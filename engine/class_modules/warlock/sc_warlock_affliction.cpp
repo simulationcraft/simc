@@ -925,8 +925,6 @@ void warlock_t::init_spells_affliction()
   
   talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
   talents.nightfall_buff = find_spell( 264571 );
-  
-  talents.xavian_teachings = find_talent_spell( talent_tree::SPECIALIZATION, "Xavian Teachings" ); // Should be ID 317031
 
   talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
   
@@ -938,9 +936,6 @@ void warlock_t::init_spells_affliction()
   talents.dark_virtuosity = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Virtuosity" ); // Should be ID 405327
 
   talents.kindled_malice = find_talent_spell( talent_tree::SPECIALIZATION, "Kindled Malice" );  // Should be ID 405330
-
-  talents.harvester_of_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Harvester of Souls" ); // Should be ID 201424
-  talents.harvester_of_souls_dmg = find_spell( 218615 ); // Damage and projectile data
 
   talents.agonizing_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Corruption" ); // Should be ID 386922
 
@@ -1075,7 +1070,6 @@ void warlock_t::init_rng_affliction()
 void warlock_t::init_procs_affliction()
 {
   procs.nightfall = get_proc( "nightfall" );
-  procs.harvester_of_souls = get_proc( "harvester_of_souls" );
   procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
   procs.tormented_crescendo = get_proc( "tormented_crescendo" );
   procs.doom_blossom = get_proc( "doom_blossom" );

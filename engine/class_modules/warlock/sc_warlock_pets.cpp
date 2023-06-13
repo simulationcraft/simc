@@ -103,15 +103,6 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_synergy = make_buff( this, "demonic_synergy",  o()->talents.demonic_synergy )
                               ->set_default_value( o()->talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
-  if ( !o()->min_version_check( VERSION_10_0_7 ) )
-  {
-    buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", find_spell( 386861 ) )
-                                    ->set_default_value( o()->talents.demonic_inspiration->effectN( 1 ).percent() );
-
-    buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
-                                ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
-  }
-
   buffs.fury_of_ruvaraad = make_buff( this, "fury_of_ruvaraad", find_spell( 409708 ) )
                                ->set_default_value_from_effect( 1 );
 
@@ -229,16 +220,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( buffs.infernal_command->check() )
     m *= 1.0 + buffs.infernal_command->check_value();
 
-  if ( o()->min_version_check( VERSION_10_0_7 ) )
-  {
-    if ( is_main_pet && o()->talents.wrathful_minion->ok() )
-      m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
-  }
-  else
-  {
-    if ( buffs.wrathful_minion->check() )
-      m *= 1.0 + buffs.wrathful_minion->check_value();
-  }
+  if ( is_main_pet && o()->talents.wrathful_minion->ok() )
+    m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -274,16 +258,9 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( o()->min_version_check( VERSION_10_0_7 ) )
-  {
-    if ( o()->talents.demonic_inspiration->ok() )
-      m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
-  }
-  else
-  {
-    if ( buffs.demonic_inspiration->check() )
-      m *= 1.0 + buffs.demonic_inspiration->check_value();
-  }
+  if ( o()->talents.demonic_inspiration->ok() )
+    m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -291,16 +268,8 @@ double warlock_pet_t::composite_spell_speed() const
 {
   double m = pet_t::composite_spell_speed();
 
-  if ( o()->min_version_check( VERSION_10_0_7 ) )
-  {
-    if ( o()->talents.demonic_inspiration->ok() )
+  if ( o()->talents.demonic_inspiration->ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
-  }
-  else
-  {
-    if ( buffs.demonic_inspiration->check() )
-      m /= 1.0 + buffs.demonic_inspiration->check_value();
-  }
 
   return m;
 }
@@ -309,16 +278,8 @@ double warlock_pet_t::composite_melee_speed() const
 {
   double m = pet_t::composite_melee_speed();
 
-  if ( o()->min_version_check( VERSION_10_0_7 ) )
-  {
-    if ( o()->talents.demonic_inspiration->ok() )
-      m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
-  }
-  else
-  {
-    if ( buffs.demonic_inspiration->check() )
-      m /= 1.0 + buffs.demonic_inspiration->check_value();
-  }
+  if ( o()->talents.demonic_inspiration->ok() )
+    m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
 }
@@ -1687,12 +1648,9 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
   if ( o()->talents.reign_of_tyranny->ok() )
   {
     m *= 1.0 + buffs.demonic_servitude->check_value();
-
-    if ( o()->min_version_check( VERSION_10_0_7 ) )
-    {
-      m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
-    }
+    m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
   }
+
   return m;
 }
 
@@ -2370,19 +2328,7 @@ struct eye_beam_t : public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
 
-    double dots = 0.0;
-
-    if ( p()->o()->min_version_check( VERSION_10_0_7 ) )
-    {
-      dots += p()->o()->get_target_data( target )->count_affliction_dots();
-    }
-    else
-    {
-      for ( player_t* t : sim->target_non_sleeping_list )
-      {
-        dots += p()->o()->get_target_data( t )->count_affliction_dots();
-      }
-    }
+    double dots = p()->o()->get_target_data( target )->count_affliction_dots();
 
     double dot_multiplier = p()->o()->talents.summon_darkglare->effectN( 3 ).percent();
 
