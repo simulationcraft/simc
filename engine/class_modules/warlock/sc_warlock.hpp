@@ -660,7 +660,6 @@ public:
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_10_1_0_data;
   const spell_data_t* version_10_1_5_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
