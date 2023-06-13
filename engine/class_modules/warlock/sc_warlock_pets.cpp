@@ -2339,17 +2339,6 @@ struct eye_beam_t : public warlock_pet_spell_t
 
     return m;
   }
-  
-  bool ready() override
-  {
-    for ( player_t* target : sim->target_non_sleeping_list )
-    {
-      if ( p()->o()->get_target_data( target )->count_affliction_dots() > 0 )
-        return warlock_pet_spell_t::ready();
-    }
-
-    return false;
-  }
 
   void impact( action_state_t* s ) override
   {
