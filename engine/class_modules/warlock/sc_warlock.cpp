@@ -999,9 +999,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Demonology
   dots_doom = target->get_dot( "doom", &p );
 
-  debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
-                                 ->set_default_value_from_effect( 1 );
-
   debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
                                            ->set_default_value_from_effect( 1 );
 

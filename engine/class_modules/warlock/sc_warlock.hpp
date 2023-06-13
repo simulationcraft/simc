@@ -66,7 +66,6 @@ struct warlock_td_t : public actor_target_data_t
   // Demo
   propagate_const<dot_t*> dots_doom;
 
-  propagate_const<buff_t*> debuffs_from_the_shadows;
   propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
   propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
@@ -310,8 +309,6 @@ public:
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
-    player_talent_t from_the_shadows; // TODO: REPLACED in 10.1
-    const spell_data_t* from_the_shadows_debuff; // TODO: REPLACED in 10.1
     player_talent_t the_houndmasters_stratagem; // Whitelisted warlock spells do more damage to target afflicted with debuff
     const spell_data_t* the_houndmasters_stratagem_debuff; // Debuff applied by Dreadstalker's Dreadbite
 
