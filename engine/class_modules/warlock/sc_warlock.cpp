@@ -290,24 +290,10 @@ struct corruption_t : public warlock_spell_t
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    if ( !seed_action )
+    if ( !seed_action && p->warlock_base.xavian_teachings->ok() )
     {
-      if ( p->min_version_check( VERSION_10_0_7 ) )
-      {
-        if ( p->warlock_base.xavian_teachings->ok() )
-        {
-          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Spell uses this effect in base spell for damage
-          base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
-        }
-      }
-      else
-      {
-        if ( p->talents.xavian_teachings->ok() )
-        {
-          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Talent uses this effect in base spell for damage
-          base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
-        }
-      }
+      spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Spell uses this effect in base spell for damage
+      base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
     }
   }
 
@@ -1370,32 +1356,6 @@ double warlock_t::composite_melee_crit_chance() const
   return m;
 }
 
-double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
-{
-  double prev = resources.current[ resource_type ];
-
-  double amt = player_t::resource_gain( resource_type, amount, source, action );
-
-  if ( resource_type == RESOURCE_SOUL_SHARD && !min_version_check( VERSION_10_0_7 ) )
-  {
-    bool filled = ( resources.current[ resource_type ] - std::floor( prev ) >= 1.0 );
-
-    if ( filled && talents.demonic_inspiration->ok() && warlock_pet_list.active )
-    {
-      warlock_pet_list.active->buffs.demonic_inspiration->trigger();
-      procs.demonic_inspiration->occur();
-    }
-
-    if ( filled && talents.wrathful_minion->ok() && warlock_pet_list.active )
-    {
-      warlock_pet_list.active->buffs.wrathful_minion->trigger();
-      procs.wrathful_minion->occur();
-    }
-  }
-
-  return amt;
-}
-
 // Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
 // a missing level requirement in data, but correct generally.
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
@@ -1674,7 +1634,6 @@ void warlock_t::init_spells()
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
   talents.soulburn_buff = find_spell( 387626 );
 
-  version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
   version_10_1_0_data = find_spell( 409652 ); // For 10.1.0 version checking, Umbrafire Embers tier buff
   version_10_1_5_data = find_spell( 417282 );  // For 10.1.5 version checking, New Crashing Chaos Buff
 }
@@ -2054,7 +2013,6 @@ bool warlock_t::min_version_check( version_check_e version ) const
     case VERSION_10_1_0:
       return !( version_10_1_0_data == spell_data_t::not_found() );
     case VERSION_10_0_7:
-      return !( version_10_0_7_data == spell_data_t::not_found() );
     case VERSION_10_0_5:
     case VERSION_10_0_0:
     case VERSION_ANY:
