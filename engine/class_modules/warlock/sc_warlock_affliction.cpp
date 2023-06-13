@@ -253,9 +253,9 @@ struct malefic_rapture_t : public affliction_spell_t
     malefic_rapture_damage_t( warlock_t* p )
       : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
     {
-      background = dual      = true;
+      background = dual = true;
       spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
-      callbacks = false;  // Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
+      callbacks = false; // Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
