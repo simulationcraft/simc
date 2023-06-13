@@ -4755,11 +4755,41 @@ struct fracture_t : public demon_hunter_attack_t
 {
   struct fracture_damage_t : public demon_hunter_attack_t
   {
+    int soul_fragments_to_spawn;
+
     fracture_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
       : demon_hunter_attack_t( name, p, s )
     {
-      dual = true;
+      dual     = true;
       may_miss = may_dodge = may_parry = false;
+
+      // Fracture currently spawns an even number of Soul Fragments baseline, half on main hand hit and half on
+      // offhand hit.
+      // In the event that Blizzard ever changes the baseline amount to an odd amount, we will assume that the extra
+      // Soul Fragment will be spawned by the main hand hit.
+      int number_of_soul_fragments_to_spawn = as<int>( p->talent.vengeance.fracture->effectN( 1 ).base_value() );
+      int number_of_soul_fragments_to_spawn_per_hit  = number_of_soul_fragments_to_spawn / 2;
+      int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn % 2;
+      if ( weapon == &( p->main_hand_weapon ) )
+      {
+        soul_fragments_to_spawn =
+            number_of_soul_fragments_to_spawn_per_hit + number_of_soul_fragments_to_spawn_leftover;
+      }
+      else
+      {
+        soul_fragments_to_spawn = number_of_soul_fragments_to_spawn_per_hit;
+      }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
+
+      p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
+      for ( unsigned i = 0; i < soul_fragments_to_spawn; i++ )
+      {
+        p()->proc.soul_fragment_from_fracture->occur();
+      }
     }
   };
 
@@ -4836,15 +4866,6 @@ struct fracture_t : public demon_hunter_attack_t
 
       mh->set_target( s->target );
       mh->execute();
-      // we're assuming that if blizz changes Fracture to 3, that 2 of the soul fragments would come from main hand and
-      // 1 from offhand.
-      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_soul_fragments_to_spawn_per_hit +
-                                                           number_of_soul_fragments_to_spawn_leftover );
-      for ( unsigned i = 0;
-            i < ( number_of_soul_fragments_to_spawn_per_hit + number_of_soul_fragments_to_spawn_leftover ); i++ )
-      {
-        p()->proc.soul_fragment_from_fracture->occur();
-      }
 
       // t30 4pc proc happens after main hand execute but before offhand execute
       // this matters because the offhand hit benefits from Fiery Demise that may be
@@ -4855,18 +4876,17 @@ struct fracture_t : public demon_hunter_attack_t
         p()->buff.t30_vengeance_4pc->expire();
       }
 
-      oh->set_target( s->target );
-      oh->execute();
-      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_soul_fragments_to_spawn_per_hit );
-      for ( unsigned i = 0; i < number_of_soul_fragments_to_spawn_per_hit; i++ )
-      {
-        p()->proc.soul_fragment_from_fracture->occur();
-      }
+      // offhand hit is ~150ms after cast
+      make_event<delayed_execute_event_t>( *p()->sim, p(), oh, s->target,
+                                           timespan_t::from_millis( data().effectN( 3 ).misc_value1() ) );
 
       if ( p()->buff.metamorphosis->check() )
       {
-        p()->spawn_soul_fragment( soul_fragment::LESSER );
-        p()->proc.soul_fragment_from_meta->occur();
+        // In all reviewed logs, it's always 500ms (based on Fires of Fel application)
+        make_event(sim, 500_ms, [ this ]() {
+          p()->spawn_soul_fragment( soul_fragment::LESSER );
+          p()->proc.soul_fragment_from_meta->occur();
+        });
       }
 
       // 15% chance to generate an extra soul fragment not included in spell data
@@ -7773,7 +7793,8 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool c
   {
     soul_fragments.push_back( new soul_fragment_t( this, type, consume_on_activation ) );
     soul_proc->occur();
-    if ( set_bonuses.t30_vengeance_2pc->ok() )
+    // Soul Fragments from Fodder to the Flame do not stack the T30 2pc.
+    if ( set_bonuses.t30_vengeance_2pc->ok() && type != soul_fragment::EMPOWERED_DEMON )
     {
       buff.t30_vengeance_2pc->trigger();
     }
