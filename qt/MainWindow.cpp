@@ -921,6 +921,7 @@ void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
       QString errorDetails;
       errorDetails += "# SimulationCraft encountered an error!\n";
       errorDetails += "# " + QString::fromStdString( util::version_info_str( sim->dbc.get() ) ) + "\n";
+      errorDetails += "# " + QString::fromStdString( util::build_info_str( sim->dbc.get() ) ) + "\n";
       errorDetails += QString( "* Category: %1\n" ).arg( simulateThread->getErrorCategory() );
       errorDetails += QString( "* Error: %1\n\n" ).arg( simulateThread->getError() );
       errorDetails += "## All options used for simulation:\n";

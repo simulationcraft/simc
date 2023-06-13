@@ -225,34 +225,36 @@ std::string util::version_info_str( const dbc_t* dbc )
     return {};
   }
 
-  std::string build_info;
+  return fmt::format( "SimulationCraft {} for World of Warcraft {} {}", SC_VERSION,
+                      dbc::client_data_version_str( dbc->ptr ), dbc->wow_ptr_status() );
+}
+
+std::string util::build_info_str( const dbc_t* dbc )
+{
+  if ( !dbc )
+  {
+    return {};
+  }
+
+  std::vector<std::string> build_strings;
+
   if ( !dbc::hotfix_date_str( dbc->ptr ).empty() )
   {
-    build_info += fmt::format( "hotfix {}/{}",
-        dbc::hotfix_date_str( dbc->ptr ),
-        dbc::hotfix_build_version( dbc->ptr ) );
+    build_strings.emplace_back(
+        fmt::format( "hotfix {}/{}", dbc::hotfix_date_str( dbc->ptr ), dbc::hotfix_build_version( dbc->ptr ) ) );
   }
 
   if ( git_info::available() )
   {
-    if ( !build_info.empty() )
-    {
-      build_info += ", ";
-    }
-
-    build_info += fmt::format( "git build {} {}",
-        git_info::branch(), git_info::revision());
+    build_strings.emplace_back( fmt::format( "git build {} {}", git_info::branch(), git_info::revision() ) );
   }
 
   if constexpr ( SC_NO_NETWORKING_ON )
   {
-    build_info += ", no-networking";
+    build_strings.emplace_back( "no-networking" );
   }
 
-  return fmt::format( "SimulationCraft {} for World of Warcraft {} {} ({})",
-      SC_VERSION, dbc::client_data_version_str( dbc->ptr ),
-      dbc->wow_ptr_status(),
-      build_info );
+  return util::string_join( build_strings );
 }
 
 double util::stat_value( const player_t* p, stat_e stat )
