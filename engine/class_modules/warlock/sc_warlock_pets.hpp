@@ -58,7 +58,6 @@ struct warlock_pet_t : public pet_t
   void create_buffs() override;
   void schedule_ready( timespan_t = 0_ms, bool = false ) override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_haste() const override;
   double composite_spell_speed() const override;
   double composite_melee_speed() const override;

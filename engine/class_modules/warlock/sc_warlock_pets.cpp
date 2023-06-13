@@ -226,34 +226,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double warlock_pet_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  double m = pet_t::composite_player_target_multiplier( target, school );
-
-  if ( o()->specialization() == WARLOCK_DEMONOLOGY && school == SCHOOL_SHADOWFLAME &&
-       o()->talents.from_the_shadows->ok() )
-  {
-    auto td = o()->get_target_data( target );
-
-    // TOCHECK: There is no "affected by" information for pets. Presumably matching school should be a sufficient check.
-    // If there's a non-warlock guardian in game that benefits from this... well, good luck with that.
-    if ( td->debuffs_from_the_shadows->check() )
-    {
-      // 2023-01-22 From the Shadows appears to ignore the Demonic Servitude multiplier, renormalizing it here
-      if ( pet_type == PET_DEMONIC_TYRANT )
-      {
-        m *= ( 1.0 + td->debuffs_from_the_shadows->check_value() + buffs.demonic_servitude->check_value() ) / ( 1.0 + buffs.demonic_servitude->check_value() );
-      }
-      else
-      {
-        m *= 1.0 + td->debuffs_from_the_shadows->check_value();
-      }    
-    }
-  }
-
-  return m;
-}
-
 double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
@@ -1444,9 +1416,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   void impact( action_state_t* s ) override
   {
     warlock_pet_melee_attack_t::impact( s );
-
-    if ( p()->o()->talents.from_the_shadows->ok() )
-      owner_td( s->target )->debuffs_from_the_shadows->trigger();
 
     if ( p()->o()->talents.the_houndmasters_stratagem->ok() )
       owner_td( s->target )->debuffs_the_houndmasters_stratagem->trigger();

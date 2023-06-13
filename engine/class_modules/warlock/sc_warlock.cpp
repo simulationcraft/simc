@@ -999,9 +999,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Demonology
   dots_doom = target->get_dot( "doom", &p );
 
-  debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
-                                 ->set_default_value_from_effect( 1 );
-
   debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
                                            ->set_default_value_from_effect( 1 );
 
@@ -1607,8 +1604,7 @@ void warlock_t::init_spells()
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
   talents.soulburn_buff = find_spell( 387626 );
 
-  version_10_1_0_data = find_spell( 409652 ); // For 10.1.0 version checking, Umbrafire Embers tier buff
-  version_10_1_5_data = find_spell( 417282 );  // For 10.1.5 version checking, New Crashing Chaos Buff
+  version_10_1_5_data = find_spell( 417282 ); // For 10.1.5 version checking, New Crashing Chaos Buff
 }
 
 void warlock_t::init_rng()
@@ -1984,7 +1980,6 @@ bool warlock_t::min_version_check( version_check_e version ) const
     case VERSION_10_1_5:
       return !( version_10_1_5_data == spell_data_t::not_found() );
     case VERSION_10_1_0:
-      return !( version_10_1_0_data == spell_data_t::not_found() );
     case VERSION_10_0_7:
     case VERSION_10_0_5:
     case VERSION_10_0_0:
