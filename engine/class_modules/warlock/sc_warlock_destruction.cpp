@@ -745,7 +745,7 @@ struct chaos_bolt_t : public destruction_spell_t
       m *= 1.0 + p()->buffs.madness_cb->check_value();
 
     if ( p()->min_version_check( VERSION_10_1_5 ) && p()->buffs.crashing_chaos->check() )
-      m *= 1 + p()->talents.crashing_chaos->effectN( 2 ).percent();
+      m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
 
     return m;
   }
@@ -914,7 +914,7 @@ struct rain_of_fire_t : public destruction_spell_t
       double m = destruction_spell_t::composite_persistent_multiplier( s );
 
       if ( p()->min_version_check( VERSION_10_1_5 ) && p()->buffs.crashing_chaos->check() )
-        m *= 1 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+        m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
 
       return m;
     }
@@ -1532,18 +1532,16 @@ void warlock_t::create_buffs_destruction()
 
   if ( min_version_check( VERSION_10_1_5 ) )
   {
-    buffs.crashing_chaos =
-        make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
-            ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
-            ->set_reverse( true );
+    buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
+                               ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
+                               ->set_reverse( true );
   }
   else
   {
-    buffs.crashing_chaos =
-        make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
-            ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 1 ).base_value() ), 1 ) )
-            ->set_reverse( true )
-            ->set_default_value( talents.crashing_chaos_buff->effectN( 1 ).base_value() / 10.0 );  
+    buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
+                               ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 1 ).base_value() ), 1 ) )
+                               ->set_reverse( true )
+                               ->set_default_value( talents.crashing_chaos_buff->effectN( 1 ).base_value() / 10.0 );
   }
 
 

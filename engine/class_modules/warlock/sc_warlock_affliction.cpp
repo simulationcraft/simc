@@ -248,128 +248,123 @@ struct summon_darkglare_t : public affliction_spell_t
 
 struct malefic_rapture_t : public affliction_spell_t
 {
-    struct malefic_rapture_damage_t : public affliction_spell_t
+  struct malefic_rapture_damage_t : public affliction_spell_t
+  {
+    malefic_rapture_damage_t( warlock_t* p )
+      : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
     {
-      malefic_rapture_damage_t( warlock_t* p )
-        : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
+      background = dual = true;
+      spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
+      callbacks = false; // Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = affliction_spell_t::composite_da_multiplier( s );
+
+      m *= p()->get_target_data( s->target )->count_affliction_dots();
+
+      m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
+
+      if ( p()->talents.focused_malignancy->ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
+        m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      affliction_spell_t::impact( s );
+
+      if ( p()->talents.dread_touch->ok() )
       {
-        background = dual = true;
-        spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
-        callbacks = false; // Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
-      }
+        auto target_data = td( s->target );
 
-      double composite_da_multiplier( const action_state_t* s ) const override
-      {
-        double m = affliction_spell_t::composite_da_multiplier( s );
-
-        m *= p()->get_target_data( s->target )->count_affliction_dots();
-
-        m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
-
-        if ( p()->talents.focused_malignancy->ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
-          m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
-
-        return m;
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        affliction_spell_t::impact( s );
-
-        if ( p()->min_version_check( VERSION_10_1_5 ) && p()->talents.dread_touch->ok() )
+        if ( p()->min_version_check( VERSION_10_1_5 ) )
         {
-          auto target_data = td( s->target );
-
           if ( target_data->dots_unstable_affliction->is_ticking() )
             target_data->debuffs_dread_touch->trigger();
+
         }
-        else
-        {
-          if ( p()->talents.malefic_affliction->ok() )
+        else if ( p()->talents.malefic_affliction->ok() && target_data->dots_unstable_affliction->is_ticking() )
           {
-            auto target_data = td( s->target );
+            if ( ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
+              target_data->debuffs_dread_touch->trigger();
 
-            if ( target_data->dots_unstable_affliction->is_ticking() )
-            {
-              if ( p()->talents.dread_touch->ok() && ( p()->buffs.malefic_affliction->check() >=
-                                                       (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
-                target_data->debuffs_dread_touch->trigger();
-
-              p()->buffs.malefic_affliction->trigger();
-            }
+            p()->buffs.malefic_affliction->trigger();
           }
         }
-      }
-
-      void execute() override
-      {
-        int d = p()->get_target_data( target )->count_affliction_dots() - 1;
-        assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
-
-        if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
-        {
-          p()->procs.malefic_rapture[ d ]->occur();
-        }
-
-        affliction_spell_t::execute();
-      }
-    };
-
-    malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : affliction_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
-    {
-      parse_options( options_str );
-      aoe = -1;
-
-      impact_action = new malefic_rapture_damage_t( p );
-      add_child( impact_action );
-    }
-
-    double cost() const override
-    {
-      double c = affliction_spell_t::cost();
-
-      if ( p()->buffs.tormented_crescendo->check() )
-        c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
-        
-      return c;      
-    }
-
-    timespan_t execute_time() const override
-    {
-      timespan_t t = affliction_spell_t::execute_time();
-
-      if ( p()->buffs.tormented_crescendo->check() )
-        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
-
-      return t;
-    }
-
-    bool ready() override
-    {
-      if ( !affliction_spell_t::ready() )
-       return false;
-
-      target_cache.is_valid = false;
-      return target_list().size() > 0;
     }
 
     void execute() override
     {
+      int d = p()->get_target_data( target )->count_affliction_dots() - 1;
+      assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
+
+      if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
+      {
+        p()->procs.malefic_rapture[ d ]->occur();
+      }
+
       affliction_spell_t::execute();
-
-      p()->buffs.tormented_crescendo->decrement();
-      p()->buffs.cruel_epiphany->decrement();
     }
+  };
 
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      affliction_spell_t::available_targets( tl );
+  malefic_rapture_t( warlock_t* p, util::string_view options_str )
+    : affliction_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
+  {
+    parse_options( options_str );
+    aoe = -1;
 
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+    impact_action = new malefic_rapture_damage_t( p );
+    add_child( impact_action );
+  }
 
-      return tl.size();
-    }
+  double cost() const override
+  {
+    double c = affliction_spell_t::cost();
+
+    if ( p()->buffs.tormented_crescendo->check() )
+      c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
+
+    return c;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t t = affliction_spell_t::execute_time();
+
+    if ( p()->buffs.tormented_crescendo->check() )
+      t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
+
+    return t;
+  }
+
+  bool ready() override
+  {
+    if ( !affliction_spell_t::ready() )
+      return false;
+
+    target_cache.is_valid = false;
+    return target_list().size() > 0;
+  }
+
+  void execute() override
+  {
+    affliction_spell_t::execute();
+
+    p()->buffs.tormented_crescendo->decrement();
+    p()->buffs.cruel_epiphany->decrement();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    affliction_spell_t::available_targets( tl );
+
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) { return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+
+    return tl.size();
+  }
 };
 
 struct drain_soul_t : public affliction_spell_t

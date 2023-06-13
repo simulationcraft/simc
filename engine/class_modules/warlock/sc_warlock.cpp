@@ -249,8 +249,7 @@ struct corruption_t : public warlock_spell_t
           p()->procs.harvester_of_souls->occur();
         }
 
-        if ( p()->talents.doom_blossom->ok() && !p()->min_version_check( VERSION_10_1_5 ) &&
-             td( d->state->target )->dots_unstable_affliction->is_ticking() )
+        if ( p()->talents.doom_blossom->ok() && !p()->min_version_check( VERSION_10_1_5 ) && td( d->state->target )->dots_unstable_affliction->is_ticking() )
         {
           if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
           {
@@ -382,8 +381,7 @@ struct seed_of_corruption_t : public warlock_spell_t
           tdata->dots_seed_of_corruption->cancel();
         }
 
-        if ( p()->min_version_check( VERSION_10_1_5 ) && p()->talents.doom_blossom->ok() &&
-             tdata->dots_unstable_affliction->is_ticking() )
+        if ( p()->min_version_check( VERSION_10_1_5 ) && p()->talents.doom_blossom->ok() && tdata->dots_unstable_affliction->is_ticking() )
         {
           doom_blossom->execute_on_target( s->target );
           p()->procs.doom_blossom->occur();
