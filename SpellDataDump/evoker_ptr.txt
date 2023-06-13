@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49890 Live (hotfix 2023-06-09/49890)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live (hotfix 2023-06-12/50000, git build dragonflight d89e382)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
