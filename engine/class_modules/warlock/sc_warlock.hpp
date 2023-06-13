@@ -663,6 +663,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
+  bool use_pet_stat_update_delay;
   shuffled_rng_t* rain_of_chaos_rng;
   const spell_data_t* version_10_0_7_data;
   const spell_data_t* version_10_1_0_data;

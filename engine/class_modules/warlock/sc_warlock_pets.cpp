@@ -13,6 +13,7 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
     summon_stats( nullptr ),
     buffs()
 {
+  use_delayed_pet_stat_updates = owner->use_pet_stat_update_delay;
   owner_coeff.ap_from_sp = 0.5;
   owner_coeff.sp_from_sp = 1.0;
 
