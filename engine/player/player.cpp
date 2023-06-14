@@ -14077,7 +14077,7 @@ void player_t::adjust_auto_attack( gcd_haste_type type )
   if ( off_hand_attack )
     off_hand_attack->reschedule_auto_attack( current_attack_speed );
 
-    current_attack_speed = cache.attack_speed();
+  current_attack_speed = cache.attack_speed();
 }
 
 timespan_t find_minimum_cd( const std::vector<std::pair<const cooldown_t*, const cooldown_t*>>& list )
