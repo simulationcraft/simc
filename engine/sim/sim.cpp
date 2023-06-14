@@ -1931,7 +1931,8 @@ void sim_t::combat_begin()
   make_event<sim_safeguard_end_event_t>( *this, *this, expected_iteration_time + expected_iteration_time );
 
   // Create the 5.25s average heartbeat event used for pet stat updates, and other aura update events.
-  make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 0, 5249 ) ) );
+  if ( !heartbeat_event_callback_function.empty() )
+    make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 0, 5249 ) ) );
 
   raid_event_t::combat_begin( this );
 }
