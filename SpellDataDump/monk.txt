@@ -18672,7 +18672,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1075290)  : Apply Aura (6) | Periodic Power% Regen (21)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.75000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.25000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.75 -> 0.25)
 Description      : Renewing Mist has a chance to grant Soulfang Infusion, granting ${$o1}.2% of your maximum Mana over $d.
 Tooltip          : Restoring $o1% of maximum mana over $d.
 
