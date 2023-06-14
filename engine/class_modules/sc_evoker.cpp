@@ -1851,7 +1851,78 @@ public:
 
   void execute() override
   {
+    sim->print_debug( "{} before cast {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
+                      p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets() );
+
+
+    // Debug for Ebon Might - Need to check if there's a bug
+    if ( sim->debug )
+    {
+      std::string _str = "";
+
+      for ( auto& _p : sim->player_no_pet_list )
+      {
+        auto td = p()->get_target_data( _p );
+
+        if ( td->buffs.ebon_might->up() )
+        {
+          if ( td->buffs.prescience->up() )
+          {
+            _str += "B ";
+          }
+          else
+          {
+            _str += "E ";
+          }
+        }
+        else if ( td->buffs.prescience->up() )
+        {
+          _str += "P ";
+        }
+        else
+        {
+          _str += "X ";
+        }
+      }
+
+      sim->print_debug( "{} {}", *p(), _str );
+
+      for ( auto& _e : p()->allied_augmentations )
+      {
+        _str = "";
+
+        for ( auto& _p : sim->player_no_pet_list )
+        {
+          auto td = _e->get_target_data( _p );
+
+          if ( td->buffs.ebon_might->up() )
+          {
+            if ( td->buffs.prescience->up() )
+            {
+              _str += "B ";
+            }
+            else
+            {
+              _str += "E ";
+            }
+          }
+          else if ( td->buffs.prescience->up() )
+          {
+            _str += "P ";
+          }
+          else
+          {
+            _str += "X ";
+          }
+        }
+        sim->print_debug( "{} {}", *_e, _str );
+      }
+    }
+
     evoker_augment_t::execute();
+
+    sim->print_debug( "{} casts {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
+                      p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets() );
   }
 
   void impact( action_state_t* s ) override
@@ -3270,7 +3341,7 @@ struct prescience_t : public evoker_augment_t
       for ( auto ally : p()->allies_with_my_prescience )
       {
         p()->get_target_data( ally )->buffs.prescience->extend_duration(
-            p(), ally == s->target ? -gcd() : -gcd() - cooldown->base_duration );
+            p(), ally == s->target ? -gcd() : -cooldown->cooldown_duration( cooldown ) );
       }
     }
   }
@@ -3279,11 +3350,11 @@ struct prescience_t : public evoker_augment_t
   {
     // Do not ever do this out of precombat, the order of entries in allies with my prescience is not preserved. During
     // precombat we can guarantee the first entry is the first buff because we do not allow the sim to cast prescience
-    // if it would expire a prescience before the next cast, factoring in two gcds since you need time to make use of your spell.
+    // if it would expire a prescience before the next cast, factoring in a gcds since you need time to make use of your spell.
     if ( is_precombat )
       return p()->allies_with_my_prescience.empty() ||
              p()->get_target_data( p()->allies_with_my_prescience[ 0 ] )->buffs.prescience->remains() >
-                 cooldown->base_duration + 2 * gcd() + 100_ms;
+                 cooldown->cooldown_duration( cooldown ) + gcd() + 100_ms;
 
     return evoker_augment_t::ready();
   }
@@ -3838,7 +3909,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         ->set_period( timespan_t::zero() )
         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
         ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
-          evoker->sim->print_debug( "{} ebon might stack change callback debug", *evoker );
           if ( new_ )
           {
             evoker->allies_with_my_ebon.push_back( target );
