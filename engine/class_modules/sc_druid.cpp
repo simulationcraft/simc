@@ -4369,6 +4369,13 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
     return e;
   }
 
+  void reset() override
+  {
+    base_t::reset();
+
+    dire_fixation_debuff = nullptr;
+  }
+
   void execute() override
   {
     base_t::execute();
@@ -4386,7 +4393,7 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) && p()->talent.dire_fixation.ok() )
     {
       auto dire = td( s->target )->debuff.dire_fixation;
 
