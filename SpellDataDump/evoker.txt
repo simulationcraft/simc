@@ -1228,25 +1228,26 @@ Description      : Focus your energies to release a salvo of pure magic, dealing
 Variables        : $dmg=${$359077s2}
 
 Name             : Eternity Surge (desc=Blue) (id=359077) [Spell Family (224)] 
-Hotfixed         : Attributes
+Hotfixed         : Attributes, Travel Delay (0 -> 0.3)
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : Magic
 Range            : 100 yards
 GCD              : 1.5 seconds
 Velocity         : 36 yards/sec
+Travel Delay     : 0.3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Evoker Devastation Class Set 2pc (393642 effect#1), Evoker Devastation 10.1 Class Set 4pc (405519 effects: #1, #2)
 Family Flags     : 0, 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ .......x ........ ........   ...x.... ........ .xx..... .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Icon (60), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow Spell Reflection (224), Allow While Charmed (261), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : No Aura Icon (60), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow Spell Reflection (224), Allow While Charmed (261), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=894882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
