@@ -1397,6 +1397,11 @@ namespace monk
           return am;
         }
 
+        bool ready() override
+        {
+          return !p()->talent.brewmaster.press_the_advantage->ok();
+        }
+
         void execute() override
         {
           //============
@@ -2869,6 +2874,22 @@ namespace monk
       // Melee
       // ==========================================================================
 
+      struct press_the_advantage_t : public monk_spell_t
+      {
+        press_the_advantage_t( monk_t *player )
+          : monk_spell_t( "press_the_advantage", player, player->talent.brewmaster.press_the_advantage->effectN( 1 ).trigger() )
+        {
+          background = true;
+        }
+
+        virtual void execute() override
+        {
+          p()->buff.press_the_advantage->trigger();
+
+          monk_spell_t::execute();
+        }
+      };
+
       struct melee_t : public monk_melee_attack_t
       {
         int sync_weapons;
@@ -2946,12 +2967,11 @@ namespace monk
               p()->passive_actions.thunderfist->schedule_execute();
             }
 
-            // Tier 30 Windwalker
-//            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T30, B4 ) && p()->rppm.shadowflame_spirit->trigger() )
-//            {
-//              p()->pets.spirit_of_forged_vermillion.spawn( p()->passives.shadowflame_spirit_summon->duration(), 1 );
-//              p()->proc.spirit_of_forged_vermillion_spawn->occur();
-//            }
+            if ( p()->talent.brewmaster.press_the_advantage->ok() )
+            {
+              p()->passive_actions.press_the_advantage->target = s->target;
+              p()->passive_actions.press_the_advantage->schedule_execute();
+            }
           }
         }
       };
@@ -7406,6 +7426,7 @@ namespace monk
     talent.brewmaster.improved_invoke_niuzao_the_black_ox = _ST( "Improved Invoke Niuzao, the Black Ox" );
     talent.brewmaster.exploding_keg = _ST( "Exploding Keg" );
     talent.brewmaster.blackout_combo = _ST( "Blackout Combo" );
+    talent.brewmaster.press_the_advantage = _ST( "Press the Advantage" );
     talent.brewmaster.weapons_of_order = _ST( "Weapons of Order" );
     // Row 10
     talent.brewmaster.bountiful_brew = _ST( "Bountiful Brew" );
@@ -7775,6 +7796,7 @@ namespace monk
 
     // Passive Action Spells
     passive_actions.thunderfist = new actions::thunderfist_t( this );
+    passive_actions.press_the_advantage = new actions::press_the_advantage_t( this );
   }
 
   // monk_t::init_base ========================================================
@@ -7982,6 +8004,9 @@ namespace monk
       ->set_cooldown( timespan_t::zero() );
 
     buff.hit_scheme = make_buff( this, "hit_scheme", talent.brewmaster.hit_scheme->effectN( 1 ).trigger() )
+      ->set_default_value_from_effect( 1 );
+
+    buff.press_the_advantage = make_buff( this, "press_the_advantage", talent.brewmaster.press_the_advantage->effectN( 3 ).trigger() )
       ->set_default_value_from_effect( 1 );
 
     buff.pretense_of_instability = make_buff( this, "pretense_of_instability", find_spell( 393515 ) )

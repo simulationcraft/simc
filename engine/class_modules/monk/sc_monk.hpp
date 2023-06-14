@@ -182,6 +182,7 @@ public:
   struct passive_actions_t
   {
     action_t* thunderfist;
+    action_t* press_the_advantage;
   } passive_actions;
 
   std::vector<action_t*> combo_strike_actions;
@@ -317,6 +318,7 @@ public:
     propagate_const<buff_t*> graceful_exit;
     propagate_const<buff_t*> hit_scheme;
     propagate_const<buff_t*> invoke_niuzao;
+    propagate_const<buff_t*> press_the_advantage;
     propagate_const<buff_t*> pretense_of_instability;
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
@@ -572,6 +574,7 @@ public:
       player_talent_t improved_invoke_niuzao_the_black_ox;
       player_talent_t exploding_keg;
       player_talent_t blackout_combo;
+      player_talent_t press_the_advantage;
       player_talent_t weapons_of_order;
       // Row 10
       player_talent_t bountiful_brew;
