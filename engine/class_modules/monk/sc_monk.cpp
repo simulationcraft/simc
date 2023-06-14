@@ -2969,6 +2969,10 @@ namespace monk
 
             if ( p()->talent.brewmaster.press_the_advantage->ok() )
             {
+              // Reduce Brew cooldown by 0.5 seconds
+              brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 2 ).base_value() / 1000 );
+
+              // Trigger the Press the Advantage damage proc
               p()->passive_actions.press_the_advantage->target = s->target;
               p()->passive_actions.press_the_advantage->schedule_execute();
             }
