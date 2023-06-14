@@ -172,7 +172,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #18), Discipline Priest (137032 effects: #5, #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Boon of the Ascended (325013 effect#4), Hungering Void (345219 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Wrath Unleashed (390782 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #18), Discipline Priest (137032 effects: #5, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Boon of the Ascended (325013 effect#4), Hungering Void (345219 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Wrath Unleashed (390782 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 7, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -236,7 +236,7 @@ GCD              : 1.5 seconds
 Duration         : 16 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8, #12, #13), Shadow Priest (137033 effects: #1, #2, #4, #5, #11, #12), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Torment of Torments (269555 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #4, #5, #11, #12), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Torment of Torments (269555 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 15, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -504,7 +504,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1602: Priest (137030 effect#2), Mangaza's Madness (207701 effect#1), Dark Thought (341207 effect#1), Dark Indulgence (372972 effect#1), Thought Harvester (406788 effect#1)
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #9, #12, #13), Shadow Priest (137033 effects: #1, #2, #9, #13, #22), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Twist of Fate (390978 effects: #1, #2), Mind Melt (391092 effect#1), Dark Ascension (391109 effects: #1, #4), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #9, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #9, #13, #22), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Twist of Fate (390978 effects: #1, #2), Mind Melt (391092 effect#1), Dark Ascension (391109 effects: #1, #4), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 13, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -632,7 +632,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Holy Fire (231687 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Burning Vehemence (372307 effects: #1, #2), Empyreal Blaze (372617 effects: #1, #2, #3), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Holy Fire (231687 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Burning Vehemence (372307 effects: #1, #2), Empyreal Blaze (372617 effects: #1, #2, #3), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Empyreal Blaze (372616)
 Family Flags     : 20, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -693,7 +693,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4.5 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#4), Mastermind (391151 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#4), Mastermind (391151 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 70, 72
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1004,7 +1004,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1169: Kiss of Death (336133 effect#2), Deathspeaker (392511 effect#3)
 Stance Mask      : 0x08000000
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #5), Discipline Priest (137032 effects: #6, #12, #13), Shadow Priest (137033 effects: #1, #2, #15, #20, #23, #25), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Mastermind (391151 effects: #1, #2), Deathspeaker (392511 effect#2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #5), Discipline Priest (137032 effects: #6, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #15, #20, #23, #25), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Mastermind (391151 effects: #1, #2), Deathspeaker (392511 effect#2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 33, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1279,7 +1279,7 @@ GCD              : 1.5 seconds
 Duration         : 21 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #4, #5, #17, #18), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#4), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #4, #5, #17, #18), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#4), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 42, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ..x..... 
@@ -1567,7 +1567,7 @@ Spell Type       : Magic
 Spell Level      : 25
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Penance (47758)
 Family Flags     : 47, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1984,6 +1984,7 @@ Spell Level      : 1
 Range            : 40 yards
 Max Targets      : 60
 Duration         : 15 seconds
+Labels           : 2706: Spatial Paradox (406732 effect#10)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#3), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Gales of Song (372370 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effect#1), Initial Priest (417191 effects: #3, #4)
@@ -2185,7 +2186,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Mastermind (391151 effects: #1, #2), Mind Spike: Insanity (407468 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Mastermind (391151 effects: #1, #2), Mind Spike: Insanity (407468 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2274,7 +2275,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.50000 | Target: Self (1)
+                   Base Value: 36 | Scaled Value: 36 | PvP Coefficient: 1.67000 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : $?s214205[Power Word: Shield applies Atonement to your target for $214206d.
@@ -2345,7 +2346,7 @@ Spell Level      : 23
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Apotheosis (200183 effect#2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Word (372760 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Inspired Word (409479 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Apotheosis (200183 effect#2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Word (372760 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Inspired Word (409479 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 69, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3011,7 +3012,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 97
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... ........ ......xx 
@@ -3119,7 +3120,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 98
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3274,7 +3275,7 @@ GCD              : 1.5 seconds
 Travel Time      : 0.5 seconds
 Travel Delay     : 0.05 seconds
 Cooldown         : 15 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Wrath Unleashed (390782 effect#1), Weal and Woe (390787 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Wrath Unleashed (390782 effect#1), Weal and Woe (390787 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3319,7 +3320,7 @@ Spell Type       : Magic
 Resource         : 1.6% Base Mana (0) (id=7897)
 Spell Level      : 31
 GCD              : 1.5 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Sudden Revelation (287360 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Rhapsody (390636 effect#1), Twilight Equilibrium (390706 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Sudden Revelation (287360 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Rhapsody (390636 effect#1), Twilight Equilibrium (390706 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 49, 72
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3340,7 +3341,7 @@ Effects          :
 Description      : An explosion of holy light around you deals up to $s1 Holy damage to enemies and up to $281265s1 healing to allies within $A1 yds, reduced if there are more than $s3 targets.
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3358,7 +3359,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -3447,11 +3448,11 @@ Effects          :
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187)
                    Family Flags: 126
 #3 (id=191077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Mind Flay (193473), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Light's Wrath (373178), Void Spike (373279), Echoing Void (373304), Echoing Void (373305), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394976), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231)
                    Family Flags: 72
 #4 (id=191078)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Mind Flay (193473), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Light's Wrath (373178), Void Spike (373279), Echoing Void (373304), Echoing Void (373305), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394976), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231)
                    Family Flags: 72
 #5 (id=191079)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3477,9 +3478,9 @@ Effects          :
                    Affected Spells: Mindgames (323673), Mindgames (375901)
                    Family Flags: 84
 #11 (id=1032422)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #12 (id=1032423)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #13 (id=1035936)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Focused Will (45242)
@@ -3537,7 +3538,7 @@ Effects          :
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187)
                    Family Flags: 126
 #3 (id=191073)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.91000 | Target: Self (1)
 #4 (id=191074)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=733880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3580,7 +3581,7 @@ Effects          :
                    Affected Spells: Mindgames (323673), Mindgames (375901)
                    Family Flags: 84
 #15 (id=1032424)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.91000 | Target: Self (1)
 #16 (id=1035935)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Focused Will (45242)
@@ -3605,6 +3606,14 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #23 (id=1089477)  : Apply Aura (6) | Dummy (4)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+#24 (id=1090993)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Mind Flay (193473), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Light's Wrath (373178), Void Spike (373279), Echoing Void (373304), Echoing Void (373305), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394976), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231)
+                   Family Flags: 72
+#25 (id=1090994)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Mind Flay (193473), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Light's Wrath (373178), Void Spike (373279), Echoing Void (373304), Echoing Void (373305), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394976), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231)
+                   Family Flags: 72
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -3724,7 +3733,7 @@ Effects          :
 #28 (id=1081067)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #29 (id=1085139)  : Apply Aura (6) | Modify Mana Regen% (379)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -3800,29 +3809,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1087
 Description      : $@spelldesc147072
 
-Name             : Shadowy Apparition (id=148859) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 100 yards
-Velocity         : 6 yards/sec
-Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... ........ ........ 
-                 : ........ ......x. ...x.... .....x..   ........ ........ ......x. ......x. 
-                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ...x.... ........ ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Effects          :
-#1 (id=203471)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 413231 | Target: Enemy (6)
-#2 (id=1070932)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Trigger Spell: 405746 | Target: Self (1)
-Description      : $@spelldesc341491
-
 Name             : Auspicious Spirits (id=155271) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Priest
@@ -3844,7 +3830,6 @@ Effects          :
                    Family Flags: 90
 #2 (id=315218)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2560 (Label) | Target: Self (1)
-                   Affected Spells (Label): Shadowy Apparition (405746)
 Description      : Your Shadowy Apparitions deal $s1% increased damage and have a chance to generate ${$m2/100} Insanity.
 
 Name             : Prayer of Mending (id=155793) [Spell Family (6)] 
@@ -4090,7 +4075,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
 Cooldown         : 1 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5038,7 +5023,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Revel in Purity (373003 effects: #1, #3), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Revel in Purity (373003 effects: #1, #3), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 100
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5064,7 +5049,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Revel in Purity (373003 effects: #1, #3), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Revel in Purity (373003 effects: #1, #3), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Purge the Wicked (204197)
 Family Flags     : 72, 100
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5176,34 +5161,6 @@ Effects          :
 Description      : Controls a mind up to 1 level above yours for $d while still controlling your own mind. Does not work versus Demonic, Mechanical, or Undead beings$?a205477[][ or players]. This spell shares diminishing returns with other disorienting effects.
 Tooltip          : Under the control of the Priest.
 
-Name             : Mind Bomb (id=205369) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 30 yards
-GCD              : 1.5 seconds
-Duration         : 2 seconds
-Cooldown         : 30 seconds
-Stance Mask      : 0x08000000
-Family Flags     : 44
-Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ..x..... ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Effects          :
-#1 (id=303236)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Inflicts the target with a Mind Bomb.
-
-After $d or if the target dies, it unleashes a psychic explosion, disorienting all enemies within $226943A1 yds of the target for $226943d.
-Tooltip          : About to unleash a psychic explosion, disorienting all nearby enemies.
-
 Name             : Shadow Crash (id=205385) [Spell Family (6)] 
 Talent Entry     : Shadow [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Priest
@@ -5241,7 +5198,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Shadow Crash (205385)
 Family Flags     : 31, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5269,7 +5226,7 @@ Velocity         : 40 yards/sec
 Cooldown         : 6 seconds
 Category         : 1660
 Category Cooldown: 6 seconds
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5546,7 +5503,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 24 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Malicious Intent (372969 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Malicious Intent (372969 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 56, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5617,36 +5574,6 @@ Effects          :
 #1 (id=325205)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc194249
-
-Name             : Mind Bomb (id=226943) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 100 yards
-Duration         : 6 seconds
-Proc Chance      : 100%
-Mechanic         : Flee
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting spells : Light of T'uure (208065 effect#1)
-Family Flags     : 57
-Attributes       : ........ ........ x......x x..x....   ...x.x.x ........ .x...... ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ..x...x. 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... .......x ........   ........ ........ ........ ........ 
-                 : .....x.. ....xx.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ..x..... ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No AutoCast (AI) (49), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Taps immediately (215), Allow While Charmed (261), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Effects          :
-#2 (id=623735)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-#3 (id=623736)   : Apply Aura (6) | Unknown(191)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Description      : Unleashes a psychic explosion, disorienting all enemies within $A1 yds of the target for $d.
-Tooltip          : Disoriented.
 
 Name             : Void Eruption (id=228260) [Spell Family (6)] 
 Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=300]
@@ -5735,7 +5662,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 35 yards/sec
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3, #7), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Heart of the Void (248296 effect#1), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (343144 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3, #7), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Heart of the Void (248296 effect#1), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (343144 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 36, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -6049,6 +5976,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 1
+Labels           : 2706: Spatial Paradox (406732 effect#10)
 Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#3), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effect#1), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 93, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -6336,7 +6264,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Insidious Ire (373213 effect#2), Malediction (373221 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Insidious Ire (373213 effect#2), Malediction (373221 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 51, 72
 Attributes       : ........ ........ x....... ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
@@ -6512,6 +6440,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 1.1 seconds
+Labels           : 2706: Spatial Paradox (406732 effect#10)
 Affecting spells : Spirit of Redemption (27827 effect#3)
 Triggered by     : Symbol of Hope (64901)
 Family Flags     : 124
@@ -6553,6 +6482,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 720 seconds
+Labels           : 2706: Spatial Paradox (406732 effect#10)
 Stance Mask      : 0x80000000
 Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effect#1), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 21, 126
@@ -9229,7 +9159,7 @@ Duration         : 5 seconds
 Cooldown         : 45 seconds
 Labels           : 976
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #9, #10), Discipline Priest (137032 effects: #12, #13, #14), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effects: #1, #2, #3), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Shattered Perceptions (391112 effects: #1, #3), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #9, #10), Discipline Priest (137032 effects: #12, #13, #14, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effects: #1, #2, #3), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Shattered Perceptions (391112 effects: #1, #3), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9342,7 +9272,7 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ .....xx. 
@@ -9458,7 +9388,7 @@ Spell Type       : Magic
 Spell Level      : 48
 GCD              : 1 seconds
 Labels           : 976
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9542,7 +9472,7 @@ Labels           : 1102: Festering Transfusion (337979 effect#1), Festering Tran
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... x.......   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Death
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Unholy Nova (324724)
 Family Flags     : 72, 114
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9573,7 +9503,7 @@ GCD              : 1 seconds
 Velocity         : 42 yards/sec
 Cooldown         : 3 seconds
 Labels           : 976
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9620,7 +9550,7 @@ Class            : Priest
 School           : Arcane
 Spell Type       : Magic
 Spell Level      : 48
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 109
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9786,7 +9716,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Category         : 691
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #17, #18), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Mind Devourer (373204 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Priest Shadow 10.1 Class Set 4pc (405558 effects: #1, #2), Voidtouched (407430 effects: #2, #3), Mind's Eye (407470 effect#1), Distorted Reality (409044 effects: #2, #3, #4, #5), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #17, #18), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Mind Devourer (373204 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Priest Shadow 10.1 Class Set 4pc (405558 effects: #1, #2), Voidtouched (407430 effects: #2, #3), Mind's Eye (407470 effect#1), Distorted Reality (409044 effects: #2, #3, #4, #5), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 87
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10846,7 +10776,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=841564)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Voidform and Dark Ascension increase your critical strike chance by $s1% for $194249d, reducing by ${$s2/10}.1% every sec.
+Description      : Voidform and Dark Ascension increase the critical strike chance of your spells by $s1% for $194249d, reducing by ${$s2/10}.1% every sec.
 
 Name             : Unfurling Darkness (id=341273) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=5, col=2, max_rank=1, req_points=8]
@@ -10944,7 +10874,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1038721)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Mind Blast, Devouring Plague, and Void Bolt conjure Shadowy Apparitions that float towards all targets afflicted by your Vampiric Touch for $148859s1 Shadow damage. 
+Description      : Mind Blast, Devouring Plague, and Void Bolt conjure Shadowy Apparitions that float towards all targets afflicted by your Vampiric Touch for $413231s1 Shadow damage. 
 
 Critical strikes increase the damage by $s2%.
 
@@ -11082,7 +11012,7 @@ Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11218,7 +11148,7 @@ Spell Level      : 26
 Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #11, #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Gathering Shadows (394961 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #11, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Gathering Shadows (394961 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 65, 72
 Attributes       : ........ ........ x....... ........   ..x....x ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -11332,7 +11262,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... .....x..   ........ ........ ..x..... .....x.. 
@@ -11374,7 +11304,7 @@ Class            : Priest
 School           : Arcane
 Spell Type       : Magic
 Spell Level      : 48
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#8), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Ascended Eruption (325326)
 Family Flags     : 72, 109
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11921,7 +11851,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Duration         : 6 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -12154,7 +12084,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ......x.   x....... .x...... ........ .x....x. 
@@ -12978,7 +12908,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Dark Reprimand (373129)
 Family Flags     : 47, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -13006,7 +12936,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 90 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Resplendent Light (390765 effect#1), Wrath Unleashed (390781 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Resplendent Light (390765 effect#1), Wrath Unleashed (390781 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 41, 72
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13309,7 +13239,7 @@ Spell Level      : 1
 Range            : 45 yards
 Cast Time        : 2 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13383,7 +13313,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -13407,7 +13337,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 2 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -13580,7 +13510,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Labels           : 2616: Shadow Priest (137033 effect#24)
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #14), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #14), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 23, 72
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13615,7 +13545,7 @@ Max Targets      : 5
 GCD              : 1 seconds
 Labels           : 2326: Inescapable Torment (373427 effect#3)
                  : 2616: Shadow Priest (137033 effect#24)
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #14), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #14), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 23, 72
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -13869,7 +13799,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #9, #10), Discipline Priest (137032 effects: #12, #13, #14), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effects: #1, #2, #3), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Shattered Perceptions (391112 effects: #1, #3), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #9, #10), Discipline Priest (137032 effects: #12, #13, #14, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effects: #1, #2, #3), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Shattered Perceptions (391112 effects: #1, #3), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14958,7 +14888,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 98
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -15040,7 +14970,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028074)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases the amount of damage required to break your $?s205369[Mind Bomb][Psychic Scream] by $s1%.
+Description      : Increases the amount of damage required to break your Psychic Scream by $s1%.
 
 Name             : Words of the Pious (id=390933) [Spell Family (6)] 
 Class            : Priest
@@ -15119,7 +15049,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 97
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... ........ ......xx 
@@ -16101,7 +16031,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#4), Mastermind (391151 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#4), Mastermind (391151 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Mind Flay: Insanity (391401)
 Family Flags     : 70, 72
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
@@ -16552,7 +16482,7 @@ Spell Level      : 26
 Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #11, #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Gathering Shadows (394961 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #11, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Gathering Shadows (394961 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 65, 72
 Attributes       : ........ ........ x....... ........   ..x....x ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -16578,7 +16508,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Mind Sear (394976)
 Family Flags     : 72
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
@@ -16884,27 +16814,6 @@ Effects          :
                    Family Flags: 87
 Description      : Devouring Plague damage increased by $s1%. Every $409502u casts of Devouring Plague increases the damage of Shadowy Apparitions conjured within the next $410871d by $410871s1%.
 
-Name             : Shadowy Apparition (id=405746) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Type       : Magic
-Spell Level      : 1
-Labels           : 2560: Auspicious Spirits (155271 effect#2)
-Triggered by     : Shadowy Apparition (148859)
-Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ......x. ......x. 
-                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ...x.... ........ ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Effects          :
-#1 (id=1054184)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
-Description      : $@spelldesc341491
-
 Name             : Calm the Wolf (desc=Racial) (id=406087) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
@@ -17065,7 +16974,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Mastermind (391151 effects: #1, #2), Mind Spike: Insanity (407468 effect#1), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Mastermind (391151 effects: #1, #2), Mind Spike: Insanity (407468 effect#1), Initial Priest (417191 effects: #1, #2)
 Triggered by     : Mind Spike: Insanity (407468)
 Family Flags     : 72, 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -17301,8 +17210,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Haunting Apparitions (338319 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
-Triggered by     : Shadowy Apparition (148859)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effect#1), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Haunting Apparitions (338319 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #4), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 72, 90
 Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... ........ ........ 
                  : ........ ......x. ...x.... .....x..   ........ ........ ......x. ......x. 
