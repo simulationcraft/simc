@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.50006
-static const std::array<spelltext_data_t, 20078> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20080> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -4673,6 +4673,7 @@ static const std::array<spelltext_data_t, 20078> __ptr_spelltext_data { {
   { 148746, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 148747, "Restores $104934o1 health over $104934d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $124216s1 haste for $124216d.", "Restores $/5;104934s1 health per second.", 0 },
   { 148749, "Restores $104934o1 health over $104934d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $124218s1 Critical Strike for $124218d.", "Restores $/5;104934s1 health per second.", 0 },
+  { 148859, "$@spelldesc341491", 0, 0 },
   { 148895, "Your attacks have a chance to grant you $148896s1 Agility for $148896d.  ($h% chance, ${$proccooldown} sec cooldown)", 0, 0 },
   { 148896, "Agility increased by $s1 for $d.", "Agility increased by $s1.", 0 },
   { 148897, "Increases Intellect by $s1 for $d.", "Increases Intellect by $s1.", 0 },
@@ -19580,6 +19581,7 @@ static const std::array<spelltext_data_t, 20078> __ptr_spelltext_data { {
   { 405728, "$@spelldesc404859", 0, 0 },
   { 405729, "$@spelldesc404859", 0, 0 },
   { 405734, "$@spelldesc404859", 0, 0 },
+  { 405746, "$@spelldesc341491", 0, 0 },
   { 405757, "Eye of Tyr deals $s1% increased damage and has $s2% reduced cooldown.", 0, 0 },
   { 405764, "$@spelldesc405076", 0, 0 },
   { 405765, "$@spelldesc405076", 0, 0 },
