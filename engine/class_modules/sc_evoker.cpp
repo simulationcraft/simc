@@ -1385,7 +1385,8 @@ struct emerald_blossom_t : public essence_heal_t
       harmful = false;
       dual    = true;
       if ( do_aoe )
-        aoe = data().effectN( 2 ).base_value() + p->talent.bountiful_bloom->effectN( 1 ).base_value();
+        aoe = as<int>( data().effectN( 2 ).base_value() ) +
+              as<int>( p->talent.bountiful_bloom->effectN( 1 ).base_value() );
     }
   };
 
@@ -3060,7 +3061,7 @@ struct eruption_t : public essence_spell_t
     if ( p()->talent.regenerative_chitin->ok() && p()->last_scales_target && p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
     {
       p()->get_target_data( p()->last_scales_target )
-          ->buffs.blistering_scales->bump( p()->talent.regenerative_chitin->effectN( 3 ).base_value() );
+          ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
     }
   }
 };
