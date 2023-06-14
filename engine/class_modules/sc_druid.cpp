@@ -397,6 +397,7 @@ public:
     std::vector<dot_t*> moonfire;
     std::vector<dot_t*> sunfire;
   } dot_list;
+  player_t* dire_fixation_target;
   // !!!==========================================================================!!!
 
   // Options
@@ -4338,8 +4339,6 @@ struct primal_wrath_t : public cat_finisher_t
 // Shred ====================================================================
 struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
 {
-  static inline buff_t* dire_fixation_debuff = nullptr;
-
   double stealth_mul;
   double stealth_cp;
 
@@ -4369,13 +4368,6 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
     return e;
   }
 
-  void reset() override
-  {
-    base_t::reset();
-
-    dire_fixation_debuff = nullptr;
-  }
-
   void execute() override
   {
     base_t::execute();
@@ -4395,17 +4387,15 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
 
     if ( result_is_hit( s->result ) && p()->talent.dire_fixation.ok() )
     {
-      auto dire = td( s->target )->debuff.dire_fixation;
-
-      if ( dire != dire_fixation_debuff )
+      if ( p()->dire_fixation_target != s->target )
       {
-        if ( dire_fixation_debuff )
-          dire_fixation_debuff->expire();
+        if ( p()->dire_fixation_target )
+          td( p()->dire_fixation_target )->debuff.dire_fixation->expire();
 
-        dire_fixation_debuff = dire;
+        p()->dire_fixation_target = s->target;
       }
 
-      dire->trigger();
+      td( p()->dire_fixation_target )->debuff.dire_fixation->trigger();
     }
   }
 
@@ -9398,6 +9388,14 @@ struct denizen_of_the_dream_t : public action_t
 // druid_t::activate ========================================================
 void druid_t::activate()
 {
+  if ( talent.dire_fixation.ok() )
+  {
+    register_on_kill_callback( [ this ]( player_t* t ) {
+      if ( t == dire_fixation_target )
+        dire_fixation_target = nullptr;
+    } );
+  }
+
   if ( talent.predator.ok() )
   {
     register_on_kill_callback( [ this ]( player_t* t ) {
@@ -11450,6 +11448,7 @@ void druid_t::reset()
   astral_power_decay = nullptr;
   dot_list.moonfire.clear();
   dot_list.sunfire.clear();
+  dire_fixation_target = nullptr;
 }
 
 // druid_t::merge ===========================================================
