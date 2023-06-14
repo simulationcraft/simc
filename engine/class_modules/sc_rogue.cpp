@@ -1597,12 +1597,12 @@ public:
     {
       // Not in spell data. Using the mastery whitelist as a baseline, most seem to apply
       affected_by.zoldyck_insignia = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
-        ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
+                                     ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
     }
 
     if ( p->talent.assassination.lethal_dose->ok() )
     {
-      // TOCHECK -- Not in spell data. Using the mastery whitelist as a baseline, most seem to apply
+      // Not in spell data. Using the mastery whitelist as a baseline, most seem to apply
       affected_by.lethal_dose = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
                                 ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
     }
@@ -6019,6 +6019,8 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t( name, p, p->spell.sepsis_expire_damage )
     {
       dual = true;
+      affected_by.lethal_dose = false; // 2023-06-11 -- Recent testing indicates this is no longer affected
+      affected_by.zoldyck_insignia = false;
     }
 
     bool procs_shadow_blades_damage() const override
@@ -6031,6 +6033,8 @@ struct sepsis_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.shared.sepsis, options_str )
   {
     affected_by.broadside_cp = true; // 2021-04-22 -- Not in the whitelist but confirmed as working in-game
+    affected_by.lethal_dose = false; // 2023-06-11 -- Recent testing indicates this is no longer affected
+    affected_by.zoldyck_insignia = false;
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
@@ -6044,8 +6048,7 @@ struct sepsis_t : public rogue_attack_t
   void last_tick( dot_t* d ) override
   {
     rogue_attack_t::last_tick( d );
-    sepsis_expire_damage->set_target( d->target );
-    sepsis_expire_damage->execute();
+    sepsis_expire_damage->execute_on_target( d->target );
     p()->buffs.sepsis->trigger();
   }
 
@@ -6064,7 +6067,6 @@ struct serrated_bone_spike_t : public rogue_attack_t
     {
       aoe = 0;
       hasted_ticks = true; // Uses the SX_DOT_HASTED_MELEE
-      affected_by.zoldyck_insignia = true; // TOCHECK DFALPHA -- 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 3 );
     }
 
@@ -6084,6 +6086,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 0.0;
     base_impact_cp = as<int>( p->spec.serrated_bone_spike_energize->effectN( 1 ).base_value() );
+    affected_by.lethal_dose = false;
+    affected_by.zoldyck_insignia = false; // Does not affect direct, does affect periodic
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
     add_child( serrated_bone_spike_dot );
