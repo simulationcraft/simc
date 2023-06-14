@@ -722,7 +722,6 @@ struct player_t : public actor_t
   /// Current execution type
   execute_type current_execute_type;
 
-
   using resource_callback_function_t = std::function<void()>;
 
   template <typename T>

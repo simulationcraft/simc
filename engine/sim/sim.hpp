@@ -732,6 +732,10 @@ struct sim_t : private sc_thread_t
   // Activates the necessary actor/actors before iteration begins.
   void activate_actors();
 
+  void heartbeat_event_callback();
+  std::vector<std::function<void(sim_t*)>> heartbeat_event_callback_function;
+  void register_heartbeat_event_callback( std::function<void( sim_t*)> fn );
+
   timespan_t current_time() const
   { return event_mgr.current_time; }
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )

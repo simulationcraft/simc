@@ -1300,6 +1300,16 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
       "dps.\n"
       "# Feel free to edit, adapt and improve it to your own needs.\n"
       "# SimulationCraft is always looking for updates and improvements to the default action lists.\n";
+
+  if ( !is_pet() && !is_enemy() )
+  {
+    sim->register_heartbeat_event_callback( [ this ]( sim_t* sim ) {
+      for ( auto& pet : active_pets )
+      {
+        pet->update_stats();
+      }
+    } );
+  }
 }
 
 // Added in source file to get full definitions of all objects to destruct here;

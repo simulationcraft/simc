@@ -1238,6 +1238,29 @@ struct bloodlust_check_t : public event_t
    }
  };
 
+struct heartbeat_event_t : public event_t
+ {
+   heartbeat_event_t( sim_t& s, timespan_t t ) : event_t( s, t )
+   {
+   }
+
+   const char* name() const override
+   {
+     return "heartbeat_event";
+   }
+
+   void execute() override
+   {
+     if ( !sim().heartbeat_event_callback_function.empty() )
+     {
+      sim().heartbeat_event_callback();
+     }
+
+     make_event<heartbeat_event_t>( sim(), sim(),
+                                    rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
+   }
+ };
+
 // compare_dps ==============================================================
 
 struct compare_dps
@@ -1956,6 +1979,10 @@ void sim_t::combat_begin()
     target -> death_pct = enemy_death_pct;
   }
   make_event<sim_safeguard_end_event_t>( *this, *this, expected_iteration_time + expected_iteration_time );
+
+  // Create the 5.25s average heartbeat event used for pet stat updates, and other aura update events.
+  if ( !heartbeat_event_callback_function.empty() )
+    make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 0, 5249 ) ) );
 
   raid_event_t::combat_begin( this );
 }
@@ -4516,4 +4543,15 @@ bool sim_t::requires_cleanup() const
 
   // .. or finally, clean up child threads based on the "cleanup_threads" option value
   return cleanup_threads;
+}
+
+void sim_t::heartbeat_event_callback()
+{
+  for( size_t i = 0; i < heartbeat_event_callback_function.size(); ++i )
+    heartbeat_event_callback_function[ i ]( this );
+}
+
+void sim_t::register_heartbeat_event_callback(std::function<void(sim_t*)> fn)
+{
+  heartbeat_event_callback_function.emplace_back( std::move( fn ) );
 }

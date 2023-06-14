@@ -1780,28 +1780,24 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
-  // Mastery and Vers appear to update immediately, likely due to being an all damage mod aura on the player
-  // last tested 6-6-2023
-  double owner_composite_melee_haste;
-  double owner_composite_spell_haste;
-  double owner_composite_melee_crit;
-  double owner_composite_spell_crit;
-  double owner_attack_power;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false ),
-    owner_composite_melee_haste( 0.0 ),
-    owner_composite_spell_haste( 0.0 ),
-    owner_composite_melee_crit( 0.0 ),
-    owner_composite_spell_crit( 0.0 ),
-    owner_attack_power( 0.0 )
+    affected_by_commander_of_the_dead( false )
   {
     if ( auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
     }
+  }
+
+  double composite_melee_speed() const override
+  {
+    if ( use_delayed_pet_stat_updates )
+      return current_pet_stats.composite_melee_haste;
+    else
+      return owner->cache.attack_haste();
   }
 
   death_knight_t* dk() const
@@ -1829,52 +1825,6 @@ struct death_knight_pet_t : public pet_t
       m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
     }
     return m;
-  }
-
-  void arise() override
-  {
-    pet_t::arise();
-    this -> sim -> print_debug( "{} arise event, updating attack power. previous value={} ", name(), composite_melee_attack_power() );
-    owner_attack_power          = owner->cache.total_melee_attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
-    this -> sim -> print_debug( "{} arise event, updating attack power. new value={} ", name(), composite_melee_attack_power() );
-    this -> sim -> print_debug( "{} arise event, updating crit. previous value={} ", name(), pet_crit() );
-    owner_composite_melee_crit  = owner->cache.attack_crit_chance();
-    owner_composite_spell_crit  = owner->cache.spell_crit_chance();
-    this -> sim -> print_debug( "{} arise event, updating crit. new value={} ", name(), pet_crit() );
-    this -> sim -> print_debug( "{} arise event, updating haste. old value={} ", name(), composite_melee_haste() );
-    owner_composite_melee_haste = owner->cache.attack_haste();
-    owner_composite_spell_haste = owner->cache.spell_haste();
-    this -> sim -> print_debug( "{} arise event, updating haste. new value={} ", name(), composite_melee_haste() );
-  }
-
-  double pet_crit() const override
-  {
-    return std::max( owner_composite_melee_crit, owner_composite_spell_crit );
-  }
-
-  double composite_melee_speed() const override
-  {
-    return owner_composite_melee_haste;
-  }
-
-  double composite_melee_haste() const override
-  {
-    return owner_composite_melee_haste;
-  }
-
-  double composite_spell_haste() const override
-  {
-   return owner_composite_spell_haste;
-  }
-
-  double composite_spell_speed() const override
-  {
-    return owner_composite_spell_haste;
-  }
-
-  double composite_melee_attack_power() const override
-  {
-    return owner_attack_power;
   }
 
   // Standard Death Knight pet actions
@@ -10805,33 +10755,6 @@ inline double death_knight_t::rune_regen_coefficient() const
   return coeff;
 }
 
-struct stat_event_t : public player_event_t
-{
-  stat_event_t( player_t* p, timespan_t interval ) : player_event_t( *p, interval ) { }
-  void execute() override
-  {
-    for ( auto pet : p()->active_pets )
-    {
-      pets::death_knight_pet_t* dk_pet = debug_cast< pets::death_knight_pet_t* >( pet );
-      sim().print_debug( "{} stat invalidate event old ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
-      dk_pet->owner_attack_power = dk_pet->owner->cache.total_melee_attack_power() * dk_pet->owner->composite_attack_power_multiplier() * dk_pet->owner_coeff.ap_from_ap;
-      sim().print_debug( "{} stat invalidate event new ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
-
-      // Mastery and Versatility appear to be excluded from the delay due to being a player aura that modifies damage done
-      sim().print_debug( "{} stat invalidate event old crit {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_crit, dk_pet->owner->cache.attack_crit_chance() );
-      dk_pet->owner_composite_melee_crit = dk_pet->owner->cache.attack_crit_chance();
-      dk_pet->owner_composite_spell_crit = dk_pet->owner->cache.spell_crit_chance();
-      sim().print_debug( "{} stat invalidate event new crit {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_crit, dk_pet->owner->cache.attack_crit_chance() );
-      sim().print_debug( "{} stat invalidate event old haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
-      dk_pet->owner_composite_melee_haste = dk_pet->owner->cache.attack_haste();
-      dk_pet->owner_composite_spell_haste = dk_pet->owner->cache.spell_haste();
-      sim().print_debug( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
-    }
-
-    make_event<stat_event_t>( sim(), this->player(), rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
-  }
-};
-
 // death_knight_t::arise ====================================================
 void death_knight_t::arise()
 {
@@ -10840,7 +10763,6 @@ void death_knight_t::arise()
     buffs.stoneskin_gargoyle -> trigger();
   start_inexorable_assault();
   start_cold_heart();
-  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range( 1, 5249 ) ) );
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
