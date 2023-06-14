@@ -1,4 +1,4 @@
-// 573 talents, wow build 10.1.5.49908
+// 573 talents, wow build 10.1.5.50006
 static std::array<talent_data_t, 573> __ptr_talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -205,7 +205,7 @@ static std::array<talent_data_t, 573> __ptr_talent_data { {
   { "Light Brewing"                     , 22099, 0x00, 0x0200,  268,   0,   2,  325093,       0,  0 },
   { "Refreshing Jade Wind"              , 22101, 0x00, 0x0200,  270,   1,   5,  196725,       0,  0 },
   { "Dance of Chi-Ji"                   , 22102, 0x00, 0x0200,  269,   2,   5,  325201,       0,  0 },
-  { "Exploding Keg"                     , 22103, 0x00, 0x0200,  268,   2,   5,  325153,       0,  0 },
+  { "Press the Advantage"               , 22103, 0x00, 0x0200,  268,   2,   5,  418359,  100780,  0 },
   { "Celestial Flames"                  , 22104, 0x00, 0x0200,  268,   1,   6,  325177,       0,  0 },
   { "Whirling Dragon Punch"             , 22105, 0x00, 0x0200,  269,   1,   6,  152175,       0,  0 },
   { "High Tolerance"                    , 22106, 0x00, 0x0200,  268,   0,   6,  196737,       0,  0 },

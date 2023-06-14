@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 10.1.5.49908
+// Talent tree specialization abilities, wow build 10.1.5.50006
 static const std::array<specialization_spell_entry_t, 381> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
@@ -365,6 +365,12 @@ static const std::array<specialization_spell_entry_t, 381> __ptr_specialization_
   { 12,  581, 321067,      0, "Metamorphosis"                     , "Rank 2" },
   { 12,  581, 321068,      0, "Metamorphosis"                     , "Rank 2" },
   { 12,  581, 321299,      0, "Mastery: Fel Blood"                , "Rank 2" },
+  { 13, 1473, 365261,      0, "Emerald Blossom"                   , 0 },
+  { 13, 1473, 395153,      0, "Sands of Time"                     , 0 },
+  { 13, 1473, 396043,      0, "Close as Clutchmates"              , 0 },
+  { 13, 1473, 396186,      0, "Augmentation Evoker"               , 0 },
+  { 13, 1473, 406041,      0, "Nourishing Sands"                  , 0 },
+  { 13, 1473, 406380,      0, "Mastery: Timewalker"               , 0 },
   { 13, 1467, 356809,      0, "Devastation Evoker"                , 0 },
   { 13, 1467, 362980,      0, "Mastery: Giantkiller"              , 0 },
   { 13, 1467, 365261,      0, "Emerald Blossom"                   , 0 },
@@ -373,12 +379,6 @@ static const std::array<specialization_spell_entry_t, 381> __ptr_specialization_
   { 13, 1468, 361178,      0, "Mass Return"                       , 0 },
   { 13, 1468, 363510,      0, "Mastery: Life-Binder"              , 0 },
   { 13, 1468, 365262,      0, "Improved Emerald Blossom"          , 0 },
-  { 13, 1473, 365261,      0, "Emerald Blossom"                   , 0 },
-  { 13, 1473, 395153,      0, "Sands of Time"                     , 0 },
-  { 13, 1473, 396043,      0, "Close as Clutchmates"              , 0 },
-  { 13, 1473, 396186,      0, "Augmentation Evoker"               , 0 },
-  { 13, 1473, 406041,      0, "Nourishing Sands"                  , 0 },
-  { 13, 1473, 406380,      0, "Mastery: Timewalker"               , 0 },
   { 13, 1465, 356816,      0, "Initial Evoker"                    , 0 },
   { 13, 1465, 365261,      0, "Emerald Blossom"                   , 0 },
 } };
