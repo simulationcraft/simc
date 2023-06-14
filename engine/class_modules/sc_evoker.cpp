@@ -126,6 +126,7 @@ struct evoker_t : public player_t
   mutable std::vector<buff_t*> allied_ebons_on_me;
   std::vector<std::function<void()>> allied_ebon_callbacks;
   player_t* last_scales_target;
+  vector_with_callback<player_t*> allies_with_my_prescience;
 
   struct heartbeat_t
   {
@@ -1873,6 +1874,7 @@ public:
   {
     evoker_augment_t::activate();
     p()->allies_with_my_ebon.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+    p()->allies_with_my_prescience.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
 
     for ( auto e : p()->allied_augmentations )
     {
@@ -1886,6 +1888,12 @@ public:
     // Player must always be the first target.
     target_list.push_back( player );
 
+    for ( auto& p : p()->allies_with_my_prescience )
+    {
+      if ( p != player )
+        target_list.push_back( p );
+    }
+
     // Clear helper vector used to process in a single pass.
     helper_list.clear();
 
@@ -1893,14 +1901,17 @@ public:
     {
       if ( t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
       {
-        if ( std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                           [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) )
+        if ( range::find( p()->allies_with_my_prescience, t ) == p()->allies_with_my_prescience.end() )
         {
-          target_list.push_back( t );
-        }
-        else
-        {
-          helper_list.push_back( t );
+          if ( std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) )
+          {
+            target_list.push_back( t );
+          }
+          else
+          {
+            helper_list.push_back( t );
+          }
         }
       }
     }
@@ -3235,7 +3246,30 @@ struct prescience_t : public evoker_augment_t
     evoker_augment_t::impact( s );
 
     p()->get_target_data( s->target )->buffs.prescience->trigger();
+
+    if ( is_precombat )
+    {
+      for ( auto ally : p()->allies_with_my_prescience )
+      {
+        p()->get_target_data( ally )->buffs.prescience->extend_duration(
+            p(), ally == s->target ? -gcd() : -gcd() - cooldown->base_duration );
+      }
+    }
   }
+
+  bool ready() override
+  {
+    // Do not ever do this out of precombat, the order of entries in allies with my prescience is not preserved. During
+    // precombat we can guarantee the first entry is the first buff because we do not allow the sim to cast prescience
+    // if it would expire a prescience before the next cast, factoring in two gcds since you need time to make use of your spell.
+    if ( is_precombat )
+      return p()->allies_with_my_prescience.empty() ||
+             p()->get_target_data( p()->allies_with_my_prescience[ 0 ] )->buffs.prescience->remains() >
+                 cooldown->base_duration + 2 * gcd() + 100_ms;
+
+    return evoker_augment_t::ready();
+  }
+
   void execute() override
   {
     evoker_augment_t::execute();
@@ -3786,6 +3820,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         ->set_period( timespan_t::zero() )
         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
         ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
+          evoker->sim->print_debug( "{} ebon might stack change callback debug", *evoker );
           if ( new_ )
           {
             evoker->allies_with_my_ebon.push_back( target );
@@ -3796,7 +3831,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
           }
           else
           {
-            evoker->allies_with_my_ebon.find_and_erase( target );
+            evoker->allies_with_my_ebon.find_and_erase_unordered( target );
             if ( auto e = dynamic_cast<evoker_t*>( target ) )
             {
               auto vec = e->allied_ebons_on_me;
@@ -3830,11 +3865,30 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
       auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror, stats );
 
-      buffs.prescience->set_stack_change_callback( [ fate_mirror_cb ]( buff_t*, int, int new_ ) {
+      buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
         if ( new_ )
+        {
           fate_mirror_cb->activate();
+          evoker->allies_with_my_prescience.push_back( target );
+        }
         else
+        {
           fate_mirror_cb->deactivate();
+          evoker->allies_with_my_prescience.find_and_erase_unordered( target );
+        }
+      } );
+    }
+    else
+    {
+      buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
+        if ( new_ )
+        {
+          evoker->allies_with_my_prescience.push_back( target );
+        }
+        else
+        {
+          evoker->allies_with_my_prescience.find_and_erase_unordered( target );
+        }
       } );
     }
 
@@ -3922,6 +3976,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     allied_ebon_callbacks(),
     last_scales_target( nullptr ),
     heartbeat(),
+    allies_with_my_prescience(),
     naszuro()
 {
   cooldown.eternity_surge = get_cooldown( "eternity_surge" );
@@ -4630,10 +4685,16 @@ void evoker_t::reset()
   player_t::reset();
 
   allied_ebons_on_me.clear();
-  for ( auto b : allies_with_my_ebon )
+  for ( auto ally : allies_with_my_ebon )
   {
-    allies_with_my_ebon.find_and_erase_unordered( b );
+    allies_with_my_ebon.find_and_erase_unordered( ally );
   }
+
+  for ( auto ally : allies_with_my_prescience )
+  {
+    allies_with_my_prescience.find_and_erase_unordered( ally );
+  }
+
 
   was_empowering = false;
 }
@@ -4805,6 +4866,15 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
   {
     if ( util::str_compare_ci( splits[ 0 ], "evoker" ) )
     {
+      if ( util::str_compare_ci( splits[ 1 ], "prescience_buffs" ) )
+        return make_fn_expr( "prescience_buffs", [ this ] { return allies_with_my_prescience.size(); } );
+      if ( util::str_compare_ci( splits[ 1 ], "ebon_buffs" ) )
+        return make_fn_expr( "ebon_buffs", [ this ] { return allies_with_my_ebon.size(); } );
+      if ( util::str_compare_ci( splits[ 1 ], "scales_up" ) )
+        return make_fn_expr( "scales_up", [ this ] {
+          return last_scales_target != nullptr &&
+                 get_target_data( last_scales_target )->buffs.blistering_scales->check();
+        } );
       if ( util::str_compare_ci( splits[ 1 ], "use_clipping" ) )
         return expr_t::create_constant( "use_clipping", option.use_clipping );
       if ( util::str_compare_ci( splits[ 1 ], "use_early_chaining" ) )
