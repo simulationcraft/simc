@@ -6746,7 +6746,10 @@ action_t* player_t::execute_action()
 
       if ( !is_enemy() )
       {
-        sequence_add( action, action->target, sim->current_time() );
+        if ( action->queue_event )
+          sequence_add( action, action->target, action->queue_event->occurs() );
+        else
+          sequence_add( action, action->target, sim->current_time() );
       }
     }
   }
