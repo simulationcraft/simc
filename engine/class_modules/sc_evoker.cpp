@@ -1665,7 +1665,7 @@ public:
   double base_ebon_value        = 0.0;
   double clutchmates_ebon_value = 0.0;
   timespan_t ebon_time          = timespan_t::min();
-  mutable std::vector<player_t*> helper_list;
+  mutable std::vector<player_t*> secondary_list, tertiary_list;
 
   ebon_might_t( evoker_t* p, std::string_view options_str )
     : ebon_might_t( p, "ebon_might", options_str, timespan_t::min() )
@@ -1677,7 +1677,10 @@ public:
   }
 
   ebon_might_t( evoker_t* p, std::string_view name, std::string_view options_str, timespan_t ebon )
-    : evoker_augment_t( name, p, p->talent.ebon_might, options_str ), helper_list(), ebon_time(ebon)
+    : evoker_augment_t( name, p, p->talent.ebon_might, options_str ),
+      secondary_list(),
+      tertiary_list(),
+      ebon_time( ebon )
   {
     // Add a target so you always hit yourself.
     aoe += 1;
@@ -1895,8 +1898,9 @@ public:
         target_list.push_back( p );
     }
 
-    // Clear helper vector used to process in a single pass.
-    helper_list.clear();
+    // Clear helper vectors used to process in a single pass.
+    secondary_list.clear();
+    tertiary_list.clear();
 
     for ( const auto& t : sim->player_no_pet_list )
     {
@@ -1907,11 +1911,14 @@ public:
           if ( std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
                              [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) )
           {
-            target_list.push_back( t );
+            if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK )
+              target_list.push_back( t );
+            else
+              secondary_list.push_back( t );
           }
           else
           {
-            helper_list.push_back( t );
+            tertiary_list.push_back( t );
           }
         }
       }
@@ -1919,7 +1926,17 @@ public:
 
     if ( target_list.size() < n_targets() )
     {
-      for ( auto& t : helper_list )
+      for ( auto& t : secondary_list )
+      {
+        target_list.push_back( t );
+        if ( target_list.size() >= n_targets() )
+          break;
+      }
+    }
+
+    if ( target_list.size() < n_targets() )
+    {
+      for ( auto& t : tertiary_list )
       {
         target_list.push_back( t );
         if ( target_list.size() >= n_targets() )
