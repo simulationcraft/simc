@@ -1670,6 +1670,7 @@ class SpellDataGenerator(DataGenerator):
             ( 407468, 0 ),          # Mind Spike Insanity Buff
             ( 391232, 0 ),          # Maddening Touch Insanity
             ( 409502, 0 ),          # Priest Shadow Class Set 2-set - Weakening Reality
+            ( 148859, 0 ),          # Shadowy Apparitions Travel Spell
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
