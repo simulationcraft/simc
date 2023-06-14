@@ -1065,9 +1065,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     region_str( s->default_region_str ),
     server_str( s->default_server_str ),
     origin_str(),
-    timeofday( DAY_TIME ),  // Set to Day by Default since in raid it always switches to Day, user can override.
-    zandalari_loa(
-        PAKU ),  // Set loa to paku by default (as it has some gain for any role if not optimal), user can override
+    timeofday( NIGHT_TIME ),  // Depends on server time, default to night that's more common for raid hours
+    zandalari_loa( PAKU ),  // Default to Paku as it has some non-zero dps benefit for all specs
     vulpera_tricks( CORROSIVE ),  // default trick for damage
     gcd_ready( timespan_t::zero() ),
     base_gcd( timespan_t::from_seconds( 1.5 ) ),
