@@ -567,6 +567,7 @@ Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0, 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
+Resource         : 1.8% Base Mana (0) (id=305301)
 Spell Level      : 1
 Max Targets      : 5
 GCD              : 1.5 seconds
@@ -1451,7 +1452,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 
-|cFFFFFFFFGenerates $244670s1 Soul Shard Fragments and an additional 1 on critical strikes.|r
+|cFFFFFFFFGenerates $?a387173[${$244670s1*(1+($387173s1/100))} Soul Shard Fragments and an additional ${1*(1+($387173s1/100))} on critical strikes.][$244670s1 Soul Shard Fragments and an additional 1 on critical strikes.]|r
 
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
 Class            : Warlock
@@ -3254,7 +3255,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 17252 | Misc Value 2: 0xcf1 | Radius: 15 yards | Target: Unknown(47)
 Description      : Summons a Felguard who attacks the target for $d that deals $216187s1% increased damage.
 
-This Felguard will stun their target when summoned.
+This Felguard will stun and interrupt their target when summoned.
 
 Name             : Threatening Presence (desc=Special Ability) (id=112042) [Spell Family (57)] 
 Class            : Warlock
@@ -4545,11 +4546,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=288282)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
@@ -4559,7 +4560,7 @@ Effects          :
 #3 (id=889621)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc196412
-Tooltip          : Damage taken from the Warlock increased by $s1%.
+Tooltip          : Damage taken from the Warlock increased by $w1%.
 
 Name             : Channel Demonfire (id=196447) [Spell Family (5)] 
 Talent Entry     : Destruction [tree=spec, row=4, col=3, max_rank=1, req_points=0]
@@ -10550,15 +10551,15 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333)
 Effects          :
-#1 (id=829470)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
-                   Base Value: -5500 | Scaled Value: -5500 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+#1 (id=829470)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -90 | Scaled Value: -90 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Felguard (30146), Summon Sayaad (366222)
                    Family Flags: 26, 27, 28, 29, 30, 96, 97, 98, 99, 100
 #2 (id=869636)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Felguard (30146), Summon Sayaad (366222)
                    Family Flags: 26, 27, 28, 29, 30, 96, 97, 98, 99, 100
-Description      : Your next Imp, Voidwalker, Incubus, Succubus, Felhunter, or Felguard Summon spell is free and has its casting time reduced by $/1000;S1 sec.
+Description      : Your next Imp, Voidwalker, Incubus, Succubus, Felhunter, or Felguard Summon spell is free and has its casting time reduced by $s1%.
 
 Tooltip          : Imp, Voidwalker, Succubus, Felhunter, or Felguard casting time reduced by $/1000;S1 sec.
 
@@ -10566,6 +10567,7 @@ Name             : Curse of Exhaustion (id=334275) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
+Resource         : 1% Base Mana (0) (id=305302)
 Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -12414,6 +12416,7 @@ Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, 
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
+Resource         : 3% Base Mana (0) (id=305300)
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 15 seconds
@@ -13108,42 +13111,19 @@ Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ..x.x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1020874)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1867 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightmare (386649)
-Description      : When Fear ends, the target is slowed by $s1% for $386649d.
-
-Name             : Nightmare (id=386649) [Spell Family (5)] 
-Class            : Warlock
-School           : Shadow
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 4 seconds
-Labels           : 1867: Nightmare (386648 effect#1)
-Attributes       : ........ x....... .......x x..x....   .....x.. ..x..... ........ ........ 
-                 : ..x..... ......x. ...x..x. ....x...   ........ .x...... xx...... ..x.x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....xx.. ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1020875)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Unknown(25)
-Description      : $@spelldesc386648
-Tooltip          : Movement speed reduced by $w1%.
+#1 (id=1020874)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Increases the amount of damage required to break your fear effects by $s1%.
 
 Name             : Greater Banish (id=386651) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -15785,12 +15765,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.59316 | PvP Coefficient: 0.60000 | Target: Enemy (6)
 Description      : Blasts the enemy target with a bolt of fel magic, causing $s1 Shadowflame damage. 
 
-Name             : Drain Soul (id=388667) [Spell Family (5), Passive] 
+Name             : Drain Soul (id=388667) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Affliction [tree=spec, row=5, col=1, max_rank=1, req_points=8, override="Drain Soul" (id=198590)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15798,7 +15778,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310)
 Effects          :
 #1 (id=1024496)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 198590 | Scaled Value: 198590 | PvP Coefficient: 1.00000 | Misc Value: 686 | Misc Value 2: 0x2 | Target: Self (1)
@@ -16641,7 +16621,6 @@ Name             : Warlock Affliction 10.1 Class Set 4pc (id=405572) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Proc Chance      : 101%
 Proc Flags       : ........ ....x... x.x..... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -16738,7 +16717,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053917)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 409652 | Target: Self (1)
-Description      : Demonfire bolts increase your Fire damage by $409652s1% for $409652d, stacking up to $409652u times. Gaining a stack does not refresh the duration. Casting Channel Demonfire resets this effect.
+Description      : Demonfire bolts increase your Fire damage by ${$409652s1}.1% for $409652d, stacking up to $409652u times. Gaining a stack does not refresh the duration. Casting Channel Demonfire resets this effect.
 
 Name             : Immutable Hatred (id=405670) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Demonology [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
@@ -16787,7 +16766,7 @@ Description      : $@spelldesc405670
 
 Name             : Umbral Blaze (id=405798) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Demonology [tree=spec, row=7, col=1, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(8, 15)]
+                 : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=set, values=(0, 100)]
 Class            : Warlock
 School           : Physical
@@ -17069,15 +17048,16 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
-Duration         : 2 seconds
+Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Ignore Line of Sight (66)
 Effects          :
 #1 (id=1074839)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Enemy (6)
@@ -17371,10 +17351,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
 Effects          :
 #1 (id=1088757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.20000 | Target: Self (1)
@@ -17383,6 +17364,6 @@ Effects          :
 #2 (id=1088758)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.21430 | Target: Self (1)
 Description      : $@spelldesc417234
-Tooltip          : Your next Chaos Bolt deals $s1% increased damage or Rain of Fire deals $s2% increased damage.
+Tooltip          : Your next Chaos Bolt deals $w1% increased damage or Rain of Fire deals $w2% increased damage.
 
 

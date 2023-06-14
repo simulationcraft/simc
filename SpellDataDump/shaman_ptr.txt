@@ -23,13 +23,13 @@ Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0, 
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 2% Base Mana (0) (id=10997) w/ Restoration Shaman (id=137039)
+Resource         : 1.6% Base Mana (0) (id=10997) w/ Restoration Shaman (id=137039)
 Resource         : 14% Base Mana (0) (id=305247) w/ Elemental Shaman (id=137040)
 Resource         : 14% Base Mana (0) (id=305248) w/ Enhancement Shaman (id=137041)
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Restoration Shaman (137039 effect#8), Ancestral Wolf Affinity (382197 effect#1)
+Affecting spells : Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 88
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -374,7 +374,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #2, #3), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #20, #21), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effects: #10, #11, #18), Maelstrom Weapon (187881 effects: #3, #5), Nobundo's Redemption (208764 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Primordial Fury (378193 effect#1), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2, #3), Refreshing Waters (393905 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #2, #3), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #19, #20), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effects: #11, #18), Maelstrom Weapon (187881 effects: #3, #5), Nobundo's Redemption (208764 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Primordial Fury (378193 effect#1), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2, #3), Refreshing Waters (393905 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -842,7 +842,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.17000 | PvP Coefficient: 1.75000 | Target: Enemy (6)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -868,7 +868,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.17000 | PvP Coefficient: 1.75000 | Target: Enemy (6)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -1136,7 +1136,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (8 seconds cooldown)
 Category         : 1536: Echo of the Elements (108283 effect#1), Ascendance (114050 effect#3), Echo of the Elements (333919 effect#1)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #10), Elemental Shaman (137040 effects: #1, #2, #13, #21), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#4), Initial Shaman (417374 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #9), Elemental Shaman (137040 effects: #1, #2, #13, #21), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#4), Initial Shaman (417374 effects: #1, #2)
 Family Flags     : 39, 44, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -1674,7 +1674,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.09000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.30800 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=1033576)  : Dummy (3)
@@ -2874,7 +2874,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
-Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Affecting spells : Nature's Fury (381655 effect#1)
 Triggered by     : Ascendance (114051)
 Family Flags     : 97
@@ -2897,7 +2897,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
-Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Affecting spells : Nature's Fury (381655 effect#1)
 Family Flags     : 97
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3030,7 +3030,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129139)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.17000 | PvP Coefficient: 1.75000 | Target: Enemy (6)
 #2 (id=197633)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -3057,7 +3057,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129143)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.17000 | PvP Coefficient: 1.75000 | Target: Enemy (6)
 #2 (id=197634)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -3371,11 +3371,11 @@ Effects          :
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024)
                    Family Flags: 41
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 54 | Scaled Value: 54 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 39
 #4 (id=191048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 54 | Scaled Value: 54 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 39
 #5 (id=191049)   : Apply Aura (6) | Modify Mana Regen% (379)
@@ -3388,56 +3388,52 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Lava Surge (77756), Volcanic Surge (408575)
                    Family Flags: 127
-#8 (id=260999)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Purge (370), Greater Purge (378773)
-                   Family Flags: 88
-#9 (id=261000)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+#8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
                    Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
-#10 (id=880173)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#9 (id=261000)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
-#11 (id=883953)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+#10 (id=880173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value 2: 1445 (Label)
                    Affected Spells (Label): Vesper Totem (356790)
-#12 (id=915672)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+#11 (id=883953)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1638 (Label)
                    Affected Spells (Label): Call of Thunder (378241)
-#13 (id=1006576)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+#12 (id=915672)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1739 (Label) | Target: Self (1)
                    Affected Spells (Label): Focused Insight (381668)
-#14 (id=1014668)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+#13 (id=1006576)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 1739 (Label) | Target: Self (1)
                    Affected Spells (Label): Focused Insight (381668)
-#15 (id=1014669)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+#14 (id=1014668)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
-#16 (id=1032428)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+#15 (id=1014669)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
-#17 (id=1032429)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#16 (id=1032428)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 62 | Scaled Value: 62 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0
-#18 (id=1040709)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#17 (id=1032429)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 73 | Scaled Value: 73 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
-#19 (id=1040710)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#18 (id=1040709)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 73 | Scaled Value: 73 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
-#20 (id=1040711)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#19 (id=1040710)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-#21 (id=1080080)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#20 (id=1040711)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-#22 (id=1080081)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+#21 (id=1080080)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
-#23 (id=1081592)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+#22 (id=1080081)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 Description      : Restoration Shaman core passive
 
@@ -3540,7 +3536,7 @@ Effects          :
                    Affected Spells: Chain Heal (1064), Healing Stream (5672), Healing Stream Totem (52042), Poison Cleansing (383014), Poison Cleansing (403922)
                    Family Flags: 8, 13
 #24 (id=1074562)  : Apply Aura (6) | Modify Mana Regen% (379)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
@@ -3587,10 +3583,8 @@ Effects          :
                    Family Flags: 28, 31
 #9 (id=830100)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#10 (id=830101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Healing Surge (8004)
-                   Family Flags: 7
+#10 (id=830101)   : Apply Aura (6) | Modify Mana Regen% (379)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=842534)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
@@ -4358,7 +4352,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #17), Elemental Shaman (137040 effects: #1, #2, #12, #22), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Initial Shaman (417374 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Initial Shaman (417374 effects: #1, #2)
 Family Flags     : 0, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4387,7 +4381,7 @@ Max Targets      : 6
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Cooldown         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #18, #19), Elemental Shaman (137040 effects: #1, #2, #16, #17), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Call of Fire (378255 effects: #1, #4), Flames of the Cauldron (378266 effects: #1, #2), Skybreaker's Fiery Demise (378310 effect#3), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2)
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #17, #18), Elemental Shaman (137040 effects: #1, #2, #16, #17), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Call of Fire (378255 effects: #1, #4), Flames of the Cauldron (378266 effects: #1, #2), Skybreaker's Fiery Demise (378310 effect#3), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2)
 Family Flags     : 28, 39, 56, 103, 126
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5459,10 +5453,13 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=291648)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
-Description      : While Feral Spirits are active, Chain Lightning and Crash Lightning causes your wolves to attack all nearby enemies for ${$198455s1*1.5} Physical damage every $198486t1 sec for the next $198486d.
-Variables        : $damage=${$s1*1.5}
+Description      : While Feral Spirits are active, Chain Lightning and Crash Lightning causes your wolves to attack all nearby enemies for $<damage> Physical damage every $198486t1 sec for the next $198486d.
+Variables        : $apScalar=${1.13}
+$spiritPhysBuff=${(1+($392375s1/100))*(1+($392375s1/100))}
+$baselinePassiveBuff=${(1+($137041m13/100))}
+$damage=${$198455s1*$<apScalar>*$<baselinePassiveBuff>}
 
-Name             : Spirit Bomb (id=198455) [Spell Family (11)] 
+Name             : Alpha Wolf (id=198455) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
 Spell Type       : Magic
@@ -6574,7 +6571,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#17), Elemental Shaman (137040 effects: #12, #22), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#16), Elemental Shaman (137040 effects: #12, #22), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9964,7 +9961,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #10), Elemental Shaman (137040 effects: #1, #2, #13, #21), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Molten Weapon (224125 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#4), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Lava Surge (77762 effects: #1, #2), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #9), Elemental Shaman (137040 effects: #1, #2, #13, #21), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effect#1), Molten Weapon (224125 effects: #1, #2), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2), Windspeaker's Lava Resurgence (336065 effect#1), Maelstrom (343725 effect#3), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Windspeaker's Lava Resurgence (378269 effect#1), Flux Melting (381777 effect#1), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Elemental Blast (394152 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#4), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2)
 Triggered by     : Lava Burst (51505)
 Family Flags     : 39, 44, 56, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10982,7 +10979,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#9), Enhancement Shaman (137041 effect#16), Maelstrom Weapon (187881 effect#4), Lavish Harvest (339185 effect#1)
+Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#8), Enhancement Shaman (137041 effect#16), Maelstrom Weapon (187881 effect#4), Lavish Harvest (339185 effect#1)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11005,7 +11002,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#9), Enhancement Shaman (137041 effect#16), Maelstrom Weapon (187881 effect#4), Lavish Harvest (339185 effect#1)
+Labels           : 983: Elemental Fury (60188 effect#3), Restoration Shaman (137039 effect#8), Enhancement Shaman (137041 effect#16), Maelstrom Weapon (187881 effect#4), Lavish Harvest (339185 effect#1)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Initial Shaman (417374 effects: #1, #2)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12980,7 +12977,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), No Caster Aura Icon (187), Show Mechanic as Combat Text (213), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=843157)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.03500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.24200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=843158)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=1016917)  : Trigger Spell (64): Ice Strike
@@ -13945,7 +13942,7 @@ Talent Entry     : Elemental [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 1638: Restoration Shaman (137039 effect#12)
+Labels           : 1638: Restoration Shaman (137039 effect#11)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14305,14 +14302,14 @@ Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0, 
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 3% Base Mana (0) (id=265425) w/ Restoration Shaman (id=137039)
+Resource         : 2.4% Base Mana (0) (id=265425) w/ Restoration Shaman (id=137039)
 Resource         : 21% Base Mana (0) (id=305245) w/ Elemental Shaman (id=137040)
 Resource         : 21% Base Mana (0) (id=305246) w/ Enhancement Shaman (id=137041)
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Restoration Shaman (137039 effect#8), Ancestral Wolf Affinity (382197 effect#1)
+Affecting spells : Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 88
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14502,7 +14499,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
-Labels           : 1739: Restoration Shaman (137039 effect#13), Restoration Shaman (137039 effect#14), Focused Insight (381666 effect#2), Focused Insight (381666 effect#3), Focused Insight (381666 effect#4)
+Labels           : 1739: Restoration Shaman (137039 effect#12), Restoration Shaman (137039 effect#13), Focused Insight (381666 effect#2), Focused Insight (381666 effect#3), Focused Insight (381666 effect#4)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
@@ -16676,11 +16673,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1017074)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
+                   Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
                    Family Flags: 58
 #2 (id=1030570)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
+                   Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
                    Family Flags: 58
 Description      : $@spelldesc335899
 Tooltip          : Damage dealt by your physical abilities increased by $w1%.
@@ -16938,11 +16935,11 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1030530)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33333 | Target: Friend (21)
-                   Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
+                   Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
                    Family Flags: 58
 #2 (id=1030531)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33333 | Misc Value: 22 | Target: Friend (21)
-                   Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
+                   Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
                    Family Flags: 58
 Description      : $@spelldesc262624
 Tooltip          : Increases physical damage dealt from your abilities by $s1%.
@@ -17116,7 +17113,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1032780)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consuming Maelstrom Weapon stacks increases your Haste by $396006s1% per stack for $396006d.
+Description      : Consuming Maelstrom Weapon stacks increases your Haste by ${$396006s1*$396006s2/100}.2% per stack for $396006d.
 
 Name             : Shaman Restoration Class Set 2pc (id=393695) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -17352,7 +17349,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 3 seconds
-Stacks           : 10 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17366,8 +17363,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1036879)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
+#2 (id=1091310)  : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : $@spelldesc393693
-Tooltip          : Haste increased by $w1%.
+Tooltip          : Haste increased by ${$w1}.1%.
 
 Name             : Primordial Surge (id=396484) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -17712,7 +17711,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053911)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each ally healed by Tidewaters increases your healing done by $409386s1% for $409386d and increases the healing of your next Healing Wave or Healing Surge by $409391s1%, or your next Chain Heal by $409391s2%.
+Description      : Each ally healed by Tidewaters increases your healing done by ${$409386s1}.1% for $409386d and increases the healing of your next Healing Wave or Healing Surge by $409391s1%, or your next Chain Heal by $409391s2%.
 
 Name             : Calm the Wolf (desc=Racial) (id=406087) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
@@ -17980,11 +17979,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1074986)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Meteor (117588), Elemental Blast Overload (120588), Flame Shock (188389), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
+                   Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Meteor (117588), Elemental Blast Overload (120588), Flame Shock (188389), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 58, 103
 #2 (id=1074987)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Meteor (117588), Elemental Blast Overload (120588), Flame Shock (188389), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
+                   Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Meteor (117588), Elemental Blast Overload (120588), Flame Shock (188389), Sundering (197214), Alpha Wolf (198455), Feral Lunge (215802), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 58, 103
 Description      : $@spelldesc405568
 Tooltip          : Physical and Fire damage dealt increased by $s1%.
@@ -18008,7 +18007,7 @@ Effects          :
 #1 (id=1074988)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1074989)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
 #3 (id=1075115)  : Apply Aura (6) | Dummy (4)

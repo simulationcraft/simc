@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.1.5.49908
-static const std::array<item_name_description_t, 744> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.1.5.50006
+static const std::array<item_name_description_t, 748> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -744,5 +744,9 @@ static const std::array<item_name_description_t, 744> __ptr_item_name_descriptio
   { 14016, "World Quests and World Drops"                },
   { 14017, "Suffusion Camps and PvP"                     },
   { 14018, "Treasures and Unique Creatures"              },
+  { 14020, "Scourgebane"                                 },
+  { 14021, "Demonbane"                                   },
+  { 14022, "Timestrike"                                  },
+  { 14023, "Spirit"                                      },
 } };
 

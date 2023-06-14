@@ -4906,13 +4906,13 @@ Affecting spells : Ruthless Marauder (385718 effect#1)
 Family Flags     : 101
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ....x... .x....x. ........   ........ ........ ........ ........ 
+                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Extra Initial Period (169), No Caster Aura Icon (187), No Pushback (207), Delay Combat Timer During Cast (211), Aura Points On Client (268), Haste Affects Duration (273), Melee Haste Affects Periodic (278), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+                 : Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), No Pushback (207), Delay Combat Timer During Cast (211), Aura Points On Client (268), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=299989)   : Apply Aura (6) | Periodic Trigger Spell (23): Fury of the Eagle every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 203413 | Target: Self (1)
@@ -9318,7 +9318,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=722199)   : Apply Aura (6) | Periodic Damage (3): nature every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Fire a shot that poisons your target, causing them to take $s1 Nature damage instantly and an additional $o2 Nature damage over $d.$?s260241[
+Description      : Fire a shot that poisons your target, causing them to take $?s389882[${$m1*(1+($389882m1/100))}][$s1] Nature damage instantly and an additional $?s389882[${$o2*(1+($389882m1/100))}][$o2] Nature damage over $d.$?s260241[
 
 Serpent Sting fires arrows at $260241s1 additional $Lenemy:enemies; near your target.][]$?s378014[
 
@@ -11163,7 +11163,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=762256)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Butchery and Carve reduce the remaining cooldown on Wildfire Bomb by ${$187708s2/1000} sec and the the remaining cooldown of Flanking Strike by ${$187708s2/1000} sec for each target hit, up to $187708s3.
+Description      : Butchery and Carve reduce the remaining cooldown on Wildfire Bomb by ${$187708s2/1000} sec and the remaining cooldown of Flanking Strike by ${$187708s2/1000} sec for each target hit, up to $187708s3.
 
 Name             : Person-Computer Interface (id=300168) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -11685,7 +11685,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Command your pet to tear into your target, causing your target to bleed for $<damage> over $321538d and increase all damage taken from your pet by $321538s2% for $321538d.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$serrated=$?s389882[${1+($@traitentryrank100513*$389882s1)/100}][${1}]
+$serrated=$?s389882[${1+($389882s1)/100}][${1}]
 $damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Bloodshed (id=321538) [Spell Family (9)] 
@@ -11716,7 +11716,7 @@ Description      : $@spelldesc321530
 Tooltip          : Bleeding for $w1 Physical damage every $t1 sec.
 Taking $s2% increased damage from the Hunter's pet.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$serrated=$?s389882[${1+($@traitentryrank100513*$389882s1)/100}][${1}]
+$serrated=$?s389882[${1+($389882s1)/100}][${1}]
 $damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Flayed Shot (desc=Venthyr) (id=324149) [Spell Family (9)] 
@@ -14461,7 +14461,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1006524)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt.
+Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt. Deals reduced damage beyond $389448s2 targets.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=3, col=3, max_rank=2, req_points=0]
@@ -15540,7 +15540,7 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Coordinated Assault (360952), Coordinated Assault (360969)
                    Family Flags: 27
-Description      : While Coordinated Assault is active, the cooldown of Wildfire Bomb is reduced by $s1%, Wildifre Bomb generates $s2 Focus when thrown, Kill Shot's cooldown is reduced by $s3%, and Kill Shot can be used against any target, regardless of their current health.
+Description      : While Coordinated Assault is active, the cooldown of Wildfire Bomb is reduced by $s1%, Wildfire Bomb generates $s2 Focus when thrown, Kill Shot's cooldown is reduced by $s3%, and Kill Shot can be used against any target, regardless of their current health.
 
 Name             : Dire Frenzy (id=385810) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=9, col=1, max_rank=2, req_points=20]
