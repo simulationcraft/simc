@@ -111,6 +111,7 @@ struct druid_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
+    buff_t* dire_fixation;
     buff_t* pulverize;
     buff_t* tooth_and_claw;
     buff_t* waning_twilight;
@@ -295,7 +296,7 @@ static const spell_data_t* resolve_spell_data( V data )
   else if constexpr( std::is_invocable_v<decltype( &action_t::data ), V> )
     return &data->data();
 
-  assert( false );
+  assert( false && "Could not resolve find_effect argument to spell data." );
   return nullptr;
 }
 
@@ -309,9 +310,9 @@ static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
 {
   const spell_data_t* data = resolve_spell_data<T>( val );
 
-  if constexpr( std::is_same_v<decltype( type ), effect_subtype_t> )
+  if constexpr( std::is_same_v<U, effect_subtype_t> )
     return spell_data_t::find_spelleffect( *data, E_APPLY_AURA, type, std::forward<Ts>( args )... );
-  else if constexpr( std::is_same_v<decltype( type ), effect_type_t> )
+  else if constexpr( std::is_same_v<U, effect_type_t> )
     return spell_data_t::find_spelleffect( *data, type, std::forward<Ts>( args )... );
   else
   {
@@ -319,11 +320,13 @@ static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
  
     if constexpr( std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_subtype_t> )
       return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA, std::forward<Ts>( args )... );
-    else if constexpr( std::is_same_v<std::tuple_element_t<9, std::tuple<Ts...>>, effect_type_t> )
+    else if constexpr( std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_type_t> )
       return spell_data_t::find_spelleffect( *data, *affected, std::forward<Ts>( args )... );
+   else
+     return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
   }
 
-  assert( false );
+  assert( false && "Could not resolve find_effect argument to type/subtype." );
   return spelleffect_data_t::nil();
 }
 
@@ -539,6 +542,8 @@ public:
     buff_t* natures_vigil;
     buff_t* protector_of_the_pack_moonfire;
     buff_t* protector_of_the_pack_regrowth;
+    buff_t* rising_light_falling_night_day;
+    buff_t* rising_light_falling_night_night;
     buff_t* tiger_dash;
     buff_t* tireless_pursuit;
     buff_t* ursine_vigor;
@@ -680,7 +685,7 @@ public:
     gain_t* energy_refund;
     gain_t* incessant_hunter;
     gain_t* overflowing_power;
-    gain_t* primal_claws;
+    gain_t* primal_claws;  // TODO remove in 10.1.5
     gain_t* primal_fury;
     gain_t* tigers_tenacity;
 
@@ -716,7 +721,7 @@ public:
     proc_t* clearcasting_wasted;
     proc_t* predator;
     proc_t* predator_wasted;
-    proc_t* primal_claws;
+    proc_t* primal_claws;  // TODO: remove in 10.1.5
     proc_t* primal_fury;
 
     // Guardian
@@ -762,6 +767,7 @@ public:
     player_talent_t rejuvenation;
     player_talent_t remove_corruption;
     player_talent_t renewal;
+    player_talent_t rising_light_falling_night;
     player_talent_t rip;
     player_talent_t skull_bash;
     player_talent_t soothe;
@@ -843,6 +849,7 @@ public:
     player_talent_t brutal_slash;
     player_talent_t carnivorous_instinct;
     player_talent_t cats_curiosity;
+    player_talent_t dire_fixation;
     player_talent_t doubleclawed_rake;
     player_talent_t dreadful_bleeding;
     player_talent_t feral_frenzy;
@@ -857,7 +864,7 @@ public:
     player_talent_t pouncing_strikes;
     player_talent_t predator;
     player_talent_t predatory_swiftness;
-    player_talent_t primal_claws;
+    player_talent_t primal_claws;  // TODO: remove in 10.1.5
     player_talent_t primal_wrath;
     player_talent_t protective_growth;
     player_talent_t raging_fury;
@@ -2051,19 +2058,19 @@ public:
   }
 
   void snapshot_and_execute( const action_state_t* s, bool is_dot,
-                             std::function<void( action_state_t* )> pre = nullptr,
-                             std::function<void( action_state_t* )> post = nullptr )
+                             std::function<void( const action_state_t*, action_state_t* )> pre = nullptr,
+                             std::function<void( const action_state_t*, action_state_t* )> post = nullptr )
   {
     auto state = this->get_state();
     state->target = s->target;
 
     if ( pre )
-      pre( state );
+      pre( s, state );
 
     this->snapshot_state( state, this->amount_type( state, is_dot ) );
 
     if ( post )
-      post( state );
+      post( s, state );
 
     this->schedule_execute( state );
   }
@@ -2106,6 +2113,7 @@ public:
     // Class
     parse_buff_effects( p()->buff.cat_form );
     parse_buff_effects( p()->buff.moonkin_form );
+    parse_buff_effects( p()->buff.rising_light_falling_night_day );
 
     switch( p()->specialization() )
     {
@@ -2174,10 +2182,12 @@ public:
   {
     parse_dot_effects( &druid_td_t::dots_t::moonfire, p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
     parse_dot_effects( &druid_td_t::dots_t::sunfire, p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
-    parse_dot_effects( &druid_td_t::dots_t::adaptive_swarm_damage, p()->spec.adaptive_swarm_damage, false,
-                       p()->spec.restoration );
+    parse_dot_effects( &druid_td_t::dots_t::adaptive_swarm_damage,
+                       p()->spec.adaptive_swarm_damage, false, p()->spec.restoration );
     parse_dot_effects( &druid_td_t::dots_t::thrash_bear, p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
 
+    parse_debuff_effects( []( druid_td_t* td ) { return td->debuff.dire_fixation->check(); },
+                          find_trigger( p()->talent.dire_fixation ).trigger() );
     parse_debuff_effects( []( druid_td_t* td ) { return td->debuff.waning_twilight->check(); },
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
   }
@@ -3069,7 +3079,7 @@ public:
   snapshot_counter_t* tf_counter = nullptr;
 
   double berserk_cp;
-  double primal_claws_cp;
+  double primal_claws_cp;  // TODO: remove in 10.1.5
   double primal_fury_cp;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
@@ -3301,7 +3311,7 @@ public:
     player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
   }
 
-  void trigger_primal_claws()
+  void trigger_primal_claws()  // TODO: remove in 10.1.5
   {
     if ( proc || !p()->talent.primal_claws.ok() )
       return;
@@ -3414,7 +3424,7 @@ public:
   {
     cat_attack_t::consume_resource();
 
-    if ( background || !hit_any_target )
+    if ( background || !hit_any_target || !consumes_combo_points )
       return;
 
     auto consumed = _combo_points();
@@ -3479,6 +3489,9 @@ public:
   void execute() override
   {
     cat_attack_t::execute();
+
+    if ( !consumes_combo_points )
+      return;
 
     p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
     p()->buff.overflowing_power->expire();
@@ -3757,9 +3770,9 @@ struct feral_frenzy_t : public cat_attack_t
 // Ferocious Bite ===========================================================
 struct ferocious_bite_t : public cat_finisher_t
 {
-  struct rampant_ferocity_t : public druid_residual_action_t<cat_attack_t>
+  struct rampant_ferocity_old_t : public druid_residual_action_t<cat_attack_t>  // TODO: remove in 10.1.5
   {
-    rampant_ferocity_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391710 ) )
+    rampant_ferocity_old_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 391710 ) )
     {
       aoe = -1;
       reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 2 ).base_value();
@@ -3782,7 +3795,52 @@ struct ferocious_bite_t : public cat_finisher_t
     }
   };
 
-  rampant_ferocity_t* rampant_ferocity = nullptr;
+  struct rampant_ferocity_t : public cat_attack_t
+  {
+    using state_t = druid_action_state_t<cat_finisher_data_t>;
+
+    rampant_ferocity_t( druid_t* p, std::string_view n ) : cat_attack_t( n, p, p->find_spell( 391710 ) )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 2 ).base_value();
+      name_str_reporting = "rampant_ferocity";
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    state_t* cast_state( action_state_t* s )
+    {
+      return static_cast<state_t*>( s );
+    }
+
+    const state_t* cast_state( const action_state_t* s ) const
+    {
+      return static_cast<const state_t*>( s );
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      target_cache.is_valid = false;
+
+      std::vector<player_t*>& tl = cat_attack_t::target_list();
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+        return !td( t )->dots.rip->is_ticking() || t == target;
+      } ), tl.end() );
+
+      return tl;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      return cat_attack_t::composite_da_multiplier( s ) * cast_state( s )->combo_points;
+    }
+  };
+
+  cat_attack_t* rampant_ferocity = nullptr;
   double excess_energy = 0.0;
   double max_excess_energy;
   bool max_energy = false;
@@ -3798,7 +3856,12 @@ struct ferocious_bite_t : public cat_finisher_t
     if ( p->talent.rampant_ferocity.ok() )
     {
       auto suf = get_suffix( name_str, "ferocious_bite" );
-      rampant_ferocity = p->get_secondary_action_n<rampant_ferocity_t>( "rampant_ferocity" + suf );
+
+      if ( !p->is_ptr() )
+        rampant_ferocity = p->get_secondary_action_n<rampant_ferocity_old_t>( "rampant_ferocity" + suf );
+      else
+        rampant_ferocity = p->get_secondary_action_n<rampant_ferocity_t>( "rampant_ferocity" + suf );
+
       rampant_ferocity->background = true;
       add_child( rampant_ferocity );
     }
@@ -3855,9 +3918,18 @@ struct ferocious_bite_t : public cat_finisher_t
 
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
-      rampant_ferocity->snapshot_and_execute( s, false, [ this, s ]( action_state_t* new_ ) {
-        rampant_ferocity->set_amount( new_, s->result_amount );
-      } );
+      if ( !p()->is_ptr() )
+      {
+        rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
+          debug_cast<rampant_ferocity_old_t*>( rampant_ferocity )->set_amount( to, from->result_amount );
+        } );
+      }
+      else
+      {
+        rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
+          debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to )->combo_points = cast_state( from )->combo_points;
+        } );
+      }
     }
   }
 
@@ -4070,9 +4142,9 @@ struct rake_t : public trigger_deep_focus_t<cat_attack_t>
   {
     base_t::impact( s );
 
-    bleed->snapshot_and_execute( s, true, nullptr, [ s ]( action_state_t* new_ ) {
+    bleed->snapshot_and_execute( s, true, nullptr, []( const action_state_t* from, action_state_t* to ) {
       // Copy persistent multipliers from the direct attack.
-      new_->persistent_multiplier = s->persistent_multiplier;
+      to->persistent_multiplier = from->persistent_multiplier;
     } );
   }
 };
@@ -4149,8 +4221,8 @@ struct rip_t : public trigger_deep_focus_t<trigger_waning_twilight_t<cat_finishe
       // increased damage from sabertooth is not counted for tear calculations
       dot_total /= 1.0 + p()->buff.sabertooth->check_stack_value();
 
-      tear->snapshot_and_execute( s, true, [ this, dot_total ]( action_state_t* new_ ) {
-        tear->set_amount( new_, dot_total );
+      tear->snapshot_and_execute( s, true, [ this, dot_total ]( const action_state_t*, action_state_t* to ) {
+        tear->set_amount( to, dot_total );
       } );
     }
   }
@@ -4266,6 +4338,8 @@ struct primal_wrath_t : public cat_finisher_t
 // Shred ====================================================================
 struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
 {
+  static inline buff_t* dire_fixation_debuff = nullptr;
+
   double stealth_mul;
   double stealth_cp;
 
@@ -4305,6 +4379,26 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
 
       if ( !stealthed() )
         p()->buff.sudden_ambush->expire();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      auto dire = td( s->target )->debuff.dire_fixation;
+
+      if ( dire != dire_fixation_debuff )
+      {
+        if ( dire_fixation_debuff )
+          dire_fixation_debuff->expire();
+
+        dire_fixation_debuff = dire;
+      }
+
+      dire->trigger();
     }
   }
 
@@ -4825,8 +4919,8 @@ struct mangle_t : public bear_attack_t
       // 2pc expires gore even on free_procs
       p()->buff.gore->expire();
 
-      swiping->snapshot_and_execute( s, false, [ this, s ]( action_state_t* new_ ) {
-        swiping->set_amount( new_, s->result_amount );
+      swiping->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
+        swiping->set_amount( to, from->result_amount );
       } );
     }
   }
@@ -6049,8 +6143,8 @@ void druid_action_t<Base>::impact( action_state_t* s )
   {
     auto moonless = debug_cast<druid_residual_action_t<bear_attacks::bear_attack_t>*>( p()->active.moonless_night );
 
-    moonless->snapshot_and_execute( s, false, [ moonless, s ]( action_state_t* new_ ) {
-      moonless->set_amount( new_, s->result_amount );
+    moonless->snapshot_and_execute( s, false, [ moonless ]( const action_state_t* from, action_state_t* to ) {
+      moonless->set_amount( to, from->result_amount );
     } );
   }
 }
@@ -7717,8 +7811,8 @@ struct starfall_t : public astral_power_spender_t
 
       if ( cast_state( s )->shrapnel_target && cast_state( s )->shrapnel_target == s->target )
       {
-        shrapnel->snapshot_and_execute( s, false, [ this, s ]( action_state_t* new_ ) {
-          shrapnel->set_amount( new_, s->result_amount );
+        shrapnel->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
+          shrapnel->set_amount( to, from->result_amount );
         } );
       }
     }
@@ -7780,8 +7874,8 @@ struct starfall_t : public astral_power_spender_t
     {
       starfall_base_t::impact( s );
 
-      damage->snapshot_and_execute( s, false, [ s ]( action_state_t* new_ ) {
-        new_->copy_state( s );
+      damage->snapshot_and_execute( s, false, []( const action_state_t* from, action_state_t* to ) {
+        to->copy_state( from );
       } );
     }
   };
@@ -9591,6 +9685,7 @@ void druid_t::init_spells()
   talent.rejuvenation                   = CT( "Rejuvenation" );
   talent.remove_corruption              = CT( "Remove Corruption" );
   talent.renewal                        = CT( "Renewal" );
+  talent.rising_light_falling_night     = CT( "Rising Light, Falling Night" );
   talent.rip                            = CT( "Rip" );
   talent.skull_bash                     = CT( "Skull Bash" );
   talent.soothe                         = CT( "Soothe" );
@@ -9674,6 +9769,7 @@ void druid_t::init_spells()
   talent.brutal_slash                   = ST( "Brutal Slash" );
   talent.carnivorous_instinct           = ST( "Carnivorous Instinct" );
   talent.cats_curiosity                 = ST( "Cat's Curiosity" );
+  talent.dire_fixation                  = ST( "Dire Fixation" );
   talent.doubleclawed_rake              = ST( "Double-Clawed Rake" );
   talent.dreadful_bleeding              = ST( "Dreadful Bleeding" );
   talent.feral_frenzy                   = ST( "Feral Frenzy" );
@@ -9687,7 +9783,7 @@ void druid_t::init_spells()
   talent.omen_of_clarity_cat            = STS( "Omen of Clarity", DRUID_FERAL );
   talent.pouncing_strikes               = ST( "Pouncing Strikes" );
   talent.predatory_swiftness            = ST( "Predatory Swiftness" );
-  talent.primal_claws                   = ST( "Primal Claws" );
+  talent.primal_claws                   = ST( "Primal Claws" );  // TODO: remove in 10.1.5
   talent.primal_wrath                   = ST( "Primal Wrath" );
   talent.predator                       = ST( "Predator" );
   talent.protective_growth              = ST( "Protective Growth" );
@@ -10092,6 +10188,15 @@ void druid_t::create_buffs()
 
   buff.protector_of_the_pack_regrowth =
       make_buff<protector_of_the_pack_buff_t>( this, "protector_of_the_pack_regrowth", find_spell( 395336 ) );
+
+  buff.rising_light_falling_night_day = make_buff( this, "rising_light_falling_night__day", find_spell( 417714 ) )
+    ->set_trigger_spell( talent.rising_light_falling_night );
+
+  buff.rising_light_falling_night_night =
+      make_buff<stat_buff_t>( this, "rising_light_falling_night__night", find_spell( 417715 ) )
+          ->set_trigger_spell( talent.rising_light_falling_night )
+          ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
+          ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
 
   buff.tiger_dash = make_buff( this, "tiger_dash", talent.tiger_dash )
     ->set_cooldown( 0_ms )
@@ -11024,7 +11129,7 @@ void druid_t::init_gains()
     gain.energy_refund       = get_gain( "Energy Refund" );
     gain.incessant_hunter    = get_gain( "Incessant Hunter" );
     gain.overflowing_power   = get_gain( "Overflowing Power" );
-    gain.primal_claws        = get_gain( "Primal Claws" );
+    gain.primal_claws        = get_gain( "Primal Claws" );  // TODO: remove in 10.1.5
     gain.primal_fury         = get_gain( "Primal Fury" );
     gain.tigers_tenacity     = get_gain( "Tiger's Tenacity" );
   }
@@ -11064,7 +11169,7 @@ void druid_t::init_procs()
   proc.ashamanes_guidance   = get_proc( "Ashamane's Guidance" )->collect_count();
   proc.predator             = get_proc( "Predator" );
   proc.predator_wasted      = get_proc( "Predator (Wasted)" );
-  proc.primal_claws         = get_proc( "Primal Claws" );
+  proc.primal_claws         = get_proc( "Primal Claws" );  // TODO: remove in 10.1.5
   proc.primal_fury          = get_proc( "Primal Fury" );
   proc.clearcasting         = get_proc( "Clearcasting" );
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
@@ -11454,6 +11559,11 @@ void druid_t::arise()
 
     register_combat_begin( [ this ]( player_t* ) { buff.lycaras_teachings->trigger(); } );
   }
+
+  if ( timeofday == timeofday_e::DAY_TIME )
+    buff.rising_light_falling_night_day->trigger();
+  else
+    buff.rising_light_falling_night_night->trigger();
 
   buff.elunes_favored->trigger();
   buff.natures_balance->trigger();
@@ -12459,6 +12569,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   hots.rejuvenation          = target.get_dot( "rejuvenation", &source );
   hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
   hots.wild_growth           = target.get_dot( "wild_growth", &source );
+
+  debuff.dire_fixation = make_buff( *this, "dire_fixation", find_trigger( source.talent.dire_fixation ).trigger() );
 
   debuff.pulverize = make_buff( *this, "pulverize_debuff", source.talent.pulverize )
     ->set_cooldown( 0_ms )
