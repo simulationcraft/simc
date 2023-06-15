@@ -171,6 +171,8 @@ public:
     propagate_const<heal_t*> gift_of_the_ox_trigger;
     propagate_const<heal_t*> gift_of_the_ox_expire;
     propagate_const<action_t*> niuzao_call_to_arms_summon;
+    propagate_const<action_t*> rising_sun_kick_press_the_advantage;
+    propagate_const<action_t*> keg_smash_press_the_advantage;
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
 
     // Windwalker
