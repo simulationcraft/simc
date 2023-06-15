@@ -5907,6 +5907,11 @@ struct wildfire_bomb_t: public hunter_spell_t
           am *= 1.0 + td -> debuffs.shredded_armor -> value();
         }
 
+        if ( as<double>( s -> n_targets ) > reduced_aoe_targets )
+        {
+          am *= std::sqrt( reduced_aoe_targets / s -> n_targets );
+        }
+
         return am;
       }
     };
@@ -5919,8 +5924,10 @@ struct wildfire_bomb_t: public hunter_spell_t
       dual = true;
 
       aoe = -1;
+      reduced_aoe_targets = p() -> talents.wildfire_bomb -> effectN( 2 ).base_value();
       radius = 5; // XXX: It's actually a circle + cone, but we sadly can't really model that
 
+      dot_action -> reduced_aoe_targets = reduced_aoe_targets;
       dot_action -> aoe = aoe;
       dot_action -> radius = radius;
 
