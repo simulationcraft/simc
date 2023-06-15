@@ -9,7 +9,7 @@ namespace warlock
 {
 struct warlock_t;
 
-//Used for version checking in code (e.g. PTR vs Live)
+// Used for version checking in code (e.g. PTR vs Live)
 enum version_check_e
 {
   VERSION_PTR,
@@ -272,9 +272,9 @@ public:
     player_talent_t summon_darkglare; 
     player_talent_t soul_rot;
 
-    player_talent_t malefic_affliction; // Stacking damage increase to Unstable Affliction until UA is cancelled/swapped/ends
-    player_talent_t xavius_gambit;      // Unstable Affliction Damage Multiplier, Replaces Malefic Affliction in 10.1.5
-    const spell_data_t* malefic_affliction_buff; // Buff applied on Malefic Rapture casts
+    player_talent_t malefic_affliction; // TODO: REMOVED in 10.1.5
+    const spell_data_t* malefic_affliction_buff; // TODO: REMOVED in 10.1.5
+    player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier, replaces Malefic Affliction in 10.1.5
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
     player_talent_t seized_vitality; // Additional Haunt damage
@@ -283,9 +283,9 @@ public:
     const spell_data_t* wrath_of_consumption_buff;
     player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction
 
-    player_talent_t doom_blossom; // Damage proc on Corruption ticks based on Malefic Affliction stacks
-    const spell_data_t* doom_blossom_proc;
-    player_talent_t dread_touch; // Increased DoT damage based on Malefic Affliction procs
+    player_talent_t doom_blossom; // Reworked in 10.1.5: Seed of Corruption damage on Unstable Affliction target procs AoE damage
+    const spell_data_t* doom_blossom_proc; // Spell data updated in 10.1.5 to new spell ID
+    player_talent_t dread_touch; // Reworked in 10.1.5: Malefic Rapture on Unstable Affliction target applies debuff increasing DoT damage
     const spell_data_t* dread_touch_debuff; // Applied to target when Dread Touch procs
     player_talent_t haunted_soul; // Haunt increase ALL DoT damage while active
     const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
@@ -968,7 +968,7 @@ public:
     double m = spell_t::composite_target_multiplier( t );
 
     if ( p()->talents.dread_touch.ok() && td( t )->debuffs_dread_touch->check() && data().affected_by( p()->talents.dread_touch_debuff->effectN( 1 ) ) )
-      m *= 1.0 + td( t )->debuffs_dread_touch->check_stack_value();
+      m *= 1.0 + td( t )->debuffs_dread_touch->check_stack_value(); // TOCHECK: Is using stack value an outdated holdover?
 
     return m;
   }

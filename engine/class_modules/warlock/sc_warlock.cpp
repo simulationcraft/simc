@@ -2253,7 +2253,7 @@ void warlock_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.sargerei_technique );
   action.apply_affecting_aura( talents.dark_virtuosity );
   action.apply_affecting_aura( talents.kindled_malice );
-  action.apply_affecting_aura( talents.xavius_gambit );
+  action.apply_affecting_aura( talents.xavius_gambit ); // TOCHECK: Should this just go in Unstable Affliction struct for clarity?
 
 }
 
