@@ -432,8 +432,8 @@ public:
     const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
     const spell_data_t* ritual_of_ruin_buff;
     
-    player_talent_t crashing_chaos; // Summon Infernal reduces cost of next X casts
-    const spell_data_t* crashing_chaos_buff;
+    player_talent_t crashing_chaos; // Reworked in 10.1.5: Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
+    const spell_data_t* crashing_chaos_buff; // Spell data updated in 10.1.5 to new spell ID
     player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
