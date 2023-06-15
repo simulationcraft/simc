@@ -276,24 +276,21 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       affliction_spell_t::impact( s );
 
-      if ( p()->talents.dread_touch->ok() )
+      auto target_data = td( s->target );
+
+      if ( p()->talents.dread_touch->ok() && p()->min_version_check( VERSION_10_1_5 ) )
       {
-        auto target_data = td( s->target );
+        if ( target_data->dots_unstable_affliction->is_ticking() )
+          target_data->debuffs_dread_touch->trigger();
+      }
+      else if ( p()->talents.malefic_affliction->ok() && target_data->dots_unstable_affliction->is_ticking() )
+      {
+        if ( ( p()->talents.dread_touch->ok() &&
+               p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
+          target_data->debuffs_dread_touch->trigger();
 
-        if ( p()->min_version_check( VERSION_10_1_5 ) )
-        {
-          if ( target_data->dots_unstable_affliction->is_ticking() )
-            target_data->debuffs_dread_touch->trigger();
-
-        }
-        else if ( p()->talents.malefic_affliction->ok() && target_data->dots_unstable_affliction->is_ticking() )
-          {
-            if ( ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
-              target_data->debuffs_dread_touch->trigger();
-
-            p()->buffs.malefic_affliction->trigger();
-          }
-        }
+        p()->buffs.malefic_affliction->trigger();
+      }
     }
 
     void execute() override
