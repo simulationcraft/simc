@@ -174,7 +174,7 @@ void demonology( player_t* p )
   precombat->add_action( "variable,name=next_tyrant,op=set,value=14+talent.grimoire_felguard+talent.summon_vilefiend" );
   precombat->add_action( "variable,name=shadow_timings,default=0,op=reset" );
   precombat->add_action( "variable,name=shadow_timings,op=set,value=0,if=cooldown.invoke_power_infusion_0.duration!=120" );
-  precombat->add_action( "power_siphon" );
+  precombat->add_action( "power_siphon,precombat_seconds=10" );
   precombat->add_action( "demonbolt,if=!buff.power_siphon.up" );
   precombat->add_action( "shadow_bolt" );
 

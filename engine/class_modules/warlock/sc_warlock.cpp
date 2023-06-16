@@ -1160,6 +1160,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
   cooldowns.grimoire_felguard = get_cooldown( "grimoire_felguard" );
+  cooldowns.power_siphon = get_cooldown( "power_siphon" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;

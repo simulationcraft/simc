@@ -694,9 +694,13 @@ struct bilescourge_bombers_t : public demonology_spell_t
 
 struct power_siphon_t : public demonology_spell_t
 {
+  timespan_t precombat_seconds;
+
   power_siphon_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "Power Siphon", p, p->talents.power_siphon )
+    : demonology_spell_t( "Power Siphon", p, p->talents.power_siphon ), 
+      precombat_seconds(0_s)
   {
+    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
@@ -725,6 +729,8 @@ struct power_siphon_t : public demonology_spell_t
     {
       p()->buffs.power_siphon->trigger( 2, p()->talents.power_siphon_buff->duration() );
       p()->buffs.demonic_core->trigger( 2, p()->warlock_base.demonic_core_buff->duration() );
+      p()->cooldowns.power_siphon->adjust( -precombat_seconds, false );
+      p()->buffs.demonic_core->extend_duration( p(), - precombat_seconds );
       return;
     }
 
