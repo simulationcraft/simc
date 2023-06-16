@@ -194,7 +194,7 @@ void demonology( player_t* p )
   default_->add_action( "call_dreadstalkers,if=!talent.summon_demonic_tyrant|fight_remains<14" );
   default_->add_action( "grimoire_felguard,if=!talent.summon_demonic_tyrant|fight_remains<cooldown.summon_demonic_tyrant.remains_expected" );
   default_->add_action( "summon_vilefiend,if=!talent.summon_demonic_tyrant|variable.tyrant_cd>cooldown+variable.tyrant_prep_start|fight_remains<cooldown.summon_demonic_tyrant.remains_expected" );
-  default_->add_action( "guillotine,if=cooldown.demonic_strength.remains" );
+  default_->add_action( "guillotine,if=cooldown.demonic_strength.remains|!talent.demonic_strength" );
   default_->add_action( "demonic_strength" );
   default_->add_action( "bilescourge_bombers,if=!pet.demonic_tyrant.active" );
   default_->add_action( "shadow_bolt,if=soul_shard<5&talent.fel_covenant&buff.fel_covenant.remains<5" );
