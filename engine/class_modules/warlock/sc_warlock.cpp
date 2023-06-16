@@ -1523,6 +1523,8 @@ void warlock_t::init_spells()
 {
   player_t::init_spells();
 
+  version_10_1_5_data = find_spell( 417282 ); // For 10.1.5 version checking, New Crashing Chaos Buff
+
   // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
   // find_class_spell - active_spells.inc
   // find_specialization_spell - specialization_spells.inc
@@ -1604,8 +1606,6 @@ void warlock_t::init_spells()
 
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
   talents.soulburn_buff = find_spell( 387626 );
-
-  version_10_1_5_data = find_spell( 417282 ); // For 10.1.5 version checking, New Crashing Chaos Buff
 }
 
 void warlock_t::init_rng()
