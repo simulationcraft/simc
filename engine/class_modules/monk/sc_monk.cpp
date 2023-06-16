@@ -1362,8 +1362,11 @@ namespace monk
           sef_ability = sef_ability_e::SEF_TIGER_PALM;
           cast_during_sck = true;
 
-          add_child( eye_of_the_tiger_damage );
-          add_child( eye_of_the_tiger_heal );
+          if ( !p->talent.brewmaster.press_the_advantage->ok() )
+          {
+            add_child( eye_of_the_tiger_damage );
+            add_child( eye_of_the_tiger_heal );
+          }
 
           if ( p->specialization() == MONK_WINDWALKER )
             energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
@@ -1772,6 +1775,7 @@ namespace monk
         bool face_palm;
         bool blackout_combo;
         bool counterstrike;
+        // chi_surge_t *chi_surge;
         heal_t *eye_of_the_tiger_heal;
         spell_t *eye_of_the_tiger_damage;
 
@@ -1780,6 +1784,7 @@ namespace monk
             face_palm( false ),
             blackout_combo( false ),
             counterstrike( false ),
+            // chi_surge( new chi_surge_t( p ) ),
             eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
             eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
         {
@@ -1794,10 +1799,10 @@ namespace monk
             am *= p()->talent.brewmaster.face_palm->effectN( 2 ).percent();
 
           if ( blackout_combo )
-            am *= p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.5;
+            am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.5;
 
           if ( counterstrike )
-            am *= p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.5;
+            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.5;
 
           return am;
         }
@@ -1812,6 +1817,17 @@ namespace monk
 
           p()->buff.counterstrike->expire();
           p()->buff.blackout_combo->expire();
+
+          // if ( p()->talent.chi_surge->ok() )
+          // {
+          //   chi_surge->set_target( target );
+          //   chi_surge->execute();
+          // }
+
+          // 30% chance to trigger estimated from an hour of attempts as of 14-06-2023
+          if ( p()->talent.brewmaster.call_to_arms->ok() && rng().roll( 0.3 ) )
+            p()->active_actions.niuzao_call_to_arms_summon->execute();
+
 
           if ( p()->talent.general.eye_of_the_tiger->ok() )
           {
@@ -2985,6 +3001,14 @@ namespace monk
           : monk_spell_t( "press_the_advantage", player, player->talent.brewmaster.press_the_advantage->effectN( 1 ).trigger() )
         {
           background = true;
+
+          if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() )
+            add_child( p()->active_actions.chi_surge );
+          // if ( p()->talent.eye_of_the_tiger->ok() )
+          // {
+          //   add_child( eye_of_the_tiger_damage );
+          //   add_child( eye_of_the_tiger_heal );
+          // }
         }
 
         virtual void execute() override
@@ -3250,6 +3274,7 @@ namespace monk
         bool face_palm;
         bool blackout_combo;
         bool counterstrike;
+        // chi_surge_t *chi_surge;
         heal_t *eye_of_the_tiger_heal;
         spell_t *eye_of_the_tiger_damage;
 
@@ -3258,8 +3283,9 @@ namespace monk
             face_palm( false ),
             blackout_combo( false ),
             counterstrike( false ),
-            eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal")),
-            eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage"))
+            // chi_surge( new chi_surge_t( p ) ),
+            eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
+            eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
         {
           trigger_gcd = 0_s;
           background = dual = true;
@@ -3273,10 +3299,10 @@ namespace monk
             am *= p()->talent.brewmaster.face_palm->effectN( 2 ).percent();
 
           if ( blackout_combo )
-            am *= p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.5;
+            am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.5;
 
           if ( counterstrike )
-            am *= p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.5;
+            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.5;
 
           return am;
         }
@@ -3291,6 +3317,13 @@ namespace monk
 
           p()->buff.counterstrike->expire();
           p()->buff.blackout_combo->expire();
+
+          if ( p()->talent.brewmaster.chi_surge->ok() )
+            p()->active_actions.chi_surge->execute();
+
+          // 30% chance to trigger estimated from an hour of attempts as of 14-06-2023
+          if ( p()->talent.brewmaster.call_to_arms->ok() && rng().roll( 0.3 ) )
+            p()->active_actions.niuzao_call_to_arms_summon->execute();
 
           if ( p()->talent.general.eye_of_the_tiger->ok() )
           {
@@ -4527,14 +4560,6 @@ namespace monk
       // ==========================================================================
       // Mana Tea
       // ==========================================================================
-      // Manatee
-      //                   _.---.._
-      //     _        _.-'         ''-.
-      //   .'  '-,_.-'                 '''.
-      //  (       _                     o  :
-      //   '._ .-'  '-._         \  \-  ---]
-      //                 '-.___.-')  )..-'
-      //                          (_/lame
 
       struct mana_tea_t : public monk_spell_t
       {
@@ -4861,7 +4886,8 @@ namespace monk
 
       struct chi_surge_t : public monk_spell_t
       {
-        chi_surge_t( monk_t &p ) : monk_spell_t( "chi_surge", &p, p.talent.brewmaster.chi_surge->effectN( 1 ).trigger() )
+        chi_surge_t( monk_t &p )
+          : monk_spell_t( "chi_surge", &p, p.talent.brewmaster.chi_surge->effectN( 1 ).trigger() )
         {
           harmful = true;
           dual = background = true;
@@ -4902,11 +4928,8 @@ namespace monk
 
       struct weapons_of_order_t : public monk_spell_t
       {
-        chi_surge_t *chi_surge;
-
         weapons_of_order_t( monk_t &p, util::string_view options_str )
-          : monk_spell_t( "weapons_of_order", &p, p.talent.brewmaster.weapons_of_order ),
-          chi_surge( new chi_surge_t( p ) )
+          : monk_spell_t( "weapons_of_order", &p, p.talent.brewmaster.weapons_of_order )
         {
           parse_options( options_str );
           may_combo_strike = true;
@@ -4916,7 +4939,8 @@ namespace monk
           base_dd_max = 0;
           cast_during_sck = true;
 
-          add_child( chi_surge );
+          if ( p.talent.brewmaster.weapons_of_order->ok() )
+            add_child( p.active_actions.chi_surge );
         }
 
         void execute() override
@@ -4929,10 +4953,7 @@ namespace monk
 
           // TODO: Does this stack with Effusive Anima Accelerator?
           if ( p()->talent.brewmaster.chi_surge->ok() )
-          {
-            chi_surge->set_target( target );
-            chi_surge->execute();
-          }
+            p()->active_actions.chi_surge->execute();
 
           if ( p()->talent.brewmaster.call_to_arms->ok() )
             p()->active_actions.niuzao_call_to_arms_summon->execute();
@@ -7965,8 +7986,10 @@ namespace monk
       active_actions.gift_of_the_ox_expire = new actions::gift_of_the_ox_expire_t( *this );
       active_actions.niuzao_call_to_arms_summon = new actions::niuzao_call_to_arms_summon_t( this );
       active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
+
       active_actions.rising_sun_kick_press_the_advantage = new actions::attacks::rising_sun_kick_press_the_advantage_t( this );
       active_actions.keg_smash_press_the_advantage = new actions::attacks::keg_smash_press_the_advantage_t( this );
+      active_actions.chi_surge = new actions::spells::chi_surge_t( *this );
     }
 
     // Windwalker
