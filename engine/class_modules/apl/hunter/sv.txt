@@ -44,7 +44,7 @@ actions.cleave+="/fury_of_the_eagle
 actions.cleave+="/carve,if=dot.shrapnel_bomb.ticking"
 actions.cleave+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.cleave+="/butchery,if=(!next_wi_bomb.shrapnel|!talent.wildfire_infusion)"
-#actions.cleave+="/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8"
+actions.cleave+="/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8"
 actions.cleave+="/raptor_strike,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8"
 actions.cleave+="/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd
 actions.cleave+="/carve"
