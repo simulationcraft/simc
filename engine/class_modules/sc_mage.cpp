@@ -2151,7 +2151,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     if ( debug_cast<const hot_streak_state_t*>( s )->hot_streak )
     {
       m *= 2.0;
-      m *= p()->talents.inflame->effectN( 1 ).percent();
+      m *= 1.0 + p()->talents.inflame->effectN( 1 ).percent();
     }
 
     return m;
