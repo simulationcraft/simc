@@ -6976,7 +6976,10 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p() ->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
     {
-      t += p()->talent.electrified_shocks->effectN( 1 ).base_value();
+      // It looks like Frost Shock does not have the expected 1 baseline n_targets.
+      // Spell data suggests Electrified Shocks adds 3 targets.
+      // But the baseline target needs to be added, too.
+      t += 1 + p()->talent.electrified_shocks->effectN( 1 ).base_value();
     }
 
     return t;
