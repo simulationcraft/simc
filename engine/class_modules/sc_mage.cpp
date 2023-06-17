@@ -353,7 +353,6 @@ public:
     cooldown_t* phoenix_flames;
     cooldown_t* phoenix_reborn;
     cooldown_t* presence_of_mind;
-    cooldown_t* snowstorm;
   } cooldowns;
 
   // Gains
@@ -1483,9 +1482,7 @@ public:
     double m = spell_t::composite_crit_damage_bonus_multiplier();
 
     if ( affected_by.wildfire )
-    {
       m *= 1.0 + p()->buffs.wildfire->check_value();
-    }
 
     return m;
   }
@@ -1800,11 +1797,8 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( tt_applicable( s, triggers.hot_streak ) )
         handle_hot_streak( s->composite_crit_chance(), s->result == RESULT_CRIT ? HS_CRIT : HS_HIT );
 
-      if ( tt_applicable( s, triggers.unleashed_inferno )
-        && p()->buffs.combustion->check() )
-      {
+      if ( tt_applicable( s, triggers.unleashed_inferno ) && p()->buffs.combustion->check() )
         p()->cooldowns.combustion->adjust( -p()->talents.unleashed_inferno->effectN( 2 ).time_value() );
-      }
 
       if ( tt_applicable( s, triggers.kindling )
         && s->result == RESULT_CRIT
@@ -2133,8 +2127,6 @@ struct hot_streak_spell_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p()->talents.surging_blaze->effectN( 2 ).percent();
-
     if ( time_to_execute > 0_ms && !p()->buffs.hyperthermia->check() )
       am *= 1.0 + p()->buffs.fury_of_the_sun_king->check_value();
 
@@ -2150,7 +2142,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
     if ( debug_cast<const hot_streak_state_t*>( s )->hot_streak )
     {
-      m *= 2.0;
+      m *= 2.0; // base Hot Streak! multiplier (not in spell data)
       m *= 1.0 + p()->talents.inflame->effectN( 1 ).percent();
     }
 
@@ -2165,18 +2157,25 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
+    bool expire_skb = false;
+
     if ( time_to_execute > 0_ms && !p()->buffs.hyperthermia->check() && p()->buffs.fury_of_the_sun_king->check() )
     {
-      p()->buffs.fury_of_the_sun_king->expire();
+      expire_skb = true;
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
     fire_mage_spell_t::execute();
 
+    if ( expire_skb )
+      p()->buffs.fury_of_the_sun_king->expire();
+
     if ( last_hot_streak )
     {
       p()->buffs.hot_streak->decrement();
-      p()->buffs.firemind->trigger();
+
+      if ( !p()->buffs.combustion->check() )
+        p()->buffs.hyperthermia->trigger();
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
 
@@ -3159,11 +3158,8 @@ struct blizzard_shard_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && p()->cooldowns.snowstorm->up() && rng().roll( p()->talents.snowstorm->proc_chance() ) )
-    {
-      p()->cooldowns.snowstorm->start( p()->talents.snowstorm->internal_cooldown() );
+    if ( result_is_hit( s->result ) )
       p()->buffs.snowstorm->trigger();
-    }
   }
 
   double action_multiplier() const override
@@ -3343,15 +3339,14 @@ struct rolling_periodic_action_state_t : public action_state_t
 {
   double rolling_ta_multiplier;
 
-  rolling_periodic_action_state_t( action_t* a, player_t* t ) :
-    action_state_t( a, t ),
+  rolling_periodic_action_state_t( action_t* action, player_t* target ) :
+    action_state_t( action, target ),
     rolling_ta_multiplier( 1.0 )
   { }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s );
-    fmt::print( s, " rolling_ta_multiplier={}", rolling_ta_multiplier );
+    action_state_t::debug_str( s ) << " rolling_ta_multiplier=" << rolling_ta_multiplier;
     return s;
   }
 
@@ -3364,9 +3359,11 @@ struct rolling_periodic_action_state_t : public action_state_t
   void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
-    auto s = debug_cast<const rolling_periodic_action_state_t*>( o );
-    rolling_ta_multiplier = s->rolling_ta_multiplier;
+    rolling_ta_multiplier = debug_cast<const rolling_periodic_action_state_t*>( o )->rolling_ta_multiplier;
   }
+
+  double composite_ta_multiplier() const override
+  { return action_state_t::composite_ta_multiplier() * rolling_ta_multiplier; }
 };
 
 struct rolling_periodic_action_t : public mage_spell_t
@@ -3378,59 +3375,6 @@ struct rolling_periodic_action_t : public mage_spell_t
   action_state_t* new_state() override
   { return new rolling_periodic_action_state_t( this, target ); }
 
-  double calculate_tick_amount( action_state_t* state, double dot_multiplier ) const override
-  {
-    if ( base_ta( state ) == 0 && spell_tick_power_coefficient( state ) == 0 &&
-         attack_tick_power_coefficient( state ) == 0 )
-      return 0;
-
-    double amount = floor( base_ta( state ) + 0.5 );
-    amount += bonus_ta( state );
-
-    double rolling_ta_multiplier = 1.0;
-    auto dot = this->find_dot( state->target );
-    if ( dot && dot->is_ticking() )
-    {
-      auto rd_state = debug_cast<const rolling_periodic_action_state_t*>( dot->state );
-      // A multiplier for Rolling Periodic DoTs that allows them to roll while also dynamically scaling with SP and AP.
-      // TODO: Should this multiplier be applied elsewhere?
-      rolling_ta_multiplier = rd_state->rolling_ta_multiplier;
-    }
-
-    amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * rolling_ta_multiplier;
-    amount += state->composite_attack_power() * attack_tick_power_coefficient( state ) * rolling_ta_multiplier;
-    amount *= state->composite_ta_multiplier();
-
-    double init_tick_amount = amount;
-
-    if ( !sim->average_range )
-      amount = floor( amount + rng().real() );
-
-    // Record raw amount to state
-    state->result_raw = amount;
-
-    amount *= dot_multiplier;
-
-    // Record total amount to state
-    state->result_total = amount;
-
-    // Apply crit damage bonus immediately to periodic damage since there is no travel time (and
-    // subsequent impact).
-    amount = calculate_crit_damage_bonus( state );
-
-    if ( sim->debug )
-    {
-      sim->print_debug(
-          "{} tick amount for {} on {}: amount={} initial_amount={} base={} bonus={} s_mod={} s_power={} a_mod={} "
-          "a_power={} mult={}, tick_mult={}",
-          *player, *this, *state->target, amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
-          spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
-          state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
-    }
-
-    return amount;
-  }
-
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     mage_spell_t::snapshot_state( s, rt );
@@ -3438,12 +3382,9 @@ struct rolling_periodic_action_t : public mage_spell_t
     // The behavior of Rolling Periodic DoTs can be modeled by keeping track of a multiplier.
     // A single instance of the DoT has a multiplier of 1.0 for all ticks. When the DoT is
     // refreshed early, the damage from any remaining ticks is rolled into multiplier so that
-    // damage is not lost. This has some unusual interactions with hasted DoTs.
+    // damage is not lost.
     double rolling_ta_multiplier = 1.0;
-
     dot_t* dot = get_dot( s->target );
-    rolling_periodic_action_state_t* dot_state = debug_cast<rolling_periodic_action_state_t*>( dot->state );
-
     if ( dot->is_ticking() )
     {
       double ticks_left = dot->ticks_left_fractional();
@@ -4916,7 +4857,7 @@ struct meteor_t final : public fire_mage_spell_t
     if ( !data().ok() )
       return;
 
-    cooldown->duration -= p->talents.deep_impact->effectN( 2 ).time_value();
+    cooldown->duration += p->talents.deep_impact->effectN( 2 ).time_value();
 
     action_t* meteor_burn = get_action<meteor_burn_t>( firefall ? "firefall_meteor_burn" : "meteor_burn", p );
     impact_action = get_action<meteor_impact_t>( firefall ? "firefall_meteor_impact" : "meteor_impact", p, meteor_burn );
@@ -5057,6 +4998,7 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     // callbacks = false;
     triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->talents.call_of_the_sun_king->effectN( 2 ).percent();
     base_crit += p->talents.alexstraszas_fury->effectN( 3 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
   }
@@ -5066,7 +5008,10 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
       get_td( s->target )->debuffs.charring_embers->trigger();
+      p()->buffs.feel_the_burn->trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -5074,7 +5019,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.flames_fury->check_value();
-    am *= 1.0 + p()->talents.call_of_the_sun_king->effectN( 2 ).percent();
 
     return am;
   }
@@ -5115,9 +5059,6 @@ struct phoenix_flames_t final : public fire_mage_spell_t
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      p()->buffs.feel_the_burn->trigger();
 
     if ( p()->buffs.flames_fury->check() )
     {
@@ -5976,7 +5917,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.phoenix_flames       = get_cooldown( "phoenix_flames"       );
   cooldowns.phoenix_reborn       = get_cooldown( "phoenix_reborn"       );
   cooldowns.presence_of_mind     = get_cooldown( "presence_of_mind"     );
-  cooldowns.snowstorm            = get_cooldown( "snowstorm"            );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
@@ -6583,6 +6523,7 @@ void mage_t::create_buffs()
   buffs.feel_the_burn            = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
                                      ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                     ->set_cooldown( find_spell( 383394 )->internal_cooldown() )
                                      ->set_chance( talents.feel_the_burn.ok() );
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 383811 ) )
                                      ->set_default_value( talents.fevered_incantation->effectN( 1 ).percent() )
@@ -6622,8 +6563,8 @@ void mage_t::create_buffs()
                                        } );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) )
-                                     ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
-                                       { if ( old > cur && !buffs.combustion->check() ) buffs.hyperthermia->trigger(); } );
+                                     ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                       { if ( cur == 0 ) buffs.firemind->trigger(); } );
   buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
                                      ->set_default_value_from_effect( 2 )
                                      ->set_trigger_spell( talents.hyperthermia );
@@ -6666,7 +6607,9 @@ void mage_t::create_buffs()
                              ->set_default_value_from_effect( 1 )
                              ->set_chance( talents.slick_ice.ok() );
   buffs.snowstorm        = make_buff( this, "snowstorm", find_spell( 381522 ) )
-                             ->set_default_value( talents.snowstorm->effectN( 2 ).percent() );
+                             ->set_default_value( talents.snowstorm->effectN( 2 ).percent() )
+                             ->set_cooldown( talents.snowstorm->internal_cooldown() )
+                             ->set_chance( talents.snowstorm->proc_chance() );
 
 
   // Shared
