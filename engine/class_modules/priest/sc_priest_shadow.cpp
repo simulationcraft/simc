@@ -1177,12 +1177,12 @@ struct devouring_plague_t final : public priest_spell_t
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
   {
-    // if you only have the partial tick, roll that damage over
+    // If only a partial tick remains then discard the duration from the partial tick.
     if ( d->ticks_left_fractional() < 1 )
     {
-      return duration + d->time_to_next_full_tick() - tick_time( d->state );
+      return duration;
     }
-    // otherwise lose the partial tick
+    // otherwise roll that damage over including the time to the next full tick
     else
     {
       return duration + d->time_to_next_full_tick();
@@ -1197,56 +1197,29 @@ struct devouring_plague_t final : public priest_spell_t
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     priest_spell_t::snapshot_state( s, rt );
+    
+    // Stolen from Dorovon's Mage Implementation to test it before it gets made core.
 
-    double multiplier = 1.0;
-    dot_t* dot        = get_dot( s->target );
-
-    // Calculate how much damage is left in the remaining Devouring Plague
-    // Convert that into a ratio so we can apply a modifier to every new tick of Devouring Plague
+    // The behavior of Rolling Periodic DoTs can be modeled by keeping track of a multiplier.
+    // A single instance of the DoT has a multiplier of 1.0 for all ticks. When the DoT is
+    // refreshed early, the damage from any remaining ticks is rolled into multiplier so that
+    // damage is not lost.
+    double rolling_multiplier = 1.0;
+    dot_t* dot = get_dot( s->target );
     if ( dot->is_ticking() )
     {
-      action_state_t* old_s = dot->state;
-      action_state_t* new_s = s;
-
-      timespan_t time_to_next_tick = dot->time_to_next_tick();
-      timespan_t old_remains       = dot->remains();
-      timespan_t new_remains       = calculate_dot_refresh_duration( dot, composite_dot_duration( new_s ) );
-      timespan_t old_tick          = tick_time( old_s );
-      timespan_t new_tick          = tick_time( new_s );
-      double old_multiplier        = cast_state( old_s )->rolling_multiplier;
-
-      sim->print_debug(
-          "{} {} calculations - time_to_next_tick: {}, old_remains: {}, new_remains: {}, old_tick: {}, new_tick: {}, "
-          "old_multiplier: {}",
-          *player, *this, time_to_next_tick, old_remains, new_remains, old_tick, new_tick, old_multiplier );
-
-      // figure out how many old ticks to roll over
-      double num_ticks = ( old_remains - time_to_next_tick ) / old_tick;
-
-      // find number of ticks in new DP
-      double new_num_ticks = ( new_remains - time_to_next_tick ) / new_tick;
-
-      // if just a partial is left roll that over with the reduced dot duration
-      if ( dot->ticks_left_fractional() < 1 )
-      {
-        num_ticks = dot->ticks_left_fractional() - dot->ticks_left() + 1;
-        new_num_ticks += dot->ticks_left_fractional() - 1;
-      }
-
-      sim->print_debug( "{} {} calculations - num_ticks: {}, new_num_ticks: {}", *player, *this, num_ticks,
-                        new_num_ticks );
-
-      // figure out the increase for each new tick of DP
-      double total_coefficient     = num_ticks * old_multiplier;
-      double increase_per_new_tick = total_coefficient / ( new_num_ticks + 1 );
-
-      multiplier = 1 + increase_per_new_tick;
-
-      sim->print_debug( "{} {} modifier updated per tick from previous dot. Modifier per tick went from {} to {}.",
-                        *player, *this, old_multiplier, multiplier );
+      double ticks_left = dot->ticks_left_fractional();
+      double old_multiplier = cast_state( dot->state )->rolling_multiplier;
+      double new_base_ticks = composite_dot_duration( s ) / tick_time( s );
+      // Calculate ticks_left_fractional for the DoT after it is refreshed.
+      double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, composite_dot_duration( s ) ) - dot->time_to_next_full_tick() ) / tick_time( s );
+      // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
+      rolling_multiplier = ( ticks_left * old_multiplier + new_base_ticks ) / new_ticks_left;
+      sim->print_debug( "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} new_ticks_left={}.",
+        *player, *this, old_multiplier, rolling_multiplier, ticks_left, new_base_ticks, new_ticks_left );
     }
 
-    cast_state( s )->rolling_multiplier = multiplier;
+    cast_state( s )->rolling_multiplier = rolling_multiplier;
   }
 };
 
