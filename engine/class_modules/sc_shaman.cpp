@@ -2572,7 +2572,7 @@ template <typename T>
 struct spirit_bomb_t : public pet_melee_attack_t<T>
 {
   spirit_bomb_t( T* player ) :
-    pet_melee_attack_t<T>( player, "spirit_bomb", player -> find_spell( 198455 ) )
+    pet_melee_attack_t<T>( player, player->dbc->ptr ? "alpha_wolf" : "spirit_bomb", player -> find_spell( 198455 ) )
   {
     this -> background = true;
     this -> aoe = -1;
