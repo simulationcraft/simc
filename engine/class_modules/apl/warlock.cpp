@@ -150,7 +150,7 @@ void affliction( player_t* p )
   ogcd->add_action( "potion,if=variable.cds_active" );
   ogcd->add_action( "berserking,if=variable.cds_active" );
   ogcd->add_action( "blood_fury,if=variable.cds_active" );
-  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active", " Uses Power Infusion together with Cooldown windows like Summon Darkglare, Soul Rot, Phantom Singularity or Vile Taint";
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active", " Uses Power Infusion together with Cooldown windows like Summon Darkglare, Soul Rot, Phantom Singularity or Vile Taint");
   ogcd->add_action( "fireblood,if=variable.cds_active" );
 }
 //affliction_apl_end
