@@ -1721,6 +1721,9 @@ namespace monk
 
             add_child( nova );
           }
+
+          if ( p->talent.brewmaster.press_the_advantage->ok() )
+            add_child( p->active_actions.rising_sun_kick_press_the_advantage );
         }
 
         void consume_resource() override
@@ -1775,7 +1778,6 @@ namespace monk
         bool face_palm;
         bool blackout_combo;
         bool counterstrike;
-        // chi_surge_t *chi_surge;
         heal_t *eye_of_the_tiger_heal;
         spell_t *eye_of_the_tiger_damage;
 
@@ -1784,11 +1786,12 @@ namespace monk
             face_palm( false ),
             blackout_combo( false ),
             counterstrike( false ),
-            // chi_surge( new chi_surge_t( p ) ),
             eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
             eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
         {
-          // background = dual = true;
+          background = dual = true;
+          proc = true;
+          trigger_gcd = 0_s;
         }
 
         double action_multiplier() const override
@@ -1818,11 +1821,8 @@ namespace monk
           p()->buff.counterstrike->expire();
           p()->buff.blackout_combo->expire();
 
-          // if ( p()->talent.chi_surge->ok() )
-          // {
-          //   chi_surge->set_target( target );
-          //   chi_surge->execute();
-          // }
+          if ( p()->talent.brewmaster.chi_surge->ok() )
+            p()->active_actions.chi_surge->execute();
 
           // 30% chance to trigger estimated from an hour of attempts as of 14-06-2023
           if ( p()->talent.brewmaster.call_to_arms->ok() && rng().roll( 0.3 ) )
@@ -1865,6 +1865,7 @@ namespace monk
           cast_during_sck = true;
           background = dual = true;
           trigger_gcd = 0_s;
+          proc = true;
 
           attack_power_mod.direct = 0;
 
@@ -3004,11 +3005,6 @@ namespace monk
 
           if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() )
             add_child( p()->active_actions.chi_surge );
-          // if ( p()->talent.eye_of_the_tiger->ok() )
-          // {
-          //   add_child( eye_of_the_tiger_damage );
-          //   add_child( eye_of_the_tiger_heal );
-          // }
         }
 
         virtual void execute() override
@@ -3165,10 +3161,10 @@ namespace monk
       // ==========================================================================
       struct keg_smash_t : public monk_melee_attack_t
       {
-        keg_smash_t( monk_t *p, util::string_view name = "keg_smash" )
+        keg_smash_t( monk_t *p, util::string_view options_str, util::string_view name = "keg_smash" )
           : monk_melee_attack_t( name, p, p->talent.brewmaster.keg_smash )
         {
-          // parse_options( options_str );
+          parse_options( options_str );
 
           aoe = -1;
           reduced_aoe_targets = p->talent.brewmaster.keg_smash->effectN( 7 ).base_value();
@@ -3186,6 +3182,11 @@ namespace monk
           // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
           // Forcing the trigger GCD to 1 second.
           trigger_gcd = timespan_t::from_seconds( 1 );
+
+          // The extra name requirement is only necessary due to keg_smash_press_the_advantage_t
+          // being derived from keg_smash_t. Causes segmentation faults without the additional restriction.
+          if ( p->talent.brewmaster.press_the_advantage->ok() && name == "keg_smash" )
+            add_child( p->active_actions.keg_smash_press_the_advantage );
         }
 
         double composite_target_multiplier( player_t *target ) const override
@@ -3274,21 +3275,20 @@ namespace monk
         bool face_palm;
         bool blackout_combo;
         bool counterstrike;
-        // chi_surge_t *chi_surge;
         heal_t *eye_of_the_tiger_heal;
         spell_t *eye_of_the_tiger_damage;
 
         keg_smash_press_the_advantage_t( monk_t *p )
-          : keg_smash_t( p, "keg_smash_press_the_advantage" ),
+          : keg_smash_t( p, "", "keg_smash_press_the_advantage" ),
             face_palm( false ),
             blackout_combo( false ),
             counterstrike( false ),
-            // chi_surge( new chi_surge_t( p ) ),
             eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
             eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
         {
           trigger_gcd = 0_s;
           background = dual = true;
+          proc = true;
         }
 
         double action_multiplier() const override
