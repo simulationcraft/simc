@@ -40,7 +40,7 @@ actions+=/call_action_list,name=cleave,if=active_enemies!=1|variable.cleave_apl
 actions+=/call_action_list,name=items
 actions+=/call_action_list,name=ogcd
 actions+=/conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)|charges=max_charges
-actions+=/dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)
+actions+=/dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)
 actions+=/cataclysm,if=raid_event.adds.in>15
 actions+=/channel_demonfire,if=talent.raging_demonfire&(dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))>cast_time&(debuff.conflagrate.remains>execute_time|!talent.roaring_blaze)
 actions+=/soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)
@@ -59,7 +59,7 @@ actions+=/dimensional_rift
 actions+=/chaos_bolt,if=soul_shard>3.5
 actions+=/chaos_bolt,if=talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft
 actions+=/chaos_bolt,if=fight_remains<5&fight_remains>cast_time+travel_time
-actions+=/conflagrate,if=charges>(max_charges-1)|time_to_die<gcd.max*charges
+actions+=/conflagrate,if=charges>(max_charges-1)|fight_remains<gcd.max*charges
 actions+=/incinerate
 
 actions.aoe=call_action_list,name=ogcd
@@ -92,7 +92,7 @@ actions.cleave+=/call_action_list,name=ogcd
 actions.cleave+=/call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max
 actions.cleave+=/variable,name=pool_soul_shards,value=cooldown.havoc.remains<=10|talent.mayhem
 actions.cleave+=/conflagrate,if=(talent.roaring_blaze.enabled&debuff.conflagrate.remains<1.5)|charges=max_charges
-actions.cleave+=/dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)
+actions.cleave+=/dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)
 actions.cleave+=/cataclysm,if=raid_event.adds.in>15
 actions.cleave+=/channel_demonfire,if=talent.raging_demonfire&active_dot.immolate=2
 actions.cleave+=/soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)&!variable.pool_soul_shards
@@ -112,9 +112,9 @@ actions.cleave+=/channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_
 actions.cleave+=/dimensional_rift
 actions.cleave+=/chaos_bolt,if=soul_shard>3.5&!variable.pool_soul_shards
 actions.cleave+=/chaos_bolt,if=!variable.pool_soul_shards&(talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft)
-actions.cleave+=/chaos_bolt,if=fight_remains<5&time_to_die>cast_time+travel_time
+actions.cleave+=/chaos_bolt,if=fight_remains<5&fight_remains>cast_time+travel_time
 actions.cleave+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10
-actions.cleave+=/conflagrate,if=charges>(max_charges-1)|time_to_die<gcd.max*charges
+actions.cleave+=/conflagrate,if=charges>(max_charges-1)|fight_remains<gcd.max*charges
 actions.cleave+=/incinerate
 
 actions.havoc=conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4

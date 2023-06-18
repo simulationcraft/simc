@@ -80,7 +80,7 @@ actions.cds+=/invoke_external_buff,name=power_infusion,if=variable.deathmark_con
 actions.cds+=/deathmark,if=variable.deathmark_condition
 actions.cds+=/kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&buff.envenom.up&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)
 # Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough. Attempt to sync with Deathmark and also Echoing Reprimand if using Resounding Clarity.
-actions.cds+=/variable,name=exsanguinate_condition,value=talent.exsanguinate&!stealthed.rogue&!stealthed.improved_garrote&!dot.deathmark.ticking&target.time_to_die>variable.exsang_sync_remains+4&variable.exsang_sync_remains<4
+actions.cds+=/variable,name=exsanguinate_condition,value=talent.exsanguinate&!stealthed.rogue&(!stealthed.improved_garrote|dot.garrote.pmultiplier>1)&!dot.deathmark.ticking&target.time_to_die>variable.exsang_sync_remains+4&variable.exsang_sync_remains<4
 actions.cds+=/echoing_reprimand,if=talent.exsanguinate&talent.resounding_clarity&(variable.exsanguinate_condition&combo_points<=2&variable.exsang_sync_remains<=2&!dot.garrote.refreshable&dot.rupture.remains>9.6)
 actions.cds+=/exsanguinate,if=variable.exsanguinate_condition&(!dot.garrote.refreshable&dot.rupture.remains>4+4*variable.exsanguinate_rupture_cp|dot.rupture.remains*0.5>target.time_to_die)
 # Shiv if DoTs are up; Always Shiv with Kingsbane, otherwise attempt to sync with Sepsis or Deathmark if we won't waste more than half Shiv's cooldown
@@ -109,7 +109,7 @@ actions.direct+=/serrated_bone_spike,target_if=min:target.time_to_die+(dot.serra
 actions.direct+=/serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25)
 # When MA is not at high duration, sync with Shiv
 actions.direct+=/serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&!variable.single_target&debuff.shiv.up
-actions.direct+=/echoing_reprimand,if=(!talent.exsanguinate|!talent.resounding_clarity|variable.exsang_sync_remains>40)&variable.use_filler&cooldown.deathmark.remains>10|fight_remains<20
+actions.direct+=/echoing_reprimand,if=(!talent.exsanguinate|!talent.resounding_clarity|variable.exsang_sync_remains>40)&variable.use_filler|fight_remains<20
 # Fan of Knives at 3+ targets or 4+ with DTB
 actions.direct+=/fan_of_knives,if=variable.use_filler&(!priority_rotation&spell_targets.fan_of_knives>=3+stealthed.rogue+talent.dragontempered_blades)
 # Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T

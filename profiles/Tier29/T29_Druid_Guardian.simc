@@ -62,9 +62,9 @@ actions.bear+=/raze,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&v
 actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.ironfur.up&!cooldown.pause_action.remains&variable.If_build=0|rage>90&variable.If_build=0
 actions.bear+=/ironfur,if=rage>90&variable.If_build=1|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1
 actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.galactic_guardian.remains<=2
-actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.vicious_cycle_mangle.stack=3
 actions.bear+=/maul,if=((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&(buff.tooth_and_claw.stack>=2))&variable.If_build=0&!talent.thorns_of_iron.enabled
-actions.bear+=/raze,if=((buff.incarnation.up|buff.berserk_bear.up)&(buff.tooth_and_claw.stack>=2))&variable.If_build=0&!talent.thorns_of_iron.enabled
+actions.bear+=/raze,if=(buff.incarnation.up|buff.berserk_bear.up)&variable.If_build=0&!talent.thorns_of_iron.enabled
+actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.vicious_cycle_mangle.stack=3
 actions.bear+=/thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|active_enemies>=5
 actions.bear+=/swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=11
 actions.bear+=/maul,if=(buff.tooth_and_claw.up&active_enemies<=5)

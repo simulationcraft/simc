@@ -37,18 +37,17 @@ actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.spoils_of_
 actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
 actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
 actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.intellect)*(variable.trinket_1_sync))
-# Rank 1 empower spell cast time TODO: multiplier should be 1.0 but 1.3 results in more dps for EBF builds
+# Rank 1 empower spell cast time
 actions.precombat+=/variable,name=r1_cast_time,value=1.0*spell_haste
 # Variable for when to start holding empowers for upcoming DR in AoE. - From my testing 4sec seems like the sweetspot, but it's very minor diff so far - Holding for more than 6 seconds it begins to become a loss.
 actions.precombat+=/variable,name=dr_prep_time_aoe,default=4,op=reset
 # Variable for when to start holding empowers for upcoming DR in ST.
 actions.precombat+=/variable,name=dr_prep_time_st,default=13,op=reset
 actions.precombat+=/variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0
-actions.precombat+=/verdant_embrace,if=talent.ancient_flame&talent.firestorm
+actions.precombat+=/verdant_embrace,if=talent.scarlet_adaptation&talent.firestorm
 actions.precombat+=/use_item,name=shadowed_orb_of_torment
 actions.precombat+=/firestorm,if=talent.firestorm
 actions.precombat+=/living_flame,if=!talent.firestorm
-actions.precombat+=/verdant_embrace,if=talent.ancient_flame&!talent.firestorm
 
 # Executed every time the actor is available.
 # Delay pot in ST if you are about to SS - mostly relevant for opener where you want DR->FB->SS->rotation
@@ -116,12 +115,10 @@ actions.st=use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff
 actions.st+=/hover,use_off_gcd=1,if=raid_event.movement.in<2&!buff.hover.up
 # Spend firestorm procs ASAP
 actions.st+=/firestorm,if=buff.snapfire.up
-# Get Ancient Flame for dragonrage
-actions.st+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&talent.dragonrage&cooldown.dragonrage.ready&(cooldown.fire_breath.remains<4&cooldown.eternity_surge.remains<10&target.time_to_die>=32|fight_remains<30)
 # Relaxed Dragonrage Entry Requirements, cannot reliably reach third extend under normal conditions (Bloodlust + Power Infusion/Very high haste gear)  DS optimization: Only cast if current fight will last 32s+ or encounter ends in less than 30s
 actions.st+=/dragonrage,if=cooldown.fire_breath.remains<4&cooldown.eternity_surge.remains<10&target.time_to_die>=32|fight_remains<30
 # Tip second FB if not playing font of magic or if playing EBF, otherwise tip ES.
-actions.st+=/tip_the_scales,if=buff.dragonrage.up&(((!talent.font_of_magic|talent.everburning_flame)&cooldown.fire_breath.up&!cooldown.eternity_surge.up&buff.dragonrage.remains<14)|(cooldown.eternity_surge.up&!cooldown.fire_breath.up&!talent.everburning_flame&talent.font_of_magic))
+actions.st+=/tip_the_scales,if=buff.dragonrage.up&(((!talent.font_of_magic|talent.everburning_flame)&cooldown.fire_breath.remains<cooldown.eternity_surge.remains&buff.dragonrage.remains<14)|(cooldown.eternity_surge.remains<cooldown.fire_breath.remains&!talent.everburning_flame&talent.font_of_magic))
 # Fire breath logic  Play around power swell if you don't have pi or lust up. Play around blazing shards if outside of DR.  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
 actions.st+=/call_action_list,name=fb,if=set_bonus.tier30_4pc&(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.power_swell.remains<variable.r1_cast_time|buff.bloodlust.up|buff.power_infusion.up|buff.dragonrage.up)&(buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up))&(!cooldown.eternity_surge.up|!talent.event_horizon|!buff.dragonrage.up)&(target.time_to_die>=8|fight_remains<30)
 # FB logic for T29, keeping for legacy support
@@ -138,8 +135,6 @@ actions.st+=/wait,sec=cooldown.eternity_surge.remains,if=talent.animosity&buff.d
 # Spend the last 1 or 2 GCDs of DR on fillers to exit with 2 EBs
 actions.st+=/living_flame,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max&buff.burnout.up
 actions.st+=/azure_strike,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max
-# Get Ancient Flame for Burnout Procs
-actions.st+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&buff.burnout.up
 # Spend burnout procs without overcapping resources
 actions.st+=/living_flame,if=buff.burnout.up&(buff.leaping_flames.up&!buff.essence_burst.up|!buff.leaping_flames.up&buff.essence_burst.stack<buff.essence_burst.max_stack)&essence.deficit>=2
 # Spend pyre if raging inferno debuff is active and you have 20 stacks of CB on 2T
@@ -154,9 +149,9 @@ actions.st+=/firestorm,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down
 actions.st+=/deep_breath,if=!buff.dragonrage.up&active_enemies>=2&((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))
 actions.st+=/deep_breath,if=!buff.dragonrage.up&talent.imminent_destruction&!debuff.shattering_star_debuff.up
 # Get Ancient Flame as Filler
-actions.st+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up
-# Cast LF outside of DR without ancient flame, or having Verdant Embrace up, or having Emerald blossom, or Irid Red. In DR only cast without Ancient Flame.
-actions.st+=/living_flame,if=!buff.dragonrage.up&(!buff.ancient_flame.up|cooldown.verdant_embrace.up|cooldown.emerald_blossom.up|buff.iridescence_red.remains>execute_time)|(buff.iridescence_red.remains>execute_time|buff.iridescence_blue.up)&active_enemies==1&!buff.ancient_flame.up
+actions.st+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&!buff.shattering_star_debuff.up&talent.scarlet_adaptation&!buff.dragonrage.up
+# Cast LF outside of DR, In DR only cast with Iridescence.
+actions.st+=/living_flame,if=!buff.dragonrage.up|(buff.iridescence_red.remains>execute_time|buff.iridescence_blue.up)&active_enemies==1
 # Fallback for movement
 actions.st+=/azure_strike
 
