@@ -360,8 +360,11 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-    if ( p()->talents.ripped_through_the_portal->ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
-      count++;
+    if ( !p()->min_version_check( VERSION_10_1_5 ) )
+    {
+      if ( p()->talents.ripped_through_the_portal->ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
+        count++;
+    }
 
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
 
