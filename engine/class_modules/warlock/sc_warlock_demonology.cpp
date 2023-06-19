@@ -730,7 +730,7 @@ struct power_siphon_t : public demonology_spell_t
       p()->buffs.power_siphon->trigger( 2, p()->talents.power_siphon_buff->duration() );
       p()->buffs.demonic_core->trigger( 2, p()->warlock_base.demonic_core_buff->duration() );
       p()->cooldowns.power_siphon->adjust( -precombat_seconds, false );
-      p()->buffs.demonic_core->extend_duration( p(), - precombat_seconds );
+      p()->buffs.demonic_core->extend_duration( p(), -precombat_seconds );
       return;
     }
 
