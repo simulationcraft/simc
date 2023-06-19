@@ -1403,7 +1403,10 @@ namespace monk
 
         bool ready() override
         {
-          return !p()->talent.brewmaster.press_the_advantage->ok();
+          if ( p()->talent.brewmaster.press_the_advantage->ok() )
+            return false;
+          return monk_melee_attack_t::ready();
+          // return !p()->talent.brewmaster.press_the_advantage->ok();
         }
 
         void execute() override
