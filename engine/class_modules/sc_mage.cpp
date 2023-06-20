@@ -4291,6 +4291,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+
+    if ( s->chain_target == 0 && p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
+      p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 3 ).time_value() );
+
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
@@ -4477,7 +4481,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       if ( p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
       {
-        p()->buffs.icy_veins->extend_duration( p(), 1000 * p()->talents.thermal_void->effectN( 1 ).time_value() );
+        p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 1 ).time_value() );
         record_shatter_source( s, extension_source );
       }
 
