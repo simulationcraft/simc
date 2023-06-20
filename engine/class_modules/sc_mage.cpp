@@ -340,6 +340,7 @@ public:
   {
     cooldown_t* arcane_orb;
     cooldown_t* combustion;
+    cooldown_t* comet_storm;
     cooldown_t* cone_of_cold;
     cooldown_t* fervent_flickering;
     cooldown_t* fire_blast;
@@ -2333,6 +2334,17 @@ struct frost_mage_spell_t : public mage_spell_t
       p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Frostbite only has the initial grace period
   }
 
+  void trigger_winters_chill( const action_state_t* s )
+  {
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    auto wc = get_td( s->target )->debuffs.winters_chill;
+    wc->trigger( wc->max_stack() );
+    for ( int i = 0; i < wc->max_stack(); i++ )
+      p()->procs.winters_chill_applied->occur();
+  }
+
   void trigger_cold_front( int stacks = 1 )
   {
     trigger_tracking_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2, stacks );
@@ -3219,8 +3231,9 @@ struct cold_snap_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->cooldowns.cone_of_cold->reset( false );
     p()->cooldowns.frost_nova->reset( false );
+    if ( !p()->talents.coldest_snap.ok() )
+      p()->cooldowns.cone_of_cold->reset( false );
   }
 };
 
@@ -3302,7 +3315,9 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     aoe = -1;
     consumes_winters_chill = triggers.radiant_spark = true;
     triggers.chill = !p->talents.freezing_cold.ok();
-    affected_by.time_manipulation = p->talents.freezing_cold.ok();
+    affected_by.time_manipulation = p->talents.freezing_cold.ok() && !p->talents.coldest_snap.ok();
+    affected_by.shifting_power = !p->talents.coldest_snap.ok();
+    cooldown->duration += p->talents.coldest_snap->effectN( 1 ).time_value();
   }
 
   double action_multiplier() const override
@@ -3317,7 +3332,16 @@ struct cone_of_cold_t final : public frost_mage_spell_t
   void execute() override
   {
     frost_mage_spell_t::execute();
-    p()->buffs.snowstorm->expire();
+
+    if ( hit_any_target )
+    {
+      p()->buffs.snowstorm->expire();
+      if ( p()->talents.coldest_snap.ok() )
+      {
+        p()->cooldowns.comet_storm->reset( false );
+        p()->cooldowns.frozen_orb->reset( false );
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3326,6 +3350,9 @@ struct cone_of_cold_t final : public frost_mage_spell_t
 
     if ( p()->talents.freezing_cold.ok() )
       p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Freezing Cold only has the initial grace period
+
+    if ( p()->talents.coldest_snap.ok() )
+      trigger_winters_chill( s );
   }
 };
 
@@ -3860,11 +3887,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    auto wc = get_td( s->target )->debuffs.winters_chill;
-    wc->trigger( wc->max_stack() );
-    for ( int i = 0; i < wc->max_stack(); i++ )
-      p()->procs.winters_chill_applied->occur();
-
+    trigger_winters_chill( s );
     consume_cold_front( s->target );
 
     if ( rng().roll( p()->talents.glacial_assault->effectN( 1 ).percent() ) )
@@ -5823,6 +5846,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   // Cooldowns
   cooldowns.arcane_orb           = get_cooldown( "arcane_orb"           );
   cooldowns.combustion           = get_cooldown( "combustion"           );
+  cooldowns.comet_storm          = get_cooldown( "comet_storm"          );
   cooldowns.cone_of_cold         = get_cooldown( "cone_of_cold"         );
   cooldowns.fervent_flickering   = get_cooldown( "fervent_flickering"   );
   cooldowns.fire_blast           = get_cooldown( "fire_blast"           );
