@@ -466,8 +466,6 @@ public:
   struct talents_list_t
   {
     // TODO: Remove after implementing new Frost
-    player_talent_t blizzard;
-    player_talent_t cold_snap;
     player_talent_t icy_propulsion;
     player_talent_t snap_freeze;
     player_talent_t summon_water_elemental;
@@ -3175,7 +3173,7 @@ struct blizzard_t final : public frost_mage_spell_t
   action_t* blizzard_shard;
 
   blizzard_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.blizzard ),
+    frost_mage_spell_t( n, p, p->find_specialization_spell( "Blizzard" ) ),
     blizzard_shard( get_action<blizzard_shard_t>( "blizzard_shard", p ) )
   {
     parse_options( options_str );
@@ -3212,7 +3210,7 @@ struct blizzard_t final : public frost_mage_spell_t
 struct cold_snap_t final : public frost_mage_spell_t
 {
   cold_snap_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.cold_snap )
+    frost_mage_spell_t( n, p, p->find_specialization_spell( "Cold Snap" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -6162,8 +6160,6 @@ void mage_t::init_spells()
   player_t::init_spells();
 
   // TODO: Remove after implementing new Frost
-  talents.blizzard               = { this };
-  talents.cold_snap              = { this };
   talents.icy_propulsion         = { this };
   talents.snap_freeze            = { this };
   talents.summon_water_elemental = { this };
