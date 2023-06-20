@@ -448,7 +448,6 @@ public:
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
     player_t* last_bomb_target;
-    int frostbolt_counter;
     bool trigger_cc_channel;
     double spent_mana;
   } state;
@@ -3969,16 +3968,9 @@ struct frostbolt_t final : public frost_mage_spell_t
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
-    double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
-    // Because of the additional procs gained from the bad luck protection
-    // system, the base proc chances are reduced so that the overall average
-    // is not significantly changed by the system.
-    // TODO: How does this reduction work for low level Mages without BLP?
-    // TODO: Need to verify that this BLP system still exists in Dragonflight.
-    if ( p->talents.fingers_of_frost.ok() )
-      fof_chance = ft_multiplier * p->talents.fingers_of_frost->effectN( 1 ).percent() - 0.005;
-    if ( p->talents.brain_freeze.ok() )
-      bf_chance = ft_multiplier * p->talents.brain_freeze->effectN( 1 ).percent() - 0.01;
+    const auto& ft = p->talents.frozen_touch;
+    fof_chance = ( 1.0 + ft->effectN( 1 ).percent() ) * p->talents.fingers_of_frost->effectN( 1 ).percent();
+    bf_chance = ( 1.0 + ft->effectN( 2 ).percent() ) * p->talents.brain_freeze->effectN( 1 ).percent();
 
     if ( p->spec.icicles->ok() )
       add_child( p->action.icicle.frostbolt );
@@ -4047,7 +4039,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     int icicle_count = p()->rng().roll( p()->talents.splintering_cold->effectN( 2 ).percent() ) ? 2 : 1;
     for ( int i = 0; i < icicle_count; i++ ) p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
 
-    handle_procs();
+    p()->trigger_fof( fof_chance, proc_fof );
+    p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
 
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
@@ -4084,43 +4077,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     // TODO: As of 2023-03-19, Frostbolt currently triggers Volatile Flame twice.
     if ( p()->bugs && tt_applicable( s, triggers.calefaction ) )
       trigger_calefaction( s->target );
-  }
-
-  void handle_procs()
-  {
-    if ( p()->specialization() != MAGE_FROST )
-      return;
-
-    bool fof_triggered = p()->trigger_fof( fof_chance, proc_fof );
-    bool bf_triggered = p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
-
-    if ( fof_chance == 0.0 || bf_chance == 0.0 )
-      return;
-
-    if ( !bf_triggered && !fof_triggered )
-    {
-      p()->state.frostbolt_counter++;
-      // On the 6th consecutive Frostbolt where no Fingers of Frost or Brain Freeze
-      // proc has occurred, there is an extra 25% chance to gain a Brain Freeze proc.
-      if ( p()->state.frostbolt_counter == 6 )
-        bf_triggered = p()->trigger_brain_freeze( 0.25, proc_brain_freeze );
-      // On the 7th consecutive Frostbolt where no Fingers of Frost or Brain Freeze
-      // proc has occurred, a proc will occur. The chances that this proc will be a
-      // Fingers of Frost or a Brain Freeze are equal.
-      else if ( p()->state.frostbolt_counter >= 7 )
-      {
-        // Try to trigger the Fingers of Frost proc with a 50% chance, because if it
-        // is triggered with a 100% chance then the actor will not have to react to it.
-        // Brain Freeze does not have this feature, so triggering it below with a 100%
-        // chance is not a problem.
-        fof_triggered = p()->trigger_fof( 0.5, proc_fof );
-        if ( !fof_triggered )
-          bf_triggered = p()->trigger_brain_freeze( 1.0, proc_brain_freeze );
-      }
-    }
-
-    if ( fof_triggered || bf_triggered )
-      p()->state.frostbolt_counter = 0;
   }
 };
 
