@@ -1453,7 +1453,7 @@ public:
       {
         affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) ) ||
                                    ( p->set_bonuses.t30_vengeance_4pc->ok() &&
-                                     ab::data().affected_by_label( p->spec.fiery_brand_debuff->effectN( 3 ) ) );
+                                     ab::data().affected_by_label( p->spec.fiery_brand_debuff->effectN( 4 ) ) );
       }
       if ( p->set_bonuses.t30_vengeance_2pc->ok() )
       {
