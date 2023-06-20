@@ -3619,7 +3619,7 @@ struct ebonbolt_t final : public frost_mage_spell_t
     if ( p->talents.splitting_ice.ok() )
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
+      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 4 ).percent();
     }
   }
 
@@ -4222,7 +4222,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     if ( p->talents.splitting_ice.ok() )
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
+      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 4 ).percent();
     }
   }
 
