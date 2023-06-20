@@ -6913,6 +6913,11 @@ double mage_t::composite_rating_multiplier( rating_e r ) const
     case RATING_SPELL_CRIT:
       rm *= 1.0 + talents.critical_mass->effectN( 2 ).percent();
       break;
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+    case RATING_SPELL_HASTE:
+      rm *= 1.0 + talents.winters_blessing->effectN( 2 ).percent();
+      break;
     default:
       break;
   }
@@ -6944,6 +6949,7 @@ double mage_t::composite_melee_haste() const
   double h = player_t::composite_melee_haste();
 
   h /= 1.0 + talents.tome_of_antonidas->effectN( 1 ).percent();
+  h /= 1.0 + talents.winters_blessing->effectN( 1 ).percent();
 
   return h;
 }
@@ -6953,6 +6959,7 @@ double mage_t::composite_spell_haste() const
   double h = player_t::composite_spell_haste();
 
   h /= 1.0 + talents.tome_of_antonidas->effectN( 1 ).percent();
+  h /= 1.0 + talents.winters_blessing->effectN( 1 ).percent();
 
   return h;
 }
