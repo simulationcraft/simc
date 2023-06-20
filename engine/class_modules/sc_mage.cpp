@@ -448,8 +448,6 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     int mana_gem_charges;
-    int inactive_frozen_orbs;
-    int active_frozen_orbs;
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
     player_t* last_bomb_target;
@@ -4232,23 +4230,9 @@ struct frozen_orb_t final : public frost_mage_spell_t
     return t;
   }
 
-  void adjust_orb_count( timespan_t duration, bool active )
-  {
-    int& counter = active ? p()->state.active_frozen_orbs : p()->state.inactive_frozen_orbs;
-    counter++;
-    make_event( *sim, duration, [ this, &counter, active ]
-    {
-      counter--;
-      if ( p()->state.active_frozen_orbs + p()->state.inactive_frozen_orbs == 0 || ( active && p()->bugs ) )
-        p()->buffs.freezing_winds->expire();
-    } );
-  }
-
   void execute() override
   {
     frost_mage_spell_t::execute();
-
-    adjust_orb_count( travel_time(), false );
 
     p()->buffs.freezing_winds->trigger();
     if ( !background ) p()->buffs.freezing_rain->trigger();
@@ -4264,8 +4248,6 @@ struct frozen_orb_t final : public frost_mage_spell_t
     pulse_count += as<int>( p()->talents.everlasting_frost->effectN( 2 ).time_value() / pulse_time );
     timespan_t duration = ( pulse_count - 1 ) * pulse_time;
     p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + duration;
-
-    adjust_orb_count( duration, true );
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
@@ -6596,8 +6578,17 @@ void mage_t::create_buffs()
                              ->set_default_value_from_effect( 2 )
                              ->set_chance( talents.freezing_rain.ok() );
   buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 382106 ) )
+                             ->modify_duration( talents.everlasting_frost->effectN( 3 ).time_value() )
                              ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )
+                             ->set_partial_tick( true )
+                             ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                             ->set_refresh_duration_callback( [ this ] ( const buff_t* b, timespan_t new_duration )
+                               {
+                                 auto rem = b->tick_event ? b->tick_event->remains() : 0_ms;
+                                 if ( !talents.everlasting_frost.ok() && rem < 2.0_s ) rem -= 1.0_s;
+                                 return new_duration + rem;
+                               } )
                              ->set_chance( talents.freezing_winds.ok() );
   buffs.icicles          = make_buff( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins        = make_buff<buffs::icy_veins_t>( this );
