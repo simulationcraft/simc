@@ -1278,6 +1278,8 @@ struct mage_spell_t : public spell_t
     // Temporary damage increase
     bool arcane_surge = true;
     bool bone_chilling = true;
+    bool icicles_aoe = false;
+    bool icicles_st = false;
     bool incanters_flow = true;
     bool invigorating_powder = true;
     bool savant = false;
@@ -1407,6 +1409,12 @@ public:
 
     if ( affected_by.bone_chilling )
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
+
+    if ( affected_by.icicles_aoe )
+      m *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 1 ).mastery_value();
+
+    if ( affected_by.icicles_st )
+      m *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 3 ).mastery_value();
 
     if ( affected_by.incanters_flow )
       m *= 1.0 + p()->buffs.incanters_flow->check_stack_value();
@@ -3122,6 +3130,7 @@ struct blizzard_shard_t final : public frost_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = 8;
     background = ground_aoe = triggers.chill = true;
+    affected_by.icicles_aoe = true;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -3247,6 +3256,7 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
   {
     aoe = -1;
     background = true;
+    affected_by.icicles_aoe = true;
   }
 };
 
@@ -3604,6 +3614,7 @@ struct ebonbolt_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 257538 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    affected_by.icicles_st = true;
 
     if ( p->talents.splitting_ice.ok() )
     {
@@ -4112,6 +4123,7 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     base_multiplier *= 1.0 + p->talents.everlasting_frost->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
     background = triggers.chill = true;
+    affected_by.icicles_aoe = true;
   }
 
   void init_finished() override
@@ -4126,15 +4138,6 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
 
     if ( hit_any_target )
       p()->trigger_fof( p()->talents.fingers_of_frost->effectN( 2 ).percent(), proc_fof );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = frost_mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 1 ).mastery_value();
-
-    return am;
   }
 };
 
@@ -4212,6 +4215,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
     triggers.overflowing_energy = true;
+    affected_by.icicles_st = true;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
@@ -4332,6 +4336,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
     triggers.overflowing_energy = true;
+    affected_by.icicles_st = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
@@ -5050,6 +5055,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     channeled = triggers.chill = true;
+    affected_by.icicles_st = true;
   }
 
   void init_finished() override
@@ -7407,7 +7413,8 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
     }
 
     source->occur();
-    procs.brain_freeze->occur();
+    if ( procs.brain_freeze )
+      procs.brain_freeze->occur();
   }
 
   return success;
