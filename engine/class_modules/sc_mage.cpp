@@ -347,7 +347,6 @@ public:
     cooldown_t* from_the_ashes;
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
-    cooldown_t* icy_veins;
     cooldown_t* incendiary_eruptions;
     cooldown_t* living_bomb;
     cooldown_t* phoenix_flames;
@@ -398,12 +397,10 @@ public:
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
     proc_t* brain_freeze;
-    proc_t* brain_freeze_snap_freeze;
     proc_t* brain_freeze_water_jet;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_flash_freeze;
     proc_t* fingers_of_frost_freezing_winds;
-    proc_t* fingers_of_frost_snap_freeze;
     proc_t* fingers_of_frost_time_anomaly;
     proc_t* fingers_of_frost_wasted;
     proc_t* flurry_cast;
@@ -466,8 +463,6 @@ public:
   struct talents_list_t
   {
     // TODO: Remove after implementing new Frost
-    player_talent_t icy_propulsion;
-    player_talent_t snap_freeze;
     player_talent_t summon_water_elemental;
 
     // Mage
@@ -1310,7 +1305,6 @@ struct mage_spell_t : public spell_t
   {
     bool chill = false;
     bool from_the_ashes = false;
-    bool icy_propulsion = false;
     bool ignite = false;
     bool overflowing_energy = false;
     bool radiant_spark = false;
@@ -1577,9 +1571,6 @@ public:
 
     if ( s->result_total <= 0.0 )
       return;
-
-    if ( triggers.icy_propulsion && s->result == RESULT_CRIT )
-      p()->cooldowns.icy_veins->adjust( -p()->talents.icy_propulsion->effectN( 1 ).time_value() );
 
     if ( callbacks && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT && ( s->result == RESULT_CRIT || triggers.overflowing_energy ) )
       p()->trigger_merged_buff( p()->buffs.overflowing_energy, s->result != RESULT_CRIT );
@@ -2362,7 +2353,7 @@ struct icicle_t final : public frost_mage_spell_t
   icicle_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 148022 ) )
   {
-    background = track_shatter = triggers.icy_propulsion = true;
+    background = track_shatter = true;
     callbacks = false;
     base_dd_min = base_dd_max = 1.0;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
@@ -3614,7 +3605,6 @@ struct ebonbolt_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 257538 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
-    triggers.icy_propulsion = !p->bugs;
 
     if ( p->talents.splitting_ice.ok() )
     {
@@ -3848,7 +3838,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
   flurry_bolt_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 228354 ) )
   {
-    background = triggers.chill = triggers.icy_propulsion = triggers.overflowing_energy = true;
+    background = triggers.chill = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
   }
@@ -3973,7 +3963,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
-    triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
+    triggers.chill = triggers.radiant_spark = triggers.overflowing_energy = true;
     triggers.calefaction = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
@@ -4265,7 +4255,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
-    triggers.icy_propulsion = triggers.overflowing_energy = true;
+    triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
@@ -4318,13 +4308,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-
-    if ( s->result == RESULT_CRIT )
-    {
-      timespan_t cdr = -p()->talents.icy_propulsion->effectN( 1 ).time_value();
-      p()->cooldowns.icy_veins->adjust( p()->spec.icicles->effectN( 2 ).base_value() * cdr );
-    }
-
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
@@ -4392,7 +4375,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
-    triggers.icy_propulsion = triggers.overflowing_energy = true;
+    triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
@@ -4595,12 +4578,6 @@ struct icy_veins_t final : public frost_mage_spell_t
 
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
-
-    if ( p()->talents.snap_freeze.ok() )
-    {
-      p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_snap_freeze, 0_ms );
-      p()->trigger_fof( 1.0, p()->procs.fingers_of_frost_snap_freeze );
-    }
   }
 };
 
@@ -4613,7 +4590,7 @@ struct fire_blast_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
-    affected_by.unleashed_inferno = triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
+    affected_by.unleashed_inferno = triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
 
@@ -5891,7 +5868,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.from_the_ashes       = get_cooldown( "from_the_ashes"       );
   cooldowns.frost_nova           = get_cooldown( "frost_nova"           );
   cooldowns.frozen_orb           = get_cooldown( "frozen_orb"           );
-  cooldowns.icy_veins            = get_cooldown( "icy_veins"            );
   cooldowns.incendiary_eruptions = get_cooldown( "incendiary_eruptions" );
   cooldowns.living_bomb          = get_cooldown( "living_bomb"          );
   cooldowns.phoenix_flames       = get_cooldown( "phoenix_flames"       );
@@ -6160,8 +6136,6 @@ void mage_t::init_spells()
   player_t::init_spells();
 
   // TODO: Remove after implementing new Frost
-  talents.icy_propulsion         = { this };
-  talents.snap_freeze            = { this };
   talents.summon_water_elemental = { this };
 
   // Mage Talents
@@ -6703,12 +6677,10 @@ void mage_t::init_procs()
       break;
     case MAGE_FROST:
       procs.brain_freeze                    = get_proc( "Brain Freeze" );
-      procs.brain_freeze_snap_freeze        = get_proc( "Brain Freeze from Snap Freeze" );
       procs.brain_freeze_water_jet          = get_proc( "Brain Freeze from Water Jet" );
       procs.fingers_of_frost                = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_flash_freeze   = get_proc( "Fingers of Frost from Flash Freeze" );
       procs.fingers_of_frost_freezing_winds = get_proc( "Fingers of Frost from Freezing Winds" );
-      procs.fingers_of_frost_snap_freeze    = get_proc( "Fingers of Frost from Snap Freeze" );
       procs.fingers_of_frost_time_anomaly   = get_proc( "Fingers of Frost from Time Anomaly" );
       procs.fingers_of_frost_wasted         = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
       procs.flurry_cast                     = get_proc( "Flurry cast" );
