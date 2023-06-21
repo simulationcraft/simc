@@ -92,6 +92,7 @@ struct mage_td_t final : public actor_target_data_t
   {
     buff_t* frozen;
     buff_t* improved_scorch;
+    buff_t* numbing_blast;
     buff_t* radiant_spark_vulnerability;
     buff_t* touch_of_the_magi;
     buff_t* winters_chill;
@@ -761,6 +762,7 @@ public:
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
   double composite_melee_haste() const override;
@@ -1281,13 +1283,12 @@ struct mage_spell_t : public spell_t
     bool bone_chilling = true;
     bool icicles_aoe = false;
     bool icicles_st = false;
+    bool improved_scorch = true;
     bool incanters_flow = true;
     bool invigorating_powder = true;
+    bool numbing_blast = true;
     bool savant = false;
-
-    bool improved_scorch = true;
     bool unleashed_inferno = false;
-    bool wildfire = true;
 
     bool arcane_overload = true;
     bool charring_embers = true;
@@ -1301,6 +1302,7 @@ struct mage_spell_t : public spell_t
     bool shatter = true;
     bool shifting_power = true;
     bool time_manipulation = false;
+    bool wildfire = true;
   } affected_by;
 
   struct triggers_t
@@ -1451,10 +1453,12 @@ public:
 
     if ( auto td = find_td( target ) )
     {
-      if ( affected_by.radiant_spark )
-        m *= 1.0 + td->debuffs.radiant_spark_vulnerability->check_stack_value();
       if ( affected_by.improved_scorch )
         m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
+      if ( affected_by.numbing_blast )
+        m *= 1.0 + td->debuffs.numbing_blast->check_value();
+      if ( affected_by.radiant_spark )
+        m *= 1.0 + td->debuffs.radiant_spark_vulnerability->check_stack_value();
       if ( affected_by.charring_embers )
         m *= 1.0 + td->debuffs.charring_embers->check_value();
     }
@@ -3271,6 +3275,14 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
     background = true;
     affected_by.icicles_aoe = true;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->talents.glacial_assault.ok() )
+      get_td( s->target )->debuffs.numbing_blast->trigger();
+  }
 };
 
 struct comet_storm_t final : public frost_mage_spell_t
@@ -3837,6 +3849,14 @@ struct glacial_assault_t final : public frost_mage_spell_t
   {
     background = true;
     aoe = -1;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      get_td( s->target )->debuffs.numbing_blast->trigger();
   }
 };
 
@@ -5815,6 +5835,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                           ->set_refresh_behavior( buff_refresh_behavior::MAX );
   debuffs.improved_scorch             = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
                                           ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
+  debuffs.numbing_blast               = make_buff( *this, "numbing_blast", mage->find_spell( 417490 ) )
+                                          ->set_default_value_from_effect( 1 )
+                                          ->set_chance( mage->talents.glacial_assault.ok() );
   debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->find_spell( 376104 ) )
                                           ->set_activated( false )
                                           ->set_default_value_from_effect( 1 )
@@ -6887,6 +6910,19 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, 
   {
     m *= 1.0 + buffs.bone_chilling->check_stack_value();
     m *= 1.0 + buffs.incanters_flow->check_stack_value();
+  }
+
+  return m;
+}
+
+double mage_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  if ( auto td = find_target_data( target ) )
+  {
+    if ( !guardian )
+      m *= 1.0 + td->debuffs.numbing_blast->check_value();
   }
 
   return m;
