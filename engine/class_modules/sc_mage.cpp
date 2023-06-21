@@ -7391,7 +7391,7 @@ void mage_t::update_from_the_ashes()
   if ( !talents.from_the_ashes.ok() )
     return;
 
-  int from_the_ashes_count = ( cooldowns.phoenix_flames->charges - static_cast<int>( cooldowns.phoenix_flames->charges_fractional() ) );
+  int from_the_ashes_count = cooldowns.phoenix_flames->charges - static_cast<int>( cooldowns.phoenix_flames->charges_fractional() );
   state.from_the_ashes_mastery = talents.from_the_ashes->effectN( 3 ).base_value() * from_the_ashes_count;
   invalidate_cache( CACHE_MASTERY );
 
