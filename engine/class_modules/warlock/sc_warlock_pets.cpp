@@ -642,6 +642,16 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
     main_pet = is_main_pet;
   }
 
+  double action_multiplier() const override
+  {
+    double m = warlock_pet_melee_attack_t::action_multiplier();
+
+    if ( main_pet && p()->o()->talents.fel_and_steel->ok() && p()->o()->min_version_check( VERSION_10_1_5 ) )
+      m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
+
+    return m;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = warlock_pet_melee_attack_t::composite_da_multiplier( s );
@@ -676,6 +686,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   struct felstorm_tick_t : public warlock_pet_melee_attack_t
   {
     bool applies_fel_sunder; // Fel Sunder is applied only by primary pet using Felstorm
+    bool fel_and_steel_bonus; // 10.1.5: Fel and Steel now only applies to primary pet
 
     felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
       : warlock_pet_melee_attack_t( "Felstorm (tick)", p, s )
@@ -685,6 +696,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       background = true;
       weapon = &( p->main_hand_weapon );
       applies_fel_sunder = false;
+      fel_and_steel_bonus = false;
     }
 
     double action_multiplier() const override
@@ -696,9 +708,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
         m *= 1.0 + p()->buffs.demonic_strength->check_value();
       }
 
-      if ( p()->o()->talents.fel_and_steel->ok() )
+      if ( fel_and_steel_bonus )
       {
-        m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
+        m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( p()->o()->min_version_check( VERSION_10_1_5 ) ? 2 : 1 ).percent();
       }
 
       if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
@@ -738,6 +750,9 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
     if ( main_pet && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
+
+    if ( ( main_pet || !p->o()->min_version_check( VERSION_10_1_5 ) ) && p->o()->talents.fel_and_steel->ok() )
+      debug_cast<felstorm_tick_t*>( tick_action )->fel_and_steel_bonus = true;
 
     if ( !main_pet )
       cooldown->duration = 45_s; // 2022-11-11: GFG does not appear to cast a second Felstorm even if the cooldown would come up, so we will pad this value to be longer than the possible duration.
@@ -1399,7 +1414,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
       m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
     }
 
-    if ( p()->o()->talents.fel_and_steel->ok() )
+    if ( p()->o()->talents.fel_and_steel->ok() && !p()->o()->min_version_check( VERSION_10_1_5 ) )
     {
       m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
     }
