@@ -378,14 +378,12 @@ void frost( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "arcane_intellect" );
-  precombat->add_action( "summon_water_elemental" );
-  precombat->add_action( "variable,name=use_fof,default=-1,value=!(talent.slick_ice&talent.frozen_touch&talent.deep_shatter),if=variable.use_fof=-1" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "blizzard,if=active_enemies>=2" );
   precombat->add_action( "frostbolt,if=active_enemies=1" );
 
   default_->add_action( "counterspell" );
-  default_->add_action( "water_jet,if=cooldown.flurry.charges_fractional<1" );
+  default_->add_action( "water_jet" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=7&!set_bonus.tier30_2pc|active_enemies>=3&talent.ice_caller" );
   default_->add_action( "run_action_list,name=st" );
@@ -413,8 +411,7 @@ void frost( player_t* p )
   cds->add_action( "use_item,name=spoils_of_neltharus,if=buff.spoils_of_neltharus_mastery.up|buff.spoils_of_neltharus_haste.up&buff.bloodlust.down&buff.temporal_warp.down&time>0|buff.spoils_of_neltharus_vers.up&(buff.bloodlust.up|buff.temporal_warp.up)" );
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<60" );
   cds->add_action( "flurry,if=time=0&active_enemies<=2" );
-  cds->add_action( "icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power&(remaining_winters_chill=2|active_enemies>=3&talent.ice_caller))" );
-  cds->add_action( "rune_of_power,if=buff.rune_of_power.down&cooldown.icy_veins.remains>20&(remaining_winters_chill=2|active_enemies>=3&talent.ice_caller)" );
+  cds->add_action( "icy_veins" );
   cds->add_action( "use_items" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
   cds->add_action( "invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down" );
@@ -439,11 +436,8 @@ void frost( player_t* p )
   st->add_action( "cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack&remaining_winters_chill" );
   st->add_action( "frozen_orb" );
   st->add_action( "blizzard,if=active_enemies>=2&talent.ice_caller&talent.freezing_rain" );
-  st->add_action( "shifting_power,if=buff.rune_of_power.down&buff.icy_veins.down|cooldown.icy_veins.remains<20" );
-  st->add_action( "ice_lance,if=variable.use_fof&(buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill)" );
-  st->add_action( "ice_lance,if=!variable.use_fof&active_enemies>=2&(remaining_winters_chill=2|remaining_winters_chill=1&buff.brain_freeze.react|remaining_winters_chill&buff.rune_of_power.up|buff.fingers_of_frost.react)" );
-  st->add_action( "ice_lance,if=!variable.use_fof&active_enemies=1&(remaining_winters_chill=2|remaining_winters_chill=1&buff.brain_freeze.react)" );
-  st->add_action( "ice_lance,if=!variable.use_fof&active_enemies=1&(remaining_winters_chill|buff.fingers_of_frost.react)&buff.icy_veins.remains<10&cooldown.icy_veins.remains>30" );
+  st->add_action( "shifting_power,if=buff.icy_veins.down|cooldown.icy_veins.remains<20" );
+  st->add_action( "ice_lance,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill" );
   st->add_action( "ice_nova,if=active_enemies>=4" );
   st->add_action( "glacial_spike,if=action.flurry.cooldown_react" );
   st->add_action( "ebonbolt,if=cooldown.flurry.charges_fractional<1" );
