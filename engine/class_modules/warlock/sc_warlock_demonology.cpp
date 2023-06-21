@@ -1279,9 +1279,6 @@ void warlock_t::init_spells_demonology()
   talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
   talents.power_siphon_buff = find_spell( 334581 );
 
-  talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
-  talents.demonic_calling_buff = find_spell( 205146 );
-
   talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
 
   talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
@@ -1292,6 +1289,9 @@ void warlock_t::init_spells_demonology()
   talents.dread_calling_buff = find_spell( 387393 );
 
   talents.doom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom" ); // Should be ID 603
+  
+  talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
+  talents.demonic_calling_buff = find_spell( 205146 );
 
   talents.demonic_meteor = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Meteor" ); // Should be ID 387396
 
