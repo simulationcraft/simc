@@ -311,6 +311,7 @@ public:
     buff_t* fingers_of_frost;
     buff_t* freezing_rain;
     buff_t* freezing_winds;
+    buff_t* frigid_empowerment;
     buff_t* icicles;
     buff_t* icy_veins;
     buff_t* ray_of_frost;
@@ -463,9 +464,6 @@ public:
   // Talents
   struct talents_list_t
   {
-    // TODO: Remove after implementing new Frost
-    player_talent_t summon_water_elemental;
-
     // Mage
     // Row 1
     player_talent_t blazing_barrier;
@@ -887,6 +885,14 @@ struct waterbolt_t final : public mage_pet_spell_t
   {
     parse_options( options_str );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_pet_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && o()->buffs.icy_veins->check() )
+      o()->buffs.frigid_empowerment->trigger();
+  }
 };
 
 struct freeze_t final : public mage_pet_spell_t
@@ -901,7 +907,10 @@ struct freeze_t final : public mage_pet_spell_t
   void impact( action_state_t* s ) override
   {
     mage_pet_spell_t::impact( s );
-    o()->trigger_crowd_control( s, MECHANIC_ROOT );
+
+    bool success = o()->trigger_crowd_control( s, MECHANIC_ROOT );
+    if ( success && o()->buffs.icy_veins->check() )
+      o()->buffs.frigid_empowerment->trigger( o()->buffs.frigid_empowerment->max_stack() );
   }
 };
 
@@ -917,6 +926,22 @@ struct water_jet_t final : public mage_pet_spell_t
   {
     mage_pet_spell_t::execute();
     o()->trigger_brain_freeze( 1.0, o()->procs.brain_freeze_water_jet, 0_ms );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_pet_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && o()->buffs.icy_veins->check() )
+      o()->buffs.frigid_empowerment->trigger();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    mage_pet_spell_t::tick( d );
+
+    if ( o()->buffs.icy_veins->check() )
+      o()->buffs.frigid_empowerment->trigger();
   }
 };
 
@@ -1131,6 +1156,7 @@ struct icy_veins_t final : public buff_t
     if ( p->talents.thermal_void.ok() && duration == 0_ms )
       p->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
 
+    p->buffs.frigid_empowerment->expire();
     p->buffs.slick_ice->expire();
   }
 };
@@ -1281,6 +1307,7 @@ struct mage_spell_t : public spell_t
     // Temporary damage increase
     bool arcane_surge = true;
     bool bone_chilling = true;
+    bool frigid_empowerment = true;
     bool icicles_aoe = false;
     bool icicles_st = false;
     bool improved_scorch = true;
@@ -1412,6 +1439,9 @@ public:
 
     if ( affected_by.bone_chilling )
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
+
+    if ( affected_by.frigid_empowerment )
+      m *= 1.0 + p()->buffs.frigid_empowerment->check_stack_value();
 
     if ( affected_by.icicles_aoe )
       m *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 1 ).mastery_value();
@@ -4313,7 +4343,11 @@ struct glacial_spike_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( s->chain_target == 0 && p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
-      p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 3 ).time_value() );
+    {
+      timespan_t t = p()->talents.thermal_void->effectN( 3 ).time_value();
+      p()->buffs.icy_veins->extend_duration( p(), t );
+      p()->pets.water_elemental->adjust_duration( t );
+    }
 
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
@@ -4501,7 +4535,9 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       if ( p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
       {
-        p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 1 ).time_value() );
+        timespan_t t = p()->talents.thermal_void->effectN( 1 ).time_value();
+        p()->buffs.icy_veins->extend_duration( p(), t );
+        p()->pets.water_elemental->adjust_duration( t );
         record_shatter_source( s, extension_source );
       }
 
@@ -4584,8 +4620,12 @@ struct icy_veins_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    p()->buffs.frigid_empowerment->expire();
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
+
+    if ( p()->pets.water_elemental->is_sleeping() )
+      p()->pets.water_elemental->summon( p()->buffs.icy_veins->buff_duration() );
   }
 };
 
@@ -5232,34 +5272,6 @@ struct supernova_t final : public arcane_mage_spell_t
   }
 };
 
-// Summon Water Elemental Spell =============================================
-
-struct summon_water_elemental_t final : public frost_mage_spell_t
-{
-  summon_water_elemental_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.summon_water_elemental )
-  {
-    parse_options( options_str );
-    harmful = track_cd_waste = false;
-    ignore_false_positive = true;
-    target = player;
-  }
-
-  void execute() override
-  {
-    frost_mage_spell_t::execute();
-    p()->pets.water_elemental->summon();
-  }
-
-  bool ready() override
-  {
-    if ( !p()->pets.water_elemental || !p()->pets.water_elemental->is_sleeping() )
-      return false;
-
-    return frost_mage_spell_t::ready();
-  }
-};
-
 // Time Warp Spell ==========================================================
 
 struct time_warp_t final : public mage_spell_t
@@ -5526,9 +5538,6 @@ struct freeze_t final : public action_t
     trigger_gcd = 0_ms;
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
-
-    if ( !p->talents.summon_water_elemental.ok() )
-      background = true;
   }
 
   void execute() override
@@ -5559,9 +5568,6 @@ struct water_jet_t final : public action_t
     trigger_gcd = 0_ms;
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
-
-    if ( !p->talents.summon_water_elemental.ok() )
-      background = true;
   }
 
   void execute() override
@@ -5931,7 +5937,6 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "ice_lance"              ) return new              ice_lance_t( name, this, options_str );
   if ( name == "icy_veins"              ) return new              icy_veins_t( name, this, options_str );
   if ( name == "ray_of_frost"           ) return new           ray_of_frost_t( name, this, options_str );
-  if ( name == "summon_water_elemental" ) return new summon_water_elemental_t( name, this, options_str );
 
   if ( name == "freeze"                 ) return new                 freeze_t( name, this, options_str );
   if ( name == "water_jet"              ) return new              water_jet_t( name, this, options_str );
@@ -6129,7 +6134,7 @@ void mage_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( talents.summon_water_elemental.ok() && find_action( "summon_water_elemental" ) )
+  if ( talents.icy_veins.ok() && find_action( "icy_veins" ) )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
   if ( talents.mirror_image.ok() && find_action( "mirror_image" ) )
@@ -6147,9 +6152,6 @@ void mage_t::create_pets()
 void mage_t::init_spells()
 {
   player_t::init_spells();
-
-  // TODO: Remove after implementing new Frost
-  talents.summon_water_elemental = { this };
 
   // Mage Talents
   // Row 1
@@ -6546,44 +6548,46 @@ void mage_t::create_buffs()
 
 
   // Frost
-  buffs.bone_chilling    = make_buff( this, "bone_chilling", find_spell( 205766 ) )
-                             ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() )
-                             ->set_chance( talents.bone_chilling.ok() );
-  buffs.chain_reaction   = make_buff( this, "chain_reaction", find_spell( 278310 ) )
-                             ->set_default_value( talents.chain_reaction->effectN( 1 ).percent() )
-                             ->set_chance( talents.chain_reaction.ok() );
-  buffs.brain_freeze     = make_buff( this, "brain_freeze", find_spell( 190446 ) );
-  buffs.cold_front       = make_buff( this, "cold_front", find_spell( 382113 ) )
-                             ->set_chance( talents.cold_front.ok() );
-  buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 382114 ) );
-  buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
-  buffs.freezing_rain    = make_buff( this, "freezing_rain", find_spell( 270232 ) )
-                             ->set_default_value_from_effect( 2 )
-                             ->set_chance( talents.freezing_rain.ok() );
-  buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 382106 ) )
-                             ->modify_duration( talents.everlasting_frost->effectN( 3 ).time_value() )
-                             ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
-                               { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )
-                             ->set_partial_tick( true )
-                             ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                             ->set_refresh_duration_callback( [ this ] ( const buff_t* b, timespan_t new_duration )
-                               {
-                                 auto rem = b->tick_event ? b->tick_event->remains() : 0_ms;
-                                 if ( !talents.everlasting_frost.ok() && rem < 2.0_s ) rem -= 1.0_s;
-                                 return new_duration + rem;
-                               } )
-                             ->set_chance( talents.freezing_winds.ok() );
-  buffs.icicles          = make_buff( this, "icicles", find_spell( 205473 ) );
-  buffs.icy_veins        = make_buff<buffs::icy_veins_t>( this );
-  buffs.ray_of_frost     = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
-                             ->set_default_value_from_effect( 1 );
-  buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 382148 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_chance( talents.slick_ice.ok() );
-  buffs.snowstorm        = make_buff( this, "snowstorm", find_spell( 381522 ) )
-                             ->set_default_value( talents.snowstorm->effectN( 2 ).percent() )
-                             ->set_cooldown( talents.snowstorm->internal_cooldown() )
-                             ->set_chance( talents.snowstorm->proc_chance() );
+  buffs.bone_chilling      = make_buff( this, "bone_chilling", find_spell( 205766 ) )
+                               ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() )
+                               ->set_chance( talents.bone_chilling.ok() );
+  buffs.chain_reaction     = make_buff( this, "chain_reaction", find_spell( 278310 ) )
+                               ->set_default_value( talents.chain_reaction->effectN( 1 ).percent() )
+                               ->set_chance( talents.chain_reaction.ok() );
+  buffs.brain_freeze       = make_buff( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.cold_front         = make_buff( this, "cold_front", find_spell( 382113 ) )
+                               ->set_chance( talents.cold_front.ok() );
+  buffs.cold_front_ready   = make_buff( this, "cold_front_ready", find_spell( 382114 ) );
+  buffs.fingers_of_frost   = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
+  buffs.freezing_rain      = make_buff( this, "freezing_rain", find_spell( 270232 ) )
+                               ->set_default_value_from_effect( 2 )
+                               ->set_chance( talents.freezing_rain.ok() );
+  buffs.freezing_winds     = make_buff( this, "freezing_winds", find_spell( 382106 ) )
+                               ->modify_duration( talents.everlasting_frost->effectN( 3 ).time_value() )
+                               ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+                                 { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )
+                               ->set_partial_tick( true )
+                               ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                               ->set_refresh_duration_callback( [ this ] ( const buff_t* b, timespan_t new_duration )
+                                 {
+                                   auto rem = b->tick_event ? b->tick_event->remains() : 0_ms;
+                                   if ( !talents.everlasting_frost.ok() && rem < 2.0_s ) rem -= 1.0_s;
+                                   return new_duration + rem;
+                                 } )
+                               ->set_chance( talents.freezing_winds.ok() );
+  buffs.frigid_empowerment = make_buff( this, "frigid_empowerment", find_spell( 417488 ) )
+                               ->set_default_value_from_effect( 1 );
+  buffs.icicles            = make_buff( this, "icicles", find_spell( 205473 ) );
+  buffs.icy_veins          = make_buff<buffs::icy_veins_t>( this );
+  buffs.ray_of_frost       = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
+                               ->set_default_value_from_effect( 1 );
+  buffs.slick_ice          = make_buff( this, "slick_ice", find_spell( 382148 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_chance( talents.slick_ice.ok() );
+  buffs.snowstorm          = make_buff( this, "snowstorm", find_spell( 381522 ) )
+                               ->set_default_value( talents.snowstorm->effectN( 2 ).percent() )
+                               ->set_cooldown( talents.snowstorm->internal_cooldown() )
+                               ->set_chance( talents.snowstorm->proc_chance() );
 
 
   // Shared
