@@ -329,8 +329,6 @@ public:
 
     player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
     player_talent_t inner_demons; // Reworked in 10.1.5: Now only 1 rank and tree location changed
-    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage. Reworked in 10.1.5: Now 2 ranks and tree location has changed
-    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     player_talent_t doom;
     player_talent_t demonic_calling; // Reworked in 10.1.5: Now only 1 rank and tree location changed
     const spell_data_t* demonic_calling_buff;
@@ -345,6 +343,8 @@ public:
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // TODO: REMOVED in 10.1.5
+    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage. Reworked in 10.1.5: Now 2 ranks and tree location has changed
+    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     // Cavitation // Increased critical strike damage for primary Felguard
 
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
