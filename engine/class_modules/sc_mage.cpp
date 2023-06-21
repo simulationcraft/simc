@@ -5551,6 +5551,10 @@ struct freeze_t final : public action_t
     if ( !p->pets.water_elemental || p->pets.water_elemental->is_sleeping() )
       return false;
 
+    // Pet is about to die, don't let it start a new cast.
+    if ( p->pets.water_elemental->expiration && p->pets.water_elemental->expiration->remains() == 0_ms )
+      return false;
+
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
     if ( !p->action.pet_freeze->cooldown->up() || !p->action.pet_freeze->ready() )
       return false;
@@ -5572,26 +5576,30 @@ struct water_jet_t final : public action_t
 
   void execute() override
   {
-    mage_t* mage = debug_cast<mage_t*>( player );
-    mage->pets.water_elemental->interrupt();
-    event_t::cancel( mage->pets.water_elemental->readying );
+    mage_t* p = debug_cast<mage_t*>( player );
+    p->pets.water_elemental->interrupt();
+    event_t::cancel( p->pets.water_elemental->readying );
 
-    mage->action.pet_water_jet->set_target( target );
-    mage->action.pet_water_jet->schedule_execute();
+    p->action.pet_water_jet->set_target( target );
+    p->action.pet_water_jet->schedule_execute();
   }
 
   bool ready() override
   {
-    mage_t* mage = debug_cast<mage_t*>( player );
-    if ( !mage->pets.water_elemental || mage->pets.water_elemental->is_sleeping() )
+    mage_t* p = debug_cast<mage_t*>( player );
+    if ( !p->pets.water_elemental || p->pets.water_elemental->is_sleeping() )
+      return false;
+
+    // Pet is about to die, don't let it start a new cast.
+    if ( p->pets.water_elemental->expiration && p->pets.water_elemental->expiration->remains() == 0_ms )
       return false;
 
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
-    if ( !mage->action.pet_water_jet->cooldown->up() || !mage->action.pet_water_jet->ready() )
+    if ( !p->action.pet_water_jet->cooldown->up() || !p->action.pet_water_jet->ready() )
       return false;
 
     // Prevent recasting if Water Elemental is already executing Water Jet
-    if ( mage->pets.water_elemental->executing == mage->action.pet_water_jet )
+    if ( p->pets.water_elemental->executing == p->action.pet_water_jet )
       return false;
 
     return action_t::ready();
