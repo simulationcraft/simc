@@ -314,7 +314,7 @@ public:
 
     player_talent_t implosion;
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
-    player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn TODO: May now be unchanged mechanically in 10.1.5, but location in tree has moved
+    player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t fel_and_steel; // Reworked in 10.1.5: Increase's primary Felguard's Legion Strike and Felstorm damage
@@ -323,28 +323,28 @@ public:
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
-    player_talent_t inner_demons; // Reworked in 10.1.5: Now only 1 rank and tree location changed
     // Malefic Impact // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
-    player_talent_t demonic_calling; // Reworked in 10.1.5: Now only 1 rank and tree location changed
-    const spell_data_t* demonic_calling_buff;
     // Imp-erator // Increased critical strike chance for Wild Imps
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
-    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage. Reworked in 10.1.5: Now 2 ranks and tree location has changed
-    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
+    player_talent_t inner_demons; // Reworked in 10.1.5: Now only 1 rank and tree location changed
     player_talent_t doom;
+    player_talent_t demonic_calling; // Reworked in 10.1.5: Now only 1 rank and tree location changed
+    const spell_data_t* demonic_calling_buff;
     player_talent_t demonic_meteor; // TODO: REMOVED in 10.1.5
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
     player_talent_t fel_covenant; // TODO: REMOVED in 10.1.5
     const spell_data_t* fel_covenant_buff;
+    player_talent_t umbral_blaze; // Reworked in 10.1.5: Location changed in tree and increased proc chance.
+    const spell_data_t* umbral_blaze_dot; // Reworked in 10.1.5: "retains remaining damage when reapplied"
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // TODO: REMOVED in 10.1.5
-    player_talent_t umbral_blaze; // Reworked in 10.1.5: Location changed in tree and increased proc chance.
-    const spell_data_t* umbral_blaze_dot; // Reworked in 10.1.5: "retains remaining damage when reapplied"
+    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage. Reworked in 10.1.5: Now 2 ranks and tree location has changed
+    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     // Cavitation // Increased critical strike damage for primary Felguard
 
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
