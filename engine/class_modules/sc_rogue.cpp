@@ -3195,6 +3195,7 @@ struct lingering_shadow_t : public rogue_attack_t
   lingering_shadow_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spec.lingering_shadow_attack )
   {
+    base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
   }
 };
 
@@ -4958,14 +4959,7 @@ struct shadow_blades_attack_t : public rogue_attack_t
   shadow_blades_attack_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spec.shadow_blades_attack )
   {
-    may_dodge = may_block = may_parry = false;
-    attack_power_mod.direct = 0;
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-    snapshot_flags = update_flags = 0;
+    base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
   }
 };
 
