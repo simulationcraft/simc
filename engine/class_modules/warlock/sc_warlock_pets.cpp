@@ -1068,6 +1068,26 @@ double felguard_pet_t::composite_melee_speed() const
   return m;
 }
 
+double felguard_pet_t::composite_melee_crit_chance() const
+{
+  double m = warlock_pet_t::composite_melee_crit_chance();
+
+  if ( o()->talents.heavy_handed->ok() )
+    m += o()->talents.heavy_handed->effectN( 1 ).percent();
+
+  return m;
+}
+
+double felguard_pet_t::composite_spell_crit_chance() const
+{
+  double m = warlock_pet_t::composite_spell_crit_chance();
+
+  if ( o()->talents.heavy_handed->ok() )
+    m += o()->talents.heavy_handed->effectN( 1 ).percent();
+
+  return m;
+}
+
 /// Felguard End
 
 /// Grimoire: Felguard Begin

@@ -1276,6 +1276,8 @@ void warlock_t::init_spells_demonology()
 
   talents.fel_might = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Might" ); // Should be ID 387338
 
+  talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
+
   talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
   talents.power_siphon_buff = find_spell( 334581 );
 

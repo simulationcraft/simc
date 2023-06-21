@@ -319,7 +319,7 @@ public:
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t fel_and_steel; // Reworked in 10.1.5: Increase's primary Felguard's Legion Strike and Felstorm damage
     player_talent_t fel_might; // TODO: REMOVED in 10.1.5, replaced by Heavy Handed
-    // Heavy Handed // Primary Felguard crit chance increase
+    player_talent_t heavy_handed; // Primary Felguard crit chance increase (additive)
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
