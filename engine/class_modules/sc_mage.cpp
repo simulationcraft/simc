@@ -5529,10 +5529,13 @@ struct shifting_power_t final : public mage_spell_t
 
 // Proxy Water Elemental Actions ======================================================
 
-struct freeze_t final : public action_t
+struct proxy_action_t : public action_t
 {
-  freeze_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    action_t( ACTION_OTHER, n, p )
+  action_t*& action;
+
+  proxy_action_t( std::string_view n, mage_t* p, std::string_view options_str, action_t*& a ) :
+    action_t( ACTION_OTHER, n, p ),
+    action( a )
   {
     parse_options( options_str );
     trigger_gcd = 0_ms;
@@ -5540,76 +5543,65 @@ struct freeze_t final : public action_t
     dual = usable_while_casting = ignore_false_positive = true;
   }
 
-  void execute() override
-  {
-    mage_t* p = debug_cast<mage_t*>( player );
-    if ( p->pets.water_elemental->is_sleeping() )
-      return;
-
-    p->action.pet_freeze->execute_on_target( target );
-  }
+  mage_t* p() const
+  { return debug_cast<mage_t*>( player ); }
 
   bool ready() override
   {
-    mage_t* p = debug_cast<mage_t*>( player );
-    if ( !p->pets.water_elemental || p->pets.water_elemental->is_sleeping() )
+    if ( !p()->pets.water_elemental || p()->pets.water_elemental->is_sleeping() )
       return false;
 
     // Pet is about to die, don't let it start a new cast.
-    if ( p->pets.water_elemental->expiration && p->pets.water_elemental->expiration->remains() == 0_ms )
+    if ( p()->pets.water_elemental->expiration && p()->pets.water_elemental->expiration->remains() == 0_ms )
       return false;
 
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
-    if ( !p->action.pet_freeze->cooldown->up() || !p->action.pet_freeze->ready() )
+    if ( !action->cooldown->up() || !action->ready() )
       return false;
 
     return action_t::ready();
+  }
+
+  void execute() override = 0;
+};
+
+struct freeze_t final : public proxy_action_t
+{
+  freeze_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    proxy_action_t( n, p, options_str, p->action.pet_freeze )
+  { }
+
+  void execute() override
+  {
+    if ( p()->pets.water_elemental->is_sleeping() )
+      return;
+
+    action->execute_on_target( target );
   }
 };
 
-struct water_jet_t final : public action_t
+struct water_jet_t final : public proxy_action_t
 {
   water_jet_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    action_t( ACTION_OTHER, n, p )
-  {
-    parse_options( options_str );
-    trigger_gcd = 0_ms;
-    may_miss = may_crit = callbacks = false;
-    dual = usable_while_casting = ignore_false_positive = true;
-  }
+    proxy_action_t( n, p, options_str, p->action.pet_water_jet )
+  { }
 
   void execute() override
   {
-    mage_t* p = debug_cast<mage_t*>( player );
-    if ( p->pets.water_elemental->is_sleeping() )
+    if ( p()->pets.water_elemental->is_sleeping() )
       return;
 
-    p->pets.water_elemental->interrupt();
-    event_t::cancel( p->pets.water_elemental->readying );
+    p()->pets.water_elemental->interrupt();
+    event_t::cancel( p()->pets.water_elemental->readying );
 
-    p->action.pet_water_jet->set_target( target );
-    p->action.pet_water_jet->schedule_execute();
+    action->set_target( target );
+    action->schedule_execute();
   }
 
   bool ready() override
   {
-    mage_t* p = debug_cast<mage_t*>( player );
-    if ( !p->pets.water_elemental || p->pets.water_elemental->is_sleeping() )
-      return false;
-
-    // Pet is about to die, don't let it start a new cast.
-    if ( p->pets.water_elemental->expiration && p->pets.water_elemental->expiration->remains() == 0_ms )
-      return false;
-
-    // Make sure the cooldown is actually ready and not just within cooldown tolerance.
-    if ( !p->action.pet_water_jet->cooldown->up() || !p->action.pet_water_jet->ready() )
-      return false;
-
     // Prevent recasting if Water Elemental is already executing Water Jet
-    if ( p->pets.water_elemental->executing == p->action.pet_water_jet )
-      return false;
-
-    return action_t::ready();
+    return proxy_action_t::ready() && p()->pets.water_elemental->executing != action;
   }
 };
 
