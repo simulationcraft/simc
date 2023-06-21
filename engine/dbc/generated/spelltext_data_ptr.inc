@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.50006
-static const std::array<spelltext_data_t, 20080> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20081> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20080,6 +20080,7 @@ static const std::array<spelltext_data_t, 20080> __ptr_spelltext_data { {
   { 418361, "$@spelldesc418359", "Damage increased by $w1%.", 0 },
   { 418527, "Gaze into the mirror's depths, inviting a version of your future self to fight alongside you for $d, casting spells based on your role. In addition, you grant yourself $s2 of your highest secondary stat.", "Fighting alongside yourself, granting $w1 $?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat].", 0 },
   { 418733, "Ray of Frost deals $s1% of its damage to ${$384685i} nearby enemies.", 0, 0 },
+  { 418735, "$@spelldesc418733", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.1.5.50006
