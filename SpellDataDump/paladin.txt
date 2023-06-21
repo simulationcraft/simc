@@ -9322,13 +9322,14 @@ Effects          :
 Description      : $@spelldesc317866
 
 Name             : Empyrean Power (id=326732) [Spell Family (10), Passive] 
+Hotfixed         : Proc Flags 1 (16 -> 20)
 Talent Entry     : Retribution [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
+Proc Flags       : ..x.x... ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
