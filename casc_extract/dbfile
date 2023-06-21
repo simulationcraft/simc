@@ -1081,3 +1081,7 @@
 5202058, DBFilesClient\QuestLabel.db2
 5205183, DBFilesClient\CollectableSourceQuest.db2
 5205600, DBFilesClient\CollectableSourceQuestSparse.db2
+5211412, DBFilesClient\ConditionalChrModel.db2
+5226140, DBFilesClient\ArenaTrackedItem.db2
+5228217, DBFilesClient\JournalInstanceQueueLoc.db2
+5228481, DBFilesClient\JournalInstanceEntrance.db2
