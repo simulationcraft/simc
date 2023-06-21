@@ -1301,14 +1301,14 @@ void warlock_t::init_spells_demonology()
   talents.fel_covenant = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Covenant" ); // Should be ID 387432
   talents.fel_covenant_buff = find_spell( 387437 );
 
+  talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
+  talents.umbral_blaze_dot = find_spell( 405802 );
+
   talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
 
   talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
 
   talents.ripped_through_the_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Ripped Through the Portal" ); // Should be ID 387485
-
-  talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
-  talents.umbral_blaze_dot = find_spell( 405802 );
 
   talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
   talents.nether_portal_buff = find_spell( 267218 );

@@ -340,11 +340,11 @@ public:
 
     player_talent_t fel_covenant; // TODO: REMOVED in 10.1.5
     const spell_data_t* fel_covenant_buff;
+    player_talent_t umbral_blaze; // Reworked in 10.1.5: Location changed in tree and increased proc chance.
+    const spell_data_t* umbral_blaze_dot; // Reworked in 10.1.5: "retains remaining damage when reapplied"
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // TODO: REMOVED in 10.1.5
-    player_talent_t umbral_blaze; // Reworked in 10.1.5: Location changed in tree and increased proc chance.
-    const spell_data_t* umbral_blaze_dot; // Reworked in 10.1.5: "retains remaining damage when reapplied"
     // Cavitation // Increased critical strike damage for primary Felguard
 
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
