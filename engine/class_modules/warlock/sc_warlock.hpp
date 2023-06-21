@@ -345,7 +345,7 @@ public:
     player_talent_t ripped_through_the_portal; // TODO: REMOVED in 10.1.5
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage. Reworked in 10.1.5: Now 2 ranks and tree location has changed
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
-    // Cavitation // Increased critical strike damage for primary Felguard
+    player_talent_t cavitation; // Increased critical strike damage for primary Felguard. TOCHECK: As of 2023-06-21 PTR, this is actually granting double the stated value
 
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
     const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
