@@ -236,6 +236,7 @@ public:
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* shattered_ice;
+    action_t* splintering_ray;
     action_t* touch_of_the_magi_explosion;
 
     struct icicles_t
@@ -5140,6 +5141,40 @@ struct pyroblast_t final : public hot_streak_spell_t
 
 // Ray of Frost Spell =======================================================
 
+struct splintering_ray_t final : public mage_spell_t
+{
+  splintering_ray_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 418735 ) )
+  {
+    background = true;
+    may_miss = may_crit = callbacks = false;
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  void init() override
+  {
+    mage_spell_t::init();
+
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    // Ignore Positive Damage Taken Modifiers (321)
+    return std::min( mage_spell_t::composite_target_multiplier( target ), 1.0 );
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    mage_spell_t::available_targets( tl );
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
 struct ray_of_frost_t final : public frost_mage_spell_t
 {
   ray_of_frost_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5167,6 +5202,9 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     // TODO: Now happens at 2.5 and 5 through a hidden buff (spell_id 269748).
     if ( d->current_tick == 3 || d->current_tick == 5 )
       p()->trigger_fof( 1.0, proc_fof );
+
+    if ( p()->action.splintering_ray )
+      p()->action.splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
   }
 
   void last_tick( dot_t* d ) override
@@ -6036,6 +6074,9 @@ void mage_t::create_actions()
 
   if ( talents.harmonic_echo.ok() )
     action.harmonic_echo = get_action<harmonic_echo_t>( "harmonic_echo", this );
+
+  if ( talents.splintering_ray.ok() )
+    action.splintering_ray = get_action<splintering_ray_t>( "splintering_ray", this );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
