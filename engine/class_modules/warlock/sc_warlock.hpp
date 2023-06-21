@@ -314,7 +314,7 @@ public:
 
     player_talent_t implosion;
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
-    player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn TODO: May now be unchanged mechanically in 10.1.5, but location in tree has moved
+    player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t fel_and_steel; // Reworked in 10.1.5: Increase's primary Felguard's Legion Strike and Felstorm damage
