@@ -4960,6 +4960,7 @@ struct shadow_blades_attack_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.shadow_blades_attack )
   {
     base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
+    attack_power_mod.direct = 0; // Base 0.1 mod overwritten by proc damage
   }
 };
 
