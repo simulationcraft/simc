@@ -303,7 +303,7 @@ public:
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
 
-    player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast TOCHECK: May now be unchanged on 10.1.5 PTR but was previously scrapped
+    player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     player_talent_t summon_vilefiend;
     player_talent_t soul_strike;
     player_talent_t bilescourge_bombers; // Reworked in 10.1.5: Soul Shard cost reduced to 0
