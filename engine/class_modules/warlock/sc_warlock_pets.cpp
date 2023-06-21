@@ -1088,6 +1088,16 @@ double felguard_pet_t::composite_spell_crit_chance() const
   return m;
 }
 
+double felguard_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s );
+
+  if ( o()->talents.cavitation->ok() )
+    m *= 1.0 + o()->talents.cavitation->effectN( 1 ).percent();
+
+  return m;
+}
+
 /// Felguard End
 
 /// Grimoire: Felguard Begin

@@ -388,6 +388,7 @@ struct felguard_pet_t : public warlock_pet_t
   double composite_melee_speed() const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
 
   void queue_ds_felstorm();
 };
