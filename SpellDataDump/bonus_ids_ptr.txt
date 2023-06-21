@@ -4726,7 +4726,7 @@ bonus_id={ 9366 }, base_ilevel={ 411 }, desc={ Shadowflame Crafted }
 bonus_id={ 9367 }, base_ilevel={ 411 }
 bonus_id={ 9368 }, ilevel_adjust={ 7 }
 bonus_id={ 9369 }, ilevel_adjust={ 13 }
-bonus_id={ 9370 }, ilevel={ 1 @plvl 1 - 167 @plvl 70 }
+bonus_id={ 9370 }, ilevel={ 1 @plvl 1 - 174 @plvl 70 }
 bonus_id={ 9371 }, base_ilevel={ 382 }, quality={ rare }
 bonus_id={ 9372 }, base_ilevel={ 395 }, quality={ epic }
 bonus_id={ 9373 }, base_ilevel={ 424 }
@@ -4787,3 +4787,4 @@ bonus_id={ 9474 }, ilevel_adjust={ -408 }
 bonus_id={ 9475 }, ilevel_adjust={ -409 }
 bonus_id={ 9476 }, ilevel_adjust={ -410 }
 bonus_id={ 9492 }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
+bonus_id={ 9520 }, ilevel={ 206 @plvl 58 - 316 @plvl 69 }
