@@ -5542,7 +5542,11 @@ struct freeze_t final : public action_t
 
   void execute() override
   {
-    debug_cast<mage_t*>( player )->action.pet_freeze->execute_on_target( target );
+    mage_t* p = debug_cast<mage_t*>( player );
+    if ( p->pets.water_elemental->is_sleeping() )
+      return;
+
+    p->action.pet_freeze->execute_on_target( target );
   }
 
   bool ready() override
@@ -5577,6 +5581,9 @@ struct water_jet_t final : public action_t
   void execute() override
   {
     mage_t* p = debug_cast<mage_t*>( player );
+    if ( p->pets.water_elemental->is_sleeping() )
+      return;
+
     p->pets.water_elemental->interrupt();
     event_t::cancel( p->pets.water_elemental->readying );
 
