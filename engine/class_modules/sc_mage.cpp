@@ -308,6 +308,7 @@ public:
     buff_t* chain_reaction;
     buff_t* cold_front;
     buff_t* cold_front_ready;
+    buff_t* cryopathy;
     buff_t* fingers_of_frost;
     buff_t* freezing_rain;
     buff_t* freezing_winds;
@@ -4502,7 +4503,10 @@ struct ice_lance_t final : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     if ( p()->state.fingers_of_frost_active )
+    {
+      p()->buffs.cryopathy->trigger();
       p()->buffs.touch_of_ice->trigger();
+    }
 
     p()->buffs.fingers_of_frost->decrement();
 
@@ -4623,6 +4627,7 @@ struct icy_veins_t final : public frost_mage_spell_t
     p()->buffs.frigid_empowerment->expire();
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
+    p()->buffs.cryopathy->trigger( p()->buffs.cryopathy->max_stack() );
 
     if ( p()->pets.water_elemental->is_sleeping() )
       p()->pets.water_elemental->summon( p()->buffs.icy_veins->buff_duration() );
@@ -5167,7 +5172,9 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   void last_tick( dot_t* d ) override
   {
     frost_mage_spell_t::last_tick( d );
+
     p()->buffs.ray_of_frost->expire();
+    p()->buffs.cryopathy->expire();
   }
 
   double action_multiplier() const override
@@ -5175,6 +5182,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     double am = frost_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.ray_of_frost->check_stack_value();
+    am *= 1.0 + p()->buffs.cryopathy->check_stack_value();
 
     return am;
   }
@@ -6565,6 +6573,9 @@ void mage_t::create_buffs()
   buffs.cold_front         = make_buff( this, "cold_front", find_spell( 382113 ) )
                                ->set_chance( talents.cold_front.ok() );
   buffs.cold_front_ready   = make_buff( this, "cold_front_ready", find_spell( 382114 ) );
+  buffs.cryopathy          = make_buff( this, "cryopathy", find_spell( 417492 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_chance( talents.cryopathy.ok() );
   buffs.fingers_of_frost   = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.freezing_rain      = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                                ->set_default_value_from_effect( 2 )
