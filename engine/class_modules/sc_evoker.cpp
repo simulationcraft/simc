@@ -3816,7 +3816,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
 
-  if ( evoker->naszuro )
+  if ( evoker->naszuro && !target->is_enemy() && !target->is_pet() )
   {
     buffs.unbound_surge = make_buff<stat_buff_t>( target, "unbound_surge_" + evoker->name_str,
                                                   evoker->find_spell( 403275 ), evoker->naszuro->item );
@@ -3895,150 +3895,155 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       }
     }
 
-    buffs.shifting_sands =
-        make_buff<e_buff_t>( *this, "shifting_sands_" + evoker->name_str, evoker->find_spell( 413984 ) )
-            ->set_default_value( evoker->cache.mastery_value() )
-            ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-            ->set_period( timespan_t::zero() );
+    if ( !target->is_enemy() && !target->is_pet() )
+    {
+      buffs.shifting_sands =
+          make_buff<e_buff_t>( *this, "shifting_sands_" + evoker->name_str, evoker->find_spell( 413984 ) )
+              ->set_default_value( evoker->cache.mastery_value() )
+              ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+              ->set_period( timespan_t::zero() );
 
-    buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
-                                                                     evoker->find_spell( 395152 ) )
-                           ->set_stat_from_effect( 2, 0 );
+      buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
+                                                                       evoker->find_spell( 395152 ) )
+                             ->set_stat_from_effect( 2, 0 );
 
-    buffs.ebon_might->set_cooldown( 0_ms )
-        ->set_period( timespan_t::zero() )
-        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-        ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
+      buffs.ebon_might->set_cooldown( 0_ms )
+          ->set_period( timespan_t::zero() )
+          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+          ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
+            if ( new_ )
+            {
+              evoker->allies_with_my_ebon.push_back( target );
+              if ( auto e = dynamic_cast<evoker_t*>( target ) )
+              {
+                e->allied_ebons_on_me.push_back( b );
+              }
+            }
+            else
+            {
+              evoker->allies_with_my_ebon.find_and_erase_unordered( target );
+              if ( auto e = dynamic_cast<evoker_t*>( target ) )
+              {
+                auto vec = e->allied_ebons_on_me;
+                vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
+              }
+            }
+            for ( auto& c : evoker->allied_ebon_callbacks )
+            {
+              c();
+            }
+          } );
+
+      buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
+                             ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                             ->set_chance( 1.0 );
+
+      if ( evoker->talent.fate_mirror.ok() )
+      {
+        action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
+        auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
+        stats->school         = fate_mirror->get_school();
+
+        fate_mirror->stats->add_child( stats );
+
+        auto fate_mirror_effect      = new special_effect_t( target );
+        fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
+        fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
+        fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
+        target->special_effects.push_back( fate_mirror_effect );
+
+        auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror, stats );
+
+        buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
           if ( new_ )
           {
-            evoker->allies_with_my_ebon.push_back( target );
-            if ( auto e = dynamic_cast<evoker_t*>( target ) )
-            {
-              e->allied_ebons_on_me.push_back( b );
-            }
+            fate_mirror_cb->activate();
+            evoker->allies_with_my_prescience.push_back( target );
           }
           else
           {
-            evoker->allies_with_my_ebon.find_and_erase_unordered( target );
-            if ( auto e = dynamic_cast<evoker_t*>( target ) )
-            {
-              auto vec = e->allied_ebons_on_me;
-              vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
-            }
-          }
-          for ( auto& c : evoker->allied_ebon_callbacks )
-          {
-            c();
+            fate_mirror_cb->deactivate();
+            evoker->allies_with_my_prescience.find_and_erase_unordered( target );
           }
         } );
+      }
+      else
+      {
+        buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
+          if ( new_ )
+          {
+            evoker->allies_with_my_prescience.push_back( target );
+          }
+          else
+          {
+            evoker->allies_with_my_prescience.find_and_erase_unordered( target );
+          }
+        } );
+      }
 
-    buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
-                           ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                           ->set_chance( 1.0 );
+      if ( evoker->talent.blistering_scales )
+      {
+        action_t* blistering_scales =
+            evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );
+        auto stats    = evoker->get_stats( "blistering_scales_" + target->name_str, blistering_scales );
+        stats->school = blistering_scales->get_school();
 
-    if ( evoker->talent.fate_mirror.ok() && !target->is_enemy() && !target->is_pet() )
-    {
-      action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
-      auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
-      stats->school         = fate_mirror->get_school();
+        blistering_scales->stats->add_child( stats );
 
-      fate_mirror->stats->add_child( stats );
+        auto blistering_scales_effect          = new special_effect_t( target );
+        blistering_scales_effect->name_str     = "blistering_scales_" + evoker->name_str;
+        blistering_scales_effect->type         = SPECIAL_EFFECT_EQUIP;
+        blistering_scales_effect->spell_id     = evoker->talent.blistering_scales->id();
+        blistering_scales_effect->proc_flags2_ = PF2_ALL_HIT;
+        blistering_scales_effect->cooldown_    = 2_s;  // Tested 27 / 05 / 2023
+        target->special_effects.push_back( blistering_scales_effect );
 
-      auto fate_mirror_effect      = new special_effect_t( target );
-      fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
-      fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
-      fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
-      target->special_effects.push_back( fate_mirror_effect );
+        auto blistering_scales_cb =
+            new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker, blistering_scales, stats );
 
-      auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror, stats );
+        buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
+                                      ->apply_affecting_aura( evoker->talent.regenerative_chitin )
+                                      ->set_cooldown( 0_s )
+                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                      ->set_stack_change_callback( [ blistering_scales_cb ]( buff_t*, int, int new_ ) {
+                                        if ( new_ )
+                                          blistering_scales_cb->activate();
+                                        else if ( !new_ )
+                                          blistering_scales_cb->deactivate();
+                                      } );
+      }
 
-      buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-        {
-          fate_mirror_cb->activate();
-          evoker->allies_with_my_prescience.push_back( target );
-        }
-        else
-        {
-          fate_mirror_cb->deactivate();
-          evoker->allies_with_my_prescience.find_and_erase_unordered( target );
-        }
-      } );
-    }
-    else
-    {
-      buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
-        if ( new_ )
-        {
-          evoker->allies_with_my_prescience.push_back( target );
-        }
-        else
-        {
-          evoker->allies_with_my_prescience.find_and_erase_unordered( target );
-        }
-      } );
-    }
 
-    if ( evoker->talent.blistering_scales )
-    {
-      action_t* blistering_scales =
-          evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );
-      auto stats    = evoker->get_stats( "blistering_scales_" + target->name_str, blistering_scales );
-      stats->school = blistering_scales->get_school();
+      if ( evoker->talent.infernos_blessing.ok() )
+      {
+        buffs.infernos_blessing =
+            make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
 
-      blistering_scales->stats->add_child( stats );
+        action_t* infernos_blessing =
+            evoker->get_secondary_action<spells::fire_breath_t::infernos_blessing_t>( "infernos_blessing" );
 
-      auto blistering_scales_effect          = new special_effect_t( target );
-      blistering_scales_effect->name_str     = "blistering_scales_" + evoker->name_str;
-      blistering_scales_effect->type         = SPECIAL_EFFECT_EQUIP;
-      blistering_scales_effect->spell_id     = evoker->talent.blistering_scales->id();
-      blistering_scales_effect->proc_flags2_ = PF2_ALL_HIT;
-      blistering_scales_effect->cooldown_    = 2_s;  // Tested 27 / 05 / 2023
-      target->special_effects.push_back( blistering_scales_effect );
+        auto stats    = evoker->get_stats( "infernos_blessing_" + target->name_str, infernos_blessing );
+        stats->school = infernos_blessing->get_school();
 
-      auto blistering_scales_cb =
-          new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker, blistering_scales, stats );
+        infernos_blessing->stats->add_child( stats );
 
-      buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
-                                    ->apply_affecting_aura( evoker->talent.regenerative_chitin )
-                                    ->set_cooldown( 0_s )
-                                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                                    ->set_stack_change_callback( [ blistering_scales_cb ]( buff_t*, int, int new_ ) {
-                                      if ( new_ )
-                                        blistering_scales_cb->activate();
-                                      else if ( !new_ )
-                                        blistering_scales_cb->deactivate();
-                                    } );
-    }
+        auto infernos_blessing_effect      = new special_effect_t( target );
+        infernos_blessing_effect->name_str = "infernos_blessing_" + target->name_str;
+        infernos_blessing_effect->type     = SPECIAL_EFFECT_EQUIP;
+        infernos_blessing_effect->spell_id = evoker->talent.infernos_blessing_buff->id();
+        target->special_effects.push_back( infernos_blessing_effect );
 
-    buffs.infernos_blessing = make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
+        auto infernos_blessing_cb =
+            new buffs::infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker, infernos_blessing, stats );
 
-    if ( evoker->talent.infernos_blessing.ok() )
-    {
-      action_t* infernos_blessing =
-          evoker->get_secondary_action<spells::fire_breath_t::infernos_blessing_t>( "infernos_blessing" );
-
-      auto stats    = evoker->get_stats( "infernos_blessing_" + target->name_str, infernos_blessing );
-      stats->school = infernos_blessing->get_school();
-
-      infernos_blessing->stats->add_child( stats );
-
-      auto infernos_blessing_effect      = new special_effect_t( target );
-      infernos_blessing_effect->name_str = "infernos_blessing_" + target->name_str;
-      infernos_blessing_effect->type     = SPECIAL_EFFECT_EQUIP;
-      infernos_blessing_effect->spell_id = evoker->talent.infernos_blessing_buff->id();
-      target->special_effects.push_back( infernos_blessing_effect );
-
-      auto infernos_blessing_cb =
-          new buffs::infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker, infernos_blessing, stats );
-
-      buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-          infernos_blessing_cb->activate();
-        else
-          infernos_blessing_cb->deactivate();
-      } );
+        buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
+          if ( new_ )
+            infernos_blessing_cb->activate();
+          else
+            infernos_blessing_cb->deactivate();
+        } );
+      }
     }
   }
 }
