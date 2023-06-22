@@ -3695,15 +3695,9 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
           return false;
 
         if ( this->p() == s->action->player )
-        {
-          if ( this->p()->buff.ebon_might_self_buff->check() )
-            return true;
-          return false;
-        }
+          return static_cast<bool>( this->p()->buff.ebon_might_self_buff->check() );
 
-        if ( this->p()->get_target_data( s->action->player->get_owner_or_self() )->buffs.ebon_might->check() )
-          return true;
-        return false;
+        return static_cast<bool>( this->p()->get_target_data( s->action->player->get_owner_or_self() )->buffs.ebon_might->check() );
       };
 
       trig = std::make_unique<dbc_proc_callback_t::trigger_fn_t>( lambda );
