@@ -114,6 +114,19 @@ struct hand_of_guldan_t : public demonology_spell_t
       if ( p()->buffs.blazing_meteor->check() )
         m *= 1.0 + p()->buffs.blazing_meteor->check_value();
 
+      if ( p()->talents.malefic_impact->ok() )
+        m *= 1.0 + p()->talents.malefic_impact->effectN( 1 ).percent();
+
+      return m;
+    }
+
+    double composite_crit_chance() const override
+    {
+      double m = demonology_spell_t::composite_crit_chance();
+
+      if ( p()->talents.malefic_impact->ok() )
+        m += p()->talents.malefic_impact->effectN( 2 ).percent(); // TOCHECK: As of 2023-06-21 PTR, this portion of the talent seems to not be applying in-game
+
       return m;
     }
 
@@ -1285,6 +1298,8 @@ void warlock_t::init_spells_demonology()
 
   talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
   talents.power_siphon_buff = find_spell( 334581 );
+
+  talents.malefic_impact = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Impact" ); // Should be ID 416341
 
   talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
 
