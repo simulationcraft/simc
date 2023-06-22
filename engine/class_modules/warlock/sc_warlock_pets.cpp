@@ -1273,6 +1273,16 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     return c;
   }
 
+  double composite_crit_chance() const override
+  {
+    double m = warlock_pet_spell_t::composite_crit_chance();
+
+    if ( p()->o()->talents.imperator->ok() )
+      m += p()->o()->talents.imperator->effectN( 1 ).percent();
+
+    return m;
+  }
+
   void execute() override
   {
     warlock_pet_spell_t::execute();
