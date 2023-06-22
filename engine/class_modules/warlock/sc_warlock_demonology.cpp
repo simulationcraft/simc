@@ -272,7 +272,12 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
     {
-      p()->cooldowns.grimoire_felguard->adjust( timespan_t::from_seconds( -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).base_value() ) );
+      auto reduction = -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).time_value();
+
+      if ( !p()->min_version_check( VERSION_10_1_5 ) )
+        reduction *= 1000;
+
+      p()->cooldowns.grimoire_felguard->adjust( reduction );
     }
 
     if ( p()->talents.power_siphon->ok() )
