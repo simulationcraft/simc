@@ -324,7 +324,7 @@ public:
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
     // Malefic Impact // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
-    // Imp-erator // Increased critical strike chance for Wild Imps
+    player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
