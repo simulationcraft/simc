@@ -302,7 +302,7 @@ Description      : Corrupts the targeted ground, causing ${$341340m1*11} Shadow 
 
 While you remain within the area, your ][]$?s223829&!c2[Necrotic Strike and ][]$?c1[ Heart Strike will hit up to $188290m3 additional targets.]?s207311&!c2[ Clawing Shadows will hit up to ${$55090s4-1} enemies near the target.]?!c2[ Scourge Strike will hit up to ${$55090s4-1} enemies near the target.][
 
-While you remain within the area, your Obliterate will hit up to $315442s2 additional target.]
+While you remain within the area, your Obliterate will hit up to $316916M2 additional $Ltarget:targets;.]
 
 Name             : Death Strike (id=45470) [Spell Family (15)] 
 Class            : Death Knight
@@ -3467,7 +3467,7 @@ Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
 
 Name             : Death Knight (id=137005) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight, Monk
+Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Affecting spells : Iron Heart (391395 effects: #1, #2), Bloodshot (391398 effect#1)
@@ -10880,7 +10880,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Death and Decay (188290)
                    Family Flags: 118
-Description      : $?a137008[Heart Strike hits up to $s3]?a137006[Obliterate hits up to $s2]?s207311[Clawing Shadows][Scourge Strike]$?a137007[ hits up to ${$55090s4-1}][] additional $?a137006[enemy][enemies] while you remain in Death and Decay.
+Description      : $?a137008[Heart Strike hits up to $s3]?a137006[Obliterate hits up to $s2]?s207311[Clawing Shadows][Scourge Strike]$?a137007[ hits up to ${$55090s4-1}][] additional enemies while you remain in Death and Decay.
 
 Name             : Unholy Command (id=316941) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=6, col=3, max_rank=2, req_points=8]
