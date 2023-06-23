@@ -4290,7 +4290,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
     triggers.overflowing_energy = true;
-    affected_by.icicles_st = true;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
@@ -4318,9 +4317,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
     icicle_coef *=       p()->spec.icicles->effectN( 2 ).base_value();
     icicle_coef *= 1.0 + p()->talents.splitting_ice->effectN( 3 ).percent();
 
-    // The damage from Icicles is added as multiplier that corresponds to
-    // 1 + Icicle damage / base damage, for some reason.
-    am *= 1.0 + icicle_coef / spell_power_mod.direct;
+    // Since the Icicle portion doesn't double dip mastery, the mastery multiplier has to be applied manually.
+    am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 3 ).mastery_value()
+              + icicle_coef / spell_power_mod.direct;
 
     return am;
   }
