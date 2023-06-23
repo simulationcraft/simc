@@ -961,6 +961,9 @@ struct empowered_release_t : public empowered_base_t<BASE>
     {
       background   = true;
       dot_duration = base_tick_time = 0_ms;
+      
+      if ( aoe == 0 )
+        aoe = 1;
     }
 
     void impact( action_state_t* s ) override
