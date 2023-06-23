@@ -1848,7 +1848,7 @@ namespace monk
 
             eye_of_the_tiger_heal->execute();
           }
-        }
+        } //
       };
 
       struct rising_sun_kick_press_the_advantage_t : public monk_melee_attack_t
@@ -3012,7 +3012,7 @@ namespace monk
 
         virtual void execute() override
         {
-          p()->buff.press_the_advantage->trigger();
+          // p()->buff.press_the_advantage->trigger();
 
           monk_spell_t::execute();
         }
@@ -3086,6 +3086,19 @@ namespace monk
         {
           monk_melee_attack_t::impact( s );
 
+          p()->sim->print_debug("{} test melee", name());
+          // if ( p()->talent.brewmaster.press_the_advantage->ok()/* && name() == "melee_main_hand"*/ )
+          if ( p()->talent.brewmaster.press_the_advantage->ok() && !strcmp(name(), "melee_main_hand"))
+          {
+            p()->sim->print_debug("{} test melee 2", name());
+            // Reduce Brew cooldown by 0.5 seconds
+            brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 2 ).base_value() / 1000 );
+
+            // Trigger the Press the Advantage damage proc
+            p()->passive_actions.press_the_advantage->target = s->target;
+            p()->passive_actions.press_the_advantage->schedule_execute();
+          }
+
           if ( result_is_hit( s->result ) )
           {
 
@@ -3093,16 +3106,6 @@ namespace monk
             {
               p()->passive_actions.thunderfist->target = s->target;
               p()->passive_actions.thunderfist->schedule_execute();
-            }
-
-            if ( p()->talent.brewmaster.press_the_advantage->ok() )
-            {
-              // Reduce Brew cooldown by 0.5 seconds
-              brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 2 ).base_value() / 1000 );
-
-              // Trigger the Press the Advantage damage proc
-              p()->passive_actions.press_the_advantage->target = s->target;
-              p()->passive_actions.press_the_advantage->schedule_execute();
             }
           }
         }
@@ -4906,6 +4909,14 @@ namespace monk
           school = SCHOOL_NATURE;
 
           spell_power_mod.tick = 2 * data().effectN( 2 ).base_value() / 100; // Saved as 45, is really 90
+        }
+
+        double action_multiplier() const override
+        {
+          double am = monk_spell_t::action_multiplier();
+
+          if ( p()->talent.brewmaster.press_the_advantage->ok() )
+            am *= 1 + p()->talent.brewmaster.press_the_advantage->effectN( 5 ).percent();
         }
 
         double composite_spell_power() const override
