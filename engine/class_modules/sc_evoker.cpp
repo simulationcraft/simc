@@ -3931,7 +3931,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
             }
           } );
 
-      buffs.prescience = make_buff<e_buff_t>( *this, "prescience_" + evoker->name_str, evoker->talent.prescience_buff )
+      buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
                              ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
                              ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                              ->set_chance( 1.0 );
