@@ -136,7 +136,7 @@ wrists=lifebound_bindings,id=193419,bonus_id=8780/8793/8797/8960,ilevel=447,gem_
 hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=7187,ilevel=447
 waist=oblivions_immortal_coil,id=204399,bonus_id=4800/1498,ilevel=450,gem_id=192961
 legs=lifebound_trousers,id=193408,bonus_id=8793,ilevel=447,enchant=frozen_spellthread_3
-feet=slimy_expulsion_boots,id=193451,bonus_id=8793,ilevel=447
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/1537
 finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=loop_of_pulsing_veins,id=159463,bonus_id=7359/6646/1808,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
 trinket1=neltharions_call_to_suffering,id=204211,bonus_id=1498
@@ -147,10 +147,10 @@ main_hand=erethos_the_empty_promise,id=202565,bonus_id=4800/1498,ilevel=450,ench
 # gear_ilvl=448.73
 # gear_stamina=22473
 # gear_intellect=8399
-# gear_crit_rating=1604
-# gear_haste_rating=4893
-# gear_mastery_rating=5525
-# gear_versatility_rating=1331
+# gear_crit_rating=1838
+# gear_haste_rating=5267
+# gear_mastery_rating=5151
+# gear_versatility_rating=1097
 # gear_armor=3995
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
