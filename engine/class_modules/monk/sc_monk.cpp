@@ -4917,6 +4917,8 @@ namespace monk
 
           if ( p()->talent.brewmaster.press_the_advantage->ok() )
             am *= 1 + p()->talent.brewmaster.press_the_advantage->effectN( 5 ).percent();
+
+          return am;
         }
 
         double composite_spell_power() const override
