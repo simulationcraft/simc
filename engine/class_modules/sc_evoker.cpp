@@ -3844,11 +3844,11 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       {
         buffs.unbound_surge->set_tick_callback( [ _target, evoker ]( buff_t* b, int s, timespan_t t ) {
           {
-            if ( t > 0_s && !_target->buff.dragonrage->check() &&
+            if ( b->remains() > 0_s && !_target->buff.dragonrage->check() &&
                  _target->rng().roll( evoker->option.naszuro_bounce_chance ) )
               make_event( _target->sim, [ _target, evoker, b, t ] {
+                evoker->bounce_naszuro( _target, b->remains() );
                 b->expire();
-                evoker->bounce_naszuro( _target, t );
               } );
           }
         } );
@@ -3857,10 +3857,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       {
         buffs.unbound_surge->set_tick_callback( [ target, evoker ]( buff_t* b, int s, timespan_t t ) {
           {
-            if ( t > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
+            if ( b->remains() > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
               make_event( target->sim, [ target, evoker, b, t ] {
+                evoker->bounce_naszuro( target, b->remains() );
                 b->expire();
-                evoker->bounce_naszuro( target, t );
               } );
           }
         } );
