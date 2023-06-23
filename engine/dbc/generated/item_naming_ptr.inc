@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.1.5.50006
-static const std::array<item_name_description_t, 748> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.1.5.50130
+static const std::array<item_name_description_t, 752> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -748,5 +748,9 @@ static const std::array<item_name_description_t, 748> __ptr_item_name_descriptio
   { 14021, "Demonbane"                                   },
   { 14022, "Timestrike"                                  },
   { 14023, "Spirit"                                      },
+  { 14025, "Time Rifts"                                  },
+  { 14026, "Secrets of Azeroth"                          },
+  { 14027, "Divergent"                                   },
+  { 14028, "Time Rifts and Dawn of the Infinite"         },
 } };
 

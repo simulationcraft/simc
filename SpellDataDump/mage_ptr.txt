@@ -160,7 +160,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=91)       : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.19461 | PvP Coefficient: 1.12000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.13490 | PvP Coefficient: 1.12000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -356,7 +356,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), Periodic Can Crit (265), Aura Points On Client (268), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=126904)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.82340 | PvP Coefficient: 1.12000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.74106 | PvP Coefficient: 1.12000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 8 yards | Mechanic: Snare | Target: AOE enemy (instant) (16)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.$?a205037[
@@ -415,7 +415,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882)      : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.27111 | PvP Coefficient: 1.45000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.24400 | PvP Coefficient: 1.45000 | Target: Enemy (6)
 Description      : Scorches an enemy for $s1 Fire damage. Castable while moving.$?a383604[
 
 Scorch critical strikes increase your movement speed by $236060s1% for $236060d.][]
@@ -550,7 +550,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.87542 | PvP Coefficient: 1.12000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.65037 | PvP Coefficient: 1.12000 | Target: Enemy (6)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[
 
 Pyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]
@@ -733,7 +733,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Can Proc From Procs (122), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=5692)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.64300 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60442 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=127998)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=290011)   : Apply Aura (6) | Dummy (4)
@@ -1335,7 +1335,7 @@ Effects          :
 #1 (id=36375)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324006)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.32076 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.35930 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -1592,7 +1592,7 @@ Effects          :
                    Affected Spells: Ice Lance (30455), Icicle (148022), Ice Lance (228598)
                    Family Flags: 17, 115
 #4 (id=1089142)  : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000
 Description      : Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.
 
 Your Ebonbolt and Glacial Spike also hit a second nearby target for $s4% of its damage.
@@ -2030,7 +2030,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
                  : Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Show Mechanic as Combat Text (213), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=85629)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14470 | PvP Coefficient: 1.20000 | Radius: 8.5 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.12734 | PvP Coefficient: 1.20000 | Radius: 8.5 yards | Target: AOE enemy (instant) (16)
 #2 (id=818474)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc84714
@@ -2341,7 +2341,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=120062)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.33460 | PvP Coefficient: 0.92000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.17445 | PvP Coefficient: 0.92000 | Target: Enemy (6)
 Description      : Blasts the enemy for $s1 Fire damage. 
 
 |cFFFFFFFFFire:|r Castable while casting other spells. Always deals a critical strike.
@@ -2700,6 +2700,8 @@ Tooltip          : Increases spell damage by $w1%.
 
 Name             : Critical Mass (id=117216) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=5, col=2, max_rank=2, req_points=8]
+                 : Effect#1 [op=set, values=(7, 15)]
+                 : Effect#2 [op=set, values=(5, 10)]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -2914,7 +2916,7 @@ Effects          :
 Description      : Summons a Ring of Frost at the target location. Enemies entering the ring will become frozen for $82691d. Lasts $d. $s2 yd radius. Limit 10 targets.
 
 Name             : Mage (id=137018) [Spell Family (3), Passive, Hidden] 
-Class            : Mage, Monk
+Class            : Mage
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3243,7 +3245,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=212872)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.58440 | PvP Coefficient: 1.08000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.51427 | PvP Coefficient: 1.08000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 
@@ -3858,7 +3860,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Show Mechanic as Combat Text (213), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=278848)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.11616 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190356
 
 Name             : Arcane Charge (id=190427) [Spell Family (3), Passive] 
@@ -4298,7 +4300,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=299766)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Fireball (133)
                    Family Flags: 0
 #2 (id=299771)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -4410,7 +4412,7 @@ Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage (3): frost every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.22000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.95400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=718208)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #4 (id=740366)   : Dummy (3)
@@ -4524,7 +4526,7 @@ Effects          :
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
 #2 (id=1090214)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.85000 | Target: Self (1)
 Description      : Causes your next $n Arcane $LBlast:Blasts; to be instant cast$?a134735[ and deal $s2% of normal damage][].
 Tooltip          : Arcane Blast is instant cast.
 
@@ -4751,7 +4753,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), PvP Enabling (96), Treat As Periodic (121), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=303428)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05137 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.04623 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Icicles (id=205473) [Spell Family (3)] 
@@ -5190,7 +5192,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : Not Shapeshifted (16), Aura Is Debuff (26), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=324014)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14580 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16330 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324015)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc44457
@@ -5381,7 +5383,7 @@ Effects          :
 #1 (id=343734)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=343735)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.41834 | PvP Coefficient: 1.08000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.36814 | PvP Coefficient: 1.08000 | Target: Enemy (6)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $w1%.
 
@@ -5431,7 +5433,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Do Not Chain To Crowd-Controlled Targets (200), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344284)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.79700 | PvP Coefficient: 2.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70140 | PvP Coefficient: 2.00000 | Target: Enemy (6)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Spell Family (3)] 
@@ -5454,7 +5456,7 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344285)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.39876 | PvP Coefficient: 1.34000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.35100 | PvP Coefficient: 1.15000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : $@spelldesc30455
@@ -5501,7 +5503,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=344289)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.37712 | PvP Coefficient: 0.95000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.24590 | PvP Coefficient: 0.95000 | Target: Enemy (6)
 #2 (id=344290)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc199786
@@ -6110,7 +6112,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : Not Shapeshifted (16), Aura Is Debuff (26), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=372237)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14580 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16330 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=372238)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc44457
@@ -6526,7 +6528,7 @@ Effects          :
 #1 (id=480806)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=480807)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.97290 | PvP Coefficient: 1.16000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.85615 | PvP Coefficient: 1.16000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc257541
 
 Name             : Haste (id=261582) [Passive] 
@@ -11659,7 +11661,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Pyroblast (11366)
                    Family Flags: 2, 22
-Description      : Flamestrike and Pyroblast cast times are reduced by ${$s1/-1000}.1 sec and damage dealt  increased by $s2%.
+Description      : Flamestrike and Pyroblast cast times are reduced by ${$s1/-1000}.1 sec and damage dealt increased by $s2%.
 
 Name             : Mirrors of Torment (id=345977) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -12162,11 +12164,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=906209)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.72000 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445), Arcane Explosion (414381)
                    Family Flags: 3
 #2 (id=906210)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.72000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445), Arcane Explosion (414381)
                    Family Flags: 3
 #3 (id=906212)   : Apply Aura (6) | Modify Power Regen (110)
@@ -12431,7 +12433,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1007461)  : Apply Aura (6) | Unknown(285)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 379024 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 379024 | Target: Self (1)
 Description      : Your Comet Storm now increases the damage enemies take from you by $417490s1% for $417490d and Flurry has a $s1% chance each hit to call down an icy comet, crashing into your target and nearby enemies for $379029s1 Frost damage.
 
 Name             : Glacial Assault (id=379024) [Spell Family (3), Hidden] 
@@ -12846,10 +12848,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1013563)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1446 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 0.50000 | Misc Value: 1446 | Target: Self (1)
                    Affected Spells (Category): Blink (1953)
 #2 (id=1013564)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1632 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 0.50000 | Misc Value: 1632 | Target: Self (1)
                    Affected Spells (Category): Shimmer (212653)
 Description      : The cooldowns of Blink and Shimmer are reduced by ${$s1/-1000} sec.
 
@@ -12870,7 +12872,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=1013566)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.25000 | Misc Value: 32 | Target: Self (1)
 Description      : Your Barriers heal you for $s1% of the damage absorbed.
 
 Name             : Tempest Barrier (id=382289) [Spell Family (3), Passive, Hidden] 
@@ -13461,11 +13463,11 @@ Effects          :
 #1 (id=1015478)  : Apply Aura (6) | Unknown(285)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 383490 | Target: Self (1)
 #2 (id=1015479)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.75000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445), Arcane Explosion (414381)
                    Family Flags: 3
 #3 (id=1017924)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.67000 | Target: Self (1)
 #4 (id=1017925)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your critical strike damage is increased by $s2%. When you activate Combustion, you gain $s3% additional critical strike damage, and up to $383493I nearby allies gain $s4% critical strike for $383493d.
@@ -13983,18 +13985,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   
-                 : Include In Advanced Combat Log (72)
+                 : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1016071)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1086457)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 275 | Scaled Value: 275 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 275 | Scaled Value: 275 | PvP Coefficient: 0.40000 | Target: Self (1)
 Description      : $@spelldesc383886
-Tooltip          : Your next non-instant Pyroblast or Flamestrike will grant you Combustion.
+Tooltip          : Your next non-instant Pyroblast or Flamestrike will grant you Combustion and deal $w2% additional damage.
 
 Name             : Sun King's Blessing (id=383886) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
@@ -14108,7 +14110,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1016315)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damaging an enemy with $s1 Fireballs or Pyroblasts causes your next Fireball to call down a Meteor on your target.
+#2 (id=1092184)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Damaging an enemy with $s1 Fireballs or Pyroblasts causes your next Fireball to call down a Meteor on your target$?a134735[ at $s2% effectiveness][].
 
 Name             : Firefall (id=384035) [Spell Family (3)] 
 Class            : Mage
@@ -15867,7 +15871,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1087322)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.34000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
 #2 (id=1087415)  : Apply Aura (6) | Dummy (4)
@@ -16004,11 +16008,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Hit (114), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1089135)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.66670 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445), Arcane Explosion (414381)
                    Family Flags: 3
 #2 (id=1091293)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.66670 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445), Arcane Explosion (414381)
                    Family Flags: 3
 Description      : $@spelldesc417487
@@ -16030,7 +16034,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1089136)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1089137)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
 Description      : Your Haste is increased by $s1%.
@@ -16054,7 +16058,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), DoT Stacking Rule (103), Suppress Caster Procs (112), Do Not Display Range (126), No Cast Log (128), No Caster Aura Icon (187), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=1089138)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Enemy (6)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445), Arcane Explosion (414381)
                    Family Flags: 3
 #2 (id=1089139)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
@@ -16071,11 +16075,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Can Proc From Procs (122), Only Proc From Class Abilities (415)
+                 : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1089140)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16085,7 +16089,7 @@ Name             : Cryopathy (id=417492) [Spell Family (3)]
 Class            : Mage
 School           : Frost
 Spell Type       : None
-Duration         : 30 seconds
+Duration         : 60 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16099,7 +16103,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Is Buff (140), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
 #1 (id=1089141)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
 Description      : $@spelldesc417491

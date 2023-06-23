@@ -3526,7 +3526,7 @@ Always keep this effect active.
 Tooltip          : Increases your threat generation while active.
 
 Name             : Warlock (id=137042) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock, Monk
+Class            : Warlock
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4216,7 +4216,7 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Duration         : 3600 seconds
+Duration         : Aura (infinite)
 Labels           : 1985: Profane Bargain (389576 effect#3)
 Proc Chance      : 100%
 Real PPM         : 20 (Haste multiplier)
@@ -10088,7 +10088,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Limit N (165), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=800325)   : Dummy (3)
-                   Base Value: 4217 | Scaled Value: 4217 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 1721 | Scaled Value: 1721 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25300 | PvP Coefficient: 1.25000 | Target: Enemy (6)
 #3 (id=800327)   : Dummy (3)
@@ -12293,6 +12293,7 @@ Resource         : 1 Soul Shard (7) (id=232618)
 Spell Level      : 19
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
+Duration         : Aura (infinite)
 Category         : 1363
 Affecting spells : Fel Domination (333889 effects: #1, #2)
 Family Flags     : 28
@@ -12306,8 +12307,8 @@ Attributes       : ........ ........ x....... ........   x....... ........ .x...
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Dismiss Pet First (32), No AutoCast (AI) (49), No Reagent Cost With Aura (161), Recast On Resummon (238), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=907701)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+#1 (id=907701)   : Summon Pet (56)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1863 | Target: Unknown(32)
 Description      : Summons a Succubus or Incubus under your command to seduce enemy Humanoids, preventing them from attacking.
 
 

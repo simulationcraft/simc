@@ -505,7 +505,7 @@ School           : Holy
 Spell Type       : Melee
 Resource         : 0.6% Base Mana (0) (id=11198)
 Spell Level      : 3
-Range            : 30 yards
+Range            : 50000 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 5 seconds
@@ -539,7 +539,7 @@ Talent Entry     : Holy [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Resource         : 2.6% Base Mana (0) (id=836)
+Resource         : 2.4% Base Mana (0) (id=836)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -611,6 +611,7 @@ Talent Entry     : Generic [free=(Retribution), tree=class, row=1, col=3, max_ra
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
+Resource         : 1% Base Mana (0) (id=305324) w/ Holy Paladin (id=137029)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -845,6 +846,12 @@ Effects          :
                    Affected Spells (Label): Retribution Aura (404996)
 #4 (id=1080169)  : Trigger Spell (64): Aura Mastery
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 412629 | Target: Self (1)
+#5 (id=1091896)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 2747 (Label) | Target: Self (1) -> Self (1)
+                   Affected Spells (Label): Merciful Auras (183415)
+#6 (id=1091898)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value 2: 2748 (Label) | Target: Self (1) -> Self (1)
+                   Affected Spells (Label): Merciful Auras (210291)
 Description      : Empowers your chosen aura for $d.$?a344218[
 
 $@spellname465: Damage reduction increased to ${-$s1-$465s2}%.][]$?a344219[
@@ -916,7 +923,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=21557)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
                    Family Flags: 46, 65
 #3 (id=479837)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -942,7 +949,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=1035101)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
                    Family Flags: 46, 65
 Description      : Call upon the Light to become an avatar of retribution, $?s53376&c2[causing Judgment to generate $53376s3 additional Holy Power, ]?s53376&c3[each Holy Power spent causing you to explode with Holy light for $326731s1 damage to nearby enemies, ]?s53376&c1[reducing Holy Shock's cooldown by $53376s2%, ][]$?s326730[allowing Hammer of Wrath to be used on any target, ][]$?s384442&s384376[increasing your damage, healing and critical strike chance by $s2% for $d.]?!s384442&s384376[increasing your damage and healing by $s1% for $d.]?!s384376&s384442[increasing your critical strike chance by $s3% for $d.][and activating all the effects learned for Avenging Wrath for $d.]
 Tooltip          : $?$w2>0&$w3>0[Damage, healing and critical strike chance increased by $w2%.]?$w3==0&$w2>0[Damage and healing increased by $w2%.]?$w2==0&$w3>0[Critical strike chance increased by $w3%.][]$?a53376[ ][]$?a53376&a137029[Holy Shock's cooldown reduced by $w6%.]?a53376&a137028[Judgment generates $53376s3 additional Holy Power.]?a53376[Each Holy Power spent deals $326731s1 Holy damage to nearby enemies.][]
@@ -1233,6 +1240,7 @@ Talent Entry     : Protection [tree=spec, row=3, col=1, max_rank=1, req_points=0
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
+Resource         : 0.32% Base Mana (0) (id=305309)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
@@ -1744,7 +1752,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 1.75000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.25000 | PvP Coefficient: 1.62000 | Target: Friend (21)
 Description      : An efficient spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -2493,7 +2501,7 @@ Effects          :
 #1 (id=128371)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=128372)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: At Enemy (53) -> AOE friendly (31)
 #3 (id=128388)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE Custom (8)
 Description      : $@spelldesc114165
@@ -2522,7 +2530,7 @@ Effects          :
 #1 (id=128396)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.50000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=128397)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE enemy (instant) (16)
 #3 (id=128398)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE Custom (8)
 Description      : $@spelldesc114165
@@ -2842,7 +2850,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Paladin (id=137026) [Spell Family (10), Passive, Hidden] 
-Class            : Paladin, Monk
+Class            : Paladin
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3110,11 +3118,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179713)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
-                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
                    Family Flags: 46, 90
 #2 (id=191084)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22
-                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
                    Family Flags: 46
 #3 (id=191085)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
@@ -3193,7 +3201,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 2179 | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
 #28 (id=1084775)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
 #29 (id=1089734)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
@@ -3304,37 +3312,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your block chance is increased by $s1%, you are able to block spells, and your successful blocks deal $157122s1 Holy damage to your attacker.
 
-Name             : Seraphim (id=152262) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Resource         : 3 Holy Power (9) (id=192465)
-GCD              : 1.5 seconds
-Duration         : 15 seconds
-Cooldown         : 45 seconds
-Affecting spells : Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Final Reckoning (343721 effect#3), Divine Purpose (408458 effects: #1, #2)
-Family Flags     : 111
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=210813)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=843936)   : Apply Aura (6) | Modify Versatility% (471)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=843937)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=843938)   : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : The Light magnifies your power for $d, granting $s1% haste, critical strike, and versatility, and $?c1[${$s4*$183997bc1}]?c2[${$s4*$76671bc1}][${$s4*$267316bc1}]% mastery.
-Tooltip          : Haste, critical Strike, and versatility increased by $s1%, and mastery increased by $?c1[${$s4*$183997bc1}]?c2[${$s4*$76671bc1}][${$s4*$267316bc1}]%.
-
 Name             : Arcane Torrent (desc=Racial) (id=155145) 
 Class            : Paladin
 Race             : Blood Elf (0x200)
@@ -3389,7 +3366,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 53651 | Target: Self (1)
 #3 (id=219558)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
                    Family Flags: 46
 #4 (id=321087)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -3662,6 +3639,37 @@ Effects          :
 Description      : $@spelldesc321136
 Tooltip          : After ${$321136s1~-$w1} $?$w1<$w2[Shields][Shield] of the Righteous, your next Word of Glory is free.
 
+Name             : Merciful Auras (id=183415) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Labels           : 2747: Aura Mastery (31821 effect#5)
+Proc Chance      : 100%
+Proc Flags       : ........ ...x...x ........ .......x   ........ ........ ........ ........   
+                 : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4)
+Family Flags     : 46
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Icon (60), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=265638)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1) -> Self (1)
+#2 (id=340886)   : Apply Party Aura (35) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Self (1) -> Self (1)
+Description      : Your auras restore $210291s1 health to $210291s2 injured allies within $210291A1 yds every $t1 sec.
+
+While Aura Mastery is active, heals all allies within ${$210291A1+$31821s5} yds and healing is increased by $31821s6%.
+Tooltip          : Restores health to $210291s2 injured allies within $210291A1 yards every $t1 sec.
+
 Name             : Retribution Aura (id=183435) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -3674,14 +3682,14 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ .....
 Affecting spells : Retribution Aura (317906 effect#1)
 Family Flags     : 94
 Attributes       : ........ x....... x.x..... x..x....   ........ ........ ........ ........ 
-                 : ....x... ........ ........ ........   ........ ........ ....x... ........ 
+                 : ..x.x... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
+                 : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=265677)   : Apply Raid Aura (65) | Modify Attack Power (99)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
@@ -4275,7 +4283,7 @@ Resource         : 2.4% Base Mana (0) (id=265697)
 Range            : 100 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Duration         : 10 seconds
+Duration         : 20 seconds
 Cooldown         : 90 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4324,7 +4332,7 @@ Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, G
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 12 seconds
 Affecting spells : Sacred Dawn (243174 effect#1)
 Family Flags     : 41
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -4495,6 +4503,7 @@ Talent Entry     : Protection [tree=spec, row=3, col=1, max_rank=1, req_points=0
 Class            : Paladin
 School           : Holy
 Spell Type       : None
+Resource         : 0.32% Base Mana (0) (id=305310)
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 3 (6 seconds cooldown)
@@ -4856,7 +4865,7 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ........ .....
 Effects          :
 #1 (id=310496)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Intercession (391054)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Intercession (391054)
                    Family Flags: 31, 49, 55, 77, 78, 88, 111
 #2 (id=314994)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
@@ -4866,6 +4875,31 @@ Effects          :
                    Family Flags: 92
 Description      : $@spelldesc203316
 Tooltip          : Your next Holy Power spender costs $s2 less Holy Power.
+
+Name             : Merciful Auras (id=210291) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Labels           : 2748: Aura Mastery (31821 effect#6)
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4)
+Family Flags     : 41, 46
+Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ x....... ......x. 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Suppress Caster Procs (112), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Do Not Log Full Overheal (323), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=311373)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Custom (18) -> AOE friendly (31)
+#2 (id=311377)   : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
+Description      : $@spelldesc183415
 
 Name             : Divine Favor (id=210294) [Spell Family (10)] 
 Talent Entry     : Holy [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
@@ -5348,11 +5382,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=334770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Avenging Crusader (216331), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Avenging Crusader (216331), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
                    Family Flags: 49, 52, 55, 77, 78, 82, 88, 102, 111
 #2 (id=739426)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
                    Family Flags: 44, 49, 52, 78, 82, 88, 111
 #3 (id=742537)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
@@ -5752,7 +5786,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=369379)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Beacon of Light (53652), Holy Light (82326), Light of Dawn (85222), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Judgment of Light (183811), Light of the Martyr (183998), Tyr's Deliverance (200654), Avenging Crusader (216371), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Hallowed Discernment (340214), Bestow Faith (343618), Golden Path (377129), Resplendent Light (392903), Seal of the Crusader (416771)
+                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Beacon of Light (53652), Holy Light (82326), Light of Dawn (85222), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Judgment of Light (183811), Light of the Martyr (183998), Tyr's Deliverance (200654), Merciful Auras (210291), Avenging Crusader (216371), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Hallowed Discernment (340214), Bestow Faith (343618), Golden Path (377129), Resplendent Light (392903), Seal of the Crusader (416771)
                    Family Flags: 15, 30, 32, 41, 48, 74, 82, 90, 97, 100, 124
 Description      : $@spelldesc238132
 Tooltip          : Receiving $w1% increased healing from the Paladin.
@@ -9214,7 +9248,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=808622)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Every $s1 Shields of the Righteous make your next Word of Glory free.
+Description      : Every $s1 Shields of the Righteous make your next Word of Glory cost no Holy Power.
 
 Name             : Glimmer of Light (id=325966) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -9258,7 +9292,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=816802)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.05200 | PvP Coefficient: 1.00000 | Trigger Spell: 287268 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.82400 | PvP Coefficient: 1.00000 | Trigger Spell: 287268 | Target: Friend (21)
 #2 (id=816803)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 287268
 Description      : $@spelldesc325966
@@ -9351,8 +9385,8 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
+Proc Flags       : ..x.x... ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9507,7 +9541,7 @@ Effects          :
                    Affected Spells: Word of Glory (85673)
                    Family Flags: 78
 Description      : $@spelldesc321136
-Tooltip          : Your next Word of Glory is free.
+Tooltip          : Your next Word of Glory costs no Holy Power.
 
 Name             : Judgment (desc=Rank 2) (id=327977) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -10197,11 +10231,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835938)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
                    Family Flags: 46, 65
 #2 (id=835962)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
                    Family Flags: 46, 65
 #3 (id=835963)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -11436,7 +11470,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.88750 | PvP Coefficient: 0.80000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #3 (id=845757)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Seraphim (152262), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
                    Family Flags: 44, 49, 52, 88, 111
 Description      : Call down a blast of heavenly energy, dealing $s2 Holy damage to all targets in the target area and causing them to take $s3% increased damage from your Holy Power abilities for $d.
 
@@ -14187,7 +14221,7 @@ Spell Type       : None
 Range            : 30 yards
 Duration         : 15 seconds
 Triggered by     : Divine Resonance (386732)
-Attributes       : ........ x....... ........ ...x....   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14195,7 +14229,7 @@ Attributes       : ........ x....... ........ ...x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Log (8), Allow While Sitting (27), Allow Cast While Casting (135), Not In Spellbook (143)
+                 : Allow While Sitting (27), Allow Cast While Casting (135), Not In Spellbook (143)
 Effects          :
 #1 (id=1021012)  : Apply Aura (6) | Periodic Trigger Spell (23): Divine Resonance every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 386731 | Target: Self (1)
@@ -14812,7 +14846,7 @@ Effects          :
 Description      : Each Holy Power spent on Light of Dawn increases the healing of your next Word of Glory by $s1%, up to a maximum of $s2%.
 
 Name             : Blessing of Summer (desc=Night Fae) (id=388007) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Nature
 Spell Type       : None
@@ -15110,15 +15144,15 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1025850)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
                    Family Flags: 46, 65
 #2 (id=1025851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
                    Family Flags: 46, 65
 #3 (id=1026054)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
                    Family Flags: 46, 65
 #4 (id=1033290)  : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -15235,7 +15269,7 @@ Effects          :
 #1 (id=1030763)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc183435
-Tooltip          : You have recently gained Seraphim from Retribution Aura.
+Tooltip          : You have recently gained Retribution Aura's effect.
 
 Name             : Resplendent Light (id=392902) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=200]
@@ -15454,13 +15488,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1031543)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1031544)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1038005)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1084223)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Holy Shock, Flash of Light, and Holy Light spells extend the duration of Tyr's Deliverance on yourself when cast on targets affected by Tyr's Deliverance.
 
 $@spellicon20473$@spellname20473: Extends ${$s4/1000}.1 sec.
@@ -15931,7 +15965,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1034310)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Seal of the Crusader (416771)
                    Family Flags: 46, 65
 Description      : $@spelldesc393670
 Tooltip          : Critical Strike chance of your spells increased by $s1%.
@@ -18121,11 +18155,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1072593)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Avenging Crusader (216331), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Avenging Crusader (216331), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
                    Family Flags: 49, 52, 55, 77, 78, 82, 88, 102, 111
 #2 (id=1072594)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.66667 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091)
                    Family Flags: 44, 49, 52, 78, 82, 88, 111
 #3 (id=1072595)  : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
@@ -18462,7 +18496,7 @@ Effects          :
 #2 (id=1083017)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=1083163)  : Dummy (3)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000
 Description      : Absorb your active Glimmer of Lights, triggering their effects at $s3% value and $?a415244[restoring ${$415246s3*$415244s1} Mana over $415246d, but your healing and damage is decreased by $415246s1%][granting $414176s1 Mana per Glimmer of Light consumed].
 
 Name             : Daybreak (id=414176) [Spell Family (10)] 
@@ -18890,9 +18924,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31)
 Effects          :
 #1 (id=1085061)  : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #2 (id=1085062)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 0x3 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 0x3 | Target: Self (1)
                    Affected School(s): Holy, Physical
 #3 (id=1085063)  : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds | Scaling Class: -2
                    Base Value: 1 | Scaled Value: 1600.05 (coefficient=0.010667) | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -18986,7 +19020,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1087832)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc416770
 Tooltip          : $@spellaura416770
 
@@ -19063,11 +19097,11 @@ Effects          :
                    Family Flags: 65
 #3 (id=1088949)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
                    Family Flags: 46
 #4 (id=1088950)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
+                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
                    Family Flags: 46
 #5 (id=1088951)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -19092,7 +19126,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1089744)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326)
                    Family Flags: 30, 48, 74
 Description      : Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.
