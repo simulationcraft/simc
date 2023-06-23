@@ -1457,6 +1457,7 @@ public:
     bool deepening_shadows = false;     // Trigger
     bool elaborate_planning = false;    // Trigger
     bool flagellation = false;
+    bool ghostly_strike = false;
     bool improved_ambush = false;
     bool improved_shiv = false;
     bool lethal_dose = false;
@@ -1613,6 +1614,11 @@ public:
     {
       affected_by.deathmark = ab::data().affected_by( p->spec.deathmark_debuff->effectN( 1 ) ) ||
                               ab::data().affected_by( p->spec.deathmark_debuff->effectN( 2 ) );
+    }
+
+    if ( p->is_ptr() && p->talent.outlaw.ghostly_strike->ok() )
+    {
+      affected_by.ghostly_strike = ab::data().affected_by( p->talent.outlaw.ghostly_strike->effectN( 3 ) );
     }
 
     if ( p->talent.subtlety.the_rotten->ok() )
@@ -2150,6 +2156,11 @@ public:
     if ( affected_by.deathmark )
     {
       m *= tdata->debuffs.deathmark->value_direct();
+    }
+
+    if ( affected_by.ghostly_strike )
+    {
+      m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
     }
 
     return m;
@@ -7963,7 +7974,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.improved_shiv_debuff, false )
     ->set_direct_mod( source->spec.improved_shiv_debuff->effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+    ->set_default_value_from_effect_type( source->is_ptr() ? A_MOD_DAMAGE_FROM_CASTER_SPELLS : A_MOD_DAMAGE_FROM_CASTER )
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->set_cooldown( timespan_t::zero() );
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
@@ -8251,7 +8262,11 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
 
   rogue_td_t* tdata = get_target_data( target );
 
-  m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
+  if ( !is_ptr() )
+  {
+    m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
+  }
+
   m *= 1.0 + tdata->debuffs.prey_on_the_weak->stack_value();
 
   return m;
