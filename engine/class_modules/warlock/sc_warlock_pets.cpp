@@ -1507,7 +1507,7 @@ void dreadstalker_t::init_base_stats()
   warlock_pet_t::init_base_stats();
   resources.base[ RESOURCE_ENERGY ] = 0;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-  melee_attack = new dreadstalker_melee_t( this, 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
+  melee_attack = new dreadstalker_melee_t( this, o()->min_version_check( VERSION_10_1_5 ) ? 0.96 : 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
 }
 
 void dreadstalker_t::arise()
