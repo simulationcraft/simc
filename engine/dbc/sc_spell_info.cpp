@@ -1142,6 +1142,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 507, "Modify Damage Taken% from Spells (Label)"     },
   { 531, "Modify Guardian Damage Done%"                 },
   { 537, "Modify Damage Taken% from Caster's Spells (Label)" },
+  { 540, "Modify Stat With Support Triggers"            },
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
