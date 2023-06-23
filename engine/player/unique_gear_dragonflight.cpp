@@ -4067,6 +4067,9 @@ void neltharions_call_to_chaos( special_effect_t& effect )
 
 void neltharions_call_to_dominance( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "call_to_dominance", "domineering_arrogance" } ) )
+    return;
+
   auto stacking_buff = buff_t::find( effect.player, "domineering_arrogance" );
 
   if ( !stacking_buff )
@@ -7014,7 +7017,7 @@ void register_special_effects()
   register_special_effect( 405940, items::screaming_black_dragonscale_use);
   register_special_effect( 403385, items::neltharions_call_to_suffering );
   register_special_effect( 403366, items::neltharions_call_to_chaos );
-  register_special_effect( 403368, items::neltharions_call_to_dominance );
+  register_special_effect( 403368, items::neltharions_call_to_dominance, true );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
   register_special_effect( 401306, items::elementium_pocket_anvil );
