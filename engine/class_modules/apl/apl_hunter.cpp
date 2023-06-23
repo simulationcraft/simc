@@ -80,7 +80,7 @@ void beast_mastery( player_t* p )
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains" );
   cleave->add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25" );
   cleave->add_action( "bestial_wrath" );
-  cleave->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator&talent.kill_cleave" );
+  cleave->add_action( "kill_command,if=talent.kill_cleave" );
   cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "stampede,if=buff.bestial_wrath.up|target.time_to_die<15" );
