@@ -141,8 +141,8 @@ actions.obliteration+=/frost_strike,if=buff.killing_machine.stack<2&buff.pillar_
 actions.obliteration+=/glacial_advance,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
 actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.obliteration+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
-actions.obliteration+=/howling_blast,if=!dot.frost_fever.ticking&!buff.killing_machine.react
-actions.obliteration+=/glacial_advance,if=!death_knight.runeforge.razorice&!buff.killing_machine.react&(!talent.avalanche|!buff.rime.react&debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|(variable.rp_buffs)
+actions.obliteration+=/howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking|buff.rime.react&set_bonus.tier30_2pc&!variable.rp_buffs)
+actions.obliteration+=/glacial_advance,if=!buff.killing_machine.react&(!death_knight.runeforge.razorice&(!talent.avalanche|debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|(variable.rp_buffs&active_enemies>1))
 actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
 actions.obliteration+=/howling_blast,if=buff.rime.react&!buff.killing_machine.react
 actions.obliteration+=/glacial_advance,if=!variable.pooling_runic_power&variable.rp_buffs&!buff.killing_machine.react&active_enemies>=2
