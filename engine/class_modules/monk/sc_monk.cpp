@@ -1848,7 +1848,7 @@ namespace monk
 
             eye_of_the_tiger_heal->execute();
           }
-        } //
+        }
       };
 
       struct rising_sun_kick_press_the_advantage_t : public monk_melee_attack_t
@@ -3009,13 +3009,6 @@ namespace monk
           if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() )
             add_child( p()->active_actions.chi_surge );
         }
-
-        virtual void execute() override
-        {
-          // p()->buff.press_the_advantage->trigger();
-
-          monk_spell_t::execute();
-        }
       };
 
       struct melee_t : public monk_melee_attack_t
@@ -3087,8 +3080,8 @@ namespace monk
           monk_melee_attack_t::impact( s );
 
           p()->sim->print_debug("{} test melee", name());
-          // if ( p()->talent.brewmaster.press_the_advantage->ok()/* && name() == "melee_main_hand"*/ )
-          if ( p()->talent.brewmaster.press_the_advantage->ok() && !strcmp(name(), "melee_main_hand"))
+          // Press the Advantage can trigger from any Main Hand swing; whether miss, dodge, parry or hit.
+          if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND)
           {
             p()->sim->print_debug("{} test melee 2", name());
             // Reduce Brew cooldown by 0.5 seconds
