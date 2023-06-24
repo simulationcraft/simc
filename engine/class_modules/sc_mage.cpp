@@ -1862,7 +1862,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
     if ( tt == HS_CRIT || tt == HS_CUSTOM && rng().roll( chance ) )
     {
-      bool guaranteed = chance > 1.0;
+      bool guaranteed = chance >= 1.0;
       p->procs.hot_streak_spell_crit->occur();
 
       // Crit with HS => wasted crit
