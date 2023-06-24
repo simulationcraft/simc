@@ -721,6 +721,8 @@ public:
   {
     // Override for target's hitbox size, relevant for Fel Rush and Vengeful Retreat.
     double target_reach = -1.0;
+    // Relative directionality for movement events, 1.0 being directly away and 2.0 being perpendicular 
+    double movement_direction_factor = 2.0;
     double initial_fury = 0;
     int fodder_to_the_flame_kill_seconds = 4;
     // Chance to proc initiative off of the fodder demon (ie. not get damaged by it first)
@@ -963,8 +965,9 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
   else
   {
     // Calculate the number of yards away from melee this will send us.
-    // This is equal to twice the reach + melee range, assuming we are moving "across" the target
-    yards_from_melee = std::max(0.0, distance_moved - (dh->get_target_reach() + 5.0) * 2.0);
+    // This is equal to reach + melee range times the direction factor
+    // With 2.0 being moving fully "across" the target and 1.0 moving fully "away"
+    yards_from_melee = std::max( 0.0, distance_moved - ( ( dh->get_target_reach() + 5.0 ) * dh->options.movement_direction_factor ) );
   }
 
   if ( yards_from_melee > 0.0 )
@@ -6164,6 +6167,7 @@ void demon_hunter_t::create_options()
   player_t::create_options();
 
   add_option( opt_float( "target_reach", options.target_reach ) );
+  add_option( opt_float( "movement_direction_factor", options.movement_direction_factor, 1.0, 2.0 ) );
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
   add_option( opt_int( "fodder_to_the_flame_kill_seconds", options.fodder_to_the_flame_kill_seconds, 0, 10 ) );
   add_option( opt_float( "fodder_to_the_flame_initiative_chance", options.fodder_to_the_flame_initiative_chance, 0, 1 ) );
