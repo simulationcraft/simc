@@ -3570,8 +3570,6 @@ struct single_target_event_t final : public event_t
 struct death_chakram_t : death_chakram::base_t
 {
   death_chakram::single_target_t* single_target;
-  explosive_shot_background_t* explosive = nullptr;
-  int munitions_targets = 0;
 
   death_chakram_t( hunter_t* p, util::string_view options_str ):
     death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram )
@@ -3610,9 +3608,6 @@ struct death_chakram_t : death_chakram::base_t
       // Hit only a single target, schedule the repeating single target hitter
       make_event<single_target_event_t>( *sim, *single_target, s -> target, ST_FIRST_HIT_DELAY );
     }
-
-    if ( explosive && s -> chain_target < explosive -> targets )
-      explosive -> execute_on_target( s -> target );
 
     td( s -> target ) -> debuffs.death_chakram -> trigger();
   }
