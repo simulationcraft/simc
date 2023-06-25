@@ -3850,7 +3850,7 @@ struct flamestrike_t final : public hot_streak_spell_t
     hot_streak_spell_t::execute();
 
     if ( hit_any_target )
-      handle_hot_streak( execute_state->crit_chance, HS_CUSTOM );
+      handle_hot_streak( execute_state->crit_chance, p()->talents.fuel_the_fire.ok() ? HS_CUSTOM : HS_HIT );
 
     if ( flame_patch )
     {
