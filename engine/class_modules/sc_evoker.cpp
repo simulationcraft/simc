@@ -216,7 +216,7 @@ struct evoker_t : public player_t
     const spell_data_t* emerald_blossom;
     const spell_data_t* emerald_blossom_heal;
     const spell_data_t* emerald_blossom_spec;
-    
+
     // Augmentation
     const spell_data_t* close_as_clutchmates;
 
@@ -953,15 +953,12 @@ struct empowered_release_t : public empowered_base_t<BASE>
 {
   struct shifting_sands_t : public evoker_augment_t
   {
-    mutable std::vector<player_t*> secondary_targets;
-    mutable std::vector<player_t*> tertiary_targets;
-
     shifting_sands_t( evoker_t* p )
-      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets(), tertiary_targets()
+      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) )
     {
       background   = true;
       dot_duration = base_tick_time = 0_ms;
-      
+
       if ( aoe == 0 )
         aoe = 1;
     }
@@ -976,9 +973,9 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
     size_t available_targets( std::vector<player_t*>& target_list ) const override
     {
+      std::vector<player_t*> helper_list;
+
       target_list.clear();
-      secondary_targets.clear();
-      tertiary_targets.clear();
 
       if ( sim->player_no_pet_list.size() <= n_targets() )
       {
@@ -992,20 +989,14 @@ struct empowered_release_t : public empowered_base_t<BASE>
       {
         if ( t != player )
         {
-          if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK )
+          if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+               p()->get_target_data( t )->buffs.ebon_might->check() && !p()->get_target_data( t )->buffs.shifting_sands->check() )
           {
-            if ( p()->get_target_data( t )->buffs.shifting_sands->up() )
-            {
-              tertiary_targets.push_back( t );
-            }
-            else
-            {
-              target_list.push_back( t );
-            }
+            target_list.push_back( t );
           }
           else
           {
-            secondary_targets.push_back( t );
+            helper_list.push_back( t );
           }
         }
       }
@@ -1018,34 +1009,45 @@ struct empowered_release_t : public empowered_base_t<BASE>
         }
         return target_list.size();
       }
+      
+      std::vector<std::function<bool( player_t* )>> lambdas = {
+          [ this ]( player_t* t ) {
+            return p()->get_target_data( t )->buffs.ebon_might->check() &&
+                   !p()->get_target_data( t )->buffs.shifting_sands->check();
+          },
+          [ this ]( player_t* t ) {
+            return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                   !p()->get_target_data( t )->buffs.shifting_sands->check();
+          },
+          [ this ]( player_t* t ) { return !p()->get_target_data( t )->buffs.shifting_sands->check(); },
+          [ this ]( player_t* t ) { return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK; },
+          [ this ]( player_t* t ) { return true; } };
 
-      if ( secondary_targets.size() > 0 )
+      for ( auto& fn : lambdas )
       {
-        if ( as<int>( target_list.size() + secondary_targets.size() ) > n_targets() )
+        auto pos = target_list.size();
+
+        for ( size_t i = 0; i < helper_list.size(); )
         {
-          rng().shuffle( secondary_targets.begin(), secondary_targets.end() );
+          if ( fn( helper_list[ i ] ) )
+          {
+            target_list.push_back( helper_list[ i ] );
+            erase_unordered( helper_list, helper_list.begin() + i );
+          }
+          else
+          {
+            i++;
+          }
         }
 
-        for ( const auto& t : secondary_targets )
+        if ( as<int>( target_list.size() ) >= n_targets() )
         {
-          target_list.push_back( t );
-          if ( target_list.size() >= n_targets() )
-            return target_list.size();
-        }
-      }
+          if ( target_list.size() - pos > 1 )
+          {
+            rng().shuffle( target_list.begin() + pos + 1, target_list.end() );
+          }
 
-      if ( tertiary_targets.size() > 0 )
-      {
-        if ( as<int>( target_list.size() + tertiary_targets.size() ) > n_targets() )
-        {
-          rng().shuffle( tertiary_targets.begin(), tertiary_targets.end() );
-        }
-
-        for ( const auto& t : tertiary_targets )
-        {
-          target_list.push_back( t );
-          if ( target_list.size() >= n_targets() )
-            break;
+          return target_list.size();
         }
       }
 
@@ -1856,7 +1858,6 @@ public:
   {
     sim->print_debug( "{} before cast {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
                       p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets() );
-
 
     // Debug for Ebon Might - Need to check if there's a bug
     if ( sim->debug )
@@ -2723,7 +2724,7 @@ struct living_flame_t : public evoker_spell_t
             total_hits++;
       }
     }
-    
+
     // Make sure the buff is definitely gone.
     p()->buff.leaping_flames->expire();
 
@@ -3149,7 +3150,8 @@ struct eruption_t : public essence_spell_t
           -timespan_t::from_seconds( p()->talent.motes_of_possibility->effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->talent.regenerative_chitin->ok() && p()->last_scales_target && p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
+    if ( p()->talent.regenerative_chitin->ok() && p()->last_scales_target &&
+         p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
     {
       p()->get_target_data( p()->last_scales_target )
           ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
@@ -3262,8 +3264,8 @@ public:
     may_dodge = may_parry = may_block = false;
     background                        = true;
     base_crit += 1.0;
-    crit_bonus         = 0.0;
-    base_eons_multiplier = e->talent.temporal_wound->effectN( 1 ).percent();
+    crit_bonus                  = 0.0;
+    base_eons_multiplier        = e->talent.temporal_wound->effectN( 1 ).percent();
     clutchmates_eons_multiplier = base_eons_multiplier * ( 1 + e->spec.close_as_clutchmates->effectN( 1 ).percent() );
 
     /* if ( p != e )
@@ -3353,7 +3355,8 @@ struct prescience_t : public evoker_augment_t
   {
     // Do not ever do this out of precombat, the order of entries in allies with my prescience is not preserved. During
     // precombat we can guarantee the first entry is the first buff because we do not allow the sim to cast prescience
-    // if it would expire a prescience before the next cast, factoring in a gcds since you need time to make use of your spell.
+    // if it would expire a prescience before the next cast, factoring in a gcds since you need time to make use of your
+    // spell.
     if ( is_precombat )
       return p()->allies_with_my_prescience.empty() ||
              p()->get_target_data( p()->allies_with_my_prescience[ 0 ] )->buffs.prescience->remains() >
@@ -3455,7 +3458,7 @@ struct blistering_scales_t : public evoker_augment_t
     evoker_augment_t::impact( s );
 
     if ( p()->last_scales_target )
-        p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->expire();
+      p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->expire();
 
     p()->last_scales_target = s->target;
 
@@ -3648,7 +3651,7 @@ struct blistering_scales_cb_t : public dbc_proc_callback_t
   {
     allow_pet_procs = true;
     deactivate();
-    initialize();   
+    initialize();
   }
 
   evoker_t* p()
@@ -3700,7 +3703,8 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
         if ( this->p() == s->action->player )
           return static_cast<bool>( this->p()->buff.ebon_might_self_buff->check() );
 
-        return static_cast<bool>( this->p()->get_target_data( s->action->player->get_owner_or_self() )->buffs.ebon_might->check() );
+        return static_cast<bool>(
+            this->p()->get_target_data( s->action->player->get_owner_or_self() )->buffs.ebon_might->check() );
       };
 
       trig = std::make_unique<dbc_proc_callback_t::trigger_fn_t>( lambda );
@@ -4010,7 +4014,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                           blistering_scales_cb->deactivate();
                                       } );
       }
-
 
       if ( evoker->talent.infernos_blessing.ok() )
       {
@@ -4784,7 +4787,6 @@ void evoker_t::reset()
   {
     allies_with_my_prescience.find_and_erase_unordered( ally );
   }
-
 
   was_empowering = false;
 }
