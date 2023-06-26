@@ -1423,6 +1423,15 @@ class SpellDataGenerator(DataGenerator):
          402813, 402894, 402896, 402897, 402898, 402903, 407961, 407982, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
          407914, 407913, 407939,  # Might of the Drogbar set
+         418076, 418527, 418547, 418773, 418774, 418775, 418776, # Mirror of Fractured Tomorrows
+         417356, 417290, 417139, 417069, 417050, 417049, # Prophetic Stonescales
+         417534, 417545, 417792, 417543, # Time-Thief's Gambit
+         417449, 417458, 417456, 417452, # Accelerating Sandglass
+         415284, 415410, # Paracausal Fragment of Thunderfin
+         415006, 415130, 415245, # Paracausal Fragment of Frostmourne
+         414976, 414968, # Paracausal Fragment of Azzinoth
+         414856, 414864, 414858, 414857, 414865, # Paracausal Fragment of Sulfuras
+         414928, 414936, 414951, 414950, # Paracausal Fragment of Doomhammer/Shalamayne
         ),
 
         # Warrior:
@@ -1850,6 +1859,7 @@ class SpellDataGenerator(DataGenerator):
           ( 408763, 0 ),                            # Frost T30 2pc
           ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
           ( 414381, 0 ),                            # Concentrated Power AE
+          ( 418735, 0 ),                            # Splintering Ray
         ),
 
         # Warlock:

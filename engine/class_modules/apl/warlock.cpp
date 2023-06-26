@@ -194,7 +194,7 @@ void demonology( player_t* p )
   default_->add_action( "call_dreadstalkers,if=!talent.summon_demonic_tyrant|fight_remains<14" );
   default_->add_action( "grimoire_felguard,if=!talent.summon_demonic_tyrant|fight_remains<cooldown.summon_demonic_tyrant.remains_expected" );
   default_->add_action( "summon_vilefiend,if=!talent.summon_demonic_tyrant|variable.tyrant_cd>cooldown+variable.tyrant_prep_start|fight_remains<cooldown.summon_demonic_tyrant.remains_expected" );
-  default_->add_action( "guillotine,if=cooldown.demonic_strength.remains" );
+  default_->add_action( "guillotine,if=cooldown.demonic_strength.remains|!talent.demonic_strength" );
   default_->add_action( "demonic_strength" );
   default_->add_action( "bilescourge_bombers,if=!pet.demonic_tyrant.active" );
   default_->add_action( "shadow_bolt,if=soul_shard<5&talent.fel_covenant&buff.fel_covenant.remains<5" );
@@ -225,6 +225,7 @@ void demonology( player_t* p )
 
   tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&!equipped.neltharions_call_to_dominance" );
   tyrant->add_action( "invoke_external_buff,name=power_infusion,if=(buff.nether_portal.up&buff.nether_portal.remains<8&talent.nether_portal)|(buff.dreadstalkers.up&variable.next_tyrant-time<=6&(!talent.nether_portal|variable.shadow_timings))", "Power Infusion is used 6 seconds or less before Demonic Tyrant, without Demonic Tyrant, it will be used 8s before Nether Portal Ends and without both, its used on Cooldown"  );
+  tyrant->add_action( "power_siphon,if=buff.wild_imps.stack>1&!buff.nether_portal.up&buff.demonic_core.stack<3" );
   tyrant->add_action( "shadow_bolt,if=time<2&soul_shard<5" );
   tyrant->add_action( "nether_portal" );
   tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&equipped.neltharions_call_to_dominance" );
@@ -236,7 +237,6 @@ void demonology( player_t* p )
   tyrant->add_action( "hand_of_guldan,if=talent.soulbound_tyrant&variable.next_tyrant-time<4&variable.next_tyrant-time>action.summon_demonic_tyrant.cast_time" );
   tyrant->add_action( "summon_demonic_tyrant,if=variable.next_tyrant-time<cast_time*2+1|(buff.dreadstalkers.remains<cast_time+gcd&buff.dreadstalkers.up)" );
   tyrant->add_action( "demonbolt,if=buff.demonic_core.up" );
-  tyrant->add_action( "power_siphon,if=buff.wild_imps.stack>1&!buff.nether_portal.up" );
   tyrant->add_action( "soul_strike" );
   tyrant->add_action( "shadow_bolt" );
 }

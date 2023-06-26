@@ -6,7 +6,7 @@ server=valdrakken
 role=tank
 spec=protection
 
-talents=BIEAS+uMNo6HaxL/ztTZBhrdcWSKJSKkCSSo1kkIhESAAACAAAAAAAASEJNBSQSKSkkAAiACABC
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAAIRk0EIBJpIRSCAgACABC
 
 head=heartfire_sentinels_forgehelm,gem_id=192945,id=202452,bonus_id=4800/4786/1504/8780
 neck=torc_of_passed_time,id=201759,gem_id=192985/192945/192945,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,crafted_stats=32/49
@@ -17,9 +17,9 @@ legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce
 feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/9405/8790/9379/8960/9366/1495,crafted_stats=36/32
 wrist=bonds_of_desperate_ascension,id=204390,gem_id=192945,bonus_id=6652/7981/8095/1498/8780/4786
 hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1501/8767
-finger1=onyx_annulet,id=203460,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,bonus_id=1491,enchant=devotion_of_haste_3
+finger1=onyx_impostors_birthright,id=204398,gem_id=192945,bonus_id=6652/7981/1498/8767/8780,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,gem_id=192945,bonus_id=6652/7981/1498/8767/8780,enchant=devotion_of_haste_3
-trinket1=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1498/8767
+trinket1=elementium_pocket_anvil,id=202617,bonus_id=9410/9380/6652/1498/8767
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=shadowflame_wreathe_3

@@ -82,9 +82,9 @@ static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_
     SPEC_NONE,
   },
   {
-    EVOKER_AUGMENTATION,
     EVOKER_DEVASTATION,
     EVOKER_PRESERVATION,
+    EVOKER_AUGMENTATION,
     SPEC_NONE,
   },
 };

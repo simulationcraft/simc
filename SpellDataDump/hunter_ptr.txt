@@ -2886,7 +2886,7 @@ Description      : $@spelldesc109298
 Tooltip          : Webbed.
 
 Name             : Hunter (id=137014) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter, Monk
+Class            : Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 

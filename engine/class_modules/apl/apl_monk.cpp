@@ -649,7 +649,7 @@ namespace monk_apl
     // Prioritize Faeline Stomp if playing with Faeline Harmony
     def->add_action( "faeline_stomp,target_if=min:debuff.fae_exposure_damage.remains,if=combo_strike&talent.faeline_harmony&debuff.fae_exposure_damage.remains<1", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
     // Spend excess energy
-    def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|(!talent.skyreach|time>5|pet.xuen_the_white_tiger.active))", "TP if not overcapping Chi or TotM" );
+    def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|((!talent.skyreach&!talent.skytouch)|time>5|pet.xuen_the_white_tiger.active))", "TP if not overcapping Chi or TotM" );
     //TP during serenity to activate skyreach
     def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies=1&buff.serenity.up&pet.xuen_the_white_tiger.active&!debuff.skyreach_exhaustion.up*20&combo_strike", "TP during serenity to activate skyreach" );
     // Use Chi Burst to reset Faeline Stomp

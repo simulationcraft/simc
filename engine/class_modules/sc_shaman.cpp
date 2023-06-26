@@ -10838,9 +10838,10 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "primordial_wave,if=raid_event.adds.in>42|raid_event.adds.in<6" );
     single->add_action( "flame_shock,if=!ticking" );
     single->add_action( "lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable" );
-    single->add_action( "ice_strike" );
+    single->add_action( "ice_strike,if=!buff.ice_strike.up" );
     single->add_action( "frost_shock,if=buff.hailstorm.up" );
     single->add_action( "lava_lash" );
+    single->add_action( "ice_strike" );
     single->add_action( "windstrike" );
     single->add_action( "stormstrike" );
     single->add_action( "sundering,if=raid_event.adds.in>=40" );
@@ -10865,10 +10866,10 @@ void shaman_t::init_action_list_enhancement()
     aoe->add_action( "crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)" );
     aoe->add_action( "sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc" );
     aoe->add_action( "fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)" );
-    aoe->add_action( "ice_strike,if=talent.hailstorm.enabled" );
     aoe->add_action( "lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled" );
+    aoe->add_action( "lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6)|(talent.ashen_catalyst.enabled&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)");
+    aoe->add_action( "ice_strike,if=talent.hailstorm.enabled&!buff.ice_strike.up" );
     aoe->add_action( "frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up" );
-    aoe->add_action( "lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6)|(talent.ashen_catalyst.enabled&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)" );
     aoe->add_action( "sundering" );
     aoe->add_action( "flame_shock,if=talent.molten_assault.enabled&!ticking" );
     aoe->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=(talent.fire_nova.enabled|talent.primordial_wave.enabled)&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );

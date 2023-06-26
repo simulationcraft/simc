@@ -114,6 +114,19 @@ struct hand_of_guldan_t : public demonology_spell_t
       if ( p()->buffs.blazing_meteor->check() )
         m *= 1.0 + p()->buffs.blazing_meteor->check_value();
 
+      if ( p()->talents.malefic_impact->ok() )
+        m *= 1.0 + p()->talents.malefic_impact->effectN( 1 ).percent();
+
+      return m;
+    }
+
+    double composite_crit_chance() const override
+    {
+      double m = demonology_spell_t::composite_crit_chance();
+
+      if ( p()->talents.malefic_impact->ok() )
+        m += p()->talents.malefic_impact->effectN( 2 ).percent(); // TOCHECK: As of 2023-06-21 PTR, this portion of the talent seems to not be applying in-game
+
       return m;
     }
 
@@ -272,7 +285,12 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
     {
-      p()->cooldowns.grimoire_felguard->adjust( timespan_t::from_seconds( -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).base_value() ) );
+      auto reduction = -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).time_value();
+
+      if ( !p()->min_version_check( VERSION_10_1_5 ) )
+        reduction *= 1000;
+
+      p()->cooldowns.grimoire_felguard->adjust( reduction );
     }
 
     if ( p()->talents.power_siphon->ok() )
@@ -360,8 +378,11 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-    if ( p()->talents.ripped_through_the_portal->ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
-      count++;
+    if ( !p()->min_version_check( VERSION_10_1_5 ) )
+    {
+      if ( p()->talents.ripped_through_the_portal->ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
+        count++;
+    }
 
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
 
@@ -1273,22 +1294,25 @@ void warlock_t::init_spells_demonology()
 
   talents.fel_might = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Might" ); // Should be ID 387338
 
+  talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
+
   talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
   talents.power_siphon_buff = find_spell( 334581 );
 
-  talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
+  talents.malefic_impact = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Impact" ); // Should be ID 416341
 
-  talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
-  talents.demonic_calling_buff = find_spell( 205146 );
+  talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
 
   talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
 
   talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
-
-  talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
-  talents.dread_calling_buff = find_spell( 387393 );
+  
+  talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 
   talents.doom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom" ); // Should be ID 603
+  
+  talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
+  talents.demonic_calling_buff = find_spell( 205146 );
 
   talents.demonic_meteor = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Meteor" ); // Should be ID 387396
 
@@ -1298,14 +1322,19 @@ void warlock_t::init_spells_demonology()
   talents.fel_covenant = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Covenant" ); // Should be ID 387432
   talents.fel_covenant_buff = find_spell( 387437 );
 
+  talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
+  talents.umbral_blaze_dot = find_spell( 405802 );
+
   talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
 
   talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
 
   talents.ripped_through_the_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Ripped Through the Portal" ); // Should be ID 387485
 
-  talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
-  talents.umbral_blaze_dot = find_spell( 405802 );
+  talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
+  talents.dread_calling_buff = find_spell( 387393 );
+
+  talents.cavitation = find_talent_spell( talent_tree::SPECIALIZATION, "Cavitation" ); // Should be ID 416154
 
   talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
   talents.nether_portal_buff = find_spell( 267218 );

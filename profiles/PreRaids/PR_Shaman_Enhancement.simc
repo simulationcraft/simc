@@ -70,10 +70,10 @@ actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=buff.maelstrom_weap
 actions.aoe+=/crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)
 actions.aoe+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
 actions.aoe+=/fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)
-actions.aoe+=/ice_strike,if=talent.hailstorm.enabled
 actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled
-actions.aoe+=/frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up
 actions.aoe+=/lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6)|(talent.ashen_catalyst.enabled&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)
+actions.aoe+=/ice_strike,if=talent.hailstorm.enabled&!buff.ice_strike.up
+actions.aoe+=/frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up
 actions.aoe+=/sundering
 actions.aoe+=/flame_shock,if=talent.molten_assault.enabled&!ticking
 actions.aoe+=/flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=(talent.fire_nova.enabled|talent.primordial_wave.enabled)&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6
@@ -114,9 +114,10 @@ actions.single+=/crash_lightning,if=buff.doom_winds.up|(talent.alpha_wolf.enable
 actions.single+=/primordial_wave,if=raid_event.adds.in>42|raid_event.adds.in<6
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable
-actions.single+=/ice_strike
+actions.single+=/ice_strike,if=!buff.ice_strike.up
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/lava_lash
+actions.single+=/ice_strike
 actions.single+=/windstrike
 actions.single+=/stormstrike
 actions.single+=/sundering,if=raid_event.adds.in>=40

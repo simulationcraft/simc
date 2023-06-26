@@ -173,6 +173,10 @@ public:
     propagate_const<action_t*> niuzao_call_to_arms_summon;
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
 
+    propagate_const<action_t*> rising_sun_kick_press_the_advantage;
+    propagate_const<action_t*> keg_smash_press_the_advantage;
+    propagate_const<action_t*> chi_surge;
+
     // Windwalker
     propagate_const<action_t*> empowered_tiger_lightning;
     propagate_const<action_t*> fury_of_xuen_summon;
@@ -182,6 +186,7 @@ public:
   struct passive_actions_t
   {
     action_t* thunderfist;
+    action_t* press_the_advantage;
   } passive_actions;
 
   std::vector<action_t*> combo_strike_actions;
@@ -317,6 +322,7 @@ public:
     propagate_const<buff_t*> graceful_exit;
     propagate_const<buff_t*> hit_scheme;
     propagate_const<buff_t*> invoke_niuzao;
+    propagate_const<buff_t*> press_the_advantage;
     propagate_const<buff_t*> pretense_of_instability;
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
@@ -572,6 +578,7 @@ public:
       player_talent_t improved_invoke_niuzao_the_black_ox;
       player_talent_t exploding_keg;
       player_talent_t blackout_combo;
+      player_talent_t press_the_advantage;
       player_talent_t weapons_of_order;
       // Row 10
       player_talent_t bountiful_brew;

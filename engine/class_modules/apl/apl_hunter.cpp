@@ -80,7 +80,7 @@ void beast_mastery( player_t* p )
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains" );
   cleave->add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25" );
   cleave->add_action( "bestial_wrath" );
-  cleave->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator&talent.kill_cleave" );
+  cleave->add_action( "kill_command,if=talent.kill_cleave" );
   cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "stampede,if=buff.bestial_wrath.up|target.time_to_die<15" );
@@ -321,7 +321,7 @@ void survival( player_t* p )
   st->add_action( "wildfire_bomb,if=raid_event.adds.in>cooldown.wildfire_bomb.full_recharge_time-(cooldown.wildfire_bomb.full_recharge_time%3.5)&set_bonus.tier30_4pc&(!dot.wildfire_bomb.ticking&debuff.shredded_armor.stack>0&focus+cast_regen<focus.max|active_enemies>1)" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=buff.mongoose_fury.up" );
   st->add_action( "explosive_shot,if=talent.ranger&(!raid_event.adds.exists|raid_event.adds.in>28)" );
-  st->add_action( "fury_of_the_eagle,if=cooldown.elder_flame_408821.remains>40&target.health.pct<65&talent.ruthless_marauder&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
+  st->add_action( "fury_of_the_eagle,if=(!equipped.djaruun_pillar_of_the_elder_flame|cooldown.elder_flame_408821.remains>40)&target.health.pct<65&talent.ruthless_marauder&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=focus+action.kill_command.cast_regen>focus.max-10|set_bonus.tier30_4pc" );
   st->add_action( "raptor_strike,target_if=max:debuff.latent_poison.stack" );
   st->add_action( "steel_trap" );

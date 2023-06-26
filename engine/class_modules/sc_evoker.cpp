@@ -216,7 +216,7 @@ struct evoker_t : public player_t
     const spell_data_t* emerald_blossom;
     const spell_data_t* emerald_blossom_heal;
     const spell_data_t* emerald_blossom_spec;
-    
+
     // Augmentation
     const spell_data_t* close_as_clutchmates;
 
@@ -953,14 +953,14 @@ struct empowered_release_t : public empowered_base_t<BASE>
 {
   struct shifting_sands_t : public evoker_augment_t
   {
-    mutable std::vector<player_t*> secondary_targets;
-    mutable std::vector<player_t*> tertiary_targets;
-
     shifting_sands_t( evoker_t* p )
-      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets(), tertiary_targets()
+      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) )
     {
       background   = true;
       dot_duration = base_tick_time = 0_ms;
+
+      if ( aoe == 0 )
+        aoe = 1;
     }
 
     void impact( action_state_t* s ) override
@@ -973,9 +973,9 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
     size_t available_targets( std::vector<player_t*>& target_list ) const override
     {
+      std::vector<player_t*> helper_list;
+
       target_list.clear();
-      secondary_targets.clear();
-      tertiary_targets.clear();
 
       if ( sim->player_no_pet_list.size() <= n_targets() )
       {
@@ -989,20 +989,14 @@ struct empowered_release_t : public empowered_base_t<BASE>
       {
         if ( t != player )
         {
-          if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK )
+          if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+               p()->get_target_data( t )->buffs.ebon_might->check() && !p()->get_target_data( t )->buffs.shifting_sands->check() )
           {
-            if ( p()->get_target_data( t )->buffs.shifting_sands->up() )
-            {
-              tertiary_targets.push_back( t );
-            }
-            else
-            {
-              target_list.push_back( t );
-            }
+            target_list.push_back( t );
           }
           else
           {
-            secondary_targets.push_back( t );
+            helper_list.push_back( t );
           }
         }
       }
@@ -1015,34 +1009,45 @@ struct empowered_release_t : public empowered_base_t<BASE>
         }
         return target_list.size();
       }
+      
+      std::vector<std::function<bool( player_t* )>> lambdas = {
+          [ this ]( player_t* t ) {
+            return p()->get_target_data( t )->buffs.ebon_might->check() &&
+                   !p()->get_target_data( t )->buffs.shifting_sands->check();
+          },
+          [ this ]( player_t* t ) {
+            return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                   !p()->get_target_data( t )->buffs.shifting_sands->check();
+          },
+          [ this ]( player_t* t ) { return !p()->get_target_data( t )->buffs.shifting_sands->check(); },
+          [ this ]( player_t* t ) { return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK; },
+          [ this ]( player_t* t ) { return true; } };
 
-      if ( secondary_targets.size() > 0 )
+      for ( auto& fn : lambdas )
       {
-        if ( as<int>( target_list.size() + secondary_targets.size() ) > n_targets() )
+        auto pos = target_list.size();
+
+        for ( size_t i = 0; i < helper_list.size(); )
         {
-          rng().shuffle( secondary_targets.begin(), secondary_targets.end() );
+          if ( fn( helper_list[ i ] ) )
+          {
+            target_list.push_back( helper_list[ i ] );
+            erase_unordered( helper_list, helper_list.begin() + i );
+          }
+          else
+          {
+            i++;
+          }
         }
 
-        for ( const auto& t : secondary_targets )
+        if ( as<int>( target_list.size() ) >= n_targets() )
         {
-          target_list.push_back( t );
-          if ( target_list.size() >= n_targets() )
-            return target_list.size();
-        }
-      }
+          if ( target_list.size() - pos > 1 )
+          {
+            rng().shuffle( target_list.begin() + pos + 1, target_list.end() );
+          }
 
-      if ( tertiary_targets.size() > 0 )
-      {
-        if ( as<int>( target_list.size() + tertiary_targets.size() ) > n_targets() )
-        {
-          rng().shuffle( tertiary_targets.begin(), tertiary_targets.end() );
-        }
-
-        for ( const auto& t : tertiary_targets )
-        {
-          target_list.push_back( t );
-          if ( target_list.size() >= n_targets() )
-            break;
+          return target_list.size();
         }
       }
 
@@ -1853,7 +1858,6 @@ public:
   {
     sim->print_debug( "{} before cast {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
                       p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets() );
-
 
     // Debug for Ebon Might - Need to check if there's a bug
     if ( sim->debug )
@@ -2720,7 +2724,7 @@ struct living_flame_t : public evoker_spell_t
             total_hits++;
       }
     }
-    
+
     // Make sure the buff is definitely gone.
     p()->buff.leaping_flames->expire();
 
@@ -3146,7 +3150,8 @@ struct eruption_t : public essence_spell_t
           -timespan_t::from_seconds( p()->talent.motes_of_possibility->effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->talent.regenerative_chitin->ok() && p()->last_scales_target && p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
+    if ( p()->talent.regenerative_chitin->ok() && p()->last_scales_target &&
+         p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
     {
       p()->get_target_data( p()->last_scales_target )
           ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
@@ -3259,8 +3264,8 @@ public:
     may_dodge = may_parry = may_block = false;
     background                        = true;
     base_crit += 1.0;
-    crit_bonus         = 0.0;
-    base_eons_multiplier = e->talent.temporal_wound->effectN( 1 ).percent();
+    crit_bonus                  = 0.0;
+    base_eons_multiplier        = e->talent.temporal_wound->effectN( 1 ).percent();
     clutchmates_eons_multiplier = base_eons_multiplier * ( 1 + e->spec.close_as_clutchmates->effectN( 1 ).percent() );
 
     /* if ( p != e )
@@ -3350,7 +3355,8 @@ struct prescience_t : public evoker_augment_t
   {
     // Do not ever do this out of precombat, the order of entries in allies with my prescience is not preserved. During
     // precombat we can guarantee the first entry is the first buff because we do not allow the sim to cast prescience
-    // if it would expire a prescience before the next cast, factoring in a gcds since you need time to make use of your spell.
+    // if it would expire a prescience before the next cast, factoring in a gcds since you need time to make use of your
+    // spell.
     if ( is_precombat )
       return p()->allies_with_my_prescience.empty() ||
              p()->get_target_data( p()->allies_with_my_prescience[ 0 ] )->buffs.prescience->remains() >
@@ -3452,7 +3458,7 @@ struct blistering_scales_t : public evoker_augment_t
     evoker_augment_t::impact( s );
 
     if ( p()->last_scales_target )
-        p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->expire();
+      p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->expire();
 
     p()->last_scales_target = s->target;
 
@@ -3645,7 +3651,7 @@ struct blistering_scales_cb_t : public dbc_proc_callback_t
   {
     allow_pet_procs = true;
     deactivate();
-    initialize();   
+    initialize();
   }
 
   evoker_t* p()
@@ -3695,15 +3701,10 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
           return false;
 
         if ( this->p() == s->action->player )
-        {
-          if ( this->p()->buff.ebon_might_self_buff->check() )
-            return true;
-          return false;
-        }
+          return static_cast<bool>( this->p()->buff.ebon_might_self_buff->check() );
 
-        if ( this->p()->get_target_data( s->action->player->get_owner_or_self() )->buffs.ebon_might->check() )
-          return true;
-        return false;
+        return static_cast<bool>(
+            this->p()->get_target_data( s->action->player->get_owner_or_self() )->buffs.ebon_might->check() );
       };
 
       trig = std::make_unique<dbc_proc_callback_t::trigger_fn_t>( lambda );
@@ -3816,7 +3817,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
 
-  if ( evoker->naszuro )
+  if ( evoker->naszuro && !target->is_enemy() && !target->is_pet() )
   {
     buffs.unbound_surge = make_buff<stat_buff_t>( target, "unbound_surge_" + evoker->name_str,
                                                   evoker->find_spell( 403275 ), evoker->naszuro->item );
@@ -3847,11 +3848,11 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       {
         buffs.unbound_surge->set_tick_callback( [ _target, evoker ]( buff_t* b, int s, timespan_t t ) {
           {
-            if ( t > 0_s && !_target->buff.dragonrage->check() &&
+            if ( b->remains() > 0_s && !_target->buff.dragonrage->check() &&
                  _target->rng().roll( evoker->option.naszuro_bounce_chance ) )
               make_event( _target->sim, [ _target, evoker, b, t ] {
+                evoker->bounce_naszuro( _target, b->remains() );
                 b->expire();
-                evoker->bounce_naszuro( _target, t );
               } );
           }
         } );
@@ -3860,10 +3861,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       {
         buffs.unbound_surge->set_tick_callback( [ target, evoker ]( buff_t* b, int s, timespan_t t ) {
           {
-            if ( t > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
+            if ( b->remains() > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
               make_event( target->sim, [ target, evoker, b, t ] {
+                evoker->bounce_naszuro( target, b->remains() );
                 b->expire();
-                evoker->bounce_naszuro( target, t );
               } );
           }
         } );
@@ -3895,150 +3896,154 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       }
     }
 
-    buffs.shifting_sands =
-        make_buff<e_buff_t>( *this, "shifting_sands_" + evoker->name_str, evoker->find_spell( 413984 ) )
-            ->set_default_value( evoker->cache.mastery_value() )
-            ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-            ->set_period( timespan_t::zero() );
+    if ( !target->is_enemy() && !target->is_pet() )
+    {
+      buffs.shifting_sands =
+          make_buff<e_buff_t>( *this, "shifting_sands_" + evoker->name_str, evoker->find_spell( 413984 ) )
+              ->set_default_value( evoker->cache.mastery_value() )
+              ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+              ->set_period( timespan_t::zero() );
 
-    buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
-                                                                     evoker->find_spell( 395152 ) )
-                           ->set_stat_from_effect( 2, 0 );
+      buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
+                                                                       evoker->find_spell( 395152 ) )
+                             ->set_stat_from_effect( 2, 0 );
 
-    buffs.ebon_might->set_cooldown( 0_ms )
-        ->set_period( timespan_t::zero() )
-        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-        ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
+      buffs.ebon_might->set_cooldown( 0_ms )
+          ->set_period( timespan_t::zero() )
+          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+          ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
+            if ( new_ )
+            {
+              evoker->allies_with_my_ebon.push_back( target );
+              if ( auto e = dynamic_cast<evoker_t*>( target ) )
+              {
+                e->allied_ebons_on_me.push_back( b );
+              }
+            }
+            else
+            {
+              evoker->allies_with_my_ebon.find_and_erase_unordered( target );
+              if ( auto e = dynamic_cast<evoker_t*>( target ) )
+              {
+                auto vec = e->allied_ebons_on_me;
+                vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
+              }
+            }
+            for ( auto& c : evoker->allied_ebon_callbacks )
+            {
+              c();
+            }
+          } );
+
+      buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
+                             ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                             ->set_chance( 1.0 );
+
+      if ( evoker->talent.fate_mirror.ok() )
+      {
+        action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
+        auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
+        stats->school         = fate_mirror->get_school();
+
+        fate_mirror->stats->add_child( stats );
+
+        auto fate_mirror_effect      = new special_effect_t( target );
+        fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
+        fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
+        fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
+        target->special_effects.push_back( fate_mirror_effect );
+
+        auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror, stats );
+
+        buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
           if ( new_ )
           {
-            evoker->allies_with_my_ebon.push_back( target );
-            if ( auto e = dynamic_cast<evoker_t*>( target ) )
-            {
-              e->allied_ebons_on_me.push_back( b );
-            }
+            fate_mirror_cb->activate();
+            evoker->allies_with_my_prescience.push_back( target );
           }
           else
           {
-            evoker->allies_with_my_ebon.find_and_erase_unordered( target );
-            if ( auto e = dynamic_cast<evoker_t*>( target ) )
-            {
-              auto vec = e->allied_ebons_on_me;
-              vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
-            }
-          }
-          for ( auto& c : evoker->allied_ebon_callbacks )
-          {
-            c();
+            fate_mirror_cb->deactivate();
+            evoker->allies_with_my_prescience.find_and_erase_unordered( target );
           }
         } );
+      }
+      else
+      {
+        buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
+          if ( new_ )
+          {
+            evoker->allies_with_my_prescience.push_back( target );
+          }
+          else
+          {
+            evoker->allies_with_my_prescience.find_and_erase_unordered( target );
+          }
+        } );
+      }
 
-    buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
-                           ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                           ->set_chance( 1.0 );
+      if ( evoker->talent.blistering_scales )
+      {
+        action_t* blistering_scales =
+            evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );
+        auto stats    = evoker->get_stats( "blistering_scales_" + target->name_str, blistering_scales );
+        stats->school = blistering_scales->get_school();
 
-    if ( evoker->talent.fate_mirror.ok() && !target->is_enemy() && !target->is_pet() )
-    {
-      action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
-      auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
-      stats->school         = fate_mirror->get_school();
+        blistering_scales->stats->add_child( stats );
 
-      fate_mirror->stats->add_child( stats );
+        auto blistering_scales_effect          = new special_effect_t( target );
+        blistering_scales_effect->name_str     = "blistering_scales_" + evoker->name_str;
+        blistering_scales_effect->type         = SPECIAL_EFFECT_EQUIP;
+        blistering_scales_effect->spell_id     = evoker->talent.blistering_scales->id();
+        blistering_scales_effect->proc_flags2_ = PF2_ALL_HIT;
+        blistering_scales_effect->cooldown_    = 2_s;  // Tested 27 / 05 / 2023
+        target->special_effects.push_back( blistering_scales_effect );
 
-      auto fate_mirror_effect      = new special_effect_t( target );
-      fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
-      fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
-      fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
-      target->special_effects.push_back( fate_mirror_effect );
+        auto blistering_scales_cb =
+            new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker, blistering_scales, stats );
 
-      auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror, stats );
+        buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
+                                      ->apply_affecting_aura( evoker->talent.regenerative_chitin )
+                                      ->set_cooldown( 0_s )
+                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                      ->set_stack_change_callback( [ blistering_scales_cb ]( buff_t*, int, int new_ ) {
+                                        if ( new_ )
+                                          blistering_scales_cb->activate();
+                                        else if ( !new_ )
+                                          blistering_scales_cb->deactivate();
+                                      } );
+      }
 
-      buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-        {
-          fate_mirror_cb->activate();
-          evoker->allies_with_my_prescience.push_back( target );
-        }
-        else
-        {
-          fate_mirror_cb->deactivate();
-          evoker->allies_with_my_prescience.find_and_erase_unordered( target );
-        }
-      } );
-    }
-    else
-    {
-      buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
-        if ( new_ )
-        {
-          evoker->allies_with_my_prescience.push_back( target );
-        }
-        else
-        {
-          evoker->allies_with_my_prescience.find_and_erase_unordered( target );
-        }
-      } );
-    }
+      if ( evoker->talent.infernos_blessing.ok() )
+      {
+        buffs.infernos_blessing =
+            make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
 
-    if ( evoker->talent.blistering_scales )
-    {
-      action_t* blistering_scales =
-          evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );
-      auto stats    = evoker->get_stats( "blistering_scales_" + target->name_str, blistering_scales );
-      stats->school = blistering_scales->get_school();
+        action_t* infernos_blessing =
+            evoker->get_secondary_action<spells::fire_breath_t::infernos_blessing_t>( "infernos_blessing" );
 
-      blistering_scales->stats->add_child( stats );
+        auto stats    = evoker->get_stats( "infernos_blessing_" + target->name_str, infernos_blessing );
+        stats->school = infernos_blessing->get_school();
 
-      auto blistering_scales_effect          = new special_effect_t( target );
-      blistering_scales_effect->name_str     = "blistering_scales_" + evoker->name_str;
-      blistering_scales_effect->type         = SPECIAL_EFFECT_EQUIP;
-      blistering_scales_effect->spell_id     = evoker->talent.blistering_scales->id();
-      blistering_scales_effect->proc_flags2_ = PF2_ALL_HIT;
-      blistering_scales_effect->cooldown_    = 2_s;  // Tested 27 / 05 / 2023
-      target->special_effects.push_back( blistering_scales_effect );
+        infernos_blessing->stats->add_child( stats );
 
-      auto blistering_scales_cb =
-          new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker, blistering_scales, stats );
+        auto infernos_blessing_effect      = new special_effect_t( target );
+        infernos_blessing_effect->name_str = "infernos_blessing_" + target->name_str;
+        infernos_blessing_effect->type     = SPECIAL_EFFECT_EQUIP;
+        infernos_blessing_effect->spell_id = evoker->talent.infernos_blessing_buff->id();
+        target->special_effects.push_back( infernos_blessing_effect );
 
-      buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
-                                    ->apply_affecting_aura( evoker->talent.regenerative_chitin )
-                                    ->set_cooldown( 0_s )
-                                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                                    ->set_stack_change_callback( [ blistering_scales_cb ]( buff_t*, int, int new_ ) {
-                                      if ( new_ )
-                                        blistering_scales_cb->activate();
-                                      else if ( !new_ )
-                                        blistering_scales_cb->deactivate();
-                                    } );
-    }
+        auto infernos_blessing_cb =
+            new buffs::infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker, infernos_blessing, stats );
 
-    buffs.infernos_blessing = make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
-
-    if ( evoker->talent.infernos_blessing.ok() )
-    {
-      action_t* infernos_blessing =
-          evoker->get_secondary_action<spells::fire_breath_t::infernos_blessing_t>( "infernos_blessing" );
-
-      auto stats    = evoker->get_stats( "infernos_blessing_" + target->name_str, infernos_blessing );
-      stats->school = infernos_blessing->get_school();
-
-      infernos_blessing->stats->add_child( stats );
-
-      auto infernos_blessing_effect      = new special_effect_t( target );
-      infernos_blessing_effect->name_str = "infernos_blessing_" + target->name_str;
-      infernos_blessing_effect->type     = SPECIAL_EFFECT_EQUIP;
-      infernos_blessing_effect->spell_id = evoker->talent.infernos_blessing_buff->id();
-      target->special_effects.push_back( infernos_blessing_effect );
-
-      auto infernos_blessing_cb =
-          new buffs::infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker, infernos_blessing, stats );
-
-      buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-          infernos_blessing_cb->activate();
-        else
-          infernos_blessing_cb->deactivate();
-      } );
+        buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
+          if ( new_ )
+            infernos_blessing_cb->activate();
+          else
+            infernos_blessing_cb->deactivate();
+        } );
+      }
     }
   }
 }
@@ -4782,7 +4787,6 @@ void evoker_t::reset()
   {
     allies_with_my_prescience.find_and_erase_unordered( ally );
   }
-
 
   was_empowering = false;
 }

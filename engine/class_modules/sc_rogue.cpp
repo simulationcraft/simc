@@ -20,6 +20,7 @@ enum class secondary_trigger
   SINISTER_STRIKE,
   WEAPONMASTER,
   SECRET_TECHNIQUE,
+  SECRET_TECHNIQUE_CLONE,
   SHURIKEN_TORNADO,
   INTERNAL_BLEEDING,
   TRIPLE_THREAT,
@@ -1074,6 +1075,7 @@ public:
   double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_player_multiplier( school_e school ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_target_crit_chance( player_t* target ) const override;
   double    composite_player_target_armor( player_t* target ) const override;
@@ -1455,6 +1457,7 @@ public:
     bool deepening_shadows = false;     // Trigger
     bool elaborate_planning = false;    // Trigger
     bool flagellation = false;
+    bool ghostly_strike = false;
     bool improved_ambush = false;
     bool improved_shiv = false;
     bool lethal_dose = false;
@@ -1611,6 +1614,11 @@ public:
     {
       affected_by.deathmark = ab::data().affected_by( p->spec.deathmark_debuff->effectN( 1 ) ) ||
                               ab::data().affected_by( p->spec.deathmark_debuff->effectN( 2 ) );
+    }
+
+    if ( p->is_ptr() && p->talent.outlaw.ghostly_strike->ok() )
+    {
+      affected_by.ghostly_strike = ab::data().affected_by( p->talent.outlaw.ghostly_strike->effectN( 3 ) );
     }
 
     if ( p->talent.subtlety.the_rotten->ok() )
@@ -2150,6 +2158,11 @@ public:
       m *= tdata->debuffs.deathmark->value_direct();
     }
 
+    if ( affected_by.ghostly_strike )
+    {
+      m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
+    }
+
     return m;
   }
 
@@ -2302,7 +2315,8 @@ public:
          !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) &&
          !( affected_by.blindside && p()->buffs.blindside->check() ) )
     {
-      p()->buffs.sepsis->decrement();
+      // Expiry delayed by 1ms in order to allow Deathmark to benefit from the Improved Garrote effect
+      p()->buffs.sepsis->expire( 1_ms );
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
@@ -3195,6 +3209,7 @@ struct lingering_shadow_t : public rogue_attack_t
   lingering_shadow_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spec.lingering_shadow_attack )
   {
+    base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
   }
 };
 
@@ -4881,6 +4896,28 @@ struct secret_technique_t : public rogue_attack_t
       reduced_aoe_targets = p->talent.subtlety.secret_technique->effectN( 6 ).base_value();
     }
 
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = rogue_attack_t::composite_da_multiplier( state );
+
+      if ( secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE )
+      {
+        // Secret Technique clones count as pets and benefit from pet modifiers
+        m *= p()->composite_player_pet_damage_multiplier( state, true );
+
+        // 2023-06-21 -- Due to issues introduced with the previous scripted application of school whitelists
+        //               and subsequent conversion to ability whitelists, clone attacks can double-dip modifiers
+        if ( p()->bugs )
+        {
+          m *= 1.0 + p()->talent.subtlety.veiltouched->effectN( 3 ).percent();
+          m *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 4 ).percent();
+          m *= 1.0 + p()->buffs.deeper_daggers->stack_value();
+        }
+      }
+
+      return m;
+    }
+
     double combo_point_da_multiplier( const action_state_t* state ) const override
     {
       return static_cast<double>( cast_state( state )->get_combo_points() );
@@ -4909,7 +4946,7 @@ struct secret_technique_t : public rogue_attack_t
       secondary_trigger::SECRET_TECHNIQUE, "secret_technique_player", p->spec.secret_technique_attack );
     player_attack->update_flags &= ~STATE_CRIT; // Hotfixed to snapshot in Cold Blood on delayed attacks
     clone_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
-      secondary_trigger::SECRET_TECHNIQUE, "secret_technique_clones", p->spec.secret_technique_clone_attack );
+      secondary_trigger::SECRET_TECHNIQUE_CLONE, "secret_technique_clones", p->spec.secret_technique_clone_attack );
     clone_attack->update_flags &= ~STATE_CRIT; // Hotfixed to snapshot in Cold Blood on delayed clone attacks
 
     add_child( player_attack );
@@ -4958,14 +4995,8 @@ struct shadow_blades_attack_t : public rogue_attack_t
   shadow_blades_attack_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spec.shadow_blades_attack )
   {
-    may_dodge = may_block = may_parry = false;
-    attack_power_mod.direct = 0;
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-    snapshot_flags = update_flags = 0;
+    base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
+    attack_power_mod.direct = 0; // Base 0.1 mod overwritten by proc damage
   }
 };
 
@@ -7944,7 +7975,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.improved_shiv_debuff, false )
     ->set_direct_mod( source->spec.improved_shiv_debuff->effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+    ->set_default_value_from_effect_type( source->is_ptr() ? A_MOD_DAMAGE_FROM_CASTER_SPELLS : A_MOD_DAMAGE_FROM_CASTER )
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->set_cooldown( timespan_t::zero() );
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
@@ -8211,6 +8242,19 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+// rogue_t::composite_player_pet_damage_multiplier ==========================
+
+double rogue_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+
+  m *= 1.0 + spec.assassination_rogue->effectN( 6 ).percent();
+  m *= 1.0 + spec.outlaw_rogue->effectN( 3 ).percent();
+  m *= 1.0 + spec.subtlety_rogue->effectN( 8 ).percent();
+
+  return m;
+}
+
 // rogue_t::composite_player_target_multiplier ==============================
 
 double rogue_t::composite_player_target_multiplier( player_t* target, school_e school ) const
@@ -8219,7 +8263,11 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
 
   rogue_td_t* tdata = get_target_data( target );
 
-  m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
+  if ( !is_ptr() )
+  {
+    m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
+  }
+
   m *= 1.0 + tdata->debuffs.prey_on_the_weak->stack_value();
 
   return m;
