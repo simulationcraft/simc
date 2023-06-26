@@ -5146,7 +5146,7 @@ struct splintering_ray_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 418735 ) )
   {
     background = true;
-    may_miss = may_crit = callbacks = false;
+    may_miss = may_crit = affected_by.shatter = false;
     base_dd_min = base_dd_max = 1.0;
   }
 
