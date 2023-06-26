@@ -1088,7 +1088,7 @@ struct combustion_t final : public buff_t
   }
 };
 
-struct clearcasting_buff_t : public buff_t
+struct clearcasting_buff_t final : public buff_t
 {
   clearcasting_buff_t( mage_t* p ) :
     buff_t( p, "clearcasting", p->find_spell( 263725 ) )
@@ -2081,7 +2081,7 @@ struct fire_mage_spell_t : public mage_spell_t
   }
 };
 
-struct hot_streak_state_t : public mage_spell_state_t
+struct hot_streak_state_t final : public mage_spell_state_t
 {
   bool hot_streak;
 
@@ -3402,7 +3402,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
 
 // Conflagration Spell ======================================================
 
-struct rolling_periodic_action_state_t : public action_state_t
+struct rolling_periodic_action_state_t final : public action_state_t
 {
   double rolling_ta_multiplier;
 
@@ -7750,7 +7750,7 @@ namespace live_mage {
 
 // MAGE MODULE INTERFACE ====================================================
 
-struct mage_module_t : public module_t
+struct mage_module_t final : public module_t
 {
 public:
   mage_module_t() :
