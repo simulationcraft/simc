@@ -42,7 +42,7 @@ actions.st+=/death_chakram
 actions.st+=/wailing_arrow,if=active_enemies>1
 actions.st+=/rapid_fire,if=talent.surging_shots
 actions.st+=/kill_shot
-actions.st+=/trueshot,if=variable.trueshot_read
+actions.st+=/trueshot,if=variable.trueshot_ready
 # Trigger Salvo if Volley isn't being used to trigger it.
 actions.st+=/multishot,if=buff.salvo.up&!talent.volley
 # With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Without Chimaera Shot don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. On two targets with Chimaera Shot don't overwrite Precise Shots unless the target is within Careful Aim range in addition to either Trueshot being active or Aimed Shot capping before its next cast. Overwrite freely if it can cleave.
