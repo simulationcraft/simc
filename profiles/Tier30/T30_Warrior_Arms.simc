@@ -128,7 +128,8 @@ actions.single_target+=/whirlwind,if=buff.merciless_bonegrinder.up
 actions.single_target+=/cleave,if=set_bonus.tier29_2pc&!talent.crushing_force
 actions.single_target+=/whirlwind,if=rage.pct>90
 actions.single_target+=/rend,if=rage.pct>90
-actions.single_target+=/rend,if=rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)
+actions.single_target+=/slam,if=talent.crushing_force&rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)
+actions.single_target+=/rend,if=!talent.crushing_force&rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)
 actions.single_target+=/bladestorm
 actions.single_target+=/cleave
 actions.single_target+=/wrecking_throw
