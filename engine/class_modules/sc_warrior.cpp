@@ -3172,7 +3172,7 @@ struct onslaught_t : public warrior_attack_t
     if ( p()->talents.fury.tenderize->ok() )
     {
       p()->enrage();
-      p()->buff.slaughtering_strikes_rb->trigger( p()->talents.fury.tenderize->effectN( 2 ).base_value() );
+      p()->buff.slaughtering_strikes_rb->trigger( as<int>( p()->talents.fury.tenderize->effectN( 2 ).base_value() ) );
     }
 
     if ( p()->talents.fury.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
@@ -5917,7 +5917,7 @@ struct titanic_throw_t : public warrior_attack_t
     {
       parse_options( options_str );
       may_dodge = may_parry = may_block = false;
-      aoe = p->talents.warrior.titanic_throw->effectN( 2 ).base_value();
+      aoe                               = as<int>( p->talents.warrior.titanic_throw->effectN( 2 ).base_value() );
     }
 
   double action_multiplier() const override

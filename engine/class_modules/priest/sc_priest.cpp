@@ -1143,7 +1143,7 @@ struct holy_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     aoe                 = -1;
-    full_amount_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
+    full_amount_targets = as<int>( priest().talents.holy_nova->effectN( 3 ).base_value() );
     reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
   }
 

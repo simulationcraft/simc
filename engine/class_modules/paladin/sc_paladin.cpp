@@ -800,7 +800,7 @@ struct crusading_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.blessed_champion->ok() )
     {
-      aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
+      aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
 
@@ -983,7 +983,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.blessed_champion->ok() )
     {
-      aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
+      aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
 
@@ -1292,7 +1292,7 @@ void judgment_t::impact( action_state_t* s )
         int num_stacks = 1;
         if ( p()->talents.highlords_judgment->ok() )
         {
-          num_stacks += p()->talents.highlords_judgment->effectN( 1 ).base_value();
+        num_stacks += as<int>( p()->talents.highlords_judgment->effectN( 1 ).base_value() );
         }
         td( s->target )->debuff.judgment->trigger( num_stacks );
       }
@@ -1892,9 +1892,10 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
   if ( paladin->talents.highlords_judgment->ok() )
   {
-    debuff.judgment = debuff.judgment
-                      ->set_max_stack( 1 + paladin->talents.highlords_judgment->effectN( 1 ).base_value() )
-                      ->modify_duration( timespan_t::from_millis( paladin->talents.highlords_judgment->effectN( 3 ).base_value() ) );
+    debuff.judgment =
+        debuff.judgment->set_max_stack( as<int>( 1 + paladin->talents.highlords_judgment->effectN( 1 ).base_value() ) )
+            ->modify_duration(
+                timespan_t::from_millis( paladin->talents.highlords_judgment->effectN( 3 ).base_value() ) );
   }
 
   debuff.judgment_of_light     = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
@@ -2287,10 +2288,8 @@ void paladin_t::create_buffs()
 
   if ( talents.relentless_inquisitor->ok() )
   {
-    buffs.relentless_inquisitor->set_max_stack(
-      talents.relentless_inquisitor->effectN( 2 ).base_value() +
-      talents.relentless_inquisitor->effectN( 3 ).base_value()
-    );
+    buffs.relentless_inquisitor->set_max_stack( as<int>( talents.relentless_inquisitor->effectN( 2 ).base_value() +
+                                                         talents.relentless_inquisitor->effectN( 3 ).base_value() ) );
   }
 
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
@@ -3105,7 +3104,7 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
     if ( !( source->name_str == "arcane_torrent" || source->name_str == "divine_toll" ) )
     {
       holy_power_generators_used++;
-      int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();
+      int hpGensNeeded = as<int>( talents.of_dusk_and_dawn->effectN( 1 ).base_value() );
       if ( holy_power_generators_used >= hpGensNeeded )
       {
         holy_power_generators_used -= hpGensNeeded;

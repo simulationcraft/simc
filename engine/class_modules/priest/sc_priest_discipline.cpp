@@ -522,7 +522,7 @@ void priest_t::create_buffs_discipline()
 
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", talents.discipline.harsh_discipline )
                                ->set_max_stack( talents.discipline.harsh_discipline.enabled()
-                                                    ? talents.discipline.harsh_discipline->effectN( 1 ).base_value()
+                                                    ? as<int>(talents.discipline.harsh_discipline->effectN( 1 ).base_value())
                                                     : 999 )
                                ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
                                  if ( buffs.harsh_discipline->at_max_stacks() )

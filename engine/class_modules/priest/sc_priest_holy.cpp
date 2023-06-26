@@ -158,7 +158,7 @@ struct burning_vehemence_t final : public priest_spell_t
     may_crit            = false;
     may_miss            = false;
     aoe                 = -1;
-    full_amount_targets = priest().talents.holy.burning_vehemence_damage->effectN( 2 ).percent();
+    full_amount_targets = as<int>( priest().talents.holy.burning_vehemence_damage->effectN( 2 ).base_value() );
     reduced_aoe_targets = priest().talents.holy.burning_vehemence_damage->effectN( 2 ).base_value();
     base_multiplier     = priest().talents.holy.burning_vehemence->effectN( 3 ).percent();
   }

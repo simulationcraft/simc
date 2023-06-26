@@ -5341,14 +5341,14 @@ struct soul_carver_t : public demon_hunter_attack_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    p()->spawn_soul_fragment( soul_fragment::LESSER, data().effectN( 3 ).base_value() );
+    p()->spawn_soul_fragment( soul_fragment::LESSER, as<unsigned int>( data().effectN( 3 ).base_value() ) );
   }
 
   void tick( dot_t* d ) override
   {
     demon_hunter_attack_t::tick( d );
 
-    p()->spawn_soul_fragment( soul_fragment::LESSER, data().effectN( 4 ).base_value() );
+    p()->spawn_soul_fragment( soul_fragment::LESSER, as<unsigned int>( data().effectN( 4 ).base_value() ) );
   }
 };
 
