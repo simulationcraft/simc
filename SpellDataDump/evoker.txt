@@ -2830,8 +2830,9 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ ...x.
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Aura Is Debuff (26), Exclude Caster (51), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=982113)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(57)
+#1 (id=982113)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -90 | Scaled Value: -90 | PvP Coefficient: 1.00000 | Target: Unknown(57)
+Hotfixed         : Sub Type (26 -> 33), Base Value (0 -> -90)
 #2 (id=982114)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : Swoop to an ally and fly with them to the target location.
