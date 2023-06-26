@@ -125,10 +125,11 @@ void protection( player_t* p )
   standard->add_action( "hammer_of_wrath" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
   standard->add_action( "consecration,if=!consecration.up" );
-  standard->add_action( "eye_of_tyr,if=!talent.inmost_light.enabled|raid_event.adds.in>=45" );
+  standard->add_action( "eye_of_tyr,if=talent.inmost_light.enabled&raid_event.adds.in>=45" );
   standard->add_action( "blessed_hammer" );
   standard->add_action( "hammer_of_the_righteous" );
   standard->add_action( "crusader_strike" );
+  standard->add_action( "eye_of_tyr,if=!talent.inmost_light.enabled&raid_event.adds.in>=60" );
   standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
   standard->add_action( "arcane_torrent,if=holy_power<5" );
   standard->add_action( "consecration" );

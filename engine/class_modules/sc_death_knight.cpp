@@ -8361,8 +8361,8 @@ void death_knight_t::create_options()
   add_option( opt_bool( "deathknight.disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "deathknight.split_ghoul_regen", options.split_ghoul_regen ) );
   add_option( opt_bool( "deathknight.split_obliterate_schools", options.split_obliterate_schools ) );
-  add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent ) );
-  add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent ) );
+  add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
+  add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent, 0.0, 1.0 ) );
 }
 
 void death_knight_t::copy_from( player_t* source )

@@ -59,10 +59,11 @@ actions.standard+=/avengers_shield
 actions.standard+=/hammer_of_wrath
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains
 actions.standard+=/consecration,if=!consecration.up
-actions.standard+=/eye_of_tyr,if=!talent.inmost_light.enabled|raid_event.adds.in>=45
+actions.standard+=/eye_of_tyr,if=talent.inmost_light.enabled&raid_event.adds.in>=45
 actions.standard+=/blessed_hammer
 actions.standard+=/hammer_of_the_righteous
 actions.standard+=/crusader_strike
+actions.standard+=/eye_of_tyr,if=!talent.inmost_light.enabled&raid_event.adds.in>=60
 actions.standard+=/word_of_glory,if=buff.shining_light_free.up
 actions.standard+=/arcane_torrent,if=holy_power<5
 actions.standard+=/consecration

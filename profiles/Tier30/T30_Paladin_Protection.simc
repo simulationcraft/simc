@@ -5,7 +5,7 @@ level=70
 race=tauren
 role=tank
 position=front
-talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSo1kkIhESAAACAAAAAAAASEJNBSQSKSkkAAiACABC
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAAIRk0EIBJpIRSCAgACABC
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -59,10 +59,11 @@ actions.standard+=/avengers_shield
 actions.standard+=/hammer_of_wrath
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains
 actions.standard+=/consecration,if=!consecration.up
-actions.standard+=/eye_of_tyr,if=!talent.inmost_light.enabled|raid_event.adds.in>=45
+actions.standard+=/eye_of_tyr,if=talent.inmost_light.enabled&raid_event.adds.in>=45
 actions.standard+=/blessed_hammer
 actions.standard+=/hammer_of_the_righteous
 actions.standard+=/crusader_strike
+actions.standard+=/eye_of_tyr,if=!talent.inmost_light.enabled&raid_event.adds.in>=60
 actions.standard+=/word_of_glory,if=buff.shining_light_free.up
 actions.standard+=/arcane_torrent,if=holy_power<5
 actions.standard+=/consecration
@@ -80,19 +81,19 @@ hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1501/8767
 waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501,gem_id=192945
 legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
 feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/9405/8790/9379/8960/9366/1495,crafted_stats=36/32
-finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,enchant=devotion_of_haste_3
+finger1=onyx_impostors_birthright,id=204398,bonus_id=6652/7981/1498/8767/8780,gem_id=192945,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192945,enchant=devotion_of_haste_3
-trinket1=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1498/8767
+trinket1=elementium_pocket_anvil,id=202617,bonus_id=9410/9380/6652/1498/8767
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
 main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=shadowflame_wreathe_3
 off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
 
 # Gear Summary
-# gear_ilvl=446.13
-# gear_strength=5322
-# gear_stamina=21780
-# gear_crit_rating=4666
-# gear_haste_rating=4512
+# gear_ilvl=446.75
+# gear_strength=5892
+# gear_stamina=22161
+# gear_crit_rating=5111
+# gear_haste_rating=4978
 # gear_mastery_rating=1097
 # gear_versatility_rating=1962
 # gear_armor=12931

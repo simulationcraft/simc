@@ -2315,7 +2315,8 @@ public:
          !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) &&
          !( affected_by.blindside && p()->buffs.blindside->check() ) )
     {
-      p()->buffs.sepsis->decrement();
+      // Expiry delayed by 1ms in order to allow Deathmark to benefit from the Improved Garrote effect
+      p()->buffs.sepsis->expire( 1_ms );
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
