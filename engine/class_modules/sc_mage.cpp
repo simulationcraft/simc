@@ -7628,7 +7628,7 @@ void mage_t::trigger_arcane_charge( int stacks )
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
-class mage_report_t : public player_report_extension_t
+class mage_report_t final : public player_report_extension_t
 {
 public:
   mage_report_t( mage_t& player ) :
