@@ -48,7 +48,7 @@ actions+=/call_dreadstalkers,if=variable.tyrant_cd>cooldown+8*variable.shadow_ti
 actions+=/call_dreadstalkers,if=!talent.summon_demonic_tyrant|fight_remains<14
 actions+=/grimoire_felguard,if=!talent.summon_demonic_tyrant|fight_remains<cooldown.summon_demonic_tyrant.remains_expected
 actions+=/summon_vilefiend,if=!talent.summon_demonic_tyrant|variable.tyrant_cd>cooldown+variable.tyrant_prep_start|fight_remains<cooldown.summon_demonic_tyrant.remains_expected
-actions+=/guillotine,if=cooldown.demonic_strength.remains
+actions+=/guillotine,if=cooldown.demonic_strength.remains|!talent.demonic_strength
 actions+=/demonic_strength
 actions+=/bilescourge_bombers,if=!pet.demonic_tyrant.active
 actions+=/shadow_bolt,if=soul_shard<5&talent.fel_covenant&buff.fel_covenant.remains<5
@@ -78,7 +78,9 @@ actions.ogcd+=/blood_fury
 actions.ogcd+=/fireblood
 
 actions.tyrant=variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&!equipped.neltharions_call_to_dominance
+# Power Infusion is used 6 seconds or less before Demonic Tyrant, without Demonic Tyrant, it will be used 8s before Nether Portal Ends and without both, its used on Cooldown
 actions.tyrant+=/invoke_external_buff,name=power_infusion,if=(buff.nether_portal.up&buff.nether_portal.remains<8&talent.nether_portal)|(buff.dreadstalkers.up&variable.next_tyrant-time<=6&(!talent.nether_portal|variable.shadow_timings))
+actions.tyrant+=/power_siphon,if=buff.wild_imps.stack>1&!buff.nether_portal.up&buff.demonic_core.stack<3
 actions.tyrant+=/shadow_bolt,if=time<2&soul_shard<5
 actions.tyrant+=/nether_portal
 actions.tyrant+=/variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&equipped.neltharions_call_to_dominance
@@ -90,7 +92,6 @@ actions.tyrant+=/hand_of_guldan,if=variable.next_tyrant-time>2&(buff.nether_port
 actions.tyrant+=/hand_of_guldan,if=talent.soulbound_tyrant&variable.next_tyrant-time<4&variable.next_tyrant-time>action.summon_demonic_tyrant.cast_time
 actions.tyrant+=/summon_demonic_tyrant,if=variable.next_tyrant-time<cast_time*2+1|(buff.dreadstalkers.remains<cast_time+gcd&buff.dreadstalkers.up)
 actions.tyrant+=/demonbolt,if=buff.demonic_core.up
-actions.tyrant+=/power_siphon,if=buff.wild_imps.stack>1&!buff.nether_portal.up
 actions.tyrant+=/soul_strike
 actions.tyrant+=/shadow_bolt
 

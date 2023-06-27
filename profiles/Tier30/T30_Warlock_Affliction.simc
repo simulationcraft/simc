@@ -119,6 +119,7 @@ actions.items+=/use_item,name=conjured_chillglobe
 actions.ogcd=potion,if=variable.cds_active
 actions.ogcd+=/berserking,if=variable.cds_active
 actions.ogcd+=/blood_fury,if=variable.cds_active
+#  Uses Power Infusion together with Cooldown windows like Summon Darkglare, Soul Rot, Phantom Singularity or Vile Taint
 actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.cds_active
 actions.ogcd+=/fireblood,if=variable.cds_active
 

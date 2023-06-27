@@ -140,6 +140,7 @@ actions.items+=/use_item,name=iceblood_deathsnare
 actions.items+=/use_item,name=conjured_chillglobe
 
 actions.ogcd=potion,if=pet.infernal.active|!talent.summon_infernal
+# Attempts to use Power Infusion alongside Summon Infernal, but it will be used on Cooldown if the fight length is too short or long enough to fit an extra PI
 actions.ogcd+=/invoke_external_buff,name=power_infusion,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.invoke_power_infusion_0.duration&fight_remains>cooldown.invoke_power_infusion_0.duration)|fight_remains<cooldown.summon_infernal.remains+15
 actions.ogcd+=/berserking,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains
 actions.ogcd+=/blood_fury,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.blood_fury.duration&fight_remains>cooldown.blood_fury.duration)|fight_remains<cooldown.summon_infernal.remains
