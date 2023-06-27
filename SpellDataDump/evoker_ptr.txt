@@ -7026,7 +7026,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ ...x.
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
-#2 (id=1035394)  : Apply Aura (6) | Unknown(540)
+#2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.
 
@@ -8834,7 +8834,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Can Proc From Procs (122), Do Not Display Range (126), Can Target Untargetable (216), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1075415)  : Apply Aura (6) | Unknown(540)
+#1 (id=1075415)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Friend (21)
 #2 (id=1080437)  : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Friend (21)
@@ -9493,7 +9493,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Only On Player (104), Do Not Display Range (126), Aura Points On Client (268), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1082678)  : Apply Aura (6) | Unknown(540)
+#1 (id=1082678)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Misc Value: 6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=1082696)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
