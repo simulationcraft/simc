@@ -4861,6 +4861,12 @@ void firecallers_focus( special_effect_t& e )
 
 // Mirror of Fractured Tomorrows
 // 418527 Driver, Buff and Value container
+// Effect 1-5, Buff Values
+// Effect 6, Sand Bolt value
+// Effect 7, Sand Cleave value
+// Effect 8, Sand Shield value
+// Effect 9, Unknown
+// Effect 10, Auto Attack value
 // Melee DPS:
 // 208957 NPC ID
 // 419591 Auto Attack 
@@ -4950,7 +4956,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       if ( ta && ta->find_action( "sand_bolt" ) )
         stats = ta->find_action( "sand_bolt" )->stats;
 
-      base_dd_min = base_dd_max = e.driver()->effectN( 9 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 6 ).average( e.item );
       background                = true;
     }
   };
