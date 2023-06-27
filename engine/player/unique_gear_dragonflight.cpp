@@ -4880,6 +4880,10 @@ void firecallers_focus( special_effect_t& e )
 // 418605 Sand Bolt Driver
 // 418607 Sand Bolt Damage
 // 418776 Summon Driver
+// TODO: 
+// Double check effects are mapped to the right ability
+// Check Auto Attack interactions, due to the unique id and gcd, that assumed behavior is modeled here
+// Implement the cast start delay for Sand Bolt
 void mirror_of_fractured_tomorrows( special_effect_t& e )
 {
   if ( unique_gear::create_fallback_buffs(
@@ -4897,7 +4901,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       if ( ta && ta->find_action( "auto_attack" ) )
         stats = ta->find_action( "auto_attack" )->stats;
 
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 10 ).average( e.item );
     }
   };
 
@@ -4910,7 +4914,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       if ( ta && ta->find_action( "sand_cleave" ) )
         stats = ta->find_action( "sand_cleave" )->stats;
 
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 7 ).average( e.item );
     }
   };
 
@@ -4926,7 +4930,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         stats = ta->find_action( "sand_shield" )->stats;
       auto shield_id = p->find_spell( 418999 );
       shield         = create_buff<absorb_buff_t>( e.player, shield_id )
-                   ->set_default_value( e.driver()->effectN( 1 ).average( e.item ) );
+                   ->set_default_value( e.driver()->effectN( 8 ).average( e.item ) );
     }
 
     void execute() override
@@ -4945,7 +4949,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       if ( ta && ta->find_action( "sand_bolt" ) )
         stats = ta->find_action( "sand_bolt" )->stats;
 
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 9 ).average( e.item );
       background                = true;
     }
   };
@@ -4958,7 +4962,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         damage( create_proc_action<sand_bolt_t>( "sand_bolt", e ) )
     {
       dual          = true;
-      stats         = damage->stats;
+      add_child ( damage );
       impact_action = damage;
     }
   };
@@ -5085,7 +5089,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
           return;
       }
 
-      auto amount = e.driver()->effectN( 2 ).average( e.item );
+      auto amount = e.driver()->effectN( 1 ).average( e.item );
       buffs = std::make_shared<std::map<stat_e, buff_t*>>();
       ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
 
