@@ -687,7 +687,6 @@ public:
 
     // Row 6
     player_talent_t comet_storm;
-    player_talent_t ebonbolt;
     player_talent_t frozen_touch;
     player_talent_t wintertide;
     player_talent_t snowstorm;
@@ -3682,38 +3681,6 @@ struct evocation_t final : public arcane_mage_spell_t
   }
 };
 
-// Ebonbolt Spell ===========================================================
-
-struct ebonbolt_t final : public frost_mage_spell_t
-{
-  ebonbolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.ebonbolt )
-  {
-    parse_options( options_str );
-    parse_effect_data( p->find_spell( 257538 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = true;
-    affected_by.icicles_st = true;
-
-    if ( p->talents.splitting_ice.ok() )
-    {
-      aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 4 ).percent();
-    }
-  }
-
-  void init_finished() override
-  {
-    proc_brain_freeze = p()->get_proc( "Brain Freeze from Ebonbolt" );
-    frost_mage_spell_t::init_finished();
-  }
-
-  void execute() override
-  {
-    frost_mage_spell_t::execute();
-    p()->trigger_brain_freeze( 1.0, proc_brain_freeze );
-  }
-};
-
 // Fireball Spell ===========================================================
 
 struct fireball_t final : public fire_mage_spell_t
@@ -5996,7 +5963,6 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "blizzard"          ) return new          blizzard_t( name, this, options_str );
   if ( name == "cold_snap"         ) return new         cold_snap_t( name, this, options_str );
   if ( name == "comet_storm"       ) return new       comet_storm_t( name, this, options_str );
-  if ( name == "ebonbolt"          ) return new          ebonbolt_t( name, this, options_str );
   if ( name == "flurry"            ) return new            flurry_t( name, this, options_str );
   if ( name == "frozen_orb"        ) return new        frozen_orb_t( name, this, options_str );
   if ( name == "glacial_spike"     ) return new     glacial_spike_t( name, this, options_str );
@@ -6403,7 +6369,6 @@ void mage_t::init_spells()
   talents.bone_chilling     = find_talent_spell( talent_tree::SPECIALIZATION, "Bone Chilling"     );
   // Row 6
   talents.comet_storm       = find_talent_spell( talent_tree::SPECIALIZATION, "Comet Storm"       );
-  talents.ebonbolt          = find_talent_spell( talent_tree::SPECIALIZATION, "Ebonbolt"          );
   talents.frozen_touch      = find_talent_spell( talent_tree::SPECIALIZATION, "Frozen Touch"      );
   talents.wintertide        = find_talent_spell( talent_tree::SPECIALIZATION, "Wintertide"        );
   talents.snowstorm         = find_talent_spell( talent_tree::SPECIALIZATION, "Snowstorm"         );
@@ -7798,12 +7763,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 0.0 );
-
-    hotfix::register_spell( "Mage", "2022-11-14", "Ebonbolt is slower than spell data suggests.", 257537 )
-      .field( "prj_speed" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20.0 )
-      .verification_value( 30.0 );
 
     for ( auto e_id : { 179703, 191121, 191122, 191124 } )
       hotfix::register_effect( "Mage", "2023-05-16", fmt::format( "Base value of Frost aura's effect {} is truncated.", e_id ), e_id )
