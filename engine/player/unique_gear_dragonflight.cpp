@@ -5054,16 +5054,16 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     }
   };
 
-  struct mirror_of_fractured_tomorrows_cb_t : public generic_proc_t
+  struct mirror_of_fractured_tomorrows_t : public generic_proc_t
   {
     spawner::pet_spawner_t<future_self_pet_t> spawner;
-    double amount;
     const special_effect_t& effect;
+    std::array<stat_e, 4> ratings;
+    std::shared_ptr<std::map<stat_e, buff_t*>> buffs;
 
-    mirror_of_fractured_tomorrows_cb_t( const special_effect_t& e )
+    mirror_of_fractured_tomorrows_t( const special_effect_t& e )
       : generic_proc_t( e, "mirror_of_fractured_tomorrows", e.driver() ),
         spawner( "future_self", e.player, [ &e ]( player_t* ) { return new future_self_pet_t( e ); } ),
-        amount( e.driver()->effectN( 2 ).average( e.item ) ),
         effect( e )
     {
       unsigned summon_driver;
@@ -5085,6 +5085,20 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
           return;
       }
 
+      auto amount = e.driver()->effectN( 2 ).average( e.item );
+      buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+
+      for ( auto stat : ratings )
+      {
+        auto name = std::string( "mirror_of_fractured_tomorrows_" ) + util::stat_type_string( stat );
+        auto buff = create_buff<stat_buff_t>( e.player, name, e.player->find_spell( 418527 ) )
+                    ->set_stat( stat, amount )
+                    ->set_name_reporting( util::stat_type_abbrev( stat ) );
+
+        ( *buffs )[ stat ] = buff;
+      }
+
       spawner.set_default_duration( e.player->find_spell( summon_driver )->duration() );
     }
 
@@ -5092,27 +5106,13 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     {
       spawner.spawn();
 
-      static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
-                                                         STAT_HASTE_RATING, STAT_CRIT_RATING };
-
-      auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
-
-      for ( auto stat : ratings )
-      {
-        auto name = std::string( "mirror_of_fractured_tomorrows_" ) + util::stat_type_string( stat );
-        auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 418527 ) )
-                        ->set_stat( stat, amount )
-                        ->set_name_reporting( util::stat_type_abbrev( stat ) );
-
-        ( *buffs )[ stat ] = buff;
-      }
-
       stat_e max_stat = util::highest_stat( effect.player, ratings );
       ( *buffs )[ max_stat ]->trigger();
     }
   };
 
-  e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_cb_t>( "mirror_of_fractured_tomorrows", e );
+  e.disable_buff();
+  e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_t>( "mirror_of_fractured_tomorrows", e );
 }
 
 // Weapons
