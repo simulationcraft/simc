@@ -18,6 +18,7 @@
 #include "player/action_priority_list.hpp"
 #include "player/action_variable.hpp"
 #include "player/pet.hpp"
+#include "player/pet_spawner.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
@@ -4858,6 +4859,266 @@ void firecallers_focus( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Mirror of Fractured Tomorrows
+// 418527 Driver, Buff and Value container
+// Melee DPS:
+// 208957 NPC ID
+// 419591 Auto Attack 
+// 418588 Sand Cleave
+// 418774 Summon Driver
+// Ranged DPS:
+// 208887 NPC ID
+// 418605 Sand Bolt Driver
+// 418607 Sand Bolt Damage
+// 418773 Summon Driver
+// Tank:
+// 208958 NPC ID
+// 418999 Sand Shield
+// 418775 Summon Driver
+// Heal:
+// 208959 NPC ID
+// 418605 Sand Bolt Driver
+// 418607 Sand Bolt Damage
+// 418776 Summon Driver
+// TODO: 
+// Double check effects are mapped to the right ability
+// Check Auto Attack interactions, due to the unique id and gcd, that assumed behavior is modeled here
+// Implement the cast start delay for Sand Bolt
+void mirror_of_fractured_tomorrows( special_effect_t& e )
+{
+  if ( unique_gear::create_fallback_buffs(
+           e, { "mirror_of_fractured_tomorrows_crit_rating", "mirror_of_fractured_tomorrows_mastery_rating",
+                "mirror_of_fractured_tomorrows_haste_rating", "mirror_of_fractured_tomorrows_versatility_rating" } ) )
+    return;
+
+  struct future_self_auto_attack_t : public spell_t
+  {
+    future_self_auto_attack_t( pet_t* p, const special_effect_t& e )
+      : spell_t( "auto_attack", p, p->find_spell( 419591 ) )
+    {
+      // Merge the stats object with other instances of the pet
+      auto ta = p->owner->find_pet( "future_self" );
+      if ( ta && ta->find_action( "auto_attack" ) )
+        stats = ta->find_action( "auto_attack" )->stats;
+
+      base_dd_min = base_dd_max = e.driver()->effectN( 10 ).average( e.item );
+    }
+  };
+
+  struct sand_cleave_t : public spell_t
+  {
+    sand_cleave_t( pet_t* p, const special_effect_t& e ) : spell_t( "sand_cleave", p, p->find_spell( 418588 ) )
+    {
+      // Merge the stats object with other instances of the pet
+      auto ta = p->owner->find_pet( "future_self" );
+      if ( ta && ta->find_action( "sand_cleave" ) )
+        stats = ta->find_action( "sand_cleave" )->stats;
+
+      base_dd_min = base_dd_max = e.driver()->effectN( 7 ).average( e.item );
+    }
+  };
+
+  struct sand_shield_t : public spell_t
+  {
+    buff_t* shield;
+    sand_shield_t( pet_t* p, const special_effect_t& e )
+      : spell_t( "sand_shield", p, p->find_spell( 418999 ) ), shield( nullptr )
+    {
+      // Merge the stats object with other instances of the pet
+      auto ta = p->owner->find_pet( "future_self" );
+      if ( ta && ta->find_action( "sand_cleave" ) )
+        stats = ta->find_action( "sand_shield" )->stats;
+      auto shield_id = p->find_spell( 418999 );
+      shield         = create_buff<absorb_buff_t>( e.player, shield_id )
+                   ->set_default_value( e.driver()->effectN( 8 ).average( e.item ) );
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+      shield->trigger();
+    }
+  };
+
+  struct sand_bolt_t : public proc_spell_t
+  {
+    sand_bolt_t( const special_effect_t& e ) : proc_spell_t( "sand_bolt", e.player, e.player->find_spell( 418607 ) )
+    {
+      // Merge the stats object with other instances of the pet
+      auto ta = e.player->find_pet( "future_self" );
+      if ( ta && ta->find_action( "sand_bolt" ) )
+        stats = ta->find_action( "sand_bolt" )->stats;
+
+      base_dd_min = base_dd_max = e.driver()->effectN( 9 ).average( e.item );
+      background                = true;
+    }
+  };
+
+  struct sand_bolt_missile_t : public spell_t
+  {
+    action_t* damage;
+    sand_bolt_missile_t( pet_t* p, const special_effect_t& e )
+      : spell_t( "sand_bolt_missile", p, p->find_spell( 418605 ) ),
+        damage( create_proc_action<sand_bolt_t>( "sand_bolt", e ) )
+    {
+      dual          = true;
+      add_child ( damage );
+      impact_action = damage;
+    }
+  };
+
+  struct future_self_pet_t : public pet_t
+  {
+    const special_effect_t& effect;
+
+    future_self_pet_t( const special_effect_t& e )
+      : pet_t( e.player->sim, e.player, "future_self", true, true ), effect( e )
+    {
+      unsigned pet_id;
+      switch ( e.player->role )
+      {
+        case ROLE_ATTACK:
+          pet_id = 208957;
+          break;
+        case ROLE_SPELL:
+          pet_id = 208887;
+          break;
+        case ROLE_TANK:
+          pet_id = 208958;
+          break;
+        case ROLE_HEAL:
+          pet_id = 208959;
+          break;
+        default:
+          return;
+      }
+
+      npc_id = pet_id;
+    }
+
+    void init_base_stats() override
+    {
+      pet_t::init_base_stats();
+    }
+
+    resource_e primary_resource() const override
+    {
+      return RESOURCE_NONE;
+    }
+
+    action_t* create_action( util::string_view name, util::string_view options ) override
+    {
+      if ( name == "auto_attack" )
+      {
+        return new future_self_auto_attack_t( this, effect );
+      }
+
+      if ( name == "sand_cleave" )
+      {
+        return new sand_cleave_t( this, effect );
+      }
+
+      if ( name == "sand_bolt" )
+      {
+        return new sand_bolt_missile_t( this, effect );
+      }
+
+      if ( name == "sand_shield" )
+      {
+        return new sand_shield_t( this, effect );
+      }
+
+      return pet_t::create_action( name, options );
+    }
+
+    void init_action_list() override
+    {
+      pet_t::init_action_list();
+
+      auto def = get_action_priority_list( "default" );
+      switch ( effect.player->role )
+      {
+        case ROLE_ATTACK:
+          def->add_action( "sand_cleave" );
+          def->add_action( "auto_attack" );
+          break;
+        case ROLE_SPELL:
+          def->add_action( "sand_bolt" );
+          break;
+        case ROLE_TANK:
+          def->add_action( "sand_shield" );
+          def->add_action( "auto_attack" );
+          break;
+        case ROLE_HEAL:
+          def->add_action( "sand_bolt" );
+          break;
+        default:
+          return;
+      }
+    }
+  };
+
+  struct mirror_of_fractured_tomorrows_t : public generic_proc_t
+  {
+    spawner::pet_spawner_t<future_self_pet_t> spawner;
+    const special_effect_t& effect;
+    std::array<stat_e, 4> ratings;
+    std::shared_ptr<std::map<stat_e, buff_t*>> buffs;
+
+    mirror_of_fractured_tomorrows_t( const special_effect_t& e )
+      : generic_proc_t( e, "mirror_of_fractured_tomorrows", e.driver() ),
+        spawner( "future_self", e.player, [ &e ]( player_t* ) { return new future_self_pet_t( e ); } ),
+        effect( e )
+    {
+      unsigned summon_driver;
+      switch ( e.player->role )
+      {
+        case ROLE_ATTACK:
+          summon_driver = 418774;
+          break;
+        case ROLE_SPELL:
+          summon_driver = 418773;
+          break;
+        case ROLE_TANK:
+          summon_driver = 418775;
+          break;
+        case ROLE_HEAL:
+          summon_driver = 418776;
+          break;
+        default:
+          return;
+      }
+
+      auto amount = e.driver()->effectN( 1 ).average( e.item );
+      buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
+
+      for ( auto stat : ratings )
+      {
+        auto name = std::string( "mirror_of_fractured_tomorrows_" ) + util::stat_type_string( stat );
+        auto buff = create_buff<stat_buff_t>( e.player, name, e.player->find_spell( 418527 ) )
+                    ->set_stat( stat, amount )
+                    ->set_name_reporting( util::stat_type_abbrev( stat ) );
+
+        ( *buffs )[ stat ] = buff;
+      }
+
+      spawner.set_default_duration( e.player->find_spell( summon_driver )->duration() );
+    }
+
+    void execute() override
+    {
+      spawner.spawn();
+
+      stat_e max_stat = util::highest_stat( effect.player, ratings );
+      ( *buffs )[ max_stat ]->trigger();
+    }
+  };
+
+  e.disable_buff();
+  e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_t>( "mirror_of_fractured_tomorrows", e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7033,6 +7294,7 @@ void register_special_effects()
   register_special_effect( 407512, items::heatbound_medallion );
   register_special_effect( 408625, items::fractured_crystalspine_quill );
   register_special_effect( 407523, items::firecallers_focus );
+  register_special_effect( 418527, items::mirror_of_fractured_tomorrows, true );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
