@@ -8184,7 +8184,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=738432)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15750 | PvP Coefficient: 0.67000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15750 | PvP Coefficient: 0.60000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (0.67 -> 0.6)
 Description      : $@spelldesc280719
 
 Name             : Unstable Catalyst (id=281514) [Passive] 

@@ -3519,13 +3519,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179691)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
                    Family Flags: 43
+Hotfixed         : Base Value (11 -> 18)
 #2 (id=191166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
                    Family Flags: 43
+Hotfixed         : Base Value (11 -> 18)
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 139 | Scaled Value: 139 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
@@ -3558,13 +3560,15 @@ Effects          :
                    Affected Spells: Veteran of the Third War (48263)
                    Family Flags: 107
 #14 (id=844542)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (11 -> 18)
 #15 (id=875940)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 48.2 | Scaled Value: 48.2 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death and Decay (52212), Defile (156000), Death's Due (341340)
                    Family Flags: 67
 #16 (id=1032342)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (11 -> 18)
 #17 (id=1052708)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Blood Plague (55078)
