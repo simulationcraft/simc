@@ -1778,13 +1778,13 @@ namespace pets {
 
 struct death_knight_pet_t : public pet_t
 {
-  bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
+  bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead, guardian;
   timespan_t precombat_spawn_adjust;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false )
+    affected_by_commander_of_the_dead( false ), guardian( guardian )
   {
     if ( auto_attack )
     {
@@ -1816,13 +1816,27 @@ struct death_knight_pet_t : public pet_t
     dk() -> apply_affecting_auras( action );
   }
 
-  double composite_player_multiplier ( school_e s ) const override
+  double composite_player_multiplier( school_e s ) const override
   {
     double m = pet_t::composite_player_multiplier( s );
 
-    if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
+    if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.commander_of_the_dead->up() &&
+         affected_by_commander_of_the_dead )
     {
-      m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
+      m *= 1.0 + dk()->pet_spell.commander_of_the_dead->effectN( 1 ).percent();
+    }
+
+    if ( dk()->mastery.dreadblade->ok() )
+    {
+      m *= 1.0 + dk()->cache.mastery_value();
+    }
+
+    if ( dk()->talent.unholy.unholy_aura.ok() )
+    {
+      if ( guardian )
+        m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 4 ).percent();
+      else  // Pets
+        m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 3 ).percent();
     }
     return m;
   }
@@ -10497,11 +10511,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 {
   double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
-  if ( mastery.dreadblade -> ok() )
-  {
-    m *= 1.0 + cache.mastery_value();
-  }
-
   if ( guardian )
   {
     m *= 1.0 + spec.blood_death_knight -> effectN( 16 ).percent();
@@ -10513,14 +10522,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
     m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
     m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
     m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
-  }
-
-  if ( talent.unholy.unholy_aura.ok() )
-  {
-    if ( guardian )
-      m *= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
-    else // Pets
-      m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
   }
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.vigorous_lifeblood_4pc -> check() )

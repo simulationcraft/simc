@@ -4914,6 +4914,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       if ( ta && ta->find_action( "sand_cleave" ) )
         stats = ta->find_action( "sand_cleave" )->stats;
 
+      aoe = -1;
       base_dd_min = base_dd_max = e.driver()->effectN( 7 ).average( e.item );
     }
   };
@@ -4926,7 +4927,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     {
       // Merge the stats object with other instances of the pet
       auto ta = p->owner->find_pet( "future_self" );
-      if ( ta && ta->find_action( "sand_cleave" ) )
+      if ( ta && ta->find_action( "sand_shield" ) )
         stats = ta->find_action( "sand_shield" )->stats;
       auto shield_id = p->find_spell( 418999 );
       shield         = create_buff<absorb_buff_t>( e.player, shield_id )
