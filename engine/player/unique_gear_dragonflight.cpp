@@ -5035,15 +5035,15 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       switch ( effect.player->role )
       {
         case ROLE_ATTACK:
-          def->add_action( "auto_attack" );
           def->add_action( "sand_cleave" );
+          def->add_action( "auto_attack" );
           break;
         case ROLE_SPELL:
           def->add_action( "sand_bolt" );
           break;
         case ROLE_TANK:
-          def->add_action( "auto_attack" );
           def->add_action( "sand_shield" );
+          def->add_action( "auto_attack" );
           break;
         case ROLE_HEAL:
           def->add_action( "sand_bolt" );
@@ -5054,14 +5054,14 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     }
   };
 
-  struct mirror_of_fractured_tomorrows_cb_t : public dbc_proc_callback_t
+  struct mirror_of_fractured_tomorrows_cb_t : public generic_proc_t
   {
     spawner::pet_spawner_t<future_self_pet_t> spawner;
     double amount;
     const special_effect_t& effect;
 
     mirror_of_fractured_tomorrows_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ),
+      : generic_proc_t( e, "mirror_of_fractured_tomorrows", e.driver() ),
         spawner( "future_self", e.player, [ &e ]( player_t* ) { return new future_self_pet_t( e ); } ),
         amount( e.driver()->effectN( 2 ).average( e.item ) ),
         effect( e )
@@ -5088,12 +5088,15 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       spawner.set_default_duration( e.player->find_spell( summon_driver )->duration() );
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute() override
     {
       spawner.spawn();
-      auto buffs                                     = std::make_shared<std::map<stat_e, buff_t*>>();
+
       static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
                                                          STAT_HASTE_RATING, STAT_CRIT_RATING };
+
+      auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+
       for ( auto stat : ratings )
       {
         auto name = std::string( "mirror_of_fractured_tomorrows_" ) + util::stat_type_string( stat );
@@ -5103,12 +5106,13 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
         ( *buffs )[ stat ] = buff;
       }
+
       stat_e max_stat = util::highest_stat( effect.player, ratings );
       ( *buffs )[ max_stat ]->trigger();
     }
   };
 
-  new mirror_of_fractured_tomorrows_cb_t( e );
+  e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_cb_t>( "mirror_of_fractured_tomorrows", e );
 }
 
 // Weapons
