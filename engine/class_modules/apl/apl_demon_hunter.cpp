@@ -95,7 +95,7 @@ void havoc( player_t* p )
   default_->add_action( "variable,name=holding_meta,value=(talent.demonic&talent.essence_break)&variable.3min_trinket&fight_remains>cooldown.metamorphosis.remains+30+talent.shattered_destiny*60&cooldown.metamorphosis.remains<20&cooldown.metamorphosis.remains>action.eye_beam.execute_time+gcd.max*(talent.inner_demon+2)" );
   default_->add_action( "invoke_external_buff,name=power_infusion" );
   default_->add_action( "immolation_aura,if=talent.ragefire&active_enemies>=3&(cooldown.blade_dance.remains|debuff.essence_break.down)" );
-  default_->add_action( "throw_glaive,if=talent.soulrend&talent.furious_throws&active_enemies>=3&time<1|talent.serrated_glaive&(time<0.5|!debuff.serrated_glaive.up&cooldown.essence_break.remains<5&cooldown.blade_dance.remains)&target.time_to_die>gcd.max*7" );
+  default_->add_action( "throw_glaive,if=talent.serrated_glaive&(cooldown.essence_break.remains<6|cooldown.eye_beam.remains<6)&debuff.serrated_glaive.remains<5&debuff.serrated_glaive.remains<(cooldown.essence_break.remains+5>?cooldown.eye_beam.remains+5)&!debuff.essence_break.up&cooldown.blade_dance.remains&(buff.metamorphosis.up|cooldown.eye_beam.remains<gcd.max*3)&target.time_to_die>gcd.max*8" );
   default_->add_action( "disrupt" );
   default_->add_action( "fel_rush,if=buff.unbound_chaos.up&(buff.unbound_chaos.remains<gcd.max*2|target.time_to_die<gcd.max*2)" );
   default_->add_action( "call_action_list,name=cooldown" );
