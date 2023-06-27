@@ -180,7 +180,7 @@ void marksmanship( player_t* p )
   st->add_action( "stampede" );
   st->add_action( "death_chakram" );
   st->add_action( "wailing_arrow,if=active_enemies>1" );
-  st->add_action( "rapid_fire,if=talent.surging_shots" );
+  st->add_action( "rapid_fire,if=talent.surging_shots|action.aimed_shot.full_recharge_time>gcd+cast_time" );
   st->add_action( "kill_shot" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
