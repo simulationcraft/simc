@@ -1801,7 +1801,7 @@ struct arcane_mage_spell_t : public mage_spell_t
     double mastery = p()->cache.mastery() * p()->spec.savant->effectN( arcane_barrage ? 3 : 2 ).mastery_value();
     mastery *= 1.0 + p()->talents.prodigious_savant->effectN( arcane_barrage ? 2 : 1 ).percent();
 
-    return 1.0 + p()->buffs.arcane_charge->check() * (base + mastery);
+    return 1.0 + p()->buffs.arcane_charge->check() * ( base + mastery );
   }
 };
 
@@ -4003,7 +4003,7 @@ struct flurry_t final : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     int icicle_count = p()->rng().roll( p()->talents.splintering_cold->effectN( 2 ).percent() ) ? 2 : 1;
-    for (int i = 0; i < icicle_count; i++ ) p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
+    for ( int i = 0; i < icicle_count; i++ ) p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
     p()->expression_support.remaining_winters_chill = 2;
 
     p()->state.brain_freeze_active = p()->buffs.brain_freeze->up();
@@ -4575,7 +4575,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     unsigned frozen = cast_state( s )->frozen;
     if ( frozen &  FF_FINGERS_OF_FROST
-      && frozen & ~FF_FINGERS_OF_FROST)
+      && frozen & ~FF_FINGERS_OF_FROST )
     {
       fm *= 1.0 + p()->talents.wintertide->effectN( 2 ).percent();
     }
@@ -6842,7 +6842,7 @@ void mage_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, t
       int new_icicles = std::min( stacks, max_icicles ) - buffs.icicles->check();
       for ( int i = 0; i < new_icicles; i++ )
         trigger_icicle_gain( target, action.icicle.frostbolt, duration );
-    });
+    } );
 
     return;
   }
