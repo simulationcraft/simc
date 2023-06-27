@@ -4974,16 +4974,16 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       switch ( e.player->role )
       {
         case ROLE_ATTACK:
-          pet_id = 418774;
+          pet_id = 208957;
           break;
         case ROLE_SPELL:
-          pet_id = 418773;
+          pet_id = 208887;
           break;
         case ROLE_TANK:
-          pet_id = 418775;
+          pet_id = 208958;
           break;
         case ROLE_HEAL:
-          pet_id = 418776;
+          pet_id = 208959;
           break;
         default:
           return;
