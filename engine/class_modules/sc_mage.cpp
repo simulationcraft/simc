@@ -2616,7 +2616,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Barrage" ) )
   {
     parse_options( options_str );
-    cooldown->hasted = true;
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     triggers.radiant_spark = triggers.overflowing_energy = true;
 
