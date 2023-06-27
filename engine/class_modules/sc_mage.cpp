@@ -221,7 +221,6 @@ public:
   {
     action_t* arcane_assault;
     action_t* arcane_echo;
-    action_t* arcane_explosion_echo;
     action_t* cold_front_frozen_orb;
     action_t* conflagration;
     action_t* conflagration_flare_up;
@@ -232,11 +231,9 @@ public:
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
-    action_t* orb_barrage_arcane_orb;
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* shattered_ice;
-    action_t* splintering_ray;
     action_t* touch_of_the_magi_explosion;
 
     struct icicles_t
@@ -2482,7 +2479,7 @@ struct phoenix_reborn_t final : public spell_t
 
 struct ignite_t final : public residual_action_t
 {
-  action_t* phoenix_reborn;
+  action_t* phoenix_reborn = nullptr;
 
   ignite_t( std::string_view n, mage_t* p ) :
     residual_action_t( n, p, p->find_spell( 12654 ) )
@@ -2560,10 +2557,59 @@ struct ignite_t final : public residual_action_t
   }
 };
 
+// Arcane Orb Spell =========================================================
+
+struct arcane_orb_bolt_t final : public arcane_mage_spell_t
+{
+  arcane_orb_bolt_t( std::string_view n, mage_t* p ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
+  {
+    background = true;
+    affected_by.savant = triggers.radiant_spark = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    // AC is triggered even if the spell misses.
+    p()->trigger_arcane_charge();
+  }
+};
+
+struct arcane_orb_t final : public arcane_mage_spell_t
+{
+  arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, bool orb_barrage = false ) :
+    arcane_mage_spell_t( n, p, orb_barrage ? p->find_spell( 153626 ) : p->talents.arcane_orb )
+  {
+    parse_options( options_str );
+    may_miss = may_crit = false;
+    aoe = -1;
+    cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
+
+    impact_action = get_action<arcane_orb_bolt_t>( orb_barrage ? "orb_barrage_arcane_orb_bolt" : "arcane_orb_bolt", p );
+    add_child( impact_action );
+
+    if ( orb_barrage )
+    {
+      background = true;
+      cooldown->duration = 0_ms;
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+    p()->trigger_arcane_charge();
+  }
+};
+
 // Arcane Barrage Spell =====================================================
 
 struct arcane_barrage_t final : public arcane_mage_spell_t
 {
+  action_t* orb_barrage = nullptr;
   int snapshot_charges = -1;
 
   arcane_barrage_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -2574,8 +2620,11 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     triggers.radiant_spark = triggers.overflowing_energy = true;
 
-    if ( p->action.orb_barrage_arcane_orb )
-      add_child( p->action.orb_barrage_arcane_orb );
+    if ( p->talents.orb_barrage.ok() )
+    {
+      orb_barrage = get_action<arcane_orb_t>( "orb_barrage_arcane_orb", p, "", true );
+      add_child( orb_barrage );
+    }
   }
 
   int n_targets() const override
@@ -2591,7 +2640,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     // how many targets it hits. Snapshot the buff stacks before executing the Orb.
     snapshot_charges = p()->buffs.arcane_charge->check();
     if ( rng().roll( snapshot_charges * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
-      p()->action.orb_barrage_arcane_orb->execute_on_target( target );
+      orb_barrage->execute_on_target( target );
 
     p()->benefits.arcane_charge.arcane_barrage->update();
 
@@ -2740,23 +2789,28 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
 struct arcane_explosion_t final : public arcane_mage_spell_t
 {
-  arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo = false ) :
-    arcane_mage_spell_t( n, p, echo ? p->find_spell( 414381 ) : p->find_class_spell( "Arcane Explosion" ) )
+  action_t* echo = nullptr;
+
+  arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo_ = false ) :
+    arcane_mage_spell_t( n, p, echo_ ? p->find_spell( 414381 ) : p->find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
 
-    if ( echo )
+    if ( echo_ )
     {
       background = true;
     }
     else
     {
       cost_reductions = { p->buffs.clearcasting };
-      if ( p->action.arcane_explosion_echo )
-        add_child( p->action.arcane_explosion_echo );
+      if ( p->talents.concentrated_power.ok() )
+      {
+        echo = get_action<arcane_explosion_t>( "arcane_explosion_echo", p, "", true );
+        add_child( echo );
+      }
     }
   }
 
@@ -2770,8 +2824,8 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
   void execute() override
   {
-    if ( !background && p()->buffs.clearcasting->check() && p()->talents.concentrated_power.ok() )
-      make_event( *sim, 500_ms, [ this, t = target ] { p()->action.arcane_explosion_echo->execute_on_target( t ); } );
+    if ( echo && p()->buffs.clearcasting->check() )
+      make_event( *sim, 500_ms, [ this, t = target ] { echo->execute_on_target( t ); } );
 
     arcane_mage_spell_t::execute();
 
@@ -3029,54 +3083,6 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::last_tick( d );
     p()->buffs.clearcasting_channel->expire();
-  }
-};
-
-// Arcane Orb Spell =========================================================
-
-struct arcane_orb_bolt_t final : public arcane_mage_spell_t
-{
-  arcane_orb_bolt_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
-  {
-    background = true;
-    affected_by.savant = triggers.radiant_spark = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    // AC is triggered even if the spell misses.
-    p()->trigger_arcane_charge();
-  }
-};
-
-struct arcane_orb_t final : public arcane_mage_spell_t
-{
-  arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, bool orb_barrage = false ) :
-    arcane_mage_spell_t( n, p, orb_barrage ? p->find_spell( 153626 ) : p->talents.arcane_orb )
-  {
-    parse_options( options_str );
-    may_miss = may_crit = false;
-    aoe = -1;
-    cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
-
-    impact_action = get_action<arcane_orb_bolt_t>( orb_barrage ? "orb_barrage_arcane_orb_bolt" : "arcane_orb_bolt", p );
-    add_child( impact_action );
-
-    if ( orb_barrage )
-    {
-      background = true;
-      cooldown->duration = 0_ms;
-      base_costs[ RESOURCE_MANA ] = 0;
-    }
-  }
-
-  void execute() override
-  {
-    arcane_mage_spell_t::execute();
-    p()->trigger_arcane_charge();
   }
 };
 
@@ -3826,12 +3832,11 @@ struct flame_patch_t final : public fire_mage_spell_t
 
 struct flamestrike_t final : public hot_streak_spell_t
 {
-  action_t* flame_patch;
+  action_t* flame_patch = nullptr;
   timespan_t flame_patch_duration;
 
   flamestrike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    hot_streak_spell_t( n, p, p->find_specialization_spell( "Flamestrike" ) ),
-    flame_patch()
+    hot_streak_spell_t( n, p, p->find_specialization_spell( "Flamestrike" ) )
   {
     parse_options( options_str );
     triggers.ignite = true;
@@ -5176,12 +5181,20 @@ struct splintering_ray_t final : public mage_spell_t
 
 struct ray_of_frost_t final : public frost_mage_spell_t
 {
+  action_t* splintering_ray = nullptr;
+
   ray_of_frost_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.ray_of_frost )
   {
     parse_options( options_str );
     channeled = triggers.chill = true;
     affected_by.icicles_st = true;
+
+    if ( p->talents.splintering_ray.ok() )
+    {
+      splintering_ray = get_action<splintering_ray_t>( "splintering_ray", p );
+      add_child( splintering_ray );
+    }
   }
 
   void init_finished() override
@@ -5202,8 +5215,8 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     if ( d->current_tick == 3 || d->current_tick == 5 )
       p()->trigger_fof( 1.0, proc_fof );
 
-    if ( p()->action.splintering_ray )
-      p()->action.splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
+    if ( splintering_ray )
+      splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
   }
 
   void last_tick( dot_t* d ) override
@@ -6040,9 +6053,6 @@ void mage_t::create_actions()
   if ( talents.arcane_echo.ok() )
     action.arcane_echo = get_action<arcane_echo_t>( "arcane_echo", this );
 
-  if ( talents.concentrated_power.ok() )
-    action.arcane_explosion_echo = get_action<arcane_explosion_t>( "arcane_explosion_echo", this, "", true );
-
   if ( talents.conflagration.ok() )
   {
     action.conflagration          = get_action<conflagration_t>( "conflagration", this );
@@ -6062,9 +6072,6 @@ void mage_t::create_actions()
   if ( talents.touch_of_the_magi.ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
 
-  if ( talents.orb_barrage.ok() )
-    action.orb_barrage_arcane_orb = get_action<arcane_orb_t>( "orb_barrage_arcane_orb", this, "", true );
-
   if ( talents.firefall.ok() )
     action.firefall_meteor = get_action<meteor_t>( "firefall_meteor", this, "", true );
 
@@ -6073,9 +6080,6 @@ void mage_t::create_actions()
 
   if ( talents.harmonic_echo.ok() )
     action.harmonic_echo = get_action<harmonic_echo_t>( "harmonic_echo", this );
-
-  if ( talents.splintering_ray.ok() )
-    action.splintering_ray = get_action<splintering_ray_t>( "splintering_ray", this );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
