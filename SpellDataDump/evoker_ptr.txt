@@ -703,7 +703,7 @@ Effects          :
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
 #3 (id=910333)   : Apply Aura (6) | Modify Mana Regen% (379)
-                   Base Value: 28 | Scaled Value: 28 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=910446)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763), Defy Fate (404381), Spiritbloom (409895), Molten Blood (410651)
@@ -844,7 +844,7 @@ Effects          :
 #1 (id=890895)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1016984)  : Apply Aura (6) | Modify Mana Regen% (379)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1016985)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
@@ -2925,8 +2925,8 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ ...x.
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Aura Is Debuff (26), Exclude Caster (51), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=982113)   : Apply Aura (6) | Root (26)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(57)
+#1 (id=982113)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -90 | Scaled Value: -90 | PvP Coefficient: 1.00000 | Target: Unknown(57)
 #2 (id=982114)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : Swoop to an ally and fly with them to the target location.
@@ -3830,7 +3830,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Store $s1% of your effective healing, up to $<cap>. Your next damaging Living Flame consumes all stored healing to increase its damage dealt.
 Variables        : $pvp=$?a134735[${0.7}][${1}]
-$cap=${$SP*1.61*$<pvp>}
+$cap=${$SP*2.254*$<pvp>}
 
 Name             : Scarlet Adaptation (id=372470) [Spell Family (224)] 
 Class            : Evoker
@@ -4854,6 +4854,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
+Family Flags     : 75
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6897,8 +6898,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032729)  : Apply Aura (6) | Proc Trigger Spell (42): Time Bender
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 394544 | Target: Self (1)
-Description      : Empower spells increase Reversion's chance to critically heal by $394544s1% for $394544d.
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Trigger Spell: 394544 | Target: Self (1)
+Description      : Empower spells increase Reversion's healing by $394544s1% for $394544d.
 
 Name             : Evoker Preservation Class Set 4pc (id=393645) [Spell Family (224), Passive, Hidden] 
 Class            : Evoker
@@ -6959,12 +6960,12 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1034298)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
+#1 (id=1034298)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Reversion (366155)
                    Family Flags: 8
 Description      : $@spelldesc393644
-Tooltip          : Reversion's critical healing chance increased by $s1%.
+Tooltip          : Reversion's healing increased by $s1%.
 
 Name             : Lifespark (id=394552) [Spell Family (224)] 
 Class            : Evoker
@@ -7024,7 +7025,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ ...x.
                  : ........ ........ ........ ........   
                  : Exclude Caster (51), Ignore Line of Sight (66), Only On Player (104), Limit N (165), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1035393)  : Apply Aura (6) | Dummy (4)
+#1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
@@ -7118,7 +7119,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1035680)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.42800 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
 #2 (id=1055269)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -7132,7 +7133,7 @@ Effects          :
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Upheaval (396288)
                    Family Flags: 35, 58
 #5 (id=1092313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.42800 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
 Description      : $@spelldesc395152
@@ -7184,7 +7185,7 @@ Effects          :
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
 #3 (id=1037190)  : Apply Aura (6) | Modify Mana Regen% (379)
-                   Base Value: 28 | Scaled Value: 28 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1037191)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763), Defy Fate (404381), Spiritbloom (409895), Molten Blood (410651)
@@ -7265,15 +7266,15 @@ Cooldown         : 40 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Affecting spells : Tip the Scales (370553 effects: #1, #2), Font of Magic (408083 effect#3), Unyielding Domain (412733 effect#2)
 Family Flags     : 59
-Attributes       : ........ ........ ........ ........   ..x..... ..x..... ........ .x..xx.. 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .....x..   ..x..... ..x..... ........ .x..xx.. 
+                 : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1037390)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -8040,7 +8041,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #10 (id=1091013)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 2706 (Label) | Target: Self (1)
-                   Affected Spells (Label): Divine Hymn (64844), Light of Dawn (85222), Revival (115310), Tranquility (157982), Refreshing Jade Wind (162530), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Symbol of Hope (265144), Holy Word: Salvation (265202), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Restoral (388615)
+                   Affected Spells (Label): Divine Hymn (64844), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Refreshing Jade Wind (162530), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Symbol of Hope (265144), Holy Word: Salvation (265202), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Restoral (388615)
 Description      : Evoke a paradox for you and a friendly healer, allowing casting while moving and increasing the range of most spells by $s4% for $d.
 
 Affects the nearest healer within $407497A1 yds, if you do not have a healer targeted.
@@ -8446,15 +8447,15 @@ Cooldown         : 40 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Affecting spells : Tip the Scales (370553 effects: #1, #2), Font of Magic (408083 effect#3), Unyielding Domain (412733 effect#2)
 Family Flags     : 59
-Attributes       : ........ ........ ........ ........   ..x..... ..x..... ........ .x..xx.. 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... .....x..   ..x..... ..x..... ........ .x..xx.. 
+                 : ........ x....... ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ......x. ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1072015)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
