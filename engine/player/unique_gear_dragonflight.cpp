@@ -7294,7 +7294,7 @@ void register_special_effects()
   register_special_effect( 407512, items::heatbound_medallion );
   register_special_effect( 408625, items::fractured_crystalspine_quill );
   register_special_effect( 407523, items::firecallers_focus );
-  register_special_effect( 418527, items::mirror_of_fractured_tomorrows );
+  register_special_effect( 418527, items::mirror_of_fractured_tomorrows, true );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
