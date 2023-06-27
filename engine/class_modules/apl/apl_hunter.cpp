@@ -190,6 +190,7 @@ void marksmanship( player_t* p )
   st->add_action( "rapid_fire" );
   st->add_action( "wailing_arrow,if=buff.trueshot.down" );
   st->add_action( "kill_command,if=buff.trueshot.down" );
+  st->add_action( "steel_trap" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
