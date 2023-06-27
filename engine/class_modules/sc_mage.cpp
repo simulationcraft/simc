@@ -3385,7 +3385,9 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     if ( hit_any_target )
     {
       p()->buffs.snowstorm->expire();
-      if ( p()->talents.coldest_snap.ok() )
+      // TODO: the number will most likely appear in the next build, use spell data here and in impact
+      // TODO: check how this behaves when CoC misses one of the three targets
+      if ( execute_state->n_targets >= 3 && p()->talents.coldest_snap.ok() )
       {
         p()->cooldowns.comet_storm->reset( false );
         p()->cooldowns.frozen_orb->reset( false );
@@ -3400,7 +3402,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     if ( p()->talents.freezing_cold.ok() )
       p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Freezing Cold only has the initial grace period
 
-    if ( p()->talents.coldest_snap.ok() )
+    if ( s->n_targets >= 3 && p()->talents.coldest_snap.ok() )
       trigger_winters_chill( s );
   }
 };
