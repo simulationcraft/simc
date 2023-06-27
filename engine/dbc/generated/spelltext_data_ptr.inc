@@ -1,4 +1,4 @@
-// Spell text, wow build 10.1.5.50130
+// Spell text, wow build 10.1.5.50199
 static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18738,7 +18738,7 @@ static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   { 393641, "Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1 sec.", 0, 0 },
   { 393642, "Empower spells have a $s1% increased chance to critically strike and also increase your critical strike chance by $394402s1% for $394402d.\r\n", 0, 0 },
   { 393643, "Empower spells have a $s2% chance to grant you $s1 seconds of Fury of the Aspects without causing Exhaustion.", 0, 0 },
-  { 393644, "Empower spells increase Reversion's chance to critically heal by $394544s1% for $394544d.", 0, 0 },
+  { 393644, "Empower spells increase Reversion's healing by $394544s1% for $394544d.", 0, 0 },
   { 393645, "Reversion healing has a chance to cause your next Living Flame to cast instant and deal $s2% increased healing or damage. Stacks up to $394552u times.", 0, 0 },
   { 393646, "Kill Command damage increased by $s1% and it has a $h% chance to reset the cooldown on Barbed Shot.", 0, 0 },
   { 393647, "Barbed Shot damage increased by $s1% and Barbed Shot increases damage of your next Kill Command by $394298s1%.", 0, 0 },
@@ -18971,7 +18971,7 @@ static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   { 394486, "$@spelldesc388114", 0, 0 },
   { 394504, "$@spelldesc393638", "Healing $w1 every $t1 sec.", 0 },
   { 394514, "$spelldesc386941", 0, 0 },
-  { 394544, "$@spelldesc393644", "Reversion's critical healing chance increased by $s1%.", 0 },
+  { 394544, "$@spelldesc393644", "Reversion's healing increased by $s1%.", 0 },
   { 394550, "$@spelldesc393670", "Critical Strike chance of your spells increased by $s1%.", 0 },
   { 394552, "$@spelldesc393645", "Next Living Flame's cast time reduced by $s1% and deals $s2% increased damage or healing.", 0 },
   { 394559, "$@spelldesc393621", 0, 0 },
@@ -19999,14 +19999,14 @@ static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   { 414928, "Your melee attacks and abilities have a chance to $?FAC=[Doomstrike][Kingstrike] your target, dealing $s1 $?FAC=[Nature][Holy] damage.", 0, 0 },
   { 414936, "Let loose a five-hit combo upon your current target dealing a total of ${$414928s2*$s2} Physical damage and unleashing a $?FAC=[Doomstrike][Kingstrike] with each blow.", 0, 0 },
   { 414951, "$@spelldesc414936", 0, 0 },
-  { 414968, "Your harmful spells and abilities have a chance to manifest a Fel Elemental by your side for $414976d, periodically dealing $s1 Fire damage to your target and increasing your Haste by $s2.", 0, 0 },
+  { 414968, "Your harmful spells and abilities have a chance to manifest a fel elemental by your side for $414976d, periodically dealing $s1 Fire damage to your target and increasing your Haste by $s2.", 0, 0 },
   { 414969, "Emerald Blossom no longer has a cooldown, deals $s4% increased healing, and increases the duration of your active Ebon Might effects by $s2 sec, but costs $s1 Essence.", 0, 0 },
   { 414976, "$@spelldesc414968", "Haste increased by $w1.", 0 },
   { 415006, "Nearby player and enemy deaths grant you a Lost Soul, up to 10. Consuming Lost Souls $?a137047|a137034|a212611|a137005|a137041|a137027|a137025|a137011|a137017|a137028|a137023|a137010[shields you for $s3 per Lost Soul consumed.][]$?a137039|a137031|a137032|a137029|a137024|a356810|a137012[regenerates $s6 mana per Lost Soul consumed.][]$?a137042|a137018|a137040|a137033|a137016|a137015|a356809|a137013[empowers you, gaining $s5 Mastery per Lost Soul consumed for $415133d.][]\r\n\r\n", 0, 0 },
   { 415033, "$@spelldesc415130", "Periodically deal $415006w2 Frost damage split between nearby enemies. After $415006w10 sec, unleash a wave of shadows fearing nearby enemies for $415038d. The duration of the fear is reduced for each nearby enemy (min 0.5 sec).", 0 },
   { 415038, "Let the Scourge coarse through and corrupt you consuming all Lost Souls, transforming into a Lich for $415033d. During this time you periodically deal $415006s2 Frost damage split between nearby enemies. After $415006s10 sec unleash of wave of shadows Fearing nearby enemies for $415038d. The duration of the Fear is reduced for each nearby enemy down to 0.5 sec against $415006s12 or more targets.", "Disoriented.", 0 },
   { 415091, "Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Crusader Strike by ${$s4/1000}.1 sec.$?a386568[\r\n\r\n$@spelldesc386568][]$?a280373[\r\n\r\n$@spelldesc280373][]\r\n\r\n", 0, 0 },
-  { 415130, "Let the power of the Scourge course through and corrupt you, consuming all Lost Souls $?a137047|a137034|a212611|a137005|a137041|a137027|a137025|a137011|a137017|a137028|a137023|a137010[and transforming into a Lich for $415033d. During this time you periodically deal $415006s2 Frost damage split between nearby enemies. After $415006s10 sec, unleash a wave of shadows fearing nearby enemies for $415038d. The duration of the fear is reduced for each nearby enemy (min 0.5 sec). (2 min 30 sec cooldown)][]$@spelldesc415245", 0, 0 },
+  { 415130, "Let the power of the Scourge course through and corrupt you, consuming all Lost Souls $?a137047|a137034|a212611|a137005|a137041|a137027|a137025|a137011|a137017|a137028|a137023|a137010[and transforming into a lich for $415033d. During this time you periodically deal $415006s2 Frost damage split between nearby enemies. After $415006s10 sec, unleash a wave of shadows causing nearby enemies to flee for $415038d. The duration of the fear is reduced for each nearby enemy (min 0.5 sec). (2 min 30 sec cooldown)][]$@spelldesc415245\r\n\r\nThis effect can differ based on your Specialization.", 0, 0 },
   { 415132, "Let the Scourge coarse through and corrupt you consuming all Lost Souls, transforming into a Lich for $415133d during which your harmful spell and abilities have a chance to slow the target by $415132s1% for $415132d. Begin to gather ice and form it into a Pillar of Frost, after $415006s10 sec launch the Pillar at your target dealing $415006s4 Frost damage split between all nearby enemies.", "Slowed by $w1%.", 0 },
   { 415133, "$@spelldesc415130", "Your harmful spell and abilities have a chance to slow the target by $415132w1% for $415132d. Begin to gather ice and form it into a Pillar of Frost, after $415006w10 sec launch the Pillar at your target dealing $415006w4 Frost damage split between all nearby enemies.", 0 },
   { 415169, "Starfall deals $s1% increased damage.", 0, 0 },
@@ -20015,9 +20015,9 @@ static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   { 415221, "Your damage done is increased by $s1%.", 0, 0 },
   { 415222, "Blistering Scales increases Armor by an additional $s1% of your own.", 0, 0 },
   { 415244, "After casting Daybreak, you restore ${$415246s3*$s1} Mana over $415246d, but your healing and damage is decreased by $415246s1%.\r\n\r\nDaybreak no longer restores Mana from each Glimmer consumed.", 0, 0 },
-  { 415245, "$?a137042|a137018|a137040|a137033|a137016|a137015|a356809|a137013[and transforming into a Lich for $415133d during which your harmful spell and abilities have a chance to slow the target by $415132s1% for $415132d. Begin to gather ice and form it into a Pillar of Frost, after $415006s10 sec launch the Pillar at your target dealing $415006s4 Frost damage split between all nearby enemies. (2 Min 30 Sec Cooldown)][]$?a137039|a137031|a137032|a137029|a137024|a356810|a137012[transforming into a Lich and promoting a friendly target to Scourge General for $415170d. The Scourge General's maximum health is increased by $415006s7 and damage they deal has a chance to heal them for $415006s8. After $415006s10 sec order your Scourge General to finish of the opposition granting them $415006s9 Haste for $415200d. (2 Min 30 Sec Cooldown)][] ", 0, 0 },
+  { 415245, "$?a137042|a137018|a137040|a137033|a137016|a137015|a356809|a137013[and transforming into a lich for $415133d. As a lich, your harmful spells and abilities have a chance to slow the target by $415132s1% for $415132d. $415006s10 sec after transforming, you launch a pillar of ice at your target dealing $415006s4 Frost damage split between all nearby enemies. (2 Min 30 Sec Cooldown)][]$?a137039|a137031|a137032|a137029|a137024|a356810|a137012[and transforming into a lich while promoting a friendly target to Scourge General for $415170d. The Scourge General's maximum health is increased by $415006s7 and damage they deal has a chance to heal them for $415006s8. After $415006s10 sec, your Scourge General gains $415006s9 Haste for $415200d. (2 Min 30 Sec Cooldown)][] ", 0, 0 },
   { 415246, "$@spelldesc415244", "Restoring $s3 Mana every $t3 sec, but your healing and damage is decreased by $s1%.", 0 },
-  { 415284, "Your harmful spells and abilities have a chance to conjure a cyclone at you current target's location. The cyclone follows the initial target dealing ${$s1* ($415339d/$s4)} Nature damage over $415339d split between all enemies.\r\n\r\nWhile inside the cyclone, enemies become Lightning Conduits. Dealing damage to a Lightning Conduit has a high chance to unleash a bolt of forked lighting, dealing $s2 Nature damage split between them and up to $s3 additional nearby targets.", 0, 0 },
+  { 415284, "Your harmful spells and abilities have a chance to conjure a cyclone at your current target's location. The cyclone follows the initial target dealing ${$s1* ($415339d/$s4)} Nature damage over $415339d split between all enemies.\r\n\r\nWhile inside the cyclone, enemies become Lightning Conduits. Dealing damage to a Lightning Conduit has a high chance to unleash a bolt of forked lighting, dealing $s2 Nature damage split between them and up to $s3 additional nearby targets.", 0, 0 },
   { 415299, "$@spelldesc414720", 0, 0 },
   { 415339, "$@spelldesk415284", 0, 0 },
   { 415364, "Holy Shock and Crusader Strike refund up to $s1% of their Mana cost and deal up to $s2% more healing or damage, based on the target's missing health.", 0, 0 },
@@ -20042,7 +20042,7 @@ static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   { 416615, "Unstable Affliction deals $s1% increased damage.", 0, 0 },
   { 416621, "When Seed of Corruption deals damage to a target suffering from your Unstable Affliction they explode, dealing $416699s1 Shadow damage to all enemies within $416699A1 yards.", 0, 0 },
   { 416699, "$@spelldesc416621", 0, 0 },
-  { 416714, "While Ignite is on $s1 or fewer enemies it deals $s2% increased damage.", 0, 0 },
+  { 416714, "While Ignite is on $s1 or fewer enemies it flares up dealing an additional $s2% of its damage to affected targets.", 0, 0 },
   { 416715, "Each time Living Bomb explodes it has a $s1% chance to reduce its cooldown by ${$s2/1000}.1 sec.", 0, 0 },
   { 416719, "Meteor's damage is increased by $s1% but is now split evenly between all enemies hit. Additionally, its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 416770, "Your auto attacks heal a nearby ally for ${$385723s1*(1+$s2/100)}.", 0, 0 },
@@ -20050,15 +20050,15 @@ static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   { 416799, "Your allies with Glimmer of Light take $s1% reduced damage, split evenly among them.", 0, 0 },
   { 416869, "Hammer of Wrath has $s1 extra charge and on enemies below $s2% health generates ${$403081s1} additional Holy Power.  ", 0, 0 },
   { 417049, "$@spelldesc417050", 0, 0 },
-  { 417050, "Sustaining fatal damage throws you $s1 seconds into the past, restoring up to $s2 health lost during that time.\r\n\r\nEnemies that struck you during that window of time deal $s3% less damage to you, in addition to your Haste being increased by $s4 for $417139d.\r\n\r\nThis effect can only occur once every $417069d.", 0, 0 },
+  { 417050, "Sustaining fatal damage throws you $s1 seconds into the past, restoring up to $s2 health lost during that time.\r\n\r\nFor the next $417139d, your Haste is increased by $s4 and enemies responsible for your untimely demise deal $s3% less damage to you.\r\n\r\nThis effect can only occur once every $417069d.", 0, 0 },
   { 417069, "$@spelldesc417050", "Your past was rewound too recently for the Prophetic Stonescale to trigger again.", 0 },
   { 417139, "$@spelldesc417050", "Haste increased by $w1, and taking $417050s3% less damage from enemies that struck you in the undone future.", 0 },
   { 417234, "Summon Infernal increases the damage of your next $s3 casts of Chaos Bolt by $s1% or your next $s3 casts of Rain of Fire by $s2%.", 0, 0 },
   { 417282, "$@spelldesc417234", "Your next Chaos Bolt deals $w1% increased damage or Rain of Fire deals $w2% increased damage.", 0 },
   { 417290, "$@spelldesc417050", "Being thrown into the past.", 0 },
-  { 417449, "Your attacks drain the Hourglass, giving you a chance to gain $s1 Haste up to $417452u times before the sand runs out.\r\n\r\nOnce the glass is empty, your next offensive ability performs a flurry of Accelerated Strikes, dealing $s2 Physical damage per stack and flipping the Hourglass to begin the cycle anew.", 0, 0 },
+  { 417449, "Your attacks drain the hourglass, giving you a chance to gain $s1 Haste up to $417452u times before the sand runs out.\r\n\r\nOnce the glass is empty, your next offensive ability performs a flurry of Accelerated Strikes, dealing $s2 Physical damage per stack and flipping the Hourglass to begin the cycle anew.", 0, 0 },
   { 417452, "$@spelldesc417449", "Haste increased by $w1.", 0 },
-  { 417456, "$@spelldesc417449", "Your next damaging spell or ability will launch a volley of attacks at the target dealing ${$417449w2*$417452u} Physical damage.", 0 },
+  { 417456, "$@spelldesc417449", "Your next damaging spell or ability will launch a volley of attacks at the target dealing ${$417449w2*$w1} Physical damage.", 0 },
   { 417458, "$@spelldesc417449", 0, 0 },
   { 417467, "Hot Streak increases the amount of Ignite damage from Pyroblast or Flamestrike by an additional $s1%.", 0, 0 },
   { 417487, "Your water elemental's abilities apply Frigid Empowerment increasing the Frost damage you deal by $417488s1%, up to ${$417488s1*$417488u}%.", 0, 0 },
@@ -20102,17 +20102,17 @@ static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   { 419262, 0, "Bleeding for $w1 every $t sec.", 0 },
   { 419278, "Attempt to finish off a weakened opponent, dealing $s1 Nature damage to an enemy below $s2% health. Dealing damage to enemies below $s2% health reduces the cooldown of this effect by $s3 sec.", 0, 0 },
   { 419279, "$@spelldesc419278", 0, 0 },
-  { 419421, "Exert authority over the domain of the titans, gaining $s2% movement speed and granting your abilities a chance to deal Holy damage on-hit. Only active while in Uldaman, Ulduar, Uldum, Uldir, Uldorus, and Uldaz.", 0, 0 },
+  { 419421, "Exert authority over the domain of the titans, gaining $s2% movement speed and granting your abilities a chance to deal bonus Holy damage. Only active while in Uldaman, Ulduar, Uldum, Uldir, Uldorus, and Uldaz.", 0, 0 },
   { 419423, "$@spelldesc419421", 0, 0 },
   { 419539, "$@spelldesc415130", "Shielded for $w4.", 0 },
   { 419591, "Attacks the enemy.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.5.50130
+// spelltext hotfix entries, wow build 10.1.5.50199
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.5.50130
+// Spell description variables, wow build 10.1.5.50199
 static const std::array<spelldesc_vars_data_t, 395> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20454,7 +20454,7 @@ static const std::array<spelldesc_vars_data_t, 395> __ptr_spelldesc_vars_data { 
   {  368847, "$damage=${$369374s1*(1+$369372d/2)}" },
   {  369908, "$max=${6}" },
   {  370839, "$rate=${100}" },
-  {  372469, "$pvp=$?a134735[${0.7}][${1}]\r\n$cap=${$SP*1.61*$<pvp>}" },
+  {  372469, "$pvp=$?a134735[${0.7}][${1}]\r\n$cap=${$SP*2.254*$<pvp>}" },
   {  373129, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   {  373427, "$mindbendermult=$?a137032[${0.326139}][${0.442}]\r\n$value=${$s4*$<mindbendermult>}" },
   {  373861, "$shield=${$SP*1.4*(1+$@versadmg)}" },
@@ -20511,7 +20511,7 @@ static const std::array<spelldesc_vars_data_t, 395> __ptr_spelldesc_vars_data { 
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.5.50130
+// spelldesc_vars hotfix entries, wow build 10.1.5.50199
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
