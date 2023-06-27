@@ -53,6 +53,7 @@ actions.st+=/volley
 actions.st+=/rapid_fire
 actions.st+=/wailing_arrow,if=buff.trueshot.down
 actions.st+=/kill_command,if=buff.trueshot.down
+actions.st+=/steel_trap
 actions.st+=/chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.st+=/bag_of_tricks,if=buff.trueshot.down
