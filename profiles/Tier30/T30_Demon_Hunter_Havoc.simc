@@ -6,7 +6,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=BEkAAAAAAAAAAAAAAAAAAAAAAQAJkSEaJJSSkGCAAAAAAAkg0SJSSKSi0SC5AJJJRA
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAIBIkSEaJJSSkGCAAAAAAAkg0SJSSKSi0SCRSSSSA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -25,6 +25,7 @@ temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=3min_trinket,value=trinket.1.cooldown.duration=180|trinket.2.cooldown.duration=180
 actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
@@ -38,6 +39,7 @@ actions.precombat+=/immolation_aura
 actions=auto_attack
 actions+=/retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound<(spell_targets>?3)
 actions+=/retarget_auto_attack,line_cd=1,target_if=min:!target.is_boss,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound=(spell_targets>?3)
+# Blade Dance with First Blood, Trail of Ruin, Chaos Theory, or at 2+ targets
 actions+=/variable,name=blade_dance,value=talent.first_blood|talent.trail_of_ruin|talent.chaos_theory&buff.chaos_theory.down|spell_targets.blade_dance1>1
 actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury<(75-talent.demon_blades*20)&cooldown.blade_dance.remains<gcd.max
 actions+=/variable,name=pooling_for_eye_beam,value=talent.demonic&!talent.blind_fury&cooldown.eye_beam.remains<(gcd.max*2)&fury<60
@@ -104,29 +106,29 @@ actions.meta_end=death_sweep
 actions.meta_end+=/annihilation
 
 head=kinslayers_hood,id=202524,bonus_id=1478/6652/7981/1498/8767/8780,gem_id=192982
-neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/1537/8782,gem_id=192919/192919/192919,crafted_stats=32/36
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/1537/8782,gem_id=192922/192922/192922,crafted_stats=32/36
 shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=1481/6652/7981/1498/8767
 back=voice_of_the_silent_star,id=204465,bonus_id=6652/7981/1498/8767
-chest=kinslayers_vest,id=202527,bonus_id=6652/7981/1498/8767,enchant_id=6625
-wrists=needlessly_complex_wristguards,id=198327,bonus_id=8836/8840/8902/1537/8780,gem_id=192919,crafted_stats=32
+chest=kinslayers_vest,id=202527,bonus_id=6652/7981/1498/8767,enchant=waking_stats_3
+wrists=needlessly_complex_wristguards,id=198327,bonus_id=8836/8840/8902/1537/8780,gem_id=192922,crafted_stats=32
 hands=kinslayers_bloodstained_grips,id=202525,bonus_id=1475/6652/7981/1498/8767
-waist=oblivions_immortal_coil,id=204399,bonus_id=6652/7981/1498/8767/8780,gem_id=192919
-legs=lifebound_trousers,id=193408,bonus_id=8836/8840/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
+waist=oblivions_immortal_coil,id=204399,bonus_id=6652/7981/1498/8767/8780,gem_id=192922
+legs=lifebound_trousers,id=193408,bonus_id=8836/8840/8902/1537/8797/8960,enchant=fierce_armor_kit_3,crafted_stats=32/49
 feet=toxic_thorn_footwraps,id=193452,bonus_id=8836/8840/8902/1537/8960
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
-finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192922,enchant=devotion_of_critical_strike_3
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/7981/1498/8767/8780,gem_id=192922,enchant=devotion_of_critical_strike_3
 trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/7981/1498/8767
 trinket2=elementium_pocket_anvil,id=202617,bonus_id=6652/7981/1498/8767
-main_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant_id=6655
-off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant_id=6655
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant=wafting_devotion_3
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant=wafting_devotion_3
 
 # Gear Summary
 # gear_ilvl=446.38
 # gear_agility=6806
 # gear_stamina=22135
 # gear_crit_rating=6412
-# gear_haste_rating=2845
-# gear_mastery_rating=1452
+# gear_haste_rating=2614
+# gear_mastery_rating=1683
 # gear_versatility_rating=1190
 # gear_armor=4003
 # set_bonus=tier30_2pc=1
