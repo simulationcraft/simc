@@ -617,7 +617,7 @@ public:
     // Row 5
     player_talent_t improved_scorch;
     player_talent_t critical_mass;
-    player_talent_t intensifying_flame; // TODO: NYI
+    player_talent_t intensifying_flame;
     player_talent_t flame_on;
     player_talent_t flame_patch;
 
@@ -2476,9 +2476,28 @@ struct phoenix_reborn_t final : public spell_t
   }
 };
 
+struct intensifying_flame_t final : public spell_t
+{
+  intensifying_flame_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 419800 ) )
+  {
+    background = true;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    // Despite only being flagged with Ignore Positive Damage Taken Modifiers (321),
+    // this spell does not appear to double dip negative damage taken multipliers.
+    snapshot_flags = STATE_NO_MULTIPLIER;
+  }
+};
+
 struct ignite_t final : public residual_action_t
 {
   action_t* phoenix_reborn = nullptr;
+  action_t* intensifying_flame = nullptr;
 
   ignite_t( std::string_view n, mage_t* p ) :
     residual_action_t( n, p, p->find_spell( 12654 ) )
@@ -2488,6 +2507,9 @@ struct ignite_t final : public residual_action_t
 
     if ( p->talents.phoenix_reborn.ok() )
       phoenix_reborn = get_action<phoenix_reborn_t>( "phoenix_reborn", p );
+
+    if ( p->talents.intensifying_flame.ok() )
+      intensifying_flame = get_action<intensifying_flame_t>( "intensifying_flame", p );
   }
 
   void init() override
@@ -2517,6 +2539,9 @@ struct ignite_t final : public residual_action_t
       p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
       phoenix_reborn->execute_on_target( d->target );
     }
+
+    if ( p()->get_active_dots( internal_id ) <= p()->talents.intensifying_flame->effectN( 1 ).base_value() )
+      intensifying_flame->execute_on_target( d->target, p()->talents.intensifying_flame->effectN( 2 ).percent() * d->state->result_amount );
   }
 
   void impact( action_state_t* s ) override
@@ -6294,58 +6319,58 @@ void mage_t::init_spells()
 
   // Fire
   // Row 1
-  talents.pyroblast              = find_talent_spell( talent_tree::SPECIALIZATION, "Pyroblast"                );
+  talents.pyroblast              = find_talent_spell( talent_tree::SPECIALIZATION, "Pyroblast"              );
   // Row 2
-  talents.fire_blast             = find_talent_spell( talent_tree::SPECIALIZATION, "Fire Blast"               );
-  talents.pyrotechnics           = find_talent_spell( talent_tree::SPECIALIZATION, "Pyrotechnics"             );
+  talents.fire_blast             = find_talent_spell( talent_tree::SPECIALIZATION, "Fire Blast"             );
+  talents.pyrotechnics           = find_talent_spell( talent_tree::SPECIALIZATION, "Pyrotechnics"           );
   // Row 3
-  talents.scorch                 = find_talent_spell( talent_tree::SPECIALIZATION, "Scorch"                   );
-  talents.phoenix_flames         = find_talent_spell( talent_tree::SPECIALIZATION, "Phoenix Flames"           );
-  talents.surging_blaze          = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Blaze"            );
+  talents.scorch                 = find_talent_spell( talent_tree::SPECIALIZATION, "Scorch"                 );
+  talents.phoenix_flames         = find_talent_spell( talent_tree::SPECIALIZATION, "Phoenix Flames"         );
+  talents.surging_blaze          = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Blaze"          );
   // Row 4
-  talents.searing_touch          = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Touch"            );
-  talents.firestarter            = find_talent_spell( talent_tree::SPECIALIZATION, "Firestarter"              );
-  talents.fervent_flickering     = find_talent_spell( talent_tree::SPECIALIZATION, "Fervent Flickering"       );
-  talents.fuel_the_fire          = find_talent_spell( talent_tree::SPECIALIZATION, "Fuel the Fire"            );
+  talents.searing_touch          = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Touch"          );
+  talents.firestarter            = find_talent_spell( talent_tree::SPECIALIZATION, "Firestarter"            );
+  talents.fervent_flickering     = find_talent_spell( talent_tree::SPECIALIZATION, "Fervent Flickering"     );
+  talents.fuel_the_fire          = find_talent_spell( talent_tree::SPECIALIZATION, "Fuel the Fire"          );
   // Row 5
-  talents.improved_scorch        = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Scorch"          );
-  talents.critical_mass          = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Mass"            );
-  talents.intensifying_flame     = find_talent_spell( talent_tree::SPECIALIZATION, "[NYI] Intensifying Flame" );
-  talents.flame_on               = find_talent_spell( talent_tree::SPECIALIZATION, "Flame On"                 );
-  talents.flame_patch            = find_talent_spell( talent_tree::SPECIALIZATION, "Flame Patch"              );
+  talents.improved_scorch        = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Scorch"        );
+  talents.critical_mass          = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Mass"          );
+  talents.intensifying_flame     = find_talent_spell( talent_tree::SPECIALIZATION, "Intensifying Flame"     );
+  talents.flame_on               = find_talent_spell( talent_tree::SPECIALIZATION, "Flame On"               );
+  talents.flame_patch            = find_talent_spell( talent_tree::SPECIALIZATION, "Flame Patch"            );
   // Row 6
-  talents.alexstraszas_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Alexstrasza's Fury"       );
-  talents.from_the_ashes         = find_talent_spell( talent_tree::SPECIALIZATION, "From the Ashes"           );
-  talents.combustion             = find_talent_spell( talent_tree::SPECIALIZATION, "Combustion"               );
-  talents.living_bomb            = find_talent_spell( talent_tree::SPECIALIZATION, "Living Bomb"              );
-  talents.incendiary_eruptions   = find_talent_spell( talent_tree::SPECIALIZATION, "Incendiary Eruptions"     );
+  talents.alexstraszas_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Alexstrasza's Fury"     );
+  talents.from_the_ashes         = find_talent_spell( talent_tree::SPECIALIZATION, "From the Ashes"         );
+  talents.combustion             = find_talent_spell( talent_tree::SPECIALIZATION, "Combustion"             );
+  talents.living_bomb            = find_talent_spell( talent_tree::SPECIALIZATION, "Living Bomb"            );
+  talents.incendiary_eruptions   = find_talent_spell( talent_tree::SPECIALIZATION, "Incendiary Eruptions"   );
   // Row 7
-  talents.call_of_the_sun_king   = find_talent_spell( talent_tree::SPECIALIZATION, "Call of the Sun King"     );
-  talents.firemind               = find_talent_spell( talent_tree::SPECIALIZATION, "Firemind"                 );
-  talents.improved_combustion    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Combustion"      );
-  talents.tempered_flames        = find_talent_spell( talent_tree::SPECIALIZATION, "Tempered Flames"          );
-  talents.feel_the_burn          = find_talent_spell( talent_tree::SPECIALIZATION, "Feel the Burn"            );
-  talents.convection             = find_talent_spell( talent_tree::SPECIALIZATION, "Convection"               );
+  talents.call_of_the_sun_king   = find_talent_spell( talent_tree::SPECIALIZATION, "Call of the Sun King"   );
+  talents.firemind               = find_talent_spell( talent_tree::SPECIALIZATION, "Firemind"               );
+  talents.improved_combustion    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Combustion"    );
+  talents.tempered_flames        = find_talent_spell( talent_tree::SPECIALIZATION, "Tempered Flames"        );
+  talents.feel_the_burn          = find_talent_spell( talent_tree::SPECIALIZATION, "Feel the Burn"          );
+  talents.convection             = find_talent_spell( talent_tree::SPECIALIZATION, "Convection"             );
   // Row 8
-  talents.phoenix_reborn         = find_talent_spell( talent_tree::SPECIALIZATION, "Phoenix Reborn"           );
-  talents.fevered_incantation    = find_talent_spell( talent_tree::SPECIALIZATION, "Fevered Incantation"      );
-  talents.master_of_flame        = find_talent_spell( talent_tree::SPECIALIZATION, "Master of Flame"          );
-  talents.kindling               = find_talent_spell( talent_tree::SPECIALIZATION, "Kindling"                 );
-  talents.inflame                = find_talent_spell( talent_tree::SPECIALIZATION, "Inflame"                  );
-  talents.pyromaniac             = find_talent_spell( talent_tree::SPECIALIZATION, "Pyromaniac"               );
-  talents.conflagration          = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration"            );
-  talents.firefall               = find_talent_spell( talent_tree::SPECIALIZATION, "Firefall"                 );
+  talents.phoenix_reborn         = find_talent_spell( talent_tree::SPECIALIZATION, "Phoenix Reborn"         );
+  talents.fevered_incantation    = find_talent_spell( talent_tree::SPECIALIZATION, "Fevered Incantation"    );
+  talents.master_of_flame        = find_talent_spell( talent_tree::SPECIALIZATION, "Master of Flame"        );
+  talents.kindling               = find_talent_spell( talent_tree::SPECIALIZATION, "Kindling"               );
+  talents.inflame                = find_talent_spell( talent_tree::SPECIALIZATION, "Inflame"                );
+  talents.pyromaniac             = find_talent_spell( talent_tree::SPECIALIZATION, "Pyromaniac"             );
+  talents.conflagration          = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration"          );
+  talents.firefall               = find_talent_spell( talent_tree::SPECIALIZATION, "Firefall"               );
   // Row 9
-  talents.controlled_destruction = find_talent_spell( talent_tree::SPECIALIZATION, "Controlled Destruction"   );
-  talents.flame_accelerant       = find_talent_spell( talent_tree::SPECIALIZATION, "Flame Accelerant"         );
-  talents.fiery_rush             = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Rush"               );
-  talents.wildfire               = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire"                 );
-  talents.meteor                 = find_talent_spell( talent_tree::SPECIALIZATION, "Meteor"                   );
+  talents.controlled_destruction = find_talent_spell( talent_tree::SPECIALIZATION, "Controlled Destruction" );
+  talents.flame_accelerant       = find_talent_spell( talent_tree::SPECIALIZATION, "Flame Accelerant"       );
+  talents.fiery_rush             = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Rush"             );
+  talents.wildfire               = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire"               );
+  talents.meteor                 = find_talent_spell( talent_tree::SPECIALIZATION, "Meteor"                 );
   // Row 10
-  talents.hyperthermia           = find_talent_spell( talent_tree::SPECIALIZATION, "Hyperthermia"             );
-  talents.sun_kings_blessing     = find_talent_spell( talent_tree::SPECIALIZATION, "Sun King's Blessing"      );
-  talents.unleashed_inferno      = find_talent_spell( talent_tree::SPECIALIZATION, "Unleashed Inferno"        );
-  talents.deep_impact            = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Impact"              );
+  talents.hyperthermia           = find_talent_spell( talent_tree::SPECIALIZATION, "Hyperthermia"           );
+  talents.sun_kings_blessing     = find_talent_spell( talent_tree::SPECIALIZATION, "Sun King's Blessing"    );
+  talents.unleashed_inferno      = find_talent_spell( talent_tree::SPECIALIZATION, "Unleashed Inferno"      );
+  talents.deep_impact            = find_talent_spell( talent_tree::SPECIALIZATION, "Deep Impact"            );
 
   // Frost
   // Row 1
