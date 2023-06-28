@@ -2541,7 +2541,7 @@ struct ignite_t final : public residual_action_t
     }
 
     if ( p()->get_active_dots( internal_id ) <= p()->talents.intensifying_flame->effectN( 1 ).base_value() )
-      intensifying_flame->execute_on_target( d->target, p()->talents.intensifying_flame->effectN( 2 ).percent() * d->state->result_amount );
+      intensifying_flame->execute_on_target( d->target, p()->talents.intensifying_flame->effectN( 2 ).percent() * d->state->result_total );
   }
 
   void impact( action_state_t* s ) override
