@@ -782,6 +782,8 @@ struct player_t : public actor_t
     player_option_t<std::string> spoils_of_neltharus_initial_type = "";
     /// Chance for igenous flowstone lave wave to hit twice
     player_option_t<double> igneous_flowstone_double_lava_wave_chance;
+    /// Enable Voice of the Silent Star's proc
+    player_option_t<bool> voice_of_the_silent_star_enable = true;
   } dragonflight_opts;
 
 private:

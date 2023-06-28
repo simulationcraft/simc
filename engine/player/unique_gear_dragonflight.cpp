@@ -6039,7 +6039,14 @@ void voice_of_the_silent_star( special_effect_t& effect )
   effect.proc_flags_ = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  if( effect.player -> dragonflight_opts.voice_of_the_silent_star_enable )
+  {
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+  }
 }
 
 // Shadowflame-Tempered Armor Patch
