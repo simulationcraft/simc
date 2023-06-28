@@ -1861,6 +1861,7 @@ class SpellDataGenerator(DataGenerator):
           ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
           ( 414381, 0 ),                            # Concentrated Power AE
           ( 418735, 0 ),                            # Splintering Ray
+          ( 419800, 0 ),                            # Intensifying Flame
         ),
 
         # Warlock:
