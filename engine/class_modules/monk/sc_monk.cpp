@@ -1802,7 +1802,7 @@ namespace monk
           double am = rising_sun_kick_dmg_t::action_multiplier();
 
           if ( face_palm )
-            am *= p()->talent.brewmaster.face_palm->effectN( 2 ).percent();
+            am *= 1.0 ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.5;
 
           if ( blackout_combo )
             am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.5;
@@ -3296,7 +3296,7 @@ namespace monk
           double am = keg_smash_t::action_multiplier();
 
           if ( face_palm )
-            am *= p()->talent.brewmaster.face_palm->effectN( 2 ).percent();
+            am *= 1.0 ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.5;
 
           if ( blackout_combo )
             am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.5;
