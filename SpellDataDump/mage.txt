@@ -6453,7 +6453,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Velocity         : 20 yards/sec
+Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
 Affecting spells : Icy Veins (12472 effect#2), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1), Foresight (384865 effect#1)
 Family Flags     : 110
