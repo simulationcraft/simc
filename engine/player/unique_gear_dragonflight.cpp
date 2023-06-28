@@ -4947,29 +4947,15 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     }
   };
 
-  struct sand_bolt_t : public proc_spell_t
-  {
-    sand_bolt_t( const special_effect_t& e ) : proc_spell_t( "sand_bolt", e.player, e.player->find_spell( 418607 ) )
-    {
-      // Merge the stats object with other instances of the pet
-      auto ta = e.player->find_pet( "future_self" );
-      if ( ta && ta->find_action( "sand_bolt" ) )
-        stats = ta->find_action( "sand_bolt" )->stats;
-
-      base_dd_min = base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      background                = true;
-    }
-  };
-
   struct sand_bolt_missile_t : public spell_t
   {
-    action_t* damage;
     sand_bolt_missile_t( pet_t* p, const special_effect_t& e )
-      : spell_t( "sand_bolt_missile", p, p->find_spell( 418605 ) ),
-        damage( create_proc_action<sand_bolt_t>( "sand_bolt", e ) )
+      : spell_t( "sand_bolt_missile", p, p->find_spell( 418605 ) )
     {
       dual          = true;
-      add_child ( damage );
+      auto damage = create_proc_action<generic_proc_t>( "sand_bolt", p, "sand_bolt", p->find_spell( 418607 ) );
+      damage -> base_dd_min = damage -> base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+      stats = damage -> stats;
       impact_action = damage;
     }
   };
