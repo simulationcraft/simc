@@ -201,7 +201,7 @@ void demonology( player_t* p )
   default_->add_action( "shadow_bolt,if=talent.fel_covenant&buff.fel_covenant.remains<5&!prev_gcd.1.shadow_bolt&soul_shard<5");
   default_->add_action( "hand_of_guldan,if=buff.nether_portal.remains>cast_time" );
   default_->add_action( "demonic_strength,if=buff.nether_portal.remains<gcd.max&(fight_remains>63&!(fight_remains>cooldown.summon_demonic_tyrant.remains+69)|cooldown.summon_demonic_tyrant.remains>30|variable.shadow_timings|buff.rite_of_ruvaraad.up|!talent.summon_demonic_tyrant|!talent.grimoire_felguard|!set_bonus.tier30_2pc)" );
-  default_->add_action( "guillotine,if=buff.nether_portal.remains<gcd.max&cooldown.demonic_strength.remains" );
+  default_->add_action( "guillotine,if=buff.nether_portal.remains<gcd.max&(cooldown.demonic_strength.remains|!talent.demonic_strength)" );
   default_->add_action( "bilescourge_bombers,if=!pet.demonic_tyrant.active" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>25|variable.tyrant_cd>25|buff.nether_portal.up" );
   default_->add_action( "implosion,if=two_cast_imps>0&buff.tyrant.down&active_enemies>1+(talent.sacrificed_souls.enabled)" );
