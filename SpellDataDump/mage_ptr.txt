@@ -6431,7 +6431,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Velocity         : 20 yards/sec
+Velocity         : 30 yards/sec
 Cooldown         : 30 seconds
 Affecting spells : Icy Veins (12472 effect#2), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1), Foresight (384865 effect#1)
 Family Flags     : 110
@@ -16171,5 +16171,24 @@ Effects          :
 #1 (id=1091270)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 Description      : $@spelldesc418733
+
+Name             : Intensifying Flame (id=419800) [Spell Family (3)] 
+Class            : Mage
+School           : Fire
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ .x...... ....x... ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : xx...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), Can't Crit (93), Not a Proc (105), Allow Aura While Dead (116), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Bypass Visibility Check (320), Ignore Positive Damage Taken Modifiers (321)
+Effects          :
+#1 (id=1092988)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc416714
 
 
