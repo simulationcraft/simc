@@ -2490,7 +2490,7 @@ struct intensifying_flame_t final : public spell_t
 
     // Despite only being flagged with Ignore Positive Damage Taken Modifiers (321),
     // this spell does not appear to double dip negative damage taken multipliers.
-    snapshot_flags = STATE_NO_MULTIPLIER;
+    snapshot_flags &= STATE_NO_MULTIPLIER;
   }
 };
 
