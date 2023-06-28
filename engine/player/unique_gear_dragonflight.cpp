@@ -4953,9 +4953,12 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       : spell_t( "sand_bolt_missile", p, p->find_spell( 418605 ) )
     {
       dual          = true;
+      // Merge the stats object with other instances of the pet
+      auto ta = p->owner->find_pet( "future_self" );
+      if ( ta && ta->find_action( "sand_bolt" ) )
+        stats = ta->find_action( "sand_bolt" )->stats;
       auto damage = create_proc_action<generic_proc_t>( "sand_bolt", p, "sand_bolt", p->find_spell( 418607 ) );
       damage -> base_dd_min = damage -> base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      stats = damage -> stats;
       impact_action = damage;
     }
   };
