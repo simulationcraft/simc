@@ -4899,42 +4899,49 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
   struct future_self_auto_attack_t : public spell_t
   {
-    future_self_auto_attack_t( pet_t* p, const special_effect_t& e )
-      : spell_t( "auto_attack", p, p->find_spell( 419591 ) )
+    action_t* action;
+    future_self_auto_attack_t( pet_t* p, const special_effect_t& e, action_t* a )
+      : spell_t( "auto_attack", p, p->find_spell( 419591 ) ), action( a )
     {
-      // Merge the stats object with other instances of the pet
-      auto ta = p->owner->find_pet( "future_self" );
-      if ( ta && ta->find_action( "auto_attack" ) )
-        stats = ta->find_action( "auto_attack" )->stats;
-
       base_dd_min = base_dd_max = e.driver()->effectN( 10 ).average( e.item );
+      auto proxy                = action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
   };
 
   struct sand_cleave_t : public spell_t
   {
-    sand_cleave_t( pet_t* p, const special_effect_t& e ) : spell_t( "sand_cleave", p, p->find_spell( 418588 ) )
+    action_t* action;
+    sand_cleave_t( pet_t* p, const special_effect_t& e, action_t* a ) : spell_t( "sand_cleave", p, p->find_spell( 418588 ) ), action( a )
     {
-      // Merge the stats object with other instances of the pet
-      auto ta = p->owner->find_pet( "future_self" );
-      if ( ta && ta->find_action( "sand_cleave" ) )
-        stats = ta->find_action( "sand_cleave" )->stats;
-
       aoe = -1;
       base_dd_min = base_dd_max = e.driver()->effectN( 7 ).average( e.item );
+      auto proxy                = action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
   };
 
   struct sand_shield_t : public spell_t
   {
     buff_t* shield;
-    sand_shield_t( pet_t* p, const special_effect_t& e )
-      : spell_t( "sand_shield", p, p->find_spell( 418999 ) ), shield( nullptr )
+    action_t* action;
+    sand_shield_t( pet_t* p, const special_effect_t& e, action_t* a )
+      : spell_t( "sand_shield", p, p->find_spell( 418999 ) ), shield( nullptr ), action( a )
     {
-      // Merge the stats object with other instances of the pet
-      auto ta = p->owner->find_pet( "future_self" );
-      if ( ta && ta->find_action( "sand_shield" ) )
-        stats = ta->find_action( "sand_shield" )->stats;
+      auto proxy                = action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
       auto shield_id = p->find_spell( 418999 );
       shield         = create_buff<absorb_buff_t>( e.player, shield_id )
                    ->set_default_value( e.driver()->effectN( 8 ).average( e.item ) );
@@ -4949,16 +4956,20 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
   struct sand_bolt_missile_t : public spell_t
   {
-    sand_bolt_missile_t( pet_t* p, const special_effect_t& e )
-      : spell_t( "sand_bolt_missile", p, p->find_spell( 418605 ) )
+    action_t* action;
+    sand_bolt_missile_t( pet_t* p, const special_effect_t& e, action_t* a )
+      : spell_t( "sand_bolt", p, p->find_spell( 418605 ) ), action( a )
     {
-      dual          = true;
-      // Merge the stats object with other instances of the pet
-      auto ta = p->owner->find_pet( "future_self" );
-      if ( ta && ta->find_action( "sand_bolt" ) )
-        stats = ta->find_action( "sand_bolt" )->stats;
-      auto damage = create_proc_action<generic_proc_t>( "sand_bolt", p, "sand_bolt", p->find_spell( 418607 ) );
+      auto proxy                = action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+
+      auto damage = create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
       damage -> base_dd_min = damage -> base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+      damage -> stats = stats;
       impact_action = damage;
     }
   };
@@ -4966,9 +4977,10 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
   struct future_self_pet_t : public pet_t
   {
     const special_effect_t& effect;
+    action_t* action;
 
-    future_self_pet_t( const special_effect_t& e )
-      : pet_t( e.player->sim, e.player, "future_self", true, true ), effect( e )
+    future_self_pet_t( const special_effect_t& e, action_t* a )
+      : pet_t( e.player->sim, e.player, "future_self", true, true ), effect( e ), action( a )
     {
       unsigned pet_id;
       switch ( e.player->role )
@@ -5006,22 +5018,22 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     {
       if ( name == "auto_attack" )
       {
-        return new future_self_auto_attack_t( this, effect );
+        return new future_self_auto_attack_t( this, effect, action );
       }
 
       if ( name == "sand_cleave" )
       {
-        return new sand_cleave_t( this, effect );
+        return new sand_cleave_t( this, effect, action );
       }
 
       if ( name == "sand_bolt" )
       {
-        return new sand_bolt_missile_t( this, effect );
+        return new sand_bolt_missile_t( this, effect, action );
       }
 
       if ( name == "sand_shield" )
       {
-        return new sand_shield_t( this, effect );
+        return new sand_shield_t( this, effect, action );
       }
 
       return pet_t::create_action( name, options );
@@ -5054,7 +5066,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     }
   };
 
-  struct mirror_of_fractured_tomorrows_t : public generic_proc_t
+  struct mirror_of_fractured_tomorrows_t : public spell_t
   {
     spawner::pet_spawner_t<future_self_pet_t> spawner;
     const special_effect_t& effect;
@@ -5062,8 +5074,8 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     std::shared_ptr<std::map<stat_e, buff_t*>> buffs;
 
     mirror_of_fractured_tomorrows_t( const special_effect_t& e )
-      : generic_proc_t( e, "mirror_of_fractured_tomorrows", e.driver() ),
-        spawner( "future_self", e.player, [ &e ]( player_t* ) { return new future_self_pet_t( e ); } ),
+      : spell_t( "mirror_of_fractured_tomorrows", e.player, e.driver() ),
+        spawner( "future_self", e.player, [ &e, this ]( player_t* ) { return new future_self_pet_t( e, this ); } ),
         effect( e )
     {
       unsigned summon_driver;
@@ -5084,7 +5096,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         default:
           return;
       }
-
+      dual = false;
       auto amount = e.driver()->effectN( 1 ).average( e.item );
       buffs = std::make_shared<std::map<stat_e, buff_t*>>();
       ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
@@ -5104,6 +5116,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
     void execute() override
     {
+      spell_t::execute();
       spawner.spawn();
 
       stat_e max_stat = util::highest_stat( effect.player, ratings );
