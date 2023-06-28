@@ -168,7 +168,6 @@ void dot_t::reset()
   event_t::cancel( tick_event );
   event_t::cancel( end_event );
   tick_time        = 0_ms;
-  ticking          = false;
   current_tick     = 0;
   stack            = 0;
   extra_time       = 0_ms;
