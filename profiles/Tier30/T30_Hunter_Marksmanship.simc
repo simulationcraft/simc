@@ -5,7 +5,7 @@ level=70
 race=troll
 role=attack
 position=ranged_back
-talents=B4PAAAAAAAAAAAAAAAAAAAAAAIHAaBApgAAAAAARiEJJJCEJJlEpRIRRoJkkESIoBAAAAA
+talents=B4PAAAAAAAAAAAAAAAAAAAAAAIHAaBApgAAAAAARiQSSCCRSSRSaESUEaCJJhECaAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -76,6 +76,7 @@ actions.st+=/volley
 actions.st+=/rapid_fire
 actions.st+=/wailing_arrow,if=buff.trueshot.down
 actions.st+=/kill_command,if=buff.trueshot.down
+actions.st+=/steel_trap
 actions.st+=/chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.st+=/arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.st+=/bag_of_tricks,if=buff.trueshot.down
