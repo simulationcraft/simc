@@ -7335,12 +7335,17 @@ struct moonfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  std::vector<player_t*>& target_list() const override
+  // force invalidate damage target cache on target change. baseline code always invalidate child_action target caches,
+  // but we only need to do this on proxy action target change.
+  bool select_target() override
   {
-    if ( !target_cache.is_valid )
+    auto old_target = target;
+    auto ret = druid_spell_t::select_target();
+
+    if ( ret && old_target != target && damage->is_aoe() )
       damage->target_cache.is_valid = false;
 
-    return druid_spell_t::target_list();
+    return ret;
   }
 
   void init() override
@@ -8227,12 +8232,17 @@ struct sunfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  std::vector<player_t*>& target_list() const override
+  // force invalidate damage target cache on target change. baseline code always invalidate child_action target caches,
+  // but we only need to do this on proxy action target change.
+  bool select_target() override
   {
-    if ( !target_cache.is_valid )
+    auto old_target = target;
+    auto ret = druid_spell_t::select_target();
+
+    if ( ret && old_target != target && damage->is_aoe() )
       damage->target_cache.is_valid = false;
 
-    return druid_spell_t::target_list();
+    return ret;
   }
 
   void gain_energize_resource( resource_e rt, double amt, gain_t* gain ) override
