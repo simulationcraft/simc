@@ -1392,6 +1392,17 @@ struct power_word_life_t final : public priest_heal_t
   }
 };
 
+struct essence_devourer_t final : public priest_heal_t
+{
+  essence_devourer_t( priest_t& p )
+    : priest_heal_t( "essence_devourer", p,
+                     p.talents.shadow.mindbender.enabled() ? p.talents.essence_devourer_mindbender
+                                                           : p.talents.essence_devourer_shadowfiend )
+  {
+    harmful = false;
+  }
+};
+
 }  // namespace heals
 
 }  // namespace actions
@@ -2199,9 +2210,16 @@ void priest_t::init_spells()
   talents.improved_fade          = CT( "Improved Fade" );
   talents.manipulation = CT( "Manipulation" );  // Spell data is not great here, actual/tooltip value is cut in half
   // Row 10
-  talents.power_word_life       = CT( "Power Word: Life" );
-  talents.angelic_bulwark       = CT( "Angelic Bulwark" );  // NYI
-  talents.void_shift            = CT( "Void Shift" );       // NYI
+  talents.benevolence      = CT( "Benevolence" );
+  talents.power_word_life  = CT( "Power Word: Life" );
+  talents.angelic_bulwark  = CT( "Angelic Bulwark" );  // NYI
+  talents.essence_devourer = CT( "Essence Devourer" );
+  if ( is_ptr() )
+  {
+    talents.essence_devourer_shadowfiend = find_spell( 415673 );  // actual healing spell for Shadowfiend
+    talents.essence_devourer_mindbender  = find_spell( 415676 );  // actual healing spell for Mindbender
+  }
+  talents.void_shift            = CT( "Void Shift" );  // NYI
   talents.shattered_perceptions = CT( "Shattered Perceptions" );
 }
 
@@ -2264,6 +2282,7 @@ void priest_t::init_background_actions()
 {
   background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
+  background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
   init_background_actions_shadow();
   init_background_actions_discipline();
   init_background_actions_holy();
@@ -2281,6 +2300,9 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.shadow_priest );
   action.apply_affecting_aura( specs.holy_priest );
   action.apply_affecting_aura( specs.discipline_priest );
+
+  // Class Talents
+  action.apply_affecting_aura( talents.benevolence );
 
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.malediction );
@@ -2505,6 +2527,11 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
   {
     spawn_idol_of_cthun( s );
   }
+}
+
+void priest_t::trigger_essence_devourer()
+{
+  background_actions.essence_devourer->execute();
 }
 
 void priest_t::spawn_idol_of_cthun( action_state_t* s )
