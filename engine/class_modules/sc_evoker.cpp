@@ -1281,6 +1281,10 @@ struct empowered_charge_t : public empowered_base_t<BASE>
   {
     ab::last_tick( d );
 
+    // being stunned ends the empower without triggering the release spell
+    if ( ab::p()->buffs.stunned->check() )
+      return;
+
     if ( empower_level( d ) == empower_e::EMPOWER_NONE || !validate_release_target( d ) )
     {
       ab::p()->was_empowering = false;
