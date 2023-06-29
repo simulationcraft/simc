@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.5.50199
-static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
+// Spell text, wow build 10.1.5.50232
+static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -2422,7 +2422,7 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
   {  75493, "Heals nearby friends for $s1 every sec for $d.", "Healing nearby friends for $s1 every sec.", 0 },
   {  75494, "Heals nearby friends for $s1 every sec for $d.", "Healing nearby friends for $s1 every sec.", 0 },
   {  75495, "For the next $d, each time your direct healing spells heal a target you cause the target of your heal to heal themselves and friends within $75494a1 yards for $75494s1 each sec for $75494d.", "Each time your direct healing spells heal a target you cause the target of your heal to heal themselves and friends within $75494a1 yards for $75494s1 each sec for $75494d.", 0 },
-  {  76613, "Casting Frostbolt$?a381244[, Ice Lance,][] or Flurry grants you an Icicle. Casting Ice Lance causes all Icicles stored to begin launching at the target, each dealing $148022s1 Frost damage.$?a379049[\r\n\r\nFrostbolt and Flurry have a $379049s2% chance to generate $379049s1 Icicles.][]\r\n\r\nUp to $s2 Icicles can be stored. Any excess Icicles gained will be automatically launched.$?a321684[\r\n\r\nIncreases the damage of Frozen Orb, Blizzard, and Comet Storm by $321684s1%.\r\n\r\nIncreases the damage of Ice Lance, Glacial Spike, Ebonbolt and Ray of Frost by $321684s2%.][]", 0, 0 },
+  {  76613, "Casting Frostbolt$?a381244[, Ice Lance,][] or Flurry grants you an Icicle. Casting Ice Lance causes all Icicles stored to begin launching at the target, each dealing $148022s1 Frost damage.$?a379049[\r\n\r\nFrostbolt and Flurry have a $379049s2% chance to generate $379049s1 Icicles.][]\r\n\r\nUp to $s2 Icicles can be stored. Any excess Icicles gained will be automatically launched.$?a321684[\r\n\r\nIncreases the damage of Frozen Orb, Blizzard, and Comet Storm by $321684s1%.\r\n\r\nIncreases the damage of Ice Lance, Glacial Spike, and Ray of Frost by $321684s2%.][]", 0, 0 },
   {  76657, "Increases the damage done by your pets by ${$s1}.1%.", 0, 0 },
   {  76671, "Increases your chance to block melee attacks by ${$s1}.1%.$?a317907[\r\n\r\nWhile inside your Consecration, your damage taken is reduced by ${-$188370s2}.1% and you have a chance equal to your block chance to reduce your damage taken from harmful periodic effects.][]\r\n\r\nAlso increases your attack power by ${$s2}.1%.", 0, 0 },
   {  76803, "Increases the damage done by your poisons $?s319473[and bleeds ][]by ${$s1}.1%.", 0, 0 },
@@ -16939,7 +16939,7 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
   { 382135, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382136, "Channel for 2 seconds, unleashing a furious volley of flame around your target, dealing [A Lot] fire damage.\r\n\r\nWhenever an allied player dies, this cooldown is reduced by 90 seconds.", 0, 0 },
   { 382139, "Call on the Lost Dwarves to rain down cannon fire at your location dealing $387777s1 Fire damage split between you and all enemies over $d.\r\n\r\nDamage is increased for each target struck, up to $s2 targets.", 0, 0 },
-  { 382144, "While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and increases its damage by $327509s2%, stacking up to $327509u times.", 0, 0 },
+  { 382144, "While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $382148s1% and increases its damage by $382148s2%, stacking up to $382148u times.", 0, 0 },
   { 382145, "Increases Haste by $s1 for $d.", "Haste increased by $w1.", 0 },
   { 382146, "Increases Critical Strike by $s1 for $d.", "Critical strike increased by $w1.", 0 },
   { 382147, "Combine the Ace through Eight of Inferno to complete the set.", 0, 0 },
@@ -18633,7 +18633,6 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
   { 392908, "$@spelldesc386175", "Speed increased by $w1.", 0 },
   { 392910, "Expel Harm's critical healing is increased by $s1%.", 0, 0 },
   { 392911, "The cooldown of Aura Mastery is reduced by ${$s1/-1000} sec.", 0, 0 },
-  { 392914, "Holy Shock's healing and damage is increased by $s1%.", 0, 0 },
   { 392915, "$@spelltooltip5394", 0, 0 },
   { 392916, "$@spelltooltip5394", 0, 0 },
   { 392928, "Lay on Hands' cooldown is reduced by ${$s1/1000}.1 sec per Holy Power spent.", 0, 0 },
@@ -20067,7 +20066,7 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
   { 417490, "$@spelldesc378947", "Damage taken from $@auracaster's spells increased by $s1%", 0 },
   { 417491, "Each time you consume Fingers of Frost the damage of your next Ray of Frost is increased by $417492s1%, stacking up to ${$417492s1*$417492u}%. Icy Veins grants $417492u stacks instantly.", 0, 0 },
   { 417492, "$@spelldesc417491", "The damage of your next Ray of Frost is increased by $w1%.", 0 },
-  { 417493, "Cone of Cold's cooldown is increased to $s2 sec and resets the cooldown of Frozen Orb and Comet Storm. In addition, Cone of Cold applies Winter's Chill to all enemies hit.\r\n\r\nCone of Cold's cooldown can no longer be reduced by your cooldown reduction effects.", 0, 0 },
+  { 417493, "Cone of Cold's cooldown is increased to $s2 sec and if Cone of Cold hits $s3 or more enemies it resets the cooldown of Frozen Orb and Comet Storm. In addition, Cone of Cold applies Winter's Chill to all enemies hit.\r\n\r\nCone of Cold's cooldown can no longer be reduced by your cooldown reduction effects.", 0, 0 },
   { 417534, "\"Borrow\" power from an alternate timeline for personal gain, increasing your Haste by $s1 for $d and triggering a Paradox $417543d later.\r\n\r\nIf the Paradox arrives, you will be frozen in time, completely unable to act or move for $417587d. Killing enemies steals their remaining time to partially delay the Paradox by $s3 sec, with major enemies restoring the timeline completely.", "Haste increased by $w1.", 0 },
   { 417543, "$@spelldesc417534", "Upon expiration, you will be frozen in time.", 0 },
   { 417587, "Freezes the target in time, making them unable to move or act.", "Stuck in a Paradox, and unable to move or act!", 0 },
@@ -20109,11 +20108,11 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
   { 419800, "$@spelldesc416714", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.5.50199
+// spelltext hotfix entries, wow build 10.1.5.50232
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.5.50199
+// Spell description variables, wow build 10.1.5.50232
 static const std::array<spelldesc_vars_data_t, 395> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20198,7 +20197,7 @@ static const std::array<spelldesc_vars_data_t, 395> __ptr_spelldesc_vars_data { 
   {  114014, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  114165, "$healmod=$?a405546[${1+$405546s3/100}][${1}]" },
   {  115057, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
-  {  115203, "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
+  {  115203, "$health=$?s322960[${20}][${20}]\r\n$damage=$?c1[${20}][${20}]" },
   {  116670, "$healing=$?c2[${$s1*1.5}][${$s1}]" },
   {  116847, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  116849, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$s3/100*(1+$@versadmg)}" },
@@ -20208,7 +20207,7 @@ static const std::array<spelldesc_vars_data_t, 395> __ptr_spelldesc_vars_data { 
   {  120360, "$damageSec=${$120361sw2*11}" },
   {  120517, "$twilightshadowtoholy=$?a390706[${(1+$390706s1/100)}][${1}]\r\n$holyhalodamage=${$120696s1*$<twilightshadowtoholy>}" },
   {  120644, "$twilightholytoshadow=$?a390707[${(1+$390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${(1+$322105s1/100)}][${1}]\r\n$darkascension=$?a391109[${(1+$391109s1/100)}][${1}]\r\n$shadowhalodamage=${$390964s1*$<twilightholytoshadow>*$<shadowcov>*$<darkascension>}" },
-  {  120954, "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
+  {  120954, "$health=$?s322960[${20}][${20}]\r\n$damage=$?c1[${20}][${20}]" },
   {  121253, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  122121, "$twilightholytoshadow=$?a390707[${(1+$390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${(1+$322105s1/100)}][${1}]\r\n$darkascension=$?a391109[${(1+$391109s1/100)}][${1}]\r\n$shadowdstardamage=${$390845s1*$<twilightholytoshadow>*$<shadowcov>*$<darkascension>}" },
   {  123586, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
@@ -20485,7 +20484,7 @@ static const std::array<spelldesc_vars_data_t, 395> __ptr_spelldesc_vars_data { 
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  388023, "$pvp=$?a134735[${2.55}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
   {  388026, "$pvp=$?a134735[${2.45}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
-  {  388917, "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
+  {  388917, "$health=$?s322960[${20}][${20}]\r\n$damage=$?c1[${20}][${20}]" },
   {  389359, "$health=${5}\r\n$cdr=${10}" },
   {  389880, "$duration= ${$s1/1000}.1" },
   {  390236, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$damage=${0.44*($390220s1)*(1+$@versadmg)*$<mastery>}" },
@@ -20512,7 +20511,7 @@ static const std::array<spelldesc_vars_data_t, 395> __ptr_spelldesc_vars_data { 
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.5.50199
+// spelldesc_vars hotfix entries, wow build 10.1.5.50232
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
