@@ -114,6 +114,10 @@ struct evoker_t : public player_t
   // !!!===========================================================================!!!
   // !!! Runtime variables NOTE: these MUST be properly reset in evoker_t::reset() !!!
   // !!!===========================================================================!!!
+  vector_with_callback<player_t*> allies_with_my_ebon;
+  vector_with_callback<player_t*> allies_with_my_prescience;
+  mutable std::vector<buff_t*> allied_ebons_on_me;
+  player_t* last_scales_target;
   bool was_empowering;
   // !!!===========================================================================!!!
 
@@ -121,12 +125,8 @@ struct evoker_t : public player_t
 
   const special_effect_t* naszuro;
 
-  vector_with_callback<player_t*> allies_with_my_ebon;
   std::vector<evoker_t*> allied_augmentations;
-  mutable std::vector<buff_t*> allied_ebons_on_me;
   std::vector<std::function<void()>> allied_ebon_callbacks;
-  player_t* last_scales_target;
-  vector_with_callback<player_t*> allies_with_my_prescience;
 
   struct heartbeat_t
   {
@@ -4057,7 +4057,16 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   : player_t( sim, EVOKER, name, r ),
+    allies_with_my_ebon(),
+    allies_with_my_prescience(),
+    allied_ebons_on_me(),
+    last_scales_target( nullptr ),
     was_empowering( false ),
+    naszuro(),
+    allied_augmentations(),
+    allied_ebon_callbacks(),
+    heartbeat(),
+    close_as_clutchmates( false ),
     option(),
     action(),
     buff(),
@@ -4068,16 +4077,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     gain(),
     proc(),
     rppm(),
-    uptime(),
-    close_as_clutchmates( false ),
-    allies_with_my_ebon(),
-    allied_ebons_on_me(),
-    allied_augmentations(),
-    allied_ebon_callbacks(),
-    last_scales_target( nullptr ),
-    heartbeat(),
-    allies_with_my_prescience(),
-    naszuro()
+    uptime()
 {
   cooldown.eternity_surge = get_cooldown( "eternity_surge" );
   cooldown.fire_breath    = get_cooldown( "fire_breath" );
@@ -4784,17 +4784,11 @@ void evoker_t::reset()
 {
   player_t::reset();
 
+  // clear runtime variables
+  allies_with_my_ebon.clear_without_callbacks();
+  allies_with_my_prescience.clear_without_callbacks();
   allied_ebons_on_me.clear();
-  for ( auto ally : allies_with_my_ebon )
-  {
-    allies_with_my_ebon.find_and_erase_unordered( ally );
-  }
-
-  for ( auto ally : allies_with_my_prescience )
-  {
-    allies_with_my_prescience.find_and_erase_unordered( ally );
-  }
-
+  last_scales_target = nullptr;
   was_empowering = false;
 }
 
