@@ -65,7 +65,7 @@ actions.build+=/sinister_strike
 
 # Cooldowns
 actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)
-actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
+actions.cds+=/blade_flurry,if=spell_targets>=(2-(ptr*buff.grand_melee.up))&buff.blade_flurry.remains<gcd
 actions.cds+=/roll_the_bones,if=buff.dreadblades.down&(rtb_buffs.total=0|variable.rtb_reroll)
 actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2&(buff.shadow_dance.down|rtb_buffs>=6)
 actions.cds+=/blade_rush,if=variable.blade_flurry_sync&!buff.dreadblades.up&(energy.base_time_to_max>4+stealthed.rogue-spell_targets%3)
@@ -104,7 +104,7 @@ actions.stealth_cds+=/shadow_dance,if=talent.keep_it_rolling&variable.shadow_dan
 # Finishers
 # BtE to keep the Crit debuff up, if RP is up, or for Greenskins, unless the target is about to die.
 actions.finish=between_the_eyes,if=target.time_to_die>3&(debuff.between_the_eyes.remains<4|talent.greenskins_wickers&!buff.greenskins_wickers.up|!talent.greenskins_wickers&talent.improved_between_the_eyes&buff.ruthless_precision.up)
-actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable&buff.grand_melee.down&(!talent.swift_slasher|combo_points>=cp_max_spend)
+actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable&(buff.grand_melee.down|ptr)&(!talent.swift_slasher|combo_points>=cp_max_spend)
 actions.finish+=/cold_blood
 actions.finish+=/dispatch
 

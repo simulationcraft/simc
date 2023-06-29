@@ -563,7 +563,7 @@ void outlaw_df( player_t* p )
   build->add_action( "sinister_strike" );
 
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)", "Cooldowns" );
-  cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd" );
+  cds->add_action( "blade_flurry,if=spell_targets>=(2-(ptr*buff.grand_melee.up))&buff.blade_flurry.remains<gcd" );
   cds->add_action( "roll_the_bones,if=buff.dreadblades.down&(rtb_buffs.total=0|variable.rtb_reroll)" );
   cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2&(buff.shadow_dance.down|rtb_buffs>=6)" );
   cds->add_action( "blade_rush,if=variable.blade_flurry_sync&!buff.dreadblades.up&(energy.base_time_to_max>4+stealthed.rogue-spell_targets%3)" );
@@ -596,7 +596,7 @@ void outlaw_df( player_t* p )
   stealth_cds->add_action( "shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))" );
 
   finish->add_action( "between_the_eyes,if=target.time_to_die>3&(debuff.between_the_eyes.remains<4|talent.greenskins_wickers&!buff.greenskins_wickers.up|!talent.greenskins_wickers&talent.improved_between_the_eyes&buff.ruthless_precision.up)", "Finishers  BtE to keep the Crit debuff up, if RP is up, or for Greenskins, unless the target is about to die." );
-  finish->add_action( "slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable&buff.grand_melee.down&(!talent.swift_slasher|combo_points>=cp_max_spend)" );
+  finish->add_action( "slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable&(buff.grand_melee.down|ptr)&(!talent.swift_slasher|combo_points>=cp_max_spend)" );
   finish->add_action( "cold_blood" );
   finish->add_action( "dispatch" );
 
