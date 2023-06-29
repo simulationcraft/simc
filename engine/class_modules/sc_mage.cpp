@@ -5597,13 +5597,16 @@ struct proxy_action_t : public action_t
   mage_t* p() const
   { return debug_cast<mage_t*>( player ); }
 
+  pet_t* pet() const
+  { return p()->pets.water_elemental; }
+
   bool ready() override
   {
-    if ( !p()->pets.water_elemental || p()->pets.water_elemental->is_sleeping() )
+    if ( !pet() || pet()->is_sleeping() || pet()->buffs.stunned->check() )
       return false;
 
     // Pet is about to die, don't let it start a new cast.
-    if ( p()->pets.water_elemental->expiration && p()->pets.water_elemental->expiration->remains() == 0_ms )
+    if ( pet()->expiration && pet()->expiration->remains() == 0_ms )
       return false;
 
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
@@ -5624,7 +5627,7 @@ struct freeze_t final : public proxy_action_t
 
   void execute() override
   {
-    if ( p()->pets.water_elemental->is_sleeping() )
+    if ( pet()->is_sleeping() || pet()->buffs.stunned->check() )
       return;
 
     action->execute_on_target( target );
@@ -5639,11 +5642,11 @@ struct water_jet_t final : public proxy_action_t
 
   void execute() override
   {
-    if ( p()->pets.water_elemental->is_sleeping() )
+    if ( pet()->is_sleeping() || pet()->buffs.stunned->check() )
       return;
 
-    p()->pets.water_elemental->interrupt();
-    event_t::cancel( p()->pets.water_elemental->readying );
+    pet()->interrupt();
+    event_t::cancel( pet()->readying );
 
     action->set_target( target );
     action->schedule_execute();
@@ -5652,7 +5655,7 @@ struct water_jet_t final : public proxy_action_t
   bool ready() override
   {
     // Prevent recasting if Water Elemental is already executing Water Jet
-    return proxy_action_t::ready() && p()->pets.water_elemental->executing != action;
+    return proxy_action_t::ready() && pet()->executing != action;
   }
 };
 
