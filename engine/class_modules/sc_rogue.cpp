@@ -7414,7 +7414,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   }
 
   // Grand Melee buff is additive with Killing Spree 100% base value
-  if ( p()->is_ptr() )
+  if ( p()->is_ptr() && p()->buffs.grand_melee->up() )
   {
     multiplier += p()->spec.grand_melee->effectN( 1 ).percent();
   }
@@ -7441,7 +7441,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   // This allows it to affect the additive Precise Cuts modifier retroactively
   // However, the value for Killing Spree with Precise Cuts ends up being off due to the higher base value
   double damage_primary = 0;
-  if ( p()->is_ptr() && p()->buffs.grand_melee->up() )
+  if ( p()->is_ptr() && p()->buffs.grand_melee->check() )
   {
     damage_primary = damage * ( 0.1 / 0.6 );
   }
