@@ -1860,7 +1860,7 @@ Up to $s2 Icicles can be stored. Any excess Icicles gained will be automatically
 
 Increases the damage of Frozen Orb, Blizzard, and Comet Storm by $321684s1%.
 
-Increases the damage of Ice Lance, Glacial Spike, Ebonbolt and Ray of Frost by $321684s2%.][]
+Increases the damage of Ice Lance, Glacial Spike, and Ray of Frost by $321684s2%.][]
 
 Name             : Clearcasting (id=79684) [Spell Family (3), Passive] 
 Class            : Arcane Mage
@@ -4618,7 +4618,7 @@ Effects          :
 Description      : Reduces the cooldown of Fire Blast by $s3 sec and increases the maximum number of charges by $s1.
 
 Name             : Frozen Touch (id=205030) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Frost [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -6424,7 +6424,7 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 Heals $s2 to allies within $A1. 
 
 Name             : Ebonbolt (id=257537) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Frost [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -10326,7 +10326,6 @@ Description      : $@spelldesc327489
 Tooltip          : Your next Hot Streak, Brain Freeze or Clearcasting will not be consumed.
 
 Name             : Slick Ice (id=327508) [Spell Family (3), Passive] 
-Class            : Mage
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -10346,41 +10345,7 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Trigger Spell: 327511 | Target: Self (1)
 Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and increases its damage by $327509s2%, stacking up to $327509u times.
 
-Name             : Slick Ice (id=327509) [Spell Family (3)] 
-Class            : Mage
-School           : Physical
-Spell Type       : None
-Duration         : 60 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Triggered by     : Slick Ice (327511)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Include In Advanced Combat Log (72), Do Not Display Duration (170)
-Effects          :
-#1 (id=819012)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Frostbolt (116)
-                   Family Flags: 57
-#2 (id=819013)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
-                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Frostbolt (116)
-                   Family Flags: 57
-#3 (id=874424)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Frostbolt (228597)
-                   Family Flags: 5
-Description      : $@spelldesc327508
-Tooltip          : Cast time of Frostbolt reduced by $s1% and its damage is increased by $s2%.
-
 Name             : Slick Ice (id=327511) [Spell Family (3), Hidden] 
-Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 60 seconds
@@ -12769,14 +12734,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013390)  : Apply Aura (6) | Proc Trigger Spell (42): Slick Ice
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Trigger Spell: 382151 | Target: Self (1)
-Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1% and increases its damage by $327509s2%, stacking up to $327509u times.
+Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $382148s1% and increases its damage by $382148s2%, stacking up to $382148u times.
 
 Name             : Slick Ice (id=382148) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
 Spell Type       : None
 Duration         : 60 seconds
-Stacks           : 10 maximum
+Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered by     : Slick Ice (382151)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12790,11 +12755,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Do Not Display Duration (170)
 Effects          :
 #1 (id=1013394)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Frostbolt (116)
                    Family Flags: 57
 #2 (id=1013395)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
-                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Frostbolt (116)
                    Family Flags: 57
 #3 (id=1013397)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -16126,7 +16091,9 @@ Effects          :
                    Family Flags: 9
 #2 (id=1090103)  : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Cone of Cold's cooldown is increased to $s2 sec and resets the cooldown of Frozen Orb and Comet Storm. In addition, Cone of Cold applies Winter's Chill to all enemies hit.
+#3 (id=1093835)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
+Description      : Cone of Cold's cooldown is increased to $s2 sec and if Cone of Cold hits $s3 or more enemies it resets the cooldown of Frozen Orb and Comet Storm. In addition, Cone of Cold applies Winter's Chill to all enemies hit.
 
 Cone of Cold's cooldown can no longer be reduced by your cooldown reduction effects.
 
