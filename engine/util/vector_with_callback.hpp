@@ -66,6 +66,9 @@ public:
   void reset_callbacks()
   { _callbacks.clear(); }
 
+  void clear_without_callbacks()
+  { _data.clear(); }
+
 private:
   void trigger_callbacks( const T& v ) const
   {
