@@ -587,6 +587,7 @@ struct fiend_melee_t : public priest_pet_melee_t
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
         p().o().trigger_shadow_weaving( s );
+        p().o().trigger_essence_devourer();
       }
 
       if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )

@@ -37,6 +37,11 @@ struct holy_fire_t;
 struct burning_vehemence_t;
 }  // namespace actions::spells
 
+namespace actions::heals
+{
+struct essence_devourer_t;
+} // namespace actions::heals
+
 /**
  * Priest target data
  * Contains target specific things
@@ -245,8 +250,12 @@ public:
     player_talent_t improved_fade;
     player_talent_t manipulation;
     // Row 10
+    player_talent_t benevolence;
     player_talent_t power_word_life;
     player_talent_t angelic_bulwark;
+    player_talent_t essence_devourer;
+    const spell_data_t* essence_devourer_shadowfiend;
+    const spell_data_t* essence_devourer_mindbender;
     player_talent_t void_shift;
     player_talent_t shattered_perceptions;
 
@@ -546,6 +555,7 @@ public:
     propagate_const<action_t*> searing_light;
     propagate_const<action_t*> light_eruption;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
+    propagate_const<actions::heals::essence_devourer_t*> essence_devourer;
   } background_actions;
 
   // Items
@@ -680,6 +690,7 @@ public:
   void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
+  void trigger_essence_devourer();
 
   std::string default_potion() const override;
   std::string default_flask() const override;
