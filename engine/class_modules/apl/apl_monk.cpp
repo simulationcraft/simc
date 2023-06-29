@@ -890,13 +890,13 @@ namespace monk_apl
     // 1 Target priority
     st->add_action( "fists_of_fury,if=!buff.pressure_point.up&!cooldown.rising_sun_kick.remains", "1 Target");
     st->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.pressure_point.up" );
-    st->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
+    st->add_action( "strike_of_the_windlord,if=talent.thunderfist&(cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<5)" );
     st->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.kicks_of_flowing_momentum.up|buff.pressure_point.up" );
     st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3");
     st->add_action( "fists_of_fury" );
     st->add_action( "rising_sun_kick" );
     st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=2" );
-    st->add_action( "strike_of_the_windlord" );
+    st->add_action( "strike_of_the_windlord,if=debuff.skyreach_exhaustion.remains>30|fight_remains<5" );
     st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
     st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&cooldown.rising_sun_kick.remains>1" );
     st->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&spinning_crane_kick.modifier>=2.7" );
