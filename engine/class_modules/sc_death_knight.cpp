@@ -1782,15 +1782,30 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead, guardian;
   timespan_t precombat_spawn_adjust;
+  util::string_view pet_name;
+  action_t* proxy_action;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false ), guardian( guardian )
+    affected_by_commander_of_the_dead( false ), guardian( guardian ), pet_name( name ), proxy_action( nullptr )
   {
     if ( auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
+    }
+
+    if ( pet_name == "army_ghoul" )
+    {
+      proxy_action = dk()->find_action( "army_of_the_dead" );
+    }
+    if ( pet_name == "apoc_ghoul" )
+    {
+      proxy_action = dk()->find_action( "apocalypse" );
+    }
+    if ( pet_name == "ghoul" )
+    {
+      proxy_action = dk()->find_action( "raise_dead" );
     }
   }
 
@@ -1845,6 +1860,34 @@ struct death_knight_pet_t : public pet_t
 
   // Standard Death Knight pet actions
 
+  struct ghoul_auto_attack_t : public melee_attack_t
+  {
+    action_t* proxy_action;
+    ghoul_auto_attack_t( death_knight_pet_t* p, action_t* a ) :
+      melee_attack_t( "auto_attack", p ), proxy_action( a )
+    {
+      assert( p -> main_hand_weapon.type != WEAPON_NONE );
+      p -> main_hand_attack = p -> create_auto_attack();
+      school = SCHOOL_PHYSICAL;
+      trigger_gcd = 0_ms;
+      auto proxy                = proxy_action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
+
+    void execute() override
+    { player -> main_hand_attack -> schedule_execute(); }
+
+    bool ready() override
+    {
+      if ( player -> is_moving() ) return false;
+      return ( player -> main_hand_attack -> execute_event == nullptr );
+    }
+  };
+
   struct auto_attack_t : public melee_attack_t
   {
     auto_attack_t( death_knight_pet_t* p ) :
@@ -1867,7 +1910,14 @@ struct death_knight_pet_t : public pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "auto_attack" ) return new auto_attack_t( this );
+    if( pet_name == "ghoul" || pet_name == "army_ghoul" || pet_name == "apoc_ghoul" )
+    {
+      if ( name == "auto_attack" ) return new ghoul_auto_attack_t( this, proxy_action );
+    }
+    else
+    {
+      if ( name == "auto_attack" ) return new auto_attack_t( this );
+    }
 
     return pet_t::create_action( name, options_str );
   }
@@ -2137,6 +2187,12 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       triggers_infected_claws = triggers_runeforge_apocalypse = true;
+      auto proxy                = dk()->find_action( "raise_dead" );
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
   };
 
@@ -2148,6 +2204,12 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       parse_options( options_str );
       aoe = -1;
       triggers_infected_claws = triggers_runeforge_apocalypse = true;
+      auto proxy                = dk()->find_action( "raise_dead" );
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
   };
 
@@ -2158,6 +2220,12 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       cooldown = p -> get_cooldown( "gnaw" );
+      auto proxy                = dk()->find_action( "raise_dead" );
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
   };
 
@@ -2168,6 +2236,12 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       cooldown = p -> get_cooldown( "gnaw" );
+      auto proxy                = dk()->find_action( "raise_dead" );
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
   };
 
@@ -2335,13 +2409,21 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 struct army_ghoul_pet_t : public base_ghoul_pet_t
 {
   pet_spell_t<army_ghoul_pet_t>* ruptured_viscera;
+  action_t* proxy_action;
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
-    army_claw_t( army_ghoul_pet_t* p, util::string_view options_str ) :
-      pet_melee_attack_t( p, "claw", p -> dk() -> pet_spell.army_claw )
+    action_t* proxy_action;
+    army_claw_t( army_ghoul_pet_t* p, action_t* a, util::string_view options_str ) :
+      pet_melee_attack_t( p, "claw", p -> dk() -> pet_spell.army_claw ), proxy_action( a )
     {
       parse_options( options_str );
+      auto proxy                = proxy_action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
   };
   
@@ -2365,9 +2447,18 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   };
 
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
-    base_ghoul_pet_t( owner, name, true )
+    base_ghoul_pet_t( owner, name, true ), proxy_action( nullptr )
   {
     affected_by_commander_of_the_dead = true;
+
+    if( name == "army_ghoul" )
+    {
+      proxy_action = dk()->find_action( "army_of_the_dead" );
+    }
+    else
+    {
+      proxy_action = dk()->find_action( "apocalypse" );
+    }
   }
 
   void init_base_stats() override
@@ -2410,7 +2501,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "claw" ) return new army_claw_t( this, options_str );
+    if ( name == "claw" ) return new army_claw_t( this, proxy_action, options_str );
 
     return base_ghoul_pet_t::create_action( name, options_str );
   }
@@ -2922,6 +3013,7 @@ struct bloodworm_pet_t : public death_knight_pet_t
 
 struct magus_pet_t : public death_knight_pet_t
 {
+  action_t* proxy_action;
   struct magus_td_t : public actor_target_data_t
   {
     buff_t* frostbolt_debuff;
@@ -2965,11 +3057,19 @@ struct magus_pet_t : public death_knight_pet_t
 
   struct frostbolt_magus_t final : public magus_spell_t
   {
-    frostbolt_magus_t( magus_pet_t* p, util::string_view options_str ) :
-      magus_spell_t( p, "frostbolt", p -> dk() -> pet_spell.frostbolt, options_str )
+    action_t* proxy_action;
+    frostbolt_magus_t( magus_pet_t* p, action_t* a, util::string_view options_str ) :
+      magus_spell_t( p, "frostbolt", p -> dk() -> pet_spell.frostbolt, options_str ), proxy_action( a )
     {
       // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
       cooldown -> duration = dk() -> pet_spell.frostbolt -> duration();
+
+      auto proxy                = proxy_action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
 
     // Frostbolt applies a slowing debuff on non-boss targets
@@ -2987,14 +3087,31 @@ struct magus_pet_t : public death_knight_pet_t
 
   struct shadow_bolt_magus_t final : public magus_spell_t
   {
-    shadow_bolt_magus_t( magus_pet_t* p, util::string_view options_str ) :
-      magus_spell_t( p, "shadow_bolt", p -> dk() -> pet_spell.shadow_bolt, options_str )
-    { }
+    action_t* proxy_action;
+    shadow_bolt_magus_t( magus_pet_t* p, action_t* a, util::string_view options_str ) :
+      magus_spell_t( p, "shadow_bolt", p -> dk() -> pet_spell.shadow_bolt, options_str ), proxy_action( a )
+    {
+      auto proxy                = proxy_action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
   };
 
   magus_pet_t( death_knight_t* owner, util::string_view name = "army_magus" ) :
-    death_knight_pet_t( owner, name, true, false )
+    death_knight_pet_t( owner, name, true, false ), proxy_action( nullptr )
   {
+    if( name == "army_magus" )
+    {
+      proxy_action = dk()->find_action( "army_of_the_dead" );
+    }
+    else
+    {
+      proxy_action = dk()->find_action( "apocalypse" );
+    }
+
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
   }
@@ -3021,8 +3138,8 @@ struct magus_pet_t : public death_knight_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "frostbolt" ) return new frostbolt_magus_t( this, options_str );
-    if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, options_str );
+    if ( name == "frostbolt" ) return new frostbolt_magus_t( this, proxy_action, options_str );
+    if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, proxy_action, options_str );
 
     return death_knight_pet_t::create_action( name, options_str );
   }
