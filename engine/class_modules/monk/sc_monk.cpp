@@ -6378,10 +6378,8 @@ namespace monk
         {
           // The tooltip is hard-coded with 20% if Brewmaster Rank 2 is activated
           // Currently it's bugged and giving 17.39% HP instead of the intended 20%
-          // The intended calculation is:
-          // health_multiplier = ( 1 + health_multiplier ) * p().passives.fortifying_brew->effectN( 5 ).percent() * ( 1 / (
-          // 1 + health_multiplier ) );
-          health_multiplier = ( p().bugs ? 0.1739 : 0.2 );  // p().passives.fortifying_brew->effectN( 5 ).percent() * ( 1 / ( 1 + health_multiplier ) );
+          // This if fixed on PTR
+          health_multiplier = ( !p().is_ptr() ? 0.1739 : p().passives.fortifying_brew->effectN( 6 ).percent() );
         }
 
         // Extra Health is set by current max_health, doesn't change when max_health changes.
@@ -10296,7 +10294,6 @@ namespace monk
       // Add bugs / issues with sims here:
       ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
       ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
-      ReportIssue( "Fortifying Brew: Determination provides 17.39% HP ( Tooltip: 20% )", "2023-02-21", true );
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
       ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
       ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
