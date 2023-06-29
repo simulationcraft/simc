@@ -1077,13 +1077,15 @@ public:
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
-    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
+    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> army_magus;
+    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> apoc_magus;
 
     pets_t(death_knight_t* p) :
         army_ghouls("army_ghoul", p),
         apoc_ghouls("apoc_ghoul", p),
         bloodworms("bloodworm", p),
-        magus_of_the_dead("magus_of_the_dead", p)
+        army_magus("army_magus", p),
+        apoc_magus("apoc_magus", p)
 
     {}
   } pets;
@@ -2431,9 +2433,10 @@ struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
   pet_spell_t<gargoyle_pet_t>* gargoyle_strike;
+  action_t* proxy_action;
 
-  gargoyle_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr )
+  gargoyle_pet_t( death_knight_t* owner, action_t* a ) :
+    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr ), proxy_action( a )
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -2441,10 +2444,17 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    gargoyle_strike_t( gargoyle_pet_t* p ) :
-      pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
+    action_t* proxy_action;
+    gargoyle_strike_t( gargoyle_pet_t* p, action_t* a ) :
+      pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike ), proxy_action( a )
     { 
       background = repeating =true;
+      auto proxy                = proxy_action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
   };
 
@@ -2483,7 +2493,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void create_actions()
   {
     death_knight_pet_t::create_actions();
-    gargoyle_strike = new gargoyle_strike_t( this );
+    gargoyle_strike = new gargoyle_strike_t( this, proxy_action );
   }
 
   void reschedule_gargoyle()
@@ -2982,8 +2992,8 @@ struct magus_pet_t : public death_knight_pet_t
     { }
   };
 
-  magus_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "magus_of_the_dead", true, false )
+  magus_pet_t( death_knight_t* owner, util::string_view name = "army_magus" ) :
+    death_knight_pet_t( owner, name, true, false )
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -4011,7 +4021,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
 
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
     {
-      p() -> pets.magus_of_the_dead.spawn( summon_duration, 1 );
+      p() -> pets.apoc_magus.spawn( summon_duration, 1 );
     }
 
     if ( p() -> talent.unholy.apocalypse.ok() )
@@ -4162,7 +4172,7 @@ struct army_of_the_dead_t final : public death_knight_spell_t
       make_event<summon_army_event_t>( *sim, p(), n_ghoul, summon_interval, summon_duration );
 
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
-      p() -> pets.magus_of_the_dead.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
+      p() -> pets.army_magus.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
 
     if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) )
     {
@@ -9101,7 +9111,7 @@ void death_knight_t::create_pets()
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
     // Initialized even if the talent isn't picked for APL purpose
-    pets.gargoyle = new pets::gargoyle_pet_t( this );
+    pets.gargoyle = new pets::gargoyle_pet_t( this, find_action( "summon_gargoyle" ) );
 
     if ( talent.unholy.all_will_serve.ok() )
     {
@@ -9112,18 +9122,24 @@ void death_knight_t::create_pets()
     {
       pets.army_ghouls.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "army_ghoul" ); } );
+
+      if ( talent.unholy.magus_of_the_dead.ok() )
+      {
+        pets.army_magus.set_creation_callback(
+          [] ( death_knight_t* p ) { return new pets::magus_pet_t( p, "army_magus" ); });
+      }
     }
 
     if ( find_action( "apocalypse" ) )
     {
       pets.apoc_ghouls.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
-    }
 
-    if ( talent.unholy.magus_of_the_dead.ok() )
-    {
-      pets.magus_of_the_dead.set_creation_callback(
-        [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
+      if ( talent.unholy.magus_of_the_dead.ok() )
+      {
+        pets.apoc_magus.set_creation_callback(
+          [] ( death_knight_t* p ) { return new pets::magus_pet_t( p, "apoc_magus" ); });
+      }
     }
   }
 
