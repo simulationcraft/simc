@@ -5987,6 +5987,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "fireball"          ) return new          fireball_t( name, this, options_str );
   if ( name == "flamestrike"       ) return new       flamestrike_t( name, this, options_str );
   if ( name == "living_bomb"       ) return new       living_bomb_t( name, this, options_str );
+  if ( name == "meteor"            ) return new            meteor_t( name, this, options_str );
   if ( name == "phoenix_flames"    ) return new    phoenix_flames_t( name, this, options_str );
   if ( name == "pyroblast"         ) return new         pyroblast_t( name, this, options_str );
   if ( name == "scorch"            ) return new            scorch_t( name, this, options_str );
@@ -6018,7 +6019,6 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "frostbolt"         ) return new         frostbolt_t( name, this, options_str );
   if ( name == "ice_floes"         ) return new         ice_floes_t( name, this, options_str );
   if ( name == "ice_nova"          ) return new          ice_nova_t( name, this, options_str );
-  if ( name == "meteor"            ) return new            meteor_t( name, this, options_str );
   if ( name == "mirror_image"      ) return new      mirror_image_t( name, this, options_str );
   if ( name == "shifting_power"    ) return new    shifting_power_t( name, this, options_str );
   if ( name == "shimmer"           ) return new           shimmer_t( name, this, options_str );
