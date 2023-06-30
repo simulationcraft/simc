@@ -452,6 +452,7 @@ public:
     player_t* last_bomb_target;
     bool trigger_cc_channel;
     double spent_mana;
+    timespan_t gained_full_icicles;
   } state;
 
   struct expression_support_t
@@ -7600,9 +7601,10 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
     return;
 
   unsigned max_icicles = as<unsigned>( spec.icicles->effectN( 2 ).base_value() );
+  unsigned old_count = icicles.size();
 
   // Shoot one if capped
-  if ( icicles.size() == max_icicles )
+  if ( old_count == max_icicles )
     trigger_icicle( icicle_target );
 
   buffs.icicles->trigger( duration );
@@ -7611,6 +7613,9 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
     buffs.icicles->decrement();
     icicles.erase( icicles.begin() );
   } ) } );
+
+  if ( old_count < max_icicles && icicles.size() == max_icicles )
+    state.gained_full_icicles = sim->current_time();
 
   assert( icicle_action && icicles.size() <= max_icicles );
 }
