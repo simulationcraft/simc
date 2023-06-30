@@ -400,10 +400,8 @@ void frost( player_t* p )
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
   aoe->add_action( "shifting_power" );
   aoe->add_action( "ice_nova" );
-  aoe->add_action( "meteor" );
   aoe->add_action( "dragons_breath,if=active_enemies>=7" );
   aoe->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=7" );
-  aoe->add_action( "ebonbolt" );
   aoe->add_action( "frostbolt" );
   aoe->add_action( "call_action_list,name=movement" );
 
@@ -428,7 +426,6 @@ void frost( player_t* p )
   movement->add_action( "fire_blast" );
   movement->add_action( "ice_lance" );
 
-  st->add_action( "meteor,if=prev_gcd.1.flurry" );
   st->add_action( "comet_storm,if=prev_gcd.1.flurry" );
   st->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|prev_gcd.1.glacial_spike)" );
   st->add_action( "ray_of_frost,if=remaining_winters_chill=1&buff.freezing_winds.down" );
@@ -440,7 +437,6 @@ void frost( player_t* p )
   st->add_action( "ice_lance,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill" );
   st->add_action( "ice_nova,if=active_enemies>=4" );
   st->add_action( "glacial_spike,if=action.flurry.cooldown_react" );
-  st->add_action( "ebonbolt,if=cooldown.flurry.charges_fractional<1" );
   st->add_action( "bag_of_tricks" );
   st->add_action( "frostbolt" );
   st->add_action( "call_action_list,name=movement" );
