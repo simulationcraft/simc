@@ -2366,14 +2366,16 @@ struct frost_mage_spell_t : public mage_spell_t
       p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Frostbite only has the initial grace period
   }
 
-  void trigger_winters_chill( const action_state_t* s )
+  void trigger_winters_chill( const action_state_t* s, int stacks = -1 )
   {
     if ( !result_is_hit( s->result ) )
       return;
 
     auto wc = get_td( s->target )->debuffs.winters_chill;
-    wc->trigger( wc->max_stack() );
-    for ( int i = 0; i < wc->max_stack(); i++ )
+    if ( stacks < 0 )
+      stacks = wc->max_stack();
+    wc->trigger( stacks );
+    for ( int i = 0; i < stacks; i++ )
       p()->procs.winters_chill_applied->occur();
   }
 
@@ -3391,6 +3393,9 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     affected_by.time_manipulation = p->talents.freezing_cold.ok() && !p->talents.coldest_snap.ok();
     affected_by.shifting_power = !p->talents.coldest_snap.ok();
     cooldown->duration += p->talents.coldest_snap->effectN( 1 ).time_value();
+    // Since impact needs to know how many targets were actually hit, we
+    // delay all impact events by 1 ms so that they occur after execute is done.
+    travel_delay = 0.001;
   }
 
   double action_multiplier() const override
@@ -3409,9 +3414,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     if ( hit_any_target )
     {
       p()->buffs.snowstorm->expire();
-      // TODO: the number will most likely appear in the next build, use spell data here and in impact
-      // TODO: check how this behaves when CoC misses one of the three targets
-      if ( execute_state->n_targets >= 3 && p()->talents.coldest_snap.ok() )
+      if ( p()->talents.coldest_snap.ok() && num_targets_hit >= as<int>( p()->talents.coldest_snap->effectN( 3 ).base_value() ) )
       {
         p()->cooldowns.comet_storm->reset( false );
         p()->cooldowns.frozen_orb->reset( false );
@@ -3426,8 +3429,9 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     if ( p()->talents.freezing_cold.ok() )
       p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Freezing Cold only has the initial grace period
 
-    if ( s->n_targets >= 3 && p()->talents.coldest_snap.ok() )
-      trigger_winters_chill( s );
+    // Cone of Cold currently consumes its own Winter's Chill without benefiting
+    if ( num_targets_hit >= 3 && p()->talents.coldest_snap.ok() )
+      trigger_winters_chill( s, p()->bugs ? 1 : -1 );
   }
 };
 
