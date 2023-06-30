@@ -373,6 +373,7 @@ public:
     timespan_t scorch_delay = 15_ms;
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
+    timespan_t glacial_spike_delay = 100_ms;
   } options;
 
   // Pets
@@ -4312,6 +4313,17 @@ struct glacial_spike_t final : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
+  timespan_t execute_time() const override
+  {
+    timespan_t t = frost_mage_spell_t::execute_time();
+
+    // If the Mage just gained the final Icicle, add a small delay to approximate the lack of spell queueing.
+    if ( p()->state.gained_full_icicles + p()->options.glacial_spike_delay > sim->current_time() )
+      t += p()->options.glacial_spike_delay;
+
+    return t;
+  }
+
   double action_multiplier() const override
   {
     double am = frost_mage_spell_t::action_multiplier();
@@ -6098,6 +6110,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_timespan( "mage.glacial_spike_delay", options.glacial_spike_delay, 0_ms, timespan_t::max() ) );
 
   player_t::create_options();
 }
