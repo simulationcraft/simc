@@ -16398,6 +16398,7 @@ Tooltip          : Heals $w1 every $t1 sec.
 Name             : Umbral Intensity (id=383195) [Spell Family (7), Passive] 
 Talent Entry     : Balance [tree=spec, row=5, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
+                 : Effect#2 [op=mul]
 Class            : Druid
 School           : Physical
 Spell Type       : None
