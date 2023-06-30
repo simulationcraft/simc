@@ -3430,7 +3430,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
       p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Freezing Cold only has the initial grace period
 
     // Cone of Cold currently consumes its own Winter's Chill without benefiting
-    if ( num_targets_hit >= 3 && p()->talents.coldest_snap.ok() )
+    if ( p()->talents.coldest_snap.ok() && num_targets_hit >= as<int>( p()->talents.coldest_snap->effectN( 3 ).base_value() ) )
       trigger_winters_chill( s, p()->bugs ? 1 : -1 );
   }
 };
