@@ -2519,7 +2519,7 @@ static const std::array<trait_data_t, 2516> __ptr_trait_data_data { {
 } };
 
 // Player trait definition effect entries, wow build 10.1.5.50232
-static const std::array<trait_definition_effect_entry_t, 654> __ptr_trait_definition_effect_data { {
+static const std::array<trait_definition_effect_entry_t, 655> __ptr_trait_definition_effect_data { {
   { 85156, 0, 0, 60989 },
   { 85156, 1, 0, 60988 },
   { 85159, 0, 0, 52496 },
@@ -3021,6 +3021,7 @@ static const std::array<trait_definition_effect_entry_t, 654> __ptr_trait_defini
   { 114853, 0, 0, 60469 },
   { 114855, 0, 1, 60987 },
   { 114858, 0, 1, 60470 },
+  { 114858, 1, 1, 68962 },
   { 114868, 0, 0, 62641 },
   { 117113, 1, 1, 61124 },
   { 117114, 1, 1, 61125 },
