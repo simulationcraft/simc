@@ -812,7 +812,7 @@ public:
   bool trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_icicle( player_t* icicle_target, bool chain = false );
-  void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, timespan_t duration = timespan_t::min() );
+  void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance = 1.0, timespan_t duration = timespan_t::min() );
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
@@ -4005,8 +4005,8 @@ struct flurry_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    int icicle_count = p()->rng().roll( p()->talents.splintering_cold->effectN( 2 ).percent() ) ? 2 : 1;
-    for ( int i = 0; i < icicle_count; i++ ) p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
+    p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
+    p()->trigger_icicle_gain( target, p()->action.icicle.flurry, p()->talents.splintering_cold->effectN( 2 ).percent() );
     p()->expression_support.remaining_winters_chill = 2;
 
     p()->state.brain_freeze_active = p()->buffs.brain_freeze->up();
@@ -4125,8 +4125,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     frost_mage_spell_t::execute();
     fractured_frost_active = true;
 
-    int icicle_count = p()->rng().roll( p()->talents.splintering_cold->effectN( 2 ).percent() ) ? 2 : 1;
-    for ( int i = 0; i < icicle_count; i++ ) p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
+    p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
+    p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt, p()->talents.splintering_cold->effectN( 2 ).percent() );
 
     p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze );
@@ -4494,8 +4494,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       p()->trigger_time_manipulation();
       p()->trigger_brain_freeze( p()->sets->set( MAGE_FROST, T30, B4 )->effectN( 1 ).percent(), proc_brain_freeze );
-      if ( p()->rng().roll( p()->talents.hailstones->effectN( 1 ).percent() ) )
-        p()->trigger_icicle_gain( s->target, p()->action.icicle.ice_lance );
+      p()->trigger_icicle_gain( s->target, p()->action.icicle.ice_lance, p()->talents.hailstones->effectN( 1 ).percent() );
     }
   }
 
@@ -6844,7 +6843,7 @@ void mage_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, t
     {
       int new_icicles = std::min( stacks, max_icicles ) - buffs.icicles->check();
       for ( int i = 0; i < new_icicles; i++ )
-        trigger_icicle_gain( target, action.icicle.frostbolt, duration );
+        trigger_icicle_gain( target, action.icicle.frostbolt, 1.0, duration );
     } );
 
     return;
@@ -7595,9 +7594,9 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   }
 }
 
-void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, timespan_t duration )
+void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance, timespan_t duration )
 {
-  if ( !spec.icicles->ok() )
+  if ( !spec.icicles->ok() || !rng().roll( chance ) )
     return;
 
   unsigned max_icicles = as<unsigned>( spec.icicles->effectN( 2 ).base_value() );
@@ -7613,6 +7612,9 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
     buffs.icicles->decrement();
     icicles.erase( icicles.begin() );
   } ) } );
+
+  if ( old_count == max_icicles || chance >= 1.0 )
+    buffs.icicles->predict();
 
   if ( old_count < max_icicles && icicles.size() == max_icicles )
     state.gained_full_icicles = sim->current_time();
