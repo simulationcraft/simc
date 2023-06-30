@@ -1424,7 +1424,7 @@ class SpellDataGenerator(DataGenerator):
          401428, 401422, # Vessel of Searing Shadow
          407914, 407913, 407939,  # Might of the Drogbar set
          # 10.1.5
-         418076, 418527, 418547, 418773, 418774, 418775, 418776, 419591, 418588, 418999, 418605, # Mirror of Fractured Tomorrows
+         418076, 418527, 418547, 418773, 418774, 418775, 418776, 419591, 418588, 418999, 418605, 419052,  # Mirror of Fractured Tomorrows
          417356, 417290, 417139, 417069, 417050, 417049, # Prophetic Stonescales
          417534, 417545, 417792, 417543, # Time-Thief's Gambit
          417449, 417458, 417456, 417452, # Accelerating Sandglass

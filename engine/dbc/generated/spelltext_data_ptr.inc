@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.50232
-static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20098,6 +20098,7 @@ static const std::array<spelltext_data_t, 20106> __ptr_spelltext_data { {
   { 418775, "$@spelldesc418527", 0, 0 },
   { 418776, "$@spelldesc418527", 0, 0 },
   { 418999, "You grant yourself an absorb shield, lasting $d.", "Absorbing $w1 damage.", 0 },
+  { 419052, "$@spelldesc419162", 0, 0 },
   { 419262, 0, "Bleeding for $w1 every $t sec.", 0 },
   { 419278, "Attempt to finish off a weakened opponent, dealing $s1 Nature damage to an enemy below $s2% health. Dealing damage to enemies below $s2% health reduces the cooldown of this effect by $s3 sec.", 0, 0 },
   { 419279, "$@spelldesc419278", 0, 0 },

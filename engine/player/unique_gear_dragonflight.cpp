@@ -4865,7 +4865,7 @@ void firecallers_focus( special_effect_t& e )
 // Effect 6, Sand Bolt value
 // Effect 7, Sand Cleave value
 // Effect 8, Sand Shield value
-// Effect 9, Unknown
+// Effect 9, Restorative Sands Value
 // Effect 10, Auto Attack value
 // Melee DPS:
 // 208957 NPC ID
@@ -4885,11 +4885,12 @@ void firecallers_focus( special_effect_t& e )
 // 208959 NPC ID
 // 418605 Sand Bolt Driver
 // 418607 Sand Bolt Damage
+// 419052 Restorative Sands
 // 418776 Summon Driver
 // TODO: 
-// Double check effects are mapped to the right ability
-// Check Auto Attack interactions, due to the unique id and gcd, that assumed behavior is modeled here
-// Implement the cast start delay for Sand Bolt
+// Check Tank Pet Auto Attack, as of 29-6-2023 was using default pet autos, scaling with player attack power.
+// Re-evaluate healer pet APL logic, may need to be adjusted up/down based on log data for raid.
+// Implement the cast start delay for Sand Bolt.
 void mirror_of_fractured_tomorrows( special_effect_t& e )
 {
   if ( unique_gear::create_fallback_buffs(
@@ -4900,9 +4901,10 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
   struct future_self_auto_attack_t : public spell_t
   {
     action_t* action;
-    future_self_auto_attack_t( pet_t* p, const special_effect_t& e, action_t* a )
+    future_self_auto_attack_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str )
       : spell_t( "auto_attack", p, p->find_spell( 419591 ) ), action( a )
     {
+      parse_options( options_str );
       base_dd_min = base_dd_max = e.driver()->effectN( 10 ).average( e.item );
       auto proxy                = action;
       auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -4916,8 +4918,9 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
   struct sand_cleave_t : public spell_t
   {
     action_t* action;
-    sand_cleave_t( pet_t* p, const special_effect_t& e, action_t* a ) : spell_t( "sand_cleave", p, p->find_spell( 418588 ) ), action( a )
+    sand_cleave_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str ) : spell_t( "sand_cleave", p, p->find_spell( 418588 ) ), action( a )
     {
+      parse_options( options_str );
       aoe = -1;
       base_dd_min = base_dd_max = e.driver()->effectN( 7 ).average( e.item );
       auto proxy                = action;
@@ -4933,9 +4936,10 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
   {
     buff_t* shield;
     action_t* action;
-    sand_shield_t( pet_t* p, const special_effect_t& e, action_t* a )
+    sand_shield_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str )
       : spell_t( "sand_shield", p, p->find_spell( 418999 ) ), shield( nullptr ), action( a )
     {
+      parse_options( options_str );
       auto proxy                = action;
       auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
       if ( it != proxy->child_action.end() )
@@ -4954,12 +4958,30 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     }
   };
 
+  struct restorative_sands_t : public heal_t
+  {
+    action_t* action;
+    restorative_sands_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str )
+      : heal_t( "restorative_sands", p, p->find_spell( 419052 ) ), action( a )
+    {
+      parse_options( options_str );
+      auto proxy                = action;
+      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+      base_dd_min = base_dd_max = e.driver() -> effectN( 9 ).average( e.item );
+    }
+  };
+
   struct sand_bolt_missile_t : public spell_t
   {
     action_t* action;
-    sand_bolt_missile_t( pet_t* p, const special_effect_t& e, action_t* a )
+    sand_bolt_missile_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str )
       : spell_t( "sand_bolt", p, p->find_spell( 418605 ) ), action( a )
     {
+      parse_options( options_str );
       auto proxy                = action;
       auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
       if ( it != proxy->child_action.end() )
@@ -5018,22 +5040,27 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     {
       if ( name == "auto_attack" )
       {
-        return new future_self_auto_attack_t( this, effect, action );
+        return new future_self_auto_attack_t( this, effect, action, options );
       }
 
       if ( name == "sand_cleave" )
       {
-        return new sand_cleave_t( this, effect, action );
+        return new sand_cleave_t( this, effect, action, options );
       }
 
       if ( name == "sand_bolt" )
       {
-        return new sand_bolt_missile_t( this, effect, action );
+        return new sand_bolt_missile_t( this, effect, action, options );
       }
 
       if ( name == "sand_shield" )
       {
-        return new sand_shield_t( this, effect, action );
+        return new sand_shield_t( this, effect, action, options );
+      }
+
+      if ( name == "restorative_sands" )
+      {
+        return new restorative_sands_t( this, effect, action, options );
       }
 
       return pet_t::create_action( name, options );
@@ -5058,7 +5085,9 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
           def->add_action( "auto_attack" );
           break;
         case ROLE_HEAL:
-          def->add_action( "sand_bolt" );
+          // Use APL logic to alternate between each spell, more properly emulating in game behavior
+          def->add_action( "sand_bolt,if=prev.restorative_sands" );
+          def->add_action( "restorative_sands" );
           break;
         default:
           return;
