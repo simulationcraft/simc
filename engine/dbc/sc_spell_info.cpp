@@ -2171,6 +2171,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     std::vector<rppm_modifier_t> modifiers( mod_span.begin(), mod_span.end() );
     range::sort( modifiers, []( rppm_modifier_t a, rppm_modifier_t b ) {
+      if ( a.modifier_type == RPPM_MODIFIER_SPEC && b.modifier_type == RPPM_MODIFIER_SPEC )
+        return a.type < b.type;
+
       return a.modifier_type < b.modifier_type;
     } );
 
