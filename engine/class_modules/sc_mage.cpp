@@ -7629,7 +7629,7 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
   if ( old_count == max_icicles || chance >= 1.0 )
     buffs.icicles->predict();
 
-  if ( old_count < max_icicles && icicles.size() == max_icicles )
+  if ( icicles.size() == max_icicles )
     state.gained_full_icicles = sim->current_time();
 
   assert( icicle_action && icicles.size() <= max_icicles );
