@@ -1197,7 +1197,7 @@ struct devouring_plague_t final : public priest_spell_t
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     priest_spell_t::snapshot_state( s, rt );
-    
+
     // Stolen from Dorovon's Mage Implementation to test it before it gets made core.
 
     // The behavior of Rolling Periodic DoTs can be modeled by keeping track of a multiplier.
@@ -1205,18 +1205,22 @@ struct devouring_plague_t final : public priest_spell_t
     // refreshed early, the damage from any remaining ticks is rolled into multiplier so that
     // damage is not lost.
     double rolling_multiplier = 1.0;
-    dot_t* dot = get_dot( s->target );
+    dot_t* dot                = get_dot( s->target );
     if ( dot->is_ticking() )
     {
-      double ticks_left = dot->ticks_left_fractional();
+      double ticks_left     = dot->ticks_left_fractional();
       double old_multiplier = cast_state( dot->state )->rolling_multiplier;
       double new_base_ticks = composite_dot_duration( s ) / tick_time( s );
       // Calculate ticks_left_fractional for the DoT after it is refreshed.
-      double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, composite_dot_duration( s ) ) - dot->time_to_next_full_tick() ) / tick_time( s );
+      double new_ticks_left =
+          1.0 + ( calculate_dot_refresh_duration( dot, composite_dot_duration( s ) ) - dot->time_to_next_full_tick() ) /
+                    tick_time( s );
       // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
       rolling_multiplier = ( ticks_left * old_multiplier + new_base_ticks ) / new_ticks_left;
-      sim->print_debug( "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} new_ticks_left={}.",
-        *player, *this, old_multiplier, rolling_multiplier, ticks_left, new_base_ticks, new_ticks_left );
+      sim->print_debug(
+          "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} "
+          "new_ticks_left={}.",
+          *player, *this, old_multiplier, rolling_multiplier, ticks_left, new_base_ticks, new_ticks_left );
     }
 
     cast_state( s )->rolling_multiplier = rolling_multiplier;
@@ -1474,7 +1478,7 @@ struct void_torrent_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
 
     // Getting insanity from the trigger spell data, base spell doesn't have it
-    energize_type     = action_energize::PER_TICK;
+    energize_type     = action_energize::NONE;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = insanity_gain;
   }
@@ -2011,7 +2015,9 @@ struct dispersion_t final : public priest_buff_t<buff_t>
   }
 };
 
-// Fury of Elune AP =========================================================
+// ==========================================================================
+// Devoured Despair (Idol of Y'Shaarj)
+// ==========================================================================
 struct devoured_despair_buff_t : public priest_buff_t<buff_t>
 {
   devoured_despair_buff_t( priest_t& p ) : base_t( p, "devoured_despair", p.talents.shadow.devoured_despair )
@@ -2021,13 +2027,35 @@ struct devoured_despair_buff_t : public priest_buff_t<buff_t>
     set_trigger_spell( p.talents.shadow.idol_of_yshaarj );
     set_duration( p.talents.shadow.devoured_pride->duration() );
 
-    auto eff = &data().effectN( 1 );
-    auto ap  = eff->resource( RESOURCE_INSANITY );
-    set_default_value( ap / eff->period().total_seconds() );
+    auto eff      = &data().effectN( 1 );
+    auto insanity = eff->resource( RESOURCE_INSANITY );
+    set_default_value( insanity / eff->period().total_seconds() );
 
     auto gain = p.get_gain( "devoured_despair" );
-    set_tick_callback(
-        [ ap, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_INSANITY, ap, gain ); } );
+    set_tick_callback( [ insanity, gain, this ]( buff_t*, int, timespan_t ) {
+      player->resource_gain( RESOURCE_INSANITY, insanity, gain );
+    } );
+  }
+};
+
+// ==========================================================================
+// Void Torrent
+// Has a fixed gain for Insanity that is not tied to the ticks of the spell
+// ==========================================================================
+struct void_torrent_t : public priest_buff_t<buff_t>
+{
+  void_torrent_t( priest_t& p ) : base_t( p, "void_torrent", p.talents.shadow.void_torrent->effectN( 3 ).trigger() )
+  {
+    set_default_value_from_effect( 1 );
+    set_tick_zero( 1 );
+
+    auto eff      = &data().effectN( 1 );
+    auto insanity = eff->resource( RESOURCE_INSANITY );
+    auto gain     = p.get_gain( "void_torrent" );
+
+    set_tick_callback( [ insanity, gain, this ]( buff_t*, int, timespan_t ) {
+      player->resource_gain( RESOURCE_INSANITY, insanity, gain );
+    } );
   }
 };
 
@@ -2091,10 +2119,13 @@ void priest_t::create_buffs_shadow()
   buffs.unfurling_darkness_cd =
       make_buff( this, "unfurling_darkness_cd",
                  talents.shadow.unfurling_darkness->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
-  buffs.void_torrent  = make_buff( this, "void_torrent", talents.shadow.void_torrent );
+
+  buffs.void_torrent = make_buff<buffs::void_torrent_t>( *this );
+
   buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
                             ->set_trigger_spell( talents.shadow.mind_devourer )
                             ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
+
   buffs.shadowy_insight = make_buff<buffs::shadowy_insight_t>( *this );
 
   buffs.mental_fortitude = new buffs::mental_fortitude_buff_t( this );
