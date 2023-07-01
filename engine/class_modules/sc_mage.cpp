@@ -409,6 +409,10 @@ public:
     proc_t* flurry_cast;
     proc_t* winters_chill_applied;
     proc_t* winters_chill_consumed;
+
+    proc_t* icicles_generated;
+    proc_t* icicles_fired;
+    proc_t* icicles_overflowed;
   } procs;
 
   struct shuffled_rngs_t
@@ -5736,6 +5740,7 @@ struct icicle_event_t final : public mage_event_t
       return;
 
     icicle_action->execute_on_target( target );
+    mage->procs.icicles_fired->occur();
 
     if ( !mage->icicles.empty() )
     {
@@ -6776,6 +6781,10 @@ void mage_t::init_procs()
       procs.flurry_cast                     = get_proc( "Flurry cast" );
       procs.winters_chill_applied           = get_proc( "Winter's Chill stacks applied" );
       procs.winters_chill_consumed          = get_proc( "Winter's Chill stacks consumed" );
+
+      procs.icicles_generated  = get_proc( "Icicles generated" );
+      procs.icicles_fired      = get_proc( "Icicles fired" );
+      procs.icicles_overflowed = get_proc( "Icicles overflowed" );
       break;
     default:
       break;
@@ -7603,6 +7612,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
       return;
 
     icicle_action->execute_on_target( icicle_target );
+    procs.icicles_overflowed->occur();
     sim->print_debug( "{} icicle use on {}, total={}", name(), icicle_target->name(), icicles.size() );
   }
 }
@@ -7625,6 +7635,8 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
     buffs.icicles->decrement();
     icicles.erase( icicles.begin() );
   } ) } );
+
+  procs.icicles_generated->occur();
 
   if ( old_count == max_icicles || chance >= 1.0 )
     buffs.icicles->predict();
