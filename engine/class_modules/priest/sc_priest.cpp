@@ -2531,6 +2531,9 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
 
 void priest_t::trigger_essence_devourer()
 {
+  if ( !talents.essence_devourer.enabled() )
+    return;
+
   background_actions.essence_devourer->execute();
 }
 
