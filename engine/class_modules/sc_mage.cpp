@@ -3443,77 +3443,10 @@ struct cone_of_cold_t final : public frost_mage_spell_t
 
 // Conflagration Spell ======================================================
 
-struct rolling_periodic_action_state_t final : public action_state_t
-{
-  double rolling_ta_multiplier;
-
-  rolling_periodic_action_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ),
-    rolling_ta_multiplier( 1.0 )
-  { }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s ) << " rolling_ta_multiplier=" << rolling_ta_multiplier;
-    return s;
-  }
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-    rolling_ta_multiplier = 1.0;
-  }
-
-  void copy_state( const action_state_t* o ) override
-  {
-    action_state_t::copy_state( o );
-    rolling_ta_multiplier = debug_cast<const rolling_periodic_action_state_t*>( o )->rolling_ta_multiplier;
-  }
-
-  double composite_ta_multiplier() const override
-  { return action_state_t::composite_ta_multiplier() * rolling_ta_multiplier; }
-};
-
-struct rolling_periodic_action_t : public mage_spell_t
-{
-  rolling_periodic_action_t( std::string_view n, mage_t* p, const spell_data_t* s ) :
-    mage_spell_t( n, p, s )
-  { }
-
-  action_state_t* new_state() override
-  { return new rolling_periodic_action_state_t( this, target ); }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    mage_spell_t::snapshot_state( s, rt );
-
-    // The behavior of Rolling Periodic DoTs can be modeled by keeping track of a multiplier.
-    // A single instance of the DoT has a multiplier of 1.0 for all ticks. When the DoT is
-    // refreshed early, the damage from any remaining ticks is rolled into multiplier so that
-    // damage is not lost.
-    double rolling_ta_multiplier = 1.0;
-    dot_t* dot = get_dot( s->target );
-    if ( dot->is_ticking() )
-    {
-      double ticks_left = dot->ticks_left_fractional();
-      double old_multiplier = debug_cast<rolling_periodic_action_state_t*>( dot->state )->rolling_ta_multiplier;
-      double new_base_ticks = composite_dot_duration( s ) / tick_time( s );
-      // Calculate ticks_left_fractional for the DoT after it is refreshed.
-      double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, composite_dot_duration( s ) ) - dot->time_to_next_full_tick() ) / tick_time( s );
-      // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
-      rolling_ta_multiplier = ( ticks_left * old_multiplier + new_base_ticks ) / new_ticks_left;
-      sim->print_debug( "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} new_ticks_left={}.",
-        *player, *this, old_multiplier, rolling_ta_multiplier, ticks_left, new_base_ticks, new_ticks_left );
-    }
-
-    debug_cast<rolling_periodic_action_state_t*>( s )->rolling_ta_multiplier = rolling_ta_multiplier;
-  }
-};
-
-struct conflagration_t final : public rolling_periodic_action_t
+struct conflagration_t final : public fire_mage_spell_t
 {
   conflagration_t( std::string_view n, mage_t* p ) :
-    rolling_periodic_action_t( n, p, p->find_spell( 226757 ) )
+    fire_mage_spell_t( n, p, p->find_spell( 226757 ) )
   {
     background = true;
   }
