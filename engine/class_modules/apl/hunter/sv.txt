@@ -31,7 +31,7 @@ actions.cds+=/use_items,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 actions.cleave="/kill_shot,if=buff.coordinated_assault_empower.up&talent.birds_of_prey"
-actions.cleave+="/wildfire_bomb,if=full_recharge_time<gcd|!cooldown.coordinated_assault.remains|buff.coordinated_assault.remains&(!buff.coordinated_assault_empower.up)|talent.bombardier"
+actions.cleave+="/wildfire_bomb"
 actions.cleave+="/death_chakram"
 actions.cleave+="/stampede"
 actions.cleave+="/coordinated_assault,if=cooldown.fury_of_the_eagle.remains|!talent.fury_of_the_eagle"
