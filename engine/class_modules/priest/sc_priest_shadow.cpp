@@ -931,42 +931,6 @@ struct vampiric_touch_t final : public priest_spell_t
 // ==========================================================================
 // Devouring Plague
 // ==========================================================================
-struct devouring_plague_dot_state_t : public action_state_t
-{
-  double rolling_multiplier;
-
-  devouring_plague_dot_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), rolling_multiplier( 1.0 )
-  {
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s );
-    fmt::print( s, " rolling_multiplier={}", rolling_multiplier );
-    return s;
-  }
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-    rolling_multiplier = 1.0;
-  }
-
-  void copy_state( const action_state_t* o ) override
-  {
-    action_state_t::copy_state( o );
-    auto other_dp_state = debug_cast<const devouring_plague_dot_state_t*>( o );
-    rolling_multiplier  = other_dp_state->rolling_multiplier;
-  }
-
-  double composite_ta_multiplier() const override
-  {
-    // Use the rolling multiplier to get the stored rolling damage of the previous DP (if it exists)
-    // This will dynamically adjust as the actor gains/loses intellect
-    return action_state_t::composite_ta_multiplier() * rolling_multiplier;
-  }
-};
-
 struct devouring_plague_t final : public priest_spell_t
 {
   struct devouring_plague_heal_t final : public priest_heal_t
@@ -1036,7 +1000,6 @@ struct devouring_plague_t final : public priest_spell_t
     casted                     = _casted;
     may_crit                   = true;
     affected_by_shadow_weaving = true;
-    rolling_periodic = false;  // TODO: Rolling Periodic is now supported automagically and this custom implementation can likely be removed.
   }
 
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
@@ -1051,16 +1014,6 @@ struct devouring_plague_t final : public priest_spell_t
     {
       apply_affecting_aura( p.sets->set( PRIEST_SHADOW, T30, B4 ) );
     }
-  }
-
-  action_state_t* new_state() override
-  {
-    return new devouring_plague_dot_state_t( this, target );
-  }
-
-  devouring_plague_dot_state_t* cast_state( action_state_t* s )
-  {
-    return debug_cast<devouring_plague_dot_state_t*>( s );
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -1174,57 +1127,6 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().buffs.darkflame_embers->trigger();
     }
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
-  {
-    // If only a partial tick remains then discard the duration from the partial tick.
-    if ( d->ticks_left_fractional() < 1 )
-    {
-      return duration;
-    }
-    // otherwise roll that damage over including the time to the next full tick
-    else
-    {
-      return duration + d->time_to_next_full_tick();
-    }
-  }
-
-  bool dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
-  {
-    return dot->ticks_left() <= 1;
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    priest_spell_t::snapshot_state( s, rt );
-
-    // Stolen from Dorovon's Mage Implementation to test it before it gets made core.
-
-    // The behavior of Rolling Periodic DoTs can be modeled by keeping track of a multiplier.
-    // A single instance of the DoT has a multiplier of 1.0 for all ticks. When the DoT is
-    // refreshed early, the damage from any remaining ticks is rolled into multiplier so that
-    // damage is not lost.
-    double rolling_multiplier = 1.0;
-    dot_t* dot                = get_dot( s->target );
-    if ( dot->is_ticking() )
-    {
-      double ticks_left     = dot->ticks_left_fractional();
-      double old_multiplier = cast_state( dot->state )->rolling_multiplier;
-      double new_base_ticks = composite_dot_duration( s ) / tick_time( s );
-      // Calculate ticks_left_fractional for the DoT after it is refreshed.
-      double new_ticks_left =
-          1.0 + ( calculate_dot_refresh_duration( dot, composite_dot_duration( s ) ) - dot->time_to_next_full_tick() ) /
-                    tick_time( s );
-      // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
-      rolling_multiplier = ( ticks_left * old_multiplier + new_base_ticks ) / new_ticks_left;
-      sim->print_debug(
-          "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} "
-          "new_ticks_left={}.",
-          *player, *this, old_multiplier, rolling_multiplier, ticks_left, new_base_ticks, new_ticks_left );
-    }
-
-    cast_state( s )->rolling_multiplier = rolling_multiplier;
   }
 };
 
