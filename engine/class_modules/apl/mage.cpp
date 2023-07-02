@@ -81,15 +81,16 @@ void arcane( player_t* p )
   default_->add_action( "counterspell" );
   default_->add_action( "potion,if=cooldown.arcane_surge.ready" );
   default_->add_action( "time_warp,if=talent.temporal_warp&buff.exhaustion.up&(cooldown.arcane_surge.ready|fight_remains<=40|buff.arcane_surge.up&fight_remains<=80)" );
-  default_->add_action( "lights_judgment,if=buff.arcane_surge.down&debuff.touch_of_the_magi.down" );
+  default_->add_action( "lights_judgment,if=buff.arcane_surge.down&debuff.touch_of_the_magi.down&active_enemies>=2" );
   default_->add_action( "berserking,if=(prev_gcd.1.arcane_surge&!(buff.temporal_warp.up&buff.bloodlust.up))|(buff.arcane_surge.up&debuff.touch_of_the_magi.up)" );
   default_->add_action( "blood_fury,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "fireblood,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "ancestral_call,if=prev_gcd.1.arcane_surge" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=((!talent.radiant_spark&prev_gcd.1.arcane_surge)|(talent.radiant_spark&prev_gcd.1.radiant_spark&cooldown.arcane_surge.remains<=(gcd.max*3)))&(!buff.bloodlust.up&!buff.temporal_warp.up&set_bonus.tier30_4pc)" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=((!talent.radiant_spark&prev_gcd.1.arcane_surge)|(talent.radiant_spark&prev_gcd.1.radiant_spark&cooldown.arcane_surge.remains<=(gcd.max*3)))&(!buff.bloodlust.up&!buff.temporal_warp.up|!set_bonus.tier30_4pc)" );
   default_->add_action( "invoke_external_buff,name=blessing_of_summer,if=(!talent.radiant_spark&prev_gcd.1.arcane_surge)|(talent.radiant_spark&prev_gcd.1.radiant_spark&cooldown.arcane_surge.remains<=(gcd.max*3))" );
   default_->add_action( "invoke_external_buff,name=blessing_of_autumn,if=cooldown.touch_of_the_magi.remains>5" );
   default_->add_action( "use_items,if=((prev_gcd.1.arcane_surge&!set_bonus.tier30_4pc)|(prev_gcd.2.arcane_surge&debuff.touch_of_the_magi.up&set_bonus.tier30_4pc))|((active_enemies>=variable.aoe_target_count)&cooldown.arcane_surge.ready&prev_gcd.1.nether_tempest)" );
+  default_->add_action( "use_item,name=timebreaching_talon,if=((variable.totm_on_last_spark_stack&cooldown.arcane_surge.remains<=(gcd.max*3))|(!variable.totm_on_last_spark_stack&prev_gcd.1.arcane_surge))&(!variable.talon_double_on_use|!buff.bloodlust.up)" );
   default_->add_action( "use_item,name=tinker_breath_of_neltharion,if=cooldown.arcane_surge.remains&buff.arcane_surge.down&debuff.touch_of_the_magi.down" );
   default_->add_action( "use_item,name=conjured_chillglobe,if=mana.pct>65&(!variable.steroid_trinket_equipped|cooldown.arcane_surge.remains>20)" );
   default_->add_action( "use_item,name=beacon_to_the_beyond,if=!variable.steroid_trinket_equipped|(cooldown.arcane_surge.remains>20&buff.arcane_surge.remains<10)" );
@@ -128,7 +129,6 @@ void arcane( player_t* p )
   cooldown_phase->add_action( "radiant_spark" );
   cooldown_phase->add_action( "nether_tempest,if=talent.arcane_echo,line_cd=30" );
   cooldown_phase->add_action( "arcane_surge" );
-  cooldown_phase->add_action( "use_item,name=timebreaching_talon,if=prev_gcd.1.arcane_surge&(!variable.talon_double_on_use|!buff.bloodlust.up)" );
   cooldown_phase->add_action( "wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15" );
   cooldown_phase->add_action( "arcane_barrage,if=prev_gcd.1.arcane_surge|prev_gcd.1.nether_tempest|prev_gcd.1.radiant_spark" );
   cooldown_phase->add_action( "arcane_blast,if=prev_gcd.1.arcane_barrage|prev_gcd.2.arcane_barrage|prev_gcd.3.arcane_barrage|(prev_gcd.4.arcane_barrage&cooldown.arcane_surge.remains<60)" );
@@ -143,7 +143,6 @@ void arcane( player_t* p )
   spark_phase->add_action( "arcane_missiles,if=variable.opener&buff.bloodlust.up&buff.clearcasting.react&buff.clearcasting.stack>=2&cooldown.radiant_spark.remains<5&buff.nether_precision.down,chain=1" );
   spark_phase->add_action( "arcane_missiles,if=talent.arcane_harmony&buff.arcane_harmony.stack<15&((variable.opener&buff.bloodlust.up)|buff.clearcasting.react&cooldown.radiant_spark.remains<5)&cooldown.arcane_surge.remains<30,chain=1" );
   spark_phase->add_action( "radiant_spark" );
-  spark_phase->add_action( "use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*3)" );
   spark_phase->add_action( "nether_tempest,if=(prev_gcd.4.radiant_spark&cooldown.arcane_surge.remains<=execute_time)|prev_gcd.5.radiant_spark,line_cd=15" );
   spark_phase->add_action( "arcane_surge,if=(!talent.nether_tempest&prev_gcd.4.radiant_spark)|prev_gcd.1.nether_tempest" );
   spark_phase->add_action( "arcane_blast,if=cast_time>=gcd&execute_time<debuff.radiant_spark_vulnerability.remains&(!talent.arcane_bombardment|target.health.pct>=35)&(talent.nether_tempest&prev_gcd.6.radiant_spark|!talent.nether_tempest&prev_gcd.5.radiant_spark)" );
@@ -156,7 +155,6 @@ void arcane( player_t* p )
   aoe_spark_phase->add_action( "cancel_buff,name=presence_of_mind,if=prev_gcd.1.arcane_blast&cooldown.arcane_surge.remains>75" );
   aoe_spark_phase->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage" );
   aoe_spark_phase->add_action( "radiant_spark" );
-  aoe_spark_phase->add_action( "use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*2)&(!variable.talon_double_on_use|!buff.bloodlust.up)" );
   aoe_spark_phase->add_action( "arcane_explosion,if=buff.arcane_charge.stack>=3&!buff.clearcasting.remains&prev_gcd.1.radiant_spark" );
   aoe_spark_phase->add_action( "ice_nova,if=buff.arcane_charge.stack=4&buff.clearcasting.remains&prev_gcd.1.radiant_spark" );
   aoe_spark_phase->add_action( "arcane_blast,if=buff.arcane_charge.stack>=3&buff.clearcasting.remains&prev_gcd.1.radiant_spark" );
