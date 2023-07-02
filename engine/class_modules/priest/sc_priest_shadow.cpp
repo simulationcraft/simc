@@ -1036,6 +1036,7 @@ struct devouring_plague_t final : public priest_spell_t
     casted                     = _casted;
     may_crit                   = true;
     affected_by_shadow_weaving = true;
+    rolling_periodic = false;  // TODO: Rolling Periodic is now supported automagically and this custom implementation can likely be removed.
   }
 
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
