@@ -3646,6 +3646,7 @@ struct feral_frenzy_t : public cat_attack_t
       background = dual = true;
       direct_bleed = false;
       dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+      rolling_periodic = false;  // TODO: Rolling Periodic is now supported automagically and this custom implementation can likely be removed.
 
       dot_name = "feral_frenzy_tick";
       berserk_cp = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
