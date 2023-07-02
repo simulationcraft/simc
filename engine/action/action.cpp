@@ -1282,8 +1282,9 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
 
   amount = floor( base_ta( state ) + 0.5 );
   amount += bonus_ta( state );
-  amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * state->composite_rolling_ta_multiplier();
-  amount += state->composite_attack_power() * attack_tick_power_coefficient( state ) * state->composite_rolling_ta_multiplier();
+  double rolling_ta_multiplier = state->composite_rolling_ta_multiplier();
+  amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * rolling_ta_multiplier;
+  amount += state->composite_attack_power() * attack_tick_power_coefficient( state ) * rolling_ta_multiplier;
   amount *= state->composite_ta_multiplier();
 
   double init_tick_amount = amount;
@@ -4216,7 +4217,7 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
     case dot_behavior_e::DOT_ROLLING:
       if ( dot->ticks_left_fractional() < 1.0 )
         return triggered_duration;
-      // Unless there is only a parital tick left, DOT_ROLLING is the same as DOT_REFRESH_DURATION
+      return dot->time_to_next_full_tick() + triggered_duration;
     case dot_behavior_e::DOT_REFRESH_DURATION:
       return dot->time_to_next_full_tick() + triggered_duration;
     case dot_behavior_e::DOT_EXTEND:
