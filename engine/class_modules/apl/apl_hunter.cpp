@@ -268,14 +268,13 @@ void survival( player_t* p )
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   cleave->add_action( "kill_shot,if=buff.coordinated_assault_empower.up&talent.birds_of_prey" );
-  cleave->add_action( "wildfire_bomb,if=full_recharge_time<gcd|!cooldown.coordinated_assault.remains|buff.coordinated_assault.remains&(!buff.coordinated_assault_empower.up)|talent.bombardier" );
+  cleave->add_action( "wildfire_bomb" );
   cleave->add_action( "death_chakram" );
   cleave->add_action( "stampede" );
   cleave->add_action( "coordinated_assault,if=cooldown.fury_of_the_eagle.remains|!talent.fury_of_the_eagle" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave->add_action( "butchery,if=full_recharge_time<gcd|dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd)" );
-  cleave->add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking" );
   cleave->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame" );
   cleave->add_action( "fury_of_the_eagle" );
   cleave->add_action( "carve,if=dot.shrapnel_bomb.ticking" );
