@@ -50,6 +50,7 @@ struct action_state_t : private noncopyable
   double          versatility;
   double          da_multiplier;
   double          ta_multiplier;
+  double          rolling_ta_multiplier;
   double          player_multiplier;
   double          persistent_multiplier;
   double          pet_multiplier; // Owner -> pet multiplier
@@ -95,6 +96,11 @@ struct action_state_t : private noncopyable
   {
     return ta_multiplier * player_multiplier * persistent_multiplier * target_ta_multiplier * versatility *
            pet_multiplier * target_pet_multiplier;
+  }
+
+  virtual double composite_rolling_ta_multiplier() const
+  {
+    return rolling_ta_multiplier;
   }
 
   virtual double composite_target_mitigation_da_multiplier() const

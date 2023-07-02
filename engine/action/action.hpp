@@ -212,6 +212,9 @@ public:
   /// Need to consume per tick?
   bool consume_per_tick_;
 
+  /// Rolling Periodic DoTs will add damage from the previous instance into the new one on refresh
+  bool rolling_periodic;
+
   /// Split damage evenly between targets
   bool split_aoe_damage;
 
@@ -886,6 +889,9 @@ public:
 
   /// List-based tick damage multipliers that specifically affect the action
   virtual double composite_ta_multiplier( const action_state_t* ) const;
+
+  // Multiplier for Rolling Periodic DoTs
+  virtual double composite_rolling_ta_multiplier( const action_state_t* ) const;
 
   /// Persistent modifiers that are snapshot at the start of the spell cast
   virtual double composite_persistent_multiplier( const action_state_t* ) const;

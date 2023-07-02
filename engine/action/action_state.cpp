@@ -102,6 +102,7 @@ void action_state_t::copy_state( const action_state_t* o )
   versatility           = o->versatility;
   da_multiplier         = o->da_multiplier;
   ta_multiplier         = o->ta_multiplier;
+  rolling_ta_multiplier = o->rolling_ta_multiplier;
   player_multiplier     = o->player_multiplier;
   persistent_multiplier = o->persistent_multiplier;
   pet_multiplier        = o->pet_multiplier;
@@ -142,6 +143,7 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     versatility( 1.0 ),
     da_multiplier( 1.0 ),
     ta_multiplier( 1.0 ),
+    rolling_ta_multiplier( 1.0 ),
     player_multiplier( 1.0 ),
     persistent_multiplier( 1.0 ),
     pet_multiplier( 1.0 ),
@@ -218,6 +220,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " versatility=" << versatility;
   s << " da_mul=" << da_multiplier;
   s << " ta_mul=" << ta_multiplier;
+  s << " rolling_ta_mul=" << rolling_ta_multiplier;
   s << " ply_mul=" << player_multiplier;
   s << " per_mul=" << persistent_multiplier;
   if ( action->player->is_pet() )

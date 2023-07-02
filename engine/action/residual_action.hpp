@@ -61,6 +61,7 @@ public:
     ab::tick_may_crit = false;
     ab::hasted_ticks = false;
     ab::may_crit = false;
+    ab::rolling_periodic = false; // TODO: Should this be autoparsed to true, overriding dot_behavior below?
     ab::attack_power_mod.tick = 0;
     ab::spell_power_mod.tick = 0;
     ab::dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;

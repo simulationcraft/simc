@@ -367,6 +367,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     tick_on_application( false ),
     hasted_ticks(),
     consume_per_tick_(),
+    rolling_periodic(),
     split_aoe_damage(),
     reduced_aoe_targets( 0.0 ),
     full_amount_targets( 0 ),
@@ -615,6 +616,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   tick_may_crit       = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
   hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  rolling_periodic    = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
   ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
@@ -1280,8 +1282,8 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
 
   amount = floor( base_ta( state ) + 0.5 );
   amount += bonus_ta( state );
-  amount += state->composite_spell_power() * spell_tick_power_coefficient( state );
-  amount += state->composite_attack_power() * attack_tick_power_coefficient( state );
+  amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * state->composite_rolling_ta_multiplier();
+  amount += state->composite_attack_power() * attack_tick_power_coefficient( state ) * state->composite_rolling_ta_multiplier();
   amount *= state->composite_ta_multiplier();
 
   double init_tick_amount = amount;
@@ -2514,6 +2516,13 @@ void action_t::init()
   if ( quiet )
     stats->quiet = true;
 
+  if ( rolling_periodic )
+  {
+    // Rolling Periodic refresh behavior overrides other behaviors.
+    dot_behavior = dot_behavior_e::DOT_ROLLING;
+    snapshot_flags |= STATE_ROLLING_TA;
+  }
+
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
@@ -2570,6 +2579,9 @@ void action_t::init()
   // WOD: Yank out persistent multiplier from update flags, so they get
   // snapshot once at the application of the spell
   update_flags &= ~STATE_MUL_PERSISTENT;
+
+  // The Rolling Periodic multiplier is only updated when the DoT is applied or refreshed
+  update_flags &= ~STATE_ROLLING_TA;
 
   // Channeled dots get haste snapshoted
   if ( channeled )
@@ -3987,6 +3999,9 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_MUL_SPELL_TA )
     state->ta_multiplier = composite_ta_multiplier( state );
 
+  if ( flags & STATE_ROLLING_TA )
+    state->rolling_ta_multiplier = composite_rolling_ta_multiplier( state );
+
   if ( flags & STATE_MUL_PLAYER_DAM )
     state->player_multiplier = composite_player_multiplier( state );
 
@@ -4198,6 +4213,10 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
   {
     case dot_behavior_e::DOT_REFRESH_PANDEMIC:
       return std::max( dot->remains(), std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration );
+    case dot_behavior_e::DOT_ROLLING:
+      if ( dot->ticks_left_fractional() < 1.0 )
+        return triggered_duration;
+      // Unless there is only a parital tick left, DOT_ROLLING is the same as DOT_REFRESH_DURATION
     case dot_behavior_e::DOT_REFRESH_DURATION:
       return dot->time_to_next_full_tick() + triggered_duration;
     case dot_behavior_e::DOT_EXTEND:
@@ -4219,6 +4238,7 @@ bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration 
     case dot_behavior_e::DOT_REFRESH_DURATION:
       return dot->ticks_left() <= 1;
     case dot_behavior_e::DOT_EXTEND:
+    case dot_behavior_e::DOT_ROLLING:
       return true;
     case dot_behavior_e::DOT_NONE:
     case dot_behavior_e::DOT_CLIP:
@@ -4524,6 +4544,30 @@ double action_t::composite_da_multiplier( const action_state_t* ) const
 double action_t::composite_ta_multiplier( const action_state_t* ) const
 {
   return action_multiplier() * action_ta_multiplier();
+}
+
+double action_t::composite_rolling_ta_multiplier( const action_state_t* s ) const
+{
+  // The behavior of Rolling Periodic DoTs can be modeled by keeping track of a multiplier.
+  // A single instance of the DoT has a multiplier of 1.0 for all ticks. When the DoT is
+  // refreshed early, the damage from any remaining ticks is rolled into multiplier so that
+  // damage is not lost.
+  double m = 1.0;
+
+  dot_t* dot = find_dot( s->target );
+  if ( dot && dot->is_ticking() )
+  {
+    double ticks_left = dot->ticks_left_fractional();
+    double new_base_ticks = composite_dot_duration( s ) / tick_time( s );
+    // Calculate ticks_left_fractional for the DoT after it is refreshed.
+    double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, composite_dot_duration( s ) ) - dot->time_to_next_full_tick() ) / tick_time( s );
+    // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
+    m = ( ticks_left * s->rolling_ta_multiplier + new_base_ticks ) / new_ticks_left;
+    sim->print_debug( "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} new_ticks_left={}.",
+      *player, *this, s->rolling_ta_multiplier, m, ticks_left, new_base_ticks, new_ticks_left );
+  }
+
+  return m;
 }
 
 /// Persistent modifiers that are snapshot at the start of the spell cast

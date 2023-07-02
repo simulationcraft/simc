@@ -414,6 +414,7 @@ enum dot_behavior_e
   DOT_EXTEND,           // DoT is extended indefinitely by Duration
   DOT_REFRESH_DURATION, // Duration + Current Tick
   DOT_REFRESH_PANDEMIC, // Duration + Current Duration up to 1.3x
+  DOT_ROLLING,          // Duration + Current Tick, except for during last partial tick
   DOT_NONE              // Does not refresh
 };
 
@@ -1352,6 +1353,8 @@ enum snapshot_state_e
   /// Multiplier from the owner to pet damage
   STATE_MUL_PET        = 0x100000,
   STATE_TGT_MUL_PET    = 0x200000,
+
+  STATE_ROLLING_TA     = 0x400000,
 
   // User-defined target-specific state flags
   STATE_TGT_USER_1     = 0x10000000,
