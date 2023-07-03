@@ -3607,36 +3607,6 @@ struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
 // Feral Frenzy =============================================================
 struct feral_frenzy_t : public cat_attack_t
 {
-  struct feral_frenzy_data_t
-  {
-    double tick_amount = 0.0;
-    double tick_mul = 1.0;
-
-    friend void sc_format_to( const feral_frenzy_data_t& data, fmt::format_context::iterator out )
-    {
-      fmt::format_to( out, "tick_amount={} tick_mul={}", data.tick_amount, data.tick_mul );
-    }
-  };
-
-  struct feral_frenzy_state_t : public action_state_t
-  {
-    feral_frenzy_state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
-
-    // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
-    double composite_ta_multiplier() const override
-    {
-      return 1.0;
-    }
-
-    // what the multiplier would have been
-    double base_composite_ta_multiplier() const
-    {
-      return action_state_t::composite_ta_multiplier();
-    }
-  };
-
-  using state_t = druid_action_state_t<feral_frenzy_data_t, feral_frenzy_state_t>;
-
   struct feral_frenzy_tick_t : public cat_attack_t
   {
     bool is_direct_damage = false;
@@ -3645,26 +3615,9 @@ struct feral_frenzy_t : public cat_attack_t
     {
       background = dual = true;
       direct_bleed = false;
-      dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
-      rolling_periodic = false;  // TODO: Rolling Periodic is now supported automagically and this custom implementation can likely be removed.
 
       dot_name = "feral_frenzy_tick";
       berserk_cp = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
-    }
-
-    action_state_t* new_state() override
-    {
-      return new state_t( this, target );
-    }
-
-    state_t* cast_state( action_state_t* s )
-    {
-      return static_cast<state_t*>( s );
-    }
-
-    const state_t* cast_state( const action_state_t* s ) const
-    {
-      return static_cast<const state_t*>( s );
     }
 
     // Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
@@ -3681,60 +3634,6 @@ struct feral_frenzy_t : public cat_attack_t
     }
 
     void trigger_primal_fury() override {}
-
-    // the dot is 'snapshotted' so we directly use the tick_amount
-    double base_ta( const action_state_t* s ) const override
-    {
-      if ( is_direct_damage )
-        return cat_attack_t::base_ta( s );
-
-      auto ff_s = cast_state( s );
-
-      return ff_s->tick_amount * ff_s->tick_mul;
-    }
-
-    // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
-    double attack_tick_power_coefficient( const action_state_t* ) const override
-    {
-      return 0.0;
-    }
-
-    double base_attack_tick_power_coefficient( const action_state_t* s ) const
-    {
-      return cat_attack_t::attack_tick_power_coefficient( s );
-    }
-
-    void trigger_dot( action_state_t* s ) override
-    {
-      // calculate the expected total dot amount from the existing state before the state is replaced in trigger_dot()
-      auto stored_amount = 0.0;
-      auto ff_d = get_dot( target );
-      auto ff_s = cast_state( ff_d->state );
-
-      if ( ff_s )
-        stored_amount = ff_s->tick_amount * ff_d->ticks_left_fractional();
-
-      cat_attack_t::trigger_dot( s );
-
-      ff_s = cast_state( ff_d->state );
-
-      // calculate base per tick damage: ap * coeff
-      auto tick_damage = ff_s->composite_attack_power() * base_attack_tick_power_coefficient( ff_s );
-      // calculate expected damage over full duration: tick damage * base duration / hasted tick time
-      auto full_damage = tick_damage * ( composite_dot_duration( ff_s ) / tick_time( ff_s ) );
-
-      stored_amount += full_damage;
-
-      // calculate the full expected duration of the dot: remaining duration + elapsed time
-      auto full_duration = ff_d->duration() + tick_time( ff_s ) - ff_d->time_to_next_full_tick();
-      // damage per tick is proportional to the ratio of the the tick duration to the full duration
-      auto tick_amount = stored_amount * tick_time( ff_s ) / full_duration;
-
-      ff_s->tick_amount = tick_amount;
-
-      // the multiplier on the latest hit overwrites multipliers from previous hits and applies to the entire dot
-      ff_s->tick_mul = ff_s->base_composite_ta_multiplier();
-    }
   };
 
   feral_frenzy_t( druid_t* p, std::string_view opt ) : feral_frenzy_t( p, "feral_frenzy", p->talent.feral_frenzy, opt )
@@ -3749,7 +3648,6 @@ struct feral_frenzy_t : public cat_attack_t
     {
       tick_action = p->get_secondary_action_n<feral_frenzy_tick_t>( name_str + "_tick" );
       tick_action->stats = stats;
-      dynamic_tick_action = true;
     }
   }
 
