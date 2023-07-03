@@ -269,7 +269,7 @@ int sim_t::main( const std::vector<std::string>& args )
     {
       control.options.parse_args( args );
     }
-    catch ( const std::exception& e )
+    catch ( const std::exception& )
     {
       fmt::print( "\n" );
       std::throw_with_nested( std::invalid_argument( "Incorrect option format" ) );

@@ -1896,11 +1896,19 @@ void action_t::tick( dot_t* d )
 
     if ( dynamic_tick_action )
     {
-      tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
+      auto flags_ = tick_action->update_flags;
+
+      // ticks actions that are also rolling periodics need to force update composite_rolling_ta_multiplier on every
+      // tick_action execute
+      if ( tick_action->rolling_periodic )
+        flags_ |= STATE_ROLLING_TA;
+
+      tick_action->update_state( tick_state, flags_, amount_type( tick_state, tick_action->direct_tick ) );
     }
 
     // Apply the last tick factor from the DoT to the base damage multipliers for partial ticks
     // 6/23/2018 -- Revert the previous logic of overwriting the da modifiers with ta modifiers
+    // TODO: confirm if this is still true
     tick_state->da_multiplier *= d->get_tick_factor();
     tick_state->ta_multiplier *= d->get_tick_factor();
 
