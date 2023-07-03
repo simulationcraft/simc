@@ -6605,8 +6605,6 @@ struct celestial_alignment_base_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->eclipse_handler.expire_both();
-
     buff->trigger();
 
     p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
@@ -10263,15 +10261,15 @@ void druid_t::create_buffs()
 
   buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
+    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+        if ( old_ && !new_ )
         eclipse_handler.advance_eclipse();
     } );
 
   buff.eclipse_solar = make_buff( this, "eclipse_solar", spec.eclipse_solar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
+    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+        if ( old_ && !new_ )
         eclipse_handler.advance_eclipse();
     } );
 
@@ -12919,7 +12917,7 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->buff.parting_skies->trigger();
   p->buff.parting_skies->trigger();
   p->buff.solstice->trigger();
-  if ( state != ANY_NEXT )
+  if ( state != ANY_NEXT && !p->is_ptr() )
     p->buff.natures_grace->trigger();
 
   state = IN_BOTH;
