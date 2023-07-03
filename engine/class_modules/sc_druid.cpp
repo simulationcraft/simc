@@ -10262,14 +10262,14 @@ void druid_t::create_buffs()
   buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
-        if ( old_ && !new_ )
+      if ( old_ && !new_ )
         eclipse_handler.advance_eclipse();
     } );
 
   buff.eclipse_solar = make_buff( this, "eclipse_solar", spec.eclipse_solar )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
-        if ( old_ && !new_ )
+      if ( old_ && !new_ )
         eclipse_handler.advance_eclipse();
     } );
 
