@@ -528,7 +528,6 @@ struct evoker_buff_t : public Base
 {
 private:
   using bb = Base;  // buff base, buff_t/stat_buff_t/etc.
-  using bb = Base;  // buff base, buff_t/stat_buff_t/etc.
 
 protected:
   using base_t = evoker_buff_t<buff_t>;  // shorthand
@@ -608,47 +607,6 @@ struct time_skip_t : public buff_t
 struct stats_data_t
 {
   stats_t* stats;
-};
-
-// Template for base evoker action code.
-template <class Base>
-struct evoker_external_action_t : public Base
-{
-private:
-  using ab = Base;  // action base, spell_t/heal_t/etc.
-
-public:
-  evoker_t* evoker;
-
-  evoker_external_action_t( std::string_view name, player_t* player, evoker_t* evoker, const spell_data_t* spell = spell_data_t::nil() )
-    : ab( name, player, spell ), evoker( evoker )
-  {
-  }
-
-  evoker_t* p()
-  {
-    return evoker;
-  }
-
-  const evoker_t* p() const
-  {
-    return evoker;
-  }
-
-  double composite_spell_power() const override
-  {
-    return std::max( ab::composite_spell_power(), ab::composite_attack_power() );
-  }
-
-  evoker_td_t* td( player_t* t ) const
-  {
-    return p()->get_target_data( t );
-  }
-
-  const evoker_td_t* find_td( const player_t* t ) const
-  {
-    return p()->find_target_data( t );
-  }
 };
 
 struct augment_t : public spell_base_t
@@ -2074,14 +2032,13 @@ public:
 
 struct fire_breath_t : public empowered_charge_spell_t
 {
-  struct infernos_blessing_t : public evoker_external_action_t<spell_t>
+  struct infernos_blessing_t : public evoker_spell_t
   {
   protected:
     using state_t = evoker_action_state_t<stats_data_t>;
-    using base = evoker_external_action_t<spell_t>;
 
   public:
-    infernos_blessing_t( player_t* p, evoker_t* e ) : base( "infernos_blessing", p, e , e->talent.infernos_blessing_damage )
+    infernos_blessing_t( evoker_t* p ) : evoker_spell_t( "infernos_blessing", p, p->talent.infernos_blessing_damage )
     {
       may_dodge = may_parry = may_block = false;
       background                        = true;
@@ -2105,7 +2062,7 @@ struct fire_breath_t : public empowered_charge_spell_t
 
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
-      spell_t::snapshot_state( s, rt );
+      evoker_spell_t::snapshot_state( s, rt );
       cast_state( s )->stats = stats;
     }
 
@@ -2227,11 +2184,11 @@ struct fire_breath_t : public empowered_charge_spell_t
   {
     create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
 
-    /*if ( p->talent.infernos_blessing.ok() )
+    if ( p->talent.infernos_blessing.ok() )
     {
-      auto infernos_blessing = p->get_secondary_action<infernos_blessing_t>( "infernos_blessing", p );
+      auto infernos_blessing = p->get_secondary_action<infernos_blessing_t>( "infernos_blessing" );
       add_child( infernos_blessing );
-    }*/
+    }
   }
 };
 
@@ -3240,15 +3197,13 @@ struct upheaval_t : public empowered_charge_spell_t
   }
 };
 
-struct fate_mirror_damage_t : public evoker_external_action_t<spell_t>
+struct fate_mirror_damage_t : public evoker_spell_t
 {
-private:
-  using base = evoker_external_action_t<spell_t>;
 protected:
   using state_t = evoker_action_state_t<stats_data_t>;
 
 public:
-  fate_mirror_damage_t( player_t* p, evoker_t* e ) : base( "fate_mirror", p, e, e->talent.fate_mirror_damage )
+  fate_mirror_damage_t( evoker_t* e ) : evoker_spell_t( "fate_mirror", e, e->talent.fate_mirror_damage )
   {
     may_dodge = may_parry = may_block = may_crit = false;
     background                                   = true;
@@ -3277,7 +3232,7 @@ public:
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    base::snapshot_state( s, rt );
+    evoker_spell_t::snapshot_state( s, rt );
     cast_state( s )->stats = stats;
   }
 
@@ -3294,17 +3249,14 @@ public:
 
   void init() override
   {
-    base::init();
+    spell_t::init();
     snapshot_flags &= STATE_NO_MULTIPLIER & ~STATE_TARGET;
-    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_TGT_MUL_DA;
+    snapshot_flags |= STATE_MUL_SPELL_DA;
   }
 };
 
 struct breath_of_eons_damage_t : public spell_t
 {
-private:
-  using base = spell_t;
-
 protected:
   using state_t = evoker_action_state_t<stats_data_t>;
 
@@ -3314,7 +3266,7 @@ public:
   evoker_t* evoker;
 
   breath_of_eons_damage_t( player_t* p, evoker_t* e )
-    : base( "breath_of_eons_damage", p, e->talent.breath_of_eons_damage ), evoker( e )
+    : spell_t( "breath_of_eons_damage", p, e->talent.breath_of_eons_damage ), evoker( e )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
@@ -3355,7 +3307,7 @@ public:
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    base::snapshot_state( s, rt );
+    spell_t::snapshot_state( s, rt );
     cast_state( s )->stats = stats;
   }
 
@@ -3372,9 +3324,9 @@ public:
 
   void init() override
   {
-    base::init();
+    spell_t::init();
     snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_CRIT | STATE_TGT_MUL_DA;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_CRIT;
   }
 };
 
@@ -3387,7 +3339,7 @@ struct prescience_t : public evoker_augment_t
   {
     anachronism_chance = p->talent.anachronism->effectN( 1 ).percent();
 
-    // add_child( p->get_secondary_action<fate_mirror_damage_t>( "fate_mirror" ) );
+    add_child( p->get_secondary_action<fate_mirror_damage_t>( "fate_mirror" ) );
   }
 
   void impact( action_state_t* s ) override
@@ -3432,15 +3384,14 @@ struct prescience_t : public evoker_augment_t
   }
 };
 
-struct blistering_scales_damage_t : public evoker_external_action_t<spell_t>
+struct blistering_scales_damage_t : public evoker_spell_t
 {
-private:
-  using base = evoker_external_action_t<spell_t>;
 protected:
   using state_t = evoker_action_state_t<stats_data_t>;
 
 public:
-  blistering_scales_damage_t( player_t* p, evoker_t* e ) : base( "blistering_scales_damage", p, e, e->talent.blistering_scales_damage )
+  blistering_scales_damage_t( evoker_t* p )
+    : evoker_spell_t( "blistering_scales_damage", p, p->talent.blistering_scales_damage )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
@@ -3450,12 +3401,12 @@ public:
 
   void init() override
   {
-    base::init();
+    evoker_spell_t::init();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double da = base::composite_da_multiplier( s );
+    double da = evoker_spell_t::composite_da_multiplier( s );
     da *= 1 + p()->buff.reactive_hide->check_stack_value();
     return da;
   }
@@ -3494,7 +3445,7 @@ public:
 
   void execute() override
   {
-    base::execute();
+    evoker_spell_t::execute();
 
     if ( p()->talent.reactive_hide.ok() )
       p()->buff.reactive_hide->trigger();
@@ -3506,7 +3457,7 @@ struct blistering_scales_t : public evoker_augment_t
   blistering_scales_t( evoker_t* p, std::string_view options_str )
     : evoker_augment_t( "blistering_scales", p, p->talent.blistering_scales, options_str )
   {
-    // add_child( p->get_secondary_action<blistering_scales_damage_t>( "blistering_scales" ) );
+    add_child( p->get_secondary_action<blistering_scales_damage_t>( "blistering_scales" ) );
   }
 
   void impact( action_state_t* s ) override
@@ -3637,9 +3588,10 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
 {
   evoker_t* source;
   action_t* fate_mirror;
+  stats_t* stats;
 
-  fate_mirror_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* fate_mirror/*, stats_t* stats*/ )
-    : dbc_proc_callback_t( p, e ), source( source ), fate_mirror( fate_mirror )
+  fate_mirror_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* fate_mirror, stats_t* stats )
+    : dbc_proc_callback_t( p, e ), source( source ), fate_mirror( fate_mirror ), stats( stats )
   {
     allow_pet_procs = true;
     deactivate();
@@ -3659,7 +3611,10 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     double da = s->result_amount;
     if ( da > 0 )
     {
+      auto _stats        = fate_mirror->stats;
+      fate_mirror->stats = stats;
       fate_mirror->execute_on_target( s->target, da );
+      fate_mirror->stats = _stats;
     }
   }
 };
@@ -3668,11 +3623,11 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
 {
   evoker_t* source;
   action_t* infernos_blessing;
-  //stats_t* stats;
+  stats_t* stats;
 
-  infernos_blessing_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* infernos_blessing )
-    : dbc_proc_callback_t( p, e ), source( source ), infernos_blessing( infernos_blessing )
-      //, stats( stats )
+  infernos_blessing_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* infernos_blessing,
+                          stats_t* stats )
+    : dbc_proc_callback_t( p, e ), source( source ), infernos_blessing( infernos_blessing ), stats( stats )
   {
     allow_pet_procs = true;
     deactivate();
@@ -3684,10 +3639,10 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
     if ( s->target->is_sleeping() )
       return;
 
-    //auto _stats              = infernos_blessing->stats;
-    //infernos_blessing->stats = stats;
+    auto _stats              = infernos_blessing->stats;
+    infernos_blessing->stats = stats;
     infernos_blessing->execute_on_target( s->target );
-    //infernos_blessing->stats = _stats;
+    infernos_blessing->stats = _stats;
   }
 };
 
@@ -3695,11 +3650,11 @@ struct blistering_scales_cb_t : public dbc_proc_callback_t
 {
   evoker_t* source;
   action_t* blistering_scales;
-  //stats_t* stats;
+  stats_t* stats;
 
-  blistering_scales_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* blistering_scales)/*,
-                          stats_t* stats )*/
-    : dbc_proc_callback_t( p, e ), source( source ), blistering_scales( blistering_scales )/*, stats( stats )*/
+  blistering_scales_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* blistering_scales,
+                          stats_t* stats )
+    : dbc_proc_callback_t( p, e ), source( source ), blistering_scales( blistering_scales ), stats( stats )
   {
     allow_pet_procs = true;
     deactivate();
@@ -3721,10 +3676,10 @@ struct blistering_scales_cb_t : public dbc_proc_callback_t
     p()->sim->print_debug( "{}'s blistering scales detonates for action {} from {} targeting {}", *p(), *s->action,
                            *s->action->player, *s->target );
 
-    //auto _stats              = blistering_scales->stats;
-    //blistering_scales->stats = stats;
+    auto _stats              = blistering_scales->stats;
+    blistering_scales->stats = stats;
     blistering_scales->execute_on_target( s->action->player );
-    //blistering_scales->stats = _stats;
+    blistering_scales->stats = _stats;
   }
 };
 
@@ -3994,13 +3949,11 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
       if ( evoker->talent.fate_mirror.ok() )
       {
-        action_t* fate_mirror = new spells::fate_mirror_damage_t(target, evoker);
-        fate_mirror->init();
-            //evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
-        /*auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
+        action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
+        auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
         stats->school         = fate_mirror->get_school();
 
-        fate_mirror->stats->add_child( stats );*/
+        fate_mirror->stats->add_child( stats );
 
         auto fate_mirror_effect      = new special_effect_t( target );
         fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
@@ -4008,7 +3961,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
         target->special_effects.push_back( fate_mirror_effect );
 
-        auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror/*, stats */);
+        auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror, stats );
 
         buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
           if ( new_ )
@@ -4039,16 +3992,12 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
       if ( evoker->talent.blistering_scales )
       {
-        /*action_t* blistering_scales =
-            evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );*/
-
-        action_t* blistering_scales = new spells::blistering_scales_damage_t( target, evoker );
-        blistering_scales->init();
-
-        /*auto stats    = evoker->get_stats( "blistering_scales_" + target->name_str, blistering_scales );
+        action_t* blistering_scales =
+            evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );
+        auto stats    = evoker->get_stats( "blistering_scales_" + target->name_str, blistering_scales );
         stats->school = blistering_scales->get_school();
 
-        blistering_scales->stats->add_child( stats );*/
+        blistering_scales->stats->add_child( stats );
 
         auto blistering_scales_effect          = new special_effect_t( target );
         blistering_scales_effect->name_str     = "blistering_scales_" + evoker->name_str;
@@ -4058,8 +4007,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         blistering_scales_effect->cooldown_    = 2_s;  // Tested 27 / 05 / 2023
         target->special_effects.push_back( blistering_scales_effect );
 
-        auto blistering_scales_cb = new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker,
-                                                                       blistering_scales /*, stats */ );
+        auto blistering_scales_cb =
+            new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker, blistering_scales, stats );
 
         buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
                                       ->apply_affecting_aura( evoker->talent.regenerative_chitin )
@@ -4078,13 +4027,13 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         buffs.infernos_blessing =
             make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
 
-        action_t* infernos_blessing = new spells::fire_breath_t::infernos_blessing_t( target, evoker );
-        infernos_blessing->init();
+        action_t* infernos_blessing =
+            evoker->get_secondary_action<spells::fire_breath_t::infernos_blessing_t>( "infernos_blessing" );
 
-        /* auto stats = evoker->get_stats( "infernos_blessing_" + target->name_str, infernos_blessing );
+        auto stats    = evoker->get_stats( "infernos_blessing_" + target->name_str, infernos_blessing );
         stats->school = infernos_blessing->get_school();
 
-        infernos_blessing->stats->add_child( stats );*/
+        infernos_blessing->stats->add_child( stats );
 
         auto infernos_blessing_effect      = new special_effect_t( target );
         infernos_blessing_effect->name_str = "infernos_blessing_" + target->name_str;
@@ -4093,7 +4042,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         target->special_effects.push_back( infernos_blessing_effect );
 
         auto infernos_blessing_cb =
-            new buffs::infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker, infernos_blessing );
+            new buffs::infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker, infernos_blessing, stats );
 
         buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
           if ( new_ )
