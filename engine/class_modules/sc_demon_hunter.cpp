@@ -3120,6 +3120,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
   };
 
   double landing_distance;
+  timespan_t gcd_lag;
 
   metamorphosis_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "metamorphosis", p, p->spec.metamorphosis ),
@@ -3135,8 +3136,8 @@ struct metamorphosis_t : public demon_hunter_spell_t
     {
       base_teleport_distance  = data().max_range();
       movement_directionality = movement_direction_type::OMNI;
-      min_gcd                 = timespan_t::from_seconds( 1.0 );  // Cannot use skills during travel time
-      travel_speed            = 1.0;                              // Allows use in the precombat list
+      min_gcd                 = 1_s;  // Cannot use skills during travel time, adjusted below
+      travel_speed            = 1.0;  // Allows use in the precombat list
 
       // If we are landing outside of the impact radius, we don't need to assign the impact spell
       if ( landing_distance < 8.0 )
@@ -3151,11 +3152,20 @@ struct metamorphosis_t : public demon_hunter_spell_t
     }
   }
 
-  // leap travel time, independent of distance
+  // Meta leap travel time and self-pacify is a 1s hidden aura (201453) regardless of distance
+  // This is affected by aura lag and will slightly delay execution of follow-up attacks
+  // Not always relevant as GCD can be longer than the 1s + lag ability delay outside of lust
+  void schedule_execute( action_state_t* s ) override
+  {
+    gcd_lag = rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
+    min_gcd = 1_s + gcd_lag;
+    demon_hunter_spell_t::schedule_execute( s );
+  }
+
   timespan_t travel_time() const override
   {
     if ( p()->specialization() == DEMON_HUNTER_HAVOC )
-      return timespan_t::from_seconds( 1.0 );
+      return min_gcd;
     else // DEMON_HUNTER_VENGEANCE
       return timespan_t::zero();
   }
@@ -3184,7 +3194,9 @@ struct metamorphosis_t : public demon_hunter_spell_t
         p()->cooldown.blade_dance->reset( false );
       }
 
+      // Cancel all previous movement events, as Metamorphosis is ground-targeted
       // If we are landing outside of point-blank range, trigger the movement buff
+      p()->set_out_of_range( timespan_t::zero() ); 
       if ( landing_distance > 0.0 )
       {
         p()->buff.metamorphosis_move->distance_moved = landing_distance;
@@ -7629,7 +7641,7 @@ void demon_hunter_t::adjust_movement()
     timespan_t remains = buff.out_of_range->remains();
     remains *= buff.out_of_range->check_value() / cache.run_speed();
 
-    set_out_of_range(remains);
+    set_out_of_range( remains );
   }
 }
 
