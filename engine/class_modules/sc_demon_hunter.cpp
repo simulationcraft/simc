@@ -2899,8 +2899,17 @@ struct collective_anguish_t : public demon_hunter_spell_t
   }
 
   // Behaves as a channeled spell, although we can't set channeled = true since it is background
+  void init() override
+  {
+    demon_hunter_spell_t::init();
+
+    // Channeled dots get haste snapshotted in action_t::init() and we replicate that here
+    update_flags &= ~STATE_HASTE;
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
+    // Replicate channeled action_t::composite_dot_duration() here
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 };
