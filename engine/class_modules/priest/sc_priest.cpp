@@ -2064,29 +2064,35 @@ void priest_t::init_base_stats()
 
 void priest_t::init_resources( bool force )
 {
-  // TODO: Use spelldata to make this less brittle when they tweak Insanity
-  if ( specialization() == PRIEST_SHADOW && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 )
+  // Can perform pre-pull actions that are harmful without actually hitting the boss
+  // to build up Insanity before pulling
+  if ( ( specialization() == PRIEST_SHADOW ) && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 &&
+       options.init_insanity )
   {
+    auto divine_star_insanity  = talents.divine_star->effectN( 3 ).resource( RESOURCE_INSANITY );
+    auto halo_insanity         = talents.halo->effectN( 2 ).resource( RESOURCE_INSANITY );
+    auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
+
     if ( talents.shadow.shadow_crash.enabled() )
     {
-      // Two Shadow Crash + Two Divine Star
+      // Two Shadow Crash + Two Divine Star == 24 Insanity
       if ( talents.divine_star.enabled() )
-        resources.initial_opt[ RESOURCE_INSANITY ] = 24;
-      // Two Shadow Crash + One Halo
+        resources.initial_opt[ RESOURCE_INSANITY ] = ( shadow_crash_insanity * 2 ) + ( divine_star_insanity * 2 );
+      // Two Shadow Crash + One Halo == 22 Insanity
       else if ( talents.halo.enabled() )
-        resources.initial_opt[ RESOURCE_INSANITY ] = 22;
+        resources.initial_opt[ RESOURCE_INSANITY ] = ( shadow_crash_insanity * 2 ) + halo_insanity;
       else
-        // Two Shadow Crash
-        resources.initial_opt[ RESOURCE_INSANITY ] = 12;
+        // Two Shadow Crash == 12 Insanity
+        resources.initial_opt[ RESOURCE_INSANITY ] = ( shadow_crash_insanity * 2 );
     }
     else
     {
-      // Three Divine Stars
+      // Three Divine Stars == 18 Insanity
       if ( talents.divine_star.enabled() )
-        resources.initial_opt[ RESOURCE_INSANITY ] = 18;
-      // One Halo
+        resources.initial_opt[ RESOURCE_INSANITY ] = ( divine_star_insanity * 3 );
+      // One Halo == 10 Insanity
       if ( talents.halo.enabled() )
-        resources.initial_opt[ RESOURCE_INSANITY ] = 10;
+        resources.initial_opt[ RESOURCE_INSANITY ] = halo_insanity;
     }
   }
 
@@ -2481,6 +2487,7 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.void_lasher_retarget", options.void_lasher_retarget ) );
+  add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
 }
 
 std::string priest_t::create_profile( save_e type )

@@ -40,7 +40,7 @@ struct burning_vehemence_t;
 namespace actions::heals
 {
 struct essence_devourer_t;
-} // namespace actions::heals
+}  // namespace actions::heals
 
 /**
  * Priest target data
@@ -595,6 +595,10 @@ public:
 
     // Void Lasher re-target on demise bug
     bool void_lasher_retarget = false;
+
+    // Option whether or not to start with higher than 0 Insanity based on talents
+    // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
+    bool init_insanity = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
