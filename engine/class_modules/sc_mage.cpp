@@ -1162,6 +1162,10 @@ struct icy_veins_t final : public buff_t
 
     p->buffs.frigid_empowerment->expire();
     p->buffs.slick_ice->expire();
+
+    // Icy Veins from TA doesn't need the IV talent and the pet might be nullptr
+    if ( p->pets.water_elemental && !p->pets.water_elemental->is_sleeping() )
+      p->pets.water_elemental->dismiss();
   }
 };
 
@@ -4296,11 +4300,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( s->chain_target == 0 && p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
-    {
-      timespan_t t = p()->talents.thermal_void->effectN( 3 ).time_value();
-      p()->buffs.icy_veins->extend_duration( p(), t );
-      p()->pets.water_elemental->adjust_duration( t );
-    }
+      p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 3 ).time_value() );
 
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
@@ -4490,9 +4490,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       if ( p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
       {
-        timespan_t t = p()->talents.thermal_void->effectN( 1 ).time_value();
-        p()->buffs.icy_veins->extend_duration( p(), t );
-        p()->pets.water_elemental->adjust_duration( t );
+        p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 1 ).time_value() );
         record_shatter_source( s, extension_source );
       }
 
@@ -4581,7 +4579,9 @@ struct icy_veins_t final : public frost_mage_spell_t
     p()->buffs.cryopathy->trigger( p()->buffs.cryopathy->max_stack() );
 
     if ( p()->pets.water_elemental->is_sleeping() )
-      p()->pets.water_elemental->summon( p()->buffs.icy_veins->buff_duration() );
+      p()->pets.water_elemental->summon();
+    else if ( p()->bugs )
+      p()->pets.water_elemental->dismiss();
   }
 };
 
@@ -5559,7 +5559,7 @@ struct proxy_action_t : public action_t
       return false;
 
     // Pet is about to die, don't let it start a new cast.
-    if ( pet()->expiration && pet()->expiration->remains() == 0_ms )
+    if ( p()->buffs.icy_veins->remains() == 0_ms )
       return false;
 
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
