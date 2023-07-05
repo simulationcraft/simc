@@ -3817,7 +3817,7 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
   };
 
   temporal_wound_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
-    : evoker_buff_t<buff_t>( td, name, s )
+    : evoker_buff_t<buff_t>( td, name, s ), eon_actions{ false }
   {
     buff_period = 0_s;
 
