@@ -65,14 +65,11 @@ enum free_spell_e : unsigned
   ORBIT      = 0x0040,  // orbit breaker talent
   // free casts
   APEX       = 0x0080,  // apex predators's craving
-  /* TODO: implement 4pc bug if not fixed in 0day patch
-  COSMOS     = 0x0100,  // touch the cosmos 4t29
-  */
-  STARWEAVER = 0x0200,  // starweaver talent
-  TOOTH      = 0x0400,  // tooth and claw talent
+  STARWEAVER = 0x0100,  // starweaver talent
+  TOOTH      = 0x0200,  // tooth and claw talent
 
   PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT,
-  CASTS = APEX | /*COSMOS |*/ STARWEAVER | TOOTH
+  CASTS = APEX | STARWEAVER | TOOTH
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -468,10 +465,6 @@ public:
     action_t* shooting_stars_moonfire;
     action_t* shooting_stars_sunfire;
     action_t* crashing_stars;                // 4t30
-    /* TODO: implement 4pc bug if not fixed in 0day patch
-    action_t* starfall_cosmos;               // free starfall from 4t29 TODO remove in 10.1
-    action_t* starsurge_cosmos;              // free starsurge fromm 4t29 TODO remove in 10.1
-    */
     action_t* starfall_starweaver;           // free starfall from starweaver's warp
     action_t* starsurge_starweaver;          // free starsurge from starweaver's weft
     action_t* sundered_firmament;
@@ -7748,15 +7741,6 @@ struct starfall_t : public astral_power_spender_t
 
   void execute() override
   {
-    /* TODO: implement 4pc bug if not fixed in 0day patch
-    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() && p()->active.starfall_cosmos )
-    {
-      p()->active.starfall_cosmos->execute_on_target( target );
-      p()->buff.touch_the_cosmos->expire();
-      return;
-    }
-    */
-
     if ( !is_free() && p()->buff.starweavers_warp->up() && p()->active.starfall_starweaver )
     {
       p()->active.starfall_starweaver->execute_on_target( target );
@@ -7991,15 +7975,6 @@ struct starsurge_t : public astral_power_spender_t
 
   void execute() override
   {
-    /* TODO: implement 4pc bug if not fixed in 0day patch
-    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() && p()->active.starsurge_cosmos )
-    {
-      p()->active.starsurge_cosmos->execute_on_target( target );
-      p()->buff.touch_the_cosmos->expire();
-      return;
-    }
-    */
-
     if ( !is_free() && p()->buff.starweavers_weft->up() && p()->active.starsurge_starweaver )
     {
       p()->active.starsurge_starweaver->execute_on_target( target );
@@ -10516,29 +10491,6 @@ void druid_t::create_actions()
     }
   }
 
-  /* TODO: implement 4pc bug if not fixed in 0day patch
-  if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
-  {
-    if ( talent.starsurge.ok() )
-    {
-      auto ss = get_secondary_action_n<starsurge_t>( "starsurge_cosmos", talent.starsurge, "" );
-      ss->name_str_reporting = "touch_the_cosmos";
-      ss->s_data_reporting = &buff.touch_the_cosmos->data();
-      ss->set_free_cast( free_spell_e::COSMOS );
-      active.starsurge_cosmos = ss;
-    }
-
-    if ( talent.starfall.ok() )
-    {
-      auto sf = get_secondary_action_n<starfall_t>( "starfall_cosmos", talent.starfall, "" );
-      sf->name_str_reporting = "touch_the_cosmos";
-      sf->s_data_reporting = &buff.touch_the_cosmos->data();
-      sf->set_free_cast( free_spell_e::COSMOS );
-      active.starfall_cosmos = sf;
-    }
-  }
-  */
-
   if ( talent.starweaver.ok() )
   {
     if ( talent.starsurge.ok() )
@@ -10695,10 +10647,6 @@ void druid_t::create_actions()
   find_parent( active.maul_tooth_and_claw, "maul" );
   find_parent( active.raze_tooth_and_claw, "raze" );
   find_parent( active.orbit_breaker, "full_moon" );
-  /* TODO: implement 4pc bug if not fixed in 0day patch
-  find_parent( active.starsurge_cosmos, "starsurge" );
-  find_parent( active.starfall_cosmos, "starfall" );
-  */
   find_parent( active.starsurge_starweaver, "starsurge" );
   find_parent( active.starfall_starweaver, "starfall" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
