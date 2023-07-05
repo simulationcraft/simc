@@ -2305,6 +2305,8 @@ void priest_t::init_rng()
 
 void priest_t::init_background_actions()
 {
+  player_t::init_background_actions();
+
   background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
