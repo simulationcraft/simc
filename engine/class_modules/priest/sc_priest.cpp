@@ -1913,6 +1913,25 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
   return m;
 }
 
+double priest_t::composite_leech() const
+{
+  double l = player_t::composite_leech();
+
+  if ( talents.sanguine_teachings.enabled() )
+  {
+    auto amount = talents.sanguine_teachings->effectN( 1 ).percent();
+
+    if ( talents.sanlayn.enabled() )
+    {
+      amount += talents.sanlayn->effectN( 3 ).percent();
+    }
+
+    l += amount;
+  }
+
+  return l;
+}
+
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
@@ -2178,7 +2197,7 @@ void priest_t::init_spells()
   talents.move_with_grace    = CT( "Move With Grace" );  // NYI
   talents.power_infusion     = CT( "Power Infusion" );
   talents.vampiric_embrace   = CT( "Vampiric Embrace" );
-  talents.sanguine_teachings = CT( "Sanguine Teachings" );  // NYI
+  talents.sanguine_teachings = CT( "Sanguine Teachings" );
   talents.tithe_evasion      = CT( "Tithe Evasion" );
   // Row 6
   talents.inspiration                = CT( "Inspiration" );           // NYI
@@ -2186,7 +2205,7 @@ void priest_t::init_spells()
   talents.body_and_soul              = CT( "Body and Soul" );
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
   talents.void_shield                = CT( "Void Shield" );
-  talents.sanlayn                    = CT( "San'layn" );  // TODO: Support working with Sanguine Teachings
+  talents.sanlayn                    = CT( "San'layn" );
   talents.apathy                     = CT( "Apathy" );
   // Row 7
   talents.unwavering_will = CT( "Unwavering Will" );
@@ -2486,7 +2505,6 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
-  add_option( opt_bool( "priest.void_lasher_retarget", options.void_lasher_retarget ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
 }
 

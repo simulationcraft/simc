@@ -593,9 +593,6 @@ public:
     // Time in seconds between prayer of mending bounces
     double prayer_of_mending_bounce_rate = 2;
 
-    // Void Lasher re-target on demise bug
-    bool void_lasher_retarget = false;
-
     // Option whether or not to start with higher than 0 Insanity based on talents
     // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
     bool init_insanity = true;
@@ -632,6 +629,7 @@ public:
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
+  double composite_leech() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void init_action_list() override;
@@ -1018,7 +1016,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twilight_equilibrium_holy_amp->trigger();
         priest().buffs.twilight_equilibrium_shadow_amp->expire();
       }
-      // Holy and Radiant (holyfire) applies this buff
+      // Holy and Radiant (SCHOOL_HOLYFIRE) applies this buff
       // Non-harmful actions don't apply this buff
       if ( ( this->school == SCHOOL_HOLY || this->school == SCHOOL_HOLYFIRE ) && this->harmful == true )
       {
