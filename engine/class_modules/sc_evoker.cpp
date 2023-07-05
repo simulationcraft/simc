@@ -3287,54 +3287,21 @@ struct upheaval_t : public empowered_charge_spell_t
   }
 };
 
-struct fate_mirror_damage_t : public evoker_spell_t
+struct fate_mirror_damage_t : public evoker_external_action_t<spell_t>
 {
 protected:
-  using state_t = evoker_action_state_t<stats_data_t>;
+  using base = evoker_external_action_t<spell_t>;
 
 public:
-  fate_mirror_damage_t( evoker_t* e ) : evoker_spell_t( "fate_mirror", e, e->talent.fate_mirror_damage )
+  fate_mirror_damage_t( player_t* p ) : base( "fate_mirror", p, p->find_spell( 404908 ) )
   {
     may_dodge = may_parry = may_block = may_crit = false;
     background                                   = true;
-    base_dd_multiplier                           = e->talent.fate_mirror->effectN( 1 ).percent();
   }
 
-  double composite_da_multiplier( const action_state_t* ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return base_dd_multiplier;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    evoker_spell_t::snapshot_state( s, rt );
-    cast_state( s )->stats = stats;
-  }
-
-  void record_data( action_state_t* data ) override
-  {
-    if ( !cast_state( data )->stats )
-      return;
-
-    cast_state( data )->stats->add_result(
-        data->result_amount, data->result_total, report_amount_type( data ), data->result,
-        ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
-        data->target );
+    return cast_state( s )->evoker->talent.fate_mirror->effectN( 1 ).percent();
   }
 
   void init() override
@@ -3359,39 +3326,6 @@ public:
     background                        = true;
     spell_power_mod.direct            = 0.88;  // Hardcoded for some reason, 24/05/2023
   }
-
-  /*
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    spell_t::snapshot_state( s, rt );
-    cast_state( s )->stats = stats;
-  }
-
-  void record_data( action_state_t* data ) override
-  {
-    if ( !cast_state( data )->stats )
-      return;
-
-    cast_state( data )->stats->add_result(
-        data->result_amount, data->result_total, report_amount_type( data ), data->result,
-        ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
-        data->target );
-  }*/
 };
 
 struct breath_of_eons_damage_t : public spell_t
@@ -3477,8 +3411,6 @@ struct prescience_t : public evoker_augment_t
     : evoker_augment_t( "prescience", p, p->talent.prescience, options_str )
   {
     anachronism_chance = p->talent.anachronism->effectN( 1 ).percent();
-
-    add_child( p->get_secondary_action<fate_mirror_damage_t>( "fate_mirror" ) );
   }
 
   void impact( action_state_t* s ) override
@@ -3670,15 +3602,16 @@ namespace buffs
 struct fate_mirror_cb_t : public dbc_proc_callback_t
 {
   evoker_t* source;
-  action_t* fate_mirror;
-  stats_t* stats;
+  spells::fate_mirror_damage_t* fate_mirror;
 
-  fate_mirror_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* fate_mirror, stats_t* stats )
-    : dbc_proc_callback_t( p, e ), source( source ), fate_mirror( fate_mirror ), stats( stats )
+  fate_mirror_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
+    : dbc_proc_callback_t( p, e ), source( source )
   {
     allow_pet_procs = true;
     deactivate();
     initialize();
+
+    fate_mirror = debug_cast<spells::fate_mirror_damage_t*>( p->find_action( "fate_mirror" ) );
   }
 
   evoker_t* p()
@@ -3694,10 +3627,8 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     double da = s->result_amount;
     if ( da > 0 )
     {
-      auto _stats        = fate_mirror->stats;
-      fate_mirror->stats = stats;
+      fate_mirror->evoker = source;
       fate_mirror->execute_on_target( s->target, da );
-      fate_mirror->stats = _stats;
     }
   }
 };
@@ -4158,19 +4089,13 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
       if ( evoker->talent.fate_mirror.ok() )
       {
-        action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
-        auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
-        stats->school         = fate_mirror->get_school();
-
-        fate_mirror->stats->add_child( stats );
-
         auto fate_mirror_effect      = new special_effect_t( target );
         fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
         fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
         fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
         target->special_effects.push_back( fate_mirror_effect );
 
-        auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror, stats );
+        auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker );
 
         buffs.prescience->set_stack_change_callback( [ fate_mirror_cb, target, evoker ]( buff_t*, int, int new_ ) {
           if ( new_ )
@@ -5425,6 +5350,7 @@ struct evoker_module_t : public module_t
 
     new spells::infernos_blessing_t( p );
     new spells::blistering_scales_damage_t( p );
+    new spells::fate_mirror_damage_t( p );
   }
 
 
