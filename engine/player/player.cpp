@@ -1303,7 +1303,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
 
   if ( !is_pet() && !is_enemy() )
   {
-    sim->register_heartbeat_event_callback( [ this ]( sim_t* sim ) {
+    sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
       for ( auto& pet : active_pets )
       {
         pet->update_stats();
@@ -2522,7 +2522,7 @@ static bool generate_tree_nodes( player_t* player,
 // Different entries within the same node are allowed to have non-unique selection indices. Every new build, it seems
 // random which node becomes the first choice. Manually resolve such conflicts here.
 // ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
-static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
+static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool /* is_ptr */ )
 {
   auto get_index = [ /* is_ptr */ ]( const trait_data_t* t ) -> short {
     return t->selection_index;
