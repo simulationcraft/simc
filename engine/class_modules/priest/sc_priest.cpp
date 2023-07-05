@@ -2498,8 +2498,6 @@ void priest_t::create_options()
 {
   base_t::create_options();
 
-  add_option( opt_bool( "priest.autounshift", options.autoUnshift ) );
-  add_option( opt_bool( "priest.fixed_time", options.fixed_time ) );
   add_option( opt_bool( "priest.mindgames_healing_reversal", options.mindgames_healing_reversal ) );
   add_option( opt_bool( "priest.mindgames_damage_reversal", options.mindgames_damage_reversal ) );
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
@@ -2511,19 +2509,6 @@ void priest_t::create_options()
 std::string priest_t::create_profile( save_e type )
 {
   std::string profile_str = base_t::create_profile( type );
-
-  if ( type & SAVE_PLAYER )
-  {
-    if ( !options.autoUnshift )
-    {
-      profile_str += fmt::format( "priest.autounshift={}\n", options.autoUnshift );
-    }
-
-    if ( !options.fixed_time )
-    {
-      profile_str += fmt::format( "priest.fixed_time={}\n", options.fixed_time );
-    }
-  }
 
   return profile_str;
 }

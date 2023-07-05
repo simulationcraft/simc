@@ -578,9 +578,6 @@ public:
   // Options
   struct
   {
-    bool autoUnshift = true;  // Shift automatically out of stance/form
-    bool fixed_time  = true;
-
     // Default param to set if you should cast Power Infusion on yourself
     bool self_power_infusion = true;
 
