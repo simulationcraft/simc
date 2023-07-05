@@ -748,11 +748,11 @@ public:
   {
     assert( state );
 
-    ab::snapshot_internal( state, flags, rt );
-        
     cast_state( state )->evoker = evoker;
 
     assert( p( state ) );
+
+    ab::snapshot_internal( state, flags, rt );
 
     if ( flags & STATE_CRIT )
       state->crit_chance = composite_crit_chance( state ) * composite_crit_chance_multiplier( state );
@@ -3520,14 +3520,15 @@ struct prescience_t : public evoker_augment_t
   }
 };
 
-struct blistering_scales_damage_t : public evoker_spell_t
+struct blistering_scales_damage_t : public evoker_external_action_t<spell_t>
 {
+private:
+  using base = evoker_external_action_t<spell_t>;
 protected:
   using state_t = evoker_action_state_t<stats_data_t>;
 
 public:
-  blistering_scales_damage_t( evoker_t* p )
-    : evoker_spell_t( "blistering_scales_damage", p, p->talent.blistering_scales_damage )
+  blistering_scales_damage_t( player_t* p ) : base( "blistering_scales_damage", p, p->find_spell( 360828 ) )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
@@ -3535,56 +3536,20 @@ public:
     spell_power_mod.direct            = 0.3;  // Hardcoded for some reason, 19/05/2023
   }
 
-  void init() override
-  {
-    evoker_spell_t::init();
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double da = evoker_spell_t::composite_da_multiplier( s );
-    da *= 1 + p()->buff.reactive_hide->check_stack_value();
+    double da = base::composite_da_multiplier( s );
+
+    da *= 1 + p( s )->buff.reactive_hide->check_stack_value();
     return da;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    spell_t::snapshot_state( s, rt );
-    cast_state( s )->stats = stats;
-  }
-
-  void record_data( action_state_t* data ) override
-  {
-    if ( !cast_state( data )->stats )
-      return;
-
-    cast_state( data )->stats->add_result(
-        data->result_amount, data->result_total, report_amount_type( data ), data->result,
-        ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
-        data->target );
   }
 
   void execute() override
   {
-    evoker_spell_t::execute();
+    base::execute();
 
-    if ( p()->talent.reactive_hide.ok() )
-      p()->buff.reactive_hide->trigger();
+    if ( p( execute_state )->talent.reactive_hide.ok() )
+      p( execute_state )->buff.reactive_hide->trigger();
   }
 };
 
@@ -3593,7 +3558,6 @@ struct blistering_scales_t : public evoker_augment_t
   blistering_scales_t( evoker_t* p, std::string_view options_str )
     : evoker_augment_t( "blistering_scales", p, p->talent.blistering_scales, options_str )
   {
-    add_child( p->get_secondary_action<blistering_scales_damage_t>( "blistering_scales" ) );
   }
 
   void impact( action_state_t* s ) override
@@ -3783,16 +3747,17 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
 struct blistering_scales_cb_t : public dbc_proc_callback_t
 {
   evoker_t* source;
-  action_t* blistering_scales;
+  spells::blistering_scales_damage_t* blistering_scales;
   stats_t* stats;
 
-  blistering_scales_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* blistering_scales,
-                          stats_t* stats )
-    : dbc_proc_callback_t( p, e ), source( source ), blistering_scales( blistering_scales ), stats( stats )
+  blistering_scales_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
+    : dbc_proc_callback_t( p, e ), source( source )
   {
     allow_pet_procs = true;
     deactivate();
     initialize();
+
+    blistering_scales = debug_cast<spells::blistering_scales_damage_t*>( p->find_action( "blistering_scales_damage" ) );
   }
 
   evoker_t* p()
@@ -3810,10 +3775,8 @@ struct blistering_scales_cb_t : public dbc_proc_callback_t
     p()->sim->print_debug( "{}'s blistering scales detonates for action {} from {} targeting {}", *p(), *s->action,
                            *s->action->player, *s->target );
 
-    auto _stats              = blistering_scales->stats;
-    blistering_scales->stats = stats;
+    blistering_scales->evoker = source;
     blistering_scales->execute_on_target( s->action->player );
-    blistering_scales->stats = _stats;
   }
 };
 
@@ -4126,13 +4089,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
       if ( evoker->talent.blistering_scales )
       {
-        action_t* blistering_scales =
-            evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );
-        auto stats    = evoker->get_stats( "blistering_scales_" + target->name_str, blistering_scales );
-        stats->school = blistering_scales->get_school();
-
-        blistering_scales->stats->add_child( stats );
-
         auto blistering_scales_effect          = new special_effect_t( target );
         blistering_scales_effect->name_str     = "blistering_scales_" + evoker->name_str;
         blistering_scales_effect->type         = SPECIAL_EFFECT_EQUIP;
@@ -4142,7 +4098,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         target->special_effects.push_back( blistering_scales_effect );
 
         auto blistering_scales_cb =
-            new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker, blistering_scales, stats );
+            new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker );
 
         buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
                                       ->apply_affecting_aura( evoker->talent.regenerative_chitin )
@@ -5357,6 +5313,7 @@ struct evoker_module_t : public module_t
       return;
 
     new spells::infernos_blessing_t( p );
+    new spells::blistering_scales_damage_t( p );
   }
 
 
