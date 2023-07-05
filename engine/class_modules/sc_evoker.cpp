@@ -702,6 +702,74 @@ public:
     return static_cast<const state_t*>( s );
   }
 
+  double composite_crit_chance( const action_state_t* s ) const
+  {
+    return action_t::composite_crit_chance() + p( s )->cache.spell_crit_chance();
+  }
+
+  double composite_haste( const action_state_t* s ) const
+  {
+    return action_t::composite_haste() * p( s )->cache.spell_speed();
+  }
+
+  double composite_crit_chance_multiplier( const action_state_t* s ) const
+  {
+    return action_t::composite_crit_chance_multiplier() * p( s )->composite_spell_crit_chance_multiplier();
+  }
+
+  double composite_versatility( const action_state_t* s ) const override
+  {
+    return action_t::composite_versatility( s ) + p( s )->cache.damage_versatility();
+  }
+
+  double composite_attack_power( const action_state_t* s ) const
+  {
+    return p( s )->composite_melee_attack_power_by_type( ab::get_attack_power_type() );
+  }
+
+  double composite_spell_power( const action_state_t* s ) const
+  {
+    double spell_power = 0;
+    double tmp;
+
+    auto _player = p( s );
+
+    for ( auto base_school : ab::base_schools )
+    {
+      tmp = _player->cache.spell_power( base_school );
+      if ( tmp > spell_power )
+        spell_power = tmp;
+    }
+
+    return spell_power;
+  }
+
+  void snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt ) override
+  {
+    assert( state );
+
+    ab::snapshot_internal( state, flags, rt );
+        
+    cast_state( state )->evoker = evoker;
+
+    assert( p( state ) );
+
+    if ( flags & STATE_CRIT )
+      state->crit_chance = composite_crit_chance( state ) * composite_crit_chance_multiplier( state );
+
+    if ( flags & STATE_HASTE )
+      state->haste = composite_haste( state );
+
+    if ( flags & STATE_AP )
+      state->attack_power = composite_attack_power( state ) * p( state )->composite_attack_power_multiplier();
+
+    if ( flags & STATE_SP )
+      state->spell_power = composite_spell_power( state ) * p( state )->composite_spell_power_multiplier();
+
+    if ( flags & STATE_VERSATILITY )
+      state->versatility = composite_versatility( state );
+  }
+
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     ab::snapshot_state( s, rt );
@@ -730,7 +798,7 @@ public:
 
   double composite_spell_power() const override
   {
-    return std::max( ab::composite_spell_power(), ab::composite_attack_power() );
+    return ab::composite_spell_power();
   }
 };
 
@@ -3287,12 +3355,6 @@ public:
     may_dodge = may_parry = may_block = false;
     background                        = true;
     spell_power_mod.direct            = 0.88;  // Hardcoded for some reason, 24/05/2023
-  }
-
-  // Use the Augmentation Evokers Versatility Multiplier.
-  double composite_versatility( const action_state_t* s ) const override
-  {
-    return base::composite_versatility( s ) + p( s )->cache.damage_versatility();
   }
 
   /*
