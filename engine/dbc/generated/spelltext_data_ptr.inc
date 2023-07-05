@@ -1806,7 +1806,7 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
   {  56285, "$@spelldesc56246", 0, 0 },
   {  56315, "Increases your maximum Focus and your pet's maximum Focus by $s1.", 0, 0 },
   {  56355, "Deals $s1 damage.", "Deals $s1 damage.", 0 },
-  {  56377, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s4% of its damage.", 0, 0 },
+  {  56377, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Glacial Spike also hits a second nearby target for $s4% of its damage.", 0, 0 },
   {  56382, "When cast on critters, your Polymorph spells now last 1 day and can be cast on multiple targets.", 0, 0 },
   {  56384, "Your Blink spell teleports you in the direction you are moving instead of the direction you are facing.", 0, 0 },
   {  56599, "$@spelldesc56382", 0, 0 },
@@ -20110,7 +20110,8 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.5.50232
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s4% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Glacial Spike also hits a second nearby target for $s4% of its damage." },
 } };
 
 // Spell description variables, wow build 10.1.5.50232
