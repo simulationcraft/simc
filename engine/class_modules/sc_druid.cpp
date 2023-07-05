@@ -10324,8 +10324,10 @@ void druid_t::create_buffs()
     ->set_default_value( 0 )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       if ( b->check_value() )
+      {
         active.elunes_favored_heal->execute();
         b->current_value = 0;
+      }
     } );
 
   buff.furious_regeneration = make_buff( this, "furious_regeneration", spec.furious_regeneration )
