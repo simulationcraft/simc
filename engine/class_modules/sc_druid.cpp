@@ -541,8 +541,7 @@ public:
     buff_t* matted_fur;
     buff_t* moonkin_form;
     buff_t* natures_vigil;
-    buff_t* protector_of_the_pack_moonfire;
-    buff_t* protector_of_the_pack_regrowth;
+    buff_t* protector_of_the_pack;
     buff_t* rising_light_falling_night_day;
     buff_t* rising_light_falling_night_night;
     buff_t* tiger_dash;
@@ -1113,7 +1112,6 @@ public:
   void init_special_effects() override;
   void init_spells() override;
   void init_scaling() override;
-  void init_assessors() override;
   void init_finished() override;
   void create_buffs() override;
   void create_actions() override;
@@ -1472,7 +1470,7 @@ public:
   const druid_t* p() const { return static_cast<druid_t*>( Base::source ); }
 };
 
-typedef druid_buff_base_t<> druid_buff_t;
+using druid_buff_t = druid_buff_base_t<>;
 
 // Shapeshift Form Buffs ====================================================
 
@@ -2079,30 +2077,6 @@ public:
   void schedule_execute( action_state_t* s = nullptr ) override;
   void execute() override;
   void impact( action_state_t* s ) override;
-
-  void assess_damage( result_amount_type t, action_state_t* s ) override
-  {
-    ab::assess_damage( t, s );
-
-    if ( !s->result_amount || !( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) )
-      return;
-
-    if ( p()->specialization() != DRUID_RESTORATION )
-    {
-      if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
-        p()->buff.natures_vigil->current_value += s->result_amount;
-
-      if ( p()->talent.protector_of_the_pack.ok() )
-      {
-        auto b = p()->buff.protector_of_the_pack_regrowth;
-
-        if ( !b->check() )
-          b->trigger();
-
-        debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
-      }
-    }
-  }
 
   virtual bool can_proc_moonless_night() const
   {
@@ -3027,32 +3001,6 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     if ( affected_by.soul_of_the_forest && p()->buff.soul_of_the_forest_tree->up() )
       p()->buff.soul_of_the_forest_tree->expire();
   }
-
-  void assess_damage( result_amount_type t, action_state_t* s ) override
-  {
-    base_t::assess_damage( t, s );
-
-    if ( !s->result_total || !( t == result_amount_type::HEAL_DIRECT || t == result_amount_type::HEAL_OVER_TIME ) )
-      return;
-
-    if ( p()->specialization() == DRUID_RESTORATION )
-    {
-      if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
-        p()->buff.natures_vigil->current_value += s->result_total;
-
-      if ( p()->talent.protector_of_the_pack.ok() )
-      {
-        auto b = p()->buff.protector_of_the_pack_moonfire;
-
-        if ( !b->check() )
-          b->trigger();
-
-        auto amt = sim->count_overheal_as_heal ? s->result_total : s->result_amount;
-
-        debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( amt );
-      }
-    }
-  }
 };
 }  // namespace heals
 
@@ -3499,7 +3447,7 @@ public:
   }
 };
 
-typedef combo_point_spender_t<> cat_finisher_t;
+using cat_finisher_t = combo_point_spender_t<>;
 
 template <typename BASE>
 struct trigger_thrashing_claws_t : public BASE
@@ -5290,25 +5238,14 @@ struct efflorescence_t : public druid_heal_t
 // Elune's Favored ==========================================================
 struct elunes_favored_heal_t : public druid_heal_t
 {
-  double mul;
-
   elunes_favored_heal_t( druid_t* p )
-    : druid_heal_t( "elunes_favored", p, p->find_spell( 370602 ) ),
-      mul( p->talent.elunes_favored->effectN( 1 ).percent() )
+    : druid_heal_t( "elunes_favored", p, p->find_spell( 370602 ) )
   {
     background = proc = true;
   }
 
-  double get_amount() const { return p()->buff.elunes_favored->check_value() * mul; }
-  double base_da_min( const action_state_t* ) const override { return get_amount(); }
-  double base_da_max( const action_state_t* ) const override { return get_amount(); }
-
-  void impact( action_state_t* s ) override
-  {
-    druid_heal_t::impact( s );
-
-    p()->buff.elunes_favored->current_value = 0;
-  }
+  double base_da_min( const action_state_t* ) const override { return p()->buff.elunes_favored->check_value(); }
+  double base_da_max( const action_state_t* ) const override { return p()->buff.elunes_favored->check_value(); }
 };
 
 // Frenzied Regeneration ====================================================
@@ -5559,16 +5496,19 @@ struct regrowth_t : public druid_heal_t
     {
       // 1 point to allow proper snapshot/update flag parsing
       base_dd_min = base_dd_max = 1.0;
+      proc = true;
+
+      name_str_reporting = "protector_of_the_pack";
     }
 
     double base_da_min( const action_state_t* ) const override
     {
-      return p()->buff.protector_of_the_pack_regrowth->check_value();
+      return p()->buff.protector_of_the_pack->check_value();
     }
 
     double base_da_max( const action_state_t* ) const override
     {
-      return p()->buff.protector_of_the_pack_regrowth->check_value();
+      return p()->buff.protector_of_the_pack->check_value();
     }
   };
 
@@ -5591,7 +5531,7 @@ struct regrowth_t : public druid_heal_t
 
     affected_by.soul_of_the_forest = true;
 
-    if ( p->talent.protector_of_the_pack.ok() )
+    if ( p->specialization() != DRUID_RESTORATION &&  p->talent.protector_of_the_pack.ok() )
     {
       potp = p->get_secondary_action<protector_of_the_pack_regrowth_t>( "protector_of_the_pack_regrowth" );
       add_child( potp );
@@ -5666,10 +5606,10 @@ struct regrowth_t : public druid_heal_t
     if ( target == p() )
       p()->buff.protective_growth->trigger();
 
-    if ( p()->buff.protector_of_the_pack_regrowth->check() )
+    if ( potp && p()->buff.protector_of_the_pack->check() )
     {
       potp->execute_on_target( target );
-      p()->buff.protector_of_the_pack_regrowth->expire();
+      p()->buff.protector_of_the_pack->expire();
     }
 
     if ( is_free() )
@@ -7047,16 +6987,19 @@ struct moonfire_t : public druid_spell_t
       {
         // 1 point to allow proper snapshot/update flag parsing
         base_dd_min = base_dd_max = 1.0;
+        proc = true;
+
+        name_str_reporting = "protector_of_the_pack";
       }
 
       double base_da_min( const action_state_t* ) const override
       {
-        return p()->buff.protector_of_the_pack_moonfire->check_value();
+        return p()->buff.protector_of_the_pack->check_value();
       }
 
       double base_da_max( const action_state_t* ) const override
       {
-        return p()->buff.protector_of_the_pack_moonfire->check_value();
+        return p()->buff.protector_of_the_pack->check_value();
       }
     };
 
@@ -7097,7 +7040,7 @@ struct moonfire_t : public druid_spell_t
         feral_override_ta = find_effect( p->spec.feral_overrides, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE ).percent();
       }
 
-      if ( p->talent.protector_of_the_pack.ok() )
+      if ( p->specialization() == DRUID_RESTORATION && p->talent.protector_of_the_pack.ok() )
       {
         potp = p->get_secondary_action<protector_of_the_pack_moonfire_t>( "protector_of_the_pack_moonfire" );
         add_child( potp );
@@ -7165,10 +7108,10 @@ struct moonfire_t : public druid_spell_t
 
       if ( hit_any_target )
       {
-        if ( p()->buff.protector_of_the_pack_moonfire->check() )
+        if ( potp && p()->buff.protector_of_the_pack->check() )
         {
           potp->execute_on_target( target );
-          p()->buff.protector_of_the_pack_moonfire->expire();
+          p()->buff.protector_of_the_pack->expire();
         }
 
         if ( !is_free( free_spell_e::GALACTIC ) || !p()->is_ptr() )
@@ -7278,24 +7221,20 @@ struct natures_vigil_t : public Base
 {
   struct natures_vigil_tick_t : public Base
   {
-    double mul;
-
     natures_vigil_tick_t( druid_t* p )
-      : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) ),
-        mul( p->talent.natures_vigil->effectN( 3 ).percent() )
+      : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) )
     {
       Base::dual = Base::proc = true;
     }
 
-    double get_amount() const { return Base::p()->buff.natures_vigil->check_value() * mul; }
-    double base_da_min( const action_state_t* ) const override { return get_amount(); }
-    double base_da_max( const action_state_t* ) const override { return get_amount(); }
-
-    void impact( action_state_t* s ) override
+    double base_da_min( const action_state_t* ) const override
     {
-      Base::impact( s );
+      return Base::p()->buff.natures_vigil->check_value();
+    }
 
-      Base::p()->buff.natures_vigil->current_value = 0;
+    double base_da_max( const action_state_t* ) const override
+    {
+      return Base::p()->buff.natures_vigil->check_value();
     }
   };
 
@@ -7311,7 +7250,10 @@ struct natures_vigil_t : public Base
 
       p->buff.natures_vigil->set_tick_callback( [ tick ]( buff_t* b, int, timespan_t ) {
         if ( b->check_value() )
+        {
           tick->execute();
+          b->current_value = 0;
+        }
       } );
     }
   }
@@ -9932,23 +9874,6 @@ void druid_t::init_base_stats()
   base_gcd = 1.5_s;
 }
 
-void druid_t::init_assessors()
-{
-  player_t::init_assessors();
-
-  if ( talent.elunes_favored.ok() )
-  {
-    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ this ]( result_amount_type, action_state_t* s ) {
-      if ( get_form() == BEAR_FORM && dbc::has_common_school( s->action->get_school(), SCHOOL_ASTRAL ) )
-      {
-        buff.elunes_favored->current_value += s->result_amount;
-      }
-
-      return assessor::CONTINUE;
-    } );
-  }
-}
-
 void druid_t::init_finished()
 {
   player_t::init_finished();
@@ -10092,14 +10017,13 @@ void druid_t::create_buffs()
   buff.moonkin_form = make_buff<moonkin_form_buff_t>( this );
 
   buff.natures_vigil = make_buff( this, "natures_vigil", talent.natures_vigil )
+    ->set_default_value( 0 )
     ->set_cooldown( 0_ms )
     ->set_freeze_stacks( true );
 
-  buff.protector_of_the_pack_moonfire =
-      make_buff<protector_of_the_pack_buff_t>( this, "protector_of_the_pack_moonfire", find_spell( 378987 ) );
-
-  buff.protector_of_the_pack_regrowth =
-      make_buff<protector_of_the_pack_buff_t>( this, "protector_of_the_pack_regrowth", find_spell( 395336 ) );
+  buff.protector_of_the_pack =
+      make_buff( this, "protector_of_the_pack", find_spell( specialization() == DRUID_RESTORATION ? 378987 : 395336 ) )
+          ->set_trigger_spell( talent.protector_of_the_pack );
 
   buff.rising_light_falling_night_day = make_buff( this, "rising_light_falling_night__day", find_spell( 417714 ) )
     ->set_trigger_spell( talent.rising_light_falling_night );
@@ -10401,6 +10325,7 @@ void druid_t::create_buffs()
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       if ( b->check_value() )
         active.elunes_favored_heal->execute();
+        b->current_value = 0;
     } );
 
   buff.furious_regeneration = make_buff( this, "furious_regeneration", spec.furious_regeneration )
@@ -10435,9 +10360,12 @@ void druid_t::create_buffs()
     } );
 
   buff.lunar_beam = make_buff( this, "lunar_beam", talent.lunar_beam )
-    ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    ->set_cooldown( 0_ms );
+  if ( is_ptr() )
+  {
+    buff.lunar_beam->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
+      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+  }
 
   buff.overpowering_aura = make_buff( this, "overpowering_aura", find_spell( 395944 ) )
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T29, B2 ) )
@@ -11147,13 +11075,171 @@ void druid_t::init_rng()
 // druid_t::init_special_effects ============================================
 void druid_t::init_special_effects()
 {
-  player_t::init_special_effects();
+  struct druid_cb_t : public dbc_proc_callback_t
+  {
+    druid_cb_t( druid_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
 
+    druid_t* p() { return static_cast<druid_t*>( listener ); }
+  };
+
+  // General
+  if ( unique_gear::find_special_effect( this, 388069 ) )
+  {
+    callbacks.register_callback_execute_function( 388069,
+      []( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+        if ( a->special )
+        {
+          switch ( a->data().id() )
+          {
+            case 190984:  // wrath
+            case 394111:  // sundered firmament
+            case 191034:  // starfall
+            case 78674:   // starsurge
+            case 274281:  // new moon
+            case 274282:  // half moon
+            case 274283:  // full moon
+              break;
+            default:
+              return;
+          }
+        }
+        cb->proc_action->execute_on_target( s->target );
+      } );
+  }
+
+  if ( talent.natures_vigil.ok() )
+  {
+    struct natures_vigil_cb_t : public druid_cb_t
+    {
+      double mul;
+
+      natures_vigil_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), mul( p->talent.natures_vigil->effectN( 3 ).percent() )
+      {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        // TODO: whitelist this if need be
+        if ( s->n_targets != 1 )
+          return;
+
+        if ( !s->result_total )
+          return;
+
+        druid_cb_t::trigger( a, s );
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        // counts overheal
+        p()->buff.natures_vigil->current_value += s->result_total * mul;
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = talent.natures_vigil->name_cstr();
+    driver->spell_id = talent.natures_vigil->id();
+    driver->cooldown_ = 0_ms;
+    driver->proc_flags2_ = PF2_ALL_HIT;
+
+    if ( specialization() == DRUID_RESTORATION )
+    {
+      driver->proc_flags_ = ( PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
+      driver->proc_flags2_ |= PF2_PERIODIC_HEAL;
+    }
+    else
+    {
+      driver->proc_flags_ = talent.natures_vigil->proc_flags() & ~( PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
+      driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE;
+    }
+
+    special_effects.push_back( driver );
+
+    auto cb = new natures_vigil_cb_t( this, *driver );
+    cb->initialize();
+    cb->deactivate();
+
+    buff.natures_vigil->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_  )
+        cb->activate();
+      else
+        cb->deactivate();
+    } );
+  }
+
+  if ( talent.protector_of_the_pack.ok() )
+  {
+    using amt_fn = std::function<double( action_state_t* )>;
+
+    struct protector_of_the_pack_cb_t : public druid_cb_t
+    {
+      amt_fn amount;
+      buff_t* buff;
+      double mul;
+      double cap_coeff = 0.0;
+
+      protector_of_the_pack_cb_t( druid_t* p, const special_effect_t& e, amt_fn f )
+        : druid_cb_t( p, e ),
+          amount( std::move( f ) ),
+          buff( p->buff.protector_of_the_pack ),
+          mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() )
+      {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        if ( !amount( s ) )
+          return;
+
+        druid_cb_t::trigger( a, s );
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        if ( !buff->check() )
+          buff->trigger();
+
+        auto cap = p()->cache.spell_power( SCHOOL_MAX ) * cap_coeff;
+        auto cur = buff->check_value();
+
+        if ( cur < cap )
+          buff->current_value = std::min( cap, cur + amount( s ) * mul );
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = talent.protector_of_the_pack->name_cstr();
+    driver->spell_id = talent.protector_of_the_pack->id();
+    driver->proc_flags2_ = PF2_ALL_HIT;
+
+    amt_fn func = []( action_state_t* s ) { return s->result_amount; };
+
+    if ( specialization() == DRUID_RESTORATION )
+    {
+      driver->proc_flags_ = ( PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
+      driver->proc_flags2_ |= PF2_PERIODIC_HEAL;
+
+      if ( sim->count_overheal_as_heal )
+      {
+        func = []( action_state_t* s ) { return s->result_total; };
+      }
+    }
+    else
+    {
+      driver->proc_flags_ = talent.protector_of_the_pack->proc_flags() & ~( PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
+      driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE;
+    }
+
+    special_effects.push_back( driver );
+
+    new protector_of_the_pack_cb_t( this, *driver, func );
+  }
+
+  // Balance
   if ( talent.denizen_of_the_dream.ok() )
   {
-    struct denizen_of_the_dream_cb_t : public dbc_proc_callback_t
+    struct denizen_of_the_dream_cb_t : public druid_cb_t
     {
-      denizen_of_the_dream_cb_t( druid_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
+      denizen_of_the_dream_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
 
       void trigger( action_t* a, action_state_t* s ) override
       {
@@ -11164,13 +11250,9 @@ void druid_t::init_special_effects()
       void execute( action_t*, action_state_t* ) override
       {
         p()->active.denizen_of_the_dream->execute();
-
         p()->buff.denizen_of_the_dream->trigger();
-
         p()->proc.denizen_of_the_dream->occur();
       }
-
-      druid_t* p() { return static_cast<druid_t*>( listener ); }
     };
 
     const auto driver = new special_effect_t( this );
@@ -11178,20 +11260,19 @@ void druid_t::init_special_effects()
     driver->spell_id = talent.denizen_of_the_dream->id();
     special_effects.push_back( driver );
 
-    auto cb = new denizen_of_the_dream_cb_t( this, *driver );
-    cb->initialize();
+    new denizen_of_the_dream_cb_t( this, *driver );
   }
 
   if ( talent.umbral_embrace.ok() )
   {
-    struct umbral_embrace_cb_t : public dbc_proc_callback_t
+    struct umbral_embrace_cb_t : public druid_cb_t
     {
-      umbral_embrace_cb_t( druid_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
+      umbral_embrace_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
 
       void trigger( action_t* a, action_state_t* s ) override
       {
         if ( a->get_school() == SCHOOL_ASTRAL )
-          dbc_proc_callback_t::trigger( a, s );
+          druid_cb_t::trigger( a, s );
       }
     };
 
@@ -11201,10 +11282,10 @@ void druid_t::init_special_effects()
     driver->custom_buff = buff.umbral_embrace;
     special_effects.push_back( driver );
 
-    auto cb = new umbral_embrace_cb_t( this, *driver );
-    cb->initialize();
+    new umbral_embrace_cb_t( this, *driver );
   }
 
+  // Feral
   if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() )
   {
     const auto driver = new special_effect_t( this );
@@ -11215,7 +11296,6 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     auto cb = new dbc_proc_callback_t( this, *driver );
-    cb->initialize();
 
     callbacks.register_callback_execute_function( driver->spell_id,
         [ dur = timespan_t::from_seconds( spec.ashamanes_guidance->effectN( 1 ).base_value() ),
@@ -11243,15 +11323,51 @@ void druid_t::init_special_effects()
     driver->custom_buff = buff.shadows_of_the_predator;
     special_effects.push_back( driver );
 
-    auto cb = new dbc_proc_callback_t( this, *driver );
-    cb->initialize();
+    new dbc_proc_callback_t( this, *driver );
+  }
+
+  // Guardian
+  if ( talent.elunes_favored.ok() )
+  {
+    struct elunes_favored_cb_t : public druid_cb_t
+    {
+      double mul;
+
+      elunes_favored_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), mul( p->talent.elunes_favored->effectN( 1 ).percent() )
+      {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        if ( p()->get_form() != BEAR_FORM || !s->result_amount )
+          return;
+
+        // Elune's Favored heals off both arcane & nature damage
+        if ( !dbc::has_common_school( a->get_school(), SCHOOL_ASTRAL ) )
+          return;
+
+        druid_cb_t::trigger( a, s );
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        p()->buff.elunes_favored->current_value += s->result_amount * mul;
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = talent.elunes_favored->name_cstr();
+    driver->spell_id = spec.elunes_favored->id();
+    special_effects.push_back( driver );
+
+    new elunes_favored_cb_t( this, *driver );
   }
 
   if ( talent.galactic_guardian.ok() )
   {
-    struct galactic_guardian_cb_t : public dbc_proc_callback_t
+    struct galactic_guardian_cb_t : public druid_cb_t
     {
-      galactic_guardian_cb_t( druid_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
+      galactic_guardian_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
 
       void trigger( action_t* a, action_state_t* s ) override
       {
@@ -11265,8 +11381,6 @@ void druid_t::init_special_effects()
         p()->proc.galactic_guardian->occur();
         make_event( p()->sim, [ this ]() { p()->buff.galactic_guardian->trigger(); } );
       }
-
-      druid_t* p() { return static_cast<druid_t*>( listener ); }
     };
 
     const auto driver = new special_effect_t( this );
@@ -11274,33 +11388,11 @@ void druid_t::init_special_effects()
     driver->spell_id = talent.galactic_guardian->id();
     special_effects.push_back( driver );
 
-    auto cb = new galactic_guardian_cb_t( this, *driver );
-    cb->initialize();
+    new galactic_guardian_cb_t( this, *driver );
   }
 
-  if ( unique_gear::find_special_effect( this, 388069 ) )
-  {
-    callbacks.register_callback_execute_function( 388069,
-      []( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
-        if ( a->special )
-        {
-          switch ( a->data().id() )
-          {
-            case 190984:  // wrath
-            case 394111:  // sundered firmament
-            case 191034:  // starfall
-            case 78674:   // starsurge
-            case 274281:  // new moon
-            case 274282:  // half moon
-            case 274283:  // full moon
-              break;
-            default:
-              return;
-          }
-        }
-        cb->proc_action->execute_on_target( s->target );
-      } );
-  }
+  // blanket proc callback initialization happens here. anything further needs to be individually initialized
+  player_t::init_special_effects();
 }
 
 // druid_t::init_actions ====================================================
