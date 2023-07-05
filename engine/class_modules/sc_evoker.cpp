@@ -210,6 +210,8 @@ struct evoker_t : public player_t
     const spell_data_t* augmentation;  // augmentation class aura
     const spell_data_t* mastery;       // Mastery Spell Data
 
+    const spell_data_t* tempered_scales;
+
     const spell_data_t* living_flame_damage;
     const spell_data_t* living_flame_heal;
 
@@ -481,7 +483,9 @@ struct evoker_t : public player_t
 
   // Stat & Multiplier overrides
   double matching_gear_multiplier( attribute_e ) const override;
+  double composite_base_armor_multiplier() const override;
   double composite_armor() const override;
+  double composite_base_armor() const;
   double composite_attribute_multiplier( attribute_e ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_spell_haste() const override;
@@ -662,7 +666,6 @@ public:
     return target;
   }
 };
-
 
 struct external_action_data
 {
@@ -3553,26 +3556,6 @@ public:
   }
 };
 
-struct blistering_scales_t : public evoker_augment_t
-{
-  blistering_scales_t( evoker_t* p, std::string_view options_str )
-    : evoker_augment_t( "blistering_scales", p, p->talent.blistering_scales, options_str )
-  {
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    evoker_augment_t::impact( s );
-
-    if ( p()->last_scales_target )
-      p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->expire();
-
-    p()->last_scales_target = s->target;
-
-    p()->get_target_data( s->target )->buffs.blistering_scales->trigger();
-  }
-};
-
 struct breath_of_eons_t : public evoker_spell_t
 {
   action_t* ebon;
@@ -3744,40 +3727,140 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
   }
 };
 
-struct blistering_scales_cb_t : public dbc_proc_callback_t
+
+struct blistering_scales_buff_t : public evoker_buff_t<buff_t>
 {
-  evoker_t* source;
-  spells::blistering_scales_damage_t* blistering_scales;
-  stats_t* stats;
+private:
+  using bb = evoker_buff_t<buff_t>;
 
-  blistering_scales_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
-    : dbc_proc_callback_t( p, e ), source( source )
+  dbc_proc_callback_t* cb;
+  stat_buff_t* armour;
+
+  struct blistering_scales_cb_t : public dbc_proc_callback_t
   {
-    allow_pet_procs = true;
-    deactivate();
-    initialize();
+    evoker_t* source;
+    spells::blistering_scales_damage_t* blistering_scales;
+    stats_t* stats;
 
-    blistering_scales = debug_cast<spells::blistering_scales_damage_t*>( p->find_action( "blistering_scales_damage" ) );
+    blistering_scales_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
+      : dbc_proc_callback_t( p, e ), source( source )
+    {
+      allow_pet_procs = true;
+      deactivate();
+      initialize();
+
+      blistering_scales =
+          debug_cast<spells::blistering_scales_damage_t*>( p->find_action( "blistering_scales_damage" ) );
+    }
+
+    evoker_t* p()
+    {
+      return source;
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( s->target->is_sleeping() )
+        return;
+
+      p()->get_target_data( s->target )->buffs.blistering_scales->decrement();
+
+      p()->sim->print_debug( "{}'s blistering scales detonates for action {} from {} targeting {}", *p(), *s->action,
+                             *s->action->player, *s->target );
+
+      blistering_scales->evoker = source;
+      blistering_scales->execute_on_target( s->action->player );
+    }
+  };
+
+  struct blistering_scales_armour_buff_t : evoker_buff_t<stat_buff_t>
+  {
+    blistering_scales_armour_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s ) 
+        : evoker_buff_t<stat_buff_t>( td, std::string( name ) + "_armour", s )
+    {
+      add_stat( STAT_BONUS_ARMOR, p()->composite_base_armor() * p()->talent.blistering_scales->effectN( 2 ).percent() );
+      set_duration( 0_s );
+      set_cooldown( 0_s );
+      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+      set_max_stack( 1 );
+    }
+  };
+
+public:
+
+  blistering_scales_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
+    : bb( td, name, s )
+  {
+    auto blistering_scales_effect          = new special_effect_t( td.target );
+    blistering_scales_effect->name_str     = "blistering_scales_" + p()->name_str;
+    blistering_scales_effect->type         = SPECIAL_EFFECT_EQUIP;
+    blistering_scales_effect->spell_id     = p()->talent.blistering_scales->id();
+    blistering_scales_effect->proc_flags2_ = PF2_ALL_HIT;
+    blistering_scales_effect->cooldown_    = 2_s;  // Tested 27 / 05 / 2023
+    td.target->special_effects.push_back( blistering_scales_effect );
+
+    cb = new blistering_scales_cb_t( td.target, *blistering_scales_effect, p() );
+
+    armour = new blistering_scales_armour_buff_t( td, name, s );
+
+    apply_affecting_aura( p()->talent.regenerative_chitin );
+    set_cooldown( 0_s );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+      {
+        cb->activate();
+        armour->trigger();
+      }
+      else if ( !new_ )
+      {
+        cb->deactivate();
+        armour->expire();
+      }
+    } );
+  }
+    
+  void update_stat( stat_buff_t* b, double amount )
+  {
+    if ( b->check() && b->stats[ 0 ].amount != amount )
+    {
+      b->stats[ 0 ].amount = amount;
+      adjust_stats( b );
+    }
   }
 
-  evoker_t* p()
+  double calc_armour()
   {
-    return source;
+    return p()->composite_base_armor() * p()->talent.blistering_scales->effectN( 2 ).percent();
   }
 
-  void execute( action_t*, action_state_t* s ) override
+  void adjust_stats( stat_buff_t* b )
   {
-    if ( s->target->is_sleeping() )
-      return;
+    for ( auto& buff_stat : b->stats )
+    {
+      if ( buff_stat.check_func && !buff_stat.check_func( *b ) )
+        continue;
 
-    p()->get_target_data( s->target )->buffs.blistering_scales->decrement();
+      double delta = buff_stat.stack_amount( b->current_stack ) - buff_stat.current_value;
+      if ( delta > 0 )
+      {
+        b->player->stat_gain( buff_stat.stat, delta, b->stat_gain, nullptr, b->buff_duration() > timespan_t::zero() );
+      }
+      else if ( delta < 0 )
+      {
+        b->player->stat_loss( buff_stat.stat, std::fabs( delta ), b->stat_gain, nullptr,
+                              b->buff_duration() > timespan_t::zero() );
+      }
 
-    p()->sim->print_debug( "{}'s blistering scales detonates for action {} from {} targeting {}", *p(), *s->action,
-                           *s->action->player, *s->target );
-
-    blistering_scales->evoker = source;
-    blistering_scales->execute_on_target( s->action->player );
+      buff_stat.current_value += delta;
+    }
   }
+
+  void update_armour_buff()
+  {
+    update_stat( armour, calc_armour() );
+  }
+
 };
 
 struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
@@ -3904,6 +3987,35 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
   }
 };
 }  // namespace buffs
+
+// Namespace spells again
+namespace spells
+{
+
+struct blistering_scales_t : public evoker_augment_t
+{
+  blistering_scales_t( evoker_t* p, std::string_view options_str )
+    : evoker_augment_t( "blistering_scales", p, p->talent.blistering_scales, options_str )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_augment_t::impact( s );
+
+    if ( p()->last_scales_target )
+      p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->expire();
+
+    p()->last_scales_target = s->target;
+
+    p()->get_target_data( s->target )->buffs.blistering_scales->trigger();
+
+    debug_cast<buffs::blistering_scales_buff_t*>( p()->get_target_data( s->target )->buffs.blistering_scales )
+        ->update_armour_buff();
+  }
+};
+
+}  // namespace spells
 
 // ==========================================================================
 // Evoker Character Definitions
@@ -4089,27 +4201,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
       if ( evoker->talent.blistering_scales )
       {
-        auto blistering_scales_effect          = new special_effect_t( target );
-        blistering_scales_effect->name_str     = "blistering_scales_" + evoker->name_str;
-        blistering_scales_effect->type         = SPECIAL_EFFECT_EQUIP;
-        blistering_scales_effect->spell_id     = evoker->talent.blistering_scales->id();
-        blistering_scales_effect->proc_flags2_ = PF2_ALL_HIT;
-        blistering_scales_effect->cooldown_    = 2_s;  // Tested 27 / 05 / 2023
-        target->special_effects.push_back( blistering_scales_effect );
-
-        auto blistering_scales_cb =
-            new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker );
-
-        buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
-                                      ->apply_affecting_aura( evoker->talent.regenerative_chitin )
-                                      ->set_cooldown( 0_s )
-                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                                      ->set_stack_change_callback( [ blistering_scales_cb ]( buff_t*, int, int new_ ) {
-                                        if ( new_ )
-                                          blistering_scales_cb->activate();
-                                        else if ( !new_ )
-                                          blistering_scales_cb->deactivate();
-                                      } );
+        buffs.blistering_scales = make_buff<buffs::blistering_scales_buff_t>(
+            *this, "blistering_scales_" + evoker->name_str, evoker->talent.blistering_scales );
       }
 
       if ( evoker->talent.infernos_blessing.ok() )
@@ -4626,6 +4719,7 @@ void evoker_t::init_spells()
   spec.mastery              = find_mastery_spell( specialization() );
   spec.living_flame_damage  = find_spell( 361500 );
   spec.living_flame_heal    = find_spell( 361509 );
+  spec.tempered_scales      = find_spell( 396571 );
   spec.emerald_blossom      = find_spell( 355913 );
   spec.emerald_blossom_heal = find_spell( 355916 );
   spec.emerald_blossom_spec = find_specialization_spell( 365261, specialization() );
@@ -5067,12 +5161,29 @@ double evoker_t::matching_gear_multiplier( attribute_e attr ) const
   return attr == ATTR_INTELLECT ? 0.05 : 0.0;
 }
 
+double evoker_t::composite_base_armor_multiplier() const
+{
+  double a = player_t::composite_base_armor_multiplier();
+
+  if ( spec.tempered_scales )
+    a *= 1.0 + spec.tempered_scales->effectN( 1 ).percent();
+
+  return a;
+}
+
 double evoker_t::composite_armor() const
 {
   double a = player_t::composite_armor();
 
-  if ( buff.obsidian_scales->check() )
-    a *= 1.0 + buff.obsidian_scales->data().effectN( 1 ).percent();
+  return a;
+}
+
+double evoker_t::composite_base_armor() const
+{
+  double a = current.stats.armor;
+
+  a *= composite_base_armor_multiplier();
+  a *= composite_armor_multiplier();
 
   return a;
 }
