@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.50232
-static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20108> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20099,7 +20099,8 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
   { 418776, "$@spelldesc418527", 0, 0 },
   { 418999, "You grant yourself an absorb shield, lasting $d.", "Absorbing $w1 damage.", 0 },
   { 419052, "$@spelldesc419162", 0, 0 },
-  { 419262, 0, "Bleeding for $w1 every $t sec.", 0 },
+  { 419262, "Striking a demon with melee abilities has a chance to rend their flesh, dealing Physical damage over $d.", "Bleeding for $w1 every $t sec.", 0 },
+  { 419268, "Striking an undead with a melee ability has a chance to smite them with righteous fury, dealing Holy damage.", 0, 0 },
   { 419278, "Attempt to finish off a weakened opponent, dealing $s1 Nature damage to an enemy below $s2% health. Dealing damage to enemies below $s2% health reduces the cooldown of this effect by $s3 sec.", 0, 0 },
   { 419279, "$@spelldesc419278", 0, 0 },
   { 419421, "Exert authority over the domain of the titans, gaining $s2% movement speed and granting your abilities a chance to deal bonus Holy damage. Only active while in Uldaman, Ulduar, Uldum, Uldir, Uldorus, and Uldaz.", 0, 0 },
@@ -20110,8 +20111,10 @@ static const std::array<spelltext_data_t, 20107> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.5.50232
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s4% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Glacial Spike also hits a second nearby target for $s4% of its damage." },
+  {  419262,  0, nullptr, "Striking a demon with melee abilities has a chance to rend their flesh, dealing Physical damage over $d." },
+  {  419268,  0, nullptr, "Striking an undead with a melee ability has a chance to smite them with righteous fury, dealing Holy damage." },
 } };
 
 // Spell description variables, wow build 10.1.5.50232
