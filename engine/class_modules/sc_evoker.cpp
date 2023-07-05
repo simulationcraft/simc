@@ -3328,78 +3328,35 @@ public:
   }
 };
 
-struct breath_of_eons_damage_t : public spell_t
+struct breath_of_eons_damage_t : public evoker_external_action_t<spell_t>
 {
 protected:
-  using state_t = evoker_action_state_t<stats_data_t>;
+  using base = evoker_external_action_t<spell_t>;
 
 public:
-  double base_eons_multiplier        = 0.0;
-  double clutchmates_eons_multiplier = 0.0;
-  evoker_t* evoker;
-
-  breath_of_eons_damage_t( player_t* p, evoker_t* e )
-    : spell_t( "breath_of_eons_damage", p, e->talent.breath_of_eons_damage ), evoker( e )
+  breath_of_eons_damage_t( player_t* p ) : base( "breath_of_eons_damage", p, p->find_spell( 409632 ) )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
     base_crit += 1.0;
-    crit_bonus                  = 0.0;
-    base_eons_multiplier        = e->talent.temporal_wound->effectN( 1 ).percent();
-    clutchmates_eons_multiplier = base_eons_multiplier * ( 1 + e->spec.close_as_clutchmates->effectN( 1 ).percent() );
-
-    /* if ( p != e )
-    {
-      auto& vec = p->stats_list;
-
-      vec.erase( std::remove( vec.begin(), vec.end(), stats ), vec.end() );
-      delete stats;
-      stats = e->get_stats( name_str, this );
-    }*/
+    crit_bonus = 0.0;
   }
 
-  double composite_da_multiplier( const action_state_t* ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return evoker->close_as_clutchmates ? clutchmates_eons_multiplier : base_eons_multiplier;
-  }
+    double m = p( s )->talent.temporal_wound->effectN( 1 ).percent();
 
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
+    if ( p( s )->close_as_clutchmates )
+      m *= 1 + p( s )->spec.close_as_clutchmates->effectN( 1 ).percent();
 
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    spell_t::snapshot_state( s, rt );
-    cast_state( s )->stats = stats;
-  }
-
-  void record_data( action_state_t* data ) override
-  {
-    if ( !cast_state( data )->stats )
-      return;
-
-    cast_state( data )->stats->add_result(
-        data->result_amount, data->result_total, report_amount_type( data ), data->result,
-        ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
-        data->target );
+    return m;
   }
 
   void init() override
   {
     spell_t::init();
     snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_CRIT;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_CRIT | STATE_TGT_MUL_DA;
   }
 };
 
@@ -3516,8 +3473,6 @@ struct breath_of_eons_t : public evoker_spell_t
     }
 
     plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
-
-    add_child( p->get_secondary_action<breath_of_eons_damage_t>( "breath_of_eons_damage", p ) );
   }
 
   void impact( action_state_t* s ) override
@@ -3796,7 +3751,7 @@ public:
 
 struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 {
-  action_t* eon_damage;
+  target_specific_t<spells::breath_of_eons_damage_t> eon_actions;
   std::map<size_t, double> eon_stored;
   dbc_proc_callback_t* cb;
 
@@ -3865,7 +3820,6 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     : evoker_buff_t<buff_t>( td, name, s )
   {
     buff_period = 0_s;
-    eon_damage  = p()->get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", p() );
 
     auto temporal_wound_effect      = new special_effect_t( p() );
     temporal_wound_effect->name_str = "temporal_wound_" + p()->name_str;
@@ -3881,6 +3835,7 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     return p->actor_index;
   }
 
+  // TODO: Stop using PID and just use the pointers.
   player_t* player_from_id( size_t i )
   {
     return sim->actor_list[ i ];
@@ -3897,6 +3852,17 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     return true;
   }
 
+  spells::breath_of_eons_damage_t* get_eon_action( const player_t* target )
+  {
+    if ( eon_actions[ target ] != nullptr )
+      return eon_actions[ target ];
+
+    eon_actions[ target ] = debug_cast<spells::breath_of_eons_damage_t*>( target->find_action( "breath_of_eons_damage" ) );
+
+    return eon_actions[ target ];
+  }
+
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -3904,16 +3870,15 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     if ( cb )
       cb->deactivate();
 
-    auto stats = eon_damage->stats;
     for ( auto& [ pid, damage ] : eon_stored )
     {
-      auto pp           = player_from_id( pid );
-      eon_damage->stats = p()->get_stats( "eon_damage_" + pp->name_str, eon_damage );
+      auto pp            = player_from_id( pid );
+      auto eon_damage    = get_eon_action( pp );
+      eon_damage->evoker = p();
       sim->print_debug( "{} eon helper expiry, player {}s, size {}, damage execution inc, executing on {}", *source,
                         *pp, damage, *player );
       eon_damage->execute_on_target( player, damage );
     }
-    eon_damage->stats = stats;
     eon_stored.clear();
   }
 };
@@ -4029,17 +3994,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       {
         debuffs.temporal_wound =
             make_buff<buffs::temporal_wound_buff_t>( *this, "temporal_wound", evoker->talent.temporal_wound );
-      }
-      else
-      {
-        if ( !target->is_pet() )
-        {
-          action_t* eon_damage =
-              evoker->get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", evoker );
-          auto stats    = evoker->get_stats( "eon_damage_" + target->name_str, eon_damage );
-          stats->school = eon_damage->get_school();
-          eon_damage->stats->add_child( stats );
-        }
       }
     }
 
@@ -5351,6 +5305,7 @@ struct evoker_module_t : public module_t
     new spells::infernos_blessing_t( p );
     new spells::blistering_scales_damage_t( p );
     new spells::fate_mirror_damage_t( p );
+    new spells::breath_of_eons_damage_t( p );
   }
 
 
