@@ -932,6 +932,9 @@ public:
 
   double cost() const override
   {
+    if ( ab::data().powers().size() > 1 && ab::current_resource() != ab::data().powers()[ 0 ].resource() )
+      return ab::cost();
+
     return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
                               get_buff_effects_value( cost_buffeffects, false, false ) );
   }
@@ -1019,7 +1022,7 @@ struct essence_base_t : public BASE
   {
     BASE::consume_resource();
 
-    if ( !BASE::base_cost() || BASE::proc )
+    if ( !BASE::base_cost() || BASE::proc || BASE::current_resource() != RESOURCE_ESSENCE )
       return;
 
     if ( BASE::p()->buff.essence_burst->up() )
@@ -1589,6 +1592,56 @@ struct emerald_blossom_t : public essence_heal_t
         virtual_heal->execute_on_target( s->target );
       }
     }
+  }
+
+  void consume_resource() override
+  {
+    essence_heal_t::consume_resource();
+
+    resource_e prev_cr = current_resource();
+
+    if ( prev_cr == RESOURCE_MANA )
+      return;
+
+    resource_e cr = resource_current = RESOURCE_MANA;
+
+    if ( base_cost() == 0 || proc )
+      return;
+
+    last_resource_cost = cost();
+
+    player->resource_loss( cr, last_resource_cost, nullptr, this );
+
+    sim->print_log( "{} consumes {} {} for {} ({})", *player, last_resource_cost, cr, *this,
+                    player->resources.current[ cr ] );
+
+    stats->consume_resource( cr, last_resource_cost );
+
+    resource_current = prev_cr;
+  }
+
+  bool ready() override
+  {
+    if ( !essence_heal_t::ready() )
+      return false;
+
+    if ( resource_current == RESOURCE_MANA )
+      return true;
+
+    auto prev_resource = resource_current;
+    resource_current   = RESOURCE_MANA;
+
+    if ( !player->resource_available( RESOURCE_MANA, cost() ) )
+    {
+      if ( starved_proc )
+        starved_proc->occur();
+
+      resource_current = prev_resource;
+      return false;
+    }
+
+    resource_current = prev_resource;
+    return true;
   }
 
   void execute() override
