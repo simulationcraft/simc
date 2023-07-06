@@ -306,21 +306,25 @@ public:
 
   // If first argument is true, create a buff per normal
   // If first argument is false, add name to fallback buffs and return the generic sim fallback
+  // NOTE: this returns a base buff_t* pointer as the generic fallback buff is type buff_t
   template <typename Buff, typename Player, typename... Args>
-  static Buff* make_buff_fallback( bool true_buff, Player player, std::string_view name, Args&&... args )
+  static buff_t* make_buff_fallback( bool true_buff, Player&& player, std::string_view name, Args&&... args )
   {
     static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
-    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>>, "Player must be derived from player_t" );
+    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
+                   std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
+                   "Player must be derived from player_t or actor_pair_t" );
+
     if ( true_buff )
     {
       if constexpr ( std::is_constructible_v<Buff, Player, Args...> )
-        return new Buff( player, std::forward<Args>( args )... );
+        return new Buff( std::forward<Player>( player ), std::forward<Args>( args )... );
       else
-        return new Buff( player, name, std::forward<Args>( args )... );
+        return new Buff( std::forward<Player>( player ), name, std::forward<Args>( args )... );
     }
     else
     {
-      if constexpr ( std::is_base_of_v<actor_pair_t, Player> )
+      if constexpr ( std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>> )
         return make_fallback( player.target, name );
       else
         return make_fallback( player, name );
@@ -658,7 +662,7 @@ inline Buff* make_buff( Args&&... args )
 }
 
 template <typename Buff = buff_t, typename... Args>
-inline Buff* make_buff_fallback( Args&&... args )
+inline buff_t* make_buff_fallback( Args&&... args )
 {
   return buff_t::make_buff_fallback<Buff>( std::forward<Args>( args )... );
 }
