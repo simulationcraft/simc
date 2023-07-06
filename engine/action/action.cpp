@@ -4109,15 +4109,6 @@ void action_t::impact( action_state_t* s )
   {
     sim->print_log( "Target {} avoids {} {} ({})", *s->target, *player, *this, s->result );
   }
-
-  // Handle Heirmir Marrowed Gemstone Soulbind
-  if ( this -> player -> type == PLAYER_PET && s -> result == RESULT_CRIT )
-  {
-    auto counter_buff = buff_t::find( debug_cast<pet_t*>( this -> player ) -> owner, "marrowed_gemstone_charging" );
-    auto buff = buff_t::find( debug_cast<pet_t*>( this -> player ) -> owner, "marrowed_gemstone_enhancement" );
-    if ( buff && counter_buff && buff -> cooldown -> up() )
-      counter_buff -> trigger();
-  }
 }
 
 void action_t::trigger_dot( action_state_t* s )
