@@ -981,11 +981,11 @@ public:
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
       parse_buff_effects_mods(
-          p()->buff.ebon_might_self_buff, [ this ] { return p()->spec.close_as_clutchmates; }, 0U, true, false,
+          p()->buff.ebon_might_self_buff, [ this ] { return !p()->spec.close_as_clutchmates; }, 0U, true, false,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
 
       parse_buff_effects_mods(
-          p()->buff.ebon_might_self_buff, [ this ] { return !p()->spec.close_as_clutchmates; }, 0U, true, false,
+          p()->buff.ebon_might_self_buff, [ this ] { return p()->spec.close_as_clutchmates; }, 0U, true, false,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 
@@ -4452,6 +4452,7 @@ void evoker_t::init_finished()
   if ( sim->player_no_pet_list.size() <= 5 )
   {
     close_as_clutchmates = true;
+    sim->print_debug( "{} Activating Close As Clutchmates", *this );
   }
 
   player_t::init_finished();
