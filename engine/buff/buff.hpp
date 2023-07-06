@@ -302,6 +302,30 @@ public:
   static buff_t* find( sim_t*, util::string_view name );
   static buff_t* find( player_t*, util::string_view name, player_t* source = nullptr );
   static buff_t* find_expressable( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
+  static buff_t* make_fallback( player_t* player, std::string_view name );
+
+  // If first argument is true, create a buff per normal
+  // If first argument is false, add name to fallback buffs and return the generic sim fallback
+  template <typename Buff, typename Player, typename... Args>
+  static Buff* make_buff_fallback( bool true_buff, Player player, std::string_view name, Args&&... args )
+  {
+    static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
+    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>>, "Player must be derived from player_t" );
+    if ( true_buff )
+    {
+      if constexpr ( std::is_constructible_v<Buff, Player, Args...> )
+        return new Buff( player, std::forward<Args>( args )... );
+      else
+        return new Buff( player, name, std::forward<Args>( args )... );
+    }
+    else
+    {
+      if constexpr ( std::is_base_of_v<actor_pair_t, Player> )
+        return make_fallback( player.target, name );
+      else
+        return make_fallback( player, name );
+    }
+  }
 
   const char* name() const { return name_str.c_str(); }
   const char* name_reporting() const;
@@ -629,8 +653,12 @@ protected:
 template <typename Buff = buff_t, typename... Args>
 inline Buff* make_buff( Args&&... args )
 {
-  static_assert( std::is_base_of<buff_t, Buff>::value,
-                 "Buff must be derived from buff_t" );
-  return new Buff( std::forward<Args>(args)... );
+  static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
+  return new Buff( std::forward<Args>( args )... );
 }
 
+template <typename Buff = buff_t, typename... Args>
+inline Buff* make_buff_fallback( Args&&... args )
+{
+  return buff_t::make_buff_fallback<Buff>( std::forward<Args>( args )... );
+}

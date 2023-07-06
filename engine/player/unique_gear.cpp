@@ -4628,10 +4628,7 @@ bool unique_gear::create_fallback_buffs( const special_effect_t& effect, const s
     return false;
 
   for ( auto name : names )
-  {
-    if ( !range::contains( effect.player->fallback_buff_names, name ) )
-      effect.player->fallback_buff_names.emplace_back( name );
-  }
+    buff_t::make_fallback( effect.player, name );
 
   return true;
 }

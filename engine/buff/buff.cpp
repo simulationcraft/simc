@@ -2747,6 +2747,14 @@ buff_t* buff_t::find_expressable( util::span<buff_t* const> buffs, util::string_
     return find( buffs, name, source );
 }
 
+buff_t* buff_t::make_fallback( player_t* player, std::string_view name )
+{
+  if ( !range::contains( player->fallback_buff_names, name ) )
+    player->fallback_buff_names.emplace_back( name );
+
+  return player->sim->auras.fallback;
+}
+
 std::string buff_t::to_str() const
 {
   std::ostringstream s;
