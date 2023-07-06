@@ -588,9 +588,19 @@ struct vile_taint_t : public affliction_spell_t
     {
       affliction_spell_t::tick( d );
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      if ( !p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
       {
         td( d->target )->debuffs_infirmity->trigger();
+      }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      affliction_spell_t::impact( s );
+
+      if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        td( s->target )->debuffs_infirmity->trigger();
       }
     }
 
