@@ -940,6 +940,25 @@ public:
     return move_during_hover && p()->buff.hover->check();
   }
 
+  
+  template <typename... Ts>
+  void parse_buff_effects_mods( buff_t* buff, const bfun& f, unsigned ignore_mask, bool use_stacks, bool use_default,
+                                Ts... mods )
+  {
+    if ( !buff )
+      return;
+
+    const spell_data_t* spell = &buff->data();
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
+      parse_buff_effect( buff, f, spell, i, use_stacks, use_default, false, mods... );
+    }
+  }
+
   // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
@@ -958,7 +977,18 @@ public:
     parse_buff_effects( p()->buff.tip_the_scales );
 
     parse_buff_effects( p()->buff.imminent_destruction );
-    parse_buff_effects( p()->buff.ebon_might_self_buff, p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
+
+    if ( p()->specialization() == EVOKER_AUGMENTATION )
+    {
+      parse_buff_effects_mods(
+          p()->buff.ebon_might_self_buff, [ this ] { return p()->spec.close_as_clutchmates; }, 0U, true, false,
+          p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
+
+      parse_buff_effects_mods(
+          p()->buff.ebon_might_self_buff, [ this ] { return !p()->spec.close_as_clutchmates; }, 0U, true, false,
+          p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
+    }
+
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
