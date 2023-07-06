@@ -2915,6 +2915,7 @@ GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 60 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
+                 : 2695: Spatial Paradox (406732 effect#7)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8034,7 +8035,7 @@ Effects          :
                    Family Flags: 73
 #7 (id=1083267)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 2695 (Label) | Target: Self (1)
-                   Affected Spells (Label): Deep Breath (357210), Dream Flight (359816), Breath of Eons (403631), Spatial Paradox (406732)
+                   Affected Spells (Label): Deep Breath (357210), Dream Flight (359816), Rescue (370665), Breath of Eons (403631), Spatial Paradox (406732)
 #8 (id=1083748)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #9 (id=1085170)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -8654,6 +8655,7 @@ Movement speed reduced by $w2%.
 Attack speed reduced by $w3%.][]
 
 Name             : Breath of Eons (id=409632) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8664,10 +8666,10 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : .......x .......x ....x... ........   ........ ........ .......x ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : xx...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
+                 : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1074629)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
