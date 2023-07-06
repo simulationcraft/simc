@@ -2031,27 +2031,14 @@ public:
 
     if ( p()->buff.ebon_might_self_buff->check() )
     {
-      auto dur = p()->buff.ebon_might_self_buff->remains();
-      if ( dur < 20_s )
-      {
-        dur = std::min( 20_s - dur, extend );
-        if ( dur > 0_s )
-          p()->buff.ebon_might_self_buff->extend_duration( p(), dur );
-      }
+      p()->buff.ebon_might_self_buff->extend_duration( p(), extend );
     }
 
     for ( auto ally : p()->allies_with_my_ebon )
     {
       auto ebon = p()->get_target_data( ally )->buffs.ebon_might;
-      auto dur  = ebon->remains();
-      if ( dur < 20_s )
-      {
-        dur = std::min( 20_s - dur, extend );
-        if ( dur > 0_s )
-        {
-          ebon->extend_duration( p(), dur );
-        }
-      }
+
+      ebon->extend_duration( p(), extend );
     }
   }
 
