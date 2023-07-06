@@ -5121,6 +5121,17 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
                           effect.resource( current_resource() ) );
         break;
 
+      case P_RESOURCE_COST_2:
+      {
+        if ( data().powers().size() < 3 )
+          break;
+        // Resource Cost 2 is actually the third resource as it's Zero Indexed.
+        resource_e resource = data().powers()[ 2 ].resource();
+        base_costs[ resource ] += effect.resource( resource );
+        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this, resource,
+                          effect.resource( resource ) );
+        break;
+      }
       case P_TARGET:
         assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
         if ( aoe > 0 )
@@ -5203,6 +5214,18 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this,
                           resource_current, effect.base_value() );
         break;
+                
+      case P_RESOURCE_COST_2:
+      {
+        if ( data().powers().size() < 3 )
+          break;
+        // Zero Indexed, this is the third cost.
+        resource_e resource = data().powers()[ 2 ].resource();
+        base_costs[ resource ] *= 1.0 + effect.percent();
+        sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this, resource,
+                          effect.base_value() );
+        break;
+      }
 
       case P_TARGET_BONUS:
         // Chain Bonus Damage is base 0.0 and applied as 1.0 + chain_bonus_damage in action_t::calculate_direct_amount
