@@ -593,6 +593,16 @@ struct vile_taint_t : public affliction_spell_t
         td( d->target )->debuffs_infirmity->trigger();
       }
     }
+
+    void last_tick( dot_t* d ) override
+    {
+      affliction_spell_t::last_tick( d );
+
+      if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        td( d->target )->debuffs_infirmity->expire();
+      }
+    }
   };
 
   vile_taint_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Vile Taint", p, p->talents.vile_taint )
