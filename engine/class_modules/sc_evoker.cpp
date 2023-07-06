@@ -981,11 +981,11 @@ public:
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
       parse_buff_effects_mods(
-          p()->buff.ebon_might_self_buff, [ this ] { return !p()->spec.close_as_clutchmates; }, 0U, true, false,
+          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, false,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
 
       parse_buff_effects_mods(
-          p()->buff.ebon_might_self_buff, [ this ] { return p()->spec.close_as_clutchmates; }, 0U, true, false,
+          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, false,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 
