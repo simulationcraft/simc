@@ -336,20 +336,21 @@ struct player_t : public actor_t
   std::string tmi_debug_file_str;
   double tmi_window;
 
-  auto_dispose< std::vector<buff_t*> > buff_list;
-  auto_dispose< std::vector<proc_t*> > proc_list;
-  auto_dispose< std::vector<gain_t*> > gain_list;
-  auto_dispose< std::vector<stats_t*> > stats_list;
-  auto_dispose< std::vector<benefit_t*> > benefit_list;
-  auto_dispose< std::vector<uptime_t*> > uptime_list;
-  auto_dispose< std::vector<cooldown_t*> > cooldown_list;
-  auto_dispose< std::vector<target_specific_cooldown_t*> > target_specific_cooldown_list;
-  auto_dispose< std::vector<real_ppm_t*> > rppm_list;
-  auto_dispose< std::vector<shuffled_rng_t*> > shuffled_rng_list;
+  auto_dispose<std::vector<buff_t*>> buff_list;
+  std::vector<std::string> fallback_buff_names;  // buff_t::find( player, name ) will return pointer to sim.auras.fallback
+  auto_dispose<std::vector<proc_t*>> proc_list;
+  auto_dispose<std::vector<gain_t*>> gain_list;
+  auto_dispose<std::vector<stats_t*>> stats_list;
+  auto_dispose<std::vector<benefit_t*>> benefit_list;
+  auto_dispose<std::vector<uptime_t*>> uptime_list;
+  auto_dispose<std::vector<cooldown_t*>> cooldown_list;
+  auto_dispose<std::vector<target_specific_cooldown_t*>> target_specific_cooldown_list;
+  auto_dispose<std::vector<real_ppm_t*>> rppm_list;
+  auto_dispose<std::vector<shuffled_rng_t*>> shuffled_rng_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
-  std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
-  std::vector<std::vector<plot_data_t> > reforge_plot_data;
-  auto_dispose< std::vector<sample_data_helper_t*> > sample_data_list;
+  std::array<std::vector<plot_data_t>, STAT_MAX> dps_plot_data;
+  std::vector<std::vector<plot_data_t>> reforge_plot_data;
+  auto_dispose<std::vector<sample_data_helper_t*>> sample_data_list;
   std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
 
   // All Data collected during / end of combat

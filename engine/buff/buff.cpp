@@ -2802,6 +2802,9 @@ buff_t* buff_t::find( sim_t* s, util::string_view name )
 
 buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
+  if ( range::contains( p->fallback_buff_names, name ) )
+    return p->sim->auras.fallback;
+
   return find( p->buff_list, name, source );
 }
 

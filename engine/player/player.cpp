@@ -11573,7 +11573,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       get_target_data( this );
       buff_t* buff = buff_t::find_expressable( buff_list, splits[ 1 ], this );
       if ( !buff )
-        buff = buff_t::find( this, splits[ 1 ], this );  // Raid debuffs
+        buff = buff_t::find( this, splits[ 1 ], this );  // Raid debuffs & fallback buffs
       if ( buff )
         return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
       throw std::invalid_argument(fmt::format("Cannot find buff '{}'.", splits[ 1 ]));
