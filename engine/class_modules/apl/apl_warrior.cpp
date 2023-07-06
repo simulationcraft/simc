@@ -43,6 +43,8 @@ void fury( player_t* p )
 
   default_list->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
   default_list->add_action( "use_item,name=vial_of_animated_blood,if=buff.avatar.up" );
+  default_list->add_action( "use_item,name=elementium_pocket_anvil,use_off_gcd=1,if=gcd.remains>0.7" );
+  default_list->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>0.7" );
   default_list->add_action( "use_item,name=irideus_fragment,if=buff.avatar.up" );
   default_list->add_action( "use_item,name=manic_grieftorch,if=buff.avatar.down" );
   default_list->add_action( "use_item,name=gladiators_badge,if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)" );
@@ -166,6 +168,8 @@ void arms( player_t* p )
 
   default_list->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.avatar.remains<3" );
   default_list->add_action( "use_item,name=vial_of_animated_blood,if=buff.avatar.up" );
+  default_list->add_action( "use_item,name=elementium_pocket_anvil,use_off_gcd=1,if=gcd.remains>0.7" );
+  default_list->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>0.7" );
   default_list->add_action( "use_item,name=irideus_fragment,if=buff.avatar.up" );
   default_list->add_action( "use_item,name=manic_grieftorch,if=!buff.avatar.up&!debuff.colossus_smash.up" );
   default_list->add_action( "use_item,name=gladiators_badge,if=gcd.remains=0&debuff.colossus_smash.remains>8|target.time_to_die<25" );
