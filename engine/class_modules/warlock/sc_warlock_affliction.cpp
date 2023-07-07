@@ -567,6 +567,11 @@ struct phantom_singularity_t : public affliction_spell_t
     return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration ;
   }
 
+  // 2023-07-06 PTR: PS applying Infirmity is currently EXTREMELY bugged, doing such things as applying to
+  // player's current focused target rather than the enemy the DoT is ticking on. There are also conflicting
+  // behaviors regarding whether it applies a variable duration per-tick (matching the remaining duration of PS)
+  // or a single infinite duration on application (like Vile Taint). Implementing like Vile Taint for now
+  // TOCHECK: A week or two after 10.1.5 goes live, verify if fixed
   void impact( action_state_t* s ) override
   {
     affliction_spell_t::impact( s );
