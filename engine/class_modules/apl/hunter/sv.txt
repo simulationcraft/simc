@@ -38,7 +38,7 @@ actions.cleave+=/coordinated_assault,if=cooldown.fury_of_the_eagle.remains|!tale
 actions.cleave+=/explosive_shot
 actions.cleave+=/carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2
 actions.cleave+=/use_item,name=djaruun_pillar_of_the_elder_flame
-actions.cleave+=/fury_of_the_eagle,if=cooldown.butchery.full_recharge_time>cast_time&raid_event.adds.exists
+actions.cleave+=/fury_of_the_eagle,if=raid_event.adds.exists&(!talent.butchery|cooldown.butchery.full_recharge_time>cast_time)
 actions.cleave+=/butchery,if=raid_event.adds.exists
 actions.cleave+=/butchery,if=(full_recharge_time<gcd|dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd|raid_event.adds.remains<10))&!raid_event.adds.exists
 actions.cleave+=/fury_of_the_eagle,if=!raid_event.adds.exists
@@ -71,7 +71,7 @@ actions.st+="/mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variab
 actions.st+="/kill_shot,if=!buff.coordinated_assault.up"
 actions.st+="/raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd"
 actions.st+="/serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom"
-actions.st+="/fury_of_the_eagle,if=buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd"
+actions.st+="/fury_of_the_eagle,if=buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1|raid_event.adds.exists&raid_event.adds.in>40)"
 actions.st+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5
 actions.st+="/mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.seething_rage.remains&active_enemies=1"
 actions.st+="/flanking_strike,if=focus+cast_regen<focus.max"
