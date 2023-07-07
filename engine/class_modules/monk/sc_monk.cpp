@@ -3110,6 +3110,11 @@ namespace monk
 
           if ( result_is_hit( s->result ) )
           {
+            if ( p()->talent.brewmaster->press_the_advantage->ok() && p()->bugs )
+            {
+              p()->passive_actions.press_the_advantage->target = s->target;
+              p()->passive_actions.press_the_advantage->schedule_execute();
+            }
 
             if ( p()->buff.thunderfist->up() )
             {
@@ -3318,7 +3323,6 @@ namespace monk
           if ( face_palm )
             am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.1;
 
-          p()->sim->print_debug(" zxc {}", p()->talent.brewmaster.face_palm->effectN( 2 ).percent());
 
           // TODO: if bug removed from parent ks, remove !p()->bugs
           if ( blackout_combo && !p()->bugs )
