@@ -3181,8 +3181,11 @@ namespace monk
       // ==========================================================================
       struct keg_smash_t : public monk_melee_attack_t
       {
+        bool is_base_ks;
+
         keg_smash_t( monk_t *p, util::string_view options_str, util::string_view name = "keg_smash" )
-          : monk_melee_attack_t( name, p, p->talent.brewmaster.keg_smash )
+          : monk_melee_attack_t( name, p, p->talent.brewmaster.keg_smash ),
+            is_base_ks( false )
         {
           parse_options( options_str );
 
@@ -3203,6 +3206,7 @@ namespace monk
           // Forcing the trigger GCD to 1 second.
           trigger_gcd = timespan_t::from_seconds( 1 );
           press_the_advantage_whitelist = true;
+          is_base_ks = true;
 
           // The extra name requirement is only necessary due to keg_smash_press_the_advantage_t
           // being derived from keg_smash_t. Causes segmentation faults without the additional restriction.
@@ -3239,7 +3243,7 @@ namespace monk
 
           monk_melee_attack_t::execute();
 
-          if ( p()->talent.brewmaster.salsalabims_strength->ok() && !strcmp(name(), "keg_smash") )
+          if ( p()->talent.brewmaster.salsalabims_strength->ok() && is_base_ks )
           {
             p()->cooldown.breath_of_fire->reset( true, 1 );
             p()->proc.salsalabim_bof_reset->occur();
@@ -3264,7 +3268,7 @@ namespace monk
             p()->buff.press_the_advantage->expire();
           }
 
-          if ( !strcmp(name(), "keg_smash") )
+          if ( is_base_ks )
             trigger_shuffle( p()->talent.brewmaster.keg_smash->effectN( 6 ).base_value() );
 
           brew_cooldown_reduction( time_reduction );
@@ -3316,6 +3320,7 @@ namespace monk
           trigger_gcd = 0_s;
           background = dual = true;
           proc = true;
+          is_base_ks = false;
         }
 
         double action_multiplier() const override
