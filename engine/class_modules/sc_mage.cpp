@@ -367,8 +367,6 @@ public:
   // Options
   struct options_t
   {
-    double firestarter_duration_multiplier = 1.0;
-    double execute_duration_multiplier = 1.0;
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
     timespan_t arcane_missiles_chain_delay = 200_ms;
@@ -2053,7 +2051,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.firestarter.ok() )
       return false;
 
-    return target->health_percentage() > 100.0 - ( 100.0 - p()->talents.firestarter->effectN( 1 ).base_value() ) * p()->options.firestarter_duration_multiplier;
+    return target->health_percentage() > p()->talents.firestarter->effectN( 1 ).base_value();
   }
 
   bool searing_touch_active( player_t* target ) const
@@ -2061,7 +2059,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.searing_touch.ok() )
       return false;
 
-    return target->health_percentage() < p()->talents.searing_touch->effectN( 1 ).base_value() * p()->options.execute_duration_multiplier;
+    return target->health_percentage() < p()->talents.searing_touch->effectN( 1 ).base_value();
   }
 
   bool improved_scorch_active( player_t* target ) const
@@ -2069,7 +2067,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.improved_scorch.ok() )
       return false;
 
-    return target->health_percentage() < p()->talents.improved_scorch->effectN( 2 ).base_value() * p()->options.execute_duration_multiplier;
+    return target->health_percentage() < p()->talents.improved_scorch->effectN( 2 ).base_value();
   }
 
   void trigger_firefall()
@@ -6042,8 +6040,6 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
-  add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
-  add_option( opt_float( "mage.execute_duration_multiplier", options.execute_duration_multiplier ) );
   add_option( opt_timespan( "mage.frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "mage.scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
@@ -7092,10 +7088,8 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
   auto splits = util::string_split<std::string_view>( name, "." );
 
   // Helper for health percentage based effects
-  auto hp_pct_expr = [ & ] ( bool active, double pct, bool execute )
+  auto hp_pct_expr = [ & ] ( bool active, double actual_pct, bool execute )
   {
-    double actual_pct = execute ? pct * options.execute_duration_multiplier : 100.0 - ( 100.0 - pct ) * options.firestarter_duration_multiplier;
-
     if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
       if ( !active )
