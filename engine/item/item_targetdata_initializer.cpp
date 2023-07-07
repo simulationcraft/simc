@@ -11,11 +11,11 @@
 #include "player/unique_gear.hpp"
 
 item_targetdata_initializer_t::item_targetdata_initializer_t( unsigned iid, util::span<const slot_e> s )
-  : effects( false ), debuff( nullptr ), item_id( iid ), spell_id( 0 ), slots_( s.begin(), s.end() )
+  : effects( false ), debuffs( false ), item_id( iid ), spell_id( 0 ), slots_( s.begin(), s.end() )
 {}
 
 item_targetdata_initializer_t::item_targetdata_initializer_t( unsigned sid )
-  : effects( false ), debuff( nullptr ), item_id( 0 ), spell_id( sid )
+  : effects( false ), debuffs( false ), item_id( 0 ), spell_id( sid )
 {}
 
 item_targetdata_initializer_t::~item_targetdata_initializer_t() = default;
@@ -25,20 +25,21 @@ item_targetdata_initializer_t::~item_targetdata_initializer_t() = default;
 
 const special_effect_t* item_targetdata_initializer_t::find_effect( player_t* player ) const
 {
+  const special_effect_t*& eff = effects[ player ];
+  if ( eff )
+    return eff;
+
   // No need to check items on pets/enemies
   if ( player->is_pet() || player->is_enemy() || player->type == HEALING_ENEMY )
   {
     return nullptr;
   }
 
-  special_effect_t*& eff = effects[ player ];
-
-  if ( !eff && spell_id )
+  if ( spell_id )
   {
     eff = unique_gear::find_special_effect( player, spell_id );
   }
-
-  if ( !eff )
+  else
   {
     for ( slot_e slot : slots_ )
     {
