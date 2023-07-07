@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 
+#include "player/target_specific.hpp"
 #include "sc_enums.hpp"
 #include "util/span.hpp"
 
@@ -15,6 +16,7 @@
 struct actor_target_data_t;
 struct player_t;
 struct special_effect_t;
+struct spell_data_t;
 
 /**
  * Targetdata initializer for items. When targetdata is constructed (due to a call to
@@ -30,6 +32,8 @@ struct special_effect_t;
  */
 struct item_targetdata_initializer_t
 {
+  target_specific_t<special_effect_t> effects;
+  const spell_data_t* debuff;
   unsigned item_id;
   unsigned spell_id;
   std::vector<slot_e> slots_;
