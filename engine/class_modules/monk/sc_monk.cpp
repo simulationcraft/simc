@@ -791,7 +791,7 @@ namespace monk
         double am = base_t::action_multiplier();
 
         if ( press_the_advantage_whitelist )
-          am *= p()->buff.press_the_advantage->check_stack_value();
+          am *= 1.0 + p()->buff.press_the_advantage->check_stack_value();
 
         // Storm, Earth, and Fire
         if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
@@ -1104,7 +1104,7 @@ namespace monk
           double am = base_t::action_multiplier();
 
           if ( press_the_advantage_whitelist )
-            am *= p()->buff.press_the_advantage->check_stack_value();
+            am *= 1.0 + p()->buff.press_the_advantage->check_stack_value();
 
           if ( ww_mastery && p()->buff.combo_strikes->check() )
             am *= 1 + p()->cache.mastery_value();
@@ -3110,7 +3110,7 @@ namespace monk
 
           if ( result_is_hit( s->result ) )
           {
-            if ( p()->talent.brewmaster->press_the_advantage->ok() && p()->bugs )
+            if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->bugs )
             {
               p()->passive_actions.press_the_advantage->target = s->target;
               p()->passive_actions.press_the_advantage->schedule_execute();
@@ -3259,8 +3259,10 @@ namespace monk
             p()->buff.blackout_combo->expire();
 
           if ( p()->buff.press_the_advantage->stack() == 10 )
+          {
             p()->active_actions.keg_smash_press_the_advantage->execute();
-
+            p()->buff.press_the_advantage->expire();
+          }
 
           if ( !strcmp(name(), "keg_smash") )
             trigger_shuffle( p()->talent.brewmaster.keg_smash->effectN( 6 ).base_value() );
@@ -3345,7 +3347,6 @@ namespace monk
 
           keg_smash_t::execute();
 
-          p()->buff.press_the_advantage->expire();
 
           if ( p()->talent.brewmaster.chi_surge->ok() )
             p()->active_actions.chi_surge->execute();
