@@ -40,6 +40,8 @@ actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
 actions+=/use_item,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)
 actions+=/use_item,name=vial_of_animated_blood,if=buff.avatar.up
+actions+=/use_item,name=elementium_pocket_anvil,use_off_gcd=1,if=gcd.remains>0.7
+actions+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>0.7
 actions+=/use_item,name=irideus_fragment,if=buff.avatar.up
 actions+=/use_item,name=manic_grieftorch,if=buff.avatar.down
 actions+=/use_item,name=gladiators_badge,if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)
