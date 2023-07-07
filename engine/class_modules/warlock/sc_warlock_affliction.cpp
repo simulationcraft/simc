@@ -533,7 +533,7 @@ struct phantom_singularity_t : public affliction_spell_t
     {
       affliction_spell_t::impact( s );
 
-      if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      if ( s->chain_target == 0 && !p()->min_version_check(VERSION_10_1_5) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
       {
         // Debuff lasts 2 seconds but refreshes on every tick. 2023-04-04 PTR: Currently only applies to target with PS DoT
         td( s->target )->debuffs_infirmity->trigger();
@@ -565,6 +565,26 @@ struct phantom_singularity_t : public affliction_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration ;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    affliction_spell_t::impact( s );
+
+    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( s->target )->debuffs_infirmity->trigger();
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    affliction_spell_t::last_tick( d );
+
+    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( d->target )->debuffs_infirmity->expire();
+    }
   }
 };
 
