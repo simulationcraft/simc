@@ -594,16 +594,6 @@ struct vile_taint_t : public affliction_spell_t
       }
     }
 
-    void impact( action_state_t* s ) override
-    {
-      affliction_spell_t::impact( s );
-
-      if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
-        td( s->target )->debuffs_infirmity->trigger();
-      }
-    }
-
     void last_tick( dot_t* d ) override
     {
       affliction_spell_t::last_tick( d );
@@ -632,6 +622,16 @@ struct vile_taint_t : public affliction_spell_t
     {
       impact_action->execute_action = nullptr; // Only want to apply Vile Taint DoT, not secondary effects
       aoe = 1;
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    affliction_spell_t::impact( s );
+
+    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( s->target )->debuffs_infirmity->trigger();
     }
   }
 };
