@@ -3065,6 +3065,13 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     apply_affecting_aura(p->spec.immolation_aura_cdr);
 
+    if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
+    {
+      energize_amount = data().effectN( 3 ).base_value();
+    } else {
+      energize_amount = data().effectN( 2 ).base_value();
+    }
+
     if ( !p->active.immolation_aura )
     {
       p->active.immolation_aura = p->get_background_action<immolation_aura_damage_t>(
