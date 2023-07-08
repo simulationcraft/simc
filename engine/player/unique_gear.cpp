@@ -2462,8 +2462,8 @@ void item::matrix_restabilizer( special_effect_t& effect )
 
 struct fel_burn_t : public buff_t
 {
-  fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    buff_t( p, "fel_burn", p.source -> find_spell( 184256 ), source_effect.item )
+  fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s )
+    : buff_t( p, "fel_burn", s, source_effect.item )
   {
 
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -2536,22 +2536,17 @@ struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
 {
   empty_drinking_horn_constructor_t( unsigned iid, util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
-  { }
+  {
+    debuff_fn = []( player_t* p ) { return p->find_spell( 184256 ); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td -> source );
-    if ( ! effect )
-    {
-      td -> debuff.fel_burn = make_buff( *td, "fel_burn" );
-    }
-    else
-    {
-      assert( ! td -> debuff.fel_burn );
+    bool active = init( td->source );
 
-      td -> debuff.fel_burn = new fel_burn_t( *td, *effect );
-      td -> debuff.fel_burn -> reset();
-    }
+    td->debuff.fel_burn =
+        make_buff_fallback<fel_burn_t>( active, *td, "fel_burn", *find_effect( td->source ), debuffs[ td->source ] );
+    td->debuff.fel_burn->reset();
   }
 };
 
@@ -2758,9 +2753,8 @@ struct mark_of_doom_t : public buff_t
   action_t* damage_spell;
   special_effect_t* effect;
 
-  mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    buff_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item ),
-    damage_spell( p.source -> find_action( "doom_nova" ) )
+  mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s, action_t* a )
+    : buff_t( p, "mark_of_doom", s, source_effect.item ), damage_spell( a )
   {
     set_activated( false );
 
@@ -2833,24 +2827,25 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
 
 struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
 {
-  prophecy_of_fear_constructor_t( unsigned iid, util::span<const slot_e> s ) :
-    item_targetdata_initializer_t( iid, s )
-  { }
+  target_specific_t<action_t> damage_actions;
+
+  prophecy_of_fear_constructor_t( unsigned iid, util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
+  {
+    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->driver()->effectN( 1 ).trigger(); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td -> source );
-    if ( effect == nullptr )
-    {
-      td -> debuff.mark_of_doom = make_buff( *td, "mark_of_doom" );
-    }
-    else
-    {
-      assert( ! td -> debuff.mark_of_doom );
+    bool active = init( td->source );
 
-      td -> debuff.mark_of_doom = new mark_of_doom_t( *td, *effect );
-      td -> debuff.mark_of_doom -> reset();
-    }
+    action_t*& damage = damage_actions[ td->source ];
+    if ( active && !damage )
+      damage = td->source->find_action( "doom_nova" );
+
+    td->debuff.mark_of_doom = make_buff_fallback<mark_of_doom_t>(
+        active, *td, "mark_of_doom", *find_effect( td->source ), debuffs[ td->source ], damage );
+    td->debuff.mark_of_doom->reset();
   }
 };
 
