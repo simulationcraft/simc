@@ -6179,157 +6179,265 @@ action_t* create_action( player_t* player, util::string_view name, util::string_
 void register_target_data_initializers( sim_t& sim )
 {
   // Sinful Revelation
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 324250 ) )
+  struct sinful_revelation_init_t : public item_targetdata_initializer_t
+  {
+    sinful_revelation_init_t() : item_targetdata_initializer_t( 324250 )
     {
-      assert( !td->debuff.sinful_revelation );
-
-      td->debuff.sinful_revelation = make_buff<SL_buff_t>( *td, "sinful_revelation", td->source->find_spell( 324260 ) )
-        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
-      td->debuff.sinful_revelation->reset();
+      debuff_fn = []( player_t* p ) { return p->find_spell( 324260 ); };
     }
-    else
-      td->debuff.sinful_revelation = make_buff( *td, "sinful_revelation" )->set_quiet( true );
-  } );
+
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.sinful_revelation =
+          make_buff_fallback<SL_buff_t>( active, *td, "sinful_revelation", debuffs[ td->source ] );
+      td->debuff.sinful_revelation->reset();
+
+      if ( active )
+        td->debuff.sinful_revelation->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+    }
+  };
+
+  sim.register_target_data_initializer( sinful_revelation_init_t() );
 
   // Darkmoon Deck: Putrescence
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 347047 ) )
+  struct putrid_burst_init_t : public item_targetdata_initializer_t
+  {
+    putrid_burst_init_t() : item_targetdata_initializer_t( 347047 )
     {
-      assert( !td->debuff.putrid_burst );
-
-      td->debuff.putrid_burst = make_buff<buff_t>( *td, "putrid_burst", td->source->find_spell( 334058 ) )
-        ->set_cooldown( 0_ms );
-      td->debuff.putrid_burst->reset();
+      debuff_fn = []( player_t* p ) { return p->find_spell( 334058 ); };
     }
-    else
-      td->debuff.putrid_burst = make_buff( *td, "putrid_burst" )->set_quiet( true );
-  } );
+
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.putrid_burst = make_buff_fallback( active, *td, "putrid_burst", debuffs[ td->source ] );
+      td->debuff.putrid_burst->reset();
+
+      if ( active )
+        td->debuff.putrid_burst->set_cooldown( 0_ms );
+    }
+  };
+
+  sim.register_target_data_initializer( putrid_burst_init_t() );
 
   // Memory of Past Sins
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 344662 ) )
+  struct shattered_psyche_init_t : public item_targetdata_initializer_t
+  {
+    shattered_psyche_init_t() : item_targetdata_initializer_t( 344662 )
     {
-      assert( !td->debuff.shattered_psyche );
-
-      td->debuff.shattered_psyche =
-          make_buff<buff_t>( *td, "shattered_psyche_debuff", td->source->find_spell( 344663 ) )
-              ->set_default_value( td->source->find_spell( 344662 )->effectN( 1 ).percent() );
-      td->debuff.shattered_psyche->reset();
+      debuff_fn = []( player_t* p ) { return p->find_spell( 344663 ); };
     }
-    else
-      td->debuff.shattered_psyche = make_buff( *td, "shattered_psyche_debuff" )->set_quiet( true );
-  } );
+
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.shattered_psyche = make_buff_fallback( active, *td, "shattered_psyche_debuff", debuffs[ td->source ] );
+      td->debuff.shattered_psyche->reset();
+
+      if ( active )
+        td->debuff.shattered_psyche->set_default_value( td->source->find_spell( 344662 )->effectN( 1 ).percent() );
+    }
+  };
+
+  sim.register_target_data_initializer( shattered_psyche_init_t() );
 
   // Relic of the Frozen Wastes
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 355301 ) )
+  struct frozen_heart_init_t : public item_targetdata_initializer_t
+  {
+    frozen_heart_init_t() : item_targetdata_initializer_t( 355301 )
     {
-      assert( !td->debuff.frozen_heart );
+      debuff_fn = []( player_t* p ) { return p->find_spell( 355759 ); };
+    }
 
-      td->debuff.frozen_heart = make_buff<buff_t>( *td, "frozen_heart", td->source->find_spell( 355759 ) );
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.frozen_heart = make_buff_fallback( active, *td, "frozen_heart", debuffs[ td->source ] );
       td->debuff.frozen_heart->reset();
     }
-    else
-      td->debuff.frozen_heart = make_buff( *td, "frozen_heart" )->set_quiet( true );
-  } );
+  };
+
+  sim.register_target_data_initializer( frozen_heart_init_t() );
 
   // Ticking Sack of Terror
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 351679 ) )
+  struct volatile_satchel_init_t : public item_targetdata_initializer_t
+  {
+    volatile_satchel_init_t() : item_targetdata_initializer_t( 367901 )
     {
-      assert( !td->debuff.volatile_satchel );
+      debuff_fn = [ this ]( player_t* p ) {
+        if ( find_effect( p )->spell_id == 351679 )
+          return p->find_spell( 351682 );
+        else
+          return p->find_spell( 367902 );
+      };
+    }
 
-      td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 351682 ) );
+    const special_effect_t* find_effect( player_t* p ) const override
+    {
+      const special_effect_t*& eff = effects[ p ];
+      if ( eff )
+        return eff;
+
+      if ( p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
+        return nullptr;
+
+      eff = unique_gear::find_special_effect( p, 351679 );
+      if ( eff )
+        return eff;
+
+      return unique_gear::find_special_effect( p, 367901 );
+    }
+
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.volatile_satchel = make_buff_fallback( active, *td, "volatile_satchel", debuffs[ td->source ] );
       td->debuff.volatile_satchel->reset();
     }
-    else if ( unique_gear::find_special_effect( td->source, 367901 ) )
-    {
-      assert( !td->debuff.volatile_satchel );
+  };
 
-      td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 367902 ) );
-      td->debuff.volatile_satchel->reset();
-    }
-    else
-      td->debuff.volatile_satchel = make_buff( *td, "volatile_satchel" )->set_quiet( true );
-  } );
+  sim.register_target_data_initializer( volatile_satchel_init_t() );
 
   // Bells of the Endless Feast
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 367336 ) )
+  struct scent_of_souls_init_t : public item_targetdata_initializer_t
+  {
+    scent_of_souls_init_t() : item_targetdata_initializer_t( 367336 )
     {
-      assert( !td->debuff.scent_of_souls );
-
-      td->debuff.scent_of_souls = make_buff<buff_t>( *td, "scent_of_souls", td->source->find_spell( 368585 ) )
-        ->set_period( 0_ms )
-        ->set_cooldown( 0_ms );  // the debuff spell id seems to also be a driver of some kind giving extra stacks
-      td->debuff.scent_of_souls->reset();
+      debuff_fn = []( player_t* p ) { return p->find_spell( 368585 ); };
     }
-    else
-      td->debuff.scent_of_souls = make_buff( *td, "scent_of_souls" )->set_quiet( true );
-  } );
+
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.scent_of_souls = make_buff_fallback( active, *td, "scent_of_souls", debuffs[ td->source ] );
+      td->debuff.scent_of_souls->reset();
+
+      // the debuff spell id seems to also be a driver of some kind giving extra stacks
+      if ( active )
+        td->debuff.scent_of_souls->set_period( 0_ms )->set_cooldown( 0_ms );  
+    }
+  };
+
+  sim.register_target_data_initializer( scent_of_souls_init_t() );
 
   // Chains of Domination
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 367931 ) )
+  struct chains_of_domination_init_t : public item_targetdata_initializer_t
+  {
+    chains_of_domination_init_t() : item_targetdata_initializer_t( 367931 )
     {
-      assert( !td->debuff.chains_of_domination );
-
-      td->debuff.chains_of_domination = make_buff<buff_t>( *td, "chains_of_domination", td->source->find_spell( 367931 ) )
-        ->set_period( 0_ms )
-        ->set_cooldown( 0_ms );
-      td->debuff.chains_of_domination->reset();
+      debuff_fn = []( player_t* p ) { return p->find_spell( 367931 ); };
     }
-    else
-      td->debuff.chains_of_domination = make_buff( *td, "chains_of_domination" )->set_quiet( true );
-  } );
+
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.chains_of_domination =
+          make_buff_fallback( active, *td, "chains_of_domination", debuffs[ td->source ] );
+      td->debuff.chains_of_domination->reset();
+
+      if ( active )
+        td->debuff.chains_of_domination->set_period( 0_ms )->set_cooldown( 0_ms );
+    }
+  };
+
+  sim.register_target_data_initializer( chains_of_domination_init_t() );
 
   // Shard of Dyz (Scouring Touch debuff)
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 355755 )
-      || unique_gear::find_special_effect( td->source, 357037 )
-      || unique_gear::find_special_effect( td->source, 357055 )
-      || unique_gear::find_special_effect( td->source, 357065 )
-      || unique_gear::find_special_effect( td->source, 357076 ) )
+  struct shard_of_dyz_init_t : public item_targetdata_initializer_t
+  {
+    shard_of_dyz_init_t() : item_targetdata_initializer_t( 357076 )
     {
-      assert( !td->debuff.scouring_touch );
+      debuff_fn = []( player_t *p ) { return p->find_spell( 356329 ); };
+    }
 
-      td->debuff.scouring_touch = make_buff( *td, "scouring_touch", td->source->find_spell( 356329 ) );
+    const special_effect_t* find_effect( player_t* p ) const override
+    {
+      const special_effect_t*& eff = effects[ p ];
+      if ( eff )
+        return eff;
+
+      if ( p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
+        return nullptr;
+
+      eff = unique_gear::find_special_effect( p, 355755 ); if ( eff ) return eff;
+      eff = unique_gear::find_special_effect( p, 357037 ); if ( eff ) return eff;
+      eff = unique_gear::find_special_effect( p, 357055 ); if ( eff ) return eff;
+      eff = unique_gear::find_special_effect( p, 357065 ); if ( eff ) return eff;
+      return unique_gear::find_special_effect( p, 357076 );
+    }
+
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.scouring_touch = make_buff_fallback( active, *td, "scouring_touch", debuffs[ td->source ] );
       td->debuff.scouring_touch->reset();
     }
-    else
-      td->debuff.scouring_touch = make_buff( *td, "scouring_touch" )->set_quiet( true );
-  } );
+  };
+
+  sim.register_target_data_initializer( shard_of_dyz_init_t() );
 
   // Shard of Bek (Exsanguinated debuff)
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 355721 )
-      || unique_gear::find_special_effect( td->source, 357031 )
-      || unique_gear::find_special_effect( td->source, 357049 )
-      || unique_gear::find_special_effect( td->source, 357058 )
-      || unique_gear::find_special_effect( td->source, 357069 ) )
+  struct shard_of_bek_init_t : public item_targetdata_initializer_t
+  {
+    shard_of_bek_init_t() : item_targetdata_initializer_t( 357069 )
     {
-      assert( !td->debuff.exsanguinated );
+      debuff_fn = []( player_t* p ) { return p->find_spell( 356372 ); };
+    }
 
-      td->debuff.exsanguinated = make_buff( *td, "exsanguinated", td->source->find_spell( 356372 ) );
+    const special_effect_t* find_effect( player_t* p ) const override
+    {
+      const special_effect_t*& eff = effects[ p ];
+      if ( eff )
+        return eff;
+
+      if ( p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
+        return nullptr;
+
+      eff = unique_gear::find_special_effect( p, 355721 ); if ( eff ) return eff;
+      eff = unique_gear::find_special_effect( p, 357031 ); if ( eff ) return eff;
+      eff = unique_gear::find_special_effect( p, 357049 ); if ( eff ) return eff;
+      eff = unique_gear::find_special_effect( p, 357058 ); if ( eff ) return eff;
+      return unique_gear::find_special_effect( p, 357069 );
+    }
+
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.exsanguinated = make_buff_fallback( active, *td, "exsanguinated", debuffs[ td->source ] );
       td->debuff.exsanguinated->reset();
     }
-    else
-      td->debuff.exsanguinated = make_buff( *td, "exsanguinated" )->set_quiet( true );
-  } );
+  };
+
+  sim.register_target_data_initializer( shard_of_bek_init_t() );
 
   // Soulwarped Seal of Menethil
-  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( unique_gear::find_special_effect( td->source, 367951 ) )
+  struct remnants_despair_init_t : public item_targetdata_initializer_t
+  {
+    remnants_despair_init_t() : item_targetdata_initializer_t( 367951 )
     {
-      assert( !td->debuff.remnants_despair );
+      debuff_fn = []( player_t* p ) { return p->find_spell( 368690 ); };
+    }
 
-      td->debuff.remnants_despair = make_buff<buff_t>( *td, "remnants_despair", td->source->find_spell( 368690 ) );
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.remnants_despair = make_buff_fallback( active, *td, "remnants_despair", debuffs[ td->source ] );
       td->debuff.remnants_despair->reset();
     }
-    else
-      td->debuff.remnants_despair = make_buff( *td, "remnants_despair" )->set_quiet( true );
-  } );
+  };
+
+  sim.register_target_data_initializer( remnants_despair_init_t() );
 }
 
 }  // namespace unique_gear

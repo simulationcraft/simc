@@ -32,8 +32,11 @@ struct spell_data_t;
  */
 struct item_targetdata_initializer_t
 {
+  // effect obj cached per actor
   target_specific_t<const special_effect_t> effects;
+  // debuff spell data cached per actor to account for player-scoped overrides
   target_specific_t<const spell_data_t> debuffs;
+  // called when debuff spell data is first cached
   std::function<const spell_data_t*( player_t* )> debuff_fn;
   unsigned item_id;
   unsigned spell_id;
