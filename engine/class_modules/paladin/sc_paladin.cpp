@@ -823,8 +823,13 @@ struct crusading_strike_t : public paladin_melee_attack_t
         p()->gains.hp_crusading_strikes
       );
     }
+  }
 
-    if ( p()->talents.empyrean_power->ok() )
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->talents.empyrean_power->ok() )
     {
       if ( rng().roll( p()->talents.empyrean_power->effectN( 2 ).percent() ) )
       {
@@ -1008,6 +1013,15 @@ struct crusader_strike_t : public paladin_melee_attack_t
       timespan_t cm_cdr = p()->talents.crusaders_might->effectN( 1 ).time_value();
       p()->cooldowns.holy_shock->adjust( cm_cdr );
     }
+
+   if ( result_is_hit( s->result ) && p()->talents.empyrean_power->ok() )
+    {
+      if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
+      {
+        p()->procs.empyrean_power->occur();
+        p()->buffs.empyrean_power->trigger();
+      }
+    }
   }
 
   void execute() override
@@ -1025,15 +1039,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
-    }
-
-    if ( p()->talents.empyrean_power->ok() )
-    {
-      if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
-      {
-        p()->procs.empyrean_power->occur();
-        p()->buffs.empyrean_power->trigger();
-      }
     }
   }
 
@@ -1695,7 +1700,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p()->talents.vanguards_momentum->ok() )
     {
-      if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() )
+      if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() && s->chain_target == 0 )
       {
         // technically this is in spell 403081 for some reason
         p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
@@ -3555,7 +3560,7 @@ public:
   paladin_report_t( paladin_t& player ) : p( player )
   {
   }
-  void html_customsection( report::sc_html_stream& os ) override
+  void html_customsection( report::sc_html_stream& /* os */ ) override
   {
   }
 

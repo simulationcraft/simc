@@ -10131,8 +10131,7 @@ void druid_t::create_buffs()
     ->set_chance( find_effect( find_specialization_spell( "Owlkin Frenzy" ), A_ADD_FLAT_MODIFIER, P_PROC_CHANCE ).percent() );
 
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 393961 ) )
-    ->set_trigger_spell( talent.primordial_arcanic_pulsar )
-    ->set_default_value( options.initial_pulsar_value );
+    ->set_trigger_spell( talent.primordial_arcanic_pulsar );
 
   buff.rattled_stars = make_buff( this, "rattled_stars", find_trigger( talent.rattle_the_stars ).trigger() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -11546,6 +11545,14 @@ void druid_t::arise()
 
   if ( specialization() == DRUID_BALANCE )
   {
+    if ( options.initial_pulsar_value > 0 )
+    {
+      register_combat_begin( [ this ]( player_t* p ) {
+        buff.primordial_arcanic_pulsar->trigger();
+        buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
+      } );
+    }
+
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
       snapshot_mastery();
       make_repeating_event( *sim, 5.25_s, [ this ]() { snapshot_mastery(); } );

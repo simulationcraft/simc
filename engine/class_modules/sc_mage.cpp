@@ -367,8 +367,6 @@ public:
   // Options
   struct options_t
   {
-    double firestarter_duration_multiplier = 1.0;
-    double execute_duration_multiplier = 1.0;
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
     timespan_t arcane_missiles_chain_delay = 200_ms;
@@ -2053,7 +2051,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.firestarter.ok() )
       return false;
 
-    return target->health_percentage() > 100.0 - ( 100.0 - p()->talents.firestarter->effectN( 1 ).base_value() ) * p()->options.firestarter_duration_multiplier;
+    return target->health_percentage() >= p()->talents.firestarter->effectN( 1 ).base_value();
   }
 
   bool searing_touch_active( player_t* target ) const
@@ -2061,7 +2059,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.searing_touch.ok() )
       return false;
 
-    return target->health_percentage() < p()->talents.searing_touch->effectN( 1 ).base_value() * p()->options.execute_duration_multiplier;
+    return target->health_percentage() <= p()->talents.searing_touch->effectN( 1 ).base_value();
   }
 
   bool improved_scorch_active( player_t* target ) const
@@ -2069,7 +2067,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.improved_scorch.ok() )
       return false;
 
-    return target->health_percentage() < p()->talents.improved_scorch->effectN( 2 ).base_value() * p()->options.execute_duration_multiplier;
+    return target->health_percentage() <= p()->talents.improved_scorch->effectN( 2 ).base_value();
   }
 
   void trigger_firefall()
@@ -2706,7 +2704,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
 
-    if ( s->target->health_percentage() < p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
+    if ( s->target->health_percentage() <= p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent();
 
     return m;
@@ -5049,8 +5047,8 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     double m = hot_streak_spell_t::composite_da_multiplier( s );
 
-    if ( s->target->health_percentage() < p()->talents.controlled_destruction->effectN( 2 ).base_value()
-      || s->target->health_percentage() > p()->talents.controlled_destruction->effectN( 3 ).base_value() )
+    if ( s->target->health_percentage() <= p()->talents.controlled_destruction->effectN( 2 ).base_value()
+      || s->target->health_percentage() >= p()->talents.controlled_destruction->effectN( 3 ).base_value() )
     {
       m *= 1.0 + p()->talents.controlled_destruction->effectN( 1 ).percent();
     }
@@ -6042,8 +6040,6 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
-  add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
-  add_option( opt_float( "mage.execute_duration_multiplier", options.execute_duration_multiplier ) );
   add_option( opt_timespan( "mage.frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "mage.scorch_delay", options.scorch_delay ) );
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
@@ -7092,10 +7088,8 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
   auto splits = util::string_split<std::string_view>( name, "." );
 
   // Helper for health percentage based effects
-  auto hp_pct_expr = [ & ] ( bool active, double pct, bool execute )
+  auto hp_pct_expr = [ & ] ( bool active, double actual_pct, bool execute )
   {
-    double actual_pct = execute ? pct * options.execute_duration_multiplier : 100.0 - ( 100.0 - pct ) * options.firestarter_duration_multiplier;
-
     if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
       if ( !active )
@@ -7104,7 +7098,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
       return make_fn_expr( name_str, [ &action, actual_pct, execute ]
       {
         double pct = action.get_expression_target()->health_percentage();
-        return execute ? pct < actual_pct : pct > actual_pct;
+        return execute ? pct <= actual_pct : pct >= actual_pct;
       } );
     }
 
@@ -7711,10 +7705,6 @@ private:
   mage_t& p;
 };
 
-namespace live_mage {
-#include "class_modules/sc_mage_live.inc"
-};
-
 // MAGE MODULE INTERFACE ====================================================
 
 struct mage_module_t final : public module_t
@@ -7726,19 +7716,9 @@ public:
 
   player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
   {
-    // TODO: Remove PTR check and the live mage file
-    if ( sim->dbc->ptr )
-    {
-      auto p = new mage_t( sim, name, r );
-      p->report_extension = std::make_unique<mage_report_t>( *p );
-      return p;
-    }
-    else
-    {
-      auto p = new live_mage::mage_t( sim, name, r );
-      p->report_extension = std::make_unique<live_mage::mage_report_t>( *p );
-      return p;
-    }
+    auto p = new mage_t( sim, name, r );
+    p->report_extension = std::make_unique<mage_report_t>( *p );
+    return p;
   }
 
   void register_hotfixes() const override

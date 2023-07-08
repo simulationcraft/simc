@@ -609,6 +609,7 @@ enum property_type_t {
   P_RESOURCE_GEN        = 34,
   P_CHAIN_TARGET_RANGE  = 35,
   P_MAX_STACKS          = 37,
+  P_RESOURCE_COST_2     = 39,
   P_MAX
 };
 

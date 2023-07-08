@@ -53,32 +53,31 @@ actions.cds+=/use_items,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 actions.cleave=kill_shot,if=buff.coordinated_assault_empower.up&talent.birds_of_prey
-actions.cleave+=/wildfire_bomb,if=full_recharge_time<gcd|!cooldown.coordinated_assault.remains|buff.coordinated_assault.remains&(!buff.coordinated_assault_empower.up)|talent.bombardier
 actions.cleave+=/death_chakram
+actions.cleave+=/wildfire_bomb
 actions.cleave+=/stampede
 actions.cleave+=/coordinated_assault,if=cooldown.fury_of_the_eagle.remains|!talent.fury_of_the_eagle
 actions.cleave+=/explosive_shot
 actions.cleave+=/carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2
-actions.cleave+=/butchery,if=full_recharge_time<gcd|dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd)
-actions.cleave+=/wildfire_bomb,if=!dot.wildfire_bomb.ticking
 actions.cleave+=/use_item,name=djaruun_pillar_of_the_elder_flame
-actions.cleave+=/fury_of_the_eagle
+actions.cleave+=/fury_of_the_eagle,if=raid_event.adds.exists&(!talent.butchery|cooldown.butchery.full_recharge_time>cast_time)
+actions.cleave+=/butchery,if=raid_event.adds.exists
+actions.cleave+=/butchery,if=(full_recharge_time<gcd|dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd|raid_event.adds.remains<10))&!raid_event.adds.exists
+actions.cleave+=/fury_of_the_eagle,if=!raid_event.adds.exists
 actions.cleave+=/carve,if=dot.shrapnel_bomb.ticking
-actions.cleave+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.cleave+=/butchery,if=(!next_wi_bomb.shrapnel|!talent.wildfire_infusion)
 actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8
 actions.cleave+=/raptor_strike,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>8
 actions.cleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd
+actions.cleave+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.cleave+=/carve
 actions.cleave+=/kill_shot,if=!buff.coordinated_assault.up
 actions.cleave+=/steel_trap,if=focus+cast_regen<focus.max
 actions.cleave+=/spearhead
 actions.cleave+=/mongoose_bite,target_if=min:dot.serpent_sting.remains,if=buff.spearhead.remains
 actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)
-actions.cleave+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.cleave+=/mongoose_bite,target_if=min:dot.serpent_sting.remains
 actions.cleave+=/raptor_strike,target_if=min:dot.serpent_sting.remains
-actions.cleave+=/flanking_strike
 
 actions.st=kill_command,target_if=min:bloodseeker.remains,if=talent.spearhead&debuff.shredded_armor.stack<1&cooldown.spearhead.remains<2*gcd
 actions.st+=/wildfire_bomb,if=talent.spearhead&cooldown.spearhead.remains<2*gcd&debuff.shredded_armor.stack>0
@@ -94,7 +93,7 @@ actions.st+=/mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variabl
 actions.st+=/kill_shot,if=!buff.coordinated_assault.up
 actions.st+=/raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd
 actions.st+=/serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom
-actions.st+=/fury_of_the_eagle,if=buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd
+actions.st+=/fury_of_the_eagle,if=buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1|raid_event.adds.exists&raid_event.adds.in>40)
 actions.st+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5
 actions.st+=/mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.seething_rage.remains&active_enemies=1
 actions.st+=/flanking_strike,if=focus+cast_regen<focus.max

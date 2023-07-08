@@ -30,6 +30,7 @@ struct enemy_t : public player_t
   size_t enemy_id;
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
+  std::vector<std::pair<double, double>> custom_health_timeline;
   double health_recalculation_dampening_exponent;
   timespan_t waiting_time;
 
@@ -46,6 +47,7 @@ struct enemy_t : public player_t
       initial_health( 0 ),
       fixed_health_percentage( 0 ),
       initial_health_percentage( 100.0 ),
+      custom_health_timeline(),
       health_recalculation_dampening_exponent( 1.0 ),
       waiting_time( timespan_t::from_seconds( 1.0 ) ),
       current_target( 0 ),
@@ -120,6 +122,7 @@ struct enemy_t : public player_t
   void reset_auto_attacks( timespan_t delay, proc_t* proc = nullptr ) override;
   void delay_auto_attacks( timespan_t delay, proc_t* proc = nullptr ) override;
 
+  bool validate_custom_timeline();
   std::string generate_tank_action_list( tank_dummy_e );
   void add_tank_heal_raid_event( tank_dummy_e );
 };
@@ -1301,9 +1304,64 @@ void enemy_t::init_base_stats()
     initial_health_percentage = 100.0;
   }
 
+  if ( !validate_custom_timeline() )
+    custom_health_timeline.clear();
+
   // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
   base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : armor_coefficient( level(), tank_dummy_e::MYTHIC );
   sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
+}
+
+bool enemy_t::validate_custom_timeline()
+{
+  if ( custom_health_timeline.empty() )
+    return false;
+
+  if ( !sim->fixed_time )
+  {
+    sim->error( "Disabling custom health timeline: must be used with fixed_time=1." );
+    return false;
+  }
+
+  if ( death_pct != 0.0 || fixed_health_percentage != 0.0 || initial_health_percentage != 100.0 )
+  {
+    sim->error( "Disabling custom health timeline: cannot be used with other health percentage options." );
+    return false;
+  }
+
+  range::sort( custom_health_timeline, [] ( const auto& l, const auto& r ) { return l.second < r.second; } );
+
+  if ( custom_health_timeline.front().second < 0.0 || custom_health_timeline.back().second > 1.0 )
+  {
+    sim->error( "Disabling custom health timeline: time values must be between 0.0 and 1.0." );
+    return false;
+  }
+
+  for ( const auto& p : custom_health_timeline )
+  {
+    if ( p.first < 0.0 || p.first > 100.0 )
+    {
+      sim->error( "Disabling custom health timeline: health values must be between 0.0 and 100.0." );
+      return false;
+    }
+  }
+
+  for ( std::size_t i = 0; i < custom_health_timeline.size() - 1; i++ )
+  {
+    if ( custom_health_timeline[ i ].second == custom_health_timeline[ i + 1 ].second )
+    {
+      sim->error( "Disabling custom health timeline: must contain unique time values." );
+      return false;
+    }
+  }
+
+  if ( custom_health_timeline.back().second != 1.0 )
+    custom_health_timeline.emplace_back( 0.0, 1.0 );
+
+  if ( custom_health_timeline.front().second != 0.0 )
+    custom_health_timeline.emplace( custom_health_timeline.begin(), 100.0, 0.0 );
+
+  return true;
 }
 
 void enemy_t::init_defense()
@@ -1611,6 +1669,27 @@ void enemy_t::create_options()
   add_option( opt_string( "enemy_tank", target_str ) );
   add_option( opt_int( "apply_debuff", apply_damage_taken_debuff ) );
 
+  add_option( opt_func( "enemy_custom_health_timeline", [ this ] ( sim_t*, std::string_view, std::string_view val )
+  {
+    custom_health_timeline.clear();
+
+    auto splits = util::string_split<std::string_view>( val, "/," );
+    range::transform(
+      splits,
+      std::back_inserter( custom_health_timeline ),
+      [] ( std::string_view s ) -> std::pair<double, double>
+      {
+        auto pair = util::string_split<std::string_view>( s, ":" );
+        if ( pair.size() == 2 )
+          return { util::to_double( pair[ 0 ] ), util::to_double( pair[ 1 ] ) };
+        else
+          throw std::invalid_argument( fmt::format( "Invalid custom health timeline pair: {}", s ) );
+      }
+    );
+
+    return true;
+  } ) );
+
   // the next part handles actor-specific options for enemies
   player_t::create_options();
 
@@ -1642,6 +1721,31 @@ void enemy_t::create_pets()
 
 double enemy_t::health_percentage() const
 {
+  if ( !custom_health_timeline.empty() )
+  {
+    double time = sim->current_time() / sim->expected_iteration_time;
+    if ( time <= 0.0 )
+      return custom_health_timeline.front().first;
+    if ( time >= 1.0 )
+      return custom_health_timeline.back().first;
+
+    for ( std::size_t i = 0; i < custom_health_timeline.size() - 1; i++ )
+    {
+      const auto& left  = custom_health_timeline[ i ];
+      const auto& right = custom_health_timeline[ i + 1 ];
+
+      if ( left.second <= time && time <= right.second )
+      {
+        double interval_pct = ( time - left.second ) / ( right.second - left.second );
+        return left.first + interval_pct * ( right.first - left.first );
+      }
+    }
+
+    // We should always find an interval to use, so we shouldn't ever get here.
+    assert( false );
+    return 100.0;
+  }
+
   if ( fixed_health_percentage > 0 && sim->current_time() < sim->expected_iteration_time )
   {
     return fixed_health_percentage;
@@ -1665,7 +1769,33 @@ timespan_t enemy_t::time_to_percent( double percent ) const
 {
   // First check current health, considering fixed_health_percentage and initial_health_percentage
   if ( health_percentage() <= percent )
-    return timespan_t::zero();
+    return 0_ms;
+
+  if ( !custom_health_timeline.empty() )
+  {
+    double time = sim->current_time() / sim->expected_iteration_time;
+    for ( std::size_t i = 0; i < custom_health_timeline.size() - 1; i++ )
+    {
+      const auto& left  = custom_health_timeline[ i ];
+      const auto& right = custom_health_timeline[ i + 1 ];
+
+      if ( right.second < time )
+        continue;
+
+      if ( percent < std::min( left.first, right.first ) || percent > std::max( left.first, right.first ) )
+        continue;
+
+      double intersect = left.first == right.first ? 0.0 : ( percent - left.first ) / ( right.first - left.first );
+      double intersect_time = left.second + intersect * ( right.second - left.second );
+      if ( left.first != right.first && intersect_time < time )
+        continue;
+
+      return std::max( 0_ms, intersect_time * sim->expected_iteration_time - sim->current_time() );
+    }
+
+    // No intersection found, health percentage will never occur
+    return 2 * sim->expected_iteration_time;
+  }
 
   // time_to_pct_0, or time_to_die, can ignore fixed_health_percentage or initial_health_percentage
   if ( percent != 0 )

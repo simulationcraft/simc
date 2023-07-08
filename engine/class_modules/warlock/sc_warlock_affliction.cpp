@@ -533,7 +533,7 @@ struct phantom_singularity_t : public affliction_spell_t
     {
       affliction_spell_t::impact( s );
 
-      if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      if ( s->chain_target == 0 && !p()->min_version_check(VERSION_10_1_5) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
       {
         // Debuff lasts 2 seconds but refreshes on every tick. 2023-04-04 PTR: Currently only applies to target with PS DoT
         td( s->target )->debuffs_infirmity->trigger();
@@ -566,6 +566,31 @@ struct phantom_singularity_t : public affliction_spell_t
   {
     return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration ;
   }
+
+  // 2023-07-06 PTR: PS applying Infirmity is currently EXTREMELY bugged, doing such things as applying to
+  // player's current focused target rather than the enemy the DoT is ticking on. There are also conflicting
+  // behaviors regarding whether it applies a variable duration per-tick (matching the remaining duration of PS)
+  // or a single infinite duration on application (like Vile Taint). Implementing like Vile Taint for now
+  // TOCHECK: A week or two after 10.1.5 goes live, verify if fixed
+  void impact( action_state_t* s ) override
+  {
+    affliction_spell_t::impact( s );
+
+    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( s->target )->debuffs_infirmity->trigger();
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    affliction_spell_t::last_tick( d );
+
+    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( d->target )->debuffs_infirmity->expire();
+    }
+  }
 };
 
 struct vile_taint_t : public affliction_spell_t
@@ -588,9 +613,19 @@ struct vile_taint_t : public affliction_spell_t
     {
       affliction_spell_t::tick( d );
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      if ( !p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
       {
         td( d->target )->debuffs_infirmity->trigger();
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      affliction_spell_t::last_tick( d );
+
+      if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        td( d->target )->debuffs_infirmity->expire();
       }
     }
   };
@@ -612,6 +647,16 @@ struct vile_taint_t : public affliction_spell_t
     {
       impact_action->execute_action = nullptr; // Only want to apply Vile Taint DoT, not secondary effects
       aoe = 1;
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    affliction_spell_t::impact( s );
+
+    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( s->target )->debuffs_infirmity->trigger();
     }
   }
 };

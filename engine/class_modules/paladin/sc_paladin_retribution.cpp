@@ -1065,11 +1065,11 @@ struct base_templar_strike_t : public paladin_melee_attack_t
     }
   }
 
-  void execute() override
+  void impact( action_state_t *s ) override
   {
-    paladin_melee_attack_t::execute();
+    paladin_melee_attack_t::impact( s );
 
-    if ( p()->talents.empyrean_power->ok() )
+    if ( result_is_hit( s->result ) && p()->talents.empyrean_power->ok() )
     {
       if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
       {

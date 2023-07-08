@@ -240,13 +240,13 @@ actions.serenity+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=
 # 1 Target
 actions.st=fists_of_fury,if=!buff.pressure_point.up&!cooldown.rising_sun_kick.remains
 actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.pressure_point.up
-actions.st+=/strike_of_the_windlord,if=talent.thunderfist
+actions.st+=/strike_of_the_windlord,if=talent.thunderfist&(cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<5)
 actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.kicks_of_flowing_momentum.up|buff.pressure_point.up
 actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3
 actions.st+=/fists_of_fury
 actions.st+=/rising_sun_kick
 actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=2
-actions.st+=/strike_of_the_windlord
+actions.st+=/strike_of_the_windlord,if=debuff.skyreach_exhaustion.remains>30|fight_remains<5
 actions.st+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
 actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&cooldown.rising_sun_kick.remains>1
 actions.st+=/spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&spinning_crane_kick.modifier>=2.7

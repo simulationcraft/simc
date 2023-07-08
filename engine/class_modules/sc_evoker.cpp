@@ -214,6 +214,7 @@ struct evoker_t : public player_t
 
     const spell_data_t* living_flame_damage;
     const spell_data_t* living_flame_heal;
+    const spell_data_t* energizing_flame;
 
     const spell_data_t* emerald_blossom;
     const spell_data_t* emerald_blossom_heal;
@@ -407,6 +408,7 @@ struct evoker_t : public player_t
   {
     propagate_const<gain_t*> eye_of_infinity;
     propagate_const<gain_t*> roar_of_exhilaration;
+    propagate_const<gain_t*> energizing_flame;
   } gain;
 
   // Procs
@@ -437,6 +439,7 @@ struct evoker_t : public player_t
   evoker_t( sim_t* sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE );
 
   // Character Definitions
+  unsigned int specialization_aura_id();
   void init_action_list() override;
   void init_finished() override;
   void init_base_stats() override;
@@ -848,6 +851,47 @@ public:
       move_during_hover =
           player->find_spelleffect( player->find_class_spell( "Hover" ), A_CAST_WHILE_MOVING_WHITELIST, 0, &ab::data() )
               ->ok();
+
+      const auto spell_powers = ab::data().powers();
+      if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
+      {
+        ab::resource_current = spell_powers.front().resource();
+      }
+      else
+      {
+        // Find the first power entry without a aura id
+        auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
+        if ( it != spell_powers.end() )
+        {
+          ab::resource_current = it->resource();
+        }
+        else
+        {
+          auto it = range::find( spell_powers, p()->specialization_aura_id(), &spellpower_data_t::aura_id );
+          if ( it != spell_powers.end() )
+          {
+            ab::resource_current = it->resource();
+          }
+        }
+      }
+
+      for ( const spellpower_data_t& pd : spell_powers )
+      {
+        if ( pd.aura_id() != 0 && pd.aura_id() != p()->specialization_aura_id() )
+          continue;
+
+        if ( pd._cost != 0 )
+          ab::base_costs[ pd.resource() ] = pd.cost();
+        else
+          ab::base_costs[ pd.resource() ] = floor( pd.cost() * p()->resources.base[ pd.resource() ] );
+
+        ab::secondary_costs[ pd.resource() ] = pd.max_cost();
+
+        if ( pd._cost_per_tick != 0 )
+          ab::base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
+        else
+          ab::base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * p()->resources.base[ pd.resource() ] );
+      }
     }
   }
 
@@ -896,6 +940,25 @@ public:
     return move_during_hover && p()->buff.hover->check();
   }
 
+  
+  template <typename... Ts>
+  void parse_buff_effects_mods( buff_t* buff, const bfun& f, unsigned ignore_mask, bool use_stacks, bool use_default,
+                                Ts... mods )
+  {
+    if ( !buff )
+      return;
+
+    const spell_data_t* spell = &buff->data();
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
+      parse_buff_effect( buff, f, spell, i, use_stacks, use_default, false, mods... );
+    }
+  }
+
   // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
@@ -914,7 +977,18 @@ public:
     parse_buff_effects( p()->buff.tip_the_scales );
 
     parse_buff_effects( p()->buff.imminent_destruction );
-    parse_buff_effects( p()->buff.ebon_might_self_buff, p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
+
+    if ( p()->specialization() == EVOKER_AUGMENTATION )
+    {
+      parse_buff_effects_mods(
+          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, false,
+          p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
+
+      parse_buff_effects_mods(
+          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, false,
+          p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
+    }
+
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -932,6 +1006,9 @@ public:
 
   double cost() const override
   {
+    if ( ab::data().powers().size() > 1 && ab::current_resource() != ab::data().powers()[ 0 ].resource() )
+      return ab::cost();
+
     return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
                               get_buff_effects_value( cost_buffeffects, false, false ) );
   }
@@ -1019,7 +1096,7 @@ struct essence_base_t : public BASE
   {
     BASE::consume_resource();
 
-    if ( !BASE::base_cost() || BASE::proc )
+    if ( !BASE::base_cost() || BASE::proc || BASE::current_resource() != RESOURCE_ESSENCE )
       return;
 
     if ( BASE::p()->buff.essence_burst->up() )
@@ -1591,6 +1668,56 @@ struct emerald_blossom_t : public essence_heal_t
     }
   }
 
+  void consume_resource() override
+  {
+    essence_heal_t::consume_resource();
+
+    resource_e prev_cr = current_resource();
+
+    if ( prev_cr == RESOURCE_MANA )
+      return;
+
+    resource_e cr = resource_current = RESOURCE_MANA;
+
+    if ( base_cost() == 0 || proc )
+      return;
+
+    last_resource_cost = cost();
+
+    player->resource_loss( cr, last_resource_cost, nullptr, this );
+
+    sim->print_log( "{} consumes {} {} for {} ({})", *player, last_resource_cost, cr, *this,
+                    player->resources.current[ cr ] );
+
+    stats->consume_resource( cr, last_resource_cost );
+
+    resource_current = prev_cr;
+  }
+
+  bool ready() override
+  {
+    if ( !essence_heal_t::ready() )
+      return false;
+
+    if ( resource_current == RESOURCE_MANA )
+      return true;
+
+    auto prev_resource = resource_current;
+    resource_current   = RESOURCE_MANA;
+
+    if ( !player->resource_available( RESOURCE_MANA, cost() ) )
+    {
+      if ( starved_proc )
+        starved_proc->occur();
+
+      resource_current = prev_resource;
+      return false;
+    }
+
+    resource_current = prev_resource;
+    return true;
+  }
+
   void execute() override
   {
     essence_heal_t::execute();
@@ -1904,27 +2031,14 @@ public:
 
     if ( p()->buff.ebon_might_self_buff->check() )
     {
-      auto dur = p()->buff.ebon_might_self_buff->remains();
-      if ( dur < 20_s )
-      {
-        dur = std::min( 20_s - dur, extend );
-        if ( dur > 0_s )
-          p()->buff.ebon_might_self_buff->extend_duration( p(), dur );
-      }
+      p()->buff.ebon_might_self_buff->extend_duration( p(), extend );
     }
 
     for ( auto ally : p()->allies_with_my_ebon )
     {
       auto ebon = p()->get_target_data( ally )->buffs.ebon_might;
-      auto dur  = ebon->remains();
-      if ( dur < 20_s )
-      {
-        dur = std::min( 20_s - dur, extend );
-        if ( dur > 0_s )
-        {
-          ebon->extend_duration( p(), dur );
-        }
-      }
+
+      ebon->extend_duration( p(), extend );
     }
   }
 
@@ -2745,12 +2859,14 @@ struct living_flame_t : public evoker_spell_t
   double gcd_mul;
   bool cast_heal;
   timespan_t prepull_timespent;
+  double mana_return;
 
   living_flame_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "living_flame", p, p->find_class_spell( "Living Flame" ) ),
       gcd_mul( p->find_spelleffect( &p->buff.ancient_flame->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() ),
       cast_heal( false ),
-      prepull_timespent( timespan_t::zero() )
+      prepull_timespent( timespan_t::zero() ),
+      mana_return( p->spec.energizing_flame->effectN( 1 ).percent() )
   {
     damage        = p->get_secondary_action<living_flame_damage_t>( "living_flame_damage" );
     damage->stats = stats;
@@ -2760,6 +2876,19 @@ struct living_flame_t : public evoker_spell_t
 
     add_option( opt_bool( "heal", cast_heal ) );
     parse_options( options_str );
+
+    switch ( p->specialization() )
+    {
+      case EVOKER_DEVASTATION:
+        mana_return += p->spec.devastation->effectN( 9 ).percent();
+        break;
+      case EVOKER_AUGMENTATION:
+        mana_return += p->spec.augmentation->effectN( 9 ).percent();
+        break;
+      case EVOKER_PRESERVATION:
+      default:
+        break;
+    }
   }
 
   bool has_amount_result() const override
@@ -2789,12 +2918,20 @@ struct living_flame_t : public evoker_spell_t
   {
     evoker_spell_t::execute();
 
+    
+    auto cr = current_resource();
+
     // Single child, update children to parent action on each precombat execute
 
     if ( is_precombat )
     {
       debug_cast<living_flame_damage_t*>( damage )->prepull_timespent = prepull_timespent;
       debug_cast<living_flame_heal_t*>( heal )->prepull_timespent     = prepull_timespent;
+    }
+
+    if ( !cast_heal )
+    {
+      p()->resource_gain( RESOURCE_MANA, cost() * mana_return, p()->gain.energizing_flame, this );
     }
 
     damage->execute_on_target( target );
@@ -4230,6 +4367,25 @@ void insight_of_naszuro( special_effect_t& effect )
   }
 }
 
+unsigned int evoker_t::specialization_aura_id()
+{
+  switch ( specialization() )
+  {
+    case EVOKER_DEVASTATION:
+      return spec.devastation->id();
+      break;
+    case EVOKER_PRESERVATION:
+      return spec.preservation->id();
+      break;
+    case EVOKER_AUGMENTATION:
+      return spec.augmentation->id();
+      break;
+    default:
+      return 356816;
+      break;
+  }
+}
+
 void evoker_t::init_action_list()
 {
   // 2022-08-07: Healing is not supported
@@ -4283,6 +4439,7 @@ void evoker_t::init_finished()
   if ( sim->player_no_pet_list.size() <= 5 )
   {
     close_as_clutchmates = true;
+    sim->print_debug( "{} Activating Close As Clutchmates", *this );
   }
 
   player_t::init_finished();
@@ -4375,6 +4532,7 @@ void evoker_t::init_gains()
 
   gain.eye_of_infinity      = get_gain( "Eye of Infinity" );
   gain.roar_of_exhilaration = get_gain( "Roar of Exhilaration" );
+  gain.energizing_flame = get_gain( "Energizing Flame" );
 }
 
 void evoker_t::init_procs()
@@ -4598,6 +4756,7 @@ void evoker_t::init_spells()
   spec.mastery              = find_mastery_spell( specialization() );
   spec.living_flame_damage  = find_spell( 361500 );
   spec.living_flame_heal    = find_spell( 361509 );
+  spec.energizing_flame     = find_spell( 400006 );
   spec.tempered_scales      = find_spell( 396571 );
   spec.emerald_blossom      = find_spell( 355913 );
   spec.emerald_blossom_heal = find_spell( 355916 );
