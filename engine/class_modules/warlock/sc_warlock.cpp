@@ -2092,6 +2092,22 @@ std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name
       } );
     } );
   }
+  else if ( name_str == "last_cast_igb_imps" )
+  {
+    return make_fn_expr( "last_cast_igb_imps", [ this ]() {
+      return warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
+        return pet->resources.current[ RESOURCE_ENERGY ] < 32 && pet->buffs.imp_gang_boss->check();
+      } );
+    } );
+  }
+  else if ( name_str == "two_cast_igb_imps" )
+  {
+    return make_fn_expr( "two_cast_igb_imps", [ this ]() {
+      return warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
+        return pet->resources.current[ RESOURCE_ENERGY ] < 48 && pet->buffs.imp_gang_boss->check();
+      } );
+    } );
+  }
   else if ( name_str == "igb_ratio" )
   {
     return make_fn_expr( "igb_ratio", [ this ]() {
@@ -2147,6 +2163,14 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     return create_pet_expression( name_str );
   }
   else if ( name_str == "two_cast_imps" )
+  {
+    return create_pet_expression( name_str );
+  }
+  else if ( name_str == "last_cast_igb_imps" )
+  {
+    return create_pet_expression( name_str );
+  }
+  else if ( name_str == "two_cast_igb_imps" )
   {
     return create_pet_expression( name_str );
   }
