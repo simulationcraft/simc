@@ -34,6 +34,7 @@ struct item_targetdata_initializer_t
 {
   target_specific_t<const special_effect_t> effects;
   target_specific_t<const spell_data_t> debuffs;
+  std::function<const spell_data_t*( player_t* )> debuff_fn;
   unsigned item_id;
   unsigned spell_id;
   std::vector<slot_e> slots_;
@@ -47,7 +48,8 @@ struct item_targetdata_initializer_t
   // esoteric functionality is needed
   virtual const special_effect_t* find_effect( player_t* player ) const;
 
-  bool is_active( player_t* player ) const { return find_effect( player ) != nullptr; }
+  // populates player-specific effect obj & debuff spell data, returns true if effect is found
+  bool init( player_t* player ) const;
 
   // Override to initialize the targetdata object.
   virtual void operator()( actor_target_data_t* ) const = 0;

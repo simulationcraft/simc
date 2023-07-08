@@ -737,7 +737,10 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
 {
   target_specific_t<action_t> bomb_actions;
 
-  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 ), bomb_actions( false ) {}
+  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 ), bomb_actions( false )
+  {
+    debuff_fn = [ s = spell_id ]( player_t* p ) { return p->find_spell( s )->effectN( 1 ).trigger(); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -758,21 +761,13 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
       }
     };
 
-    auto active = is_active( td->source );
-    const spell_data_t*& debuff = debuffs[ td->source ];
+    auto active = init( td->source );
     action_t*& bomb = bomb_actions[ td->source ];
-
-    if ( active )
-    {
-      if ( !debuff )
-        debuff = td->source->find_spell( 408675 );
-
-      if ( !bomb )
+    if ( active && !bomb )
         bomb = td->source->find_action( "dragonfire_bomb_st" );
-    }
 
-    td->debuff.dragonfire_bomb =
-        make_buff_fallback<dragonfire_bomb_debuff_t>( active, *td, "dragonfire_bomb", debuff, bomb );  // IT GONNA BLOW!
+    td->debuff.dragonfire_bomb = make_buff_fallback<dragonfire_bomb_debuff_t>(
+        active, *td, "dragonfire_bomb", debuffs[ td->source ], bomb );  // IT GONNA BLOW!
     td->debuff.dragonfire_bomb->reset();
   }
 };
@@ -1034,16 +1029,16 @@ void darkmoon_deck_inferno( special_effect_t& effect )
 
 struct awakening_rime_initializer_t : public item_targetdata_initializer_t
 {
-  awakening_rime_initializer_t() : item_targetdata_initializer_t( 386624 ) {}
+  awakening_rime_initializer_t() : item_targetdata_initializer_t( 386624 )
+  {
+    debuff_fn = [ s = spell_id ]( player_t* p ) { return p->find_spell( s )->effectN( 1 ).trigger(); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    bool active = is_active( td->source );
-    const spell_data_t*& debuff = debuffs[ td->source ];
-    if ( active && !debuff )
-      debuff = td->source->find_spell( 386623 );
+    bool active = init( td->source );
 
-    td->debuff.awakening_rime = make_buff_fallback( active, *td, "awakening_rime", debuff );
+    td->debuff.awakening_rime = make_buff_fallback( active, *td, "awakening_rime", debuffs[ td->source ] );
     td->debuff.awakening_rime->reset();
   }
 };
@@ -1239,16 +1234,16 @@ void conjured_chillglobe( special_effect_t& effect )
 
 struct skewering_cold_initializer_t : public item_targetdata_initializer_t
 {
-  skewering_cold_initializer_t() : item_targetdata_initializer_t( 383931 ) {}
+  skewering_cold_initializer_t() : item_targetdata_initializer_t( 383931 )
+  {
+    debuff_fn = [ s = spell_id ]( player_t* p ) { return p->find_spell( s )->effectN( 1 ).trigger(); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    bool active = is_active( td->source );
-    const spell_data_t*& debuff = debuffs[ td->source ];
-    if ( active && !debuff )
-      debuff = td->source->find_spell( spell_id )->effectN( 1 ).trigger();
+    bool active = init( td->source );
 
-    td->debuff.skewering_cold = make_buff_fallback( active, *td, "skewering_cold", debuff );
+    td->debuff.skewering_cold = make_buff_fallback( active, *td, "skewering_cold", debuffs[ td->source ] );
     td->debuff.skewering_cold->reset();
   }
 };
@@ -1671,16 +1666,16 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
 
 struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
 {
-  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
+  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 )
+  {
+    debuff_fn = []( player_t* p ) { return p->find_spell( 382428 ); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    bool active = is_active( td->source );
-    const spell_data_t*& debuff = debuffs[ td->source ];
-    if ( active && !debuff )
-      debuff = td->source->find_spell( 382428 );
+    bool active = init( td->source );
 
-    td->debuff.grudge = make_buff_fallback( active, *td, "grudge", debuff );
+    td->debuff.grudge = make_buff_fallback( active, *td, "grudge", debuffs[ td->source ] );
     td->debuff.grudge->reset();
   }
 };
@@ -3725,16 +3720,16 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
 {
   target_specific_t<action_t> damage_actions;
 
-  iceblood_deathsnare_initializer_t() : item_targetdata_initializer_t( 377455 ), damage_actions( false ) {}
+  iceblood_deathsnare_initializer_t() : item_targetdata_initializer_t( 377455 ), damage_actions( false )
+  {
+    debuff_fn = [ s = spell_id ]( player_t* p ) { return p->find_spell( s )->effectN( 3 ).trigger(); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    bool active = is_active( td->source );
-    const spell_data_t*& debuff = debuffs[ td->source ];
-    if ( active && !debuff )
-      debuff = td->source->find_spell( spell_id )->effectN( 3 ).trigger();
+    bool active = init( td->source );
 
-    td->debuff.crystalline_web = make_buff_fallback( active, *td, "crystalline_web", debuff );
+    td->debuff.crystalline_web = make_buff_fallback( active, *td, "crystalline_web", debuffs[ td->source ] );
     td->debuff.crystalline_web->reset();
 
     if ( !active )
@@ -5350,16 +5345,16 @@ void neltharax( special_effect_t& effect )
 
 struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 {
-  heavens_nemesis_initializer_t() : item_targetdata_initializer_t( 394928 ) {}
+  heavens_nemesis_initializer_t() : item_targetdata_initializer_t( 394928 )
+  {
+    debuff_fn = []( player_t* p ) { return p->find_spell( 397478 ); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    bool active = is_active( td->source );
-    const spell_data_t*& debuff = debuffs[ td->source ];
-    if ( active && !debuff )
-      debuff = td->source->find_spell( 397478 );
+    bool active = init( td->source );
 
-    td->debuff.heavens_nemesis = make_buff_fallback( active, *td, "heavens_nemesis_mark", debuff );
+    td->debuff.heavens_nemesis = make_buff_fallback( active, *td, "heavens_nemesis_mark", debuffs[ td->source ] );
     td->debuff.heavens_nemesis->reset();
   }
 };
@@ -6207,16 +6202,16 @@ void ever_decaying_spores( special_effect_t& effect )
 
 struct ever_decaying_spores_initializer_t : public item_targetdata_initializer_t
 {
-  ever_decaying_spores_initializer_t() : item_targetdata_initializer_t( 406244 ) {}
+  ever_decaying_spores_initializer_t() : item_targetdata_initializer_t( 406244 )
+  {
+    debuff_fn = []( player_t* p ) { return p->find_spell( 407087 ); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    bool active = is_active( td->source );
-    const spell_data_t*& debuff = debuffs[ td->source ];
-    if ( active && !debuff )
-      debuff = td->source->find_spell( 407087 );
+    bool active = init( td->source );
 
-    td->debuff.ever_decaying_spores = make_buff_fallback( active, *td, "ever_decaying_spores", debuff );
+    td->debuff.ever_decaying_spores = make_buff_fallback( active, *td, "ever_decaying_spores", debuffs[ td->source ] );
     td->debuff.ever_decaying_spores->reset();
   }
 };

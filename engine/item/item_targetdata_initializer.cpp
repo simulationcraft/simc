@@ -52,3 +52,16 @@ const special_effect_t* item_targetdata_initializer_t::find_effect( player_t* pl
 
   return eff;
 }
+
+bool item_targetdata_initializer_t::init( player_t* player ) const
+{
+  assert( debuff_fn );
+
+  if ( find_effect( player ) != nullptr )
+  {
+    debuffs[ player ] = debuff_fn( player );
+    return true;
+  }
+
+  return false;
+}
