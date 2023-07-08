@@ -1767,28 +1767,35 @@ double enemy_t::health_percentage() const
 
 timespan_t enemy_t::time_to_percent( double percent ) const
 {
+  // First check current health, considering fixed_health_percentage and initial_health_percentage
+  if ( health_percentage() <= percent )
+    return 0_ms;
+
   if ( !custom_health_timeline.empty() )
   {
+    double time = sim->current_time() / sim->expected_iteration_time;
     for ( std::size_t i = 0; i < custom_health_timeline.size() - 1; i++ )
     {
       const auto& left  = custom_health_timeline[ i ];
       const auto& right = custom_health_timeline[ i + 1 ];
+
+      if ( right.second < time )
+        continue;
 
       if ( percent < std::min( left.first, right.first ) || percent > std::max( left.first, right.first ) )
         continue;
 
       double intersect = left.first == right.first ? 0.0 : ( percent - left.first ) / ( right.first - left.first );
       double intersect_time = left.second + intersect * ( right.second - left.second );
+      if ( left.first != right.first && intersect_time < time )
+        continue;
+
       return std::max( 0_ms, intersect_time * sim->expected_iteration_time - sim->current_time() );
     }
 
     // No intersection found, health percentage will never occur
     return 2 * sim->expected_iteration_time;
   }
-
-  // First check current health, considering fixed_health_percentage and initial_health_percentage
-  if ( health_percentage() <= percent )
-    return timespan_t::zero();
 
   // time_to_pct_0, or time_to_die, can ignore fixed_health_percentage or initial_health_percentage
   if ( percent != 0 )
