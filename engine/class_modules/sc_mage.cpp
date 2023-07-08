@@ -2051,7 +2051,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.firestarter.ok() )
       return false;
 
-    return target->health_percentage() > p()->talents.firestarter->effectN( 1 ).base_value();
+    return target->health_percentage() >= p()->talents.firestarter->effectN( 1 ).base_value();
   }
 
   bool searing_touch_active( player_t* target ) const
@@ -2059,7 +2059,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.searing_touch.ok() )
       return false;
 
-    return target->health_percentage() < p()->talents.searing_touch->effectN( 1 ).base_value();
+    return target->health_percentage() <= p()->talents.searing_touch->effectN( 1 ).base_value();
   }
 
   bool improved_scorch_active( player_t* target ) const
@@ -2067,7 +2067,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.improved_scorch.ok() )
       return false;
 
-    return target->health_percentage() < p()->talents.improved_scorch->effectN( 2 ).base_value();
+    return target->health_percentage() <= p()->talents.improved_scorch->effectN( 2 ).base_value();
   }
 
   void trigger_firefall()
@@ -2704,7 +2704,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
 
-    if ( s->target->health_percentage() < p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
+    if ( s->target->health_percentage() <= p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent();
 
     return m;
@@ -5047,8 +5047,8 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     double m = hot_streak_spell_t::composite_da_multiplier( s );
 
-    if ( s->target->health_percentage() < p()->talents.controlled_destruction->effectN( 2 ).base_value()
-      || s->target->health_percentage() > p()->talents.controlled_destruction->effectN( 3 ).base_value() )
+    if ( s->target->health_percentage() <= p()->talents.controlled_destruction->effectN( 2 ).base_value()
+      || s->target->health_percentage() >= p()->talents.controlled_destruction->effectN( 3 ).base_value() )
     {
       m *= 1.0 + p()->talents.controlled_destruction->effectN( 1 ).percent();
     }
@@ -7098,7 +7098,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
       return make_fn_expr( name_str, [ &action, actual_pct, execute ]
       {
         double pct = action.get_expression_target()->health_percentage();
-        return execute ? pct < actual_pct : pct > actual_pct;
+        return execute ? pct <= actual_pct : pct >= actual_pct;
       } );
     }
 
