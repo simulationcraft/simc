@@ -337,36 +337,34 @@ struct potion_of_focused_resolve_t : public item_targetdata_initializer_t
 {
   potion_of_focused_resolve_t() : item_targetdata_initializer_t( 0, {} )
   {
+    debuff_fn = []( player_t* p ) { return p->find_spell( 298614 ); };
   }
 
   const special_effect_t* find_effect( player_t* player ) const override
   {
+    const special_effect_t*& eff = effects[ player ];
+    if ( eff )
+      return eff;
+
     auto it = range::find_if( player->special_effects,
                               []( const special_effect_t* effect ) { return effect->spell_id == 298317; } );
 
     if ( it != player->special_effects.end() )
-    {
-      return *it;
-    }
+      eff = *it;
 
-    return nullptr;
+    return eff;
   }
 
   // Create the choking brine debuff that is checked on enemy demise
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.focused_resolve = make_buff( *td, "focused_resolve" );
-      return;
-    }
-    assert( !td->debuff.focused_resolve );
+    bool active = init( td->source );
 
-    td->debuff.focused_resolve = make_buff( *td, "focused_resolve", td->source->find_spell( 298614 ) )
-                                     ->set_default_value( td->source->find_spell( 298614 )->effectN( 1 ).percent() );
-
+    td->debuff.focused_resolve = make_buff_fallback( active, *td, "focused_resolve", debuffs[ td->source ] );
     td->debuff.focused_resolve->reset();
+
+    if ( active )
+      td->debuff.focused_resolve->set_default_value_from_effect( 1 );
   }
 };
 
@@ -1165,19 +1163,21 @@ struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
 {
   deadeye_spyglass_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {}
+  {
+    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.dead_ahead = make_buff( *td, "dead_ahead_debuff" );
+    bool active = init( td->source );
+
+    td->debuff.dead_ahead = make_buff_fallback( active, *td, "dead_ahead_debuff", debuffs[ td->source ] );
+    td->debuff.dead_ahead->set_activated( false )->reset();
+
+    if ( !active )
       return;
-    }
 
-    assert( !td->debuff.dead_ahead );
-
+    const special_effect_t* effect = find_effect( td->source );
     special_effect_t* effect2 = new special_effect_t( effect->item );
     effect2->type             = SPECIAL_EFFECT_EQUIP;
     effect2->source           = SPECIAL_EFFECT_SOURCE_ITEM;
@@ -1188,10 +1188,7 @@ struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
     callback->initialize();
     callback->deactivate();
 
-    td->debuff.dead_ahead = make_buff( *td, "dead_ahead_debuff", effect->trigger() )
-                                ->set_activated( false )
-                                ->set_stack_change_callback( util::callback_buff_activator( callback ) );
-    td->debuff.dead_ahead->reset();
+    td->debuff.dead_ahead->set_stack_change_callback( util::callback_buff_activator( callback ) );
   }
 };
 
@@ -1533,21 +1530,17 @@ struct briny_barnacle_constructor_t : public item_targetdata_initializer_t
 {
   briny_barnacle_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {}
+  {
+    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
+  }
 
   // Create the choking brine debuff that is checked on enemy demise
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.choking_brine = make_buff( *td, "choking_brine_debuff" );
-      return;
-    }
-    assert( !td->debuff.choking_brine );
+    bool active = init( td->source );
 
-    td->debuff.choking_brine = make_buff( *td, "choking_brine_debuff", effect->trigger() )->set_activated( false );
-    td->debuff.choking_brine->reset();
+    td->debuff.choking_brine = make_buff_fallback( active, *td, "choking_brine_debuff", debuffs[ td->source ] );
+    td->debuff.choking_brine->set_activated( false )->reset();
   }
 };
 
@@ -1978,18 +1971,21 @@ struct syringe_of_bloodborne_infirmity_constructor_t : public item_targetdata_in
 {
   syringe_of_bloodborne_infirmity_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {}
+  {
+    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.wasting_infection = make_buff( *td, "wasting_infection_debuff" );
-      return;
-    }
-    assert( !td->debuff.wasting_infection );
+    bool active = init( td->source );
 
+    td->debuff.wasting_infection = make_buff_fallback( active, *td, "wasting_infection_debuff", debuffs[ td->source ] );
+    td->debuff.wasting_infection->set_activated( false )->reset();
+
+    if ( !active )
+      return;
+
+    const special_effect_t* effect = find_effect( td->source );
     special_effect_t* effect2 = new special_effect_t( effect->item );
     effect2->type             = SPECIAL_EFFECT_EQUIP;
     effect2->source           = SPECIAL_EFFECT_SOURCE_ITEM;
@@ -2000,10 +1996,7 @@ struct syringe_of_bloodborne_infirmity_constructor_t : public item_targetdata_in
     callback->initialize();
     callback->deactivate();
 
-    td->debuff.wasting_infection = make_buff( *td, "wasting_infection_debuff", effect->trigger() )
-                                       ->set_activated( false )
-                                       ->set_stack_change_callback( util::callback_buff_activator( callback ) );
-    td->debuff.wasting_infection->reset();
+    td->debuff.wasting_infection->set_stack_change_callback( util::callback_buff_activator( callback ) );
   }
 };
 
@@ -2578,21 +2571,17 @@ struct everchill_anchor_constructor_t : public item_targetdata_initializer_t
 {
   everchill_anchor_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {}
+  {
+    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
+  }
 
   // Create the everchill debuff to handle trinket icd
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.everchill = make_buff( *td, "everchill_debuff" );
-      return;
-    }
-    assert( !td->debuff.everchill );
+    bool active = init( td->source );
 
-    td->debuff.everchill = make_buff( *td, "everchill_debuff", effect->trigger() )->set_activated( false );
-    td->debuff.everchill->reset();
+    td->debuff.everchill = make_buff_fallback( active, *td, "everchill_debuff", debuffs[ td->source ] );
+    td->debuff.everchill->set_activated( false )->reset();
   }
 };
 
@@ -3454,34 +3443,37 @@ struct luminous_algae_constructor_t : public item_targetdata_initializer_t
 {
   luminous_algae_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {}
+  {
+    debuff_fn = [ this ]( player_t * p ) { return find_effect( p )->trigger(); };
+  }
 
   const special_effect_t* find_effect( player_t* player ) const override
   {
+    const special_effect_t*& eff = effects[ player ];
+    if ( eff )
+      return eff;
+
     auto it = range::find_if( player->special_effects,
                               []( const special_effect_t* effect ) { return effect->spell_id == 302776; } );
 
     if ( it != player->special_effects.end() )
-      return *it;
+      eff = *it;
 
-    return nullptr;
+    return eff;
   }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.luminous_algae = make_buff( *td, "luminous_algae_debuff" );
-      return;
-    }
-    assert( !td->debuff.luminous_algae );
+    bool active = init ( td->source );
 
-    td->debuff.luminous_algae = make_buff( *td, "luminous_algae_debuff", effect->trigger() );
-    td->debuff.luminous_algae->set_max_stack( 1 );  // Data says 999, but logs show only 1 stack
-    td->debuff.luminous_algae->set_default_value( effect->trigger()->effectN( 1 ).percent() );
-    td->debuff.luminous_algae->set_activated( false );
-    td->debuff.luminous_algae->reset();
+    td->debuff.luminous_algae = make_buff_fallback( active, *td, "luminous_algae_debuff", debuffs[ td->source ] );
+    td->debuff.luminous_algae->set_activated( false )->reset();
+
+    if ( active )
+    {
+      td->debuff.luminous_algae->set_max_stack( 1 )  // Data says 999, but logs show only 1 stack
+        ->set_default_value_from_effect( 1, 0.01 );
+    }
   }
 };
 
@@ -4139,41 +4131,44 @@ void items::shiver_venom_lance( special_effect_t& effect )
  */
 struct razor_coral_constructor_t : public item_targetdata_initializer_t
 {
+  target_specific_t<buff_t> tracker_buffs;
+
   razor_coral_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s )
-  {}
+    : item_targetdata_initializer_t( iid, s ), tracker_buffs( false )
+  {
+    debuff_fn = []( player_t* p ) { return p->find_spell( 303568 ); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.razor_coral = make_buff( *td, "razor_coral_debuff" );
-      return;
-    }
-    assert( !td->debuff.razor_coral );
+    bool active = init( td->source );
 
-    td->debuff.razor_coral = make_buff( *td, "razor_coral_debuff", td->source->find_spell( 303568 ) )
-      ->set_activated( false )
-      ->set_stack_change_callback( [ td ]( buff_t*, int old_, int new_ ) {
+    td->debuff.razor_coral = make_buff_fallback( active, *td, "razor_coral_debuff", debuffs[ td->source ] );
+    td->debuff.razor_coral->set_activated( false )->reset();
+
+    if ( active )
+    {
+      buff_t*& tracker = tracker_buffs[ td->source ];
+      if ( !tracker )
+        tracker = buff_t::find( td->source, "razor_coral_stack_tracker" );
+
+      td->debuff.razor_coral->set_stack_change_callback( [ td, tracker ]( buff_t*, int old_, int new_ ) {
         // buff on expiration, including demise
         if ( !new_ )
         {
           // Increment the stack tracker buff then multiply the debuff stacks by the player buff stacks
           // This overwrites any previous crit value, so ensure we expire the existing buff first
           int buff_stacks = 1;
-          buff_t* stack_tracker_buff = buff_t::find( td->source, "razor_coral_stack_tracker" );
-          if ( stack_tracker_buff )
+          if ( tracker )
           {
-            stack_tracker_buff->trigger();
-            buff_stacks = stack_tracker_buff->check();
+            tracker->trigger();
+            buff_stacks = tracker->check();
           }
           td->source->buffs.razor_coral->expire();
           td->source->buffs.razor_coral->trigger( old_ * buff_stacks );
         }
       } );
-
-    td->debuff.razor_coral->reset();
+    }
   }
 };
 
@@ -4303,22 +4298,19 @@ struct conductive_ink_constructor_t : public item_targetdata_initializer_t
 {
   conductive_ink_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {}
+  {
+    debuff_fn = []( player_t* p ) { return p->find_spell( 302565 ); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.conductive_ink = make_buff( *td, "conductive_ink_debuff" );
-      return;
-    }
-    assert( !td->debuff.conductive_ink );
+    bool active = init( td->source );
 
-    td->debuff.conductive_ink = make_buff( *td, "conductive_ink_debuff", td->source->find_spell( 302565 ) )
-                                    ->set_activated( false )
-                                    ->set_max_stack( 255 );
-    td->debuff.conductive_ink->reset();
+    td->debuff.conductive_ink = make_buff_fallback( active, *td, "conductive_ink_debuff", debuffs[ td->source ] );
+    td->debuff.conductive_ink->set_activated( false )->reset();
+
+    if ( active )
+      td->debuff.conductive_ink->set_max_stack( 255 );
   }
 };
 
@@ -5733,31 +5725,34 @@ struct shredded_psyche_t : public generic_proc_t
 
 struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
 {
+  target_specific_t<action_t> damage_actions;
+
   psyche_shredder_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s )
-  {}
+    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
+  {
+    debuff_fn = []( player_t* p ) { return p->find_spell( 313663 ); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td->source );
-    if ( !effect )
-    {
-      td->debuff.psyche_shredder = make_buff( *td, "psyche_shredder_debuff" );
-      return;
-    }
-    assert( !td->debuff.psyche_shredder );
+    bool active = init( td->source );
 
-    td->debuff.psyche_shredder = make_buff( *td, "psyche_shredder_debuff", td->source->find_spell( 313663 ) );
+    td->debuff.psyche_shredder = make_buff_fallback( active, *td, "psyche_shredder_debuff", debuffs[ td->source ] );
     td->debuff.psyche_shredder->reset();
 
-    auto damage_spell = td->source->find_action( "shredded_psyche" );
+    if ( !active )
+      return;
+
+    action_t*& damage = damage_actions[ td->source ];
+    if ( !damage )
+      damage = td->source->find_action( "shredded_psyche" );
 
     auto cb_driver      = new special_effect_t( td->source );
     cb_driver->name_str = "shredded_psyche_driver";
     cb_driver->spell_id = 313627;
     td->source->special_effects.push_back( cb_driver );
 
-    auto callback = new shredded_psyche_cb_t( *cb_driver, damage_spell, td->target );
+    auto callback = new shredded_psyche_cb_t( *cb_driver, damage, td->target );
     callback->initialize();
     callback->deactivate();
     td->debuff.psyche_shredder->set_stack_change_callback( util::callback_buff_activator( callback ) );
