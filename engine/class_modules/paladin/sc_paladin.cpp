@@ -3560,7 +3560,7 @@ public:
   paladin_report_t( paladin_t& player ) : p( player )
   {
   }
-  void html_customsection( report::sc_html_stream& os ) override
+  void html_customsection( report::sc_html_stream& /* os */ ) override
   {
   }
 
