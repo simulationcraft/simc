@@ -3757,7 +3757,10 @@ struct the_hunt_t : public demon_hunter_spell_t
 
     p()->set_out_of_range( timespan_t::zero() ); // Cancel all other movement
 
-    p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
+    if ( p()->specialization() != DEMON_HUNTER_VENGEANCE )
+    {
+      p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
+    }
   }
 
   timespan_t travel_time() const override
@@ -5336,7 +5339,10 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
     p()->buff.vengeful_retreat_move->trigger();
 
-    p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
+    if ( p()->specialization() != DEMON_HUNTER_VENGEANCE )
+    {
+      p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
+    }
   }
 
   bool ready() override
