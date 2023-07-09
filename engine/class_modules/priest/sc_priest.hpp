@@ -102,6 +102,7 @@ public:
     propagate_const<buff_t*> desperate_prayer;
     absorb_buff_t* power_word_shield;
     propagate_const<buff_t*> fade;
+    propagate_const<buff_t*> levitate;
 
     // Talents
     propagate_const<buff_t*> twist_of_fate;

@@ -79,6 +79,7 @@ struct expiation_t final : public priest_spell_t
     }
   }
 };
+
 // ==========================================================================
 // Mind Blast
 // ==========================================================================
@@ -111,6 +112,7 @@ public:
       child_expiation->background = true;
     }
 
+    // Extra charge of Mind Blast
     apply_affecting_aura( p.talents.shadow.thought_harvester );
   }
 
@@ -243,6 +245,7 @@ public:
     priest_spell_t::update_ready( cd_duration );
   }
 };
+
 // ==========================================================================
 // Angelic Feather
 // ==========================================================================
@@ -279,7 +282,6 @@ struct angelic_feather_t final : public priest_spell_t
 // ==========================================================================
 // Divine Star
 // Base Spell, used for both heal and damage spell.
-// TODO: add reduced healing beyond 6 targets
 // ==========================================================================
 struct divine_star_spell_t final : public priest_spell_t
 {
@@ -329,6 +331,8 @@ struct divine_star_heal_t final : public priest_heal_t
     : priest_heal_t( n, p, s ), return_spell( ( is_return_spell ? nullptr : new divine_star_heal_t( n, p, s, true ) ) )
   {
     aoe = -1;
+
+    reduced_aoe_targets = p.talents.divine_star->effectN( 1 ).base_value();
 
     proc = background = true;
   }
@@ -398,7 +402,6 @@ private:
 // ==========================================================================
 // Halo
 // Base Spell, used for both damage and heal spell.
-// TODO: add reduced healing beyond 5 targets
 // ==========================================================================
 struct halo_spell_t final : public priest_spell_t
 {
@@ -428,6 +431,8 @@ struct halo_heal_t final : public priest_heal_t
     radius       = data().max_range();
     range        = 0;
     travel_speed = 15;  // Rough estimate, 2021-01-03
+
+    reduced_aoe_targets = p.talents.halo->effectN( 1 ).base_value();
   }
 };
 
@@ -480,7 +485,16 @@ struct levitate_t final : public priest_spell_t
     : priest_spell_t( "levitate", p, p.find_class_spell( "Levitate" ) )
   {
     parse_options( options_str );
+
     ignore_false_positive = true;
+    harmful               = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().buffs.levitate->trigger();
   }
 };
 
@@ -504,7 +518,9 @@ struct power_word_fortitude_t final : public priest_spell_t
     priest_spell_t::execute();
 
     if ( !sim->overrides.power_word_fortitude )
+    {
       sim->auras.power_word_fortitude->trigger();
+    }
   }
 };
 
@@ -2256,6 +2272,7 @@ void priest_t::create_buffs()
   buffs.desperate_prayer  = make_buff<buffs::desperate_prayer_t>( *this );
   buffs.power_word_shield = new buffs::power_word_shield_buff_t( this );
   buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 1 );
+  buffs.levitate          = make_buff( this, "levitate", find_spell( 111759 ) )->set_duration( timespan_t::zero() );
 
   // Shared talent buffs
   // Does not show damage value on the buff spelldata, that is only found on the talent
@@ -2332,7 +2349,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.benevolence );
 
   // Shadow Talents
-  action.apply_affecting_aura( talents.shadow.malediction );
+  action.apply_affecting_aura( talents.shadow.malediction );  // Void Torrent CDR
   action.apply_affecting_aura( talents.shadow.mastermind );
   action.apply_affecting_aura( talents.shadow.mental_decay );
 
