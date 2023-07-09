@@ -886,11 +886,9 @@ struct fury_of_the_burning_sun_constructor_t : public item_targetdata_initialize
 {
   target_specific_t<action_t> damage_actions;
 
-  fury_of_the_burning_sun_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
-    item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->driver()->effectN ( 1 ).trigger(); };
-  }
+  fury_of_the_burning_sun_constructor_t( unsigned iid, ::util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -900,7 +898,7 @@ struct fury_of_the_burning_sun_constructor_t : public item_targetdata_initialize
       damage = td->source->find_action( "solar_collapse_damage" );
 
     td->debuff.solar_collapse = make_buff_fallback<solar_collapse_t>(
-        active, *td, "solar_collapse", *find_effect( td->source ), debuffs[ td->source ], damage );
+        active, *td, "solar_collapse", *effect( td ), debuffs[ td->source ], damage );
     td->debuff.solar_collapse->reset();
   }
 };
@@ -1015,9 +1013,7 @@ struct mrrgrias_favor_constructor_t : public item_targetdata_initializer_t
 
   mrrgrias_favor_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->driver()->effectN( 1 ).trigger(); };
-  }
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -1027,7 +1023,7 @@ struct mrrgrias_favor_constructor_t : public item_targetdata_initializer_t
       damage = td->source->find_action( "thunder_ritual_damage" );
 
     td->debuff.thunder_ritual = make_buff_fallback<thunder_ritual_t>(
-        active, *td, "thunder_ritual", *find_effect( td->source ), debuffs[ td->source ], damage );
+        active, *td, "thunder_ritual", *effect( td ), debuffs[ td->source ], damage );
     td->debuff.thunder_ritual->reset();
   }
 };
@@ -1841,15 +1837,15 @@ struct shadow_blades_constructor_t : public item_targetdata_initializer_t
   shadow_blades_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   {
-    debuff_fn = []( player_t* p ) { return p->find_spell( 253265 ); };
+    debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 253265 ); };
   }
 
   void operator()( actor_target_data_t* td ) const override
   {
     bool active = init( td->source );
 
-    td->debuff.shadow_blades = make_buff_fallback( active, *td, "shadow_blades_debuff", debuffs[ td->source ],
-                                                   find_effect( td->source )->item );
+    td->debuff.shadow_blades =
+        make_buff_fallback( active, *td, "shadow_blades_debuff", debuffs[ td->source ], effect( td )->item );
     td->debuff.shadow_blades->reset();
 
     if ( active )
@@ -2646,9 +2642,7 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
 
   spiked_counterweight_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
-  }
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -2664,25 +2658,26 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
     if ( !damage )
       damage = td->source->find_action( "brutal_haymaker_vulnerability" );
 
-    const special_effect_t* effect = find_effect( td->source );
+    auto eff = effect( td );
     // Vulnerability: Deal x% of the damage dealt to the debuffed target, up to the limit.
 
     // Create effect for the callback.
-    special_effect_t* effect2 = new special_effect_t( effect->item );
+    special_effect_t* effect2 = new special_effect_t( eff->item );
     effect2->source = SPECIAL_EFFECT_SOURCE_ITEM;
     effect2->name_str = "brutal_haymaker_accumulator";
     effect2->proc_chance_ = 1.0;
     effect2->proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
     effect2->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-    effect->player->special_effects.push_back( effect2 );
+    eff->player->special_effects.push_back( effect2 );
 
     // Create callback. We'll enable this callback whenever the debuff is active.
-    haymaker_driver_t* callback = new haymaker_driver_t( *effect2, effect->trigger()->effectN( 2 ).percent(), damage );
+    haymaker_driver_t* callback = new haymaker_driver_t( *effect2, eff->trigger()->effectN( 2 ).percent(), damage );
     callback->initialize();
     callback->deactivate();
 
     // Create debuff with stack callback.
     td->debuff.brutal_haymaker
+        ->set_default_value( eff->driver()->effectN( 1 ).trigger()->effectN( 3 ).average( eff->item ) )
         ->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ ) {
           if ( old == 0 )
           {
@@ -2691,8 +2686,7 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
           }
           else if ( new_ == 0 )
             callback->deactivate();
-        } )
-        ->set_default_value( effect->driver()->effectN( 1 ).trigger()->effectN( 3 ).average( effect->item ) );
+        } );
 
     // Set pointer to debuff so the callback can do its thing.
     callback->debuff = td->debuff.brutal_haymaker;
@@ -3702,9 +3696,7 @@ struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
 
   bough_of_corruption_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->driver()->effectN( 1 ).trigger(); };
-  }
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -3714,7 +3706,7 @@ struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
       damage = td->source->find_action( "poisoned_dreams_damage" );
 
     td->debuff.poisoned_dreams = make_buff_fallback<poisoned_dreams_t>(
-        active, *td, "poisoned_dreams", *find_effect( td->source ), debuffs[ td->source ], damage );
+        active, *td, "poisoned_dreams", *effect( td ), debuffs[ td->source ], damage );
     td->debuff.poisoned_dreams->reset();
   }
 };
@@ -4164,7 +4156,7 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
   figurehead_of_the_naglfar_constructor_t( unsigned iid, ::util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
   {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->driver(); };
+    debuff_fn = []( player_t*, const special_effect_t* e ) { return e->driver(); };
   }
 
   void operator()( actor_target_data_t* td ) const override
@@ -4177,16 +4169,16 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
     if ( !active )
       return;
 
-    const special_effect_t* effect = find_effect( td->source );
+    auto eff = effect( td );
 
     // Create special effect for the damage transferral.
-    special_effect_t* effect2 = new special_effect_t( effect->item );
+    special_effect_t* effect2 = new special_effect_t( eff->item );
     effect2->source = SPECIAL_EFFECT_SOURCE_ITEM;
     effect2->name_str = "taint_of_the_sea_driver";
     effect2->proc_chance_ = 1.0;
     effect2->proc_flags_ = PF_ALL_DAMAGE;
     effect2->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-    effect->player->special_effects.push_back( effect2 );
+    eff->player->special_effects.push_back( effect2 );
 
     // Create callback; we'll enable this callback whenever the debuff is active.
     taint_of_the_sea_driver_t* callback = new taint_of_the_sea_driver_t( *effect2 );
@@ -4194,7 +4186,7 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
     callback->deactivate();
 
     td->debuff.taint_of_the_sea
-        ->set_default_value( effect->driver()->effectN( 2 ).trigger()->effectN( 2 ).average( effect->item ) )
+        ->set_default_value( eff->driver()->effectN( 2 ).trigger()->effectN( 2 ).average( eff->item ) )
         ->set_stack_change_callback( [ callback ]( buff_t* b, int old, int new_ ) {
           if ( old == 0 )
           {
@@ -4767,9 +4759,7 @@ struct portable_manacracker_constructor_t : public item_targetdata_initializer_t
 
   portable_manacracker_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
-  }
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -4779,8 +4769,8 @@ struct portable_manacracker_constructor_t : public item_targetdata_initializer_t
     if ( active && !damage )
       damage = td->source->find_action( "withering_consupmtion" );
 
-    td->debuff.volatile_magic = make_buff_fallback<volatile_magic_debuff_t>( active, *td, "withering_consumption",
-                                                                             debuffs[ td->source ], damage );
+    td->debuff.volatile_magic = make_buff_fallback<volatile_magic_debuff_t>(
+        active, *td, "withering_consumption", debuffs[ td->source ], damage );
     td->debuff.volatile_magic->reset();
   }
 };
@@ -4953,9 +4943,7 @@ struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
 
   wriggling_sinew_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s ), damage_actions( false )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
-  }
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -4966,7 +4954,7 @@ struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
       damage = td->source->find_action( "maddening_whispers" );
 
     td->debuff.maddening_whispers = make_buff_fallback<maddening_whispers_debuff_t>(
-        active, *td, "maddening_whispers", *find_effect( td->source ), debuffs[ td->source ], damage );
+        active, *td, "maddening_whispers", *effect( td ), debuffs[ td->source ], damage );
     td->debuff.maddening_whispers->reset();
   }
 };

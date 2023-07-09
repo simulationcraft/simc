@@ -2470,8 +2470,24 @@ void register_soulbind_special_effect( unsigned spell_id, const custom_cb_t& ini
       },
       fallback );
 }
-
 }  // namespace
+
+soulbind_targetdata_initializer_t::soulbind_targetdata_initializer_t( std::string_view n, unsigned id )
+  : targetdata_initializer_t(), name( n )
+{
+  active_fn = []( const spell_data_t* s ) { return s->ok(); };
+  debuff_fn = [ id ]( player_t* p, const spell_data_t* ) { return p->find_spell( id ); };
+}
+
+const spell_data_t* soulbind_targetdata_initializer_t::find( player_t* p ) const
+{
+  return p->find_soulbind_spell( name );
+}
+
+inline const spell_data_t* soulbind_targetdata_initializer_t::soulbind( actor_target_data_t* td ) const
+{
+  return data[ td->source ];
+}
 
 void register_special_effects()
 {
@@ -2608,44 +2624,10 @@ void initialize_soulbinds( player_t* player )
 
 void register_target_data_initializers( sim_t* sim )
 {
-  struct soulbind_targetdata_initializer_t
-  {
-    target_specific_t<const spell_data_t> soulbinds;
-    target_specific_t<const spell_data_t> debuffs;
-    std::function<const spell_data_t*( player_t* )> debuff_fn;
-    std::string name;
-
-    soulbind_targetdata_initializer_t( std::string_view n ) : soulbinds( false ), debuffs( false ), name( n ) {}
-
-    virtual ~soulbind_targetdata_initializer_t() = default;
-
-    bool init( player_t* p ) const
-    {
-      assert( debuff_fn );
-
-      const spell_data_t*& soulbind = soulbinds[ p ];
-      if ( !soulbind )
-        soulbind = p->find_soulbind_spell( name );
-
-      if ( soulbind->ok() )
-      {
-        debuffs[ p ] = debuff_fn( p );
-        return true;
-      }
-
-      return false;
-    }
-
-    virtual void operator()( actor_target_data_t* ) const = 0;
-  };
-
   // Dauntless Duelist
   struct dauntless_duelist_init_t : public soulbind_targetdata_initializer_t
   {
-    dauntless_duelist_init_t() : soulbind_targetdata_initializer_t( "Dauntless Duelist" )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 331934 ); };
-    }
+    dauntless_duelist_init_t() : soulbind_targetdata_initializer_t( "Dauntless Duelist", 331934 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -2664,10 +2646,7 @@ void register_target_data_initializers( sim_t* sim )
   // Plaguey's Preemptive Strike
   struct plagueys_preemptive_strike_init_t : public soulbind_targetdata_initializer_t
   {
-    plagueys_preemptive_strike_init_t() : soulbind_targetdata_initializer_t( "Plaguey's Preemptive Strike" )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 323416 ); };
-    }
+    plagueys_preemptive_strike_init_t() : soulbind_targetdata_initializer_t( "Plaguey's Preemptive Strike", 323416 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -2687,10 +2666,7 @@ void register_target_data_initializers( sim_t* sim )
   // Dream Delver
   struct dream_delver_init_t : public soulbind_targetdata_initializer_t
   {
-    dream_delver_init_t() : soulbind_targetdata_initializer_t( "Dream Delver" )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 353354 ); };
-    }
+    dream_delver_init_t() : soulbind_targetdata_initializer_t( "Dream Delver", 353354 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -2709,10 +2685,7 @@ void register_target_data_initializers( sim_t* sim )
   // Carver's Eye dummy buff to track cooldown
   struct carvers_eye_init_t : public soulbind_targetdata_initializer_t
   {
-    carvers_eye_init_t() : soulbind_targetdata_initializer_t( "Carver's Eye" )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 350899 ); };
-    }
+    carvers_eye_init_t() : soulbind_targetdata_initializer_t( "Carver's Eye", 350899 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -2724,7 +2697,7 @@ void register_target_data_initializers( sim_t* sim )
       if ( active )
       {
         td->debuff.carvers_eye_debuff->set_duration(
-            timespan_t::from_seconds( soulbinds[ td->source ]->effectN( 2 ).base_value() ) );
+            timespan_t::from_seconds( soulbind( td )->effectN( 2 ).base_value() ) );
       }
     }
   };
@@ -2736,10 +2709,9 @@ void register_target_data_initializers( sim_t* sim )
   {
     target_specific_t<action_callback_t> callbacks;
 
-    soulglow_spectrometer_init_t() : soulbind_targetdata_initializer_t( "Soulglow Spectrometer" ), callbacks( false )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 352939 ); };
-    }
+    soulglow_spectrometer_init_t()
+      : soulbind_targetdata_initializer_t( "Soulglow Spectrometer", 352939 ), callbacks( false )
+    {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -2756,10 +2728,12 @@ void register_target_data_initializers( sim_t* sim )
       action_callback_t*& cb = callbacks[ td->source ];
       if ( !cb )
       {
-        cb = *( range::find_if( td->source->callbacks.all_callbacks,
-                [ id = soulbinds[ td->source ]->id() ]( action_callback_t* t ) {
-                  return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == id;
-                } ) );
+        auto it =
+            range::find_if( td->source->callbacks.all_callbacks, [ id = soulbind( td )->id() ]( action_callback_t* t ) {
+              return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == id;
+            } );
+        if ( it != td->source->callbacks.all_callbacks.end() )
+          cb = *it;
       }
 
       // When an enemy dies or the debuff expires allow the user to proc the debuff again on the next target
@@ -2779,10 +2753,7 @@ void register_target_data_initializers( sim_t* sim )
   // Kevin's Wrath
   struct kevins_wrath_init_t : public soulbind_targetdata_initializer_t
   {
-    kevins_wrath_init_t() : soulbind_targetdata_initializer_t( "Kevin's Oozeling" )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 352528 ); };
-    }
+    kevins_wrath_init_t() : soulbind_targetdata_initializer_t( "Kevin's Oozeling", 352528 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -2801,10 +2772,7 @@ void register_target_data_initializers( sim_t* sim )
   // Wild Hunt Strategem
   struct wild_hunt_strategem_init_t : public soulbind_targetdata_initializer_t
   {
-    wild_hunt_strategem_init_t() : soulbind_targetdata_initializer_t( "Wild Hunt Strategem" )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 353254 ); };
-    }
+    wild_hunt_strategem_init_t() : soulbind_targetdata_initializer_t( "Wild Hunt Strategem", 353254 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {

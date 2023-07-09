@@ -5,23 +5,21 @@
 
 #include "unique_gear_shadowlands.hpp"
 
-#include "sim/sim.hpp"
-
-#include "sim/cooldown.hpp"
+#include "action/dot.hpp"
+#include "actor_target_data.hpp"
+#include "buff/buff.hpp"
+#include "class_modules/monk/sc_monk.hpp"
+#include "darkmoon_deck.hpp"
+#include "item/item.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
-#include "buff/buff.hpp"
-#include "action/dot.hpp"
-#include "item/item.hpp"
-#include "class_modules/monk/sc_monk.hpp"
-
-#include "actor_target_data.hpp"
-#include "darkmoon_deck.hpp"
+#include "report/decorators.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
-#include "report/decorators.hpp"
 #include <dbc/covenant_data.hpp>
 
 namespace unique_gear::shadowlands
@@ -6181,10 +6179,7 @@ void register_target_data_initializers( sim_t& sim )
   // Sinful Revelation
   struct sinful_revelation_init_t : public item_targetdata_initializer_t
   {
-    sinful_revelation_init_t() : item_targetdata_initializer_t( 324250 )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 324260 ); };
-    }
+    sinful_revelation_init_t() : item_targetdata_initializer_t( 324250 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -6204,10 +6199,7 @@ void register_target_data_initializers( sim_t& sim )
   // Darkmoon Deck: Putrescence
   struct putrid_burst_init_t : public item_targetdata_initializer_t
   {
-    putrid_burst_init_t() : item_targetdata_initializer_t( 347047 )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 334058 ); };
-    }
+    putrid_burst_init_t() : item_targetdata_initializer_t( 347047 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -6226,10 +6218,7 @@ void register_target_data_initializers( sim_t& sim )
   // Memory of Past Sins
   struct shattered_psyche_init_t : public item_targetdata_initializer_t
   {
-    shattered_psyche_init_t() : item_targetdata_initializer_t( 344662 )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 344663 ); };
-    }
+    shattered_psyche_init_t() : item_targetdata_initializer_t( 344662, 344663 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -6248,10 +6237,7 @@ void register_target_data_initializers( sim_t& sim )
   // Relic of the Frozen Wastes
   struct frozen_heart_init_t : public item_targetdata_initializer_t
   {
-    frozen_heart_init_t() : item_targetdata_initializer_t( 355301 )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 355759 ); };
-    }
+    frozen_heart_init_t() : item_targetdata_initializer_t( 355301 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -6269,28 +6255,20 @@ void register_target_data_initializers( sim_t& sim )
   {
     volatile_satchel_init_t() : item_targetdata_initializer_t( 367901 )
     {
-      debuff_fn = [ this ]( player_t* p ) {
-        if ( find_effect( p )->spell_id == 351679 )
+      debuff_fn = [ this ]( player_t* p, const special_effect_t* e ) {
+        if ( e->spell_id == 351679 )
           return p->find_spell( 351682 );
         else
           return p->find_spell( 367902 );
       };
     }
 
-    const special_effect_t* find_effect( player_t* p ) const override
+    const special_effect_t* find( player_t* p ) const override
     {
-      const special_effect_t*& eff = effects[ p ];
-      if ( eff )
+      if ( auto eff = unique_gear::find_special_effect( p, 351679 ) )
         return eff;
-
-      if ( p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
-        return nullptr;
-
-      eff = unique_gear::find_special_effect( p, 351679 );
-      if ( eff )
-        return eff;
-
-      return unique_gear::find_special_effect( p, 367901 );
+      else
+        return unique_gear::find_special_effect( p, 367901 );
     }
 
     void operator()( actor_target_data_t* td ) const override
@@ -6307,10 +6285,7 @@ void register_target_data_initializers( sim_t& sim )
   // Bells of the Endless Feast
   struct scent_of_souls_init_t : public item_targetdata_initializer_t
   {
-    scent_of_souls_init_t() : item_targetdata_initializer_t( 367336 )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 368585 ); };
-    }
+    scent_of_souls_init_t() : item_targetdata_initializer_t( 367336 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -6330,10 +6305,7 @@ void register_target_data_initializers( sim_t& sim )
   // Chains of Domination
   struct chains_of_domination_init_t : public item_targetdata_initializer_t
   {
-    chains_of_domination_init_t() : item_targetdata_initializer_t( 367931 )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 367931 ); };
-    }
+    chains_of_domination_init_t() : item_targetdata_initializer_t( 367931, 367931 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {
@@ -6353,24 +6325,14 @@ void register_target_data_initializers( sim_t& sim )
   // Shard of Dyz (Scouring Touch debuff)
   struct shard_of_dyz_init_t : public item_targetdata_initializer_t
   {
-    shard_of_dyz_init_t() : item_targetdata_initializer_t( 357076 )
+    shard_of_dyz_init_t() : item_targetdata_initializer_t( 357076 ) {}
+
+    const special_effect_t* find( player_t* p ) const override
     {
-      debuff_fn = []( player_t *p ) { return p->find_spell( 356329 ); };
-    }
-
-    const special_effect_t* find_effect( player_t* p ) const override
-    {
-      const special_effect_t*& eff = effects[ p ];
-      if ( eff )
-        return eff;
-
-      if ( p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
-        return nullptr;
-
-      eff = unique_gear::find_special_effect( p, 355755 ); if ( eff ) return eff;
-      eff = unique_gear::find_special_effect( p, 357037 ); if ( eff ) return eff;
-      eff = unique_gear::find_special_effect( p, 357055 ); if ( eff ) return eff;
-      eff = unique_gear::find_special_effect( p, 357065 ); if ( eff ) return eff;
+      if ( auto eff = unique_gear::find_special_effect( p, 355755 ) ) return eff;
+      if ( auto eff = unique_gear::find_special_effect( p, 357037 ) ) return eff;
+      if ( auto eff = unique_gear::find_special_effect( p, 357055 ) ) return eff;
+      if ( auto eff = unique_gear::find_special_effect( p, 357065 ) ) return eff;
       return unique_gear::find_special_effect( p, 357076 );
     }
 
@@ -6388,24 +6350,14 @@ void register_target_data_initializers( sim_t& sim )
   // Shard of Bek (Exsanguinated debuff)
   struct shard_of_bek_init_t : public item_targetdata_initializer_t
   {
-    shard_of_bek_init_t() : item_targetdata_initializer_t( 357069 )
+    shard_of_bek_init_t() : item_targetdata_initializer_t( 357069, 356372 ) {}
+
+    const special_effect_t* find( player_t* p ) const override
     {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 356372 ); };
-    }
-
-    const special_effect_t* find_effect( player_t* p ) const override
-    {
-      const special_effect_t*& eff = effects[ p ];
-      if ( eff )
-        return eff;
-
-      if ( p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
-        return nullptr;
-
-      eff = unique_gear::find_special_effect( p, 355721 ); if ( eff ) return eff;
-      eff = unique_gear::find_special_effect( p, 357031 ); if ( eff ) return eff;
-      eff = unique_gear::find_special_effect( p, 357049 ); if ( eff ) return eff;
-      eff = unique_gear::find_special_effect( p, 357058 ); if ( eff ) return eff;
+      if ( auto eff = unique_gear::find_special_effect( p, 355721 ) ) return eff;
+      if ( auto eff = unique_gear::find_special_effect( p, 357031 ) ) return eff;
+      if ( auto eff = unique_gear::find_special_effect( p, 357049 ) ) return eff;
+      if ( auto eff = unique_gear::find_special_effect( p, 357058 ) ) return eff;
       return unique_gear::find_special_effect( p, 357069 );
     }
 
@@ -6423,10 +6375,7 @@ void register_target_data_initializers( sim_t& sim )
   // Soulwarped Seal of Menethil
   struct remnants_despair_init_t : public item_targetdata_initializer_t
   {
-    remnants_despair_init_t() : item_targetdata_initializer_t( 367951 )
-    {
-      debuff_fn = []( player_t* p ) { return p->find_spell( 368690 ); };
-    }
+    remnants_despair_init_t() : item_targetdata_initializer_t( 367951, 368690 ) {}
 
     void operator()( actor_target_data_t* td ) const override
     {

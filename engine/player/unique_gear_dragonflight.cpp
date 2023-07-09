@@ -13,12 +13,11 @@
 #include "dbc/item_database.hpp"
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
-#include "item/item_targetdata_initializer.hpp"
-#include "set_bonus.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/action_variable.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
+#include "set_bonus.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
@@ -737,10 +736,7 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
 {
   target_specific_t<action_t> bomb_actions;
 
-  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 ), bomb_actions( false )
-  {
-    debuff_fn = [ s = spell_id ]( player_t* p ) { return p->find_spell( s )->effectN( 1 ).trigger(); };
-  }
+  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 ), bomb_actions( false ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -1029,10 +1025,7 @@ void darkmoon_deck_inferno( special_effect_t& effect )
 
 struct awakening_rime_initializer_t : public item_targetdata_initializer_t
 {
-  awakening_rime_initializer_t() : item_targetdata_initializer_t( 386624 )
-  {
-    debuff_fn = [ s = spell_id ]( player_t* p ) { return p->find_spell( s )->effectN( 1 ).trigger(); };
-  }
+  awakening_rime_initializer_t() : item_targetdata_initializer_t( 386624 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -1234,10 +1227,7 @@ void conjured_chillglobe( special_effect_t& effect )
 
 struct skewering_cold_initializer_t : public item_targetdata_initializer_t
 {
-  skewering_cold_initializer_t() : item_targetdata_initializer_t( 383931 )
-  {
-    debuff_fn = [ s = spell_id ]( player_t* p ) { return p->find_spell( s )->effectN( 1 ).trigger(); };
-  }
+  skewering_cold_initializer_t() : item_targetdata_initializer_t( 383931 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -1666,10 +1656,7 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
 
 struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
 {
-  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 )
-  {
-    debuff_fn = []( player_t* p ) { return p->find_spell( 382428 ); };
-  }
+  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466, 382428 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -3722,7 +3709,7 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
 
   iceblood_deathsnare_initializer_t() : item_targetdata_initializer_t( 377455 ), damage_actions( false )
   {
-    debuff_fn = [ s = spell_id ]( player_t* p ) { return p->find_spell( s )->effectN( 3 ).trigger(); };
+    debuff_fn = []( player_t* p, const special_effect_t* e ) { return e->driver()->effectN( 3 ).trigger(); };
   }
 
   void operator()( actor_target_data_t* td ) const override
@@ -5345,10 +5332,7 @@ void neltharax( special_effect_t& effect )
 
 struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 {
-  heavens_nemesis_initializer_t() : item_targetdata_initializer_t( 394928 )
-  {
-    debuff_fn = []( player_t* p ) { return p->find_spell( 397478 ); };
-  }
+  heavens_nemesis_initializer_t() : item_targetdata_initializer_t( 394928, 397478 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -6202,10 +6186,7 @@ void ever_decaying_spores( special_effect_t& effect )
 
 struct ever_decaying_spores_initializer_t : public item_targetdata_initializer_t
 {
-  ever_decaying_spores_initializer_t() : item_targetdata_initializer_t( 406244 )
-  {
-    debuff_fn = []( player_t* p ) { return p->find_spell( 407087 ); };
-  }
+  ever_decaying_spores_initializer_t() : item_targetdata_initializer_t( 406244, 407087 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {

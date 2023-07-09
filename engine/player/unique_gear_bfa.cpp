@@ -335,24 +335,18 @@ void consumables::potion_of_unbridled_fury( special_effect_t& effect )
 
 struct potion_of_focused_resolve_t : public item_targetdata_initializer_t
 {
-  potion_of_focused_resolve_t() : item_targetdata_initializer_t( 0, {} )
-  {
-    debuff_fn = []( player_t* p ) { return p->find_spell( 298614 ); };
-  }
+  potion_of_focused_resolve_t() : item_targetdata_initializer_t( 0, {} ) {}
 
-  const special_effect_t* find_effect( player_t* player ) const override
+  const special_effect_t* find( player_t* player ) const override
   {
-    const special_effect_t*& eff = effects[ player ];
-    if ( eff )
-      return eff;
-
-    auto it = range::find_if( player->special_effects,
-                              []( const special_effect_t* effect ) { return effect->spell_id == 298317; } );
+    auto it = range::find_if( player->special_effects, []( const special_effect_t* effect ) {
+      return effect->spell_id == 298317;
+    } );
 
     if ( it != player->special_effects.end() )
-      eff = *it;
+      return *it;
 
-    return eff;
+    return nullptr;
   }
 
   // Create the choking brine debuff that is checked on enemy demise
@@ -1161,11 +1155,8 @@ void items::merekthas_fang( special_effect_t& effect )
 
 struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
 {
-  deadeye_spyglass_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
-  }
+  deadeye_spyglass_constructor_t( unsigned iid, ::util::span<const slot_e> s ) : item_targetdata_initializer_t( iid, s )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -1177,14 +1168,14 @@ struct deadeye_spyglass_constructor_t : public item_targetdata_initializer_t
     if ( !active )
       return;
 
-    const special_effect_t* effect = find_effect( td->source );
-    special_effect_t* effect2 = new special_effect_t( effect->item );
+    auto eff = effect( td );
+    special_effect_t* effect2 = new special_effect_t( eff->item );
     effect2->type             = SPECIAL_EFFECT_EQUIP;
     effect2->source           = SPECIAL_EFFECT_SOURCE_ITEM;
     effect2->spell_id         = 268758;
-    effect->player->special_effects.push_back( effect2 );
+    eff->player->special_effects.push_back( effect2 );
 
-    auto callback = new dbc_proc_callback_t( effect->item, *effect2 );
+    auto callback = new dbc_proc_callback_t( eff->item, *effect2 );
     callback->initialize();
     callback->deactivate();
 
@@ -1528,11 +1519,8 @@ void items::vial_of_animated_blood( special_effect_t& effect )
 
 struct briny_barnacle_constructor_t : public item_targetdata_initializer_t
 {
-  briny_barnacle_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
-  }
+  briny_barnacle_constructor_t( unsigned iid, ::util::span<const slot_e> s ) : item_targetdata_initializer_t( iid, s )
+  {}
 
   // Create the choking brine debuff that is checked on enemy demise
   void operator()( actor_target_data_t* td ) const override
@@ -1971,9 +1959,7 @@ struct syringe_of_bloodborne_infirmity_constructor_t : public item_targetdata_in
 {
   syringe_of_bloodborne_infirmity_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
-  }
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
@@ -1985,14 +1971,14 @@ struct syringe_of_bloodborne_infirmity_constructor_t : public item_targetdata_in
     if ( !active )
       return;
 
-    const special_effect_t* effect = find_effect( td->source );
-    special_effect_t* effect2 = new special_effect_t( effect->item );
+    auto eff = effect( td );
+    special_effect_t* effect2 = new special_effect_t( eff->item );
     effect2->type             = SPECIAL_EFFECT_EQUIP;
     effect2->source           = SPECIAL_EFFECT_SOURCE_ITEM;
     effect2->spell_id         = 278109;
-    effect->player->special_effects.push_back( effect2 );
+    eff->player->special_effects.push_back( effect2 );
 
-    auto callback = new dbc_proc_callback_t( effect->item, *effect2 );
+    auto callback = new dbc_proc_callback_t( eff->item, *effect2 );
     callback->initialize();
     callback->deactivate();
 
@@ -2569,11 +2555,8 @@ void items::variable_intensity_gigavolt_oscillating_reactor_onuse( special_effec
 
 struct everchill_anchor_constructor_t : public item_targetdata_initializer_t
 {
-  everchill_anchor_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = [ this ]( player_t* p ) { return find_effect( p )->trigger(); };
-  }
+  everchill_anchor_constructor_t( unsigned iid, ::util::span<const slot_e> s ) : item_targetdata_initializer_t( iid, s )
+  {}
 
   // Create the everchill debuff to handle trinket icd
   void operator()( actor_target_data_t* td ) const override
@@ -3441,25 +3424,19 @@ void items::shiver_venom_relic_equip( special_effect_t& effect )
  */
 struct luminous_algae_constructor_t : public item_targetdata_initializer_t
 {
-  luminous_algae_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s )
-  {
-    debuff_fn = [ this ]( player_t * p ) { return find_effect( p )->trigger(); };
-  }
+  luminous_algae_constructor_t( unsigned iid, ::util::span<const slot_e> s ) : item_targetdata_initializer_t( iid, s )
+  {}
 
-  const special_effect_t* find_effect( player_t* player ) const override
+  const special_effect_t* find( player_t* player ) const override
   {
-    const special_effect_t*& eff = effects[ player ];
-    if ( eff )
-      return eff;
-
-    auto it = range::find_if( player->special_effects,
-                              []( const special_effect_t* effect ) { return effect->spell_id == 302776; } );
+    auto it = range::find_if( player->special_effects, []( const special_effect_t* effect ) {
+      return effect->spell_id == 302776;
+    } );
 
     if ( it != player->special_effects.end() )
-      eff = *it;
+      return *it;
 
-    return eff;
+    return nullptr;
   }
 
   void operator()( actor_target_data_t* td ) const override
@@ -4136,7 +4113,7 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
   razor_coral_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s ), tracker_buffs( false )
   {
-    debuff_fn = []( player_t* p ) { return p->find_spell( 303568 ); };
+    debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 303568 ); };
   }
 
   void operator()( actor_target_data_t* td ) const override
@@ -4299,7 +4276,7 @@ struct conductive_ink_constructor_t : public item_targetdata_initializer_t
   conductive_ink_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s )
   {
-    debuff_fn = []( player_t* p ) { return p->find_spell( 302565 ); };
+    debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 302565 ); };
   }
 
   void operator()( actor_target_data_t* td ) const override
@@ -5730,7 +5707,7 @@ struct psyche_shredder_constructor_t : public item_targetdata_initializer_t
   psyche_shredder_constructor_t( unsigned iid, ::util::span<const slot_e> s )
     : item_targetdata_initializer_t( iid, s ), damage_actions( false )
   {
-    debuff_fn = []( player_t* p ) { return p->find_spell( 313663 ); };
+    debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 313663 ); };
   }
 
   void operator()( actor_target_data_t* td ) const override
