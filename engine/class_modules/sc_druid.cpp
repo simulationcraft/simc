@@ -2623,13 +2623,9 @@ public:
     // pulsar accumulate based on base_cost not last_resource_cost
     p_buff->current_value += base_cost();
 
-    // Purely visual indicator for the sample sequence
-    p_buff->current_value == 0 ? p_buff->increment( base_cost() / 10 - 1 ) : p_buff->increment( base_cost() / 10 );
-
     if ( p_buff->check_value() >= p_cap )
     {
       p_buff->current_value -= p_cap;
-      p_buff->decrement( p_cap / 10 );
 
       if ( p()->talent.incarnation_moonkin.ok() && p()->get_form() != form_e::MOONKIN_FORM &&
            !p()->buff.incarnation_moonkin->check() )
@@ -2649,6 +2645,13 @@ public:
         p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
       } );
     }
+
+    // Purely visual indicator for the sample sequence
+    auto stack_value_difference = as<int>( p_buff->current_value ) / 10 - p_buff->check();
+    if ( stack_value_difference >= 0 )
+      p_buff->increment( stack_value_difference );
+    else
+      p_buff->decrement( abs( stack_value_difference ) );
   }
 
   void post_execute()
@@ -11557,7 +11560,7 @@ void druid_t::arise()
         buff.primordial_arcanic_pulsar->trigger();
         buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
         // Purely visual indicator for the sample sequence
-        buff.primordial_arcanic_pulsar->increment( options.initial_pulsar_value / 10 - 1 );
+        buff.primordial_arcanic_pulsar->increment( as<int>(options.initial_pulsar_value) / 10 - 1 );
       } );
     }
 
