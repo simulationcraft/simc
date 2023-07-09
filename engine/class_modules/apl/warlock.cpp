@@ -272,7 +272,6 @@ void destruction( player_t* p )
   default_->add_action( "call_action_list,name=cleave,if=active_enemies!=1|variable.cleave_apl" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "variable,name=opti_cc,value=opti_cc,op=print" );
   default_->add_action( "conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)|charges=max_charges" );
   default_->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)" );
   default_->add_action( "cataclysm,if=raid_event.adds.in>15" );
@@ -280,7 +279,7 @@ void destruction( player_t* p )
   default_->add_action( "soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)" );
   default_->add_action( "immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|dot.immolate.remains<3|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.infernal_combustion&action.chaos_bolt.usable)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&target.time_to_die>8" );
   default_->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&set_bonus.tier30_4pc" );
-  default_->add_action( "chaos_bolt,if=cooldown.summon_infernal.remains=0&soul_shard>4&(trinket.spoils_of_neltharus.ready_cooldown|!equipped.spoils_of_neltharus)&buff.domineering_arrogance.stack<3", "We want to pool some soul_shard if we play with cc before casting infernal and then chain the madness into first cc proc" );
+  default_->add_action( "chaos_bolt,if=cooldown.summon_infernal.remains=0&soul_shard>4&(trinket.spoils_of_neltharus.ready_cooldown|!equipped.spoils_of_neltharus)&buff.domineering_arrogance.stack<3&talent.crashing_chaos", "We want to pool some soul_shard if we play with cc before casting infernal and then chain the madness into first cc proc" );
   default_->add_action( "summon_infernal,if=variable.opti_cc&((soul_shard>4&buff.domineering_arrogance.stack>=3|buff.domineering_arrogance.stack<3&buff.madness_cb.remains>2*gcd.max)&(trinket.spoils_of_neltharus.cooldown.remains<2|!equipped.spoils_of_neltharus))|!variable.opti_cc|fight_remains<30", "With crushing_chaos we want to be sure that infrnal lines with the next comming trinket, if it's ready soon, and that we have pulled shards or have madness up" );
   default_->add_action( "chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4&(variable.opti_cc&(cooldown.summon_infernal.remains<?trinket.spoils_of_neltharus.cooldown.remains)>2|!variable.opti_cc)" );
   default_->add_action( "channel_demonfire,if=talent.ruin.rank>1&!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))&dot.immolate.remains>cast_time" );
@@ -367,7 +366,7 @@ void destruction( player_t* p )
 
   items->add_action( "use_item,slot=trinket1,if=variable.infernal_active|!talent.summon_infernal|fight_remains<21|trinket.1.cooldown.duration<cooldown.summon_infernal.remains_expected+5" );
   items->add_action( "use_item,slot=trinket2,if=variable.infernal_active|!talent.summon_infernal|fight_remains<21|trinket.2.cooldown.duration<cooldown.summon_infernal.remains_expected+5" );
-  items->add_action( "use_item,name=spoils_of_neltharus,if=(!talent.crashing_chaos&(fight_remains>trinket.spoils_of_neltharus.cooldown.duration)|cooldown.summon_infernal.remains_expected>fight_remains-25)|variable.infernal_active", "actions.items+=/variable,name=cooldown,op=print,if=cooldown.summon_infernal.remains_expected>fight_remains,value=cooldown.summon_infernal.remains_expected actions.items+=/variable,name=fight_remains,op=print,if=cooldown.summon_infernal.remains_expected>fight_remains,value=fight_remains" );
+  items->add_action( "use_item,name=spoils_of_neltharus,if=(!talent.crashing_chaos&(fight_remains>trinket.spoils_of_neltharus.cooldown.duration)|cooldown.summon_infernal.remains_expected>fight_remains-25)|variable.infernal_active" );
   items->add_action( "use_item,slot=trinket1,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains_expected+trinket.1.cooldown.duration&fight_remains>trinket.1.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains_expected|(trinket.2.has_cooldown&trinket.2.cooldown.remains<cooldown.summon_infernal.remains_expected)" );
   items->add_action( "use_item,slot=trinket2,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains_expected+trinket.2.cooldown.duration&fight_remains>trinket.2.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains_expected|(trinket.1.has_cooldown&trinket.1.cooldown.remains<cooldown.summon_infernal.remains_expected)" );
   items->add_action( "use_item,name=erupting_spear_fragment,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains_expected+trinket.erupting_spear_fragment.cooldown.duration&fight_remains>trinket.erupting_spear_fragment.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains_expected|trinket.erupting_spear_fragment.cooldown.duration<cooldown.summon_infernal.remains_expected+5" );
@@ -376,9 +375,6 @@ void destruction( player_t* p )
   items->add_action( "use_item,name=conjured_chillglobe" );
 
   ogcd->add_action( "potion,if=variable.infernal_active|!talent.summon_infernal" );
-  ogcd->add_action( "variable,name=infernal,value=pet.infernal.active,op=set" );
-  ogcd->add_action( "variable,name=infernal,value=pet.infernal.active,op=print" );
-  ogcd->add_action( "variable,name=infernal_active,value=variable.infernal_active,op=print" );
   ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.invoke_power_infusion_0.duration&fight_remains>cooldown.invoke_power_infusion_0.duration)|fight_remains<cooldown.summon_infernal.remains_expected+15" );
   ogcd->add_action( "berserking,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains_expected+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains_expected" );
   ogcd->add_action( "blood_fury,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.blood_fury.duration&fight_remains>cooldown.blood_fury.duration)|fight_remains<cooldown.summon_infernal.remains" );
