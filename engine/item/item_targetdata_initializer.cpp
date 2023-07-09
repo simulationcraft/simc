@@ -31,9 +31,7 @@ const special_effect_t* item_targetdata_initializer_t::find_effect( player_t* pl
 
   // No need to check items on pets/enemies
   if ( player->is_pet() || player->is_enemy() || player->type == HEALING_ENEMY )
-  {
     return nullptr;
-  }
 
   if ( spell_id )
   {
