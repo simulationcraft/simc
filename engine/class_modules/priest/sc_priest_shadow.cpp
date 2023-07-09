@@ -233,10 +233,8 @@ struct dispersion_t final : public priest_spell_t
     hasted_ticks          = false;
     may_miss              = false;
 
-    if ( priest().talents.shadow.intangibility.enabled() )
-    {
-      cooldown->duration += priest().talents.shadow.intangibility->effectN( 1 ).time_value();
-    }
+    // CD Reduction
+    apply_affecting_aura( priest().talents.shadow.intangibility );
   }
 
   void execute() override
@@ -258,6 +256,25 @@ struct dispersion_t final : public priest_spell_t
 
     // reset() instead of expire() because it was not properly creating the buff every 2nd time
     priest().buffs.dispersion->reset();
+  }
+};
+
+struct dispersion_heal_t final : public priest_heal_t
+{
+  dispersion_heal_t( priest_t& p ) : priest_heal_t( "dispersion_heal", p, p.talents.shadow.dispersion )
+  {
+    background = true;
+    may_crit = may_miss = false;
+    base_dd_multiplier  = 1.0;
+
+    // turn off automatic HoT components
+    dot_duration = timespan_t::from_seconds( 0 );
+  }
+
+  void trigger( double amount )
+  {
+    base_dd_min = base_dd_max = amount;
+    execute();
   }
 };
 
@@ -1905,16 +1922,34 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
   }
 };
 
-// TODO: implement healing from Intangibility
+// ==========================================================================
+// Dispersion
+// TODO: apply movement speed increase
+// ==========================================================================
 struct dispersion_t final : public priest_buff_t<buff_t>
 {
-  // TODO: hook up rank2 to movement speed
-  const spell_data_t* rank2;
+  actions::spells::dispersion_heal_t* heal;
 
   dispersion_t( priest_t& p )
-    : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
-      rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
+    : base_t( p, "dispersion", p.talents.shadow.dispersion ), heal( new actions::spells::dispersion_heal_t( p ) )
   {
+    set_period( data().effectN( 5 ).period() );
+
+    auto eff            = &data().effectN( 5 );
+    auto health_percent = eff->percent();
+
+    if ( p.talents.shadow.intangibility.enabled() )
+    {
+      health_percent += p.talents.shadow.intangibility->effectN( 2 ).percent();
+    }
+
+    int num_ticks =
+        as<int>( p.talents.shadow.dispersion->duration().total_seconds() / tick_time().total_seconds() ) + 1;
+    set_default_value( player->max_health() * health_percent / num_ticks );
+
+    set_tick_callback( [ health_percent, num_ticks, this ]( buff_t*, int, timespan_t ) {
+      heal->trigger( player->max_health() * health_percent / num_ticks );
+    } );
   }
 };
 
