@@ -106,6 +106,7 @@ struct mind_flay_t final : public priest_spell_t
 
   bool ready() override
   {
+    // Mind Spike replaces Mind Flay
     if ( priest().talents.shadow.mind_spike.enabled() )
     {
       return false;
@@ -187,7 +188,9 @@ struct mind_spike_t final : public mind_spike_base_t
   bool ready() override
   {
     if ( priest().buffs.mind_spike_insanity->check() )
+    {
       return false;
+    }
 
     return mind_spike_base_t::ready();
   }
@@ -210,7 +213,9 @@ struct mind_spike_insanity_t final : public mind_spike_base_t
   bool ready() override
   {
     if ( !priest().buffs.mind_spike_insanity->check() )
+    {
       return false;
+    }
 
     return mind_spike_base_t::ready();
   }
@@ -266,6 +271,7 @@ struct dispersion_heal_t final : public priest_heal_t
     background = true;
     may_crit = may_miss = false;
     base_dd_multiplier  = 1.0;
+    callbacks           = false;  // TODO: verify
 
     // turn off automatic HoT components
     dot_duration = timespan_t::from_seconds( 0 );
@@ -309,12 +315,6 @@ struct silence_t final : public priest_spell_t
     may_miss = may_crit   = false;
     ignore_false_positive = is_interrupt = true;
 
-    auto rank2 = p.find_rank_spell( "Silence", "Rank 2" );
-    if ( rank2->ok() )
-    {
-      range += rank2->effectN( 1 ).base_value();
-    }
-
     // CD Reduction
     apply_affecting_aura( priest().talents.shadow.last_word );
   }
@@ -343,11 +343,8 @@ struct silence_t final : public priest_spell_t
 // ==========================================================================
 struct vampiric_embrace_t final : public priest_spell_t
 {
-  double insanity;
-
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
+    : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace )
   {
     parse_options( options_str );
 
@@ -377,7 +374,6 @@ struct vampiric_embrace_t final : public priest_spell_t
 // ==========================================================================
 // Shadowy Apparition
 // ==========================================================================
-
 struct shadowy_apparition_state_t : public action_state_t
 {
   double source_crit;
@@ -589,11 +585,8 @@ struct shadow_word_pain_t final : public priest_spell_t
       spell_power_mod.direct = 0;
     }
 
-    if ( priest().talents.shadow.misery.enabled() )
-    {
-      dot_duration += priest().talents.shadow.misery->effectN( 2 ).time_value();
-    }
-
+    // Shadow: DoT Duration increase
+    apply_affecting_aura( priest().talents.shadow.misery );
     // Discipline: 8% / 15% damage increase
     apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
     // Spell Direct and Periodic 3%/5% gain
@@ -603,6 +596,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       child_searing_light = priest().background_actions.searing_light;
     }
+
     if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T30, B2 ) )
     {
       apply_affecting_aura( p.sets->set( PRIEST_DISCIPLINE, T30, B2 ) );
@@ -859,6 +853,7 @@ struct vampiric_touch_t final : public priest_spell_t
       add_child( child_ud );
     }
 
+    // Spell Periodic Percent Increase
     apply_affecting_aura( priest().talents.shadow.maddening_touch );
   }
 
@@ -1008,23 +1003,24 @@ struct devouring_plague_t final : public priest_spell_t
   };
 
   propagate_const<devouring_plague_heal_t*> devouring_plague_heal;
-  bool casted;
 
-  devouring_plague_t( priest_t& p, bool _casted = false )
+  devouring_plague_t( priest_t& p )
     : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
       devouring_plague_heal( new devouring_plague_heal_t( p ) )
   {
-    casted                     = _casted;
     may_crit                   = true;
     affected_by_shadow_weaving = true;
   }
 
-  devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
+  devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p )
   {
     parse_options( options_str );
 
+    // Spell Direct/Periodic Percent Increase
     apply_affecting_aura( p.talents.shadow.voidtouched );
+    // Spell Resource Cost
     apply_affecting_aura( p.talents.shadow.minds_eye );
+    // Duration, Direct/Periodic Percent Increase, and Resource Cost
     apply_affecting_aura( p.talents.shadow.distorted_reality );
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
@@ -1043,6 +1039,7 @@ struct devouring_plague_t final : public priest_spell_t
       m *= 1 + priest().buffs.gathering_shadows->check_stack_value();
     }
 
+    // Dummy effect that is hard-coded to 20
     if ( priest().buffs.mind_devourer->check() )
     {
       m *= 1 + priest().buffs.mind_devourer->data().effectN( 2 ).percent();
@@ -1053,13 +1050,9 @@ struct devouring_plague_t final : public priest_spell_t
 
   void consume_resource() override
   {
-    if ( casted )
-    {
-      priest_spell_t::consume_resource();
-    }
+    priest_spell_t::consume_resource();
 
-    // TODO: shouldn't need to check casted anymore
-    if ( priest().buffs.mind_devourer->up() && casted )
+    if ( priest().buffs.mind_devourer->up() )
     {
       priest().buffs.mind_devourer->decrement();
     }
@@ -1075,11 +1068,7 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.gathering_shadows->up();
     }
 
-    // TODO: shouldn't need to check casted anymore
-    if ( casted )
-    {
-      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_dp, s->result == RESULT_CRIT );
-    }
+    priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_dp, s->result == RESULT_CRIT );
 
     if ( result_is_hit( s->result ) )
     {
@@ -1268,24 +1257,17 @@ struct dark_ascension_t final : public priest_spell_t
 // ==========================================================================
 struct void_eruption_damage_t final : public priest_spell_t
 {
-  propagate_const<action_t*> void_bolt;
-
   void_eruption_damage_t( priest_t& p )
-    : priest_spell_t( "void_eruption_damage", p, p.talents.shadow.void_eruption_damage ), void_bolt( nullptr )
+    : priest_spell_t( "void_eruption_damage", p, p.talents.shadow.void_eruption_damage )
   {
     may_miss                   = false;
     background                 = true;
     affected_by_shadow_weaving = true;
   }
 
-  void init() override
-  {
-    priest_spell_t::init();
-    void_bolt = player->find_action( "void_bolt" );
-  }
-
   void impact( action_state_t* s ) override
   {
+    // Void Eruption hits everything around your target twice
     priest_spell_t::impact( s );
     priest_spell_t::impact( s );
   }
@@ -1310,11 +1292,6 @@ struct void_eruption_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->trigger();
-  }
-
-  void consume_resource() override
-  {
-    // does not consume any insanity, even though it has a cost. So do nothing.
   }
 
   bool ready() override
@@ -1368,6 +1345,7 @@ struct psychic_horror_t final : public priest_spell_t
 
 // ==========================================================================
 // Idol of C'Thun (Talent)
+// Parent action to store Void Tendril/Lasher damage
 // ==========================================================================
 struct idol_of_cthun_t final : public priest_spell_t
 {
@@ -1597,6 +1575,8 @@ private:
 
 // ==========================================================================
 // Shadow Weaving
+// Separate action to handle Mastery increase from Shadowfiend/Mindbender melee's
+// Built similar to how the game handles the effect so breakdowns match
 // ==========================================================================
 struct shadow_weaving_t final : public priest_spell_t
 {
@@ -1621,7 +1601,6 @@ struct shadow_weaving_t final : public priest_spell_t
 
 // ==========================================================================
 // Shadow Crash
-// TODO: double check DoT target logic
 // ==========================================================================
 struct shadow_crash_damage_t final : public priest_spell_t
 {
@@ -1658,7 +1637,7 @@ struct shadow_crash_dots_t final : public priest_spell_t
     // Force regen this every time
     target_cache.is_valid = false;
     auto& tl              = priest_spell_t::target_list();
-    double original_size  = tl.size();
+    auto original_size    = tl.size();
 
     // if target_list is bigger than dot cap shuffle the list
     if ( as<int>( tl.size() ) > aoe )
