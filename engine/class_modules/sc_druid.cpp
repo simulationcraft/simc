@@ -2623,9 +2623,13 @@ public:
     // pulsar accumulate based on base_cost not last_resource_cost
     p_buff->current_value += base_cost();
 
+    // Purely visual indicator for the sample sequence
+    p_buff->current_value == 0 ? p_buff->increment( base_cost() / 10 - 1 ) : p_buff->increment( base_cost() / 10 );
+
     if ( p_buff->check_value() >= p_cap )
     {
       p_buff->current_value -= p_cap;
+      p_buff->decrement( p_cap / 10 );
 
       if ( p()->talent.incarnation_moonkin.ok() && p()->get_form() != form_e::MOONKIN_FORM &&
            !p()->buff.incarnation_moonkin->check() )
@@ -10131,7 +10135,9 @@ void druid_t::create_buffs()
     ->set_chance( find_effect( find_specialization_spell( "Owlkin Frenzy" ), A_ADD_FLAT_MODIFIER, P_PROC_CHANCE ).percent() );
 
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 393961 ) )
-    ->set_trigger_spell( talent.primordial_arcanic_pulsar );
+    ->set_trigger_spell( talent.primordial_arcanic_pulsar )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    ->set_max_stack(99);
 
   buff.rattled_stars = make_buff( this, "rattled_stars", find_trigger( talent.rattle_the_stars ).trigger() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -11550,6 +11556,8 @@ void druid_t::arise()
       register_combat_begin( [ this ]( player_t* p ) {
         buff.primordial_arcanic_pulsar->trigger();
         buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
+        // Purely visual indicator for the sample sequence
+        buff.primordial_arcanic_pulsar->increment( options.initial_pulsar_value / 10 - 1 );
       } );
     }
 
