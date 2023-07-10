@@ -9448,7 +9448,7 @@ namespace monk
   role_e monk_t::primary_role() const
   {
     if ( base_t::primary_role() == role_e::ROLE_DPS )
-      return ROLE_HYBRID;
+      return ROLE_DPS;
 
     if ( base_t::primary_role() == role_e::ROLE_TANK )
       return ROLE_TANK;
