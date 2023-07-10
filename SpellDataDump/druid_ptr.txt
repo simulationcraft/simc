@@ -2367,7 +2367,6 @@ Duration         : 6 seconds
 Cooldown         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1469: Survival of the Fittest (203965 effect#2), Dual Determination (208228 effect#1), Dual Determination (208228 effect#2), Strive for Perfection (296320 effect#7), Strive for Perfection (296320 effect#8), Strive for Perfection (299367 effect#7), Strive for Perfection (299369 effect#7), Improved Survival Instincts (328767 effect#1)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Dual Determination (208228 effect#3)
 Family Flags     : 71
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
