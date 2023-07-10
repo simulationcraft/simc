@@ -3030,7 +3030,6 @@ public:
     : base_t( n, p, s ),
       snapshots(),
       berserk_cp( p->spec.berserk_cat->effectN( 2 ).base_value() ),
-      primal_claws_cp( p->talent.primal_claws->effectN( 2 ).base_value() ),
       primal_fury_cp( find_effect( find_trigger( p->talent.primal_fury ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT ) )
   {
     parse_options( opt );
@@ -3223,7 +3222,6 @@ public:
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
       trigger_primal_fury();
-      trigger_primal_claws();
     }
 
     if ( hit_any_target )
@@ -7491,41 +7489,12 @@ struct stampeding_roar_t : public druid_spell_t
 // Starfall Spell ===========================================================
 struct starfall_t : public astral_power_spender_t
 {
-  struct starfall_data_t
-  {
-    player_t* shrapnel_target = nullptr;
-    double total_amount = 0.0;
-
-    friend void sc_format_to( const starfall_data_t& data, fmt::format_context::iterator out )
-    {
-      fmt::format_to( out, "total_amount={} shrapnel_target={}", data.total_amount,
-                      data.shrapnel_target ? data.shrapnel_target->name() : "none" );
-    }
-  };
-
-  using starfall_state_t = druid_action_state_t<starfall_data_t>;
-
-  struct starfall_base_t : public druid_spell_t
-  {
-    starfall_base_t( std::string_view n, druid_t* p, const spell_data_t* s ) : druid_spell_t( n, p, s ) {}
-
-    action_state_t* new_state() override
-    {
-      return new starfall_state_t( this, target );
-    }
-
-    starfall_state_t* cast_state( action_state_t* s )
-    {
-      return static_cast<starfall_state_t*>( s );
-    }
-  };
-
-  struct starfall_damage_t : public starfall_base_t
+  struct starfall_damage_t : public druid_spell_t
   {
     double cosmos_mul;
 
     starfall_damage_t( druid_t* p, std::string_view n )
-      : starfall_base_t( n, p, p->find_spell( 191037 ) ),
+      : druid_spell_t( n, p, p->find_spell( 191037 ) ),
         cosmos_mul( p->sets->set( DRUID_BALANCE, T29, B4 )->effectN( 1 ).trigger()->effectN( 2 ).percent() )
     {
       background = dual = true;
@@ -7538,28 +7507,16 @@ struct starfall_t : public astral_power_spender_t
       if ( p()->buff.touch_the_cosmos_starfall->check() )
         stack += cosmos_mul;
 
-      return starfall_base_t::action_multiplier() * std::max( 1.0, stack );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      starfall_base_t::impact( s );
-
-      if ( cast_state( s )->shrapnel_target && cast_state( s )->shrapnel_target == s->target )
-      {
-        shrapnel->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
-          shrapnel->set_amount( to, from->result_amount );
-        } );
-      }
+      return druid_spell_t::action_multiplier() * std::max( 1.0, stack );
     }
   };
 
-  struct starfall_driver_t : public starfall_base_t
+  struct starfall_driver_t : public druid_spell_t
   {
     starfall_damage_t* damage;
 
     starfall_driver_t( druid_t* p, std::string_view n )
-      : starfall_base_t( n, p, find_trigger( p->buff.starfall ).trigger() )
+      : druid_spell_t( n, p, find_trigger( p->buff.starfall ).trigger() )
     {
       background = dual = true;
 
@@ -7576,7 +7533,7 @@ struct starfall_t : public astral_power_spender_t
 
     void impact( action_state_t* s ) override
     {
-      starfall_base_t::impact( s );
+      druid_spell_t::impact( s );
 
       damage->snapshot_and_execute( s, false, []( const action_state_t* from, action_state_t* to ) {
         to->copy_state( from );
