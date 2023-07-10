@@ -18711,7 +18711,8 @@ Effects          :
 #1 (id=1083442)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1083443)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 180 | Scaled Value: 180 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (180 -> 200)
 Description      : $@spelldesc392938
 
 Name             : Shining Righteousness (id=414443) [Spell Family (10), Passive] 
