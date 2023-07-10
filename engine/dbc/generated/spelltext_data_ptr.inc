@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.50355
-static const std::array<spelltext_data_t, 20108> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20109> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20018,8 +20018,9 @@ static const std::array<spelltext_data_t, 20108> __ptr_spelltext_data { {
   { 415246, "$@spelldesc415244", "Restoring $s3 Mana every $t3 sec, but your healing and damage is decreased by $s1%.", 0 },
   { 415284, "Your harmful spells and abilities have a chance to conjure a cyclone at your current target's location. The cyclone follows the initial target dealing ${$s1* ($415339d/$s4)} Nature damage over $415339d split between all enemies.\r\n\r\nWhile inside the cyclone, enemies become Lightning Conduits. Dealing damage to a Lightning Conduit has a high chance to unleash a bolt of forked lighting, dealing $s2 Nature damage split between them and up to $s3 additional nearby targets.", 0, 0 },
   { 415299, "$@spelldesc414720", 0, 0 },
-  { 415339, "$@spelldesk415284", 0, 0 },
+  { 415339, "$@spelldesc415284", "Suffering $w1 Nature damage every 1 sec split between all nearby enemies.", 0 },
   { 415364, "Holy Shock and Crusader Strike refund up to $s1% of their Mana cost and deal up to $s2% more healing or damage, based on the target's missing health.", 0, 0 },
+  { 415395, "$@spelldesc415284", 0, 0 },
   { 415416, "Increases the healing of your spells by $s1%.", 0, 0 },
   { 415446, "Your healing spells and abilities have a chance to fire a Healing Dart toward an ally target. The first ally hit will be healed for $s1.", 0, 0 },
   { 415479, "Attacks from your Shadowfiend siphon life from enemies, healing a nearby injured ally for $415673s1.$?a137031[][\r\n\r\nAttacks from your Mindbender siphon life from enemies, healing a nearby injured ally for $415676s1.]", 0, 0 },
@@ -20111,8 +20112,9 @@ static const std::array<spelltext_data_t, 20108> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.5.50355
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __ptr_spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s4% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Glacial Spike also hits a second nearby target for $s4% of its damage." },
+  {  415339,  0, "$@spelldesk415284", "$@spelldesc415284" },
   {  419262,  0, nullptr, "Striking a demon with melee abilities has a chance to rend their flesh, dealing Physical damage over $d." },
   {  419268,  0, nullptr, "Striking an undead with a melee ability has a chance to smite them with righteous fury, dealing Holy damage." },
 } };
