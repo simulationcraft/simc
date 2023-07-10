@@ -610,7 +610,6 @@ Velocity         : 4 yards/sec
 Duration         : 20 seconds
 Charges          : 0 (120 seconds cooldown)
 Category         : 1614: Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Haunted Mask (356968 effect#5), Empower Rune Weapon (392962 effect#1), Empower Rune Weapon (392963 effect#1)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Stance Mask      : 0x01000000
 Affecting spells : Death Knight (137005 effect#2), Accelerated Cold (337822 effect#1)
 Family Flags     : 14, 127
@@ -915,6 +914,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... x...x.x. x.x..... ........   ........ ........ ........ ........   
@@ -1370,6 +1370,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 12 seconds
 Cooldown         : 60 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   

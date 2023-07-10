@@ -1567,7 +1567,7 @@ public:
 
     if ( affected_by.frailty )
     {
-      m *= 1.0 + p()->spec.frailty_debuff->effectN( 4 ).percent() * td( target )->debuffs.frailty->check();
+      m *= 1.0 + p()->talent.vengeance.vulnerability->effectN( 1 ).percent() * td( target )->debuffs.frailty->check();
     }
 
     if ( affected_by.fiery_demise && td(target)->dots.fiery_brand->is_ticking() )
