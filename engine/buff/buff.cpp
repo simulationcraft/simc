@@ -1110,6 +1110,9 @@ buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multipl
 buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, property_type_t p_type, double multiplier,
                                                     effect_type_t e_type )
 {
+  if ( !s_data->ok() )
+    return this;
+
   for ( size_t idx = 1; idx <= s_data->effect_count(); idx++ )
   {
     const spelleffect_data_t& eff = s_data->effectN( idx );
@@ -1131,12 +1134,9 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
     return this;  // return out after matching the first effect
   }
 
-  if ( s_data->ok() )
-  {
-    sim->error(
-        "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
-        name(), s_data->id(), static_cast<int>(a_type), static_cast<int>(p_type), static_cast<int>(e_type) );
-  }
+  sim->error( "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
+              name(), s_data->id(), static_cast<int>( a_type ), static_cast<int>( p_type ),
+              static_cast<int>( e_type ) );
 
   return this;
 }
@@ -1318,7 +1318,7 @@ buff_t* buff_t::set_name_reporting( std::string_view n )
 
 buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
 {
-  if ( !spell->ok() )
+  if ( !spell->ok() || !s_data->ok() )
     return this;
 
   assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting buffs." );
