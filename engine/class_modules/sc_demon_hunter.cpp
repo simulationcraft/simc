@@ -1565,9 +1565,16 @@ public:
       m *= 1.0 + td( target )->debuffs.burning_wound->check_value();
     }
 
-    if ( affected_by.frailty )
+    if ( p()->specialization() == DEMON_HUNTER_VENGEANCE && td( target )->debuffs.frailty->check() )
     {
-      m *= 1.0 + p()->talent.vengeance.vulnerability->effectN( 1 ).percent() * td( target )->debuffs.frailty->check();
+      if ( affected_by.frailty )
+      {
+        m *= 1.0 + p()->talent.vengeance.vulnerability->effectN( 1 ).percent() * td( target )->debuffs.frailty->check();
+      }
+      else if ( !ab::special ) // AA modifier
+      {
+        m *= 1.0 + p()->talent.vengeance.vulnerability->effectN( 1 ).percent() * td( target )->debuffs.frailty->check();
+      }
     }
 
     if ( affected_by.fiery_demise && td(target)->dots.fiery_brand->is_ticking() )
