@@ -6,7 +6,7 @@ server=valdrakken
 role=tank
 spec=protection
 
-talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAAIRk0EIBJpIRSCAgACABC
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAASEJNBSQSKCJJAACIAEIAB
 
 head=heartfire_sentinels_forgehelm,gem_id=192945,id=202452,bonus_id=4800/4786/1504/8780
 neck=torc_of_passed_time,id=201759,gem_id=192985/192945/192945,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,crafted_stats=32/49
@@ -33,7 +33,7 @@ level=70
 race=tauren
 role=attack
 position=back
-talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAARQSCBSQkSESCpkmQkICJiSjWA
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAQEkkQgEEpEhkQKpJEJiQio0oFAA
 dragonflight.ominous_chromatic_essence_dragonflight=emerald
 dragonflight.ominous_chromatic_essence_allies=azure/bronze/ruby/obsidian
 
@@ -48,7 +48,7 @@ waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=1929
 legs=legplates_of_profane_sacrifice,id=159443,bonus_id=1795/6808/4786/3317,enchant_id=6490
 feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=40/36
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192932,enchant=devotion_of_versatility_3
-finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204029/204027,enchant=devotion_of_versatility_3
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=3317,gem_id=192932,enchant=devotion_of_versatility_3
 trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
