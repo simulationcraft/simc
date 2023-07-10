@@ -1241,6 +1241,7 @@ Description      : Breathe fire on targets in front of you, causing $s1 Fire dam
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
 Name             : Fortifying Brew (id=115203) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -1263,10 +1264,12 @@ Effects          :
 #1 (id=128913)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1035050)  : Dummy (3)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 1.5)
 Description      : $@spelldesc120954
 Variables        : $health=$?s322960[${20}][${20}]
-$damage=$?c1[${20}][${20}]
+$pvp=$?a134735[${1.5}][${1}]
+$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]
 
 Name             : Energizing Elixir (id=115288) [Spell Family (53)] 
 Class            : Monk
@@ -2402,6 +2405,7 @@ Effects          :
 Description      : Increases your Agility by $s1% while wearing only Leather armor.
 
 Name             : Fortifying Brew (id=120954) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -2421,8 +2425,9 @@ Effects          :
 #1 (id=141067)   : Apply Aura (6) | Increase Health (34)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=153591)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.50000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 1.5)
 #3 (id=153607)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=158673)   : Apply Aura (6) | Unknown(255)
@@ -2442,7 +2447,8 @@ Tooltip          : $?$w1>0[Health increased by $<health>%, damage taken reduced 
 Effectiveness of Stagger increased by $115203s1%.][]$?$w8>0[
 Armor increased by $w8%. Dodge chance increased by $w7%.][]
 Variables        : $health=$?s322960[${20}][${20}]
-$damage=$?c1[${20}][${20}]
+$pvp=$?a134735[${1.5}][${1}]
+$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]
 
 Name             : Gift of the Naaru (desc=Racial) (id=121093) 
 Class            : Monk
@@ -2612,7 +2618,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Misc Value 2: 0xffffffe3 | Target: Self (1)
                    Affected School(s): Physical
 #2 (id=240978)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | PvP Coefficient: 1.50000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 1.5)
 #3 (id=358716)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #4 (id=365097)   : Apply Aura (6) | Absorb Damage (69)
@@ -2671,9 +2678,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffe2 | Target: Self (1)
                    Affected School(s): All
 #3 (id=220987)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.60000
+Hotfixed         : PvP Coefficient (1 -> 1.6)
 #4 (id=753843)   : Dummy (3)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.50000
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000
+Hotfixed         : PvP Coefficient (1.5 -> 1)
+#5 (id=1094967)  : Dummy (3)
+                   Base Value: 160 | Scaled Value: 160 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Absorbs all damage taken for $d, up to $s3% of your maximum health, and redirects $s4% of that amount to the enemy target as Nature damage over $124280d.
 Tooltip          : Damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
@@ -14167,7 +14179,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1021960)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.70000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.7)
 Description      : Expel Harm's healing is increased by up to $s1%, based on your missing health.
 
 Name             : Dragonfire Brew (id=387621) [Spell Family (53)] 
@@ -15779,6 +15792,7 @@ Effects          :
 Description      : Detox additionally removes all Poison and Disease effects.
 
 Name             : Fortifying Brew (id=388917) [Spell Family (53), Passive, Hidden] 
+Hotfixed         : Variables
 Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, override="Fortifying Brew" (id=115203)]
 Class            : Monk
 School           : Physical
@@ -15803,7 +15817,8 @@ Description      : Turns your skin to stone for $120954d, increasing your curren
 
 Combines with other Fortifying Brew effects.
 Variables        : $health=$?s322960[${20}][${20}]
-$damage=$?c1[${20}][${20}]
+$pvp=$?a134735[${1.5}][${1}]
+$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]
 
 Name             : Claw of the White Tiger (id=389541) [Spell Family (53)] 
 Class            : Monk

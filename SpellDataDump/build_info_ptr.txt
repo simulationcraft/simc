@@ -1,1 +1,1 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live (hotfix 2023-07-04/50000, git build data-update-test-50232 be82678)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live (hotfix 2023-07-04/50000, git build data-update-test-50355 2105fee)

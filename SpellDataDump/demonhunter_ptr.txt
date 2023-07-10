@@ -2341,6 +2341,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
+Mechanic         : Snare
 Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #2, #3), Extended Sigils (389697 effect#1), Chains of Anger (389715 effect#1), Precise Sigils (389799 effect#5)
 Family Flags     : 33
 Attributes       : ........ ........ ........ x..x....   .....x.x ........ ........ ........ 
@@ -2354,7 +2355,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=302367)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Slows enemies by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
