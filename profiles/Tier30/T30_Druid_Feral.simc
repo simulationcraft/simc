@@ -10,7 +10,7 @@ talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICkoIJJJl0OgkSiEJJAAAAAAAARQAhkkkIJRKJgE
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
+flask=iced_phial_of_corrupting_rage_3
 food=thousandbone_tongueslicer
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3
@@ -165,21 +165,21 @@ wrists=cuffs_of_the_savage_serpent,id=204394,bonus_id=6652/8783/8784/9414/9415/4
 hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
 waist=oblivions_immortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961
 legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
-feet=slimy_expulsion_boots,id=193451,bonus_id=8960/8840/8836/8902/1537,enchant_id=6607
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8836/8840/8902/8960/9405/9376/9366,enchant_id=6607
 finger1=scalebane_signet,id=193768,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,gem_id=192961,enchant_id=6562
 finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961,enchant_id=6562
-trinket1=ominous_chromatic_essence,id=203729,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=9410/9381/6652/1501/8767
 trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6655
 
 # Gear Summary
-# gear_ilvl=448.47
-# gear_agility=6842
+# gear_ilvl=448.67
+# gear_agility=6858
 # gear_stamina=22591
-# gear_crit_rating=4450
-# gear_haste_rating=2646
-# gear_mastery_rating=4585
-# gear_versatility_rating=1015
+# gear_crit_rating=4684
+# gear_haste_rating=3020
+# gear_mastery_rating=4211
+# gear_versatility_rating=781
 # gear_speed_rating=250
 # gear_avoidance_rating=325
 # gear_armor=4003

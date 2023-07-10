@@ -26,6 +26,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
 actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
+actions.precombat+=/variable,name=opti_cc,value=talent.crashing_chaos&equipped.neltharions_call_to_dominance,op=set
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/soul_fire
@@ -35,10 +36,12 @@ actions.precombat+=/incinerate
 # Executed every time the actor is available.
 actions=variable,name=havoc_immo_time,op=reset
 actions+=/cycling_variable,name=havoc_immo_time,op=add,value=dot.immolate.remains*debuff.havoc.up
+# Simc thinks that infernal is active the moment it lands, but we prefer to have it active when the spell is used
+actions+=/variable,name=infernal_active,op=set,value=pet.infernal.active|cooldown.summon_infernal.remains>160
 actions+=/call_action_list,name=aoe,if=(active_enemies>=3-(talent.inferno&!talent.madness_of_the_azjaqir))&!(!talent.inferno&talent.madness_of_the_azjaqir&talent.chaos_incarnate&active_enemies<4)&!variable.cleave_apl
 actions+=/call_action_list,name=cleave,if=active_enemies!=1|variable.cleave_apl
-actions+=/call_action_list,name=items
 actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=items
 actions+=/conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)|charges=max_charges
 actions+=/dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)
 actions+=/cataclysm,if=raid_event.adds.in>15
@@ -46,17 +49,20 @@ actions+=/channel_demonfire,if=talent.raging_demonfire&(dot.immolate.remains-5*(
 actions+=/soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)
 actions+=/immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|dot.immolate.remains<3|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.infernal_combustion&action.chaos_bolt.usable)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&target.time_to_die>8
 actions+=/channel_demonfire,if=dot.immolate.remains>cast_time&set_bonus.tier30_4pc
-actions+=/chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4
-actions+=/summon_infernal
+# We want to pool some soul_shard if we play with cc before casting infernal and then chain the madness into first cc proc
+actions+=/chaos_bolt,if=cooldown.summon_infernal.remains=0&soul_shard>4&(trinket.spoils_of_neltharus.ready_cooldown|!equipped.spoils_of_neltharus)&buff.domineering_arrogance.stack<3&talent.crashing_chaos
+# With crushing_chaos we want to be sure that infrnal lines with the next comming trinket, if it's ready soon, and that we have pulled shards or have madness up
+actions+=/summon_infernal,if=variable.opti_cc&((soul_shard>4&buff.domineering_arrogance.stack>=3|buff.domineering_arrogance.stack<3&buff.madness_cb.remains>2*gcd.max)&(trinket.spoils_of_neltharus.cooldown.remains<2|!equipped.spoils_of_neltharus))|!variable.opti_cc|fight_remains<30
+actions+=/chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4&(variable.opti_cc&(cooldown.summon_infernal.remains<?trinket.spoils_of_neltharus.cooldown.remains)>2|!variable.opti_cc)
 actions+=/channel_demonfire,if=talent.ruin.rank>1&!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))&dot.immolate.remains>cast_time
 actions+=/conflagrate,if=buff.backdraft.down&soul_shard>=1.5&!talent.roaring_blaze
-actions+=/incinerate,if=cast_time+action.chaos_bolt.cast_time<buff.madness_cb.remains
+actions+=/incinerate,if=cast_time+action.chaos_bolt.cast_time<buff.madness_cb.remains&(buff.call_to_dominance.down|!variable.opti_cc)
 actions+=/chaos_bolt,if=buff.rain_of_chaos.remains>cast_time
 actions+=/chaos_bolt,if=buff.backdraft.up&!talent.eradication&!talent.madness_of_the_azjaqir
-actions+=/chaos_bolt,if=buff.madness_cb.up
+actions+=/chaos_bolt,if=buff.madness_cb.up&((cooldown.summon_infernal.remains<?trinket.spoils_of_neltharus.cooldown.remains)>10|!variable.opti_cc)
 actions+=/channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))&dot.immolate.remains>cast_time
 actions+=/dimensional_rift
-actions+=/chaos_bolt,if=soul_shard>3.5
+actions+=/chaos_bolt,if=soul_shard>3.5&(cooldown.summon_infernal.remains_expected>5|!variable.opti_cc)
 actions+=/chaos_bolt,if=talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft
 actions+=/chaos_bolt,if=fight_remains<5&fight_remains>cast_time+travel_time
 actions+=/conflagrate,if=charges>(max_charges-1)|fight_remains<gcd.max*charges
@@ -76,7 +82,7 @@ actions.aoe+=/immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remain
 actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire
 actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10
 actions.aoe+=/call_action_list,name=ogcd
-actions.aoe+=/summon_infernal
+actions.aoe+=/summon_infernal,if=cooldown.invoke_power_infusion_0.up|cooldown.invoke_power_infusion_0.duration=0|fight_remains>=190&!talent.grand_warlocks_design
 actions.aoe+=/rain_of_fire,if=debuff.pyrogenics.down&active_enemies<=4
 actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time
 actions.aoe+=/immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=((dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains))|active_enemies>active_dot.immolate)&target.time_to_die>10&!havoc_active
@@ -130,21 +136,21 @@ actions.havoc+=/channel_demonfire,if=soul_shard<4.5
 actions.havoc+=/conflagrate,if=!talent.backdraft
 actions.havoc+=/incinerate,if=cast_time<havoc_remains
 
-actions.items=use_item,slot=trinket1,if=pet.infernal.active|!talent.summon_infernal|fight_remains<21|trinket.1.cooldown.duration<cooldown.summon_infernal.remains+5
-actions.items+=/use_item,slot=trinket2,if=pet.infernal.active|!talent.summon_infernal|fight_remains<21|trinket.2.cooldown.duration<cooldown.summon_infernal.remains+5
-actions.items+=/use_item,slot=trinket1,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains+trinket.1.cooldown.duration&fight_remains>trinket.1.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains|(trinket.2.cooldown.remains>0&trinket.2.cooldown.remains<cooldown.summon_infernal.remains)
-actions.items+=/use_item,slot=trinket2,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains+trinket.2.cooldown.duration&fight_remains>trinket.2.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains|(trinket.1.cooldown.remains>0&trinket.1.cooldown.remains<cooldown.summon_infernal.remains)
-actions.items+=/use_item,name=erupting_spear_fragment,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains+trinket.erupting_spear_fragment.cooldown.duration&fight_remains>trinket.erupting_spear_fragment.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains|trinket.erupting_spear_fragment.cooldown.duration<cooldown.summon_infernal.remains+5
+actions.items=use_item,slot=trinket1,if=variable.infernal_active|!talent.summon_infernal|fight_remains<21|trinket.1.cooldown.duration<cooldown.summon_infernal.remains_expected+5
+actions.items+=/use_item,slot=trinket2,if=variable.infernal_active|!talent.summon_infernal|fight_remains<21|trinket.2.cooldown.duration<cooldown.summon_infernal.remains_expected+5
+actions.items+=/use_item,name=spoils_of_neltharus,if=(!talent.crashing_chaos&(fight_remains>trinket.spoils_of_neltharus.cooldown.duration)|cooldown.summon_infernal.remains_expected>fight_remains-25)|variable.infernal_active
+actions.items+=/use_item,slot=trinket1,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains_expected+trinket.1.cooldown.duration&fight_remains>trinket.1.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains_expected|(trinket.2.has_cooldown&trinket.2.cooldown.remains<cooldown.summon_infernal.remains_expected)
+actions.items+=/use_item,slot=trinket2,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains_expected+trinket.2.cooldown.duration&fight_remains>trinket.2.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains_expected|(trinket.1.has_cooldown&trinket.1.cooldown.remains<cooldown.summon_infernal.remains_expected)
+actions.items+=/use_item,name=erupting_spear_fragment,if=(!talent.rain_of_chaos&fight_remains<cooldown.summon_infernal.remains_expected+trinket.erupting_spear_fragment.cooldown.duration&fight_remains>trinket.erupting_spear_fragment.cooldown.duration)|fight_remains<cooldown.summon_infernal.remains_expected|trinket.erupting_spear_fragment.cooldown.duration<cooldown.summon_infernal.remains_expected+5
 actions.items+=/use_item,name=desperate_invokers_codex
 actions.items+=/use_item,name=iceblood_deathsnare
 actions.items+=/use_item,name=conjured_chillglobe
 
-actions.ogcd=potion,if=pet.infernal.active|!talent.summon_infernal
-# Attempts to use Power Infusion alongside Summon Infernal, but it will be used on Cooldown if the fight length is too short or long enough to fit an extra PI
-actions.ogcd+=/invoke_external_buff,name=power_infusion,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.invoke_power_infusion_0.duration&fight_remains>cooldown.invoke_power_infusion_0.duration)|fight_remains<cooldown.summon_infernal.remains+15
-actions.ogcd+=/berserking,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains
-actions.ogcd+=/blood_fury,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.blood_fury.duration&fight_remains>cooldown.blood_fury.duration)|fight_remains<cooldown.summon_infernal.remains
-actions.ogcd+=/fireblood,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.fireblood.duration&fight_remains>cooldown.fireblood.duration)|fight_remains<cooldown.summon_infernal.remains
+actions.ogcd=potion,if=variable.infernal_active|!talent.summon_infernal
+actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.invoke_power_infusion_0.duration&fight_remains>cooldown.invoke_power_infusion_0.duration)|fight_remains<cooldown.summon_infernal.remains_expected+15
+actions.ogcd+=/berserking,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains_expected+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains_expected
+actions.ogcd+=/blood_fury,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.blood_fury.duration&fight_remains>cooldown.blood_fury.duration)|fight_remains<cooldown.summon_infernal.remains
+actions.ogcd+=/fireblood,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.fireblood.duration&fight_remains>cooldown.fireblood.duration)|fight_remains<cooldown.summon_infernal.remains_expected
 
 head=scalesworn_cultists_scorn,id=200336,bonus_id=6514,ilevel=424,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,ilevel=418,gem_id=192948/192948/192948
