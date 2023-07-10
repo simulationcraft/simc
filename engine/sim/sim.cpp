@@ -2739,7 +2739,21 @@ void sim_t::init()
     }
   }
 
-  auras.fallback = make_buff( this, "fallback" )->set_chance( 0.0 );
+  struct fallback_buff_t : public buff_t
+  {
+    fallback_buff_t( sim_t* sim ) : buff_t( sim, "fallback" ) { set_chance( 0.0 ); }
+    bool trigger( int, double, double, timespan_t ) override { return false; }
+    void execute( int, double, timespan_t ) override { return; }
+    void increment( int, double, timespan_t ) override { return; }
+    void decrement( int, double ) override { return; }
+    void start( int, double, timespan_t ) override { return; }
+    void refresh( int, double, timespan_t ) override { return; }
+    void bump( int, double ) override { return; }
+    void reset() override { return; }
+    void invalidate_cache() override { return; }
+  };
+
+  auras.fallback = make_buff<fallback_buff_t>( this );
 
   auras.arcane_intellect = make_buff( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
                                ->set_default_value( dbc::find_spell( this, 1459 )->effectN( 1 ).percent() )
