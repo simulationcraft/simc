@@ -2741,7 +2741,11 @@ void sim_t::init()
 
   struct fallback_buff_t : public buff_t
   {
-    fallback_buff_t( sim_t* sim ) : buff_t( sim, "fallback" ) { set_chance( 0.0 ); }
+    fallback_buff_t( sim_t* sim ) : buff_t( sim, "fallback" )
+    {
+      set_chance( 0.0 );
+      set_no_callbacks( true );
+    }
     bool trigger( int, double, double, timespan_t ) override { return false; }
     void execute( int, double, timespan_t ) override { return; }
     void increment( int, double, timespan_t ) override { return; }
