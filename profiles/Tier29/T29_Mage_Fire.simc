@@ -1,4 +1,3 @@
-ptr=1
 mage="T29_Mage_Fire"
 source=default
 spec=fire
@@ -238,4 +237,3 @@ off_hand=scripture_of_primal_devotion,id=195513,bonus_id=4800/4786/1498
 # gear_armor=2045
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
-ptr=0

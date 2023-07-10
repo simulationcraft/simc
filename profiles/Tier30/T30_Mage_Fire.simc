@@ -1,4 +1,3 @@
-ptr=1
 mage="T30_Mage_Fire"
 source=default
 spec=fire
@@ -240,4 +239,3 @@ main_hand=erethos_the_empty_promise,id=202565,bonus_id=6652/8783/8784/9414/9415/
 # gear_armor=2452
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
-ptr=0
