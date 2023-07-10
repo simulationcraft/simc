@@ -1912,6 +1912,9 @@ struct dispersion_t final : public priest_buff_t<buff_t>
   dispersion_t( priest_t& p )
     : base_t( p, "dispersion", p.talents.shadow.dispersion ), heal( new actions::spells::dispersion_heal_t( p ) )
   {
+    if ( !data().ok() )
+      return;
+
     set_period( data().effectN( 5 ).period() );
 
     auto eff            = &data().effectN( 5 );
