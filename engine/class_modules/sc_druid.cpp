@@ -1833,7 +1833,8 @@ struct shadows_of_the_predator_buff_t : public druid_buff_t
 
   void increment( int s, double v, timespan_t d ) override
   {
-    if ( current_stack >= cutoff && rng().roll( 0.125 * ( current_stack - ( cutoff - 1 ) ) ) )
+    // TODO: 10.625% is just a guess with no confirmation based on old proc rate being 12.5%
+    if ( current_stack >= cutoff && rng().roll( 0.10625 * ( current_stack - ( cutoff - 1 ) ) ) )
     {
       p()->predator_revealed_stacks->add( current_stack );
 
