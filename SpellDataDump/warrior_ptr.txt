@@ -200,6 +200,7 @@ Cooldown         : 8 seconds
 Charges          : 1 (210 seconds cooldown)
 Category         : 1929: Symbol of Hope (265144 effect#3), Stalwart Guardian (334993 effect#2), Unbreakable Will (335629 effect#2), Defender's Aegis (397103 effect#1), Defender's Aegis (397103 effect#2)
 Labels           : 1284: Symbol of Hope (265144 effect#2)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3)
 Family Flags     : 11, 13
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
@@ -2315,8 +2316,7 @@ Spell Type       : None
 Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-                 : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
+Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 
@@ -3469,6 +3469,7 @@ GCD              : 1.5 seconds
 Travel Delay     : 0.3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Pile On (364553 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Blunt Instruments (383442 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Family Flags     : 8, 9, 52, 62
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -5169,7 +5170,6 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Proc Chance      : 101%
 Proc Flags       : ........ ..x..... ........ ........   ........ ........ ........ ........   
                  : Generic Heal
@@ -15494,7 +15494,6 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6), Unnerving Focus (337155 effect#5), Unnerving Focus (384043 effect#5), Dance of Death (390714 effect#1)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x.x   ....x... .xx....x ........ ........ 
@@ -17384,8 +17383,7 @@ Spell Type       : None
 Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-                 : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
+Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 

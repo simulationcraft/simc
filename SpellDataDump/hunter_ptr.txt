@@ -4402,7 +4402,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Hunter (137014 effect#3), Call of the Wild (206332 effect#1), Ride the Lightning (263821 effect#1), Aspect of the Cheetah (263829 effect#1), Call of the Wild (336742 effect#1), Snake Bite (389660 effect#1)
 Family Flags     : 1, 77
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
