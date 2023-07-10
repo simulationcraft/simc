@@ -9447,25 +9447,28 @@ namespace monk
 
   role_e monk_t::primary_role() const
   {
-    if ( base_t::primary_role() == role_e::ROLE_DPS )
-      return ROLE_DPS;
+    // First, check for the user-specified role
+    switch ( player_t::primary_role() )
+    {
+      case ROLE_TANK:
+      case ROLE_ATTACK:
+      case ROLE_HEAL:
+        return player_t::primary_role();
+        break;
+      default:
+        break;
+    }
 
-    if ( base_t::primary_role() == role_e::ROLE_TANK )
-      return ROLE_TANK;
-
-    if ( base_t::primary_role() == role_e::ROLE_HEAL )
-      return ROLE_HYBRID;  // To prevent spawning healing_target, as there is no support for healing.
-
-    if ( specialization() == specialization_e::MONK_BREWMASTER )
-      return ROLE_TANK;
-
-    if ( specialization() == specialization_e::MONK_MISTWEAVER )
-      return ROLE_ATTACK;  // To prevent spawning healing_target, as there is no support for healing.
-
-    if ( specialization() == specialization_e::MONK_WINDWALKER )
-      return ROLE_DPS;
-
-    return ROLE_HYBRID;
+    // Else, fall back to spec
+    switch ( specialization() )
+    {
+      case MONK_BREWMASTER:
+        return ROLE_TANK;
+        break;
+      default:
+        return ROLE_ATTACK;
+        break;
+    }
   }
 
   // monk_t::convert_hybrid_stat ==============================================
