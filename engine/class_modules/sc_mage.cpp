@@ -339,7 +339,6 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* arcane_orb;
     cooldown_t* combustion;
     cooldown_t* comet_storm;
     cooldown_t* cone_of_cold;
@@ -958,7 +957,6 @@ void water_elemental_pet_t::create_actions()
 {
   o()->action.pet_freeze = get_action<freeze_t>( "freeze", this );
 
-  // /!\ WARNING /!\
   // This is a foreground action (and thus get_action shouldn't be used). Handle with care.
   o()->action.pet_water_jet = new water_jet_t( "water_jet", this );
 
@@ -5890,7 +5888,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   talents()
 {
   // Cooldowns
-  cooldowns.arcane_orb           = get_cooldown( "arcane_orb"           );
   cooldowns.combustion           = get_cooldown( "combustion"           );
   cooldowns.comet_storm          = get_cooldown( "comet_storm"          );
   cooldowns.cone_of_cold         = get_cooldown( "cone_of_cold"         );
