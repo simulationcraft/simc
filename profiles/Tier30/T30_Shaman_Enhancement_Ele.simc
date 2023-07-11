@@ -11,7 +11,7 @@ dragonflight.ominous_chromatic_essence_allies=ruby/bronze/emerald/obsidian
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=disabled
@@ -106,7 +106,7 @@ actions.single+=/lava_lash,if=buff.hot_hand.up
 actions.single+=/windfury_totem,if=!buff.windfury_totem.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
-actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up
+actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up&talent.elemental_spirits.enabled
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&(buff.feral_spirit.up|!talent.elemental_spirits.enabled)
 actions.single+=/lava_burst,if=!talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=5
 actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down
@@ -144,20 +144,20 @@ hands=knuckles_of_the_cinderwolf,id=202471,bonus_id=4800/4786/1498
 waist=faulds_of_the_cinderwolf,id=202467,bonus_id=4800/4786/1504/523,gem_id=192961
 legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
 feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
-finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
+finger1=entropic_convergence_loop,id=202572,bonus_id=4800/4786/1504,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
-trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1501
 trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
 main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,enchant=sophic_devotion_3,crafted_stats=49/36
 off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,enchant=sophic_devotion_3,crafted_stats=49/36
 
 # Gear Summary
-# gear_ilvl=448.63
-# gear_agility=6225
+# gear_ilvl=448.81
+# gear_agility=6241
 # gear_stamina=22474
 # gear_crit_rating=1024
-# gear_haste_rating=6066
-# gear_mastery_rating=5166
+# gear_haste_rating=5738
+# gear_mastery_rating=5493
 # gear_versatility_rating=795
 # gear_speed_rating=250
 # gear_avoidance_rating=200

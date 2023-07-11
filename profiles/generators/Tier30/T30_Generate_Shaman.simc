@@ -46,9 +46,9 @@ hands=knuckles_of_the_cinderwolf,id=202471,bonus_id=4800/4786/1498
 waist=faulds_of_the_cinderwolf,id=202467,bonus_id=4800/4786/1504/523,gem_id=192961
 legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
 feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
-finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
+finger1=entropic_convergence_loop,id=202572,bonus_id=4800/4786/1504,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
-trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1501
 trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
 main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
 off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
@@ -78,7 +78,7 @@ legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_a
 feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
 finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
-trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1501
 trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
 main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
 off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
