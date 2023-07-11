@@ -2251,17 +2251,14 @@ void priest_t::init_spells()
   talents.improved_fade          = CT( "Improved Fade" );
   talents.manipulation = CT( "Manipulation" );  // Spell data is not great here, actual/tooltip value is cut in half
   // Row 10
-  talents.benevolence      = CT( "Benevolence" );
-  talents.power_word_life  = CT( "Power Word: Life" );
-  talents.angelic_bulwark  = CT( "Angelic Bulwark" );  // NYI
-  talents.essence_devourer = CT( "Essence Devourer" );
-  if ( is_ptr() )
-  {
-    talents.essence_devourer_shadowfiend = find_spell( 415673 );  // actual healing spell for Shadowfiend
-    talents.essence_devourer_mindbender  = find_spell( 415676 );  // actual healing spell for Mindbender
-  }
-  talents.void_shift            = CT( "Void Shift" );  // NYI
-  talents.shattered_perceptions = CT( "Shattered Perceptions" );
+  talents.benevolence                  = CT( "Benevolence" );
+  talents.power_word_life              = CT( "Power Word: Life" );
+  talents.angelic_bulwark              = CT( "Angelic Bulwark" );  // NYI
+  talents.essence_devourer             = CT( "Essence Devourer" );
+  talents.essence_devourer_shadowfiend = find_spell( 415673 );  // actual healing spell for Shadowfiend
+  talents.essence_devourer_mindbender  = find_spell( 415676 );  // actual healing spell for Mindbender
+  talents.void_shift                   = CT( "Void Shift" );    // NYI
+  talents.shattered_perceptions        = CT( "Shattered Perceptions" );
 }
 
 void priest_t::create_buffs()
