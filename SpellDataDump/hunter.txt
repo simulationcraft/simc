@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -652,7 +652,6 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.80500 | PvP Coefficient: 1.25000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.55 -> 2.805)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage$?s260240[ and causes your next 1-$260242u ][]$?s342049&s260240[Chimaera Shots]?s260240[Arcane Shots][]$?s260240[ or Multi-Shots to deal $260242s1% more damage][].$?s260228[
@@ -1053,7 +1052,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk
 Race             : Draenei (0x400)
 School           : Holy
 Spell Type       : Magic
@@ -1465,7 +1464,6 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=45989)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.78300 | PvP Coefficient: 0.91000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.53 -> 2.783), PvP Coefficient (1 -> 0.91)
 #2 (id=45990)    : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : You attempt to finish off a wounded target, dealing $s1 Physical damage. Only usable on enemies with less than $s2% health.$?s343248[
@@ -1708,6 +1706,8 @@ Name             : Glyph of Lesser Proportion (id=57870) [Spell Family (9), Pass
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2886,7 +2886,7 @@ Description      : $@spelldesc109298
 Tooltip          : Webbed.
 
 Name             : Hunter (id=137014) [Spell Family (9), Passive, Hidden] 
-Class            : Hunter, Monk
+Class            : Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4402,7 +4402,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Hunter (137014 effect#3), Call of the Wild (206332 effect#1), Ride the Lightning (263821 effect#1), Aspect of the Cheetah (263829 effect#1), Call of the Wild (336742 effect#1), Snake Bite (389660 effect#1)
 Family Flags     : 1, 77
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -4893,7 +4892,6 @@ Effects          :
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
-Hotfixed         : Attributes
 Talent Entry     : Survival [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
@@ -5896,7 +5894,6 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51000 | PvP Coefficient: 1.25000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.456 -> 0.51)
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -5919,9 +5916,8 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Limit N (165), No Caster Aura Icon (187), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=480367)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
-                   Affected School(s): All
+#1 (id=480367)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=743704)   : Apply Aura (6) | Stalked (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=819194)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
@@ -9321,7 +9317,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=722199)   : Apply Aura (6) | Periodic Damage (3): nature every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Fire a shot that poisons your target, causing them to take $s1 Nature damage instantly and an additional $o2 Nature damage over $d.$?s260241[
+Description      : Fire a shot that poisons your target, causing them to take $?s389882[${$m1*(1+($389882m1/100))}][$s1] Nature damage instantly and an additional $?s389882[${$o2*(1+($389882m1/100))}][$o2] Nature damage over $d.$?s260241[
 
 Serpent Sting fires arrows at $260241s1 additional $Lenemy:enemies; near your target.][]$?s378014[
 
@@ -11072,7 +11068,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 Description      : Reduces the cooldown of your Aimed Shot and Rapid Fire by ${100*(1-(100/(100+$m1)))}%, and causes Aimed Shot to cast $s4% faster for $d.
 
-While Trueshot is active, you generate $s5% additional Focus$?s386878[ and you gain $386877s1% critical strike chance and $386877s2% increased critical damage dealt every $386876t1 sec, stacking up to $386877u times.][].$?s260404[
+While Trueshot is active, you generate $s5% additional Focus$?s386878[ and you gain $386877s1% critical strike chance and $386877s2% increased critical damage dealt every $386876t1 sec, stacking up to $386877u times][].$?s260404[
 
 Every $260404s2 Focus spent reduces the cooldown of Trueshot by ${$260404m1/1000}.1 sec.][]
 Tooltip          : The cooldown of Aimed Shot and Rapid Fire is reduced by ${100*(1-(100/(100+$m1)))}%, and Aimed Shot casts $s4% faster.
@@ -11166,7 +11162,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=762256)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Butchery and Carve reduce the remaining cooldown on Wildfire Bomb by ${$187708s2/1000} sec and the the remaining cooldown of Flanking Strike by ${$187708s2/1000} sec for each target hit, up to $187708s3.
+Description      : Butchery and Carve reduce the remaining cooldown on Wildfire Bomb by ${$187708s2/1000} sec and the remaining cooldown of Flanking Strike by ${$187708s2/1000} sec for each target hit, up to $187708s3.
 
 Name             : Person-Computer Interface (id=300168) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -11688,7 +11684,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Command your pet to tear into your target, causing your target to bleed for $<damage> over $321538d and increase all damage taken from your pet by $321538s2% for $321538d.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$serrated=$?s389882[${1+($@traitentryrank100513*$389882s1)/100}][${1}]
+$serrated=$?s389882[${1+($389882s1)/100}][${1}]
 $damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Bloodshed (id=321538) [Spell Family (9)] 
@@ -11719,7 +11715,7 @@ Description      : $@spelldesc321530
 Tooltip          : Bleeding for $w1 Physical damage every $t1 sec.
 Taking $s2% increased damage from the Hunter's pet.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$serrated=$?s389882[${1+($@traitentryrank100513*$389882s1)/100}][${1}]
+$serrated=$?s389882[${1+($389882s1)/100}][${1}]
 $damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Flayed Shot (desc=Venthyr) (id=324149) [Spell Family (9)] 
@@ -13715,6 +13711,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 120 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Call of the Wild (336742 effect#1), Deadly Tandem (341350 effect#1), Coordinated Kill (385739 effects: #1, #2, #3)
 Family Flags     : 27
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -14464,7 +14461,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1006524)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt.
+Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt. Deals reduced damage beyond $389448s2 targets.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=3, col=3, max_rank=2, req_points=0]
@@ -15543,7 +15540,7 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Coordinated Assault (360952), Coordinated Assault (360969)
                    Family Flags: 27
-Description      : While Coordinated Assault is active, the cooldown of Wildfire Bomb is reduced by $s1%, Wildifre Bomb generates $s2 Focus when thrown, Kill Shot's cooldown is reduced by $s3%, and Kill Shot can be used against any target, regardless of their current health.
+Description      : While Coordinated Assault is active, the cooldown of Wildfire Bomb is reduced by $s1%, Wildfire Bomb generates $s2 Focus when thrown, Kill Shot's cooldown is reduced by $s3%, and Kill Shot can be used against any target, regardless of their current health.
 
 Name             : Dire Frenzy (id=385810) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=9, col=1, max_rank=2, req_points=20]
@@ -17013,7 +17010,7 @@ Effects          :
                    Family Flags: 12, 105
 #2 (id=1075493)  : Apply Aura (6) | Proc Trigger Spell (42): Deathblow
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 378770 | Target: Self (1)
-Description      : $?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot deal $s1% increased damage and have a $h% chance to grant the Deathblow effect.
+Description      : $?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot deal $s1% increased damage and have an $h% chance to grant the Deathblow effect.
 
 Name             : Hunter Marksmanship 10.1 Class Set 4pc (id=405527) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter

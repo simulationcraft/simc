@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -200,6 +200,7 @@ Cooldown         : 8 seconds
 Charges          : 1 (210 seconds cooldown)
 Category         : 1929: Symbol of Hope (265144 effect#3), Stalwart Guardian (334993 effect#2), Unbreakable Will (335629 effect#2), Defender's Aegis (397103 effect#1), Defender's Aegis (397103 effect#2)
 Labels           : 1284: Symbol of Hope (265144 effect#2)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3)
 Family Flags     : 11, 13
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
@@ -1170,7 +1171,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk
 Race             : Draenei (0x400)
 School           : Holy
 Spell Type       : Magic
@@ -2268,9 +2269,9 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
+                 : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=115753)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Root | Chain Targets: 1 | Target: Enemy (6)
@@ -2315,8 +2316,7 @@ Spell Type       : None
 Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-                 : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
+Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 
@@ -2857,7 +2857,7 @@ Description      : $@spelldesc2565
 Tooltip          : Block chance increased by $s1%.
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2875,7 +2875,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -2916,7 +2916,7 @@ Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
 
 Name             : Warrior (id=137047) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior, Monk
+Class            : Warrior
 School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.75 seconds
@@ -2994,11 +2994,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179732)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Nature's Fury (354163), Spear of Bastion (376080), Annihilator (383915), Titanic Throw (384090), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunder Clap (396719), Thunderous Roar (397364), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703)
                    Family Flags: 9
 #2 (id=186944)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Nature's Fury (354163), Spear of Bastion (376080), Annihilator (383915), Titanic Throw (384090), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunder Clap (396719), Thunderous Roar (397364), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703)
                    Family Flags: 9
 #3 (id=191017)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -3051,7 +3051,6 @@ Effects          :
 #20 (id=1093630)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2796 (Label) | Target: Self (1)
                    Affected Spells (Label): Defensive Stance (386208)
-Hotfixed         : NEW EFFECT
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
 Class            : Arms Warrior
@@ -3470,6 +3469,7 @@ GCD              : 1.5 seconds
 Travel Delay     : 0.3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Pile On (364553 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Blunt Instruments (383442 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Family Flags     : 8, 9, 52, 62
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -5170,7 +5170,6 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Proc Chance      : 101%
 Proc Flags       : ........ ..x..... ........ ........   ........ ........ ........ ........   
                  : Generic Heal
@@ -8998,7 +8997,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 18 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #5), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Family Flags     : 8, 9, 18, 20
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9006,7 +9005,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=799630)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
@@ -12585,7 +12584,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
 Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects last ${$s1/1000}.1 sec longer and have a $s2% increased critical strike chance.
 
-If you have Rend, Mortal Strike inflicts Rend on targets below $s4% health
+If you have Rend, Mortal Strike inflicts Rend on targets below $s4% health.
 
 
 Name             : Improved Sweeping Strikes (id=383155) [Spell Family (4), Passive, Hidden] 
@@ -12651,6 +12650,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1015062)  : Reduce Remaining Cooldown (290)
                    Base Value: -6000 | Scaled Value: -6000 | PvP Coefficient: 1.00000 | Trigger Spell: 12294 | Target: Self (1)
+Description      : Mortal Strike and Cleave have a $383219h% chance to instantly reset their own cooldowns.
+
 
 Name             : Bloodborne (id=383287) [Spell Family (4), Passive] 
 Talent Entry     : Arms [tree=spec, row=7, col=2, max_rank=2, req_points=8]
@@ -13077,7 +13078,7 @@ Stacks           : 999 maximum
 Proc Chance      : 101%
 Proc Flags       : .....x.. ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee Taken
-Triggered by     : Fatality (383703), Fatal Mark (383706)
+Triggered by     : Fatality (383703)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13110,8 +13111,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1015780)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.76000 | PvP Coefficient: 0.33000 | Target: Unknown(25)
-#2 (id=1015781)  : Cancel Aura (164)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383704 | Target: Unknown(25)
 Description      : $@spelldesc383703
 
 Name             : Bitter Immunity (id=383762) 
@@ -15495,7 +15494,6 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6), Unnerving Focus (337155 effect#5), Unnerving Focus (384043 effect#5), Dance of Death (390714 effect#1)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x.x   ....x... .xx....x ........ ........ 
@@ -17003,7 +17001,7 @@ Cooldown         : 18 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #5), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Triggered by     : Onslaught (315720)
 Family Flags     : 9, 20
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ..x..... 
+Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17011,7 +17009,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Chain From Caster (76), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1038230)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.12240 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
@@ -17385,8 +17383,7 @@ Spell Type       : None
 Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-                 : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
+Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 
@@ -17561,7 +17558,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053923)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : For $410218d sec after Last Stand ends, Shield Slam unleashes a wave of force dealing $410219s2 Physical damage to enemies in front of you and reducing damage they deal to you by $410219s3% for $410219d.
+Description      : For $410218d after Last Stand ends, Shield Slam unleashes a wave of force dealing $410219s2 Physical damage to enemies in front of you and reducing damage they deal to you by $410219s3% for $410219d.
 
 Name             : Calm the Wolf (desc=Racial) (id=406087) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
