@@ -9,7 +9,7 @@ talents=BcQAAAAAAAAAAAAAAAAAAAAAAQSSKRSCSSIIJUSIAAAAAAAAAAAAgSESCJoJQSLJpgIEESaI
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=disabled
@@ -104,7 +104,7 @@ actions.single+=/lava_lash,if=buff.hot_hand.up
 actions.single+=/windfury_totem,if=!buff.windfury_totem.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
-actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up
+actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up&talent.elemental_spirits.enabled
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&(buff.feral_spirit.up|!talent.elemental_spirits.enabled)
 actions.single+=/lava_burst,if=!talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=5
 actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down
