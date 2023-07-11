@@ -5158,6 +5158,70 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
   e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_t>( "mirror_of_fractured_tomorrows", e );
 }
 
+// Accelerating Sandglass
+// 417499 Driver/Values
+// 417452 Stacking Buff 
+// 417456 Damage enable buff
+// 417458 Damage
+void accelerating_sandglass(special_effect_t& e)
+{
+  struct accelerating_sandglass_damage_t : public generic_proc_t
+  {
+    buff_t* damage_buff;
+    accelerating_sandglass_damage_t( const special_effect_t& e, buff_t* b )
+      : generic_proc_t( e, "accelerating_sandglass", e.player->find_spell( 417458 ) ), damage_buff( b )
+    {
+      base_dd_min = base_dd_max = e.driver() -> effectN( 2 ).average( e.item ) * e.player -> find_spell( 417452 ) -> max_stacks();
+    }
+    
+    void execute() override
+    {
+      generic_proc_t::execute();
+      damage_buff -> expire();
+    }
+  };
+
+  auto damage_buff_spell = e.player -> find_spell( 417456 );
+  auto damage_buff = create_buff<buff_t>( e.player, "accelerating_sandglass_damage", damage_buff_spell );
+
+  auto sandglass_damage      = new special_effect_t( e.player );
+  sandglass_damage->name_str = "accelerating_sandglass";
+  sandglass_damage->item     = e.item;
+  sandglass_damage->spell_id = damage_buff->data().id();
+  sandglass_damage->execute_action = new accelerating_sandglass_damage_t( e, damage_buff );
+  e.player->special_effects.push_back( sandglass_damage );
+
+  auto damage = new dbc_proc_callback_t( e.player, *sandglass_damage );
+  damage->initialize();
+  damage->deactivate();
+
+  damage_buff->set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      damage->activate();
+    }
+    else
+    {
+      damage->deactivate();
+    }
+  } );
+
+  auto buff_spell = e.player -> find_spell( 417452 );
+  auto buff = create_buff<stat_buff_t>( e.player, "accelerating_sandglass_stack", buff_spell );
+  buff -> add_stat_from_effect( 1, e.driver() -> effectN( 1 ).average( e.item ) );
+  buff -> set_max_stack( buff_spell -> max_stacks() + 1 ); // Expires on the proc after reaching 8 stacks
+  buff -> set_expire_at_max_stack( true );
+  buff->set_stack_change_callback( [ damage_buff ]( buff_t*, int, int new_ ) {
+    if ( !new_ )
+    {
+      damage_buff->trigger();
+    }
+  } );
+
+  e.custom_buff = buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7341,6 +7405,7 @@ void register_special_effects()
   register_special_effect( 408625, items::fractured_crystalspine_quill );
   register_special_effect( 407523, items::firecallers_focus );
   register_special_effect( 418527, items::mirror_of_fractured_tomorrows, true );
+  register_special_effect( 417449, items::accelerating_sandglass );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
