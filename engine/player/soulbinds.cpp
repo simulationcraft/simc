@@ -2544,7 +2544,7 @@ void register_special_effects()
   register_soulbind_special_effect( 350936, soulbinds::mnemonic_equipment );
 }
 
-action_t* create_action( player_t* player, util::string_view name, util::string_view options )
+action_t* create_action( player_t* player, std::string_view name, std::string_view options )
 {
   if ( util::str_compare_ci( name, "newfound_resolve" ) ) return new soulbinds::newfound_resolve_t( player, options );
 
