@@ -12305,53 +12305,58 @@ void druid_t::shapeshift( form_e f )
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ), dots(), hots(), debuff(), buff()
 {
-  dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
-  dots.astral_smolder        = target.get_dot( "astral_smolder", &source );
-  dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );  // damage dot is triggered by feral_frenzy_tick_t
-  dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
-  dots.fungal_growth         = target.get_dot( "fungal_growth", &source );
-  dots.lunar_inspiration     = target.get_dot( "lunar_inspiration", &source );
-  dots.moonfire              = target.get_dot( "moonfire", &source );
-  dots.rake                  = target.get_dot( "rake", &source );
-  dots.rip                   = target.get_dot( "rip", &source );
-  dots.stellar_flare         = target.get_dot( "stellar_flare", &source );
-  dots.sunfire               = target.get_dot( "sunfire", &source );
-  dots.tear                  = target.get_dot( "tear", &source );
-  dots.thrash_bear           = target.get_dot( "thrash_bear", &source );
-  dots.thrash_cat            = target.get_dot( "thrash_cat", &source );
+  if ( target.is_enemy() )
+  {
+    dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
+    dots.astral_smolder        = target.get_dot( "astral_smolder", &source );
+    dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );  // damage dot is triggered by feral_frenzy_tick_t
+    dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
+    dots.fungal_growth         = target.get_dot( "fungal_growth", &source );
+    dots.lunar_inspiration     = target.get_dot( "lunar_inspiration", &source );
+    dots.moonfire              = target.get_dot( "moonfire", &source );
+    dots.rake                  = target.get_dot( "rake", &source );
+    dots.rip                   = target.get_dot( "rip", &source );
+    dots.stellar_flare         = target.get_dot( "stellar_flare", &source );
+    dots.sunfire               = target.get_dot( "sunfire", &source );
+    dots.tear                  = target.get_dot( "tear", &source );
+    dots.thrash_bear           = target.get_dot( "thrash_bear", &source );
+    dots.thrash_cat            = target.get_dot( "thrash_cat", &source );
 
-  hots.adaptive_swarm_heal   = target.get_dot( "adaptive_swarm_heal", &source );
-  hots.cenarion_ward         = target.get_dot( "cenarion_ward", &source );
-  hots.cultivation           = target.get_dot( "cultivation", &source );
-  hots.frenzied_regeneration = target.get_dot( "frenzied_regeneration", &source );
-  hots.germination           = target.get_dot( "germination", &source );
-  hots.lifebloom             = target.get_dot( "lifebloom", &source );
-  hots.regrowth              = target.get_dot( "regrowth", &source );
-  hots.rejuvenation          = target.get_dot( "rejuvenation", &source );
-  hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
-  hots.wild_growth           = target.get_dot( "wild_growth", &source );
+    debuff.dire_fixation = make_buff( *this, "dire_fixation", find_trigger( source.talent.dire_fixation ).trigger() );
 
-  debuff.dire_fixation = make_buff( *this, "dire_fixation", find_trigger( source.talent.dire_fixation ).trigger() );
+    debuff.pulverize = make_buff( *this, "pulverize_debuff", source.talent.pulverize )
+      ->set_cooldown( 0_ms )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
+      ->apply_affecting_aura( source.talent.circle_of_life_and_death );
 
-  debuff.pulverize = make_buff( *this, "pulverize_debuff", source.talent.pulverize )
-    ->set_cooldown( 0_ms )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-    ->apply_affecting_aura( source.talent.circle_of_life_and_death );
+    debuff.tooth_and_claw = make_buff( *this, "tooth_and_claw_debuff",
+          find_trigger( find_trigger( source.talent.tooth_and_claw ).trigger() ).trigger() )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
+      ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
+        source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
+      } );
 
-  debuff.tooth_and_claw = make_buff( *this, "tooth_and_claw_debuff",
-        find_trigger( find_trigger( source.talent.tooth_and_claw ).trigger() ).trigger() )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-    ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
-      source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
-    } );
+    debuff.waning_twilight = make_buff( *this, "waning_twilight", source.spec.waning_twilight )
+      ->set_chance( 1.0 )
+      ->set_duration( 0_ms );
+  }
+  else if ( !target.is_pet() )
+  {
+    hots.adaptive_swarm_heal   = target.get_dot( "adaptive_swarm_heal", &source );
+    hots.cenarion_ward         = target.get_dot( "cenarion_ward", &source );
+    hots.cultivation           = target.get_dot( "cultivation", &source );
+    hots.frenzied_regeneration = target.get_dot( "frenzied_regeneration", &source );
+    hots.germination           = target.get_dot( "germination", &source );
+    hots.lifebloom             = target.get_dot( "lifebloom", &source );
+    hots.regrowth              = target.get_dot( "regrowth", &source );
+    hots.rejuvenation          = target.get_dot( "rejuvenation", &source );
+    hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
+    hots.wild_growth           = target.get_dot( "wild_growth", &source );
 
-  debuff.waning_twilight = make_buff( *this, "waning_twilight", source.spec.waning_twilight )
-    ->set_chance( 1.0 )
-    ->set_duration( 0_ms );
-
-  buff.ironbark = make_buff( *this, "ironbark", source.talent.ironbark )
-    ->set_cooldown( 0_ms );
+    buff.ironbark = make_buff( *this, "ironbark", source.talent.ironbark )
+      ->set_cooldown( 0_ms );
+  }
 }
 
 int druid_td_t::hots_ticking() const
