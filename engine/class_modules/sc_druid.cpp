@@ -459,19 +459,20 @@ public:
 
     // Balance
     action_t* astral_smolder;
-    action_t* denizen_of_the_dream;          // placeholder action
+    action_t* denizen_of_the_dream;  // placeholder action
+    action_t* moons;                 // placeholder action
     action_t* orbit_breaker;
-    action_t* shooting_stars;                // placeholder action
+    action_t* shooting_stars;        // placeholder action
     action_t* shooting_stars_moonfire;
     action_t* shooting_stars_sunfire;
-    action_t* crashing_stars;                // 4t30
-    action_t* starfall_starweaver;           // free starfall from starweaver's warp
-    action_t* starsurge_starweaver;          // free starsurge from starweaver's weft
+    action_t* crashing_stars;        // 4t30
+    action_t* starfall_starweaver;   // free starfall from starweaver's warp
+    action_t* starsurge_starweaver;  // free starsurge from starweaver's weft
     action_t* sundered_firmament;
     action_t* orbital_strike;
 
     // Feral
-    action_t* ferocious_bite_apex;           // free bite from apex predator's crazing
+    action_t* ferocious_bite_apex;  // free bite from apex predator's crazing
     action_t* frenzied_assault;
     action_t* thrashing_claws;
 
@@ -6715,6 +6716,8 @@ struct moon_base_t : public druid_spell_t
                          data().charges(), cooldown->charges );
       }
       cooldown->charges = data().charges();
+
+      p()->active.moons->add_child( this );
     }
   }
 
@@ -6736,6 +6739,9 @@ struct moon_base_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+
+    if ( !is_free() && data().ok() )
+      p()->active.moons->stats->add_execute( time_to_execute, target );
 
     p()->eclipse_handler.cast_moon( stage );
 
@@ -10257,6 +10263,12 @@ void druid_t::create_actions()
 
   if ( talent.denizen_of_the_dream.ok() )
     active.denizen_of_the_dream = new denizen_of_the_dream_t( this );
+
+  if ( talent.new_moon.ok() )
+  {
+    active.moons = new action_t( action_e::ACTION_OTHER, "moons_proxy", this, talent.new_moon );
+    active.moons->name_str_reporting = "new_moon";
+  }
 
   if ( talent.shooting_stars.ok() )
   {
