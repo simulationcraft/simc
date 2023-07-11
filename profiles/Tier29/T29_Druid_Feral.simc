@@ -6,7 +6,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICIKSSSSJlIpkIRSCAAAAAAFASEEASSSikEK5AUScAAAAAAAIBAIA
+talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICIKSSSSJlIpkIRSCAAAAAABgEBAAAAAAAAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
