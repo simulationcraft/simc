@@ -89,7 +89,7 @@ public:
    */
   bool activated;
   bool reactable;
-  bool reverse, constant, quiet, overridden, can_cancel, no_callbacks;
+  bool reverse, constant, quiet, overridden, can_cancel, is_fallback;
   bool requires_invalidation;
   bool expire_at_max_stack;
 
@@ -374,7 +374,6 @@ public:
   buff_t* set_reverse( bool );
   buff_t* set_activated( bool );
   buff_t* set_can_cancel( bool cc );
-  buff_t* set_no_callbacks( bool );
   buff_t* set_tick_behavior( buff_tick_behavior );
   buff_t* set_tick_callback( buff_tick_callback_t );
   buff_t* set_tick_time_callback( buff_tick_time_callback_t );

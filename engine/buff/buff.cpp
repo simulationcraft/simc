@@ -618,7 +618,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     quiet(),
     overridden(),
     can_cancel( true ),
-    no_callbacks(),
+    is_fallback(),
     requires_invalidation(),
     expire_at_max_stack(),
     reverse_stack_reduction( 1 ),
@@ -770,8 +770,12 @@ void buff_t::update_trigger_calculations()
 
 buff_t* buff_t::set_chance( double chance )
 {
-  manual_chance = chance;
-  update_trigger_calculations();
+  if ( !is_fallback )
+  {
+    manual_chance = chance;
+    update_trigger_calculations();
+  }
+
   return this;
 }
 
@@ -1172,19 +1176,6 @@ buff_t* buff_t::set_can_cancel( bool cc )
   return this;
 }
 
-buff_t* buff_t::set_no_callbacks( bool nc )
-{
-  no_callbacks = nc;
-  if ( nc )
-  {
-    refresh_duration_callback = nullptr;
-    stack_change_callback = nullptr;
-    tick_callback = nullptr;
-    tick_time_callback = nullptr;
-  }
-  return this;
-}
-
 buff_t* buff_t::set_tick_behavior( buff_tick_behavior behavior )
 {
   tick_behavior = behavior;
@@ -1200,7 +1191,7 @@ buff_t* buff_t::set_tick_behavior( buff_tick_behavior behavior )
 
 buff_t* buff_t::set_tick_callback( buff_tick_callback_t fn )
 {
-  if ( fn && !no_callbacks )
+  if ( fn && !is_fallback )
   {
     tick_callback = std::move( fn );
   }
@@ -1210,7 +1201,7 @@ buff_t* buff_t::set_tick_callback( buff_tick_callback_t fn )
 
 buff_t* buff_t::set_tick_time_callback( buff_tick_time_callback_t cb )
 {
-  if ( cb && !no_callbacks )
+  if ( cb && !is_fallback )
   {
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
     tick_time_callback = std::move( cb );
@@ -1260,7 +1251,7 @@ buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
 
 buff_t* buff_t::set_refresh_duration_callback( buff_refresh_duration_callback_t cb )
 {
-  if ( cb && !no_callbacks )
+  if ( cb && !is_fallback )
   {
     refresh_behavior          = buff_refresh_behavior::CUSTOM;
     refresh_duration_callback = std::move( cb );
@@ -1310,7 +1301,7 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
 
 buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& cb )
 {
-  if ( !no_callbacks )
+  if ( !is_fallback )
   {
     stack_change_callback = cb;
   }
