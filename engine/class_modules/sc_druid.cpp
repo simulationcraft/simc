@@ -7388,7 +7388,7 @@ struct shooting_stars_t : public druid_spell_t
 
     buff->trigger();
 
-    if ( buff->at_max_stacks() )
+    if ( buff->at_max_stacks() && p()->active.orbit_breaker )
     {
       p()->active.orbit_breaker->execute_on_target( target );
       buff->expire();
@@ -10258,17 +10258,6 @@ void druid_t::create_actions()
   if ( talent.denizen_of_the_dream.ok() )
     active.denizen_of_the_dream = new denizen_of_the_dream_t( this );
 
-  if ( talent.orbit_breaker.ok() )
-  {
-    auto fm = get_secondary_action_n<full_moon_t>( "orbit breaker", find_spell( 274283 ), "" );
-    fm->s_data_reporting = talent.orbit_breaker;
-    fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
-    fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
-    fm->set_free_cast( free_spell_e::ORBIT );
-    fm->background = true;
-    active.orbit_breaker = fm;
-  }
-
   if ( talent.shooting_stars.ok() )
   {
     active.shooting_stars = new action_t( action_e::ACTION_OTHER, "shooting_stars", this, talent.shooting_stars );
@@ -10282,6 +10271,18 @@ void druid_t::create_actions()
     sf->name_str_reporting = "Sunfire";
     active.shooting_stars->add_child( sf );
     active.shooting_stars_sunfire = sf;
+
+    if ( talent.orbit_breaker.ok() )
+    {
+      auto fm = get_secondary_action_n<full_moon_t>( "orbit_breaker", find_spell( 274283 ), "" );
+      fm->s_data_reporting = talent.orbit_breaker;
+      fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
+      fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
+      fm->set_free_cast( free_spell_e::ORBIT );
+      fm->background = true;
+      active.shooting_stars->add_child(fm );
+      active.orbit_breaker = fm;
+    }
 
     if ( sets->has_set_bonus( DRUID_BALANCE, T30, B4 ) )
     {
@@ -10445,7 +10446,6 @@ void druid_t::create_actions()
   find_parent( active.galactic_guardian, "moonfire" );
   find_parent( active.maul_tooth_and_claw, "maul" );
   find_parent( active.raze_tooth_and_claw, "raze" );
-  find_parent( active.orbit_breaker, "full_moon" );
   find_parent( active.starsurge_starweaver, "starsurge" );
   find_parent( active.starfall_starweaver, "starfall" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
