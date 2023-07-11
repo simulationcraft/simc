@@ -4902,7 +4902,8 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
   struct sand_cleave_t : public spell_t
   {
     action_t* action;
-    sand_cleave_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str ) : spell_t( "sand_cleave", p, p->find_spell( 418588 ) ), action( a )
+    sand_cleave_t( pet_t* p, const special_effect_t& e, action_t* a, util::string_view options_str )
+      : spell_t( "sand_cleave", p, p->find_spell( 418588 ) ), action( a )
     {
       parse_options( options_str );
       aoe = -1;
@@ -4955,7 +4956,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
-      base_dd_min = base_dd_max = e.driver() -> effectN( 9 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 9 ).average( e.item );
     }
   };
 
@@ -4973,9 +4974,10 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       else
         proxy->add_child( this );
 
-      auto damage = create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
-      damage -> base_dd_min = damage -> base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      damage -> stats = stats;
+      auto damage =
+          create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+      damage->stats = stats;
       impact_action = damage;
     }
   };
@@ -4991,9 +4993,6 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       unsigned pet_id;
       switch ( e.player->role )
       {
-        case ROLE_ATTACK:
-          pet_id = 208957;
-          break;
         case ROLE_SPELL:
           pet_id = 208887;
           break;
@@ -5003,8 +5002,10 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         case ROLE_HEAL:
           pet_id = 208959;
           break;
+        case ROLE_ATTACK:
         default:
-          return;
+          pet_id = 208957;
+          break;
       }
 
       npc_id = pet_id;
@@ -5057,10 +5058,6 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       auto def = get_action_priority_list( "default" );
       switch ( effect.player->role )
       {
-        case ROLE_ATTACK:
-          def->add_action( "sand_cleave" );
-          def->add_action( "auto_attack" );
-          break;
         case ROLE_SPELL:
           def->add_action( "sand_bolt" );
           break;
@@ -5073,30 +5070,46 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
           def->add_action( "sand_bolt,if=prev.restorative_sands" );
           def->add_action( "restorative_sands" );
           break;
+        case ROLE_ATTACK:
         default:
-          return;
+          def->add_action( "sand_cleave" );
+          def->add_action( "auto_attack" );
+          break;
       }
     }
   };
+
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
 
   struct mirror_of_fractured_tomorrows_t : public spell_t
   {
     spawner::pet_spawner_t<future_self_pet_t> spawner;
     const special_effect_t& effect;
-    std::array<stat_e, 4> ratings;
-    std::shared_ptr<std::map<stat_e, buff_t*>> buffs;
+    std::map<stat_e, buff_t*> buffs;
 
     mirror_of_fractured_tomorrows_t( const special_effect_t& e )
       : spell_t( "mirror_of_fractured_tomorrows", e.player, e.driver() ),
         spawner( "future_self", e.player, [ &e, this ]( player_t* ) { return new future_self_pet_t( e, this ); } ),
         effect( e )
     {
+      dual = false;
+
+      auto amount = e.driver()->effectN( 1 ).average( e.item );
+      for ( auto stat : ratings )
+      {
+        auto name = std::string( "mirror_of_fractured_tomorrows_" ) + util::stat_type_string( stat );
+        auto buff = create_buff<stat_buff_t>( e.player, name, e.player->find_spell( 418527 ) )
+          ->set_stat( stat, amount )
+          ->set_name_reporting( util::stat_type_abbrev( stat ) );
+
+        buffs[ stat ] = buff;
+      }
+
       unsigned summon_driver;
+
       switch ( e.player->role )
       {
-        case ROLE_ATTACK:
-          summon_driver = 418774;
-          break;
         case ROLE_SPELL:
           summon_driver = 418773;
           break;
@@ -5106,22 +5119,10 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         case ROLE_HEAL:
           summon_driver = 418776;
           break;
+        case ROLE_ATTACK:
         default:
-          return;
-      }
-      dual = false;
-      auto amount = e.driver()->effectN( 1 ).average( e.item );
-      buffs = std::make_shared<std::map<stat_e, buff_t*>>();
-      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
-
-      for ( auto stat : ratings )
-      {
-        auto name = std::string( "mirror_of_fractured_tomorrows_" ) + util::stat_type_string( stat );
-        auto buff = create_buff<stat_buff_t>( e.player, name, e.player->find_spell( 418527 ) )
-                    ->set_stat( stat, amount )
-                    ->set_name_reporting( util::stat_type_abbrev( stat ) );
-
-        ( *buffs )[ stat ] = buff;
+          summon_driver = 418774;
+          break;
       }
 
       spawner.set_default_duration( e.player->find_spell( summon_driver )->duration() );
@@ -5133,7 +5134,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       spawner.spawn();
 
       stat_e max_stat = util::highest_stat( effect.player, ratings );
-      ( *buffs )[ max_stat ]->trigger();
+      buffs[ max_stat ]->trigger();
     }
   };
 
