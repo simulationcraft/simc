@@ -13,12 +13,11 @@
 #include "dbc/item_database.hpp"
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
-#include "item/item_targetdata_initializer.hpp"
-#include "set_bonus.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/action_variable.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
+#include "set_bonus.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
@@ -735,23 +734,18 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
 
 struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initializer_t
 {
-  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 ) {}
+  target_specific_t<action_t> bomb_actions;
+
+  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 ), bomb_actions( false ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.dragonfire_bomb = make_buff( *td, "dragonfire_bomb" )->set_quiet( true );
-      return;
-    }
-
     struct dragonfire_bomb_debuff_t : buff_t
     {
       action_t* bomb;
 
-      dragonfire_bomb_debuff_t( actor_target_data_t& td )
-        : buff_t( td, "dragonfire_bomb", td.source->find_spell( 408675 ) ),
-          bomb( td.source->find_action( "dragonfire_bomb_st" ) )
+      dragonfire_bomb_debuff_t( actor_target_data_t& td, const spell_data_t* s, action_t* a )
+        : buff_t( td, "dragonfire_bomb", s ), bomb( a )
       {}
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -763,7 +757,13 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
       }
     };
 
-    td->debuff.dragonfire_bomb = make_buff<dragonfire_bomb_debuff_t>( *td );  // IT GONNA BLOW!
+    auto active = init( td->source );
+    action_t*& bomb = bomb_actions[ td->source ];
+    if ( active && !bomb )
+        bomb = td->source->find_action( "dragonfire_bomb_st" );
+
+    td->debuff.dragonfire_bomb = make_buff_fallback<dragonfire_bomb_debuff_t>(
+        active, *td, "dragonfire_bomb", debuffs[ td->source ], bomb );  // IT GONNA BLOW!
     td->debuff.dragonfire_bomb->reset();
   }
 };
@@ -1029,14 +1029,9 @@ struct awakening_rime_initializer_t : public item_targetdata_initializer_t
 
   void operator()( actor_target_data_t* td ) const override
   {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.awakening_rime = make_buff( *td, "awakening_rime" )->set_quiet( true );
-      return;
-    }
+    bool active = init( td->source );
 
-    assert( !td->debuff.awakening_rime );
-    td->debuff.awakening_rime = make_buff( *td, "awakening_rime", td->source->find_spell( 386623 ) );
+    td->debuff.awakening_rime = make_buff_fallback( active, *td, "awakening_rime", debuffs[ td->source ] );
     td->debuff.awakening_rime->reset();
   }
 };
@@ -1236,15 +1231,9 @@ struct skewering_cold_initializer_t : public item_targetdata_initializer_t
 
   void operator()( actor_target_data_t* td ) const override
   {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.skewering_cold = make_buff( *td, "skewering_cold" )->set_quiet( true );
-      return;
-    }
+    bool active = init( td->source );
 
-    assert( !td->debuff.skewering_cold );
-    td->debuff.skewering_cold =
-        make_buff( *td, "skewering_cold", td->source->find_spell( spell_id )->effectN( 1 ).trigger() );
+    td->debuff.skewering_cold = make_buff_fallback( active, *td, "skewering_cold", debuffs[ td->source ] );
     td->debuff.skewering_cold->reset();
   }
 };
@@ -1667,18 +1656,13 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
 
 struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
 {
-  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
+  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466, 382428 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.grudge = make_buff( *td, "grudge" )->set_quiet( true );
-      return;
-    }
+    bool active = init( td->source );
 
-    assert( !td->debuff.grudge );
-    td->debuff.grudge = make_buff( *td, "grudge", td->source->find_spell( 382428 ) );
+    td->debuff.grudge = make_buff_fallback( active, *td, "grudge", debuffs[ td->source ] );
     td->debuff.grudge->reset();
   }
 };
@@ -3680,8 +3664,6 @@ void iceblood_deathsnare( special_effect_t& effect )
     }
   };
 
-
-
   struct iceblood_deathsnare_t : public generic_proc_t
   {
     iceblood_deathsnare_t( const special_effect_t& e ) : generic_proc_t( e, "iceblood_deathsnare", e.driver() )
@@ -3723,19 +3705,23 @@ struct iceblood_deathsnare_cb_t : public dbc_proc_callback_t
 
 struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
 {
-  iceblood_deathsnare_initializer_t() : item_targetdata_initializer_t( 377455 )
+  target_specific_t<action_t> damage_actions;
+
+  iceblood_deathsnare_initializer_t() : item_targetdata_initializer_t( 377455 ), damage_actions( false )
   {
+    debuff_fn = []( player_t* p, const special_effect_t* e ) { return e->driver()->effectN( 3 ).trigger(); };
   }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.crystalline_web = make_buff( *td, "crystalline_web" );
-      return;
-    }
+    bool active = init( td->source );
 
-    assert( !td->debuff.crystalline_web );
+    td->debuff.crystalline_web = make_buff_fallback( active, *td, "crystalline_web", debuffs[ td->source ] );
+    td->debuff.crystalline_web->reset();
+
+    if ( !active )
+      return;
+
     auto web          = new special_effect_t( td->source );
     web->name_str     = "iceblood_deathsnare_proc_trigger";
     web->type         = SPECIAL_EFFECT_EQUIP;
@@ -3746,24 +3732,22 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
     web->cooldown_    = 1.5_s;
     td->source->special_effects.push_back( web );
 
-    auto damage = td->source->find_action( "iceblood_deathsnare_proc" );
+    action_t*& damage = damage_actions[ td->source ];
+    if ( !damage )
+      damage = td->source->find_action( "iceblood_deathsnare_proc" );
 
     // callback to proc damage
     auto damage_cb = new iceblood_deathsnare_cb_t( *web, damage );
     damage_cb->initialize();
     damage_cb->deactivate();
 
-    td->debuff.crystalline_web =
-        make_buff( *td, "crystalline_web", td->source->find_spell( spell_id )->effectN( 3 ).trigger() )
-            ->set_cooldown(0_ms)
-            ->set_stack_change_callback( [ damage_cb ]( buff_t*, int, int new_ ) {
-              if ( new_ == 1 )
-                damage_cb->activate();
-              else
-                damage_cb->deactivate();
-            } );
-
-    td->debuff.crystalline_web->reset();
+    td->debuff.crystalline_web->set_cooldown( 0_ms )
+      ->set_stack_change_callback( [ damage_cb ]( buff_t*, int, int new_ ) {
+        if ( new_ == 1 )
+          damage_cb->activate();
+        else
+          damage_cb->deactivate();
+      } );
   }
 };
 
@@ -5349,18 +5333,13 @@ void neltharax( special_effect_t& effect )
 
 struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 {
-  heavens_nemesis_initializer_t() : item_targetdata_initializer_t( 394928 ) {}
+  heavens_nemesis_initializer_t() : item_targetdata_initializer_t( 394928, 397478 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.heavens_nemesis = make_buff( *td, "heavens_nemesis_mark" )->set_quiet( true );
-      return;
-    }
+    bool active = init( td->source );
 
-    assert( !td->debuff.heavens_nemesis );
-    td->debuff.heavens_nemesis = make_buff( *td, "heavens_nemesis_mark", td->source->find_spell( 397478 ) );
+    td->debuff.heavens_nemesis = make_buff_fallback( active, *td, "heavens_nemesis_mark", debuffs[ td->source ] );
     td->debuff.heavens_nemesis->reset();
   }
 };
@@ -6208,24 +6187,16 @@ void ever_decaying_spores( special_effect_t& effect )
 
 struct ever_decaying_spores_initializer_t : public item_targetdata_initializer_t
 {
-  ever_decaying_spores_initializer_t() : item_targetdata_initializer_t( 406244 )
-  {
-  }
+  ever_decaying_spores_initializer_t() : item_targetdata_initializer_t( 406244, 407087 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.ever_decaying_spores = make_buff( *td, "ever_decaying_spores" )->set_quiet( true );
-      return;
-    }
+    bool active = init( td->source );
 
-    assert( !td->debuff.ever_decaying_spores );
-    td->debuff.ever_decaying_spores = make_buff( *td, "ever_decaying_spores", td->source->find_spell( 407087 ) );
+    td->debuff.ever_decaying_spores = make_buff_fallback( active, *td, "ever_decaying_spores", debuffs[ td->source ] );
     td->debuff.ever_decaying_spores->reset();
   }
 };
-
 }  // namespace items
 
 namespace sets

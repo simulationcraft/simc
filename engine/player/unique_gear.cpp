@@ -118,7 +118,7 @@ namespace item
   /* Timewalking Trinkets */
   void necromantic_focus( special_effect_t& );
   void sorrowsong( special_effect_t& );
-  }
+}
 
 namespace gem
 {
@@ -2462,8 +2462,8 @@ void item::matrix_restabilizer( special_effect_t& effect )
 
 struct fel_burn_t : public buff_t
 {
-  fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    buff_t( p, "fel_burn", p.source -> find_spell( 184256 ), source_effect.item )
+  fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s )
+    : buff_t( p, "fel_burn", s, source_effect.item )
   {
 
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -2536,22 +2536,17 @@ struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
 {
   empty_drinking_horn_constructor_t( unsigned iid, util::span<const slot_e> s ) :
     item_targetdata_initializer_t( iid, s )
-  { }
+  {
+    debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 184256 ); };
+  }
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td -> source );
-    if ( ! effect )
-    {
-      td -> debuff.fel_burn = make_buff( *td, "fel_burn" );
-    }
-    else
-    {
-      assert( ! td -> debuff.fel_burn );
+    bool active = init( td->source );
 
-      td -> debuff.fel_burn = new fel_burn_t( *td, *effect );
-      td -> debuff.fel_burn -> reset();
-    }
+    td->debuff.fel_burn =
+        make_buff_fallback<fel_burn_t>( active, *td, "fel_burn", *effect( td ), debuffs[ td->source ] );
+    td->debuff.fel_burn->reset();
   }
 };
 
@@ -2758,9 +2753,8 @@ struct mark_of_doom_t : public buff_t
   action_t* damage_spell;
   special_effect_t* effect;
 
-  mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    buff_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item ),
-    damage_spell( p.source -> find_action( "doom_nova" ) )
+  mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s, action_t* a )
+    : buff_t( p, "mark_of_doom", s, source_effect.item ), damage_spell( a )
   {
     set_activated( false );
 
@@ -2833,24 +2827,23 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
 
 struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
 {
-  prophecy_of_fear_constructor_t( unsigned iid, util::span<const slot_e> s ) :
-    item_targetdata_initializer_t( iid, s )
-  { }
+  target_specific_t<action_t> damage_actions;
+
+  prophecy_of_fear_constructor_t( unsigned iid, util::span<const slot_e> s )
+    : item_targetdata_initializer_t( iid, s ), damage_actions( false )
+  {}
 
   void operator()( actor_target_data_t* td ) const override
   {
-    const special_effect_t* effect = find_effect( td -> source );
-    if ( effect == nullptr )
-    {
-      td -> debuff.mark_of_doom = make_buff( *td, "mark_of_doom" );
-    }
-    else
-    {
-      assert( ! td -> debuff.mark_of_doom );
+    bool active = init( td->source );
 
-      td -> debuff.mark_of_doom = new mark_of_doom_t( *td, *effect );
-      td -> debuff.mark_of_doom -> reset();
-    }
+    action_t*& damage = damage_actions[ td->source ];
+    if ( active && !damage )
+      damage = td->source->find_action( "doom_nova" );
+
+    td->debuff.mark_of_doom =
+        make_buff_fallback<mark_of_doom_t>( active, *td, "mark_of_doom", *effect( td ), debuffs[ td->source ], damage );
+    td->debuff.mark_of_doom->reset();
   }
 };
 
@@ -3720,6 +3713,58 @@ bool buff_has_stat( const buff_t* buff, stat_e stat )
 }
 
 } // UNNAMED NAMESPACE
+
+item_targetdata_initializer_t::item_targetdata_initializer_t( unsigned iid, util::span<const slot_e> s )
+  : targetdata_initializer_t(), item_id( iid ), spell_id( 0 ), slots_( s.begin(), s.end() )
+{
+  active_fn = []( const special_effect_t* e ) { return e != nullptr; };
+  debuff_fn = []( player_t*, const special_effect_t* e ) { return e->trigger(); };
+}
+
+item_targetdata_initializer_t::item_targetdata_initializer_t( unsigned sid, unsigned did )
+  : targetdata_initializer_t(), item_id( 0 ), spell_id( sid )
+{
+  active_fn = []( const special_effect_t* e ) { return e != nullptr; };
+
+  if ( did )
+    debuff_fn = [ did ]( player_t* p, const special_effect_t* ) { return p->find_spell( did ); };
+  else
+    debuff_fn = []( player_t*, const special_effect_t* e ) { return e->trigger(); };
+}
+
+const special_effect_t* item_targetdata_initializer_t::find( player_t* p ) const
+{
+  if ( spell_id )
+  {
+    return unique_gear::find_special_effect( p, spell_id );
+  }
+  else
+  {
+    for ( slot_e slot : slots_ )
+    {
+      if ( p->items[ slot ].parsed.data.id == item_id )
+      {
+        return p->items[ slot ].parsed.special_effects[ 0 ];
+      }
+    }
+  }
+
+  return nullptr;
+}
+
+bool item_targetdata_initializer_t::init( player_t* p ) const
+{
+  // No need to check on pets/enemies
+  if ( p->is_pet() || p->is_enemy() || p->type == HEALING_ENEMY )
+    return false;
+
+  return targetdata_initializer_t::init( p );
+}
+
+inline const special_effect_t* item_targetdata_initializer_t::effect( actor_target_data_t* td ) const
+{
+  return data[ td->source ];
+}
 
 /**
  * Initialize a special effect, based on a spell id. Returns true if the first

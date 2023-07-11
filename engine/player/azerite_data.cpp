@@ -1395,7 +1395,7 @@ void register_azerite_powers()
 void register_azerite_target_data_initializers( sim_t* sim )
 {
   // Azerite Globules
-  sim -> register_target_data_initializer( [] ( actor_target_data_t* td ) {
+  sim -> register_target_data_initializer( [ sim ] ( actor_target_data_t* td ) {
     auto&& azerite = td -> source -> azerite;
     if ( azerite && azerite -> is_enabled( "Azerite Globules" ) )
     {
@@ -1406,13 +1406,12 @@ void register_azerite_target_data_initializers( sim_t* sim )
     }
     else
     {
-      td -> debuff.azerite_globules = make_buff( *td, "azerite_globules" );
-      td -> debuff.azerite_globules -> set_quiet( true );
+      td -> debuff.azerite_globules = sim->auras.fallback;
     }
   } );
 
   // Battlefield Focus / Precision
-  sim -> register_target_data_initializer( [] ( actor_target_data_t* td ) {
+  sim -> register_target_data_initializer( [ sim ] ( actor_target_data_t* td ) {
     auto&& azerite = td -> source -> azerite;
     if ( ! azerite )
     {
@@ -1433,13 +1432,12 @@ void register_azerite_target_data_initializers( sim_t* sim )
     }
     else
     {
-      td -> debuff.battlefield_debuff = make_buff( *td, "battlefield_debuff" );
-      td -> debuff.battlefield_debuff->set_quiet( true );
+      td -> debuff.battlefield_debuff = sim->auras.fallback;
     }
   } );
 
   // Blood of the Enemy
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+  sim->register_target_data_initializer( [ sim ]( actor_target_data_t* td ) {
     auto essence = td->source->find_azerite_essence( "Blood of the Enemy" );
     if ( essence.enabled() )
     {
@@ -1450,12 +1448,12 @@ void register_azerite_target_data_initializers( sim_t* sim )
     }
     else
     {
-      td->debuff.blood_of_the_enemy = make_buff( *td, "blood_of_the_enemy" )->set_quiet( true );
+      td->debuff.blood_of_the_enemy = sim->auras.fallback;
     }
   } );
 
   // Condensed Life-Force
-  sim->register_target_data_initializer( [] ( actor_target_data_t* td ) {
+  sim->register_target_data_initializer( [ sim ] ( actor_target_data_t* td ) {
     auto essence = td->source->find_azerite_essence( "Condensed Life-Force" );
     if ( essence.enabled() )
     {
@@ -1465,12 +1463,11 @@ void register_azerite_target_data_initializers( sim_t* sim )
     }
     else
     {
-      td->debuff.condensed_lifeforce = make_buff( *td, "condensed_lifeforce" )
-        ->set_quiet( true );
+      td->debuff.condensed_lifeforce = sim->auras.fallback;
     }
   } );
 
-  sim->register_target_data_initializer( [] ( actor_target_data_t * td ) {
+  sim->register_target_data_initializer( [ sim ] ( actor_target_data_t * td ) {
     auto essence = td->source->find_azerite_essence( "Breath of the Dying" );
     if ( essence.enabled() )
     {
@@ -1480,8 +1477,7 @@ void register_azerite_target_data_initializers( sim_t* sim )
     }
     else
     {
-      td->debuff.reaping_flames_tracker = make_buff( *td, "reaping_flames_tracker" )
-        ->set_quiet( true );
+      td->debuff.reaping_flames_tracker = sim->auras.fallback;
     }
   } );
 }
