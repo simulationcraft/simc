@@ -1,4 +1,4 @@
-// Spell text, wow build 10.1.5.50379
+// Spell text, wow build 10.1.5.50401
 static const std::array<spelltext_data_t, 20109> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -20111,7 +20111,7 @@ static const std::array<spelltext_data_t, 20109> __spelltext_data { {
   { 419800, "$@spelldesc416714", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.5.50379
+// spelltext hotfix entries, wow build 10.1.5.50401
 static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
   {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s4% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Glacial Spike also hits a second nearby target for $s4% of its damage." },
   {  415339,  0, "$@spelldesk415284", "$@spelldesc415284" },
@@ -20120,7 +20120,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix
   {  419268,  0, nullptr, "Striking an undead with a melee ability has a chance to smite them with righteous fury, dealing Holy damage." },
 } };
 
-// Spell description variables, wow build 10.1.5.50379
+// Spell description variables, wow build 10.1.5.50401
 static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20519,7 +20519,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.5.50379
+// spelldesc_vars hotfix entries, wow build 10.1.5.50401
 static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
   {  115203,  0, "$health=$?s322960[${20}][${20}]\r\n$damage=$?c1[${20}][${20}]", "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
   {  120954,  0, "$health=$?s322960[${20}][${20}]\r\n$damage=$?c1[${20}][${20}]", "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
