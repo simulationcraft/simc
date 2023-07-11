@@ -4,7 +4,7 @@ level=70
 race=orc
 role=spell
 position=back
-talents=B4DAAAAAAAAAAAAAAAAAAAAAAIJQolIhkUAJtEiIikIhEaBSLJAAAAAAAAAAAAJJJJhkkkcAA
+talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJSkigIJERSIRCkEk0SCAAAAAAAAAAAISSSSkkkEIA
 
 head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498,gem_id=192919
 neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,crafted_stats=32/40,gem_id=192982/192925/192925
@@ -33,7 +33,7 @@ level=70
 race=dwarf
 role=spell
 position=back
-talents=B8DAAAAAAAAAAAAAAAAAAAAAAkkQIplIkkUA0SiIiIJAAAAAAAAAkQgEhyBkIJRSSSSBAAAA
+talents=B8DAAAAAAAAAAAAAAAAAAAAAAERIl0QSkkiASCRkEJBAAAAAAAAgIikkQJRJJJJJJJHoBAAACA
 
 head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498/8810,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=8960/8836/8782/1508,gem_id=192952/192952/192952,crafted_stats=36/49
@@ -62,7 +62,7 @@ level=70
 race=dwarf
 role=spell
 position=ranged_back
-talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJBolIIJFQSLhIiIJBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
+talents=BAEAAAAAAAAAAAAAAAAAAAAAAQEUSDJSkigcgkQERkEAAASJRSIRSSIJJJJJBAAAAAAAAAiA
 
 head=,id=200318,bonus_id=523,gem_id=192961,ilevel=424
 neck=,id=193001,gem_id=192988/192961/192961,crafted_stats=32/49,ilevel=418
