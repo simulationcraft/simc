@@ -4,7 +4,7 @@ race=zandalari_troll
 spec=balance
 role=spell
 position=back
-talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIQiikkkUS7ASKJScgkAAAAAAoAQigAQSSSkkQJhS4AAAAAAAQCAQA
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFASSSEkEgkEJ5ApAtEHIRSUS0kcgQolUSCR0AoQBA
 
 head=bough_of_the_autumn_blaze,id=202515,bonus_id=1504/9413,gem_id=192961
 neck=choker_of_stolen_thunder,id=206180,bonus_id=7359/6646,ilevel=447,gem_id=192961/192961/192961
@@ -32,7 +32,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICkoIJJJl0OgkSiEJJAAAAAAAARQAhkkkIJRKJgEAAAAAAIBAIA
+talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIQiikkkUS7ASKJScgkAAAAAAoAQigAQSSSkkQJhS4AAAAAAAQCAQA
 
 head=bough_of_the_autumn_blaze,id=202515,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504/1808,gem_id=192988
 neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192961/192961/192961
