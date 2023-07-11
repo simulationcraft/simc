@@ -5160,10 +5160,10 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
 // Accelerating Sandglass
 // 417499 Driver/Values
-// 417452 Stacking Buff 
+// 417452 Stacking Buff
 // 417456 Damage enable buff
 // 417458 Damage
-void accelerating_sandglass(special_effect_t& e)
+void accelerating_sandglass( special_effect_t& e )
 {
   struct accelerating_sandglass_damage_t : public generic_proc_t
   {
@@ -5171,23 +5171,24 @@ void accelerating_sandglass(special_effect_t& e)
     accelerating_sandglass_damage_t( const special_effect_t& e, buff_t* b )
       : generic_proc_t( e, "accelerating_sandglass", e.player->find_spell( 417458 ) ), damage_buff( b )
     {
-      base_dd_min = base_dd_max = e.driver() -> effectN( 2 ).average( e.item ) * e.player -> find_spell( 417452 ) -> max_stacks();
+      base_dd_min = base_dd_max =
+          e.driver()->effectN( 2 ).average( e.item ) * e.player->find_spell( 417452 )->max_stacks();
     }
-    
+
     void execute() override
     {
       generic_proc_t::execute();
-      damage_buff -> expire();
+      damage_buff->expire();
     }
   };
 
-  auto damage_buff_spell = e.player -> find_spell( 417456 );
-  auto damage_buff = create_buff<buff_t>( e.player, "accelerating_sandglass_damage", damage_buff_spell );
+  auto damage_buff_spell = e.player->find_spell( 417456 );
+  auto damage_buff       = create_buff<buff_t>( e.player, "accelerating_sandglass_damage", damage_buff_spell );
 
-  auto sandglass_damage      = new special_effect_t( e.player );
-  sandglass_damage->name_str = "accelerating_sandglass";
-  sandglass_damage->item     = e.item;
-  sandglass_damage->spell_id = damage_buff->data().id();
+  auto sandglass_damage            = new special_effect_t( e.player );
+  sandglass_damage->name_str       = "accelerating_sandglass";
+  sandglass_damage->item           = e.item;
+  sandglass_damage->spell_id       = damage_buff->data().id();
   sandglass_damage->execute_action = new accelerating_sandglass_damage_t( e, damage_buff );
   e.player->special_effects.push_back( sandglass_damage );
 
@@ -5206,11 +5207,11 @@ void accelerating_sandglass(special_effect_t& e)
     }
   } );
 
-  auto buff_spell = e.player -> find_spell( 417452 );
-  auto buff = create_buff<stat_buff_t>( e.player, "accelerating_sandglass_stack", buff_spell );
-  buff -> add_stat_from_effect( 1, e.driver() -> effectN( 1 ).average( e.item ) );
-  buff -> set_max_stack( buff_spell -> max_stacks() + 1 ); // Expires on the proc after reaching 8 stacks
-  buff -> set_expire_at_max_stack( true );
+  auto buff_spell = e.player->find_spell( 417452 );
+  auto buff       = create_buff<stat_buff_t>( e.player, "accelerating_sandglass_stack", buff_spell );
+  buff->add_stat_from_effect( 1, e.driver()->effectN( 1 ).average( e.item ) );
+  buff->set_max_stack( buff_spell->max_stacks() + 1 );  // Expires on the proc after reaching 8 stacks
+  buff->set_expire_at_max_stack( true );
   buff->set_stack_change_callback( [ damage_buff ]( buff_t*, int, int new_ ) {
     if ( !new_ )
     {
