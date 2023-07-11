@@ -162,16 +162,17 @@ void vengeance( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* racials = p->get_action_priority_list( "racials" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
-  precombat->add_action( "variable,name=spirit_bomb_soul_fragments_not_in_meta,op=setif,value=4,value_else=5,condition=talent.fracture" );
-  precombat->add_action( "variable,name=spirit_bomb_soul_fragments_in_meta,op=setif,value=3,value_else=4,condition=talent.fracture" );
-  precombat->add_action( "variable,name=vulnerability_frailty_stack,op=setif,value=1,value_else=0,condition=talent.vulnerability" );
-  precombat->add_action( "variable,name=cooldown_frailty_requirement_st,op=setif,value=6*variable.vulnerability_frailty_stack,value_else=variable.vulnerability_frailty_stack,condition=talent.soulcrush" );
-  precombat->add_action( "variable,name=cooldown_frailty_requirement_aoe,op=setif,value=5*variable.vulnerability_frailty_stack,value_else=variable.vulnerability_frailty_stack,condition=talent.soulcrush" );
-  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)" );
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
   precombat->add_action( "sigil_of_flame" );
   precombat->add_action( "immolation_aura,if=active_enemies=1|!talent.fallout" );
 
@@ -181,39 +182,35 @@ void vengeance( player_t* p )
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
   default_->add_action( "metamorphosis" );
   default_->add_action( "fel_devastation,if=!talent.fiery_demise.enabled" );
-  default_->add_action( "fiery_brand,if=!talent.fiery_demise.enabled&!dot.fiery_brand.ticking" );
+  default_->add_action( "fiery_brand,if=!talent.fiery_demise.enabled&!ticking" );
   default_->add_action( "bulk_extraction" );
   default_->add_action( "potion" );
-  default_->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=fight_remains<20|charges=3" );
-  default_->add_action( "use_item,name=elementium_pocket_anvil,use_off_gcd=1" );
-  default_->add_action( "use_item,slot=trinket1" );
-  default_->add_action( "use_item,slot=trinket2" );
-  default_->add_action( "variable,name=the_hunt_on_cooldown,value=talent.the_hunt&cooldown.the_hunt.remains|!talent.the_hunt" );
-  default_->add_action( "variable,name=elysian_decree_on_cooldown,value=talent.elysian_decree&cooldown.elysian_decree.remains|!talent.elysian_decree" );
-  default_->add_action( "variable,name=soul_carver_on_cooldown,value=talent.soul_carver&cooldown.soul_carver.remains|!talent.soul_carver" );
-  default_->add_action( "variable,name=fel_devastation_on_cooldown,value=talent.fel_devastation&cooldown.fel_devastation.remains|!talent.fel_devastation" );
-  default_->add_action( "variable,name=fiery_demise_fiery_brand_is_ticking_on_current_target,value=talent.fiery_brand&talent.fiery_demise&dot.fiery_brand.ticking" );
-  default_->add_action( "variable,name=fiery_demise_fiery_brand_is_not_ticking_on_current_target,value=talent.fiery_brand&((talent.fiery_demise&!dot.fiery_brand.ticking)|!talent.fiery_demise)" );
-  default_->add_action( "variable,name=fiery_demise_fiery_brand_is_ticking_on_any_target,value=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand_dot" );
-  default_->add_action( "variable,name=fiery_demise_fiery_brand_is_not_ticking_on_any_target,value=talent.fiery_brand&((talent.fiery_demise&!active_dot.fiery_brand_dot)|!talent.fiery_demise)" );
-  default_->add_action( "variable,name=spirit_bomb_soul_fragments,op=setif,value=variable.spirit_bomb_soul_fragments_in_meta,value_else=variable.spirit_bomb_soul_fragments_not_in_meta,condition=buff.metamorphosis.up" );
-  default_->add_action( "variable,name=cooldown_frailty_requirement,op=setif,value=variable.cooldown_frailty_requirement_aoe,value_else=variable.cooldown_frailty_requirement_st,condition=talent.spirit_bomb&(spell_targets.spirit_bomb>1|variable.fiery_demise_fiery_brand_is_ticking_on_any_target)" );
-  default_->add_action( "the_hunt,if=variable.fiery_demise_fiery_brand_is_not_ticking_on_current_target&debuff.frailty.stack>=variable.cooldown_frailty_requirement" );
-  default_->add_action( "elysian_decree,if=variable.fiery_demise_fiery_brand_is_not_ticking_on_current_target&debuff.frailty.stack>=variable.cooldown_frailty_requirement" );
-  default_->add_action( "soul_carver,if=!talent.fiery_demise&soul_fragments<=3&debuff.frailty.stack>=variable.cooldown_frailty_requirement" );
-  default_->add_action( "soul_carver,if=variable.fiery_demise_fiery_brand_is_ticking_on_current_target&soul_fragments<=3&debuff.frailty.stack>=variable.cooldown_frailty_requirement" );
-  default_->add_action( "fel_devastation,if=variable.fiery_demise_fiery_brand_is_ticking_on_current_target&dot.fiery_brand.remains<3" );
-  default_->add_action( "fiery_brand,if=variable.fiery_demise_fiery_brand_is_not_ticking_on_any_target&variable.the_hunt_on_cooldown&variable.elysian_decree_on_cooldown&((talent.soul_carver&(cooldown.soul_carver.up|cooldown.soul_carver.remains<10))|(talent.fel_devastation&(cooldown.fel_devastation.up|cooldown.fel_devastation.remains<10)))" );
-  default_->add_action( "immolation_aura,if=talent.fiery_demise&variable.fiery_demise_fiery_brand_is_ticking_on_any_target" );
-  default_->add_action( "sigil_of_flame,if=talent.fiery_demise&variable.fiery_demise_fiery_brand_is_ticking_on_any_target" );
-  default_->add_action( "spirit_bomb,if=soul_fragments>=variable.spirit_bomb_soul_fragments&(spell_targets>1|variable.fiery_demise_fiery_brand_is_ticking_on_any_target)" );
-  default_->add_action( "soul_cleave,if=(soul_fragments<=1&spell_targets>1)|spell_targets=1" );
+  default_->add_action( "invoke_external_buff,name=power_infusion" );
+  default_->add_action( "call_action_list,name=trinkets" );
+  default_->add_action( "call_action_list,name=racials" );
+  default_->add_action( "the_hunt" );
+  default_->add_action( "elysian_decree" );
+  default_->add_action( "soul_carver,if=(!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking))&soul_fragments<=3" );
+  default_->add_action( "fel_devastation" );
+  default_->add_action( "fiery_brand,if=remains<tick_time|!ticking" );
+  default_->add_action( "immolation_aura" );
+  default_->add_action( "sigil_of_flame" );
+  default_->add_action( "spirit_bomb,if=(soul_fragments>=4&!buff.metamorphosis.up)|(soul_fragments>=3&buff.metamorphosis.up)" );
+  default_->add_action( "soul_cleave" );
   default_->add_action( "sigil_of_flame" );
   default_->add_action( "immolation_aura" );
   default_->add_action( "fracture" );
   default_->add_action( "shear" );
   default_->add_action( "throw_glaive" );
   default_->add_action( "felblade" );
+
+  racials->add_action( "arcane_torrent,if=fury.deficit>15", "Use racial abilities that give buffs, resource, or damage." );
+
+  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs", "Prioritize damage dealing on use trinkets over trinkets that give buffs" );
+  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs" );
+  trinkets->add_action( "use_item,use_off_gcd=1,slot=main_hand,if=(variable.trinket_1_buffs|trinket.1.cooldown.remains)&(variable.trinket_2_buffs|trinket.2.cooldown.remains)" );
+  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_2_exclude|trinket.2.cooldown.remains|!trinket.2.has_cooldown|variable.trinket_2_buffs)" );
+  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_1_exclude|trinket.1.cooldown.remains|!trinket.1.has_cooldown|variable.trinket_1_buffs)" );
 }
 //vengeance_apl_end
 
