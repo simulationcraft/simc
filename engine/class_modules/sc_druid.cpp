@@ -12320,28 +12320,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     dots.tear                  = target.get_dot( "tear", &source );
     dots.thrash_bear           = target.get_dot( "thrash_bear", &source );
     dots.thrash_cat            = target.get_dot( "thrash_cat", &source );
-
-    debuff.dire_fixation = make_buff_fallback( source.talent.dire_fixation.ok(),
-        *this, "dire_fixation", find_trigger( source.talent.dire_fixation ).trigger() );
-
-    debuff.pulverize =
-        make_buff_fallback( source.talent.pulverize.ok(), *this, "pulverize_debuff", source.talent.pulverize )
-            ->set_cooldown( 0_ms )
-            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-            ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-            ->apply_affecting_aura( source.talent.circle_of_life_and_death );
-
-    debuff.tooth_and_claw = make_buff_fallback( source.talent.tooth_and_claw.ok(),
-        *this, "tooth_and_claw_debuff", find_trigger( find_trigger( source.talent.tooth_and_claw ).trigger() ).trigger() )
-            ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-            ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
-              source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
-            } );
-
-    debuff.waning_twilight =
-        make_buff_fallback( source.talent.waning_twilight.ok(), *this, "waning_twilight", source.spec.waning_twilight )
-            ->set_chance( 1.0 )
-            ->set_duration( 0_ms );
   }
   else if ( !target.is_pet() )
   {
@@ -12355,10 +12333,33 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     hots.rejuvenation          = target.get_dot( "rejuvenation", &source );
     hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
     hots.wild_growth           = target.get_dot( "wild_growth", &source );
-
-    buff.ironbark = make_buff_fallback( source.talent.ironbark.ok(), *this, "ironbark", source.talent.ironbark )
-      ->set_cooldown( 0_ms );
   }
+
+  debuff.dire_fixation = make_buff_fallback( source.talent.dire_fixation.ok() && target.is_enemy(),
+      *this, "dire_fixation", find_trigger( source.talent.dire_fixation ).trigger() );
+
+  debuff.pulverize = make_buff_fallback( source.talent.pulverize.ok() && target.is_enemy(),
+      *this, "pulverize_debuff", source.talent.pulverize )
+          ->set_cooldown( 0_ms )
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
+          ->apply_affecting_aura( source.talent.circle_of_life_and_death );
+
+  debuff.tooth_and_claw = make_buff_fallback( source.talent.tooth_and_claw.ok() && target.is_enemy(),
+      *this, "tooth_and_claw_debuff", find_trigger( find_trigger( source.talent.tooth_and_claw ).trigger() ).trigger() )
+          ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
+          ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
+            source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
+          } );
+
+  debuff.waning_twilight = make_buff_fallback( source.talent.waning_twilight.ok() && target.is_enemy(),
+      *this, "waning_twilight", source.spec.waning_twilight )
+          ->set_chance( 1.0 )
+          ->set_duration( 0_ms );
+
+  buff.ironbark = make_buff_fallback( source.talent.ironbark.ok() && !target.is_enemy() && !target.is_pet(),
+      *this, "ironbark", source.talent.ironbark )
+          ->set_cooldown( 0_ms );
 }
 
 int druid_td_t::hots_ticking() const
