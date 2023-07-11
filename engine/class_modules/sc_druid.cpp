@@ -10272,8 +10272,8 @@ void druid_t::create_actions()
 
   if ( talent.new_moon.ok() )
   {
-    active.moons = new action_t( action_e::ACTION_OTHER, "moons_proxy", this, talent.new_moon );
-    active.moons->name_str_reporting = "new_moon";
+    active.moons = new action_t( action_e::ACTION_OTHER, "moons_talent", this, talent.new_moon );
+    active.moons->name_str_reporting = "Talent";
   }
 
   if ( talent.shooting_stars.ok() )
