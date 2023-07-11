@@ -1706,9 +1706,11 @@ namespace monk
         shadowflame_nova_t *nova;
         rising_sun_kick_dmg_t *trigger_attack;
         glory_of_the_dawn_t *gotd;
+        bool is_base_rsk;
 
         rising_sun_kick_t( monk_t *p, util::string_view options_str )
-          : monk_melee_attack_t( "rising_sun_kick", p, p->talent.general.rising_sun_kick )
+          : monk_melee_attack_t( "rising_sun_kick", p, p->talent.general.rising_sun_kick ),
+            is_base_rsk( true )
         {
           parse_options( options_str );
 
@@ -1723,6 +1725,7 @@ namespace monk
 
           trigger_attack = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
           trigger_attack->stats = stats;
+          is_base_rsk = true;
 
           if ( p->talent.windwalker.glory_of_the_dawn->ok() )
           {
@@ -1781,9 +1784,9 @@ namespace monk
             p()->buff.whirling_dragon_punch->trigger();
           }
 
-          if ( p()->buff.press_the_advantage->stack() == 10 )
+          if ( p()->buff.press_the_advantage->stack() == 10 && is_base_rsk )
           {
-            p()->active_actions.rising_sun_kick_press_the_advantage->execute();
+            p()->active_actions.rising_sun_kick_press_the_advantage->schedule_execute();
             p()->buff.press_the_advantage->expire();
           }
         }
@@ -1796,18 +1799,21 @@ namespace monk
         bool counterstrike;
         heal_t *eye_of_the_tiger_heal;
         spell_t *eye_of_the_tiger_damage;
+        bool is_base_rsk;
 
         rising_sun_kick_press_the_advantage_dmg_t( monk_t *p, util::string_view name )
           : rising_sun_kick_dmg_t( p, name ),
             face_palm( false ),
             blackout_combo( false ),
             counterstrike( false ),
+            is_base_rsk( false ),
             eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
             eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
         {
           background = dual = true;
           proc = true;
           trigger_gcd = 0_s;
+          is_base_rsk = false;
         }
 
         double action_multiplier() const override
@@ -1815,13 +1821,13 @@ namespace monk
           double am = rising_sun_kick_dmg_t::action_multiplier();
 
           if ( face_palm )
-            am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.1;
+            am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.5;
 
           if ( blackout_combo )
-            am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.1;
+            am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.5;
 
           if ( counterstrike )
-            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.1;
+            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.5;
 
           return am;
         }
@@ -1843,7 +1849,6 @@ namespace monk
           // 30% chance to trigger estimated from an hour of attempts as of 14-06-2023
           if ( p()->talent.brewmaster.call_to_arms->ok() && rng().roll( 0.3 ) )
             p()->active_actions.niuzao_call_to_arms_summon->execute();
-
 
           if ( p()->talent.general.eye_of_the_tiger->ok() )
           {
@@ -3018,7 +3023,7 @@ namespace monk
       struct press_the_advantage_t : public monk_spell_t
       {
         press_the_advantage_t( monk_t *player )
-          : monk_spell_t( "press_the_advantage", player, player->talent.brewmaster.press_the_advantage->effectN( 1 ).trigger() )
+          : monk_spell_t( "press_the_advantage", player, player->find_spell( 418360 ) )
         {
           background = true;
 
@@ -3096,22 +3101,17 @@ namespace monk
         {
           monk_melee_attack_t::impact( s );
 
-          // Press the Advantage can trigger from any Main Hand swing; whether miss, dodge, parry or hit.
-          if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND)
-          {
-            // Reduce Brew cooldown by 0.5 seconds
-            brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 2 ).base_value() / 1000 );
-
+          if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
             p()->buff.press_the_advantage->trigger();
-            // Trigger the Press the Advantage damage proc
-            p()->passive_actions.press_the_advantage->target = s->target;
-            p()->passive_actions.press_the_advantage->schedule_execute();
-          }
 
           if ( result_is_hit( s->result ) )
           {
-            if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->bugs )
+            if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
             {
+              // Reduce Brew cooldown by 0.5 seconds
+              brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 1 ).base_value() / 1000 );
+
+              // Trigger the Press the Advantage damage proc
               p()->passive_actions.press_the_advantage->target = s->target;
               p()->passive_actions.press_the_advantage->schedule_execute();
             }
@@ -3185,7 +3185,7 @@ namespace monk
 
         keg_smash_t( monk_t *p, util::string_view options_str, util::string_view name = "keg_smash" )
           : monk_melee_attack_t( name, p, p->talent.brewmaster.keg_smash ),
-            is_base_ks( false )
+            is_base_ks( true )
         {
           parse_options( options_str );
 
@@ -3232,9 +3232,6 @@ namespace monk
 
           am *= 1 + p()->buff.hit_scheme->check_value();
 
-          if ( p()->buff.blackout_combo->check() )
-            am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.1;
-
           return am;
         }
 
@@ -3257,20 +3254,16 @@ namespace monk
           {
             time_reduction += p()->buff.blackout_combo->data().effectN( 3 ).base_value();
             p()->proc.blackout_combo_keg_smash->occur();
+            p()->buff.blackout_combo->expire();
           }
 
-          if ( !p()->talent.brewmaster.press_the_advantage->ok() )
-            p()->buff.blackout_combo->expire();
-
-          if ( p()->buff.press_the_advantage->stack() == 10 )
+          if ( p()->buff.press_the_advantage->stack() == 10 && is_base_ks )
           {
-            p()->active_actions.keg_smash_press_the_advantage->execute();
+            p()->active_actions.keg_smash_press_the_advantage->schedule_execute();
             p()->buff.press_the_advantage->expire();
           }
 
-          if ( is_base_ks )
-            trigger_shuffle( p()->talent.brewmaster.keg_smash->effectN( 6 ).base_value() );
-
+          trigger_shuffle( p()->talent.brewmaster.keg_smash->effectN( 6 ).base_value() );
           brew_cooldown_reduction( time_reduction );
         }
 
@@ -3306,6 +3299,7 @@ namespace monk
         bool face_palm;
         bool blackout_combo;
         bool counterstrike;
+        bool is_base_ks;
         heal_t *eye_of_the_tiger_heal;
         spell_t *eye_of_the_tiger_damage;
 
@@ -3314,6 +3308,7 @@ namespace monk
             face_palm( false ),
             blackout_combo( false ),
             counterstrike( false ),
+            is_base_ks( false ),
             eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
             eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
         {
@@ -3328,15 +3323,9 @@ namespace monk
           double am = keg_smash_t::action_multiplier();
 
           if ( face_palm )
-            am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.1;
-
-
-          // TODO: if bug removed from parent ks, remove !p()->bugs
-          if ( blackout_combo && !p()->bugs )
-            am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.1;
-
+            am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.5;
           if ( counterstrike )
-            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.1;
+            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.5;
 
           return am;
         }
@@ -3347,11 +3336,13 @@ namespace monk
           blackout_combo = p()->buff.blackout_combo->up();
           counterstrike = p()->buff.counterstrike->up();
 
+          keg_smash_t::execute();
+
           p()->buff.counterstrike->expire();
           p()->buff.blackout_combo->expire();
 
-          keg_smash_t::execute();
-
+          if ( face_palm )
+            brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
 
           if ( p()->talent.brewmaster.chi_surge->ok() )
             p()->active_actions.chi_surge->execute();
@@ -4952,7 +4943,7 @@ namespace monk
           double am = monk_spell_t::action_multiplier();
 
           if ( p()->talent.brewmaster.press_the_advantage->ok() )
-            am *= 1 + p()->talent.brewmaster.press_the_advantage->effectN( 5 ).percent();
+            am *= 1 + p()->talent.brewmaster.press_the_advantage->effectN( 4 ).percent();
 
           return am;
         }
@@ -8272,7 +8263,7 @@ namespace monk
     buff.hit_scheme = make_buff( this, "hit_scheme", talent.brewmaster.hit_scheme->effectN( 1 ).trigger() )
       ->set_default_value_from_effect( 1 );
 
-    buff.press_the_advantage = make_buff( this, "press_the_advantage", talent.brewmaster.press_the_advantage->effectN( 3 ).trigger() )
+    buff.press_the_advantage = make_buff( this, "press_the_advantage", talent.brewmaster.press_the_advantage->effectN( 2 ).trigger() )
       ->set_default_value_from_effect( 1 );
 
     buff.pretense_of_instability = make_buff( this, "pretense_of_instability", find_spell( 393515 ) )
