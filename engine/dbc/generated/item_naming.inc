@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.1.0.50000
-static const std::array<item_name_description_t, 744> __item_name_description_data { {
+// Item name descriptions, wow build 10.1.5.50379
+static const std::array<item_name_description_t, 754> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -744,5 +744,15 @@ static const std::array<item_name_description_t, 744> __item_name_description_da
   { 14016, "World Quests and World Drops"                },
   { 14017, "Suffusion Camps and PvP"                     },
   { 14018, "Treasures and Unique Creatures"              },
+  { 14020, "Scourgebane"                                 },
+  { 14021, "Demonbane"                                   },
+  { 14022, "Timestrike"                                  },
+  { 14023, "Spirit"                                      },
+  { 14025, "Time Rifts"                                  },
+  { 14026, "Secrets of Azeroth"                          },
+  { 14027, "Divergent"                                   },
+  { 14028, "Time Rifts and Dawn of the Infinite"         },
+  { 14029, "Dawn of the Infinite"                        },
+  { 14030, "Soridormi"                                   },
 } };
 
