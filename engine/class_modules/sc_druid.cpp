@@ -8692,6 +8692,12 @@ struct convoke_the_spirits_t : public druid_spell_t
     if ( !conv_cast )
       return;
 
+    if ( type == convoke_cast_e::CAST_HEAL )
+    {
+      const auto& heal_tl = conv_cast->target_list();
+      conv_tar = heal_tl.at( rng().range( heal_tl.size() ) );
+    }
+
     conv_cast->execute_on_target( conv_tar );
   }
 
