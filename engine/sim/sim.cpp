@@ -2743,8 +2743,9 @@ void sim_t::init()
   {
     fallback_buff_t( sim_t* sim ) : buff_t( sim, "fallback" )
     {
-      set_chance( 0.0 );
-      set_no_callbacks( true );
+      is_fallback = true;
+      manual_chance = 0.0;
+      default_chance = 0.0;
     }
     bool trigger( int, double, double, timespan_t ) override { return false; }
     void execute( int, double, timespan_t ) override { return; }
