@@ -2355,7 +2355,7 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
+  std::string retribution_flask = ( true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : "disabled";
 
   std::string protection_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
