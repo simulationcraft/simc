@@ -12339,7 +12339,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     dots.thrash_bear           = target.get_dot( "thrash_bear", &source );
     dots.thrash_cat            = target.get_dot( "thrash_cat", &source );
   }
-  else if ( !target.is_pet() )
+  else
   {
     hots.adaptive_swarm_heal   = target.get_dot( "adaptive_swarm_heal", &source );
     hots.cenarion_ward         = target.get_dot( "cenarion_ward", &source );
@@ -12375,7 +12375,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
           ->set_chance( 1.0 )
           ->set_duration( 0_ms );
 
-  buff.ironbark = make_buff_fallback( source.talent.ironbark.ok() && !target.is_enemy() && !target.is_pet(),
+  buff.ironbark = make_buff_fallback( source.talent.ironbark.ok() && !target.is_enemy(),
       *this, "ironbark", source.talent.ironbark )
           ->set_cooldown( 0_ms );
 }
