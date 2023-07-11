@@ -572,7 +572,6 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 buff_t::buff_t(actor_pair_t q, util::string_view name)
   : buff_t(q, name, spell_data_t::nil(), nullptr)
 {
-
 }
 
 buff_t::buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell_data, const item_t* item )
@@ -671,6 +670,11 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 {
   if ( source )  // Player Buffs
   {
+    // remove matching name from fallback buff list
+    auto &fl = player->fallback_buff_names;
+    fl.erase( std::remove_if( fl.begin(), fl.end(), [ name, source]( std::pair<std::string, player_t*> f ) {
+      return f.first == name && f.second == source;
+    } ), fl.end() );
     player->buff_list.push_back( this );
     cooldown = source->get_cooldown( "buff_" + name_str );
   }
@@ -2764,11 +2768,13 @@ buff_t* buff_t::find_expressable( util::span<buff_t* const> buffs, util::string_
     return find( buffs, name, source );
 }
 
-buff_t* buff_t::make_fallback( player_t* player, std::string_view name )
+buff_t* buff_t::make_fallback( player_t* player, std::string_view name, player_t* source )
 {
-  if ( !range::contains( player->fallback_buff_names, name ) )
-    player->fallback_buff_names.emplace_back( name );
+  for ( const auto& fb : player->fallback_buff_names )
+    if ( fb.first == name && fb.second == source )
+      return player->sim->auras.fallback;
 
+  player->fallback_buff_names.emplace_back( name, source );
   return player->sim->auras.fallback;
 }
 
@@ -2827,8 +2833,9 @@ buff_t* buff_t::find( sim_t* s, util::string_view name )
 
 buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
-  if ( range::contains( p->fallback_buff_names, name ) )
-    return p->sim->auras.fallback;
+  for ( const auto& fb : p->fallback_buff_names )
+    if ( fb.first == name && fb.second == source )
+      return p->sim->auras.fallback;
 
   return find( p->buff_list, name, source );
 }

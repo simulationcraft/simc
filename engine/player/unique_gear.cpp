@@ -4673,7 +4673,7 @@ bool unique_gear::create_fallback_buffs( const special_effect_t& effect, const s
     return false;
 
   for ( auto name : names )
-    buff_t::make_fallback( effect.player, name );
+    buff_t::make_fallback( effect.player, name, effect.player );
 
   return true;
 }

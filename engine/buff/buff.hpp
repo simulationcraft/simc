@@ -302,7 +302,7 @@ public:
   static buff_t* find( sim_t*, util::string_view name );
   static buff_t* find( player_t*, util::string_view name, player_t* source = nullptr );
   static buff_t* find_expressable( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
-  static buff_t* make_fallback( player_t* player, std::string_view name );
+  static buff_t* make_fallback( player_t* player, std::string_view name, player_t* source = nullptr );
 
   // If first argument is true, create a buff per normal
   // If first argument is false, add name to fallback buffs and return the generic sim fallback
@@ -325,9 +325,9 @@ public:
     else
     {
       if constexpr ( std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>> )
-        return make_fallback( player.target, name );
+        return make_fallback( player.target, name, player.source );
       else
-        return make_fallback( player, name );
+        return make_fallback( player, name, player );
     }
   }
 
