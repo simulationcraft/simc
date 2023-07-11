@@ -1820,14 +1820,16 @@ namespace monk
         {
           double am = rising_sun_kick_dmg_t::action_multiplier();
 
+          auto pta_modifier = 1.0 - p()->talent.brewmaster.press_the_advantage->effectN( 3 ).percent();
+
           if ( face_palm )
-            am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.5;
+            am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1 ) * pta_modifier;
 
           if ( blackout_combo )
-            am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * 0.5;
+            am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * pta_modifier;
 
           if ( counterstrike )
-            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.5;
+            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * pta_modifier;
 
           return am;
         }
@@ -3322,10 +3324,12 @@ namespace monk
         {
           double am = keg_smash_t::action_multiplier();
 
+          auto pta_modifier = 1.0 - p()->talent.brewmaster.press_the_advantage->effectN( 3 ).percent();
+
           if ( face_palm )
-            am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1) * 0.5;
+            am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1 ) * pta_modifier;
           if ( counterstrike )
-            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * 0.5;
+            am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * pta_modifier;
 
           return am;
         }
@@ -6410,12 +6414,7 @@ namespace monk
         double health_multiplier = ( p().bugs ? 0.2 : 0.15 );  // p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
 
         if ( p().talent.brewmaster.fortifying_brew_determination->ok() )
-        {
-          // The tooltip is hard-coded with 20% if Brewmaster Rank 2 is activated
-          // Currently it's bugged and giving 17.39% HP instead of the intended 20%
-          // This if fixed on PTR
-          health_multiplier = ( !p().is_ptr() ? 0.1739 : p().passives.fortifying_brew->effectN( 6 ).percent() );
-        }
+          health_multiplier = p().passives.fortifying_brew->effectN( 6 ).percent();
 
         // Extra Health is set by current max_health, doesn't change when max_health changes.
         health_gain = static_cast< int >( p().resources.max[RESOURCE_HEALTH] * health_multiplier );
@@ -9212,8 +9211,7 @@ namespace monk
   {
     double d = player_t::composite_dodge();
 
-    if ( is_ptr() )
-      d += talent.general.dance_of_the_wind->effectN( 1 ).percent();
+    d += talent.general.dance_of_the_wind->effectN( 1 ).percent();
 
     if ( specialization() == MONK_BREWMASTER )
     {

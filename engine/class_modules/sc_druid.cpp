@@ -10272,8 +10272,8 @@ void druid_t::create_actions()
 
   if ( talent.new_moon.ok() )
   {
-    active.moons = new action_t( action_e::ACTION_OTHER, "moons_proxy", this, talent.new_moon );
-    active.moons->name_str_reporting = "new_moon";
+    active.moons = new action_t( action_e::ACTION_OTHER, "moons_talent", this, talent.new_moon );
+    active.moons->name_str_reporting = "Talent";
   }
 
   if ( talent.shooting_stars.ok() )
@@ -12228,20 +12228,23 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
   if ( spec.ursine_adept->ok() && buff.bear_form->check() )
     s->result_amount *= 1.0 + spec.ursine_adept->effectN( 2 ).percent();
 
-  if ( talent.pulverize.ok() )
-    s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.pulverize->check_value();
-
-  if ( talent.rend_and_tear.ok() )
+  if ( s->action->player != this )
   {
-    s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() *
-                                  get_target_data( s->action->player )->dots.thrash_bear->current_stack();
+    if ( talent.pulverize.ok() )
+      s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.pulverize->check_value();
+
+    if ( talent.rend_and_tear.ok() )
+    {
+      s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() *
+                                    get_target_data( s->action->player )->dots.thrash_bear->current_stack();
+    }
+
+    if ( talent.scintillating_moonlight.ok() && get_target_data( s->action->player )->dots.moonfire->is_ticking() )
+      s->result_amount *= 1.0 + talent.scintillating_moonlight->effectN( 1 ).percent();
+
+    if ( talent.tooth_and_claw.ok() )
+      s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.tooth_and_claw->check_value();
   }
-
-  if ( talent.scintillating_moonlight.ok() && get_target_data( s->action->player )->dots.moonfire->is_ticking() )
-    s->result_amount *= 1.0 + talent.scintillating_moonlight->effectN( 1 ).percent();
-
-  if ( talent.tooth_and_claw.ok() )
-    s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.tooth_and_claw->check_value();
 
   player_t::target_mitigation( school, type, s );
 }

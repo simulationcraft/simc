@@ -36,20 +36,20 @@ position=front
 talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAoEhSSikkAIJBSKJQi2BIRikQSkEkkkQJIAAAAA
 
 head=kinslayers_hood,id=202524,bonus_id=9410/1504/9413,gem_id=192945
-neck=torc_of_passed_time,id=201759,gem_id=192945/192945/192945,bonus_id=8782,crafted_stats=36/32,ilevel=447
-shoulder=kinslayers_tainted_spaulders,id=202522,bonus_id=4800/4786/1507,ilevel=450
+neck=torc_of_passed_time,id=201759,bonus_id=8782,ilevel=447,gem_id=192945/192945/192945,crafted_stats=36/32
+shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=4800/4786/1507,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=lifebound_chestpiece,id=193399,crafted_stats=36/32,enchant_id=6625,ilevel=447
-wrist=lifebound_bindings,id=193419,bonus_id=8797/8960,crafted_stats=32/36,gem_id=192945,ilevel=447
+chest=lifebound_chestpiece,id=193399,ilevel=447,enchant_id=6625,crafted_stats=36/32
+wrists=lifebound_bindings,id=193419,bonus_id=8797/8960,ilevel=447,gem_id=192945,crafted_stats=32/36
 hands=kinslayers_bloodstained_grips,id=202525,bonus_id=9410/1501,ilevel=450
-waist=kinslayers_sash,id=202521,gem_id=192985,ilevel=450
+waist=kinslayers_sash,id=202521,ilevel=450,gem_id=192985
 legs=kinslayers_legguards,id=202523,bonus_id=9410/1504,enchant_id=6496
-feet=slimy_expulsion_boots,id=193451,enchant_id=6613,ilevel=447
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
-finger2=onyx_annulet,id=203460,enchant_id=6550,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,bonus_id=1491
-trinket1=elementium_pocket_anvil,id=202617,bonus_id=4800/4786/1498
+feet=slimy_expulsion_boots,id=193451,ilevel=447,enchant_id=6613
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192945,enchant_id=6556
+finger2=onyx_impostors_birthright,id=204398,bonus_id=4800/4786/1498,gem_id=192945,enchant_id=6556
+trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=4800/4786/1498
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
-main_hand=bilestained_crawg_tusks,id=159653,enchant_id=6643,ilevel=447
-off_hand=bilestained_crawg_tusks,id=159653,enchant_id=6655,ilevel=447
+main_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6655
+off_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6655
 
 save=T30_Demon_Hunter_Vengeance.simc

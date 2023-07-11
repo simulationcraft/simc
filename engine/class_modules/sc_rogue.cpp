@@ -1617,7 +1617,7 @@ public:
                               ab::data().affected_by( p->spec.deathmark_debuff->effectN( 2 ) );
     }
 
-    if ( p->is_ptr() && p->talent.outlaw.ghostly_strike->ok() )
+    if ( p->talent.outlaw.ghostly_strike->ok() )
     {
       affected_by.ghostly_strike = ab::data().affected_by( p->talent.outlaw.ghostly_strike->effectN( 3 ) );
     }
@@ -1992,7 +1992,6 @@ public:
   void trigger_shadow_blades_attack( action_state_t* );
   void trigger_prey_on_the_weak( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
-  void trigger_grand_melee( const action_state_t* state );
   void trigger_master_of_shadows();
   void trigger_dashing_scoundrel( const action_state_t* state );
   void trigger_count_the_odds( const action_state_t* state );
@@ -3378,7 +3377,6 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     trigger_restless_blades( execute_state );
-    trigger_grand_melee( execute_state );
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -3784,7 +3782,6 @@ struct dispatch_t: public rogue_attack_t
     }
 
     trigger_restless_blades( execute_state );
-    trigger_grand_melee( execute_state );
     trigger_count_the_odds( execute_state );
   }
 
@@ -5610,9 +5607,6 @@ struct slice_and_dice_t : public rogue_spell_t
     {
       p()->buffs.slice_and_dice->trigger( snd_duration );
     }
-
-    // Grand melee extension goes on top of SnD buff application.
-    trigger_grand_melee( execute_state );
   }
 
   bool ready() override
@@ -7397,7 +7391,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   if ( !ab::result_is_hit( state->result ) )
     return;
 
-  if ( p()->sim->active_enemies == 1 && ( !p()->is_ptr() || !p()->buffs.grand_melee->check() ) )
+  if ( p()->sim->active_enemies == 1 && !p()->buffs.grand_melee->check() )
     return;
 
   // Compute Blade Flurry modifier
@@ -7414,7 +7408,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   }
 
   // Grand Melee buff is additive with Killing Spree 100% base value
-  if ( p()->is_ptr() && p()->buffs.grand_melee->up() )
+  if ( p()->buffs.grand_melee->up() )
   {
     multiplier += p()->spec.grand_melee->effectN( 1 ).percent();
   }
@@ -7441,7 +7435,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   // This allows it to affect the additive Precise Cuts modifier retroactively
   // However, the value for Killing Spree with Precise Cuts ends up being off due to the higher base value
   double damage_primary = 0;
-  if ( p()->is_ptr() && p()->buffs.grand_melee->check() )
+  if ( p()->buffs.grand_melee->check() )
   {
     damage_primary = damage * ( 0.1 / 0.6 );
   }
@@ -7810,16 +7804,6 @@ void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t*
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_grand_melee( const action_state_t* state )
-{
-  if ( !ab::result_is_hit( state->result ) || !p()->buffs.grand_melee->up() || p()->is_ptr() )
-    return;
-
-  timespan_t snd_extension = cast_state( state )->get_combo_points() * timespan_t::from_seconds( p()->buffs.grand_melee->check_value() );
-  p()->buffs.slice_and_dice->extend_duration_or_trigger( snd_extension );
-}
-
-template <typename Base>
 void actions::rogue_action_t<Base>::trigger_master_of_shadows()
 {
   // Since Stealth from expiring Vanish cannot trigger this but expire_override already treats vanish as gone, we have to do this manually using this function.
@@ -8017,7 +8001,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.improved_shiv_debuff, false )
     ->set_direct_mod( source->spec.improved_shiv_debuff->effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
-    ->set_default_value_from_effect_type( source->is_ptr() ? A_MOD_DAMAGE_FROM_CASTER_SPELLS : A_MOD_DAMAGE_FROM_CASTER )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->set_cooldown( timespan_t::zero() );
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
@@ -8256,11 +8240,6 @@ double rogue_t::composite_leech() const
 {
   double l = player_t::composite_leech();
 
-  if ( !is_ptr() && buffs.grand_melee->check() )
-  {
-    l += buffs.grand_melee->data().effectN( 2 ).percent();
-  }
-
   l += spell.leeching_poison_buff->effectN( 1 ).percent();
 
   return l;
@@ -8304,11 +8283,6 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
   double m = player_t::composite_player_target_multiplier( target, school );
 
   rogue_td_t* tdata = get_target_data( target );
-
-  if ( !is_ptr() )
-  {
-    m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
-  }
 
   m *= 1.0 + tdata->debuffs.prey_on_the_weak->stack_value();
 
@@ -9806,12 +9780,6 @@ void rogue_t::create_buffs()
     ->set_affects_regen( true );
 
   buffs.grand_melee = make_buff( this, "grand_melee", spec.grand_melee );
-  if ( !is_ptr() )
-  {
-    buffs.grand_melee
-      ->set_default_value_from_effect( 1, 1.0 ) // SnD Extend Seconds
-      ->add_invalidate( CACHE_LEECH );
-  }
 
   buffs.skull_and_crossbones = make_buff( this, "skull_and_crossbones", spec.skull_and_crossbones )
     ->set_default_value_from_effect( 1, 0.01 ); // Flat Modifier to Proc%
