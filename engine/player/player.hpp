@@ -337,7 +337,8 @@ struct player_t : public actor_t
   double tmi_window;
 
   auto_dispose<std::vector<buff_t*>> buff_list;
-  std::vector<std::string> fallback_buff_names;  // buff_t::find( player, name ) will return pointer to sim.auras.fallback
+  // buff_t::find( player, name, source ) will return pointer to sim.auras.fallback
+  std::vector<std::pair<std::string, player_t*>> fallback_buff_names;
   auto_dispose<std::vector<proc_t*>> proc_list;
   auto_dispose<std::vector<gain_t*>> gain_list;
   auto_dispose<std::vector<stats_t*>> stats_list;

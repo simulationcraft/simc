@@ -9705,7 +9705,7 @@ void druid_t::create_buffs()
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
 
   // buff.thorns = make_buff( this, "thorns", find_spell( 305497 ) );
-  buff.thorns = buff_t::make_fallback( this, "thorns" );
+  buff.thorns = buff_t::make_fallback( this, "thorns", this );
 
   // Class
   buff.forestwalk =
