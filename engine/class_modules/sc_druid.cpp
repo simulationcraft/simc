@@ -3582,7 +3582,7 @@ struct ferocious_bite_t : public cat_finisher_t
     rampant_ferocity_t( druid_t* p, std::string_view n ) : cat_attack_t( n, p, p->find_spell( 391710 ) )
     {
       aoe = -1;
-      reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 2 ).base_value();
+      reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 1 ).base_value();
       name_str_reporting = "rampant_ferocity";
     }
 
