@@ -12659,8 +12659,6 @@ Effects          :
 #2 (id=1020063)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#3 (id=1020064)  : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc386174
 Tooltip          : Your Felguard deals $w1% more damage and takes $w1% less damage.
 
