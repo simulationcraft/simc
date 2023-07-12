@@ -9,6 +9,7 @@
 
 #include "sc_enums.hpp"
 #include "targetdata_initializer.hpp"
+#include "util/span.hpp"
 #include "util/string_view.hpp"
 
 #include <cassert>

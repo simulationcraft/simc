@@ -9,7 +9,6 @@
 
 #include "sc_enums.hpp"
 #include "target_specific.hpp"
-#include "util/span.hpp"
 
 #include <vector>
 
