@@ -23,9 +23,9 @@ class_modules/apl/apl_monk.hpp
 class_modules/apl/apl_paladin.hpp
 class_modules/apl/apl_priest.hpp
 class_modules/apl/apl_rogue.hpp
+class_modules/apl/apl_warrior.hpp
 class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
-class_modules/apl/apl_warrior.hpp
 class_modules/class_module.hpp
 class_modules/monk/sc_monk.hpp
 class_modules/paladin/sc_paladin.hpp
@@ -78,7 +78,6 @@ interfaces/sc_js.hpp
 interfaces/wowhead.hpp
 item/enchants.hpp
 item/item.hpp
-item/item_targetdata_initializer.hpp
 item/special_effect.hpp
 lib/cpp-semver/base/type.hpp
 lib/cpp-semver/base/util.hpp
@@ -127,6 +126,7 @@ player/special_effect_db_item.hpp
 player/stats.hpp
 player/talent.hpp
 player/target_specific.hpp
+player/targetdata_initializer.hpp
 player/unique_gear.hpp
 player/unique_gear_dragonflight.hpp
 player/unique_gear_helper.hpp
@@ -213,9 +213,9 @@ class_modules/apl/apl_monk.cpp
 class_modules/apl/apl_paladin.cpp
 class_modules/apl/apl_priest.cpp
 class_modules/apl/apl_rogue.cpp
+class_modules/apl/apl_warrior.cpp
 class_modules/apl/mage.cpp
 class_modules/apl/warlock.cpp
-class_modules/apl/apl_warrior.cpp
 class_modules/monk/sc_monk.cpp
 class_modules/monk/sc_monk_pets.cpp
 class_modules/paladin/sc_paladin.cpp
@@ -286,7 +286,6 @@ interfaces/sc_js.cpp
 interfaces/wowhead.cpp
 item/enchants.cpp
 item/item.cpp
-item/item_targetdata_initializer.cpp
 item/special_effect.cpp
 lib/fmt/format.cpp
 lib/fmt/os.cpp
@@ -313,6 +312,7 @@ player/soulbinds.cpp
 player/spawner_base.cpp
 player/talent.cpp
 player/target_specific.cpp
+player/targetdata_initializer.cpp
 player/unique_gear.cpp
 player/unique_gear_bfa.cpp
 player/unique_gear_dragonflight.cpp

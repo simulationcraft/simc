@@ -25,9 +25,9 @@ SRC += \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_paladin.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_priest.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_rogue.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_warrior.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)warlock.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_warrior.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk_pets.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin.cpp \
@@ -98,7 +98,6 @@ SRC += \
     interfaces$(PATHSEP)wowhead.cpp \
     item$(PATHSEP)enchants.cpp \
     item$(PATHSEP)item.cpp \
-    item$(PATHSEP)item_targetdata_initializer.cpp \
     item$(PATHSEP)special_effect.cpp \
     lib$(PATHSEP)fmt$(PATHSEP)format.cpp \
     lib$(PATHSEP)fmt$(PATHSEP)os.cpp \
@@ -125,6 +124,7 @@ SRC += \
     player$(PATHSEP)spawner_base.cpp \
     player$(PATHSEP)talent.cpp \
     player$(PATHSEP)target_specific.cpp \
+    player$(PATHSEP)targetdata_initializer.cpp \
     player$(PATHSEP)unique_gear.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \
     player$(PATHSEP)unique_gear_dragonflight.cpp \
