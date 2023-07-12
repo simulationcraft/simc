@@ -73,10 +73,10 @@ actions.breath+=/horn_of_winter,if=rune<2&runic_power.deficit>25
 actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.breath+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
 actions.breath+=/frostscythe,if=variable.frostscythe_priority&runic_power>45
-actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up&runic_power.deficit>15
-actions.breath+=/death_and_decay,if=runic_power<32&rune.time_to_2>runic_power%16
-actions.breath+=/remorseless_winter,if=runic_power<32&rune.time_to_2>runic_power%16
-actions.breath+=/howling_blast,if=runic_power<32&rune.time_to_2>runic_power%16
+actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up&runic_power.deficit>17
+actions.breath+=/death_and_decay,if=runic_power<36&rune.time_to_2>runic_power%18
+actions.breath+=/remorseless_winter,if=runic_power<36&rune.time_to_2>runic_power%18
+actions.breath+=/howling_blast,if=runic_power<36&rune.time_to_2>runic_power%18
 actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25
 actions.breath+=/howling_blast,if=buff.rime.react
 actions.breath+=/arcane_torrent,if=runic_power<60

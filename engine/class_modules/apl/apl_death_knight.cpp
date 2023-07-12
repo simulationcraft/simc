@@ -232,10 +232,10 @@ void frost( player_t* p )
   breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
   breath->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
   breath->add_action( "frostscythe,if=variable.frostscythe_priority&runic_power>45" );
-  breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up&runic_power.deficit>15" );
-  breath->add_action( "death_and_decay,if=runic_power<32&rune.time_to_2>runic_power%16" );
-  breath->add_action( "remorseless_winter,if=runic_power<32&rune.time_to_2>runic_power%16" );
-  breath->add_action( "howling_blast,if=runic_power<32&rune.time_to_2>runic_power%16" );
+  breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up&runic_power.deficit>17" );
+  breath->add_action( "death_and_decay,if=runic_power<36&rune.time_to_2>runic_power%18" );
+  breath->add_action( "remorseless_winter,if=runic_power<36&rune.time_to_2>runic_power%18" );
+  breath->add_action( "howling_blast,if=runic_power<36&rune.time_to_2>runic_power%18" );
   breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25" );
   breath->add_action( "howling_blast,if=buff.rime.react" );
   breath->add_action( "arcane_torrent,if=runic_power<60" );
