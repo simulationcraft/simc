@@ -138,6 +138,7 @@ namespace racial
 {
   void touch_of_the_grave( special_effect_t& );
   void entropic_embrace( special_effect_t& );
+  void brush_it_off( special_effect_t& );
   void zandalari_loa( special_effect_t& );
   void combat_analysis( special_effect_t& );
 }
@@ -3409,6 +3410,29 @@ void racial::entropic_embrace( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void racial::brush_it_off( special_effect_t& effect )
+{
+  struct brush_it_off_cb_t : public dbc_proc_callback_t
+  {
+    action_t* regen;
+    double heal_pct;
+
+    brush_it_off_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), heal_pct( e.driver()->effectN( 2 ).percent() )
+    {
+      regen = new residual_action::residual_periodic_action_t<proc_heal_t>( "brush_it_off", e.player,
+                                                                            e.player->find_spell( 291843 ) );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      residual_action::trigger( regen, listener, s->result_amount * heal_pct );
+    }
+  };
+
+  new brush_it_off_cb_t( effect );
+}
+
 struct embrace_of_bwonsamdi_t : public spell_t
 {
   embrace_of_bwonsamdi_t(player_t* p, const spell_data_t* sd) :
@@ -4946,6 +4970,7 @@ void unique_gear::register_special_effects()
   /* Racial special effects */
   register_special_effect( 5227,   racial::touch_of_the_grave );
   register_special_effect( 255669, racial::entropic_embrace );
+  register_special_effect( 291628, racial::brush_it_off );
   register_special_effect( 292751, racial::zandalari_loa );
   register_special_effect( 312923, racial::combat_analysis );
 
