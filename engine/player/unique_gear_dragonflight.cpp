@@ -6430,21 +6430,6 @@ void timestrike( special_effect_t& effect )
 // Demonsbane
 // 419261 Driver
 // 419262 DoT
-struct demonsbane_initializer_t : public item_targetdata_initializer_t
-{
-  demonsbane_initializer_t() : item_targetdata_initializer_t( 419262 )
-  {
-  }
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.warchiefs_rend = make_buff_fallback( active, *td, "warchiefs_rend", debuffs[ td->source ] );
-    td->debuff.warchiefs_rend->reset();
-  }
-};
-
 void demonsbane( special_effect_t& e )
 {
   auto dot     = create_proc_action<generic_proc_t>( "warchiefs_rend", e, "warchiefs_rend", 419262 );
@@ -7668,7 +7653,6 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );
   sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
-  sim.register_target_data_initializer( items::demonsbane_initializer_t() );
 }
 
 void register_hotfixes()
