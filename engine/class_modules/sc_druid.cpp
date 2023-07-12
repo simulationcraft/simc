@@ -480,7 +480,6 @@ public:
     action_t* after_the_wildfire_heal;
     action_t* brambles;
     action_t* elunes_favored_heal;
-    action_t* furious_regeneration;
     action_t* galactic_guardian;
     action_t* maul_tooth_and_claw;
     action_t* raze_tooth_and_claw;
@@ -10358,9 +10357,6 @@ void druid_t::create_actions()
   if ( talent.elunes_favored.ok() )
     active.elunes_favored_heal = get_secondary_action<elunes_favored_heal_t>( "elunes_favored" );
 
-  if ( sets->has_set_bonus( DRUID_GUARDIAN, T30, B2 ) )
-    active.furious_regeneration = get_secondary_action<furious_regeneration_t>( "furious_regeneration" );
-
   if ( talent.galactic_guardian.ok() )
   {
     auto gg = get_secondary_action_n<moonfire_t>( "galactic_guardian", "" );
@@ -11138,6 +11134,37 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     new galactic_guardian_cb_t( this, *driver );
+  }
+
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, T30, B2 ) )
+  {
+    struct furious_regeneration_cb_t : public druid_cb_t
+    {
+      action_t* regen;
+      double heal_pct;
+
+      furious_regeneration_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), heal_pct( e.driver()->effectN( 1 ).percent() )
+      {
+        regen = p->get_secondary_action<heals::furious_regeneration_t>( "furious_regeneration" );
+      }
+
+      void execute( action_t* a, action_state_t* s ) override
+      {
+        druid_cb_t::execute( a, s );
+
+        residual_action::trigger( regen, p(), s->result_amount * heal_pct );
+      }
+    };
+
+    auto bonus = sets->set( DRUID_GUARDIAN, T30, B2 );
+    const auto driver = new special_effect_t( this );
+    driver->name_str = bonus->name_cstr();
+    driver->spell_id = bonus->id();
+    driver->custom_buff = buff.furious_regeneration;
+    special_effects.push_back( driver );
+
+    new furious_regeneration_cb_t( this, *driver );
   }
 
   // blanket proc callback initialization happens here. anything further needs to be individually initialized
@@ -12265,15 +12292,6 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
 
     if ( talent.dream_of_cenarius.ok() && s->result_type == result_amount_type::DMG_DIRECT )
       buff.dream_of_cenarius->trigger( -1, buff_t::DEFAULT_VALUE(), cache.attack_crit_chance() );
-
-    if ( active.furious_regeneration )
-    {
-      buff.furious_regeneration->trigger();
-
-      auto heal_pct = sets->set( DRUID_GUARDIAN, T30, B2 )->effectN( 1 ).percent();
-
-      residual_action::trigger( active.furious_regeneration, this, s->result_amount * heal_pct );
-    }
   }
 }
 
