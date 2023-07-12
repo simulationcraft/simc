@@ -30,7 +30,7 @@ spec=demonology
 race=troll
 role=spell
 position=ranged_back
-talents=BoQAAAAAAAAAAAAAAAAAAAAAAAIJRSCkWKHQkmkESJAAAAAokIJSIgQikDkiWSSOABAAAAAAJ
+talents=BoQAAAAAAAAAAAAAAAAAAAAAAAIJRSCkWKHQkmkESJAAAAAokIJSiAkIJSKaJRCBAAAAAAJ
 
 head=cragshapers_fitted_hood,id=137341,bonus_id=8780,ilevel=447,gem_id=192985
 neck=magmoraxs_fourth_collar,id=204397,bonus_id=8782,ilevel=447,gem_id=192945/192945/192945
@@ -56,7 +56,7 @@ spec=destruction
 race=mechagnome
 role=spell
 position=ranged_back
-talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESJwBSUSSkAalmkAAAAAAAAAAAAIIpkEJ
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAgESSkkAppApdgkESBBRJJRCoVKSCAAAAAAAAAAAggkSSkA
 
 head=grimhorns_of_the_sinister_savant,id=202533,bonus_id=8780,ilevel=447,gem_id=192988
 neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/9477/8782/9405/8793/9366,ilevel=447,gem_id=192958/192958/192958,crafted_stats=36/32
@@ -70,7 +70,7 @@ legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
 feet=sandals_of_the_sinister_savant,id=202535,bonus_id=4800/4786/1507,ilevel=450
 finger1=loop_of_pulsing_veins,id=159463,bonus_id=8780,ilevel=447,gem_id=192958,enchant_id=6562
 finger2=signet_of_titanic_insight,id=192999,bonus_id=8780/8793/8960,ilevel=447,gem_id=192958,enchant_id=6562
-trinket1=vessel_of_searing_shadow,id=202615,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498/9334,ilevel=441
+trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767,ilevel=447
 trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/1498
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6655
 
