@@ -6381,10 +6381,9 @@ void demonsbane( special_effect_t& e )
   auto dot     = create_proc_action<generic_proc_t>( "warchiefs_rend", e, "warchiefs_rend", 419262 );
   dot->base_td = e.driver()->effectN( 1 ).average( e.item );
 
-  e.player->callbacks.register_callback_trigger_function( e.driver() -> id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      []( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        return s->target->race == RACE_DEMON;
-      } );
+  e.player->callbacks.register_callback_trigger_function(
+      e.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t*, action_state_t* s ) { return s->target->race == RACE_DEMON; } );
 
   e.execute_action = dot;
   new dbc_proc_callback_t( e.player, e );
