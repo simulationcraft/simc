@@ -10363,6 +10363,7 @@ void druid_t::create_actions()
     gg->s_data_reporting = talent.galactic_guardian;
     gg->set_free_cast( free_spell_e::GALACTIC );
     gg->damage->set_free_cast( free_spell_e::GALACTIC );
+    gg->damage->aoe = 0;  // gg proc cannot proc second moonfire
     active.galactic_guardian = gg;
   }
 
