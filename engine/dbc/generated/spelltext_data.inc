@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.50401
-static const std::array<spelltext_data_t, 20109> __spelltext_data { {
+static const std::array<spelltext_data_t, 20111> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20108,7 +20108,9 @@ static const std::array<spelltext_data_t, 20109> __spelltext_data { {
   { 419423, "$@spelldesc419421", 0, 0 },
   { 419539, "$@spelldesc415130", "Shielded for $w4.", 0 },
   { 419591, "Attacks the enemy.", 0, 0 },
+  { 419737, "Upon expiration, an echo of the ability's damage will strike the target.", 0, 0 },
   { 419800, "$@spelldesc416714", 0, 0 },
+  { 420144, 0, "An echo of $w1 damage will be dealt upon expiration.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.1.5.50401

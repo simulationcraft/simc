@@ -6262,6 +6262,57 @@ struct ever_decaying_spores_initializer_t : public item_targetdata_initializer_t
     td->debuff.ever_decaying_spores->reset();
   }
 };
+
+struct timestrike_initializer_t : public item_targetdata_initializer_t
+{
+  timestrike_initializer_t() : item_targetdata_initializer_t( 419290, 420144 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.timestrike = make_buff_fallback( active, *td, "timestrike", debuffs[ td->source ] );
+    td->debuff.ever_decaying_spores->reset();
+  }
+};
+
+void timestrike( special_effect_t& effect )
+{
+  struct timestrike_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    timespan_t delay;
+    double mul;
+
+    timestrike_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        delay( timespan_t::from_seconds( e.driver()->effectN( 2 ).base_value() ) ),
+        mul( e.driver()->effectN( 1 ).percent() )
+    {
+      damage = create_proc_action<generic_proc_t>( "timestrike", e, "timestrike", 419737 );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      // capture amount & target by value
+      make_event( *listener->sim, delay, [ amt = s->result_amount * mul, t = s->target, this ]() {
+        if ( !t->is_sleeping() )
+        {
+          damage->base_dd_min = damage->base_dd_max = amt;
+          damage->execute_on_target( t );
+        }
+      } );
+
+      // debuff is purely cosmetic
+      listener->get_target_data( s->target )->debuff.timestrike->trigger();
+    }
+  };
+
+  // procs on impact to properly get the actual damage
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+  new timestrike_cb_t( effect );
+}
 }  // namespace items
 
 namespace sets
@@ -7410,6 +7461,7 @@ void register_special_effects()
   register_special_effect( 406254, items::roiling_shadowflame );
   register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
   register_special_effect( 406244, items::ever_decaying_spores );
+
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
   register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
@@ -7434,6 +7486,9 @@ void register_special_effects()
   register_special_effect( primordial_stones::GLEAMING_IRON_STONE,      primordial_stones::gleaming_iron_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,       DISABLED_EFFECT ); // Necessary for other gems to find the driver.
   register_special_effect( primordial_stones::PROPHETIC_TWILIGHT_STONE, DISABLED_EFFECT );
+
+  // Divergent
+  register_special_effect( 419290, items::timestrike );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
@@ -7464,6 +7519,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::heavens_nemesis_initializer_t() );
   sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );
   sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
+  sim.register_target_data_initializer( items::timestrike_initializer_t() );
 }
 
 void register_hotfixes()

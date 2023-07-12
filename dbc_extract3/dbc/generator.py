@@ -1433,6 +1433,7 @@ class SpellDataGenerator(DataGenerator):
          414976, 414968, # Paracausal Fragment of Azzinoth
          414856, 414864, 414858, 414857, 414865, # Paracausal Fragment of Sulfuras
          414928, 414936, 414951, 414950, # Paracausal Fragment of Doomhammer/Shalamayne
+         419737, 420144, # Timestrike
         ),
 
         # Warrior:
