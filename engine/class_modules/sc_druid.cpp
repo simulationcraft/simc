@@ -11347,7 +11347,7 @@ void druid_t::arise()
   {
     if ( options.initial_pulsar_value > 0 )
     {
-      register_combat_begin( [ this ]( player_t* p ) {
+      register_combat_begin( [ this ]( player_t* ) {
         buff.primordial_arcanic_pulsar->trigger();
         buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
         // Purely visual indicator for the sample sequence

@@ -6255,7 +6255,7 @@ void register_target_data_initializers( sim_t& sim )
   {
     volatile_satchel_init_t() : item_targetdata_initializer_t( 367901 )
     {
-      debuff_fn = [ this ]( player_t* p, const special_effect_t* e ) {
+      debuff_fn = []( player_t* p, const special_effect_t* e ) {
         if ( e->spell_id == 351679 )
           return p->find_spell( 351682 );
         else
