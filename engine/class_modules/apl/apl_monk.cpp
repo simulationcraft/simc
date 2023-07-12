@@ -331,7 +331,7 @@ namespace monk_apl
     rotation_boc->add_action( "keg_smash" );
     rotation_boc->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
     rotation_boc->add_action( "breath_of_fire" );
-    rotation_boc->add_action( "tiger_palm,if=active_enemies>1&!talent.blackout_combo.enabled" );
+    rotation_boc->add_action( "tiger_palm,if=active_enemies=1&!talent.blackout_combo.enabled" );
     rotation_boc->add_action( "spinning_crane_kick,if=active_enemies>1" );
     rotation_boc->add_action( "expel_harm" );
     rotation_boc->add_action( "chi_wave,if=talent.chi_wave.enabled" );
