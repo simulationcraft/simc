@@ -3761,7 +3761,7 @@ bool item_targetdata_initializer_t::init( player_t* p ) const
   return targetdata_initializer_t::init( p );
 }
 
-inline const special_effect_t* item_targetdata_initializer_t::effect( actor_target_data_t* td ) const
+const special_effect_t* item_targetdata_initializer_t::effect( actor_target_data_t* td ) const
 {
   return data[ td->source ];
 }

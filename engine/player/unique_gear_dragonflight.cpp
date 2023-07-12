@@ -3709,7 +3709,7 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
 
   iceblood_deathsnare_initializer_t() : item_targetdata_initializer_t( 377455 ), damage_actions( false )
   {
-    debuff_fn = []( player_t* p, const special_effect_t* e ) { return e->driver()->effectN( 3 ).trigger(); };
+    debuff_fn = []( player_t*, const special_effect_t* e ) { return e->driver()->effectN( 3 ).trigger(); };
   }
 
   void operator()( actor_target_data_t* td ) const override

@@ -2484,7 +2484,7 @@ const spell_data_t* soulbind_targetdata_initializer_t::find( player_t* p ) const
   return p->find_soulbind_spell( name );
 }
 
-inline const spell_data_t* soulbind_targetdata_initializer_t::soulbind( actor_target_data_t* td ) const
+const spell_data_t* soulbind_targetdata_initializer_t::soulbind( actor_target_data_t* td ) const
 {
   return data[ td->source ];
 }
