@@ -5629,7 +5629,7 @@ void iridal_the_earths_master( special_effect_t& e )
     cooldown_t* item_cd;
     double cdr_value;
     cdr_cb_t( const special_effect_t& e, double i, player_t* p, const special_effect_t& item )
-      : dbc_proc_callback_t( p, e ), item_cd( p->get_cooldown( item.cooldown_name() ) ), cdr_value(i)
+      : dbc_proc_callback_t( p, e ), item_cd( p->get_cooldown( item.cooldown_name() ) ), cdr_value( i )
     {
     }
 
@@ -5650,7 +5650,7 @@ void iridal_the_earths_master( special_effect_t& e )
     {
       stats               = damage->stats;
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-      cooldown->duration  = 0_ms; // Handled by the use item
+      cooldown->duration                        = 0_ms;  // Handled by the use item
     }
 
     void impact( action_state_t* s ) override
@@ -5663,14 +5663,14 @@ void iridal_the_earths_master( special_effect_t& e )
     }
   };
 
-  auto cdr_value = e.driver() -> effectN( 3 ).base_value();
+  auto cdr_value = e.driver()->effectN( 3 ).base_value();
   auto damage    = create_proc_action<extinction_blast_missile_t>( "extinction_blast_missile", e );
 
-  auto on_hit            = new special_effect_t( e.player );
-  on_hit->name_str       = "extinction_blast_cdr";
-  on_hit->type           = SPECIAL_EFFECT_EQUIP;
-  on_hit->source         = SPECIAL_EFFECT_SOURCE_ITEM;
-  on_hit->spell_id       = 419282;
+  auto on_hit      = new special_effect_t( e.player );
+  on_hit->name_str = "extinction_blast_cdr";
+  on_hit->type     = SPECIAL_EFFECT_EQUIP;
+  on_hit->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  on_hit->spell_id = 419282;
 
   e.player->special_effects.push_back( on_hit );
 
