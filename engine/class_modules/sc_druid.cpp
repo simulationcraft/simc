@@ -7083,19 +7083,6 @@ struct moonfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  // force invalidate damage target cache on target change. baseline code always invalidate child_action target caches,
-  // but we only need to do this on proxy action target change.
-  bool select_target() override
-  {
-    auto old_target = target;
-    auto ret = druid_spell_t::select_target();
-
-    if ( ret && old_target != target && damage->is_aoe() )
-      damage->target_cache.is_valid = false;
-
-    return ret;
-  }
-
   void init() override
   {
     druid_spell_t::init();
@@ -7109,6 +7096,11 @@ struct moonfire_t : public druid_spell_t
     p()->snapshot_mastery();
 
     druid_spell_t::execute();
+
+    // as we use a single secondary action for all instances of sunfire invalidate the damage action cache whenever it
+    // doesn't match the current proxy action target.
+    if ( damage->target != target )
+      damage->target_cache.is_valid = false;
 
     damage->target = target;
     damage->schedule_execute();
@@ -7851,19 +7843,6 @@ struct sunfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  // force invalidate damage target cache on target change. baseline code always invalidate child_action target caches,
-  // but we only need to do this on proxy action target change.
-  bool select_target() override
-  {
-    auto old_target = target;
-    auto ret = druid_spell_t::select_target();
-
-    if ( ret && old_target != target && damage->is_aoe() )
-      damage->target_cache.is_valid = false;
-
-    return ret;
-  }
-
   void gain_energize_resource( resource_e rt, double amt, gain_t* gain ) override
   {
     druid_spell_t::gain_energize_resource( rt, amt, gain );
@@ -7878,6 +7857,11 @@ struct sunfire_t : public druid_spell_t
     p()->snapshot_mastery();
 
     druid_spell_t::execute();
+
+    // as we use a single secondary action for all instances of sunfire invalidate the damage action cache whenever it
+    // doesn't match the current proxy action target.
+    if ( damage->target != target )
+      damage->target_cache.is_valid = false;
 
     damage->target = target;
     damage->schedule_execute();
