@@ -6357,6 +6357,37 @@ void timestrike( special_effect_t& effect )
 
   new timestrike_cb_t( effect );
 }
+
+// Demonsbane
+// 419261 Driver
+// 419262 DoT
+struct demonsbane_initializer_t : public item_targetdata_initializer_t
+{
+  demonsbane_initializer_t() : item_targetdata_initializer_t( 419262 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.warchiefs_rend = make_buff_fallback( active, *td, "warchiefs_rend", debuffs[ td->source ] );
+    td->debuff.warchiefs_rend->reset();
+  }
+};
+
+void demonsbane( special_effect_t& e )
+{
+  auto dot     = create_proc_action<generic_proc_t>( "warchiefs_rend", e, "warchiefs_rend", 419262 );
+  dot->base_td = e.driver()->effectN( 1 ).average( e.item );
+
+  e.execute_action = dot;
+  if ( e.player->target->race == RACE_DEMON )
+  {
+    new dbc_proc_callback_t( e.player, e );
+  }
+}
+
 }  // namespace items
 
 namespace sets
@@ -7534,6 +7565,7 @@ void register_special_effects()
 
   // Divergent
   register_special_effect( 419290, items::timestrike );
+  register_special_effect( 419261, items::demonsbane );
 
   // Disabled
   register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
@@ -7565,6 +7597,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );
   sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
+  sim.register_target_data_initializer( items::demonsbane_initializer_t() );
 }
 
 void register_hotfixes()
