@@ -5618,6 +5618,75 @@ void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
   effect.execute_action = create_proc_action<djaruun_of_the_elder_flame_t>( "elder_flame", effect, siphon_damage );
 }
 
+// Iridal the Earths Master
+// 419278 Driver/Missile/Values
+// 419279 Damage
+// 419282 CDR
+void iridal_the_earths_master( special_effect_t& e )
+{
+  struct cdr_cb_t : public dbc_proc_callback_t
+  {
+    cooldown_t* item_cd;
+    double cdr_value;
+    cdr_cb_t( const special_effect_t& e, double i, player_t* p, const special_effect_t& item )
+      : dbc_proc_callback_t( p, e ), item_cd( p->get_cooldown( item.cooldown_name() ) ), cdr_value( i )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+      item_cd->adjust( -timespan_t::from_seconds( cdr_value ) );
+    }
+  };
+
+  struct extinction_blast_missile_t : public generic_proc_t
+  {
+    action_t* damage;
+    extinction_blast_missile_t( const special_effect_t& e )
+      : generic_proc_t( e, "extinction_blast_missile", e.driver() ),
+        damage( create_proc_action<generic_proc_t>( "extinction_blast", e, "extinction_blast",
+                                                    e.player->find_spell( 419279 ) ) )
+    {
+      stats               = damage->stats;
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      cooldown->duration                        = 0_ms;  // Handled by the use item
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      if ( s->target->health_percentage() < data().effectN( 2 ).base_value() )
+      {
+        damage->execute();
+      }
+    }
+  };
+
+  auto cdr_value = e.driver()->effectN( 3 ).base_value();
+  auto damage    = create_proc_action<extinction_blast_missile_t>( "extinction_blast_missile", e );
+
+  auto on_hit      = new special_effect_t( e.player );
+  on_hit->name_str = "extinction_blast_cdr";
+  on_hit->type     = SPECIAL_EFFECT_EQUIP;
+  on_hit->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  on_hit->spell_id = 419282;
+
+  e.player->special_effects.push_back( on_hit );
+
+  auto on_hit_cb = new cdr_cb_t( *on_hit, cdr_value, e.player, e );
+  on_hit_cb->initialize();
+  on_hit_cb->activate();
+
+  e.player->callbacks.register_callback_trigger_function(
+      419282, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ e ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        return s->target->health_percentage() < e.driver()->effectN( 2 ).base_value();
+      } );
+
+  e.execute_action = damage;
+}
+
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
 {
@@ -7516,6 +7585,7 @@ void register_special_effects()
   register_special_effect( 408790, items::ashkandur );                          // Ashkandur, Fall of the Brotherhood
   register_special_effect( 408711, items::shadowed_razing_annihilator );        // Shadowed Razing Annihilator
   register_special_effect( 408821, items::djaruun_pillar_of_the_elder_flame, true );  // Djaruun, Pillar of the Elder Flame
+  register_special_effect( 419278, items::iridal_the_earths_master );           // Iridal, the Earth's Master
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
