@@ -5207,6 +5207,50 @@ void accelerating_sandglass( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Paracausal Fragment of Sulfuras
+// 414856 ST damage driver / Values
+// 414857 AoE damage driver
+// 414857 Counter damage driver
+// 414864 ST Damage
+// 414865 AoE Damage
+// 414866 Counter damage
+void paracausal_fragment_of_sulfuras( special_effect_t& e )
+{
+  auto counter_damage = create_proc_action<generic_proc_t>( "sulfuras_blast", e, "sulfuras_blast", e.player->find_spell( 414866 ) );
+  counter_damage -> base_dd_min = counter_damage -> base_dd_max = e.driver() -> effectN ( 3 ).average( e.item );
+
+  auto sulfuras_blast            = new special_effect_t( e.player );
+  sulfuras_blast->name_str       = "sulfuras_blast";
+  sulfuras_blast->spell_id       = 414858;
+  sulfuras_blast->execute_action = counter_damage;
+  e.player->special_effects.push_back( sulfuras_blast );
+
+  auto counter_damage_proc = new dbc_proc_callback_t( e.player, *sulfuras_blast );
+  counter_damage_proc -> initialize();
+  counter_damage_proc -> activate();
+
+  auto aoe_damage = create_proc_action<generic_aoe_proc_t>( "sulfuras_crash", e, "sulfuras_crash", e.player->find_spell( 414865 ), true );
+  aoe_damage -> base_dd_min = aoe_damage -> base_dd_max = e.driver() -> effectN( 2 ).average( e.item );
+
+  auto sulfuras_crash            = new special_effect_t( e.player );
+  sulfuras_crash->name_str       = "sulfuras_crash";
+  sulfuras_crash->spell_id       = 414857;
+  sulfuras_crash->execute_action = aoe_damage;
+  e.player->special_effects.push_back( sulfuras_crash );
+
+  auto aoe_damage_proc = new dbc_proc_callback_t( e.player, *sulfuras_crash );
+  aoe_damage_proc -> initialize();
+  aoe_damage_proc -> activate();
+
+  auto st_damage = create_proc_action<generic_proc_t>( "sulfuras_smash", e, "sulfuras_smash", e.player->find_spell( 414864 ) );
+  st_damage -> base_dd_min = st_damage -> base_dd_max = e.driver() -> effectN( 1 ).average( e.item );
+  st_damage -> add_child( aoe_damage );
+  st_damage -> add_child( counter_damage );
+
+  e.execute_action = st_damage;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7429,6 +7473,7 @@ void register_special_effects()
   register_special_effect( 407523, items::firecallers_focus );
   register_special_effect( 418527, items::mirror_of_fractured_tomorrows, true );
   register_special_effect( 417449, items::accelerating_sandglass );
+  register_special_effect( 414856, items::paracausal_fragment_of_sulfuras );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
