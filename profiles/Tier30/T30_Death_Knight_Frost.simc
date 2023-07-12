@@ -217,14 +217,14 @@ legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fie
 feet=darksky_treads,id=133253,bonus_id=6808/4786/9466
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192922,enchant=devotion_of_critical_strike_3,crafted_stats=32/49
 finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192922,enchant=devotion_of_mastery_3,crafted_stats=49/32
-trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1501
 trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
 main_hand=proctors_tactical_cleaver,id=204320,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 off_hand=proctors_tactical_cleaver,id=204320,bonus_id=4800/4786/1498,enchant=rune_of_hysteria
 
 # Gear Summary
-# gear_ilvl=448.63
-# gear_strength=6222
+# gear_ilvl=448.81
+# gear_strength=6238
 # gear_stamina=22456
 # gear_crit_rating=5636
 # gear_haste_rating=3845
