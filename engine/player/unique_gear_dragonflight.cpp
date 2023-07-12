@@ -6272,7 +6272,7 @@ struct timestrike_initializer_t : public item_targetdata_initializer_t
     bool active = init( td->source );
 
     td->debuff.timestrike = make_buff_fallback( active, *td, "timestrike", debuffs[ td->source ] );
-    td->debuff.ever_decaying_spores->reset();
+    td->debuff.timestrike->reset();
   }
 };
 
