@@ -5289,7 +5289,7 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
     {
       generic_aoe_proc_t::impact( a );
       auto debuff = player->get_target_data( a->target )->debuff.lightning_conduit;
-      debuff->trigger( duration );
+      debuff->trigger( duration+1_ms );
     }
   };
 
@@ -5317,20 +5317,6 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
     }
   };
 
-  struct tideseeker_cb_t : public dbc_proc_callback_t
-  {
-    action_t* ground_effect;
-    tideseeker_cb_t( const special_effect_t& e, action_t* a ) : dbc_proc_callback_t( e.player, e ), ground_effect( a )
-    {
-    }
-
-    void execute( action_t* a, action_state_t* s ) override
-    {
-      dbc_proc_callback_t::execute( a, s );
-      ground_effect->execute_on_target( s->target );
-    }
-  };
-
   auto conduit_damage = create_proc_action<generic_aoe_proc_t>( "tideseekers_thunder", effect, "tideseekers_thunder", effect.player->find_spell( 415412 ) );
   conduit_damage -> base_dd_min = conduit_damage -> base_dd_max = effect.driver() -> effectN( 2 ).average( effect.item );
 
@@ -5352,7 +5338,9 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
       } );
 
   auto ground_effect = new cataclysm_ground_t( "tideseekers_cataclysm", effect, effect.player -> find_spell(415339) );
-  new tideseeker_cb_t( effect, ground_effect );
+
+  effect.execute_action = ground_effect;
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Weapons
