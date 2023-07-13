@@ -5275,50 +5275,58 @@ struct tideseekers_cataclysm_initializer_t : public item_targetdata_initializer_
 
 void paracausal_fragment_of_thunderfin( special_effect_t& effect )
 {
-  struct cataclysm_aoe_t : public generic_aoe_proc_t
-  {
-    timespan_t duration;
-    cataclysm_aoe_t( util::string_view n, const special_effect_t& e, timespan_t t )
-      : generic_aoe_proc_t( e.player, "tideseekers_cataclysm", e.player->find_spell( 415395 ) ), duration( t )
-    {
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-    }
-
-    void impact( action_state_t* a ) override
-    {
-      generic_aoe_proc_t::impact( a );
-      auto debuff = player->get_target_data( a->target )->debuff.lightning_conduit;
-      debuff->trigger( duration + 1_ms );
-    }
-  };
-
   struct cataclysm_ground_t : public generic_proc_t
   {
-    timespan_t duration;
     timespan_t tick_time;
     action_t* damage;
     cataclysm_ground_t( util::string_view n, const special_effect_t& e, const spell_data_t* s )
       : generic_proc_t( e.player, n, s ),
         tick_time( timespan_t::from_seconds( e.driver()->effectN( 4 ).base_value() ) ),
-        duration( s->duration() ),
-        damage( new cataclysm_aoe_t( "tideseekers_cataclysm", e, tick_time ) )
+        damage( create_proc_action<generic_aoe_proc_t>( "tideseekers_cataclysm_tick", e, "tideseekers_cataclysm_tick",
+                                                        e.player->find_spell( 415395 ) ) )
     {
-      stats = damage->stats;
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      ground_aoe = dual = true;
+      radius = damage->data().effectN( 1 ).radius_max();
+      aoe = -1;
     }
 
-    void impact( action_state_t* a ) override
+    void impact( action_state_t* s ) override
     {
-      generic_proc_t::impact( a );
+      generic_proc_t::impact( s );
 
       make_event<ground_aoe_event_t>(
           *sim, player,
-          ground_aoe_params_t().target( a->target ).pulse_time( tick_time ).duration( duration ).action( damage ) );
+          ground_aoe_params_t()
+              .target( s->target )
+              .pulse_time( tick_time )
+              .duration( data().duration() )
+              .action( damage )
+              .state_callback( [ this ]( ground_aoe_params_t::state_type s, ground_aoe_event_t* e ) {
+                if ( s == ground_aoe_params_t::state_type::EVENT_STARTED )
+                {
+                  for ( player_t* t : e->params->action()->target_list() )
+                  {
+                    auto td = player->get_target_data( t );
+                    td->debuff.lightning_conduit->trigger();
+                  }
+                }
+                else if( s == ground_aoe_params_t::state_type::EVENT_STOPPED )
+                {
+                  for ( player_t* t : e->params->action()->target_list() )
+                  {
+                    auto td = player->get_target_data( t );
+                    td->debuff.lightning_conduit->expire();
+                  }
+                }
+              } ) );
     }
   };
 
-  auto conduit_damage = create_proc_action<generic_aoe_proc_t>( "tideseekers_thunder", effect, "tideseekers_thunder",
+  auto conduit_damage = create_proc_action<generic_proc_t>( "tideseekers_thunder", effect, "tideseekers_thunder",
                                                                 effect.player->find_spell( 415412 ) );
   conduit_damage->base_dd_min = conduit_damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+  conduit_damage->split_aoe_damage = true;
 
   auto lightning_conduit            = new special_effect_t( effect.player );
   lightning_conduit->name_str       = "paracuasal_fragment_of_thunderfin_humid_blade_of_the_tideseeker";
