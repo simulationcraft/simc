@@ -256,11 +256,11 @@ void pet_t::update_stats()
 
   if ( owner->bugs && this->name_str == "future_self" )
   {
-    current_pet_stats.composite_melee_haste = 0;
-    current_pet_stats.composite_spell_haste = 0;
+    current_pet_stats.composite_melee_haste = 1;
+    current_pet_stats.composite_spell_haste = 1;
 
-    current_pet_stats.composite_melee_speed = 0;
-    current_pet_stats.composite_spell_speed = 0;
+    current_pet_stats.composite_melee_speed = 1;
+    current_pet_stats.composite_spell_speed = 1;
   }
   else
   {
