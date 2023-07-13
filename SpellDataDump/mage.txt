@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -1564,7 +1564,6 @@ Effects          :
 Description      : Increases your Versatility by $s1.
 
 Name             : Splitting Ice (id=56377) [Spell Family (3), Passive] 
-Hotfixed         : Description
 Talent Entry     : Frost [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
@@ -4643,7 +4642,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Brain Freeze (190447)
                    Family Flags: 79
-Hotfixed         : Base Value (15 -> 20)
 Description      : Frostbolt grants you Fingers of Frost $s1% more often and Brain Freeze $s2% more often.
 
 Name             : Ice Ward (id=205036) [Spell Family (3), Passive] 
@@ -12716,7 +12714,6 @@ Description      : $@spelldesc382110
 Tooltip          : Your next Frostbolt or Flurry will also cast a Frozen Orb at your target.
 
 Name             : Slick Ice (id=382144) [Spell Family (3), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Frost [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
@@ -12768,7 +12765,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Frostbolt (228597)
                    Family Flags: 5
-Hotfixed         : Base Value (2 -> 4)
 Description      : $@spelldesc382144
 Tooltip          : Cast time of Frostbolt reduced by $s1% and its damage is increased by $s2%.
 
