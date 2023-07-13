@@ -5423,6 +5423,40 @@ void paracausal_fragment_of_azzinoth( special_effect_t& e )
   e.custom_buff = buff;
   new dbc_proc_callback_t( e.player, e );
 }
+// Paracausal Fragment of Frostmoune
+// 415130 Driver
+// 415006 Value container
+// 415033 Lich Form Buff
+// 415052 Damage
+// 419539 Shield Buff
+// TODO:
+// Check MANY more classes/specs to see if this differs much
+// All 3 DK specs do what is programmed below, no difference with dps/tank roles. Unsure about healers or other classes.
+// Potentially implement the soul consuming mechanic somehow? if the mastery buff/mana referenced in 415006 is actually used anywhere 
+// Skipping the soul consuming mechanic for now, since the absorb buff wont matter for DPS 
+// Impelemt Fear mechanic? not sure this actually matters at all for sims
+void paracausal_fragment_of_frostmourne( special_effect_t& e )
+{
+  auto value_spell = e.player->find_spell( 415006 );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "lich_touch", e, "lich_touch", e.player->find_spell( 415052 ) );
+  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 2 ).average( e.item );
+
+  auto lich_shield_spell = e.player->find_spell( 419539 );
+  auto lich_shield_buff  = create_buff<absorb_buff_t>( e.player, "lich_shield", lich_shield_spell );
+  lich_shield_buff->set_default_value( value_spell->effectN( 3 ).average( e.item ) );
+
+  auto lich_buff_spell = e.player->find_spell( 415033 );
+  auto buff            = create_buff<buff_t>( e.player, "lich_form", lich_buff_spell );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) { damage->execute(); } );
+  buff->set_stack_change_callback( [ lich_shield_buff ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      lich_shield_buff->trigger();
+    }
+  } );
+
+  e.custom_buff = buff;
+}
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
@@ -7733,6 +7767,7 @@ void register_special_effects()
   register_special_effect( 414856, items::paracausal_fragment_of_sulfuras );
   register_special_effect( 415284, items::paracausal_fragment_of_thunderfin );
   register_special_effect( 414968, items::paracausal_fragment_of_azzinoth );
+  register_special_effect( 415130, items::paracausal_fragment_of_frostmourne );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -7814,6 +7849,7 @@ void register_special_effects()
   register_special_effect( 398396, DISABLED_EFFECT );  // emerald coach's whistle on-use
   register_special_effect( 382132, DISABLED_EFFECT );  // Iceblood Deathsnare damage data
   register_special_effect( 410530, DISABLED_EFFECT );  // Infurious Boots of Reprieve - Mettle (NYI)
+  register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
 }
 
 void register_target_data_initializers( sim_t& sim )
