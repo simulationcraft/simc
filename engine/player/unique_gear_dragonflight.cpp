@@ -5289,7 +5289,7 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
     {
       generic_aoe_proc_t::impact( a );
       auto debuff = player->get_target_data( a->target )->debuff.lightning_conduit;
-      debuff->trigger();
+      debuff->trigger( duration );
     }
   };
 
