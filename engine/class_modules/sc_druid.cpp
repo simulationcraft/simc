@@ -377,7 +377,6 @@ public:
   // counters for snapshot tracking
   std::vector<std::unique_ptr<snapshot_counter_t>> counters;
   // Tier 30 stacks tracking
-  std::unique_ptr<extended_sample_data_t> predator_revealed_stacks;
   double expected_max_health;  // For Bristling Fur calculations.
   std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
   std::vector<player_t*> swarm_targets;
@@ -1811,8 +1810,6 @@ struct shadows_of_the_predator_buff_t : public druid_buff_t
     // TODO: 10.625% is just a guess with no confirmation based on old proc rate being 12.5%
     if ( current_stack >= cutoff && rng().roll( 0.10625 * ( current_stack - ( cutoff - 1 ) ) ) )
     {
-      p()->predator_revealed_stacks->add( current_stack );
-
       base_t::decrement( current_stack - reset, v );
 
       // as we are using decrement, manually reschedule buff expiration
@@ -10767,9 +10764,6 @@ void druid_t::init_procs()
   proc.clearcasting         = get_proc( "Clearcasting" );
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
 
-  if ( sets->has_set_bonus( DRUID_FERAL, T30, B2 ) )
-    predator_revealed_stacks = std::make_unique<extended_sample_data_t>( "Predator Revealed Stack", false );
-
   // Guardian
   proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_count();
   proc.gore                 = get_proc( "Gore" )->collect_interval();
@@ -11245,9 +11239,6 @@ void druid_t::merge( player_t& other )
   for ( size_t i = 0; i < counters.size(); i++ )
     counters[ i ]->merge( *od.counters[ i ] );
 
-  if ( predator_revealed_stacks )
-    predator_revealed_stacks->merge( *od.predator_revealed_stacks );
-
   eclipse_handler.merge( od.eclipse_handler );
 }
 
@@ -11271,9 +11262,6 @@ void druid_t::analyze( sim_t& sim )
     range::for_each( active.denizen_of_the_dream->child_action, [ this ]( action_t* a ) { a->stats->player = this; } );
 
   player_t::analyze( sim );
-
-  if ( predator_revealed_stacks )
-    predator_revealed_stacks->analyze();
 
   // GG is a major portion of guardian druid damage but skews moonfire reporting because gg has no execute time. We
   // adjust by removing the gg amount from mf stat and re-calculating dpe and dpet for moonfire.
@@ -12972,9 +12960,6 @@ public:
 
       feral_snapshot_table( os );
 
-      if ( p.predator_revealed_stacks )
-        predator_revealed_histogram( os );
-
       os << "</div>\n";
     }
 
@@ -13059,28 +13044,6 @@ public:
       else
         data.bt_tick += counter->execute.mean();
     }
-  }
-
-  void predator_revealed_histogram( report::sc_html_stream& os )
-  {
-    // Write header
-    os << "<h3 class=\"toggle open\">Predator Revealed Chart</h3>\n"
-       << "<div class=\"toggle-content\">\n";
-
-    auto& d = *p.predator_revealed_stacks;
-    int num_buckets = 8;
-    d.create_histogram( num_buckets );
-
-    highchart::histogram_chart_t chart( highchart::build_id( p, "predator_revealed_stacks" ), *p.sim );
-    if ( chart::generate_distribution( chart, &p, d.distribution, "When Predator Revealed", d.mean(), 5, 12 ) )
-    {
-      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> stacks<br/>" );
-      os << chart.to_target_div();
-      p.sim->add_chart_data( chart );
-    }
-
-    // Write footer
-    os << "</div>\n";
   }
 
   void feral_snapshot_table( report::sc_html_stream& os )
