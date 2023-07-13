@@ -5251,6 +5251,79 @@ void paracausal_fragment_of_sulfuras( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Paracusal Fragment of Thunderfin
+// 415284 Driver/Values
+// 415339 Cataclysm Debuff
+// 415395 Cataclysm Damage
+// 415403 Lightning Conduit Debuff
+// 415412 Lightning Conduit Damage
+struct tideseekers_cataclysm_initializer_t : public item_targetdata_initializer_t
+{
+  tideseekers_cataclysm_initializer_t() : item_targetdata_initializer_t( 415284, 415403 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.tideseekers_thunder =
+        make_buff_fallback( active, *td, "tideseekers_thunder", debuffs[ td->source ] );
+    td->debuff.tideseekers_thunder->reset();
+  }
+};
+
+void paracausal_fragment_of_thunderfin( special_effect_t& effect )
+{
+  auto damage_debuff = create_buff<buff_t>( effect.player, "tideseekers_thunder", effect.player->find_spell( 415403 ) );
+
+  struct cataclysm_ground_t : public generic_proc_t
+  {
+    timespan_t duration, tick_time;
+    action_t* damage;
+    const spell_data_t* main_debuff;
+    cataclysm_ground_t( util::string_view n, special_effect_t& e, const spell_data_t* s, const spell_data_t* b )
+      : generic_proc_t( e.player, n, s ),
+        tick_time( timespan_t::from_seconds( e.driver()->effectN( 4 ).base_value() ) ), main_debuff( b ),
+        duration( main_debuff->duration() ),
+        damage( create_proc_action<generic_aoe_proc_t>( "tideseekers_cataclysm", e, "tideseekers_cataclysm",
+                                                        e.player->find_spell( 415395 ) ) )
+    {
+      damage -> base_dd_min = damage -> base_dd_max = e.driver() -> effectN( 1 ).average( e.item );
+    }
+
+    void impact( action_state_t* a ) override
+    {
+      generic_proc_t::impact( a );
+      auto td = player->get_target_data( a -> target );
+      make_event<ground_aoe_event_t>(
+          *sim, player,
+          ground_aoe_params_t().target( a->target ).pulse_time( tick_time ).duration( duration ).action( damage ) );
+      td -> debuff.tideseekers_thunder -> trigger();
+
+    }
+  };
+
+  struct tideseeker_cb_t : public dbc_proc_callback_t
+  {
+    action_t* ground_effect;
+    tideseeker_cb_t( const special_effect_t& e, action_t* a )
+      : dbc_proc_callback_t( e.player, e ), ground_effect( a ) 
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+      ground_effect -> execute_on_target( s -> target );
+    }
+  };
+
+  auto debuff = effect.player -> find_spell( 415339 );
+  auto ground_effect = new cataclysm_ground_t( "tideseekers_cataclysm", effect, effect.driver(), debuff );
+  new tideseeker_cb_t( effect, ground_effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7560,6 +7633,7 @@ void register_special_effects()
   register_special_effect( 418527, items::mirror_of_fractured_tomorrows, true );
   register_special_effect( 417449, items::accelerating_sandglass );
   register_special_effect( 414856, items::paracausal_fragment_of_sulfuras );
+  register_special_effect( 415284, items::paracausal_fragment_of_thunderfin );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
