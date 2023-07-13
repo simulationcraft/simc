@@ -62,7 +62,7 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3" );
+  default_->add_action( "malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<2&debuff.dread_touch.up" );
   default_->add_action( "unstable_affliction,if=remains<5" );
   default_->add_action( "agony,if=remains<5" );
   default_->add_action( "corruption,if=remains<5" );
