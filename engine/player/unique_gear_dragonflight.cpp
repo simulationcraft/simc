@@ -5155,56 +5155,93 @@ void accelerating_sandglass( special_effect_t& e )
     accelerating_sandglass_damage_t( const special_effect_t& e, buff_t* b )
       : generic_proc_t( e, "accelerating_sandglass", e.player->find_spell( 417458 ) ), damage_buff( b )
     {
-      base_dd_min = base_dd_max =
-          e.driver()->effectN( 2 ).average( e.item ) * e.player->find_spell( 417452 )->max_stacks();
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
     }
 
-    void execute() override
+    double action_multiplier() const override
     {
-      generic_proc_t::execute();
-      damage_buff->expire();
+      double m = generic_proc_t::action_multiplier();
+      m *= damage_buff->check();
+      return m;
     }
   };
 
+  struct accelerating_sandglass_cb_t : public dbc_proc_callback_t
+  {
+    accelerating_sandglass_damage_t* damage;
+    buff_t* buff;
+
+    accelerating_sandglass_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
+      : dbc_proc_callback_t( effect.player, effect ), damage( debug_cast<accelerating_sandglass_damage_t*>( d ) ), buff( b )
+    {
+    }
+
+    void execute( action_t*, action_state_t* trigger_state ) override
+    {
+      if ( buff->check() )
+      {
+        damage->execute_on_target( trigger_state->target );
+        buff->expire();
+      }
+    }
+  };
+
+  // Damage Buff
   auto damage_buff_spell = e.player->find_spell( 417456 );
   auto damage_buff       = create_buff<buff_t>( e.player, "accelerating_sandglass_damage", damage_buff_spell );
 
+  // Damage Effect and Spell
   auto sandglass_damage            = new special_effect_t( e.player );
   sandglass_damage->name_str       = "accelerating_sandglass";
   sandglass_damage->item           = e.item;
   sandglass_damage->spell_id       = damage_buff->data().id();
-  sandglass_damage->execute_action = new accelerating_sandglass_damage_t( e, damage_buff );
   e.player->special_effects.push_back( sandglass_damage );
 
-  auto damage = new dbc_proc_callback_t( e.player, *sandglass_damage );
-  damage->initialize();
-  damage->deactivate();
+  action_t* damage = create_proc_action<accelerating_sandglass_damage_t>( "accelerating_sandglass", e, damage_buff );
 
-  damage_buff->set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+  auto damage_cb = new accelerating_sandglass_cb_t( *sandglass_damage, damage, damage_buff );
+  damage_cb->initialize();
+  damage_cb->deactivate();
+
+  // Stacking Buff
+  auto buff_spell = e.player->find_spell( 417452 );
+  auto buff = create_buff<stat_buff_t>( e.player, "accelerating_sandglass_stack", buff_spell );
+  e.custom_buff = buff;
+
+  auto cb = new dbc_proc_callback_t( e.player, e );
+  cb->initialize();
+  e.player->register_combat_begin( [ cb ]( player_t* p ) {
+    cb->activate();
+  } );
+
+  // Buff Setup
+  buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  buff->add_stat_from_effect( 1, e.driver()->effectN( 1 ).average( e.item ) );
+  buff->set_stack_change_callback( [ cb, damage_buff ]( buff_t*, int old_, int new_ ) {
+    if ( !new_ )
+    {
+      cb->deactivate();
+      damage_buff->trigger( old_ );
+    }
+  } );
+
+  // Damage Buff Setup
+  // When the damage buff triggers, it enables the damage proc to occur
+  // It also disables the stacking buff from happening until after the damage buff is removed
+  // Track the triggered stacks in the stacks of the damage buff for damage scaling
+  damage_buff->set_max_stack( buff->max_stack() );
+  damage_buff->set_stack_change_callback( [ cb, damage_cb ]( buff_t*, int, int new_ ) {
     if ( new_ )
     {
-      damage->activate();
+      damage_cb->activate();
+      cb->deactivate();
     }
     else
     {
-      damage->deactivate();
+      damage_cb->deactivate();
+      cb->activate();
     }
   } );
-
-  auto buff_spell = e.player->find_spell( 417452 );
-  auto buff       = create_buff<stat_buff_t>( e.player, "accelerating_sandglass_stack", buff_spell );
-  buff->add_stat_from_effect( 1, e.driver()->effectN( 1 ).average( e.item ) );
-  buff->set_max_stack( buff_spell->max_stacks() + 1 );  // Expires on the proc after reaching 8 stacks
-  buff->set_expire_at_max_stack( true );
-  buff->set_stack_change_callback( [ damage_buff ]( buff_t*, int, int new_ ) {
-    if ( !new_ )
-    {
-      damage_buff->trigger();
-    }
-  } );
-
-  e.custom_buff = buff;
-  new dbc_proc_callback_t( e.player, e );
 }
 
 // Paracausal Fragment of Sulfuras
