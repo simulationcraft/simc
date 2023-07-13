@@ -5432,9 +5432,9 @@ void paracausal_fragment_of_azzinoth( special_effect_t& e )
 // TODO:
 // Check MANY more classes/specs to see if this differs much
 // All 3 DK specs do what is programmed below, no difference with dps/tank roles. Unsure about healers or other classes.
-// Potentially implement the soul consuming mechanic somehow? if the mastery buff/mana referenced in 415006 is actually
-// used anywhere Skipping the soul consuming mechanic for now, since the absorb buff wont matter for DPS Impelemt Fear
-// mechanic? not sure this actually matters at all for sims
+// Potentially implement the soul consuming mechanic somehow? if the mastery buff/mana referenced in 415006 is actually used anywhere 
+// Skipping the soul consuming mechanic for now, since the absorb buff wont matter for DPS 
+// Impelemt Fear mechanic? not sure this actually matters at all for sims
 void paracausal_fragment_of_frostmourne( special_effect_t& e )
 {
   auto value_spell = e.player->find_spell( 415006 );
