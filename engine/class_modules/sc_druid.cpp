@@ -10537,6 +10537,7 @@ std::string druid_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
+      return true_level >= 70 ? "main_hand:hissing_rune_3" : "main_hand:shadowcore_oil";
     case DRUID_RESTORATION:
       return true_level >= 70 ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
     case DRUID_FERAL:
