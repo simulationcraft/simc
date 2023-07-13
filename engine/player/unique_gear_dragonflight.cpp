@@ -5407,16 +5407,19 @@ void paracausal_fragment_of_azzinoth( special_effect_t& e )
 {
   auto damage =
       create_proc_action<generic_proc_t>( "fires_of_azzinoth", e, "fires_of_azzinoth", e.player->find_spell( 414977 ) );
-  damage -> base_dd_min = damage -> base_dd_max = e.driver() -> effectN( 1 ).average(e.item);
-  auto missile    = create_proc_action<generic_proc_t>( "fires_of_azzinoth_missile", e, "fires_of_azzinoth_missile",
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+
+  auto missile = create_proc_action<generic_proc_t>( "fires_of_azzinoth_missile", e, "fires_of_azzinoth_missile",
                                                      e.player->find_spell( 417468 ) );
   missile->impact_action = damage;
-  missile->stats = damage->stats;
+  missile->stats         = damage->stats;
+
   auto buff_spell = e.player->find_spell( 414976 );
   auto buff       = create_buff<stat_buff_t>( e.player, "rage_of_azzinoth", buff_spell );
   buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
   buff->set_tick_callback(
       [ missile ]( buff_t* b, int, timespan_t ) { missile->execute_on_target( b->player->target ); } );
+
   e.custom_buff = buff;
   new dbc_proc_callback_t( e.player, e );
 }
