@@ -5398,6 +5398,32 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Paracausal Fragment of Azzinoth
+// 414968 Driver
+// 414976 Haste Buff/Periodic Trigger
+// 417468 Missile
+// 414977 Damage
+void paracausal_fragment_of_azzinoth( special_effect_t& e )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "fires_of_azzinoth", e, "fires_of_azzinoth", e.player->find_spell( 414977 ) );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+
+  auto missile = create_proc_action<generic_proc_t>( "fires_of_azzinoth_missile", e, "fires_of_azzinoth_missile",
+                                                     e.player->find_spell( 417468 ) );
+  missile->impact_action = damage;
+  missile->stats         = damage->stats;
+
+  auto buff_spell = e.player->find_spell( 414976 );
+  auto buff       = create_buff<stat_buff_t>( e.player, "rage_of_azzinoth", buff_spell );
+  buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
+  buff->set_tick_callback(
+      [ missile ]( buff_t* b, int, timespan_t ) { missile->execute_on_target( b->player->target ); } );
+
+  e.custom_buff = buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7706,6 +7732,7 @@ void register_special_effects()
   register_special_effect( 417449, items::accelerating_sandglass );
   register_special_effect( 414856, items::paracausal_fragment_of_sulfuras );
   register_special_effect( 415284, items::paracausal_fragment_of_thunderfin );
+  register_special_effect( 414968, items::paracausal_fragment_of_azzinoth );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment

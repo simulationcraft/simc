@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.5.50401
-static const std::array<spelltext_data_t, 20114> __spelltext_data { {
+// Spell text, wow build 10.1.5.50438
+static const std::array<spelltext_data_t, 20116> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20002,6 +20002,7 @@ static const std::array<spelltext_data_t, 20114> __spelltext_data { {
   { 414968, "Your harmful spells and abilities have a chance to manifest a fel elemental by your side for $414976d, periodically dealing $s1 Fire damage to your target and increasing your Haste by $s2.", 0, 0 },
   { 414969, "Emerald Blossom no longer has a cooldown, deals $s4% increased healing, and increases the duration of your active Ebon Might effects by $s2 sec, but costs $s1 Essence.", 0, 0 },
   { 414976, "$@spelldesc414968", "Haste increased by $w1.", 0 },
+  { 414977, "$@spelldesc414968", 0, 0 },
   { 415006, "Nearby player and enemy deaths grant you a Lost Soul, up to 10. Consuming Lost Souls $?a137047|a137034|a212611|a137005|a137041|a137027|a137025|a137011|a137017|a137028|a137023|a137010[shields you for $s3 per Lost Soul consumed.][]$?a137039|a137031|a137032|a137029|a137024|a356810|a137012[regenerates $s6 mana per Lost Soul consumed.][]$?a137042|a137018|a137040|a137033|a137016|a137015|a356809|a137013[empowers you, gaining $s5 Mastery per Lost Soul consumed for $415133d.][]\r\n\r\n", 0, 0 },
   { 415033, "$@spelldesc415130", "Periodically deal $415006w2 Frost damage split between nearby enemies. After $415006w10 sec, unleash a wave of shadows fearing nearby enemies for $415038d. The duration of the fear is reduced for each nearby enemy (min 0.5 sec).", 0 },
   { 415038, "Let the Scourge coarse through and corrupt you consuming all Lost Souls, transforming into a Lich for $415033d. During this time you periodically deal $415006s2 Frost damage split between nearby enemies. After $415006s10 sec unleash of wave of shadows Fearing nearby enemies for $415038d. The duration of the Fear is reduced for each nearby enemy down to 0.5 sec against $415006s12 or more targets.", "Disoriented.", 0 },
@@ -20064,6 +20065,7 @@ static const std::array<spelltext_data_t, 20114> __spelltext_data { {
   { 417456, "$@spelldesc417449", "Your next damaging spell or ability will launch a volley of attacks at the target dealing ${$417449w2*$w1} Physical damage.", 0 },
   { 417458, "$@spelldesc417449", 0, 0 },
   { 417467, "Hot Streak increases the amount of Ignite damage from Pyroblast or Flamestrike by an additional $s1%.", 0, 0 },
+  { 417468, "$@spelldesc414968", 0, 0 },
   { 417487, "Your water elemental's abilities apply Frigid Empowerment increasing the Frost damage you deal by $417488s1%, up to ${$417488s1*$417488u}%.", 0, 0 },
   { 417488, "$@spelldesc417487", "Your elemental is empowering you increasing your Frost damage dealt by $s1%.", 0 },
   { 417489, "Your Haste is increased by $s1%.\r\n\r\nYou gain $s2% more of the Haste stat from all sources.", 0, 0 },
@@ -20116,18 +20118,11 @@ static const std::array<spelltext_data_t, 20114> __spelltext_data { {
   { 420144, 0, "An echo of $w1 damage will be dealt upon expiration.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.5.50401
-static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __spelltext_hotfix_data { {
-  {   56377,  0, "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Ebonbolt and Glacial Spike also hit a second nearby target for $s4% of its damage.", "Your Ice Lance and Icicles now deal $s3% increased damage, and hit a second nearby target for $s2% of their damage.\r\n\r\nYour Glacial Spike also hits a second nearby target for $s4% of its damage." },
-  {  415339,  0, "$@spelldesk415284", "$@spelldesc415284" },
-  {  415339,  1, nullptr, "Suffering $w1 Nature damage every 1 sec split between all nearby enemies." },
-  {  415403,  0, nullptr, "$@spelldesc415284" },
-  {  415403,  1, "Dealing damage to a Lightning Conduit has a high chance to unleashes a bolt of forked lighting dealing $s2 Nature damage split between them and up to four additonal nearby targets.", "Dealing damage to a Lightning Conduit has a high chance to unleashes a bolt of forked lighting dealing $w1 Nature damage split between them and up to four additonal nearby targets." },
-  {  419262,  0, nullptr, "Striking a demon with melee abilities has a chance to rend their flesh, dealing Physical damage over $d." },
-  {  419268,  0, nullptr, "Striking an undead with a melee ability has a chance to smite them with righteous fury, dealing Holy damage." },
+// spelltext hotfix entries, wow build 10.1.5.50438
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.5.50401
+// Spell description variables, wow build 10.1.5.50438
 static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20526,10 +20521,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.5.50401
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
-  {  115203,  0, "$health=$?s322960[${20}][${20}]\r\n$damage=$?c1[${20}][${20}]", "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
-  {  120954,  0, "$health=$?s322960[${20}][${20}]\r\n$damage=$?c1[${20}][${20}]", "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
-  {  388917,  0, "$health=$?s322960[${20}][${20}]\r\n$damage=$?c1[${20}][${20}]", "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
+// spelldesc_vars hotfix entries, wow build 10.1.5.50438
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
