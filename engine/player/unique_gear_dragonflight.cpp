@@ -5279,16 +5279,17 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
   {
     timespan_t tick_time;
     action_t* damage;
-    cataclysm_ground_t( util::string_view n, const special_effect_t& e, const spell_data_t* s )
+    action_t* conduit;
+    cataclysm_ground_t( util::string_view n, const special_effect_t& e, const spell_data_t* s, action_t* a )
       : generic_proc_t( e.player, n, s ),
         tick_time( timespan_t::from_seconds( e.driver()->effectN( 4 ).base_value() ) ),
         damage( create_proc_action<generic_aoe_proc_t>( "tideseekers_cataclysm_tick", e, "tideseekers_cataclysm_tick",
-                                                        e.player->find_spell( 415395 ) ) )
+                                                        e.player->find_spell( 415395 ) ) ),
+        conduit( a )
     {
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-      ground_aoe = dual = true;
-      radius = damage->data().effectN( 1 ).radius_max();
-      aoe = -1;
+      add_child( damage );
+      add_child( conduit );
     }
 
     void impact( action_state_t* s ) override
@@ -5345,7 +5346,7 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
         return td->check();
       } );
 
-  auto ground_effect = new cataclysm_ground_t( "tideseekers_cataclysm", effect, effect.player->find_spell( 415339 ) );
+  auto ground_effect = new cataclysm_ground_t( "tideseekers_cataclysm", effect, effect.player->find_spell( 415339 ), conduit_damage );
 
   effect.execute_action = ground_effect;
   new dbc_proc_callback_t( effect.player, effect );
