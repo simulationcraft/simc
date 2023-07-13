@@ -75,7 +75,7 @@ actions.rotation_boc+=/exploding_keg,if=(!talent.bonedust_brew.enabled)
 actions.rotation_boc+=/keg_smash
 actions.rotation_boc+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
 actions.rotation_boc+=/breath_of_fire
-actions.rotation_boc+=/tiger_palm,if=active_enemies>1&!talent.blackout_combo.enabled
+actions.rotation_boc+=/tiger_palm,if=active_enemies=1&!talent.blackout_combo.enabled
 actions.rotation_boc+=/spinning_crane_kick,if=active_enemies>1
 actions.rotation_boc+=/expel_harm
 actions.rotation_boc+=/chi_wave,if=talent.chi_wave.enabled

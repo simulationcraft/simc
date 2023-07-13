@@ -39,7 +39,7 @@ actions+=/call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|var
 actions+=/call_action_list,name=aoe,if=active_enemies>3
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
-actions+=/malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3
+actions+=/malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<2&debuff.dread_touch.up
 actions+=/unstable_affliction,if=remains<5
 actions+=/agony,if=remains<5
 actions+=/corruption,if=remains<5

@@ -5,7 +5,7 @@ level=70
 race=mechagnome
 role=spell
 position=ranged_back
-talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESJwBSUSSkAalmkAAAAAAAAAAAAIIpkEJ
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAgESSkkAppApdgkESBBRJJRCoVKSCAAAAAAAAAAAggkSSkA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -164,17 +164,17 @@ legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
 feet=sandals_of_the_sinister_savant,id=202535,bonus_id=4800/4786/1507,ilevel=450
 finger1=loop_of_pulsing_veins,id=159463,bonus_id=8780,ilevel=447,gem_id=192958,enchant_id=6562
 finger2=signet_of_titanic_insight,id=192999,bonus_id=8780/8793/8960,ilevel=447,gem_id=192958,enchant_id=6562
-trinket1=vessel_of_searing_shadow,id=202615,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498/9334,ilevel=441
+trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767,ilevel=447
 trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/1498
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6655
 
 # Gear Summary
-# gear_ilvl=447.87
+# gear_ilvl=448.27
 # gear_stamina=22563
-# gear_intellect=9062
+# gear_intellect=8492
 # gear_crit_rating=1651
 # gear_haste_rating=5464
-# gear_mastery_rating=4676
+# gear_mastery_rating=5300
 # gear_versatility_rating=933
 # gear_avoidance_rating=200
 # gear_armor=2452

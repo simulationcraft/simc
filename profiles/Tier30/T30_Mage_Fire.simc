@@ -59,6 +59,7 @@ actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_ba
 actions.precombat+=/variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
+actions.precombat+=/flamestrike,if=active_enemies>=variable.hot_streak_flamestrike
 actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
@@ -123,11 +124,13 @@ actions.combustion_phase+=/living_bomb,if=active_enemies>1&buff.combustion.down
 actions.combustion_phase+=/call_action_list,name=combustion_cooldowns,if=buff.combustion.remains>variable.skb_duration|fight_remains<20
 actions.combustion_phase+=/use_item,name=hyperthread_wristwraps,if=hyperthread_wristwraps.fire_blast>=2&action.fire_blast.charges=0
 actions.combustion_phase+=/use_item,name=neural_synapse_enhancer,if=variable.time_to_combustion>60
+# In Charring embers is not up before Combustion, make sure to apply it.
+actions.combustion_phase+=/phoenix_flames,if=set_bonus.tier30_2pc&!action.phoenix_flames.in_flight&debuff.charring_embers.remains<2*gcd.max
 actions.combustion_phase+=/call_action_list,name=active_talents
 # If Combustion is down, precast something before activating it.
-actions.combustion_phase+=/flamestrike,if=buff.combustion.down&cooldown.combustion.remains<cast_time&active_enemies>=variable.combustion_flamestrike
+actions.combustion_phase+=/flamestrike,if=buff.combustion.down&buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.remains>cast_time&buff.fury_of_the_sun_king.expiration_delay_remains=0&cooldown.combustion.remains<cast_time&active_enemies>=variable.skb_flamestrike
 actions.combustion_phase+=/pyroblast,if=buff.combustion.down&buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.remains>cast_time&buff.fury_of_the_sun_king.expiration_delay_remains=0
-actions.combustion_phase+=/fireball,if=buff.combustion.down&cooldown.combustion.remains<cast_time
+actions.combustion_phase+=/fireball,if=buff.combustion.down&cooldown.combustion.remains<cast_time&active_enemies<2
 actions.combustion_phase+=/scorch,if=buff.combustion.down&cooldown.combustion.remains<cast_time
 # Combustion should be used when the precast is almost finished or when Meteor is about to land.
 actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=hot_streak_spells_in_flight=0&buff.combustion.down&variable.time_to_combustion<=0&(action.scorch.executing&action.scorch.execute_remains<variable.combustion_cast_remains|action.fireball.executing&action.fireball.execute_remains<variable.combustion_cast_remains|action.pyroblast.executing&action.pyroblast.execute_remains<variable.combustion_cast_remains|action.flamestrike.executing&action.flamestrike.execute_remains<variable.combustion_cast_remains|action.meteor.in_flight&action.meteor.in_flight_remains<variable.combustion_cast_remains)
