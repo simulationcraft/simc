@@ -1,11 +1,11 @@
-paladin="T30_Paladin_Retribution"
+paladin="T30_Paladin_Retribution_CS"
 source=default
 spec=retribution
 level=70
 race=tauren
 role=attack
 position=back
-talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAQEkkQgEEpEhkQKpkQkICJiShGAA
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAQEkkQgEEpEhkQKplQkICJiCaBAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -87,30 +87,30 @@ actions.generators+=/arcane_torrent
 actions.generators+=/consecration
 actions.generators+=/divine_hammer
 
-head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/6935,gem_id=192985
-neck=bromachs_disentombed_locket,id=193809,bonus_id=1795/6808/4786/1669/6935/6935/6935,gem_id=192945/192945/192945
+head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/6935,gem_id=192991
+neck=ionized_choker,id=206181,bonus_id=1795/6808/4786/1669/6935/6935/6935,gem_id=192952/192952/192952
 shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1507,enchant_id=6625
-wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192945
+chest=rockbound_chestguard,id=134135,bonus_id=1795/6808/4786/3326,enchant_id=6625
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192952
 hands=heartfire_sentinels_protectors,id=202453,bonus_id=4800/4786/1501
-waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=192945
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=192952
 legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant_id=6490
 feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=40/36
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192945,enchant=devotion_of_haste_3
-finger2=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192945,enchant=devotion_of_haste_3,crafted_stats=40/36
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192952,enchant=devotion_of_haste_3
+finger2=onyx_impostors_birthright,id=204398,bonus_id=4800/4786/1498/6935,gem_id=192952,enchant=devotion_of_haste_3
 trinket1=elementium_pocket_anvil,id=202617,bonus_id=4800/4786/1504
-trinket2=neltharions_call_to_chaos,id=204201,bonus_id=4800/4786/1498
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=447.60
-# gear_strength=6270
-# gear_stamina=22246
-# gear_crit_rating=3283
-# gear_haste_rating=4898
-# gear_mastery_rating=1969
-# gear_versatility_rating=3007
-# gear_armor=8558
+# gear_ilvl=447.13
+# gear_strength=6252
+# gear_stamina=22206
+# gear_crit_rating=3173
+# gear_haste_rating=4589
+# gear_mastery_rating=1577
+# gear_versatility_rating=3812
+# gear_armor=8527
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
