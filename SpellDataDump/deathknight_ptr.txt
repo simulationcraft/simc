@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -657,7 +657,6 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.56907 | PvP Coefficient: 1.90000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (2.1 -> 1.9)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -4183,7 +4182,6 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.10000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -4327,7 +4325,6 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22770 | PvP Coefficient: 3.50000 | Target: Unknown(25)
-Hotfixed         : PvP Coefficient (4.1 -> 3.5)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc194310
@@ -14893,7 +14890,6 @@ Effects          :
 Description      : Enemies suffer $377359s1% increased damage from Chill Streak each time they are struck by it.
 
 Name             : Piercing Chill (id=377359) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : Magic
@@ -14914,7 +14910,6 @@ Effects          :
 #1 (id=1005150)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1615 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Chill Streak (204167)
-Hotfixed         : Sub Type (507 -> 537)
 Description      : $@spelldesc377351
 
 Tooltip          : Damage taken from $@auracaster's Chill Streak increased by $s1%.

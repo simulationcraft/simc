@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -7636,7 +7636,6 @@ Description      : $@spelldesc404195
 Tooltip          : Healing $w1 every $t1 sec.
 
 Name             : Fate Mirror (desc=Bronze) (id=404908) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -8656,7 +8655,6 @@ Movement speed reduced by $w2%.
 Attack speed reduced by $w3%.][]
 
 Name             : Breath of Eons (id=409632) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
