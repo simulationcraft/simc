@@ -4896,6 +4896,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
+      trigger_gcd = 1.5_s; // Currently bugged and has a 1.5s swing time. 
     }
   };
 
@@ -4967,8 +4968,8 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       : spell_t( "sand_bolt", p, p->find_spell( 418605 ) ), action( a )
     {
       parse_options( options_str );
-      auto proxy                = action;
-      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      auto proxy = action;
+      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
       if ( it != proxy->child_action.end() )
         stats = ( *it )->stats;
       else
@@ -4977,8 +4978,14 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       auto damage =
           create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      damage->stats = stats;
-      impact_action = damage;
+      damage->stats                             = stats;
+      impact_action                             = damage;
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+      trigger_gcd = data().cast_time() + rng().range( 350_ms, 450_ms ); // Currently bugged and delaying starting new casts by ~400ms
     }
   };
 

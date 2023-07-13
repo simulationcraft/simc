@@ -253,14 +253,26 @@ void pet_t::update_stats()
   current_pet_stats.composite_spell_crit = owner->cache.spell_crit_chance();
   sim->print_debug( "{} refreshed Critical Strike from owner (crit={})", name(), current_pet_stats.composite_melee_crit,
                     owner->cache.attack_crit_chance() );
-  current_pet_stats.composite_melee_haste = owner->cache.attack_haste();
-  current_pet_stats.composite_spell_haste = owner->cache.spell_haste();
-  sim->print_debug( "{} refreshed Haste from owner (haste={})", name(),
-                    current_pet_stats.composite_melee_haste, owner->cache.attack_haste() );
 
-  current_pet_stats.composite_melee_speed = owner->cache.attack_speed();
-  current_pet_stats.composite_spell_speed = owner->cache.spell_speed();
-  this -> adjust_dynamic_cooldowns();
+  if ( owner->bugs && this->name_str == "future_self" )
+  {
+    current_pet_stats.composite_melee_haste = 0;
+    current_pet_stats.composite_spell_haste = 0;
+
+    current_pet_stats.composite_melee_speed = 0;
+    current_pet_stats.composite_spell_speed = 0;
+  }
+  else
+  {
+    current_pet_stats.composite_melee_haste = owner->cache.attack_haste();
+    current_pet_stats.composite_spell_haste = owner->cache.spell_haste();
+    sim->print_debug( "{} refreshed Haste from owner (haste={})", name(), current_pet_stats.composite_melee_haste,
+                      owner->cache.attack_haste() );
+
+    current_pet_stats.composite_melee_speed = owner->cache.attack_speed();
+    current_pet_stats.composite_spell_speed = owner->cache.spell_speed();
+    this->adjust_dynamic_cooldowns();
+  }
 }
 
 void pet_t::dismiss( bool expired )
