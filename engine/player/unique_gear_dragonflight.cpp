@@ -4978,8 +4978,10 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       auto damage =
           create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      damage->stats                             = stats;
-      impact_action                             = damage;
+      damage->stats = stats;
+      damage->dual = true;
+
+      impact_action = damage;
     }
 
     void execute() override
