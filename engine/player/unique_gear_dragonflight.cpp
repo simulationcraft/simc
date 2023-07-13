@@ -5665,6 +5665,7 @@ void iridal_the_earths_master( special_effect_t& e )
   {
     cooldown_t* item_cd;
     double cdr_value;
+
     cdr_cb_t( const special_effect_t& e, double i, player_t* p, const special_effect_t& item )
       : dbc_proc_callback_t( p, e ), item_cd( p->get_cooldown( item.cooldown_name() ) ), cdr_value( i )
     {
@@ -5679,24 +5680,21 @@ void iridal_the_earths_master( special_effect_t& e )
 
   struct extinction_blast_missile_t : public generic_proc_t
   {
-    action_t* damage;
+    double hp_pct;
+
     extinction_blast_missile_t( const special_effect_t& e )
-      : generic_proc_t( e, "extinction_blast_missile", e.driver() ),
-        damage( create_proc_action<generic_proc_t>( "extinction_blast", e, "extinction_blast",
-                                                    e.player->find_spell( 419279 ) ) )
+      : generic_proc_t( e, "extinction_blast_missile", e.driver() ), hp_pct( e.driver()->effectN( 2 ).base_value() )
     {
-      stats               = damage->stats;
+      auto damage = create_proc_action<generic_proc_t>( "extinction_blast", e, "extinction_blast", e.trigger() );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-      cooldown->duration                        = 0_ms;  // Handled by the use item
+      impact_action = damage;
+
+      cooldown->duration = 0_ms;  // Handled by the use item
     }
 
-    void impact( action_state_t* s ) override
+    bool target_ready( player_t* t ) override
     {
-      generic_proc_t::impact( s );
-      if ( s->target->health_percentage() < data().effectN( 2 ).base_value() )
-      {
-        damage->execute();
-      }
+      return generic_proc_t::target_ready( t ) && t->health_percentage() <= hp_pct;
     }
   };
 
