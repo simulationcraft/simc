@@ -4938,7 +4938,6 @@ namespace monk
           aoe = -1;
           school = SCHOOL_NATURE;
 
-          spell_power_mod.tick = 2 * data().effectN( 2 ).base_value() / 100; // Saved as 45, is really 90
           press_the_advantage_whitelist = true;
         }
 
