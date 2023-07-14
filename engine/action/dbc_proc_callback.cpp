@@ -301,6 +301,7 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
   //
   // Technically, this information is exposed in the client data, but simc needs a proper
   // targeting system first before we start using it.
+  assert( proc_action && "Cannot determine target of incoming callback, there is no proc_action" );
   switch ( proc_action->type )
   {
       // Heals are always targeted to the callback actor on incoming events
