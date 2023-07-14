@@ -6085,6 +6085,7 @@ struct eye_beam_adjusted_cooldown_expr_t : public expr_t
 std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split( name_str, "." );
+
   if ( ( splits.size() == 1 || splits.size() == 2 ) && 
        ( util::str_compare_ci( splits[ 0 ], "soul_fragments" ) ||  util::str_compare_ci( splits[ 0 ], "greater_soul_fragments" ) ||
          util::str_compare_ci( splits[ 0 ], "lesser_soul_fragments" ) || util::str_compare_ci( splits[ 0 ], "demon_soul_fragments" ) ) ) 
@@ -6140,7 +6141,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
 
     if ( splits.size() == 2 )
     {
-      if ( util::str_compare_ci(splits[ 1 ], "inactive") ) {
+      if ( util::str_compare_ci( splits[ 1 ], "inactive") ) {
         filter = soul_fragment_filter::INACTIVE;
       }
       else if ( util::str_compare_ci( splits[ 1 ], "total" ) )
