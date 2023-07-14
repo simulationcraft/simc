@@ -164,6 +164,7 @@ void demonology( player_t* p )
   action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
   action_priority_list_t* fight_end = p->get_action_priority_list( "fight_end" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -196,8 +197,7 @@ void demonology( player_t* p )
   default_->add_action( "summon_demonic_tyrant,if=buff.vilefiend.up|buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>90" );
   default_->add_action( "call_action_list,name=racials,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<=2)|fight_remains<22" );
   default_->add_action( "potion,if=pet.demonic_tyrant.active" );
-  default_->add_action( "use_items,use_off_gcd=1,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<gcd.max*2|!talent.nether_portal)|fight_remains<22" );
-  default_->add_action( "use_item,name=beacon_to_the_beyond,if=buff.nether_portal.down" );
+  default_->add_action( "call_action_list,name=items,use_off_gcd=1" );
   default_->add_action( "shadow_bolt,if=talent.fel_covenant&buff.fel_covenant.remains<5&!prev_gcd.1.shadow_bolt&soul_shard<5");
   default_->add_action( "hand_of_guldan,if=buff.nether_portal.remains>cast_time" );
   default_->add_action( "demonic_strength,if=buff.nether_portal.remains<gcd.max&(fight_remains>63&!(fight_remains>cooldown.summon_demonic_tyrant.remains+69)|cooldown.summon_demonic_tyrant.remains>30|variable.shadow_timings|buff.rite_of_ruvaraad.up|!talent.summon_demonic_tyrant|!talent.grimoire_felguard|!set_bonus.tier30_2pc)" );
@@ -250,6 +250,17 @@ void demonology( player_t* p )
 
   racials->add_action( "berserking,use_off_gcd=1" );
   racials->add_action( "blood_fury" );
+  racials->add_action( "fireblood" );
+
+
+  items->add_action( "use_item,name=irideus_fragment,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<gcd.max*2|!talent.nether_portal)|fight_remains<22" );
+  items->add_action( "use_item,name=timebreaching_talon,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<gcd.max*2|!talent.nether_portal)|fight_remains<22" );
+  items->add_action( "use_item,name=spoils_of_neltharus,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<gcd.max*2|!talent.nether_portal)|fight_remains<22" );
+  items->add_action( "use_item,name=voidmenders_shadowgem,if=!variable.shadow_timings|(variable.shadow_timings&(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)))" );
+  items->add_action( "use_item,name=erupting_spear_fragment,,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<gcd.max*2|!talent.nether_portal)|fight_remains<12" );
+  items->add_action( "use_items,if=(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal))&(!equipped.irideus_fragment&!equipped.timebreaching_talon&!equipped.spoils_of_neltharus&!equipped.erupting_spear_fragment&!equipped.voidmenders_shadowgem)" );
+  items->add_action( "use_item,name=rotcrusted_voodoo_doll" );
+  items->add_action( "use_item,name=beacon_to_the_beyond" );
 }
 //demonology_apl_end
 
