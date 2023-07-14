@@ -5532,9 +5532,9 @@ void spore_keepers_baton( special_effect_t& effect )
         {
           buff->trigger();
         }
-        else
+        else if ( s->target != s->action->player )  // TODO: determine what happens for self-damage
         {
-          dot->set_target( cb->target( s ) );
+          dot->set_target( s->target );
           auto proc_state    = dot->get_state();
           proc_state->target = dot->target;
           dot->snapshot_state( proc_state, dot->amount_type( proc_state ) );
