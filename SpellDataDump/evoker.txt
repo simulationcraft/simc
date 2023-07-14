@@ -4847,6 +4847,7 @@ Description      : Fire Breath damage has $s1% chance to cause your next Living 
 Variables        : $rate=${30}
 
 Name             : Burnout (id=375802) [Spell Family (224)] 
+Hotfixed         : Proc Flags 2 (4 -> 0)
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
@@ -4854,8 +4855,6 @@ Duration         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
 Family Flags     : 75
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
