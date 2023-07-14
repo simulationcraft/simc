@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -731,7 +731,6 @@ Effects          :
 Description      : Pummels the target, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Revenge (id=6572) [Spell Family (4)] 
-Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -9015,7 +9014,6 @@ Description      : Brutally attack an enemy for $396718s1 Physical damage$?s3889
 |cFFFFFFFFGenerates ${$m1/10} Rage.
 
 Name             : Dreadnaught (id=315961) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -13095,7 +13093,6 @@ Description      : $@spelldesc383703
 Tooltip          : Falling below $s1% health will cause Fatal Mark to inflict $383706s1 Physical damage.
 
 Name             : Fatal Mark (id=383706) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -14385,7 +14382,6 @@ Effects          :
 Description      : $@spelldesc385888
 
 Name             : Tough as Nails (id=385890) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee

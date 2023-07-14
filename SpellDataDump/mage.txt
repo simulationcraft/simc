@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -6451,7 +6451,6 @@ Description      : Launch a bolt of ice at the enemy, dealing $257538s1 Frost da
 Deals ${$257538s1*$56377m4/100} Frost damage to a second nearby target.][] 
 
 Name             : Ebonbolt (id=257538) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -11306,7 +11305,6 @@ Effects          :
 Description      : Direct damage you deal to enemies affected by Touch of the Magi, causes an explosion that deals $342232s1 Arcane damage to all nearby enemies. Deals reduced damage beyond $s1 targets.
 
 Name             : Arcane Echo (id=342232) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -12423,7 +12421,6 @@ Effects          :
 Description      : $@spelldesc378947
 
 Name             : Glacial Assault (id=379029) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -16142,7 +16139,6 @@ Effects          :
 Description      : $@spelldesc418733
 
 Name             : Intensifying Flame (id=419800) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic

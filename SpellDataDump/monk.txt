@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13869,7 +13869,6 @@ Effects          :
 Description      : Your abilities have a low chance to cast Bonedust Brew at your target's location.
 
 Name             : Charred Passions (id=386959) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Fire
 Spell Type       : Magic
@@ -17041,7 +17040,6 @@ Effects          :
 Description      : Fists of Fury now instead enhances your next $s1 Rising Sun Kicks or Spinning Crane Kicks and enhanced kicks increase the damage of your next Fists of Fury by $394949s1%, stacking up to 3 times.
 
 Name             : Chi Surge (id=393786) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -18385,7 +18383,6 @@ Description      : Your main hand auto attacks reduce the cooldown on your brews
 Upon reaching $418361u stacks, your next cast of Rising Sun Kick or Keg Smash consumes all stacks to strike again at $418361s2% effectiveness. This bonus attack can trigger effects on behalf of Tiger Palm at reduced effectiveness.
 
 Name             : Press the Advantage (id=418360) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic

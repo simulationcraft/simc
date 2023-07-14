@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -2896,7 +2896,6 @@ Effects          :
 Description      : Restores $s1 health to three injured allies within $A1 yards of the initial target every $81262t1 sec for $81262d.
 
 Name             : Fungal Growth (id=81281) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -16904,7 +16903,6 @@ Effects          :
 Description      : Finishing moves extend the duration of Tiger's Fury by ${$s1/10}.1 sec per combo point spent.
 
 Name             : Frenzied Assault (id=391140) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -16972,7 +16970,6 @@ Effects          :
 Description      : Applying Rip to a target also applies a Tear that deals $s1% of the new Rip's damage over $391356d.
 
 Name             : Tear (id=391356) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -17160,7 +17157,6 @@ Effects          :
 Description      : Ferocious Bite also deals $391710s1 damage per combo point spent to all nearby enemies affect by your Rip. Damage reduced beyond $s1 $Ltarget:targets;.
 
 Name             : Rampant Ferocity (id=391710) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -17447,7 +17443,6 @@ Description      : Command a swarm that heals $391891o1 or deals $391889o1 Shado
 Upon expiration, finds a new target, preferring to alternate between friend and foe up to $s1 times.
 
 Name             : Adaptive Swarm (id=391889) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Shadow
 Spell Type       : Magic
@@ -19207,7 +19202,6 @@ Effects          :
 Description      : Your critical strikes from Starfire and Wrath cause the target to languish for an additional $s1% of your spell's damage over $394061d.
 
 Name             : Astral Smolder (id=394061) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -19907,7 +19901,6 @@ Effects          :
 Description      : Increases $?s202028[Brutal Slash][Swipe] damage by $s1%.
 
 Name             : Protector of the Pack (id=400202) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -19974,7 +19967,6 @@ Effects          :
 Description      : When you cast Ironfur, also deal Physical damage equal to $s1% of your armor, split among enemies within $r yards. Damage reduced above $s2 applications.
 
 Name             : Thorns of Iron (id=400223) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -19997,7 +19989,6 @@ Effects          :
 Description      : $@spelldesc400222
 
 Name             : Raze (id=400254) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Guardian [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
@@ -20083,7 +20074,6 @@ Effects          :
 Description      : Your damage over time effects deal their damage in $s1% less time, and your healing over time effects in $s2% less time.
 
 Name             : Moonless Night (id=400360) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -21072,10 +21062,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Rampant Ferocity (391710), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
-Hotfixed         : Type (203 -> 6), Sub Type (0 -> 108), Base Value (0 -> 3), Misc Value (0 -> 22), Affects Spells, Trigger Spell (417715 -> 0)
 #3 (id=1095979)  : Unknown(203)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 417715 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Increases your damage and healing by $s1% during the day.
 Tooltip          : Damage and healing increased by $s1%.
 

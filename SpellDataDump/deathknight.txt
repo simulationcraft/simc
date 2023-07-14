@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -9452,7 +9452,6 @@ Description      : $@spelldesc281208
 Tooltip          : Your next Chains of Ice will deal $281210s1 Frost damage.
 
 Name             : Cold Heart (id=281210) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -11179,7 +11178,6 @@ Effects          :
 Description      : $@spelldesc319230
 
 Name             : Unholy Pact (id=319236) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -15339,7 +15337,6 @@ Effects          :
 Description      : Dancing Rune Weapon generates $s2 Bone Shield charges. When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec.
 
 Name             : Shattering Bone (id=377640) [Spell Family (15), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Blood [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(1, 100)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -15854,7 +15851,6 @@ Effects          :
 Description      : Apocalypse and Army of the Dead also summon a Magus of the Dead who hurls Frostbolts and Shadow Bolts at your foes.
 
 Name             : Ruptured Viscera (id=390220) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -16007,7 +16003,6 @@ Effects          :
 Description      : Death Coil causes the target to take an additional $s1% of the direct damage dealt over $253367d.
 
 Name             : Coil of Devastation (id=390271) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic

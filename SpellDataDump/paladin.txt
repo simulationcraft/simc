@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -5404,7 +5404,6 @@ Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power ability is free and deals $s2% increased damage and healing.
 
 Name             : Divine Storm (id=224239) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -9300,7 +9299,6 @@ Effects          :
 Description      : $@spelldesc325966
 
 Name             : Glimmer of Light (id=325984) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -9364,7 +9362,6 @@ Effects          :
 Description      : Hammer of Wrath may be used on any target during Avenging Wrath.
 
 Name             : Sanctified Wrath (id=326731) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -11449,7 +11446,6 @@ Effects          :
 Description      : $@spelldesc223306
 
 Name             : Final Reckoning (id=343721) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Retribution [tree=spec, row=9, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Holy
@@ -12817,7 +12813,6 @@ Effects          :
 Description      : Judgment grants you Virtuous Command for $383307d, which causes your Templar's Verdict, Crusader Strike, Blade of Justice, and auto attacks to deal $s1% additional Holy damage.
 
 Name             : Virtuous Command (id=383305) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -13015,7 +13010,6 @@ Effects          :
 Description      : $?a384052[Radiant Decree][Wake of Ashes] burns the target for an additional $s1% damage over $383351d.
 
 Name             : Truth's Wake (id=383351) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -13977,7 +13971,6 @@ $@spellicon32223 $@spellname32223:
 $@spelldesc32223
 
 Name             : Seal of the Crusader (id=385723) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -14107,7 +14100,6 @@ Effects          :
 Description      : Each Holy Power you spend has a 5% chance to cause your Consecration to flare up, dealing medium Holy damage to up to 5 enemies standing within it.
 
 Name             : Inner Light (id=386553) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -17947,7 +17939,6 @@ Effects          :
 Description      : Divine Storm heals you for $s1% of your maximum health.
 
 Name             : Searing Light (id=407478) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -18757,7 +18748,6 @@ Description      : $?s2812[Denounce][Shield of the Righteous] deals $414448s1 da
 Every $s1 $?s2812[Denounces][Shields of the Righteous] make your next Word of Glory or Light of Dawn cost no Holy Power.
 
 Name             : Shining Righteousness (id=414448) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
