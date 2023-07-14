@@ -82,7 +82,6 @@ namespace item
   void amplification( special_effect_t& );
   void black_blood_of_yshaarj( special_effect_t& );
   void cleave( special_effect_t& );
-  void endurance_of_niuzao( special_effect_t& );
   void essence_of_yulon( special_effect_t& );
   void flurry_of_xuen( special_effect_t& );
   void prismatic_prison_of_pride( special_effect_t& );
@@ -2008,21 +2007,6 @@ void item::essence_of_yulon( special_effect_t& effect )
   new essence_of_yulon_cb_t( p, effect );
 }
 
-void item::endurance_of_niuzao( special_effect_t& effect )
-{
-  maintenance_check( 600 );
-
-  if ( effect.item -> sim -> challenge_mode )
-    return;
-  if ( effect.item -> player -> level() >= 100 )
-    return;
-
-  const spell_data_t* cd = effect.item -> player -> find_spell( 148010 );
-
-  effect.item -> player -> legendary_tank_cloak_cd = effect.item -> player -> get_cooldown( "endurance_of_niuzao" );
-  effect.item -> player -> legendary_tank_cloak_cd -> duration = cd -> duration();
-}
-
 void item::readiness( special_effect_t& effect )
 {
   maintenance_check( 528 );
@@ -3233,33 +3217,32 @@ void item::tyrants_decree( special_effect_t& effect )
   new tyrants_decree_callback_t( effect.player, effect, trigger );
 }
 
-double warlords_unseeing_eye_handler( const action_state_t* s )
-{
-  /* Absorb is based on what the player's HP would be after taking the damage,
-     accounting for absorbs that occur prior but ignoring the rest.
-
-     Max current health to 0 to keep the trinket's value somewhat sane when the
-     actor goes negative.
-
-     TOCHECK: If the actor would die from the hit, does the size of the absorb
-     scale with the amount of overkill? */
-  player_t* p = s -> target;
-
-  double absorb_amount = s -> result_amount * p -> warlords_unseeing_eye;
-
-  absorb_amount *= 1 - ( std::max( p -> resources.current[ RESOURCE_HEALTH ], 0.0 ) - s -> result_amount )
-                       / p -> resources.max[ RESOURCE_HEALTH ];
-
-  return absorb_amount;
-}
-
 void item::warlords_unseeing_eye( special_effect_t& effect )
 {
   // Store the magic mitigation number in a player-scope variable.
-  effect.player -> warlords_unseeing_eye = effect.driver() -> effectN( 2 ).average( effect.item ) / 10000.0;
+  auto magic = effect.driver()->effectN( 2 ).average( effect.item ) / 10000.0;
   // Register our handler function so it can be managed by player_t::account_absorb_buffs()
-  effect.player -> instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( effect.driver() -> id(),
-      instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", &warlords_unseeing_eye_handler ) ));
+  effect.player->instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+      effect.driver()->id(),
+      instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", [ magic ]( const action_state_t* s ) {
+        /* Absorb is based on what the player's HP would be after taking the damage,
+          accounting for absorbs that occur prior but ignoring the rest.
+
+          Max current health to 0 to keep the trinket's value somewhat sane when the
+          actor goes negative.
+
+          TOCHECK: If the actor would die from the hit, does the size of the absorb
+          scale with the amount of overkill? */
+        player_t* p = s->target;
+
+        double absorb_amount = s->result_amount * magic;
+
+        absorb_amount *= 1 - ( std::max( p->resources.current[ RESOURCE_HEALTH ], 0.0 ) - s->result_amount ) /
+                                 p->resources.max[ RESOURCE_HEALTH ];
+
+        return absorb_amount;
+      } ) ) );
+
   // Push the effect into the priority list.
   effect.player -> absorb_priority.push_back( 184762 );
 }
@@ -4851,7 +4834,6 @@ void unique_gear::register_special_effects()
   /* Mists of Pandaria: 5.4 */
   register_special_effect( 146195, item::flurry_of_xuen                 );
   register_special_effect( 146197, item::essence_of_yulon               );
-  register_special_effect( 146193, item::endurance_of_niuzao            );
 
   register_special_effect( 146219, "ProcOn/Hit"                         ); /* Yu'lon's Bite */
   register_special_effect( 146251, "ProcOn/Hit"                         ); /* Thok's Tail Tip (Str proc) */
