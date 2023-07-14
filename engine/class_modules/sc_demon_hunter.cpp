@@ -6084,9 +6084,10 @@ struct eye_beam_adjusted_cooldown_expr_t : public expr_t
 
 std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view name_str )
 {
-  auto tokens = util::string_split( name_str, "." );
-  if ( util::str_compare_ci( tokens[ 0 ], "soul_fragments" ) || util::str_compare_ci( tokens[ 0 ], "greater_soul_fragments" ) ||
-       util::str_compare_ci( tokens[ 0 ], "lesser_soul_fragments" ) || util::str_compare_ci( tokens[ 0 ], "demon_soul_fragments" ) )
+  auto splits = util::string_split( name_str, "." );
+  if ( ( splits.size() == 1 || splits.size() == 2 ) && 
+       ( util::str_compare_ci( splits[ 0 ], "soul_fragments" ) ||  util::str_compare_ci( splits[ 0 ], "greater_soul_fragments" ) ||
+         util::str_compare_ci( splits[ 0 ], "lesser_soul_fragments" ) || util::str_compare_ci( splits[ 0 ], "demon_soul_fragments" ) ) ) 
   {
     enum class soul_fragment_filter
     {
@@ -6122,32 +6123,32 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
 
     soul_fragment type = soul_fragment::LESSER;
 
-    if ( util::str_compare_ci( tokens[ 0 ], "soul_fragments" ) )
+    if ( util::str_compare_ci( splits[ 0 ], "soul_fragments" ) )
     {
       type = soul_fragment::ANY;
     }
-    else if ( util::str_compare_ci( tokens[ 0 ], "greater_soul_fragments" ) )
+    else if ( util::str_compare_ci( splits[ 0 ], "greater_soul_fragments" ) )
     {
       type = soul_fragment::ANY_GREATER;
     }
-    else if ( util::str_compare_ci( tokens[ 0 ], "demon_soul_fragments" ) )
+    else if ( util::str_compare_ci( splits[ 0 ], "demon_soul_fragments" ) )
     {
       type = soul_fragment::ANY_DEMON;
     }
     
     soul_fragment_filter filter = soul_fragment_filter::ACTIVE;
 
-    if ( tokens.size() == 2 )
+    if ( splits.size() == 2 )
     {
-      if ( util::str_compare_ci(tokens[ 1 ], "inactive") ) {
+      if ( util::str_compare_ci(splits[ 1 ], "inactive") ) {
         filter = soul_fragment_filter::INACTIVE;
       }
-      else if ( util::str_compare_ci( tokens[ 1 ], "total" ) )
+      else if ( util::str_compare_ci( splits[ 1 ], "total" ) )
       {
         filter = soul_fragment_filter::TOTAL;
       }
-      else if ( !util::str_compare_ci( tokens[ 1 ], "active" ) ) {
-        throw std::invalid_argument( fmt::format( "Unsupported soul_fragments filter '{}'.", tokens[ 1 ] ) );
+      else if ( !util::str_compare_ci( splits[ 1 ], "active" ) ) {
+        throw std::invalid_argument( fmt::format( "Unsupported soul_fragments filter '{}'.", splits[ 1 ] ) );
       }
     }
 
