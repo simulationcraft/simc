@@ -820,6 +820,7 @@ public:
   unsigned consume_soul_fragments( soul_fragment = soul_fragment::ANY, bool heal = true, unsigned max = MAX_SOUL_FRAGMENTS );
   unsigned consume_nearby_soul_fragments( soul_fragment = soul_fragment::ANY );
   unsigned get_active_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
+  unsigned get_inactive_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   unsigned get_total_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   void activate_soul_fragment( soul_fragment_t* );
   void spawn_soul_fragment( soul_fragment, unsigned = 1, bool = false );
@@ -6083,41 +6084,74 @@ struct eye_beam_adjusted_cooldown_expr_t : public expr_t
 
 std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view name_str )
 {
-  if ( name_str == "greater_soul_fragments" || name_str == "lesser_soul_fragments" ||
-       name_str == "soul_fragments" || name_str == "demon_soul_fragments" )
+  auto tokens = util::string_split( name_str, "." );
+  if ( util::str_compare_ci( tokens[ 0 ], "soul_fragments" ) || util::str_compare_ci( tokens[ 0 ], "greater_soul_fragments" ) ||
+       util::str_compare_ci( tokens[ 0 ], "lesser_soul_fragments" ) || util::str_compare_ci( tokens[ 0 ], "demon_soul_fragments" ) )
   {
+    enum class soul_fragment_filter
+    {
+        ACTIVE,
+        INACTIVE,
+        TOTAL
+    };
+
     struct soul_fragments_expr_t : public expr_t
     {
       demon_hunter_t* dh;
       soul_fragment type;
+      soul_fragment_filter filter;
 
-      soul_fragments_expr_t( demon_hunter_t* p, util::string_view n, soul_fragment t )
-        : expr_t( n ), dh( p ), type( t )
+      soul_fragments_expr_t( demon_hunter_t* p, util::string_view n, soul_fragment t, soul_fragment_filter f )
+        : expr_t( n ), dh( p ), type( t ), filter( f )
       {
       }
 
       double evaluate() override
       {
-        return dh->get_active_soul_fragments( type );
+        switch ( filter )
+        {
+          case soul_fragment_filter::ACTIVE:
+            return dh->get_active_soul_fragments( type );
+          case soul_fragment_filter::INACTIVE:
+            return dh->get_inactive_soul_fragments( type );
+          case soul_fragment_filter::TOTAL:
+            return dh->get_total_soul_fragments( type );
+        }
       }
     };
 
     soul_fragment type = soul_fragment::LESSER;
 
-    if ( name_str == "soul_fragments" )
+    if ( util::str_compare_ci( tokens[ 0 ], "soul_fragments" ) )
     {
       type = soul_fragment::ANY;
     }
-    else if ( name_str == "greater_soul_fragments" )
+    else if ( util::str_compare_ci( tokens[ 0 ], "greater_soul_fragments" ) )
     {
       type = soul_fragment::ANY_GREATER;
     }
-    else if ( name_str == "demon_soul_fragments" )
+    else if ( util::str_compare_ci( tokens[ 0 ], "demon_soul_fragments" ) )
     {
       type = soul_fragment::ANY_DEMON;
     }
+    
+    soul_fragment_filter filter = soul_fragment_filter::ACTIVE;
 
-    return std::make_unique<soul_fragments_expr_t>( this, name_str, type );
+    if ( tokens.size() == 2 )
+    {
+      if ( util::str_compare_ci(tokens[ 1 ], "inactive") ) {
+        filter = soul_fragment_filter::INACTIVE;
+      }
+      else if ( util::str_compare_ci( tokens[ 1 ], "total" ) )
+      {
+        filter = soul_fragment_filter::TOTAL;
+      }
+      else if ( !util::str_compare_ci( tokens[ 1 ], "active" ) ) {
+        throw std::invalid_argument( fmt::format( "Unsupported soul_fragments filter '{}'.", tokens[ 1 ] ) );
+      }
+    }
+
+    return std::make_unique<soul_fragments_expr_t>( this, name_str, type, filter );
   }
   else if ( name_str == "cooldown.metamorphosis.adjusted_remains" )
   {
@@ -7756,6 +7790,16 @@ unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment type_mask ) co
     return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
                             [ &type_mask ]( unsigned acc, soul_fragment_t* frag ) {
                               return acc + ( frag->is_type( type_mask ) && frag->active() );
+                            } );
+}
+
+// demon_hunter_t::get_inactive_soul_fragments ================================
+
+unsigned demon_hunter_t::get_inactive_soul_fragments( soul_fragment type_mask ) const
+{
+    return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
+                            [ &type_mask ]( unsigned acc, soul_fragment_t* frag ) {
+                              return acc + ( frag->is_type( type_mask ) && !frag->active() );
                             } );
 }
 
