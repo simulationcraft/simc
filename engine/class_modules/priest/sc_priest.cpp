@@ -2647,6 +2647,8 @@ struct priest_module_t final : public module_t
   }
   void init( player_t* p ) const override
   {
+    p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
+    p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",

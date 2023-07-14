@@ -388,6 +388,7 @@ void condensed_life_force( special_effect_t& effect );
 void conflict_and_strife( special_effect_t& effect );
 void purification_protocol( special_effect_t& effect );
 void ripple_in_space( special_effect_t& effect );
+void lucid_dreams( special_effect_t& effect );
 void the_unbound_force( special_effect_t& effect );
 void worldvein_resonance( special_effect_t& effect );
 void strive_for_perfection( special_effect_t& effect );

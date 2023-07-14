@@ -31,8 +31,7 @@ spell_base_t::spell_base_t( action_e at,
                             util::string_view token,
                             player_t* p,
                             const spell_data_t* s ) :
-  action_t( at, token, p, s ),
-  procs_courageous_primal_diamond( true )
+  action_t( at, token, p, s )
 {
   min_gcd = p -> min_gcd;
   gcd_type = gcd_haste_type::SPELL_SPEED; // Hasten spell GCDs by default
@@ -232,14 +231,6 @@ result_amount_type spell_t::report_amount_type( const action_state_t* state ) co
   }
 
   return result_type;
-}
-
-void spell_t::init()
-{
-  spell_base_t::init();
-
-  if ( harmful )
-    procs_courageous_primal_diamond = false;
 }
 
 double spell_t::composite_hit() const

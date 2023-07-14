@@ -1567,7 +1567,7 @@ public:
               ceil( ab::last_resource_cost * p()->azerite_spells.memory_of_lucid_dreams->effectN( 1 ).percent() );
           p()->resource_gain( cr, amount, p()->gain.memory_of_lucid_dreams );
 
-          if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+          if ( p()->buffs.lucid_dreams && p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
           {
           p()->buffs.lucid_dreams->trigger();
           }
@@ -10213,7 +10213,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
       a *= 1.0 + spell.recklessness_buff->effectN( 4 ).percent();
   }
   // Memory of Lucid Dreams
-  if ( buffs.memory_of_lucid_dreams->up() )
+  if ( buffs.memory_of_lucid_dreams && buffs.memory_of_lucid_dreams->up() )
   {
     a *= 1.0 + buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }

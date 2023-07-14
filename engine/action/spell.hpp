@@ -18,7 +18,6 @@ public:
   result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
   result_amount_type report_amount_type( const action_state_t* /* state */ ) const override;
   double miss_chance( double hit, player_t* t ) const override;
-  void   init() override;
   double composite_hit() const override;
   double composite_versatility(const action_state_t* state) const override;
   double composite_target_multiplier(player_t* target) const override;
