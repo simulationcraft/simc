@@ -5288,6 +5288,50 @@ void paracausal_fragment_of_sulfuras( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Paracausal Fragment of Shalamayne/Doomhammer
+// 414928 Passive driver (effect 1 is passive coefficient, effect 2 is active coefficient)
+// 414936 Active driver
+// 414951 Warstrikes damage
+// 414935 Passive damage
+void paracausal_fragment_of_doomhammer( special_effect_t& e ) 
+{
+
+  struct warstrikes_tick : public generic_proc_t
+  {
+    action_t* doomstrike_damage;
+
+    warstrikes_tick( const special_effect_t& e, action_t* d ) : generic_proc_t( e, "warstrikes", e.player->find_spell( 414951 ) ), doomstrike_damage( d )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 414928 )->effectN( 2 ).average( e.item ); // todo get damage from trigger
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      doomstrike_damage->execute();
+    }
+  };
+
+  auto equip_damage = create_proc_action<generic_proc_t>( "doomstrike", e, "doomstrike", e.player->find_spell( 414935 ) );
+  equip_damage -> base_dd_min = equip_damage -> base_dd_max = e.player->find_spell( 414928 )->effectN( 1 ).average(e.item);
+
+  auto doomstrike = new special_effect_t(e.player);
+  doomstrike->name_str = "doomstrike";
+  doomstrike->spell_id = 414928;
+  doomstrike->execute_action = equip_damage;
+  doomstrike->type = SPECIAL_EFFECT_EQUIP;
+  e.player->special_effects.push_back( doomstrike );
+
+  auto use_damage = create_proc_action<generic_proc_t>( "warstrikes", e, "warstrikes", e.driver() );
+  use_damage->interrupt_auto_attack = false;
+  use_damage->tick_action = create_proc_action<warstrikes_tick>( "warstrikes_tick", e, equip_damage);
+  use_damage->tick_action->stats = use_damage->stats;
+  use_damage->tick_action->dual = true;
+
+  e.execute_action = use_damage;
+  e.execute_action->add_child( equip_damage );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7595,6 +7639,7 @@ void register_special_effects()
   register_special_effect( 418527, items::mirror_of_fractured_tomorrows, true );
   register_special_effect( 417449, items::accelerating_sandglass );
   register_special_effect( 414856, items::paracausal_fragment_of_sulfuras );
+  register_special_effect( 414936, items::paracausal_fragment_of_doomhammer );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
