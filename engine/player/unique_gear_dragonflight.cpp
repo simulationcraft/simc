@@ -5295,6 +5295,8 @@ void paracausal_fragment_of_sulfuras( special_effect_t& e )
 // 414935 Passive damage
 void paracausal_fragment_of_doomhammer( special_effect_t& e ) 
 {
+  bool is_horde = util::is_horde( e.player->race );
+  std::string passive_damage_name = is_horde ? "doomstrike" : "kingstrike";
 
   struct warstrikes_tick : public generic_proc_t
   {
@@ -5312,11 +5314,12 @@ void paracausal_fragment_of_doomhammer( special_effect_t& e )
     }
   };
 
-  auto equip_damage = create_proc_action<generic_proc_t>( "doomstrike", e, "doomstrike", e.player->find_spell( 414935 ) );
+  auto equip_damage = create_proc_action<generic_proc_t>( passive_damage_name, e, passive_damage_name, e.player->find_spell( 414935 ) );
   equip_damage -> base_dd_min = equip_damage -> base_dd_max = e.player->find_spell( 414928 )->effectN( 1 ).average(e.item);
+  equip_damage->school = is_horde ? SCHOOL_NATURE : SCHOOL_HOLY;
 
   auto doomstrike = new special_effect_t(e.player);
-  doomstrike->name_str = "doomstrike";
+  doomstrike->name_str = passive_damage_name;
   doomstrike->spell_id = 414928;
   doomstrike->execute_action = equip_damage;
   doomstrike->type = SPECIAL_EFFECT_EQUIP;
