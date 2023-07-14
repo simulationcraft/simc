@@ -599,7 +599,6 @@ struct player_t : public actor_t
     gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
     gain_t* embrace_of_bwonsamdi;
-    gain_t* urh_restoration;
 
     gain_t* leech;
   } gains;
