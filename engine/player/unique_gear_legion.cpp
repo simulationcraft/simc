@@ -405,6 +405,9 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
 
 void item::ring_of_collapsing_futures( special_effect_t& effect )
 {
+  if ( create_fallback_buffs( effect, { "temptation" } ) )
+    return;
+
   struct collapse_t: public proc_spell_t {
     collapse_t( const special_effect_t& effect ):
       proc_spell_t( "collapse", effect.player,
@@ -458,7 +461,12 @@ void item::ring_of_collapsing_futures( special_effect_t& effect )
     }
   };
 
-  effect.custom_buff = effect.player -> buffs.temptation;
+  auto lockout = make_buff( effect.player, "temptation", effect.player->find_spell( 234143 ) )
+    ->set_cooldown( 0_ms )
+    ->set_chance( 1 )
+    ->set_default_value( 0.1 );  // Not in spelldata
+
+  effect.custom_buff = lockout;
   effect.execute_action = new apply_debuff_t( effect );
   effect.buff_disabled = true; // Buff application is handled inside apply_debuff_t, and this will prevent use_item
                                // from putting the item on cooldown but not using the action.
@@ -5981,7 +5989,7 @@ void unique_gear::register_special_effects_legion()
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );
-  register_special_effect( 234142, item::ring_of_collapsing_futures     );
+  register_special_effect( 234142, item::ring_of_collapsing_futures, true );
   register_special_effect( 230222, item::mrrgrias_favor                 );
   register_special_effect( 231952, item::toe_knees_promise              );
   register_special_effect( 230236, item::deteriorated_construct_core    );

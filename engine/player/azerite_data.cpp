@@ -1373,7 +1373,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 304081, azerite_essences::conflict_and_strife );
   unique_gear::register_special_effect( 295293, azerite_essences::purification_protocol );
   unique_gear::register_special_effect( 302916, azerite_essences::ripple_in_space );
-  unique_gear::register_special_effect( 298407, azerite_essences::the_unbound_force );
+  unique_gear::register_special_effect( 298268, azerite_essences::lucid_dreams );
+  unique_gear::register_special_effect( 298407, azerite_essences::the_unbound_force, true );
   unique_gear::register_special_effect( 295078, azerite_essences::worldvein_resonance );
   unique_gear::register_special_effect( 296320, azerite_essences::strive_for_perfection );
   unique_gear::register_special_effect( 294964, azerite_essences::anima_of_life_and_death );
@@ -4131,16 +4132,18 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 
     harmful = false;
 
-    // Adjust the buff based on essence data
-    player->buffs.memory_of_lucid_dreams->set_cooldown( timespan_t::zero() );
-    player->buffs.memory_of_lucid_dreams->set_duration(
-      essence.spell_ref( 1U ).duration() + essence.spell_ref( 2U, essence_spell::UPGRADE ).effectN( 1 ).time_value()
-    );
-
-    if ( essence.rank() >= 3 )
+    if ( !player->buffs.memory_of_lucid_dreams )
     {
-      player->buffs.memory_of_lucid_dreams->add_stat( STAT_LEECH_RATING,
-        essence.spell_ref( 1U ).effectN( 6 ).average( essence.item() ) );
+      auto buff = make_buff<stat_buff_t>( player, "memory_of_lucid_dreams", player->find_spell( 298357 ) );
+
+      if ( essence.rank() >= 3 )
+        buff->add_stat( STAT_LEECH_RATING, essence.spell_ref( 1U ).effectN( 6 ).average( essence.item() ) );
+
+      buff->set_cooldown( 0_ms )->set_duration(
+          essence.spell_ref( 1U ).duration() +
+          essence.spell_ref( 2U, essence_spell::UPGRADE ).effectN( 1 ).time_value() );
+
+      player->buffs.memory_of_lucid_dreams = buff;
     }
   }
 
@@ -4275,6 +4278,17 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
     if ( essence.rank() >= 2 )
       cooldown->duration *=
         1.0 + essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent();
+
+    auto set_buffs = []( player_t* p ) {
+      if ( !p->buffs.seething_rage_essence)
+      {
+        p->buffs.seething_rage_essence = make_buff( p, "seething_rage_essence", p->find_spell( 297126 ) )
+          ->set_default_value_from_effect( 1 );
+      }
+    };
+
+    set_buffs( p );
+    range::for_each( p->pet_list, [ &set_buffs ]( pet_t* pet ) { set_buffs( pet ); } );
   }
 
   result_e calculate_result( action_state_t* s ) const override
@@ -4490,9 +4504,10 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
     {
       azerite_essence_t essence;
       player_t* owner;
+      buff_t* guardian;
 
-      azerite_spike_t(util::string_view n, pet_t* p, util::string_view options, const azerite_essence_t& ess) :
-        spell_t(n, p, p->find_spell(295856)), essence(ess), owner(p->owner)
+      azerite_spike_t( std::string_view n, pet_t* p, std::string_view options, const azerite_essence_t& ess, buff_t* b )
+        : spell_t( n, p, p->find_spell( 295856 ) ), essence( ess ), owner( p->owner ), guardian( b )
       {
         parse_options(options);
         may_crit = true;
@@ -4509,7 +4524,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
         spell_t::execute();
 
         if (essence.rank() >= 3)
-          owner->buffs.guardian_of_azeroth->trigger();
+          guardian->trigger();
       }
 
       void impact(action_state_t* s) override
@@ -4539,16 +4554,21 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
 
     azerite_essence_t essence;
     buff_t* azerite_volley;
+    buff_t* guardian;
 
     // TODO: Does pet inherit player's stats? Some, all, or none?
     guardian_of_azeroth_pet_t(player_t* p, azerite_essence_t ess) :
       pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(std::move(ess))
-    {}
+    {
+      guardian = make_buff( owner, "guardian_of_azeroth", owner->find_spell( 295855 ) )
+        ->set_default_value_from_effect( 1 )
+        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
 
     action_t* create_action(util::string_view name, util::string_view options) override
     {
       if (name == "azerite_spike")
-        return new azerite_spike_t(name, this, options, essence);
+        return new azerite_spike_t(name, this, options, essence, guardian);
 
       return pet_t::create_action(name, options);
     }
@@ -4589,7 +4609,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       pet_t::demise();
 
       azerite_volley->expire();
-      owner->buffs.guardian_of_azeroth->expire();
+      guardian->expire();
     }
   };
 
@@ -4848,6 +4868,7 @@ void ripple_in_space(special_effect_t& effect)
 struct ripple_in_space_t : public azerite_essence_major_t
 {
   timespan_t delay;
+  buff_t* buff;
 
   ripple_in_space_t(player_t* p, util::string_view options_str) :
     azerite_essence_major_t(p, "ripple_in_space", p->find_spell(302731))
@@ -4861,6 +4882,19 @@ struct ripple_in_space_t : public azerite_essence_major_t
 
     delay = essence.spell_ref( 1U, essence_type::MAJOR ).duration()
       + timespan_t::from_seconds( essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).base_value() / 1000 );
+
+    buff = buff_t::find( p, "reality_shift" );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( p, "reality_shift", p->find_spell( 302916 ) )
+                 ->add_stat( p->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                             essence.spell_ref( 1U, essence_type::MINOR ).effectN( 2 ).average( essence.item() ) )
+                 ->set_duration(
+                     p->find_spell( 302952 )->duration() +
+                     essence.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).time_value() )
+                 ->set_cooldown( p->find_spell( 302953 )->duration() );
+    }
+
   }
 
   timespan_t travel_time() const override
@@ -4872,14 +4906,35 @@ struct ripple_in_space_t : public azerite_essence_major_t
   {
     azerite_essence_major_t::impact( s );
 
-    s->action->player->buffs.reality_shift->trigger();
+    buff->trigger();
   }
 }; //End of Ripple in Space
+
+void lucid_dreams( special_effect_t& effect )
+{
+  auto p = effect.player;
+  auto ess = p->find_azerite_essence( effect.driver()->essence_id() );
+  if ( !ess.enabled() )
+    return;
+
+  if ( p->buffs.lucid_dreams )
+  {
+    p->buffs.lucid_dreams =
+        make_buff<stat_buff_t>( p, "lucid_dreams", p->find_spell( 298343 ) )
+            ->add_stat(
+                STAT_VERSATILITY_RATING,
+                ess.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average( ess.item() ) )
+            ->set_quiet( ess.rank() < 3 );
+  }
+}
 
 //The Unbound Force
 //Minor driver is 298407
 void the_unbound_force(special_effect_t& effect)
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "reckless_force", "reckless_force_counter" } ) )
+    return;
+
   auto essence = effect.player->find_azerite_essence(effect.driver()->essence_id());
   if (!essence.enabled())
   {
@@ -4909,9 +4964,11 @@ void the_unbound_force(special_effect_t& effect)
   };
 
   // buff id=302917, not referenced in spell data
-  effect.custom_buff = effect.player->buffs.reckless_force_counter;
+  effect.custom_buff = make_buff( effect.player, "reckless_force_counter", effect.player->find_spell( 302917 ) );
 
-  buff_t* crit_buff = effect.player->buffs.reckless_force; // id=302932
+  auto crit_buff = make_buff( effect.player, "reckless_force", effect.player->find_spell( 302932 ) )
+    ->set_default_value_from_effect( 1 )
+    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   if (essence.rank() >= 3)
     crit_buff->base_buff_duration += timespan_t::from_millis(essence.spell_ref(3U, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
@@ -5080,6 +5137,8 @@ void vision_of_perfection( special_effect_t& effect )
 
 struct lifeblood_shard_t : public buff_t
 {
+  stat_buff_t* lb_buff;
+
   lifeblood_shard_t( player_t* p, const azerite_essence_t& ess ) :
     buff_t( p, "lifeblood_shard", p->find_spell( 295114 ), ess.item() )
   {
@@ -5088,14 +5147,18 @@ struct lifeblood_shard_t : public buff_t
     set_quiet( true );
     base_buff_duration *= 1.0 + ess.spell_ref( 2, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
 
+    lb_buff = make_buff<stat_buff_t>( p, "lifeblood", p->find_spell( 295137 ) )
+                  ->add_stat( p->convert_hybrid_stat( STAT_STR_AGI_INT ),
+                              ess.spell( 1, essence_type::MINOR )->effectN( 5 ).average( ess.item() ) );
+
     set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
       if ( new_ > old_ )
       {
-        player->buffs.lifeblood->trigger( new_ - old_ );
+        lb_buff->trigger( new_ - old_ );
       }
       else if ( old_ > new_ )
       {
-        player->buffs.lifeblood->decrement( old_ - new_ );
+        lb_buff->decrement( old_ - new_ );
 
         // testing data shows an exponential variable-like distribution of the delay times, with 0.636s mean and highest
         // gap seen was 1.923s. for now implement as an exponential variable with a mean of 0.636 generated by a uniform
@@ -5103,10 +5166,10 @@ struct lifeblood_shard_t : public buff_t
         auto delay = timespan_t::from_seconds( std::log( rng().range( 0.048, 1.0 ) ) * -0.636 );
 
         make_event( *sim, delay, [this]() {
-          auto delta = std::min( player->buffs.lifeblood->max_stack(), check() ) - player->buffs.lifeblood->check();
+          auto delta = std::min( lb_buff->max_stack(), check() ) - lb_buff->check();
           if ( delta > 0 )
           {
-            player->buffs.lifeblood->trigger( delta );
+            lb_buff->trigger( delta );
           }
         } );
       }
