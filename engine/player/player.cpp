@@ -2965,7 +2965,6 @@ void player_t::init_gains()
   gains.vampiric_embrace   = get_gain( "vampiric_embrace" );
   gains.leech              = get_gain( "leech" );
   gains.embrace_of_bwonsamdi = get_gain( "embrace_of_bwonsamdi" );
-  gains.urh_restoration    = get_gain( "urh_restoration" );
 }
 
 void player_t::init_procs()
