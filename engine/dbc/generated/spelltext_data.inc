@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.50438
-static const std::array<spelltext_data_t, 20117> __spelltext_data { {
+static const std::array<spelltext_data_t, 20120> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20059,6 +20059,8 @@ static const std::array<spelltext_data_t, 20117> __spelltext_data { {
   { 417069, "$@spelldesc417050", "Your past was rewound too recently for the Prophetic Stonescale to trigger again.", 0 },
   { 417139, "$@spelldesc417050", "Haste increased by $w1, and taking $417050s3% less damage from enemies that struck you in the undone future.", 0 },
   { 417234, "Summon Infernal increases the damage of your next $s3 casts of Chaos Bolt by $s1% or your next $s3 casts of Rain of Fire by $s2%.", 0, 0 },
+  { 417275, 0, "The next Time Rift you complete is guaranteed to reward you with a Mount!", 0 },
+  { 417276, 0, "The next Time Rift you complete is guaranteed to reward you with a Battle Pet!", 0 },
   { 417282, "$@spelldesc417234", "Your next Chaos Bolt deals $w1% increased damage or Rain of Fire deals $w2% increased damage.", 0 },
   { 417290, "$@spelldesc417050", "Being thrown into the past.", 0 },
   { 417449, "Your attacks drain the hourglass, giving you a chance to gain $s1 Haste up to $417452u times before the sand runs out.\r\n\r\nOnce the glass is empty, your next offensive ability performs a flurry of Accelerated Strikes, dealing $s2 Physical damage per stack and flipping the Hourglass to begin the cycle anew.", 0, 0 },
@@ -20117,6 +20119,7 @@ static const std::array<spelltext_data_t, 20117> __spelltext_data { {
   { 419737, "Upon expiration, an echo of the ability's damage will strike the target.", 0, 0 },
   { 419800, "$@spelldesc416714", 0, 0 },
   { 420144, 0, "An echo of $w1 damage will be dealt upon expiration.", 0 },
+  { 421662, "Guarantees that the next Time Rift you complete will grant you a reward.", "The next time rift you complete is guaranteed to grant you a reward.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.1.5.50438
