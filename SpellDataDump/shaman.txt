@@ -6239,7 +6239,7 @@ Talent Entry     : Restoration [tree=spec, row=9, col=3, max_rank=1, req_points=
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 15% Base Mana (0) (id=191705)
+Resource         : 3% Base Mana (0) (id=191705)[Hotfixed: Percent Cost (15 -> 3)]
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds

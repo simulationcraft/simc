@@ -908,6 +908,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=1054274)  : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 0x9 | Target: Self (1)
+#8 (id=1096713)  : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Upon death, the Priest becomes the Spirit of Redemption for $27827d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. When the effect ends, the Priest dies.
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 
