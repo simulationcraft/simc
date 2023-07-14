@@ -1176,8 +1176,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     karazhan_trinkets_paired( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
-    warlords_unseeing_eye( 0.0 ),
-    warlords_unseeing_eye_stats(),
     auto_attack_modifier( 0.0 ),
     auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),

@@ -389,11 +389,6 @@ struct player_t : public actor_t
   bool karazhan_trinkets_paired;
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
-  cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
-
-  // Warlord's Unseeing Eye (6.2 Trinket)
-  double warlords_unseeing_eye;
-  stats_t* warlords_unseeing_eye_stats;
 
   // Misc Multipliers
   // auto attack modifier and multiplier (for Jeweled Signet of Melandrus and similar effects)
@@ -597,14 +592,12 @@ struct player_t : public actor_t
   struct gains_t
   {
     gain_t* arcane_torrent;
-    gain_t* endurance_of_niuzao;
     std::array<gain_t*, RESOURCE_MAX> resource_regen;
     gain_t* health;
     gain_t* mana_potion;
     gain_t* restore_mana;
     gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
-    gain_t* warlords_unseeing_eye;
     gain_t* embrace_of_bwonsamdi;
     gain_t* urh_restoration;
 
