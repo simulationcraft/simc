@@ -20504,7 +20504,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  390236, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$damage=${0.44*($390220s1)*(1+$@versadmg)*$<mastery>}" },
   {  392359, "$damage=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}" },
   {  392536, "$val=$?a317320[${$s1*0.5}][${$s1}]" },
-  {  393400, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s5)/100}" },
+  {  393400, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
   {  394352, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  395152, "$stat=${$INT*($s1/100)}" },
@@ -20526,6 +20526,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.1.5.50469
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  393400,  0, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s5)/100}", "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
 } };
 
