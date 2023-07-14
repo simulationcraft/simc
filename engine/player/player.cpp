@@ -1176,7 +1176,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     karazhan_trinkets_paired( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
-    legendary_tank_cloak_cd( nullptr ),
     warlords_unseeing_eye( 0.0 ),
     warlords_unseeing_eye_stats(),
     auto_attack_modifier( 0.0 ),
@@ -2955,7 +2954,6 @@ void player_t::init_gains()
   sim->print_debug( "Initializing gains for {}.", *this );
 
   gains.arcane_torrent      = get_gain( "arcane_torrent" );
-  gains.endurance_of_niuzao = get_gain( "endurance_of_niuzao" );
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     std::string name = util::resource_type_string( r );
@@ -7483,28 +7481,6 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
   s->result_absorbed = s->result_amount;
 }
 
-void account_legendary_tank_cloak( player_t& p, action_state_t* s )
-{
-  // Legendary Tank Cloak Proc - max absorb of 1e7 hardcoded (in spellid 146193, effect 1)
-  if ( p.legendary_tank_cloak_cd && p.legendary_tank_cloak_cd->up()    // and the cloak's cooldown is up
-       && s->result_amount > p.resources.current[ RESOURCE_HEALTH ] )  // attack exceeds player health
-  {
-    if ( s->result_amount > 1e7 )
-    {
-      p.gains.endurance_of_niuzao->add( RESOURCE_HEALTH, 1e7, 0 );
-      s->result_amount -= 1e7;
-      s->result_absorbed += 1e7;
-    }
-    else
-    {
-      p.gains.endurance_of_niuzao->add( RESOURCE_HEALTH, s->result_amount, 0 );
-      s->result_absorbed += s->result_amount;
-      s->result_amount = 0;
-    }
-    p.legendary_tank_cloak_cd->start();
-  }
-}
-
 /**
  * Statistical data collection for damage taken.
  */
@@ -7585,8 +7561,6 @@ void player_t::assess_damage( school_e school, result_amount_type type, action_s
   account_absorb_buffs( *this, s, school );
 
   assess_damage_imminent( school, type, s );
-
-  account_legendary_tank_cloak( *this, s );
 }
 
 void player_t::do_damage( action_state_t* incoming_state )
