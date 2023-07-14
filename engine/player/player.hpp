@@ -386,7 +386,6 @@ struct player_t : public actor_t
   std::unique_ptr<set_bonus_t> sets;
   meta_gem_e meta_gem;
   bool matching_gear;
-  bool karazhan_trinkets_paired;
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
 

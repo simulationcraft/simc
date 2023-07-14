@@ -1173,7 +1173,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     sets( ( !is_pet() && !is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
     meta_gem( META_GEM_NONE ),
     matching_gear( false ),
-    karazhan_trinkets_paired( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
     auto_attack_modifier( 0.0 ),
@@ -12485,7 +12484,6 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
-  add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
   add_option( opt_timespan( "default_item_group_cooldown", default_item_group_cooldown, 0_ms, timespan_t::max() ) );
   add_option( opt_func( "override.precombat_state",
     [ this ] ( sim_t*, util::string_view, util::string_view value ) {

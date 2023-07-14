@@ -946,9 +946,8 @@ struct thunder_ritual_impact_t : public proc_spell_t
     callbacks = false;
     pair_icd = effect.player -> get_cooldown( "paired_trinket_icd" );
     pair_icd -> duration = timespan_t::from_seconds( 60.0 );
-    if ( player -> karazhan_trinkets_paired )
+    if ( unique_gear::find_special_effect( player, 231952 ) )
     {
-
       pair_multiplied = true;
     }
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * chest_multiplier;
@@ -2354,7 +2353,7 @@ struct flame_gale_pulse_t : proc_spell_t
     callbacks = false;
     school = SCHOOL_FIRE;
     aoe = -1;
-    if ( player -> karazhan_trinkets_paired )
+    if ( unique_gear::find_special_effect( player, 230222 ) )
       paired_multiplier += 0.3;
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * paired_multiplier * chest_multiplier;
   }
