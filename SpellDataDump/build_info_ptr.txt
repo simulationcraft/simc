@@ -1,1 +1,1 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live (hotfix 2023-07-12/50401, git build data-update-test-50438 00f508e)
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live (hotfix 2023-07-12/50401, git build data-update-test-50438 5864bd3)
