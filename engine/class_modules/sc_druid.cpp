@@ -2100,8 +2100,6 @@ public:
     parse_buff_effects( p()->buff.furious_regeneration );
     parse_buff_effects( p()->buff.gory_fur );
     parse_buff_effects( p()->buff.overpowering_aura );
-    // rage of the sleeper also applies to moonfire tick via hidden script. see moonfire_damage_t
-    // note that it DOES NOT apply to thrash ticks
     parse_buff_effects( p()->buff.rage_of_the_sleeper );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
     parse_buff_effects( p()->buff.tooth_and_claw, false );
@@ -6977,10 +6975,6 @@ struct moonfire_t : public druid_spell_t
 
       if ( feral_override_ta && !p()->buff.moonkin_form->check() )
         tam *= 1.0 + feral_override_ta;
-
-      // on PTR rage of the sleeper applies to ticks via hidden script, so we manually adjust here
-      if ( p()->buff.rage_of_the_sleeper->check() )
-        tam *= 1.0 + p()->talent.rage_of_the_sleeper->effectN( 5 ).percent();
 
       return tam;
     }
