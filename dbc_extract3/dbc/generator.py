@@ -1432,7 +1432,7 @@ class SpellDataGenerator(DataGenerator):
          415006, 415130, 415245, 415033, 419539, 415052, 415038, # Paracausal Fragment of Frostmourne
          414976, 414977, 414968, 417468, # Paracausal Fragment of Azzinoth
          414856, 414864, 414858, 414857, 414865, 414866, # Paracausal Fragment of Sulfuras
-         414928, 414936, 414951, 414950, # Paracausal Fragment of Doomhammer/Shalamayne
+         414928, 414936, 414951, 414950, 414935, # Paracausal Fragment of Doomhammer/Shalamayne
          419737, 420144, # Timestrike
          419262, 419261, # Demonsbane
         ),

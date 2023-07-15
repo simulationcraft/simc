@@ -5458,6 +5458,53 @@ void paracausal_fragment_of_frostmourne( special_effect_t& e )
   e.custom_buff = buff;
 }
 
+// Paracausal Fragment of Shalamayne/Doomhammer
+// 414928 Passive driver (effect 1 is passive coefficient, effect 2 is active coefficient)
+// 414936 Active driver
+// 414951 Warstrikes damage
+// 414935 Passive damage
+void paracausal_fragment_of_doomhammer( special_effect_t& e ) 
+{
+  bool is_horde = util::is_horde( e.player->race );
+  std::string passive_damage_name = is_horde ? "doomstrike" : "kingstrike";
+
+  struct warstrikes_tick : public generic_proc_t
+  {
+    action_t* doomstrike_damage;
+
+    warstrikes_tick( const special_effect_t& e, action_t* d ) : generic_proc_t( e, "warstrikes", e.player->find_spell( 414951 ) ), doomstrike_damage( d )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 414928 )->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      doomstrike_damage->execute();
+    }
+  };
+
+  auto equip_damage = create_proc_action<generic_proc_t>( passive_damage_name, e, passive_damage_name, e.player->find_spell( 414935 ) );
+  equip_damage -> base_dd_min = equip_damage -> base_dd_max = e.player->find_spell( 414928 )->effectN( 1 ).average(e.item);
+  equip_damage->school = is_horde ? SCHOOL_NATURE : SCHOOL_HOLY;
+
+  auto doomstrike = new special_effect_t(e.player);
+  doomstrike->name_str = passive_damage_name;
+  doomstrike->spell_id = 414928;
+  doomstrike->execute_action = equip_damage;
+  doomstrike->type = SPECIAL_EFFECT_EQUIP;
+  e.player->special_effects.push_back( doomstrike );
+
+  auto use_damage = create_proc_action<generic_proc_t>( "warstrikes", e, "warstrikes", e.driver() );
+  use_damage->interrupt_auto_attack = false;
+  use_damage->tick_action = create_proc_action<warstrikes_tick>( "warstrikes_tick", e, equip_damage);
+  use_damage->tick_action->stats = use_damage->stats;
+  use_damage->tick_action->dual = true;
+
+  e.execute_action = use_damage;
+  e.execute_action->add_child( equip_damage );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7768,6 +7815,7 @@ void register_special_effects()
   register_special_effect( 415284, items::paracausal_fragment_of_thunderfin );
   register_special_effect( 414968, items::paracausal_fragment_of_azzinoth );
   register_special_effect( 415130, items::paracausal_fragment_of_frostmourne );
+  register_special_effect( 414936, items::paracausal_fragment_of_doomhammer );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment

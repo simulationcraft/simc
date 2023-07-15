@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.5.50438
-static const std::array<spelltext_data_t, 20120> __spelltext_data { {
+// Spell text, wow build 10.1.5.50469
+static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19997,6 +19997,7 @@ static const std::array<spelltext_data_t, 20120> __spelltext_data { {
   { 414877, "Ebon Might increases the damage of your empower spells by $s1%.", 0, 0 },
   { 414878, "Ebon Might increases allies' primary stat by an additional ${$s1}.1% of your own.", 0, 0 },
   { 414928, "Your melee attacks and abilities have a chance to $?FAC=[Doomstrike][Kingstrike] your target, dealing $s1 $?FAC=[Nature][Holy] damage.", 0, 0 },
+  { 414935, "$@spelldesc414928", 0, 0 },
   { 414936, "Let loose a five-hit combo upon your current target dealing a total of ${$414928s2*$s2} Physical damage and unleashing a $?FAC=[Doomstrike][Kingstrike] with each blow.", 0, 0 },
   { 414951, "$@spelldesc414936", 0, 0 },
   { 414968, "Your harmful spells and abilities have a chance to manifest a fel elemental by your side for $414976d, periodically dealing $s1 Fire damage to your target and increasing your Haste by $s2.", 0, 0 },
@@ -20122,11 +20123,11 @@ static const std::array<spelltext_data_t, 20120> __spelltext_data { {
   { 421662, "Guarantees that the next Time Rift you complete will grant you a reward.", "The next time rift you complete is guaranteed to grant you a reward.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.5.50438
+// spelltext hotfix entries, wow build 10.1.5.50469
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.5.50438
+// Spell description variables, wow build 10.1.5.50469
 static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20504,7 +20505,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  390236, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$damage=${0.44*($390220s1)*(1+$@versadmg)*$<mastery>}" },
   {  392359, "$damage=${$cond($gt($SP,$AP),$SP*0.75,$AP*0.75)*$pctD*(1+$@versadmg)}" },
   {  392536, "$val=$?a317320[${$s1*0.5}][${$s1}]" },
-  {  393400, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s5)/100}" },
+  {  393400, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
   {  394352, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  395152, "$stat=${$INT*($s1/100)}" },
@@ -20525,7 +20526,8 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.5.50438
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.1.5.50469
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  393400,  0, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s5)/100}", "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
 } };
 
