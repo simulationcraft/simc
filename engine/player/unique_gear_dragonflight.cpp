@@ -5474,7 +5474,7 @@ void paracausal_fragment_of_doomhammer( special_effect_t& e )
 
     warstrikes_tick( const special_effect_t& e, action_t* d ) : generic_proc_t( e, "warstrikes", e.player->find_spell( 414951 ) ), doomstrike_damage( d )
     {
-      base_dd_min = base_dd_max = e.player->find_spell( 414928 )->effectN( 2 ).average( e.item ); // todo get damage from trigger
+      base_dd_min = base_dd_max = e.player->find_spell( 414928 )->effectN( 2 ).average( e.item );
     }
 
     void execute() override
