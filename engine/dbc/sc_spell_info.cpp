@@ -828,8 +828,9 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 32, "Spell Effect 4"            },
   { 33, "Spell Effect 5"            },
   { 34, "Spell Resource Generation" },
-    { 35, "Spell Chain Target Range" },
-    { 37, "Spell Max Stacks" },
+  { 35, "Spell Chain Target Range"  },
+  { 37, "Spell Max Stacks"          },
+  { 39, "Spell Resource Cost 3"     },
 } );
 
 static constexpr auto _effect_type_strings = util::make_static_map<unsigned, util::string_view>( {
