@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -200,7 +200,6 @@ Cooldown         : 8 seconds
 Charges          : 1 (210 seconds cooldown)
 Category         : 1929: Symbol of Hope (265144 effect#3), Stalwart Guardian (334993 effect#2), Unbreakable Will (335629 effect#2), Defender's Aegis (397103 effect#1), Defender's Aegis (397103 effect#2)
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bladestorm (389774 effect#3)
 Family Flags     : 11, 13
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
@@ -384,7 +383,6 @@ School           : Physical
 Spell Type       : Melee
 Duration         : 12 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), Depths of Insanity (337162 effect#1), Depths of Insanity (383922 effect#1), Reckless Abandon (396749 effect#1)
 Family Flags     : 4, 8
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -733,6 +731,7 @@ Effects          :
 Description      : Pummels the target, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Revenge (id=6572) [Spell Family (4)] 
+Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -749,9 +748,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2316)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42750 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
@@ -2317,6 +2316,7 @@ Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 
@@ -3469,7 +3469,6 @@ GCD              : 1.5 seconds
 Travel Delay     : 0.3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Pile On (364553 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Blunt Instruments (383442 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Family Flags     : 8, 9, 52, 62
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -9016,6 +9015,7 @@ Description      : Brutally attack an enemy for $396718s1 Physical damage$?s3889
 |cFFFFFFFFGenerates ${$m1/10} Rage.
 
 Name             : Dreadnaught (id=315961) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -9028,9 +9028,9 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Active Defense (21), No AutoCast (AI) (49), Always AOE Line of Sight (186)
+                 : No Active Defense (21), No AutoCast (AI) (49), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=800084)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> Unknown(134)
@@ -13095,6 +13095,7 @@ Description      : $@spelldesc383703
 Tooltip          : Falling below $s1% health will cause Fatal Mark to inflict $383706s1 Physical damage.
 
 Name             : Fatal Mark (id=383706) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -13105,9 +13106,9 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : ........ .x..x... ........ ........   ........ ........ .......x xx...... 
                  : x....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ .....x.. ..x..... 
-                 : ........ .x...... ....x... ........   .x...... ........ ........ ........ 
+                 : ........ .x...... ....x... ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Active Passive (393), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)
+                 : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Active Passive (393), Allow during spell override (404), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1015780)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.76000 | PvP Coefficient: 0.33000 | Target: Unknown(25)
@@ -14384,6 +14385,7 @@ Effects          :
 Description      : $@spelldesc385888
 
 Name             : Tough as Nails (id=385890) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -14394,9 +14396,9 @@ Attributes       : ........ ........ .....x.. ..x.....   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Active Defense (21), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Aura Points On Client (268)
+                 : No Active Defense (21), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1019451)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -17384,6 +17386,7 @@ Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
 Labels           : 771: Strive for Perfection (296320 effect#9), Immovable Object (394314 effect#1), Immovable Object (394314 effect#2), Immovable Object (394314 effect#3)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x....x x....... ........ 

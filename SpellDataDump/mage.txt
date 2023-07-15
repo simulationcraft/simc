@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50401 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -1564,7 +1564,6 @@ Effects          :
 Description      : Increases your Versatility by $s1.
 
 Name             : Splitting Ice (id=56377) [Spell Family (3), Passive] 
-Hotfixed         : Description
 Talent Entry     : Frost [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
@@ -4643,7 +4642,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Brain Freeze (190447)
                    Family Flags: 79
-Hotfixed         : Base Value (15 -> 20)
 Description      : Frostbolt grants you Fingers of Frost $s1% more often and Brain Freeze $s2% more often.
 
 Name             : Ice Ward (id=205036) [Spell Family (3), Passive] 
@@ -6453,6 +6451,7 @@ Description      : Launch a bolt of ice at the enemy, dealing $257538s1 Frost da
 Deals ${$257538s1*$56377m4/100} Frost damage to a second nearby target.][] 
 
 Name             : Ebonbolt (id=257538) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -6465,9 +6464,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128)
+                 : Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=480800)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.64500 | PvP Coefficient: 1.12000 | Target: Enemy (6)
@@ -11307,6 +11306,7 @@ Effects          :
 Description      : Direct damage you deal to enemies affected by Touch of the Magi, causes an explosion that deals $342232s1 Arcane damage to all nearby enemies. Deals reduced damage beyond $s1 targets.
 
 Name             : Arcane Echo (id=342232) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -11320,9 +11320,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Always Hit (114), Do Not Display Range (126), Only Proc From Class Abilities (415)
+                 : Always Hit (114), Do Not Display Range (126), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=843144)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.08250 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
@@ -12423,6 +12423,7 @@ Effects          :
 Description      : $@spelldesc378947
 
 Name             : Glacial Assault (id=379029) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -12435,9 +12436,9 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ....x... ...x.... ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ .......x   .x...... ........ ........ .x...... 
+                 : ........ ........ ........ .......x   xx...... ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Only Proc From Class Abilities (415), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
+                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1007588)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33327 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
@@ -12716,7 +12717,6 @@ Description      : $@spelldesc382110
 Tooltip          : Your next Frostbolt or Flurry will also cast a Frozen Orb at your target.
 
 Name             : Slick Ice (id=382144) [Spell Family (3), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Frost [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
@@ -12768,7 +12768,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Frostbolt (228597)
                    Family Flags: 5
-Hotfixed         : Base Value (2 -> 4)
 Description      : $@spelldesc382144
 Tooltip          : Cast time of Frostbolt reduced by $s1% and its damage is increased by $s2%.
 
@@ -16143,6 +16142,7 @@ Effects          :
 Description      : $@spelldesc418733
 
 Name             : Intensifying Flame (id=419800) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -16153,9 +16153,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : xx...... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), Can't Crit (93), Not a Proc (105), Allow Aura While Dead (116), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Bypass Visibility Check (320), Ignore Positive Damage Taken Modifiers (321)
+                 : Allow Cast While Dead (23), Can't Crit (93), Not a Proc (105), Allow Aura While Dead (116), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Bypass Visibility Check (320), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1092988)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)

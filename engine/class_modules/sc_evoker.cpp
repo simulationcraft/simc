@@ -3489,11 +3489,16 @@ public:
     return m;
   }
 
+  double composite_player_critical_multiplier( const action_state_t* state ) const override
+  {
+    return 1.0;
+  }
+
   void init() override
   {
     spell_t::init();
     snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_CRIT | STATE_TGT_MUL_DA;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_CRIT;
   }
 };
 

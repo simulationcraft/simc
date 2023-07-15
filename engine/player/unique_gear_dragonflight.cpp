@@ -4896,6 +4896,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
+      trigger_gcd = 1.5_s; // Currently bugged and has a 1.5s swing time. 
     }
   };
 
@@ -4967,8 +4968,8 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       : spell_t( "sand_bolt", p, p->find_spell( 418605 ) ), action( a )
     {
       parse_options( options_str );
-      auto proxy                = action;
-      auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
+      auto proxy = action;
+      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
       if ( it != proxy->child_action.end() )
         stats = ( *it )->stats;
       else
@@ -4978,7 +4979,15 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
           create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
       damage->stats = stats;
+      damage->dual = true;
+
       impact_action = damage;
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+      trigger_gcd = data().cast_time() + rng().range( 350_ms, 450_ms ); // Currently bugged and delaying starting new casts by ~400ms
     }
   };
 
@@ -5288,6 +5297,167 @@ void paracausal_fragment_of_sulfuras( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Paracusal Fragment of Thunderfin
+// 415284 Driver/Values
+// 415339 Cataclysm Debuff
+// 415395 Cataclysm Damage
+// 415403 Lightning Conduit Debuff
+// 415412 Lightning Conduit Damage
+// 415410 Lightning Conduit Proc Flags & RPPM
+struct tideseekers_cataclysm_initializer_t : public item_targetdata_initializer_t
+{
+  tideseekers_cataclysm_initializer_t() : item_targetdata_initializer_t( 415284, 415403 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.lightning_conduit = make_buff_fallback( active, *td, "lightning_conduit", debuffs[ td->source ] );
+    td->debuff.lightning_conduit->reset();
+  }
+};
+
+void paracausal_fragment_of_thunderfin( special_effect_t& effect )
+{
+  struct cataclysm_ground_t : public generic_proc_t
+  {
+    timespan_t tick_time;
+    action_t* damage;
+    action_t* conduit;
+    cataclysm_ground_t( util::string_view n, const special_effect_t& e, const spell_data_t* s, action_t* a )
+      : generic_proc_t( e.player, n, s ),
+        tick_time( timespan_t::from_seconds( e.driver()->effectN( 4 ).base_value() ) ),
+        damage( create_proc_action<generic_aoe_proc_t>( "tideseekers_cataclysm_tick", e, "tideseekers_cataclysm_tick",
+                                                        e.player->find_spell( 415395 ) ) ),
+        conduit( a )
+    {
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      add_child( damage );
+      add_child( conduit );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      make_event<ground_aoe_event_t>(
+          *sim, player,
+          ground_aoe_params_t()
+              .target( s->target )
+              .pulse_time( tick_time )
+              .duration( data().duration() )
+              .action( damage )
+              .state_callback( [ this ]( ground_aoe_params_t::state_type s, ground_aoe_event_t* e ) {
+                if ( s == ground_aoe_params_t::state_type::EVENT_STARTED )
+                {
+                  for ( player_t* t : e->params->action()->target_list() )
+                  {
+                    auto td = player->get_target_data( t );
+                    td->debuff.lightning_conduit->trigger();
+                  }
+                }
+                else if( s == ground_aoe_params_t::state_type::EVENT_STOPPED )
+                {
+                  for ( player_t* t : e->params->action()->target_list() )
+                  {
+                    auto td = player->get_target_data( t );
+                    td->debuff.lightning_conduit->expire();
+                  }
+                }
+              } ) );
+    }
+  };
+
+  auto conduit_damage = create_proc_action<generic_proc_t>( "tideseekers_thunder", effect, "tideseekers_thunder",
+                                                                effect.player->find_spell( 415412 ) );
+  conduit_damage->base_dd_min = conduit_damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
+  conduit_damage->split_aoe_damage = true;
+
+  auto lightning_conduit            = new special_effect_t( effect.player );
+  lightning_conduit->name_str       = "paracuasal_fragment_of_thunderfin_humid_blade_of_the_tideseeker";
+  lightning_conduit->spell_id       = 415410;
+  lightning_conduit->execute_action = conduit_damage;
+  effect.player->special_effects.push_back( lightning_conduit );
+
+  auto lightning_conduit_proc = new dbc_proc_callback_t( effect.player, *lightning_conduit );
+  lightning_conduit_proc->initialize();
+  lightning_conduit_proc->activate();
+
+  effect.player->callbacks.register_callback_trigger_function(
+      415410, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        auto td = effect.player->get_target_data( s->target )->debuff.lightning_conduit;
+        return td->check();
+      } );
+
+  auto ground_effect = new cataclysm_ground_t( "tideseekers_cataclysm", effect, effect.player->find_spell( 415339 ), conduit_damage );
+
+  effect.execute_action = ground_effect;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Paracausal Fragment of Azzinoth
+// 414968 Driver
+// 414976 Haste Buff/Periodic Trigger
+// 417468 Missile
+// 414977 Damage
+void paracausal_fragment_of_azzinoth( special_effect_t& e )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "fires_of_azzinoth", e, "fires_of_azzinoth", e.player->find_spell( 414977 ) );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+
+  auto missile = create_proc_action<generic_proc_t>( "fires_of_azzinoth_missile", e, "fires_of_azzinoth_missile",
+                                                     e.player->find_spell( 417468 ) );
+  missile->impact_action = damage;
+  missile->stats         = damage->stats;
+
+  auto buff_spell = e.player->find_spell( 414976 );
+  auto buff       = create_buff<stat_buff_t>( e.player, "rage_of_azzinoth", buff_spell );
+  buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
+  buff->set_tick_callback(
+      [ missile ]( buff_t* b, int, timespan_t ) { missile->execute_on_target( b->player->target ); } );
+
+  e.custom_buff = buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+// Paracausal Fragment of Frostmoune
+// 415130 Driver
+// 415006 Value container
+// 415033 Lich Form Buff
+// 415052 Damage
+// 419539 Shield Buff
+// TODO:
+// Check MANY more classes/specs to see if this differs much
+// All 3 DK specs do what is programmed below, no difference with dps/tank roles. Unsure about healers or other classes.
+// Potentially implement the soul consuming mechanic somehow? if the mastery buff/mana referenced in 415006 is actually used anywhere 
+// Skipping the soul consuming mechanic for now, since the absorb buff wont matter for DPS 
+// Impelemt Fear mechanic? not sure this actually matters at all for sims
+void paracausal_fragment_of_frostmourne( special_effect_t& e )
+{
+  auto value_spell = e.player->find_spell( 415006 );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "lich_touch", e, "lich_touch", e.player->find_spell( 415052 ) );
+  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 2 ).average( e.item );
+
+  auto lich_shield_spell = e.player->find_spell( 419539 );
+  auto lich_shield_buff  = create_buff<absorb_buff_t>( e.player, "lich_shield", lich_shield_spell );
+  lich_shield_buff->set_default_value( value_spell->effectN( 3 ).average( e.item ) );
+
+  auto lich_buff_spell = e.player->find_spell( 415033 );
+  auto buff            = create_buff<buff_t>( e.player, "lich_form", lich_buff_spell );
+  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) { damage->execute(); } );
+  buff->set_stack_change_callback( [ lich_shield_buff ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      lich_shield_buff->trigger();
+    }
+  } );
+
+  e.custom_buff = buff;
+}
+
 // Paracausal Fragment of Shalamayne/Doomhammer
 // 414928 Passive driver (effect 1 is passive coefficient, effect 2 is active coefficient)
 // 414936 Active driver
@@ -5409,9 +5579,9 @@ void spore_keepers_baton( special_effect_t& effect )
         {
           buff->trigger();
         }
-        else
+        else if ( s->target != s->action->player )  // TODO: determine what happens for self-damage
         {
-          dot->set_target( cb->target( s ) );
+          dot->set_target( s->target );
           auto proc_state    = dot->get_state();
           proc_state->target = dot->target;
           dot->snapshot_state( proc_state, dot->amount_type( proc_state ) );
@@ -7642,6 +7812,9 @@ void register_special_effects()
   register_special_effect( 418527, items::mirror_of_fractured_tomorrows, true );
   register_special_effect( 417449, items::accelerating_sandglass );
   register_special_effect( 414856, items::paracausal_fragment_of_sulfuras );
+  register_special_effect( 415284, items::paracausal_fragment_of_thunderfin );
+  register_special_effect( 414968, items::paracausal_fragment_of_azzinoth );
+  register_special_effect( 415130, items::paracausal_fragment_of_frostmourne );
   register_special_effect( 414936, items::paracausal_fragment_of_doomhammer );
 
   // Weapons
@@ -7724,6 +7897,7 @@ void register_special_effects()
   register_special_effect( 398396, DISABLED_EFFECT );  // emerald coach's whistle on-use
   register_special_effect( 382132, DISABLED_EFFECT );  // Iceblood Deathsnare damage data
   register_special_effect( 410530, DISABLED_EFFECT );  // Infurious Boots of Reprieve - Mettle (NYI)
+  register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -7736,6 +7910,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );
   sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
+  sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
 }
 
 void register_hotfixes()

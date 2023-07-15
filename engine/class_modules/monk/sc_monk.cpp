@@ -4938,7 +4938,6 @@ namespace monk
           aoe = -1;
           school = SCHOOL_NATURE;
 
-          spell_power_mod.tick = 2 * data().effectN( 2 ).base_value() / 100; // Saved as 45, is really 90
           press_the_advantage_whitelist = true;
         }
 
@@ -6835,7 +6834,7 @@ namespace monk
         {
           range::for_each( p.close_to_heart_aura->target_list(), [ this ] ( player_t *target )
         {
-          target->buffs.close_to_heart_leech_aura->trigger( 1, ( leech_increase ), 1, timespan_t::from_seconds( 10 ) );
+          target->buffs.close_to_heart_aura->trigger( 1, ( leech_increase ), 1, timespan_t::from_seconds( 10 ) );
         } );
         } );
         set_trigger_spell( p.talent.general.close_to_heart );
@@ -6860,7 +6859,7 @@ namespace monk
         {
           range::for_each( p.generous_pour_aura->target_list(), [ this ] ( player_t *target )
         {
-          target->buffs.generous_pour_avoidance_aura->trigger( 1, ( avoidance_increase ), 1, timespan_t::from_seconds( 10 ) );
+          target->buffs.generous_pour_aura->trigger( 1, ( avoidance_increase ), 1, timespan_t::from_seconds( 10 ) );
         } );
         } );
         set_trigger_spell( p.talent.general.generous_pour );
@@ -9546,8 +9545,7 @@ namespace monk
       }
       else
       {
-        buffs.close_to_heart_leech_aura->trigger( 1, buffs.close_to_heart_leech_aura->data().effectN( 1 ).percent(), 1,
-          timespan_t::zero() );
+        buffs.close_to_heart_aura->trigger( 1, buffs.close_to_heart_aura->data().effectN( 1 ).percent(), 1, 0_ms );
       }
     }
 
@@ -9559,8 +9557,7 @@ namespace monk
       }
       else
       {
-        buffs.generous_pour_avoidance_aura->trigger( 1, buffs.generous_pour_avoidance_aura->data().effectN( 1 ).percent(), 1,
-          timespan_t::zero() );
+        buffs.generous_pour_aura->trigger( 1, buffs.generous_pour_aura->data().effectN( 1 ).percent(), 1, 0_ms );
       }
     }
 
@@ -10564,10 +10561,10 @@ namespace monk
 
     void init( player_t *p ) const override
     {
-      p->buffs.close_to_heart_leech_aura =
-        make_buff( p, "close_to_heart_leech_aura", p->find_spell( 389684 ) )->add_invalidate( CACHE_LEECH );
-      p->buffs.close_to_heart_leech_aura =
-        make_buff( p, "generous_pour_avoidance_aura", p->find_spell( 389685 ) )->add_invalidate( CACHE_AVOIDANCE );
+      // TODO: healing received bonus NYI
+      p->buffs.close_to_heart_aura = make_buff( p, "close_to_heart_aura", p->find_spell( 389684 ) );
+      // TODO: grants A_MOD_DAMAGE_AVOIDANCE, not avoidance rating. NYI.
+      p->buffs.generous_pour_aura =  make_buff( p, "generous_pour_aura", p->find_spell( 389685 ) );
       p->buffs.windwalking_movement_aura =
         make_buff( p, "windwalking_movement_aura", p->find_spell( 365080 ) )->add_invalidate( CACHE_RUN_SPEED );
     }

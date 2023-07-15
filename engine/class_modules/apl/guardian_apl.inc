@@ -21,7 +21,7 @@ def->add_action( "run_action_list,name=bear" );
 bear->add_action( "bear_form,if=!buff.bear_form.up" );
 bear->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled" );
 bear->add_action( "moonfire,cycle_targets=1,if=(((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)" );
-bear->add_action( "thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.enabled|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)" );
+bear->add_action( "thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)" );
 bear->add_action( "bristling_fur,if=!cooldown.pause_action.remains" );
 bear->add_action( "barkskin,if=buff.bear_form.up" );
 bear->add_action( "convoke_the_spirits" );

@@ -10,9 +10,6 @@
 
 struct spell_base_t : public action_t
 {
-  // special item flags
-  bool procs_courageous_primal_diamond;
-
   spell_base_t( action_e at, util::string_view token, player_t* p);
   spell_base_t( action_e at, util::string_view token, player_t* p, const spell_data_t* s );
 

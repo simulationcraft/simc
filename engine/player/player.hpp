@@ -386,14 +386,8 @@ struct player_t : public actor_t
   std::unique_ptr<set_bonus_t> sets;
   meta_gem_e meta_gem;
   bool matching_gear;
-  bool karazhan_trinkets_paired;
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
-  cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
-
-  // Warlord's Unseeing Eye (6.2 Trinket)
-  double warlords_unseeing_eye;
-  stats_t* warlords_unseeing_eye_stats;
 
   // Misc Multipliers
   // auto attack modifier and multiplier (for Jeweled Signet of Melandrus and similar effects)
@@ -431,58 +425,38 @@ struct player_t : public actor_t
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
-    buff_t* mongoose_mh;
-    buff_t* mongoose_oh;
     buff_t* nitro_boosts;
     buff_t* pain_suppression;
     buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
-    buff_t* close_to_heart_leech_aura;
-    buff_t* generous_pour_avoidance_aura;
+    buff_t* close_to_heart_aura;
+    buff_t* generous_pour_aura;
     buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
-    buff_t* embrace_of_paku;
     buff_t* symbol_of_hope; // Priest spell
 
     buff_t* berserking;
     buff_t* bloodlust;
     buff_t* windfury_totem;
 
-    buff_t* cooldown_reduction;
-    buff_t* amplification;
-    buff_t* amplification_2;
-
     // Legendary meta stuff
     buff_t* courageous_primal_diamond_lucidity;
     buff_t* tempus_repit;
     buff_t* fortitude;
 
-    buff_t* archmages_greater_incandescence_str;
-    buff_t* archmages_greater_incandescence_agi;
-    buff_t* archmages_greater_incandescence_int;
-    buff_t* archmages_incandescence_str;
-    buff_t* archmages_incandescence_agi;
-    buff_t* archmages_incandescence_int;
     buff_t* legendary_aoe_ring; // Legendary ring buff.
-    buff_t* legendary_tank_buff;
 
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
 
     // 7.1
-    buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
     buff_t* nefarious_pact; // Whispers in the dark good buff
     buff_t* devils_due; // Whispers in the dark bad buff
-
-    // 6.2 trinket proxy buffs
-    buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
-    buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
-    buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
 
@@ -502,25 +476,15 @@ struct player_t : public actor_t
     // Azerite power
     buff_t* normalization_increase;
 
-    // Uldir
-    buff_t* reorigination_array;
-
     /// 8.2 Azerite Essences
-    stat_buff_t* memory_of_lucid_dreams;
-    stat_buff_t* lucid_dreams; // Versatility Buff from Rank 3
-    buff_t* reckless_force; // The Unbound Force minor - crit chance
-    buff_t* reckless_force_counter; // The Unbound Force minor - max 20 stack counter
-    stat_buff_t* lifeblood; // Worldvein Resonance - grant primary stat per shard, max 4
+    buff_t* memory_of_lucid_dreams;
+    buff_t* lucid_dreams; // Versatility Buff from Rank 3
     buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
-    stat_buff_t* reality_shift; // Ripple in Space minor - primary stat on moving 25yds
-    buff_t* guardian_of_azeroth; // Condensed Life-Force major - R3 stacking haste on pet cast
 
     // 8.2 misc
     buff_t* damage_to_aberrations; // Benthic belt special effect
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
-    buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
-    buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
 
     // 9.0 class buffs
     buff_t* focus_magic; // Mage talent
@@ -627,16 +591,13 @@ struct player_t : public actor_t
   struct gains_t
   {
     gain_t* arcane_torrent;
-    gain_t* endurance_of_niuzao;
     std::array<gain_t*, RESOURCE_MAX> resource_regen;
     gain_t* health;
     gain_t* mana_potion;
     gain_t* restore_mana;
     gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
-    gain_t* warlords_unseeing_eye;
     gain_t* embrace_of_bwonsamdi;
-    gain_t* urh_restoration;
 
     gain_t* leech;
   } gains;

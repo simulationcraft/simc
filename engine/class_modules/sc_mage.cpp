@@ -3743,6 +3743,7 @@ struct flame_patch_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 205472 ) )
   {
     aoe = -1;
+    reduced_aoe_targets = 8;
     ground_aoe = background = true;
   }
 
@@ -3777,6 +3778,7 @@ struct flamestrike_t final : public hot_streak_spell_t
     parse_options( options_str );
     triggers.ignite = true;
     aoe = -1;
+    reduced_aoe_targets = 8;
 
     if ( p->talents.flame_patch.ok() )
     {

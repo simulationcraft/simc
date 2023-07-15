@@ -3450,7 +3450,7 @@ absorb_buff_t* absorb_buff_t::set_cumulative( bool c )
 
 bool movement_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
-  if ( player->buffs.norgannons_sagacity_stacks )
+  if ( player->buffs.norgannons_sagacity_stacks && player->buffs.norgannons_sagacity )
   {
     auto sagacity = player->buffs.norgannons_sagacity_stacks->check();
 

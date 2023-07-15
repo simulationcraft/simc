@@ -71,6 +71,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* crystalline_web; // Iceblood Deathsnare
     buff_t* ever_decaying_spores; // Ever Decaying Spores Embellishment
     buff_t* timestrike;
+    buff_t* lightning_conduit;
   } debuff;
 
   struct atd_dot_t

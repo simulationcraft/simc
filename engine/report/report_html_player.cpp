@@ -258,8 +258,8 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   }
 
   // If we are printing a stats object that belongs to a pet, for an actual
-  // actor, print out the pet name too
-  if ( actor && !actor->is_pet() && s.player->is_pet() )
+  // actor, print out the pet name too unless the action already has a parent
+  if ( actor && !actor->is_pet() && s.player->is_pet() && !s.parent )
     name += " (" + util::encode_html( s.player->name_str ) + ")";
 
   return "<span" + class_attr + ">" + name + "</span>";

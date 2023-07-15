@@ -5108,9 +5108,21 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case P_RESOURCE_COST:
         base_costs[ resource_current ] += effect.resource( current_resource() );
-        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this, resource_current,
+        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource_current,
                           effect.resource( current_resource() ) );
         break;
+
+      case P_RESOURCE_COST_1:
+      {
+        if ( data().powers().size() < 2 )
+          break;
+        // Resource Cost 1 is actually the second resource as it's Zero Indexed.
+        resource_e resource = data().powers()[ 1 ].resource();
+        base_costs[ resource ] += effect.resource( resource );
+        sim->print_debug( "{} base resource cost for resource {} (2) modified by {}", *this, resource,
+                          effect.resource( resource ) );
+        break;
+      }
 
       case P_RESOURCE_COST_2:
       {
@@ -5119,10 +5131,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         // Resource Cost 2 is actually the third resource as it's Zero Indexed.
         resource_e resource = data().powers()[ 2 ].resource();
         base_costs[ resource ] += effect.resource( resource );
-        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this, resource,
+        sim->print_debug( "{} base resource cost for resource {} (3) modified by {}", *this, resource,
                           effect.resource( resource ) );
         break;
       }
+
       case P_TARGET:
         assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
         if ( aoe > 0 )
@@ -5202,10 +5215,22 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case P_RESOURCE_COST:
         base_costs[ resource_current ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this,
+        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}%", *this,
                           resource_current, effect.base_value() );
         break;
-                
+
+      case P_RESOURCE_COST_1:
+      {
+        if ( data().powers().size() < 2 )
+          break;
+        // Zero Indexed, this is the second cost.
+        resource_e resource = data().powers()[ 1 ].resource();
+        base_costs[ resource ] *= 1.0 + effect.percent();
+        sim->print_debug( "{} base resource cost for resource {} (2) modified by {}%", *this, resource,
+                          effect.base_value() );
+        break;
+      }
+
       case P_RESOURCE_COST_2:
       {
         if ( data().powers().size() < 3 )
@@ -5213,7 +5238,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         // Zero Indexed, this is the third cost.
         resource_e resource = data().powers()[ 2 ].resource();
         base_costs[ resource ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this, resource,
+        sim->print_debug( "{} base resource cost for resource {} (3) modified by {}%", *this, resource,
                           effect.base_value() );
         break;
       }

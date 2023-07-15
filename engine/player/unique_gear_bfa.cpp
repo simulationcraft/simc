@@ -4109,9 +4109,10 @@ void items::shiver_venom_lance( special_effect_t& effect )
 struct razor_coral_constructor_t : public item_targetdata_initializer_t
 {
   target_specific_t<buff_t> tracker_buffs;
+  target_specific_t<buff_t> coral_buffs;
 
   razor_coral_constructor_t( unsigned iid, ::util::span<const slot_e> s )
-    : item_targetdata_initializer_t( iid, s ), tracker_buffs( false )
+    : item_targetdata_initializer_t( iid, s ), tracker_buffs( false ), coral_buffs( false )
   {
     debuff_fn = []( player_t* p, const special_effect_t* ) { return p->find_spell( 303568 ); };
   }
@@ -4129,7 +4130,11 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
       if ( !tracker )
         tracker = buff_t::find( td->source, "razor_coral_stack_tracker" );
 
-      td->debuff.razor_coral->set_stack_change_callback( [ td, tracker ]( buff_t*, int old_, int new_ ) {
+      buff_t*& coral = coral_buffs[ td->source ];
+      if( !coral )
+        coral = buff_t::find( td->source, "razor_coral" );
+
+      td->debuff.razor_coral->set_stack_change_callback( [ tracker, coral ]( buff_t*, int old_, int new_ ) {
         // buff on expiration, including demise
         if ( !new_ )
         {
@@ -4141,8 +4146,8 @@ struct razor_coral_constructor_t : public item_targetdata_initializer_t
             tracker->trigger();
             buff_stacks = tracker->check();
           }
-          td->source->buffs.razor_coral->expire();
-          td->source->buffs.razor_coral->trigger( old_ * buff_stacks );
+          coral->expire();
+          coral->trigger( old_ * buff_stacks );
         }
       } );
     }
@@ -4239,9 +4244,10 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
   proc->initialize();
 
   // crit buff from 2nd on-use activation
-  if ( !effect.player->buffs.razor_coral )
+  auto razor_coral_buff = buff_t::find( effect.player, "razor_coral" );
+  if ( !razor_coral_buff )
   {
-    effect.player->buffs.razor_coral =
+    razor_coral_buff =
         make_buff<stat_buff_t>( effect.player, "razor_coral", effect.player->find_spell( 303570 ) )
             ->add_stat( STAT_CRIT_RATING, effect.player->find_spell( 303573 )->effectN( 1 ).average( effect.item ) )
             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
@@ -4455,17 +4461,20 @@ void items::dreams_end( special_effect_t& effect )
 
 void items::divers_folly( special_effect_t& effect )
 {
+  if ( create_fallback_buffs( effect, { "bioelectric_charge" } ) )
+    return;
+
   // Primary driver callback. Procs buff on AA.
   struct divers_folly_cb_t : public dbc_proc_callback_t
   {
-    divers_folly_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
-    {
-    }
+    buff_t* buff;
+
+    divers_folly_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b ) {}
 
     void trigger( action_t* a, action_state_t* s ) override
     {
       // Doesn't proc when buff is up, and doesn't seem to trigger rppm neither
-      if ( listener->buffs.bioelectric_charge->check() )
+      if ( buff->check() )
         return;
 
       dbc_proc_callback_t::trigger( a, s );
@@ -4473,7 +4482,7 @@ void items::divers_folly( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* ) override
     {
-      listener->buffs.bioelectric_charge->trigger();
+      buff->trigger();
     }
   };
 
@@ -4534,27 +4543,28 @@ void items::divers_folly( special_effect_t& effect )
   proc2->deactivate();
   proc2->initialize();
 
-  if ( !effect.player->buffs.bioelectric_charge )
+  auto charge_buff = buff_t::find( effect.player, "bioelectric_charge" );
+  if ( !charge_buff )
   {
     double pct = effect.driver()->effectN( 1 ).percent();
-    auto buff  = make_buff<bioelectric_charge_buff_t>( effect, proc2 );
+    charge_buff = make_buff<bioelectric_charge_buff_t>( effect, proc2 );
 
-    effect.player->buffs.bioelectric_charge = buff;
     effect.player->assessor_out_damage.add(
-        assessor::TARGET_DAMAGE + 1, [buff, pct]( result_amount_type, action_state_t* s ) {
-          if ( !buff->check() )
+        assessor::TARGET_DAMAGE + 1, [ charge_buff, pct ]( result_amount_type, action_state_t* s ) {
+          if ( !charge_buff->check() )
             return assessor::CONTINUE;
 
-          double old_  = buff->current_value;
+          double old_  = charge_buff->current_value;
           double this_ = s->result_amount * pct;
-          buff->sim->print_debug( "Bioelectric Charge (Diver's Folly) storing {}({}% of {}) damage from {}: {} -> {}",
-                                  this_, pct, s->result_amount, s->action->name(), old_, old_ + this_ );
-          buff->current_value += this_;
+          charge_buff->sim->print_debug(
+              "Bioelectric Charge (Diver's Folly) storing {}({}% of {}) damage from {}: {} -> {}", this_, pct,
+              s->result_amount, s->action->name(), old_, old_ + this_ );
+          charge_buff->current_value += this_;
           return assessor::CONTINUE;
         } );
   }
 
-  new divers_folly_cb_t( effect );
+  new divers_folly_cb_t( effect, charge_buff );
 }
 
 /**Remote Guidance Device
@@ -6060,7 +6070,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 300140, items::anodized_deflectors );
   register_special_effect( 301753, items::reclaimed_shock_coil );
   register_special_effect( 303356, items::dreams_end );
-  register_special_effect( 303353, items::divers_folly );
+  register_special_effect( 303353, items::divers_folly, true );
   register_special_effect( 302307, items::remote_guidance_device );
   register_special_effect( 305252, items::gladiators_maledict );
   register_special_effect( 281712, items::getiikku_cut_of_death );

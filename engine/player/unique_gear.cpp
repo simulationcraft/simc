@@ -82,7 +82,6 @@ namespace item
   void amplification( special_effect_t& );
   void black_blood_of_yshaarj( special_effect_t& );
   void cleave( special_effect_t& );
-  void endurance_of_niuzao( special_effect_t& );
   void essence_of_yulon( special_effect_t& );
   void flurry_of_xuen( special_effect_t& );
   void prismatic_prison_of_pride( special_effect_t& );
@@ -670,7 +669,10 @@ struct nitro_boosts_action_t : public engineering_effect_t
 {
   nitro_boosts_action_t( player_t* p ) :
     engineering_effect_t( p, "nitro_boosts" )
-  { }
+  {
+    if ( !p->buffs.nitro_boosts )
+      p->buffs.nitro_boosts = make_buff( p, "nitro_boosts", p->find_spell( 54861 ) );
+  }
 
   void execute() override
   {
@@ -827,7 +829,16 @@ void gem::sinister_primal( special_effect_t& effect )
   if ( effect.item -> player -> level() >= 100 )
     return;
 
-  effect.custom_buff = effect.item -> player -> buffs.tempus_repit;
+  auto p = effect.player;
+  if ( !p->buffs.tempus_repit )
+  {
+    p->buffs.tempus_repit = make_buff( p, "tempus_repit", p->find_spell( 137590 ) )
+      ->set_default_value_from_effect( 1 )
+      ->add_invalidate( CACHE_SPELL_SPEED )
+      ->set_activated( false );
+  }
+
+  effect.custom_buff = p->buffs.tempus_repit;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -839,7 +850,15 @@ void gem::indomitable_primal( special_effect_t& effect )
   if ( effect.item -> player -> level() >= 100 )
     return;
 
-  effect.custom_buff = effect.item -> player -> buffs.fortitude;
+  auto p = effect.player;
+  if ( !p->buffs.fortitude )
+  {
+    p->buffs.fortitude = make_buff( p, "fortitude", p->find_spell( 137593 ) )
+      ->set_default_value_from_effect( 1 )
+      ->set_activated( false );
+  }
+
+  effect.custom_buff = p->buffs.fortitude;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -914,25 +933,13 @@ void gem::courageous_primal( special_effect_t& effect )
   if ( effect.item -> player -> level() >= 100 )
     return;
 
-  struct courageous_primal_proc_t : public dbc_proc_callback_t
-  {
-    courageous_primal_proc_t( const special_effect_t& data ) :
-      dbc_proc_callback_t( data.player, data )
-    { }
+  auto p = effect.player;
+  if ( !p->buffs.courageous_primal_diamond_lucidity )
+    p->buffs.courageous_primal_diamond_lucidity = make_buff( p, "lucidity", p->find_spell( 137288 ) );
 
-    void trigger( action_t* action, action_state_t* s ) override
-    {
-      spell_base_t* spell = debug_cast<spell_base_t*>( action );
-      if ( ! spell -> procs_courageous_primal_diamond )
-        return;
+  effect.custom_buff = p->buffs.courageous_primal_diamond_lucidity;
 
-      dbc_proc_callback_t::trigger( action, s );
-    }
-  };
-
-  effect.custom_buff = effect.item -> player -> buffs.courageous_primal_diamond_lucidity;
-
-  new courageous_primal_proc_t( effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 struct lfr_harmful_spell_t : public spell_t
@@ -1534,13 +1541,19 @@ void item::spellbound_runic_band( special_effect_t& effect )
   switch( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
   {
     case STAT_STRENGTH:
-      buff = buff_t::find( p, "archmages_greater_incandescence_str" );
+      buff = create_buff<buff_t>( p, p->find_spell( 177175 ) )
+        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
       break;
     case STAT_AGILITY:
-      buff = buff_t::find( p, "archmages_greater_incandescence_agi" );
+      buff = create_buff<buff_t>( p, p->find_spell( 177172 ) )
+        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
       break;
     case STAT_INTELLECT:
-      buff = buff_t::find( p, "archmages_greater_incandescence_int" );
+      buff = create_buff<buff_t>( p, p->find_spell( 177176 ) )
+        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
       break;
     default:
       break;
@@ -1565,13 +1578,19 @@ void item::spellbound_solium_band( special_effect_t& effect )
   switch( p -> convert_hybrid_stat( STAT_STR_AGI_INT ) )
   {
     case STAT_STRENGTH:
-      buff = buff_t::find( p, "archmages_incandescence_str" );
+      buff = create_buff<buff_t>( p, p->find_spell( 177160 ) )
+        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
       break;
     case STAT_AGILITY:
-      buff = buff_t::find( p, "archmages_incandescence_agi" );
+      buff = create_buff<buff_t>( p, p->find_spell( 177161 ) )
+        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
       break;
     case STAT_INTELLECT:
-      buff = buff_t::find( p, "archmages_incandescence_int" );
+      buff = create_buff<buff_t>( p, p->find_spell( 177159 ) )
+        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
       break;
     default:
       break;
@@ -1771,12 +1790,11 @@ void item::legendary_ring( special_effect_t& effect )
     buff = buff_t::find( p, "sanctus" );
     if ( ! buff )
     {
-      const spell_data_t* driver_spell = p -> find_spell( effect.spell_id );
-      const spell_data_t* spell = p -> find_spell( 187617 );
+      const spell_data_t* driver_spell = p->find_spell( effect.spell_id );
+      const spell_data_t* spell = p->find_spell( 187617 );
       buff = make_buff( p, "sanctus", spell )
-        ->add_invalidate( CACHE_VERSATILITY )
-        ->set_default_value( driver_spell -> effectN( 1 ).average( effect.item ) / 10000.0 );
-      p -> buffs.legendary_tank_buff = buff;
+        ->set_default_value( driver_spell->effectN( 1 ).average( effect.item ) / 10000.0 )
+        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
     }
   }
 
@@ -1989,21 +2007,6 @@ void item::essence_of_yulon( special_effect_t& effect )
   new essence_of_yulon_cb_t( p, effect );
 }
 
-void item::endurance_of_niuzao( special_effect_t& effect )
-{
-  maintenance_check( 600 );
-
-  if ( effect.item -> sim -> challenge_mode )
-    return;
-  if ( effect.item -> player -> level() >= 100 )
-    return;
-
-  const spell_data_t* cd = effect.item -> player -> find_spell( 148010 );
-
-  effect.item -> player -> legendary_tank_cloak_cd = effect.item -> player -> get_cooldown( "endurance_of_niuzao" );
-  effect.item -> player -> legendary_tank_cloak_cd -> duration = cd -> duration();
-}
-
 void item::readiness( special_effect_t& effect )
 {
   maintenance_check( 528 );
@@ -2053,15 +2056,6 @@ void item::readiness( special_effect_t& effect )
     cdr = std::min( 0.90, cdr ); // The amount of CDR doesn't go above 90%, even at level 100.
   }
 
-  if ( p -> buffs.cooldown_reduction == nullptr )
-  {
-    p -> buffs.cooldown_reduction = make_buff( p, "readiness", effect.driver(), effect.item );
-  }
-
-  p -> buffs.cooldown_reduction -> s_data = cdr_spell;
-  p -> buffs.cooldown_reduction -> default_value = cdr;
-  p -> buffs.cooldown_reduction -> default_chance = 1;
-
   const cooldowns_t* cd = &( __cd[ 0 ] );
   do
   {
@@ -2092,25 +2086,11 @@ void item::amplification( special_effect_t& effect )
   maintenance_check( 528 );
 
   player_t* p = effect.item -> player;
-  buff_t* first_amp = buff_t::find( p, "amplification" );
-  buff_t* second_amp = buff_t::find( p, "amplification_2" );
-  buff_t* amp_buff = nullptr;
-  double* amp_value = nullptr;
-  if ( first_amp -> default_chance == 0 )
-  {
-    amp_buff = first_amp;
-    amp_value = &( p -> passive_values.amplification_1 );
-  }
+  double amp_value = 0.1;  // Seems to be 0.1 regardless of level/item level now.
+  if ( !p->passive_values.amplification_1 )
+    p->passive_values.amplification_1 = amp_value;
   else
-  {
-    amp_buff = second_amp;
-    amp_value = &( p -> passive_values.amplification_2 );
-  }
-
-  // Seems to be 0.1 regardless of level/item level now.
-  *amp_value = 0.1;
-  amp_buff -> default_value = *amp_value;
-  amp_buff -> default_chance = 1.0;
+    p->passive_values.amplification_2 = amp_value;
 }
 
 void item::prismatic_prison_of_pride( special_effect_t& effect )
@@ -3188,21 +3168,16 @@ void item::mirror_of_the_blademaster( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_USE;
 }
 
-static void tyrants_decree_driver_callback( buff_t* buff, int, timespan_t )
-{
-  if ( buff -> player -> resources.pct( RESOURCE_HEALTH ) >= buff -> data().effectN( 2 ).percent() )
-    buff -> player -> buffs.tyrants_immortality -> trigger();
-}
-
 void item::tyrants_decree( special_effect_t& effect )
 {
   struct tyrants_decree_callback_t : public dbc_proc_callback_t
   {
     double cancel_threshold;
     player_t* p;
+    buff_t* tyrant;
 
-    tyrants_decree_callback_t( player_t* player, const special_effect_t& effect ) :
-      dbc_proc_callback_t( player, effect ), p( player )
+    tyrants_decree_callback_t( player_t* player, const special_effect_t& effect, buff_t* b ) :
+      dbc_proc_callback_t( player, effect ), p( player ), tyrant( b )
     {
       cancel_threshold = effect.driver() -> effectN( 2 ).percent();
     }
@@ -3210,57 +3185,64 @@ void item::tyrants_decree( special_effect_t& effect )
     void trigger( action_t* , action_state_t* ) override
     {
       if ( p -> resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
-        p -> buffs.tyrants_immortality -> expire();
+        tyrant->expire();
     }
   };
 
-  buff_t* driver  = make_buff( effect.player, "tyrants_decree_driver", effect.driver() )
-                    ->set_period( effect.driver() -> effectN( 1 ).period() )
-                    ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                    ->set_tick_callback( tyrants_decree_driver_callback )
-                    ->set_quiet( true );
-  stat_buff_t* trigger = make_buff<stat_buff_t>( effect.player, "tyrants_immortality", effect.player -> find_spell( 184770 ) );
-  trigger->add_stat( STAT_STAMINA, effect.player -> find_spell( 184770 ) -> effectN( 1 ).average( effect.item ) )
-      ->set_duration( timespan_t::zero() ); // indefinite, this will never expire naturally so might as well save some CPU cycles
+  auto trigger =
+      make_buff<stat_buff_t>( effect.player, "tyrants_immortality", effect.player->find_spell( 184770 ) )
+          ->add_stat( STAT_STAMINA, effect.player->find_spell( 184770 )->effectN( 1 ).average( effect.item ) )
+          ->set_duration( timespan_t::zero() );  // indefinite, this will never expire naturally so might as well save
+                                                 // some CPU cycles
 
-  // Driver is triggered in player_t::arise()
-  effect.player -> buffs.tyrants_decree_driver = driver;
-  effect.player -> buffs.tyrants_immortality   = trigger;
+  auto driver = make_buff( effect.player, "tyrants_decree_driver", effect.driver() )
+    ->set_period( effect.driver()->effectN( 1 ).period() )
+    ->set_tick_behavior( buff_tick_behavior::REFRESH )
+    ->set_quiet( true )
+    ->set_tick_callback( [ trigger ]( buff_t* b, int, timespan_t ) {
+      if ( b->player->resources.pct( RESOURCE_HEALTH ) > b->data().effectN( 2 ).percent() )
+        trigger->trigger();
+    } );
+
+  // Assume actor has stacked the buff to max stack precombat.
+  effect.player->register_on_arise_callback( effect.player, [ driver, trigger ]() {
+    driver->trigger();
+    trigger->trigger( trigger->max_stack() );
+  } );
 
   // Create a callback that triggers on damage taken to check if the buff should be expired.
   effect.proc_flags_= PF_DAMAGE_TAKEN;
   effect.proc_chance_ = 1.0;
 
-  new tyrants_decree_callback_t( effect.player, effect );
-}
-
-double warlords_unseeing_eye_handler( const action_state_t* s )
-{
-  /* Absorb is based on what the player's HP would be after taking the damage,
-     accounting for absorbs that occur prior but ignoring the rest.
-
-     Max current health to 0 to keep the trinket's value somewhat sane when the
-     actor goes negative.
-
-     TOCHECK: If the actor would die from the hit, does the size of the absorb
-     scale with the amount of overkill? */
-  player_t* p = s -> target;
-
-  double absorb_amount = s -> result_amount * p -> warlords_unseeing_eye;
-
-  absorb_amount *= 1 - ( std::max( p -> resources.current[ RESOURCE_HEALTH ], 0.0 ) - s -> result_amount )
-                       / p -> resources.max[ RESOURCE_HEALTH ];
-
-  return absorb_amount;
+  new tyrants_decree_callback_t( effect.player, effect, trigger );
 }
 
 void item::warlords_unseeing_eye( special_effect_t& effect )
 {
   // Store the magic mitigation number in a player-scope variable.
-  effect.player -> warlords_unseeing_eye = effect.driver() -> effectN( 2 ).average( effect.item ) / 10000.0;
+  auto magic = effect.driver()->effectN( 2 ).average( effect.item ) / 10000.0;
   // Register our handler function so it can be managed by player_t::account_absorb_buffs()
-  effect.player -> instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( effect.driver() -> id(),
-      instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", &warlords_unseeing_eye_handler ) ));
+  effect.player->instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+      effect.driver()->id(),
+      instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", [ magic ]( const action_state_t* s ) {
+        /* Absorb is based on what the player's HP would be after taking the damage,
+          accounting for absorbs that occur prior but ignoring the rest.
+
+          Max current health to 0 to keep the trinket's value somewhat sane when the
+          actor goes negative.
+
+          TOCHECK: If the actor would die from the hit, does the size of the absorb
+          scale with the amount of overkill? */
+        player_t* p = s->target;
+
+        double absorb_amount = s->result_amount * magic;
+
+        absorb_amount *= 1 - ( std::max( p->resources.current[ RESOURCE_HEALTH ], 0.0 ) - s->result_amount ) /
+                                 p->resources.max[ RESOURCE_HEALTH ];
+
+        return absorb_amount;
+      } ) ) );
+
   // Push the effect into the priority list.
   effect.player -> absorb_priority.push_back( 184762 );
 }
@@ -3505,6 +3487,9 @@ struct embrace_of_kimbul_t : public spell_t
 
 void racial::zandalari_loa( special_effect_t& effect )
 {
+  if ( create_fallback_buffs( effect, { "embrace_of_paku" } ) )
+    return;
+
   //only handle the proc loas here.
   //Gonk is handled in player_t::passive_movement_modifier() when chosen (TODO: Should we add a constant buff for report feedback when Gonk is chosen?)
   if ( effect.player->zandalari_loa == player_t::AKUNDA )
@@ -3550,13 +3535,12 @@ void racial::zandalari_loa( special_effect_t& effect )
     if (paku == nullptr)
     {
       //Buff spell data contains duration and amount
-      paku = make_buff( effect.player, "embrace_of_paku", effect.player->find_spell(292463) );
-      paku->add_invalidate(CACHE_CRIT_CHANCE);
-      paku->set_default_value(effect.player->find_spell(292463)->effectN(1).percent());
+      paku = make_buff( effect.player, "embrace_of_paku", effect.player->find_spell(292463) )
+        ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     }
 
     driver->custom_buff = paku;
-    effect.player->buffs.embrace_of_paku = paku;
 
     effect.player->special_effects.push_back(driver);
 
@@ -4850,7 +4834,6 @@ void unique_gear::register_special_effects()
   /* Mists of Pandaria: 5.4 */
   register_special_effect( 146195, item::flurry_of_xuen                 );
   register_special_effect( 146197, item::essence_of_yulon               );
-  register_special_effect( 146193, item::endurance_of_niuzao            );
 
   register_special_effect( 146219, "ProcOn/Hit"                         ); /* Yu'lon's Bite */
   register_special_effect( 146251, "ProcOn/Hit"                         ); /* Thok's Tail Tip (Str proc) */
@@ -4971,7 +4954,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 5227,   racial::touch_of_the_grave );
   register_special_effect( 255669, racial::entropic_embrace );
   register_special_effect( 291628, racial::brush_it_off );
-  register_special_effect( 292751, racial::zandalari_loa );
+  register_special_effect( 292751, racial::zandalari_loa, true );
   register_special_effect( 312923, racial::combat_analysis );
 
   /* Generic "global scope" special effects */

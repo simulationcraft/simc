@@ -1173,12 +1173,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     sets( ( !is_pet() && !is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
     meta_gem( META_GEM_NONE ),
     matching_gear( false ),
-    karazhan_trinkets_paired( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
-    legendary_tank_cloak_cd( nullptr ),
-    warlords_unseeing_eye( 0.0 ),
-    warlords_unseeing_eye_stats(),
     auto_attack_modifier( 0.0 ),
     auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
@@ -2955,7 +2951,6 @@ void player_t::init_gains()
   sim->print_debug( "Initializing gains for {}.", *this );
 
   gains.arcane_torrent      = get_gain( "arcane_torrent" );
-  gains.endurance_of_niuzao = get_gain( "endurance_of_niuzao" );
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     std::string name = util::resource_type_string( r );
@@ -2969,7 +2964,6 @@ void player_t::init_gains()
   gains.vampiric_embrace   = get_gain( "vampiric_embrace" );
   gains.leech              = get_gain( "leech" );
   gains.embrace_of_bwonsamdi = get_gain( "embrace_of_bwonsamdi" );
-  gains.urh_restoration    = get_gain( "urh_restoration" );
 }
 
 void player_t::init_procs()
@@ -3810,122 +3804,43 @@ void player_t::create_buffs()
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
     // Racials
-    buffs.berserking = make_buff( this, "berserking", find_spell( 26297 ) )->add_invalidate( CACHE_HASTE );
-    buffs.stoneform  = make_buff( this, "stoneform", find_spell( 65116 ) );
-    buffs.blood_fury = make_buff<stat_buff_t>( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
+    buffs.berserking = make_buff_fallback( race == RACE_TROLL, this, "berserking", find_spell( 26297 ) )
+                           ->add_invalidate( CACHE_HASTE );
+
+    buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) );
+
+    buffs.blood_fury = make_buff_fallback<stat_buff_t>( race == RACE_ORC, this, "blood_fury", find_racial_spell( "Blood Fury" ) )
                            ->add_invalidate( CACHE_SPELL_POWER )
                            ->add_invalidate( CACHE_ATTACK_POWER );
-    buffs.fortitude  = make_buff( this, "fortitude", find_spell( 137593 ) )->set_activated( false );
-    buffs.shadowmeld = make_buff( this, "shadowmeld", find_spell( 58984 ) )->set_cooldown( timespan_t::zero() );
 
-    buffs.ancestral_call[ 0 ] = make_buff<stat_buff_t>( this, "rictus_of_the_laughing_skull", find_spell( 274739 ) );
-    buffs.ancestral_call[ 1 ] = make_buff<stat_buff_t>( this, "zeal_of_the_burning_blade", find_spell( 274740 ) );
-    buffs.ancestral_call[ 2 ] = make_buff<stat_buff_t>( this, "ferocity_of_the_frostwolf", find_spell( 274741 ) );
-    buffs.ancestral_call[ 3 ] = make_buff<stat_buff_t>( this, "might_of_the_blackrock", find_spell( 274742 ) );
+    buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
+                           ->set_cooldown( 0_ms );
 
-    buffs.fireblood = make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
-                        ->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-                          util::round( find_spell( 265226 ) -> effectN( 1 ).average( this, level() ) ) * 3 );
+    buffs.ancestral_call[ 0 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
+                                                                 "rictus_of_the_laughing_skull", find_spell( 274739 ) );
+    buffs.ancestral_call[ 1 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
+                                                                 "zeal_of_the_burning_blade", find_spell( 274740 ) );
+    buffs.ancestral_call[ 2 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
+                                                                 "ferocity_of_the_frostwolf", find_spell( 274741 ) );
+    buffs.ancestral_call[ 3 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
+                                                                 "might_of_the_blackrock", find_spell( 274742 ) );
 
-    buffs.archmages_greater_incandescence_agi =
-        make_buff( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
-            ->add_invalidate( CACHE_AGILITY );
-    buffs.archmages_greater_incandescence_str =
-        make_buff( this, "archmages_greater_incandescence_str", find_spell( 177175 ) )
-            ->add_invalidate( CACHE_STRENGTH );
-    buffs.archmages_greater_incandescence_int =
-        make_buff( this, "archmages_greater_incandescence_int", find_spell( 177176 ) )
-            ->add_invalidate( CACHE_INTELLECT );
+    if ( race == RACE_DARK_IRON_DWARF )
+    {
+      buffs.fireblood =
+          make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
+              ->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
+                          util::round( find_spell( 265226 )->effectN( 1 ).average( this, level() ) ) * 3 );
+    }
+    else
+      buffs.fireblood = buff_t::make_fallback( this, "fireblood", this );
 
-    buffs.archmages_incandescence_agi =
-        make_buff( this, "archmages_incandescence_agi", find_spell( 177161 ) )->add_invalidate( CACHE_AGILITY );
-    buffs.archmages_incandescence_str =
-        make_buff( this, "archmages_incandescence_str", find_spell( 177160 ) )->add_invalidate( CACHE_STRENGTH );
-    buffs.archmages_incandescence_int =
-        make_buff( this, "archmages_incandescence_int", find_spell( 177159 ) )->add_invalidate( CACHE_INTELLECT );
-
-    // Legendary meta haste buff
-    buffs.tempus_repit = make_buff( this, "tempus_repit", find_spell( 137590 ) )
-        ->add_invalidate( CACHE_SPELL_SPEED )->set_activated( false );
-
-    buffs.darkflight = make_buff( this, "darkflight", find_racial_spell( "darkflight" ) );
-
-    buffs.nitro_boosts = make_buff( this, "nitro_boosts", find_spell( 54861 ) );
-
-    buffs.amplification = make_buff( this, "amplification", find_spell( 146051 ) )
-                              ->add_invalidate( CACHE_MASTERY )
-                              ->add_invalidate( CACHE_HASTE )
-                              ->add_invalidate( CACHE_VERSATILITY )
-                              ->set_chance( 0 );
-    buffs.amplification_2 = make_buff( this, "amplification_2", find_spell( 146051 ) )
-                                ->add_invalidate( CACHE_MASTERY )
-                                ->add_invalidate( CACHE_HASTE )
-                                ->add_invalidate( CACHE_VERSATILITY )
-                                ->set_chance( 0 );
-
-    buffs.temptation = make_buff( this, "temptation", find_spell( 234143 ) )
-                           ->set_cooldown( timespan_t::zero() )
-                           ->set_chance( 1 )
-                           ->set_default_value( 0.1 );  // Not in spelldata
-
-    buffs.courageous_primal_diamond_lucidity = make_buff( this, "lucidity", find_spell( 137288 ) );
-
-    buffs.body_and_soul = make_buff( this, "body_and_soul", find_spell( 64129 ) )
-                              ->set_max_stack( 1 )
-                              ->set_duration( timespan_t::from_seconds( 4.0 ) );
-
-    buffs.angelic_feather = make_buff( this, "angelic_feather", find_spell( 121557 ) )
-                                ->set_max_stack( 1 )
-                                ->set_duration( timespan_t::from_seconds( 6.0 ) );
-
-    buffs.close_to_heart_leech_aura = make_buff( this, "close_to_heart", find_spell( 389684 ) )
-                                        ->add_invalidate( CACHE_LEECH );
-    buffs.generous_pour_avoidance_aura = make_buff( this, "generous pour", find_spell( 389685 ) )
-                                            ->add_invalidate( CACHE_AVOIDANCE );
-    buffs.windwalking_movement_aura = make_buff( this, "windwalking", find_spell( 365080 ) )
-                                        ->add_invalidate( CACHE_RUN_SPEED );
+    buffs.darkflight = make_buff_fallback( race == RACE_WORGEN, this, "darkflight", find_racial_spell( "darkflight" ) );
 
     buffs.movement = new movement_buff_t( this );
 
     if ( !is_pet() )
     {
-      buffs.memory_of_lucid_dreams = make_buff<stat_buff_t>( this, "memory_of_lucid_dreams",
-        find_spell( 298357 ) );
-
-      auto memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-      buffs.lucid_dreams = make_buff<stat_buff_t>( this, "lucid_dreams", find_spell( 298343 ) );
-      buffs.lucid_dreams->add_stat( STAT_VERSATILITY_RATING,
-        memory_of_lucid_dreams.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
-          memory_of_lucid_dreams.item() ) );
-      buffs.lucid_dreams->set_quiet( memory_of_lucid_dreams.rank() < 3 );
-
-      buffs.reckless_force = make_buff( this, "reckless_force", find_spell( 302932 ) )
-        ->add_invalidate(CACHE_CRIT_CHANCE)
-        ->set_default_value( find_spell( 302932 )->effectN( 1 ).percent() );
-
-      buffs.reckless_force_counter = make_buff( this, "reckless_force_counter", find_spell( 302917 ) );
-
-      auto worldvein_resonance = find_azerite_essence( "Worldvein Resonance" );
-      buffs.lifeblood = make_buff<stat_buff_t>( this, "lifeblood", find_spell( 295137 ) );
-      buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-        worldvein_resonance.spell( 1, essence_type::MINOR )->effectN( 5 ).average( worldvein_resonance.item() ) );
-
-      buffs.seething_rage_essence = make_buff( this, "seething_rage_essence", find_spell( 297126 ) )
-        ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
-
-      buffs.guardian_of_azeroth = make_buff( this, "guardian_of_azeroth", find_spell( 295855 ) )
-        ->set_default_value( find_spell( 295855 )->effectN( 1 ).percent() )
-        ->add_invalidate( CACHE_HASTE );
-
-      auto ripple_in_space = find_azerite_essence( "Ripple in Space" );
-      buffs.reality_shift = make_buff<stat_buff_t>( this, "reality_shift", find_spell( 302916 ) );
-      buffs.reality_shift->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-        ripple_in_space.spell_ref(1U, essence_type::MINOR).effectN( 2 ).average(
-          ripple_in_space.item() ) );
-      buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
-        + timespan_t::from_seconds( ripple_in_space.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
-      buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
-
       buffs.windfury_totem = make_buff<buff_t>( this, "windfury_totem", find_spell( 327942 ) )
         ->set_duration( sim->max_time * 3 )
         ->set_chance( as<double>( sim->overrides.windfury_totem ) );
@@ -3939,10 +3854,6 @@ void player_t::create_buffs()
         ->set_default_value_from_effect( 1 )
         ->set_cooldown( 0_ms )
         ->add_invalidate( CACHE_HASTE );
-
-      // Runecarves
-      buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
-      buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
 
       // External trinkets
       if ( external_buffs.soleahs_secret_technique )
@@ -4176,17 +4087,8 @@ double player_t::composite_melee_haste() const
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
 
-    if ( buffs.mongoose_mh && buffs.mongoose_mh->check() )
-      h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
-
-    if ( buffs.mongoose_oh && buffs.mongoose_oh->check() )
-      h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
-
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    if ( buffs.guardian_of_azeroth->check() )
-      h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
@@ -4330,14 +4232,8 @@ double player_t::composite_melee_crit_chance() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
 
-  // The Unbound Force crit bonus from 20 stack proc
-  if (buffs.reckless_force)
-    ac += buffs.reckless_force->check_value();
-
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
-  if ( buffs.embrace_of_paku )
-    ac += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
     ac += racials.touch_of_elune->effectN( 1 ).percent();
@@ -4553,9 +4449,6 @@ double player_t::composite_spell_haste() const
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
 
-    if ( buffs.guardian_of_azeroth->check() )
-      h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
-
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
@@ -4578,9 +4471,9 @@ double player_t::composite_spell_speed() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( buffs.tempus_repit->check() )
+    if ( buffs.tempus_repit &&  buffs.tempus_repit->check() )
     {
-      speed *= 1.0 / ( 1.0 + buffs.tempus_repit->data().effectN( 1 ).percent() );
+      speed *= 1.0 / ( 1.0 + buffs.tempus_repit->check_stack_value() );
     }
 
     if ( buffs.nefarious_pact )
@@ -4629,14 +4522,8 @@ double player_t::composite_spell_crit_chance() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
 
-  // reckless force (The Unbound Force) crit bonus from 20 stack proc
-  if (buffs.reckless_force)
-    sc += buffs.reckless_force->check_value();
-
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
-  if ( buffs.embrace_of_paku )
-    sc += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
   {
@@ -4689,9 +4576,6 @@ double player_t::composite_damage_versatility() const
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     cdv += sim->auras.mark_of_the_wild->check_value();
-
-    if ( buffs.legendary_tank_buff )
-      cdv += buffs.legendary_tank_buff->check_value();
   }
 
   if ( buffs.dmf_well_fed )
@@ -4714,9 +4598,6 @@ double player_t::composite_heal_versatility() const
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     chv += sim->auras.mark_of_the_wild->check_value();
-
-    if ( buffs.legendary_tank_buff )
-      chv += buffs.legendary_tank_buff->check_value();
   }
 
   if ( buffs.dmf_well_fed )
@@ -4739,9 +4620,6 @@ double player_t::composite_mitigation_versatility() const
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     cmv += sim->auras.mark_of_the_wild->check_value() / 2;
-
-    if ( buffs.legendary_tank_buff )
-      cmv += buffs.legendary_tank_buff->check_value() / 2;
   }
 
   if ( buffs.dmf_well_fed )
@@ -4994,7 +4872,7 @@ double player_t::temporary_movement_modifier() const
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( buffs.stampeding_roar )
+    if ( buffs.stampeding_roar && buffs.stampeding_roar->check() )
       temporary = std::max( buffs.stampeding_roar->check_value(), temporary );
   }
 
@@ -5003,16 +4881,16 @@ double player_t::temporary_movement_modifier() const
     if ( buffs.darkflight->check() )
       temporary = std::max( buffs.darkflight->data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.nitro_boosts->check() )
+    if ( buffs.nitro_boosts && buffs.nitro_boosts->check() )
       temporary = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.body_and_soul->check() )
+    if ( buffs.body_and_soul && buffs.body_and_soul->check() )
       temporary = std::max( buffs.body_and_soul->data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.angelic_feather->check() )
+    if ( buffs.angelic_feather && buffs.angelic_feather->check() )
       temporary = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.windwalking_movement_aura->check() )
+    if ( buffs.windwalking_movement_aura && buffs.windwalking_movement_aura->check() )
       temporary = std::max( buffs.windwalking_movement_aura->data().effectN( 1 ).percent(), temporary );
 
     if ( buffs.normalization_increase && buffs.normalization_increase->check() )
@@ -5087,24 +4965,12 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   {
     case ATTR_STRENGTH:
       pct_type = STAT_PCT_BUFF_STRENGTH;
-      if ( buffs.archmages_greater_incandescence_str->check() )
-        m *= 1.0 + buffs.archmages_greater_incandescence_str->data().effectN( 1 ).percent();
-      if ( buffs.archmages_incandescence_str->check() )
-        m *= 1.0 + buffs.archmages_incandescence_str->data().effectN( 1 ).percent();
       break;
     case ATTR_AGILITY:
       pct_type = STAT_PCT_BUFF_AGILITY;
-      if ( buffs.archmages_greater_incandescence_agi->check() )
-        m *= 1.0 + buffs.archmages_greater_incandescence_agi->data().effectN( 1 ).percent();
-      if ( buffs.archmages_incandescence_agi->check() )
-        m *= 1.0 + buffs.archmages_incandescence_agi->data().effectN( 1 ).percent();
       break;
     case ATTR_INTELLECT:
       pct_type = STAT_PCT_BUFF_INTELLECT;
-      if ( buffs.archmages_greater_incandescence_int->check() )
-        m *= 1.0 + buffs.archmages_greater_incandescence_int->data().effectN( 1 ).percent();
-      if ( buffs.archmages_incandescence_int->check() )
-        m *= 1.0 + buffs.archmages_incandescence_int->data().effectN( 1 ).percent();
       if ( sim->auras.arcane_intellect->check() )
         m *= 1.0 + sim->auras.arcane_intellect->current_value;
       break;
@@ -5498,21 +5364,6 @@ void player_t::combat_begin()
   for ( size_t i = 0, end = collected_data.combat_start_resource.size(); i < end; ++i )
   {
     collected_data.combat_start_resource[ i ].add( resources.current[ i ] );
-  }
-
-  if ( buffs.cooldown_reduction )
-    buffs.cooldown_reduction->trigger();
-
-  if ( buffs.amplification )
-    buffs.amplification->trigger();
-
-  if ( buffs.amplification_2 )
-    buffs.amplification_2->trigger();
-
-  if ( buffs.tyrants_decree_driver )
-  {  // Assume actor has stacked the buff to max stack precombat.
-    buffs.tyrants_decree_driver->trigger();
-    buffs.tyrants_immortality->trigger( buffs.tyrants_immortality->max_stack() );
   }
 
   auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
@@ -7626,28 +7477,6 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
   s->result_absorbed = s->result_amount;
 }
 
-void account_legendary_tank_cloak( player_t& p, action_state_t* s )
-{
-  // Legendary Tank Cloak Proc - max absorb of 1e7 hardcoded (in spellid 146193, effect 1)
-  if ( p.legendary_tank_cloak_cd && p.legendary_tank_cloak_cd->up()    // and the cloak's cooldown is up
-       && s->result_amount > p.resources.current[ RESOURCE_HEALTH ] )  // attack exceeds player health
-  {
-    if ( s->result_amount > 1e7 )
-    {
-      p.gains.endurance_of_niuzao->add( RESOURCE_HEALTH, 1e7, 0 );
-      s->result_amount -= 1e7;
-      s->result_absorbed += 1e7;
-    }
-    else
-    {
-      p.gains.endurance_of_niuzao->add( RESOURCE_HEALTH, s->result_amount, 0 );
-      s->result_absorbed += s->result_amount;
-      s->result_amount = 0;
-    }
-    p.legendary_tank_cloak_cd->start();
-  }
-}
-
 /**
  * Statistical data collection for damage taken.
  */
@@ -7728,8 +7557,6 @@ void player_t::assess_damage( school_e school, result_amount_type type, action_s
   account_absorb_buffs( *this, s, school );
 
   assess_damage_imminent( school, type, s );
-
-  account_legendary_tank_cloak( *this, s );
 }
 
 void player_t::do_damage( action_state_t* incoming_state )
@@ -7805,14 +7632,11 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
   if ( buffs.pain_suppression && buffs.pain_suppression->up() )
     s->result_amount *= 1.0 + buffs.pain_suppression->data().effectN( 1 ).percent();
 
-  if ( buffs.naarus_discipline && buffs.naarus_discipline->check() )
-    s->result_amount *= 1.0 + buffs.naarus_discipline->stack_value();
-
   if ( buffs.stoneform && buffs.stoneform->up() )
     s->result_amount *= 1.0 + buffs.stoneform->data().effectN( 1 ).percent();
 
   if ( buffs.fortitude && buffs.fortitude->up() )
-    s->result_amount *= 1.0 + buffs.fortitude->data().effectN( 1 ).percent();
+    s->result_amount *= 1.0 + buffs.fortitude->check_value();
 
   if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->check() )
     s->result_amount *= 1.0 + buffs.elemental_chaos_earth->check_value();
@@ -12660,7 +12484,6 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
-  add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
   add_option( opt_timespan( "default_item_group_cooldown", default_item_group_cooldown, 0_ms, timespan_t::max() ) );
   add_option( opt_func( "override.precombat_state",
     [ this ] ( sim_t*, util::string_view, util::string_view value ) {
