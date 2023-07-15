@@ -2532,10 +2532,11 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Regrowth (8936)
                    Family Flags: 6, 9
-#2 (id=100285)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+#2 (id=100285)   : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Regrowth (8936)
                    Family Flags: 6, 9
+Hotfixed         : Misc Value (14 -> 39)
 #3 (id=167620)   : Apply Aura (6) | Modify Stance Mask (275)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Regrowth (8936)
@@ -2664,6 +2665,7 @@ GCD              : 1 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Category         : 1257
+Labels           : 2706: Spatial Paradox (406732 effect#10)
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
 Affecting spells : Incarnation: Avatar of Ashamane (102543 effect#3), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2)

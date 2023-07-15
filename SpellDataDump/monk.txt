@@ -14386,6 +14386,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 2706: Spatial Paradox (406732 effect#10)
 Affecting spells : Enveloping Mist (124682 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 102
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 

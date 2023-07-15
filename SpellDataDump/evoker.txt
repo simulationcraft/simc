@@ -8044,7 +8044,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #10 (id=1091013)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 2706 (Label) | Target: Self (1)
-                   Affected Spells (Label): Divine Hymn (64844), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Refreshing Jade Wind (162530), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Symbol of Hope (265144), Holy Word: Salvation (265202), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Restoral (388615)
+                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Refreshing Jade Wind (162530), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Symbol of Hope (265144), Holy Word: Salvation (265202), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Restoral (388615)
 Description      : Evoke a paradox for you and a friendly healer, allowing casting while moving and increasing the range of most spells by $s4% for $d.
 
 Affects the nearest healer within $407497A1 yds, if you do not have a healer targeted.
