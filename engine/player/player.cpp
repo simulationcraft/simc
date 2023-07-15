@@ -9263,7 +9263,7 @@ struct use_items_t : public action_t
     // sub-action
     for ( auto action : use_actions )
     {
-      if ( action->ready() )
+      if ( action->ready() && action->target_ready( target ) )
       {
         action->set_target( target );
         action->execute();
@@ -9318,7 +9318,7 @@ struct use_items_t : public action_t
 
     for ( const auto action : use_actions )
     {
-      if ( action->target_ready( t ) )
+      if ( action->ready() && action->target_ready( t ) )
         return true;
     }
 
