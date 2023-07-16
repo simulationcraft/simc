@@ -2709,6 +2709,11 @@ struct fiery_brand_t : public demon_hunter_spell_t
     fb_state->primary = true;
     dot_action->schedule_execute( fb_state );
   }
+
+  dot_t* get_dot( player_t* t ) override
+  {
+    return dot_action->get_dot( t );
+  }
 };
 
 // Glaive Tempest ===========================================================
@@ -6859,7 +6864,7 @@ void demon_hunter_t::init_spells()
     fiery_brand_t30->internal_cooldown->base_duration = 0_s;
     fiery_brand_t30->cooldown->base_duration = 0_s;
     fiery_brand_t30->cooldown->charges = 0;
-    fiery_brand_t30->dot_action->dot_duration = timespan_t::from_seconds(set_bonuses.t30_vengeance_4pc->effectN(2).base_value());
+    fiery_brand_t30->dot_action->dot_duration = timespan_t::from_seconds( set_bonuses.t30_vengeance_4pc->effectN( 2 ).base_value() );
     active.fiery_brand_t30 = fiery_brand_t30;
   }
 }
