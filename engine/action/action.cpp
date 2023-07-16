@@ -5114,10 +5114,16 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_RESOURCE_COST:
-        base_costs[ resource_primary ] += effect.resource( current_resource() );
-        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource_primary,
-                          effect.resource( current_resource() ) );
+      {
+        if ( data().powers().size() < 1 )
+          break;
+        // Resource Cost is actually the first resource as it's Zero Indexed.
+        resource_e resource = data().powers()[ 0 ].resource();
+        base_costs[ resource ] += effect.resource( resource );
+        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource,
+                          effect.resource( resource ) );
         break;
+      }
 
       case P_RESOURCE_COST_1:
       {
@@ -5221,10 +5227,16 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_RESOURCE_COST:
-        base_costs[ resource_primary ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}%", *this,
-                          resource_primary, effect.base_value() );
+      {
+        if ( data().powers().size() < 1 )
+          break;
+        // Zero Indexed, this is the first cost.
+        resource_e resource = data().powers()[ 0 ].resource();
+        base_costs[ resource ] *= 1.0 + effect.percent();
+        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}%", *this, resource,
+                          effect.base_value() );
         break;
+      }
 
       case P_RESOURCE_COST_1:
       {
