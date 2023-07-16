@@ -725,8 +725,11 @@ public:
   /** Cooldown base duration for action based cooldowns. */
   virtual timespan_t cooldown_base_duration( const cooldown_t& cd ) const;
 
-  virtual resource_e current_resource() const
+  virtual resource_e primary_resource() const
   { return resource_primary; }
+
+  virtual resource_e secondary_resource() const
+  { return resource_secondary; }
 
   virtual int n_targets() const
   { return aoe; }

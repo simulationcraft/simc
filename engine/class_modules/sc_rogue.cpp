@@ -2255,7 +2255,7 @@ public:
 
     spend_combo_points( ab::execute_state );
 
-    if ( ab::current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
+    if ( ab::primary_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
     {
       if ( !ab::hit_any_target )
       {

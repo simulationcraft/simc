@@ -43,7 +43,7 @@ spell_base_t::spell_base_t( action_e at,
 
 double spell_base_t::cost() const
 {
-  if ( current_resource() == RESOURCE_MANA && player->buffs.chilled_clarity && player->buffs.chilled_clarity->check() )
+  if ( primary_resource() == RESOURCE_MANA && player->buffs.chilled_clarity && player->buffs.chilled_clarity->check() )
     return 0;
 
   return action_t::cost();

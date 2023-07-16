@@ -252,7 +252,7 @@ public:
           debug_message( "crit chance" );
           break;
         case P_RESOURCE_COST:
-          val_mul = eff.resource_multiplier( action_->current_resource() );
+          val_mul = eff.resource_multiplier( action_->primary_resource() );
           flat_cost_buffeffects.emplace_back( buff, val * val_mul, use_stacks, false, f );
           debug_message( "flat cost" );
           break;

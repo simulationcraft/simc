@@ -870,7 +870,7 @@ struct bba_cb_t : public dbc_proc_callback_t
   template <resource_category c>
   timespan_t value( action_state_t* state ) const
   {
-    int resource = static_cast<int>( state->action->current_resource() );
+    int resource = static_cast<int>( state->action->primary_resource() );
     double cost  = state->action->last_resource_cost;
 
     // Breath of Sindragosa needs to be special cased, as the tick action doesn't cost any resource

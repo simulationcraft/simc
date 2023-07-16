@@ -1585,7 +1585,7 @@ public:
   {
     spell_t::consume_resource();
 
-    if ( current_resource() == RESOURCE_MANA )
+    if ( primary_resource() == RESOURCE_MANA )
       p()->state.spent_mana += last_resource_cost;
   }
 
@@ -1597,7 +1597,7 @@ public:
     // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
     consume_cost_reductions();
 
-    if ( p()->spec.clearcasting->ok() && harmful && current_resource() == RESOURCE_MANA )
+    if ( p()->spec.clearcasting->ok() && harmful && primary_resource() == RESOURCE_MANA )
     {
       // Mana spending required for 1% chance.
       double mana_step = p()->spec.clearcasting->cost( POWER_MANA ) * p()->resources.base[ RESOURCE_MANA ];

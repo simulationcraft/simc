@@ -3043,7 +3043,7 @@ public:
     base_t::consume_resource();
 
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( !is_free() && snapshots.clearcasting && current_resource() == RESOURCE_ENERGY &&
+    if ( !is_free() && snapshots.clearcasting && primary_resource() == RESOURCE_ENERGY &&
          p()->buff.clearcasting_cat->up() )
     {
       p()->buff.clearcasting_cat->decrement();
@@ -3477,7 +3477,7 @@ struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
       bleed_mul = p->talent.merciless_claws->effectN( 1 ).percent();
   }
 
-  resource_e current_resource() const override
+  resource_e primary_resource() const override
   {
     return p()->buff.cat_form->check() ? RESOURCE_ENERGY : RESOURCE_NONE;
   }
@@ -3698,8 +3698,8 @@ struct ferocious_bite_t : public cat_finisher_t
     // because its dumb.
     if ( hit_any_target && !is_free() )
     {
-      player->resource_loss( current_resource(), excess_energy );
-      stats->consume_resource( current_resource(), excess_energy );
+      player->resource_loss( primary_resource(), excess_energy );
+      stats->consume_resource( primary_resource(), excess_energy );
     }
 
     cat_finisher_t::consume_resource();
@@ -7755,7 +7755,7 @@ struct starsurge_t : public astral_power_spender_t
     if ( !moonkin_form_in_precombat )
       return false;
 
-    // emulate performing resource_available( current_resource(), cost() )
+    // emulate performing resource_available( primary_resource(), cost() )
     if ( !p()->talent.natures_balance.ok() && p()->options.initial_astral_power < cost() )
       return false;
 

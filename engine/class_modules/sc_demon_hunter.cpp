@@ -1746,7 +1746,7 @@ public:
   {
     ab::consume_resource();
 
-    if ( ab::current_resource() == RESOURCE_FURY && ab::last_resource_cost > 0 )
+    if ( ab::primary_resource() == RESOURCE_FURY && ab::last_resource_cost > 0 )
     {
       if ( !ab::hit_any_target )
       {

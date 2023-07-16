@@ -337,17 +337,17 @@ namespace monk
         }
       }
 
-      resource_e current_resource() const override
+      resource_e primary_resource() const override
       {
         if ( p()->specialization() == SPEC_NONE )
         {
-          return ab::current_resource();
+          return ab::primary_resource();
         }
 
         resource_e resource_by_stance = _resource_by_stance[dbc::spec_idx( p()->specialization() )];
 
         if ( resource_by_stance == RESOURCE_MAX )
-          return ab::current_resource();
+          return ab::primary_resource();
 
         return resource_by_stance;
       }
@@ -515,7 +515,7 @@ namespace monk
         if ( !ab::execute_state )  // Fixes rare crashes at combat_end.
           return;
 
-        if ( current_resource() == RESOURCE_CHI )
+        if ( primary_resource() == RESOURCE_CHI )
         {
           // Dance of Chi-Ji talent triggers from spending chi
           p()->buff.dance_of_chiji->trigger();
@@ -573,7 +573,7 @@ namespace monk
         }
 
         // Energy refund, estimated at 80%
-        if ( current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 && !ab::hit_any_target )
+        if ( primary_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 && !ab::hit_any_target )
         {
           double energy_restored = ab::last_resource_cost * 0.8;
 

@@ -1006,7 +1006,7 @@ public:
 
   double cost() const override
   {
-    if ( ab::data().powers().size() > 1 && ab::current_resource() != ab::data().powers()[ 0 ].resource() )
+    if ( ab::data().powers().size() > 1 && ab::primary_resource() != ab::data().powers()[ 0 ].resource() )
       return ab::cost();
 
     return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
@@ -1096,7 +1096,7 @@ struct essence_base_t : public BASE
   {
     BASE::consume_resource();
 
-    if ( !BASE::base_cost() || BASE::proc || BASE::current_resource() != RESOURCE_ESSENCE )
+    if ( !BASE::base_cost() || BASE::proc || BASE::primary_resource() != RESOURCE_ESSENCE )
       return;
 
     if ( BASE::p()->buff.essence_burst->up() )
@@ -1672,7 +1672,7 @@ struct emerald_blossom_t : public essence_heal_t
   {
     essence_heal_t::consume_resource();
 
-    resource_e prev_cr = current_resource();
+    resource_e prev_cr = primary_resource();
 
     if ( prev_cr == RESOURCE_MANA )
       return;
@@ -2919,7 +2919,7 @@ struct living_flame_t : public evoker_spell_t
     evoker_spell_t::execute();
 
     
-    auto cr = current_resource();
+    auto cr = primary_resource();
 
     // Single child, update children to parent action on each precombat execute
 

@@ -1069,7 +1069,7 @@ bool action_t::verify_actor_weapon() const
 
 double action_t::base_cost() const
 {
-  resource_e cr = current_resource();
+  resource_e cr = primary_resource();
   double c      = base_costs[ cr ];
   if ( additional_costs[ cr ] != 0 )
   {
@@ -1080,14 +1080,14 @@ double action_t::base_cost() const
 }
 
 /**
- * Resource cost of the action for current_resource()
+ * Resource cost of the action for primary_resource()
  */
 double action_t::cost() const
 {
   if ( !harmful && is_precombat )
     return 0;
 
-  resource_e cr = current_resource();
+  resource_e cr = primary_resource();
 
   double c;
   if ( additional_costs[ cr ] == 0 )
@@ -1534,7 +1534,7 @@ double action_t::composite_target_multiplier(player_t* target) const
 
 void action_t::consume_resource()
 {
-  resource_e cr = current_resource();
+  resource_e cr = primary_resource();
 
   if ( cr == RESOURCE_NONE || base_cost() == 0 || proc )
     return;
@@ -2450,7 +2450,7 @@ bool action_t::ready()
   if ( player->is_moving() && !usable_moving() )
     return false;
 
-  auto resource = current_resource();
+  auto resource = primary_resource();
   if ( resource != RESOURCE_NONE && !player->resource_available( resource, cost() ) )
   {
     if ( starved_proc )

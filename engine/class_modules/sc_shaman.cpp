@@ -1562,7 +1562,7 @@ public:
     }
 
     // set cost to zero after cost additions and reductions are applied to prevent negative cost values
-    if ( affected_by_ns_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
+    if ( affected_by_ns_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::primary_resource() != RESOURCE_MAELSTROM )
     {
       c *= 1.0 + p()->talent.natures_swiftness->effectN( 1 ).percent();
     }
@@ -1975,7 +1975,7 @@ public:
     this->p()->buff.spiritwalkers_grace->up();
 
     if ( this->p()->talent.aftershock->ok() &&
-         this->current_resource() == RESOURCE_MAELSTROM &&
+         this->primary_resource() == RESOURCE_MAELSTROM &&
          this->last_resource_cost > 0 &&
          this->rng().roll( this->p()->talent.aftershock->effectN( 1 ).percent() ) )
     {

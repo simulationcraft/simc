@@ -1557,7 +1557,7 @@ public:
     // Memory of Lucid Dreams Essence
     if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
     {
-      resource_e cr = ab::current_resource();
+      resource_e cr = ab::primary_resource();
       if ( cr == RESOURCE_RAGE )
       {
         if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
@@ -1575,7 +1575,7 @@ public:
       }
     }
 
-    if ( ab::current_resource() == RESOURCE_RAGE && ab::last_resource_cost > 0 )
+    if ( ab::primary_resource() == RESOURCE_RAGE && ab::last_resource_cost > 0 )
     {
       if ( p()->legendary.glory->ok() && p()->buff.conquerors_banner->check() )
       {
@@ -2842,7 +2842,7 @@ struct bloodthirst_heal_t : public warrior_heal_t
 
     return am;
   }
-  resource_e current_resource() const override
+  resource_e primary_resource() const override
   {
     return RESOURCE_NONE;
   }
@@ -4046,7 +4046,7 @@ struct impending_victory_heal_t : public warrior_heal_t
     return PROC1_NONE_HEAL;
   }
 
-  resource_e current_resource() const override
+  resource_e primary_resource() const override
   {
     return RESOURCE_NONE;
   }
@@ -6118,7 +6118,7 @@ struct victory_rush_heal_t : public warrior_heal_t
     base_pct_heal = data().effectN( 1 ).percent();
     background    = true;
   }
-  resource_e current_resource() const override
+  resource_e primary_resource() const override
   {
     return RESOURCE_NONE;
   }
