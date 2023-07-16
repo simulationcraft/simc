@@ -2737,6 +2737,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
     // Trigger the initial DoT action and set the primary flag for use with Burning Alive
     dot_action->set_target( s->target );
     fiery_brand_state_t* fb_state = debug_cast<fiery_brand_state_t*>( dot_action->get_state() );
+    fb_state->target = s->target;
     dot_action->snapshot_state( fb_state, result_amount_type::DMG_OVER_TIME );
     fb_state->primary = true;
     fb_state->from_t30 = from_t30;
@@ -3619,6 +3620,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     {
       damage->set_target( target );
       action_state_t* damage_state = damage->get_state();
+      damage_state->target = target;
       damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
       damage_state->da_multiplier *= fragments_consumed;
       damage->schedule_execute( damage_state );
