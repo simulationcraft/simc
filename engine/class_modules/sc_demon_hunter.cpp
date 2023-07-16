@@ -1736,9 +1736,9 @@ public:
 
   void trigger_fury_refund()
   {
-    if ( ab::resource_current == RESOURCE_FURY )
+    if ( ab::resource_primary == RESOURCE_FURY )
     {
-      p()->resource_gain( ab::resource_current, ab::last_resource_cost * 0.80, p()->gain.miss_refund );
+      p()->resource_gain( ab::resource_primary, ab::last_resource_cost * 0.80, p()->gain.miss_refund );
     }
   }
 
@@ -2127,7 +2127,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
 
     // Clear out the costs since this is just a copy of the damage spell
     base_costs.fill( 0 );
-    secondary_costs.fill( 0 );
+    additional_costs.fill( 0 );
 
     if ( p->talent.vengeance.feast_of_souls->ok() )
     {
@@ -5316,7 +5316,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( p->talent.havoc.furious_throws->ok() )
     {
-      resource_current = RESOURCE_FURY;
+      resource_primary = RESOURCE_FURY;
       base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
       furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws" );
       add_child( furious_throws );

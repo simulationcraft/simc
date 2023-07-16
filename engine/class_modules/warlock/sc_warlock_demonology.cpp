@@ -19,7 +19,7 @@ public:
   {
     warlock_spell_t::consume_resource();
 
-    if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
+    if ( resource_primary == RESOURCE_SOUL_SHARD && p()->in_combat )
     {
       if ( p()->buffs.nether_portal->up() )
       {

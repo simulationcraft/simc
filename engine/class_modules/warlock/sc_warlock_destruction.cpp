@@ -35,7 +35,7 @@ public:
       shards_used -= as<int>( p()->buffs.crashing_chaos->check_value() );
 
     // Do cost changes reduce number of draws appropriately? This may be difficult to check
-    if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() && shards_used > 0 )
+    if ( resource_primary == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() && shards_used > 0 )
     {
       for ( int i = 0; i < shards_used; i++ )
       {
@@ -47,7 +47,7 @@ public:
       }
     }
 
-    if ( p()->talents.ritual_of_ruin->ok() && resource_current == RESOURCE_SOUL_SHARD && shards_used > 0 )
+    if ( p()->talents.ritual_of_ruin->ok() && resource_primary == RESOURCE_SOUL_SHARD && shards_used > 0 )
     {
       int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
       p()->buffs.impending_ruin->trigger( shards_used ); // Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
@@ -55,7 +55,7 @@ public:
         make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
     }
 
-    if ( p()->talents.power_overwhelming->ok() && resource_current == RESOURCE_SOUL_SHARD && base_cost > 0 )
+    if ( p()->talents.power_overwhelming->ok() && resource_primary == RESOURCE_SOUL_SHARD && base_cost > 0 )
     {
       p()->buffs.power_overwhelming->trigger( base_cost );
     }
@@ -63,7 +63,7 @@ public:
     // 2022-10-17: Spell data is missing the % chance!
     // Need to test further, but chance appears independent of shard cost
     // Also procs even if the cast is free due to other effects
-    if ( resource_current == RESOURCE_SOUL_SHARD && base_cost > 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B2 ) && rng().roll( 0.2 ) )
+    if ( resource_primary == RESOURCE_SOUL_SHARD && base_cost > 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B2 ) && rng().roll( 0.2 ) )
     {
       p()->buffs.chaos_maelstrom->trigger();
       p()->procs.chaos_maelstrom->occur();

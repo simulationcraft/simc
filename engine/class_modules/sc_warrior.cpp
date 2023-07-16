@@ -7685,7 +7685,7 @@ struct ignore_pain_t : public warrior_spell_t
     base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : p->specialization() == WARRIOR_ARMS ? 40 : 35);
 
     base_dd_max = base_dd_min = 0;
-    resource_current = RESOURCE_RAGE;
+    resource_primary = RESOURCE_RAGE;
   }
 
   double bonus_da( const action_state_t* state ) const override

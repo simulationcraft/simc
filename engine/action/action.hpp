@@ -91,7 +91,7 @@ public:
   int internal_id;
 
   /// What resource does this ability use.
-  resource_e resource_current;
+  resource_e resource_primary, resource_secondary;
 
   /// The amount of targets that an ability impacts on. -1 will hit all targets.
   int aoe;
@@ -316,7 +316,7 @@ public:
   int dot_max_stack;
 
   /// Cost of using the ability.
-  std::array< double, RESOURCE_MAX > base_costs, secondary_costs;
+  std::array< double, RESOURCE_MAX > base_costs, additional_costs;
 
   /// Cost of using ability per periodic effect tick.
   std::array< double, RESOURCE_MAX > base_costs_per_tick;
@@ -726,7 +726,7 @@ public:
   virtual timespan_t cooldown_base_duration( const cooldown_t& cd ) const;
 
   virtual resource_e current_resource() const
-  { return resource_current; }
+  { return resource_primary; }
 
   virtual int n_targets() const
   { return aoe; }

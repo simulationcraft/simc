@@ -855,7 +855,7 @@ public:
       const auto spell_powers = ab::data().powers();
       if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
       {
-        ab::resource_current = spell_powers.front().resource();
+        ab::resource_primary = spell_powers.front().resource();
       }
       else
       {
@@ -863,14 +863,14 @@ public:
         auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
         if ( it != spell_powers.end() )
         {
-          ab::resource_current = it->resource();
+          ab::resource_primary = it->resource();
         }
         else
         {
           auto it = range::find( spell_powers, p()->specialization_aura_id(), &spellpower_data_t::aura_id );
           if ( it != spell_powers.end() )
           {
-            ab::resource_current = it->resource();
+            ab::resource_primary = it->resource();
           }
         }
       }
@@ -885,7 +885,7 @@ public:
         else
           ab::base_costs[ pd.resource() ] = floor( pd.cost() * p()->resources.base[ pd.resource() ] );
 
-        ab::secondary_costs[ pd.resource() ] = pd.max_cost();
+        ab::additional_costs[ pd.resource() ] = pd.max_cost();
 
         if ( pd._cost_per_tick != 0 )
           ab::base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
@@ -1677,7 +1677,7 @@ struct emerald_blossom_t : public essence_heal_t
     if ( prev_cr == RESOURCE_MANA )
       return;
 
-    resource_e cr = resource_current = RESOURCE_MANA;
+    resource_e cr = resource_primary = RESOURCE_MANA;
 
     if ( base_cost() == 0 || proc )
       return;
@@ -1691,7 +1691,7 @@ struct emerald_blossom_t : public essence_heal_t
 
     stats->consume_resource( cr, last_resource_cost );
 
-    resource_current = prev_cr;
+    resource_primary = prev_cr;
   }
 
   bool ready() override
@@ -1699,22 +1699,22 @@ struct emerald_blossom_t : public essence_heal_t
     if ( !essence_heal_t::ready() )
       return false;
 
-    if ( resource_current == RESOURCE_MANA )
+    if ( resource_primary == RESOURCE_MANA )
       return true;
 
-    auto prev_resource = resource_current;
-    resource_current   = RESOURCE_MANA;
+    auto prev_resource = resource_primary;
+    resource_primary   = RESOURCE_MANA;
 
     if ( !player->resource_available( RESOURCE_MANA, cost() ) )
     {
       if ( starved_proc )
         starved_proc->occur();
 
-      resource_current = prev_resource;
+      resource_primary = prev_resource;
       return false;
     }
 
-    resource_current = prev_resource;
+    resource_primary = prev_resource;
     return true;
   }
 

@@ -5984,7 +5984,7 @@ struct elemental_blast_t : public shaman_spell_t
         overload = new elemental_blast_overload_t( player, this );
       }
 
-      resource_current = RESOURCE_MAELSTROM;
+      resource_primary = RESOURCE_MAELSTROM;
       cooldown->duration = 0_ms;
     }
     else if ( player->specialization() == SHAMAN_ENHANCEMENT )
@@ -6589,7 +6589,7 @@ struct earth_shock_t : public shaman_spell_t
   {
     parse_options( options_str );
     // hardcoded because spelldata doesn't provide the resource type
-    resource_current                   = RESOURCE_MAELSTROM;
+    resource_primary                   = RESOURCE_MAELSTROM;
     affected_by_master_of_the_elements = true;
 
     if ( p()->talent.mountains_will_fall.enabled() )

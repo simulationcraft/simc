@@ -329,7 +329,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     original_school( SCHOOL_NONE ),
     id(),
     internal_id( p->get_action_id( name_str ) ),
-    resource_current( RESOURCE_NONE ),
+    resource_primary( RESOURCE_NONE ),
+    resource_secondary( RESOURCE_NONE ),
     aoe(),
     dual(),
     callbacks( true ),
@@ -399,7 +400,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     dot_duration(),
     dot_max_stack( 1 ),
     base_costs(),
-    secondary_costs(),
+    additional_costs(),
     base_costs_per_tick(),
     base_dd_min(),
     base_dd_max(),
@@ -670,16 +671,22 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   const auto spell_powers = spell_data.powers();
   if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
   {
-    resource_current = spell_powers.front().resource();
+    resource_primary = spell_powers.front().resource();
   }
   else
   {
-    // Find the first power entry without a aura id
-    auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
+    // Find the first power entry matching current spec or without an aura
+    auto fn_ = [ spec_id = player->spec_spell->id() ]( const spellpower_data_t& pow ) {
+      return pow.aura_id() == 0U || pow.aura_id() == spec_id;
+    };
+
+    auto it = range::find_if( spell_powers, fn_ );
     if ( it != spell_powers.end() )
-    {
-      resource_current = it->resource();
-    }
+      resource_primary = it->resource();
+
+    it = std::find_if( it, spell_powers.end(), fn_ );
+    if ( it != spell_powers.end() )
+      resource_secondary = it->resource();
   }
 
   for ( const spellpower_data_t& pd : spell_powers )
@@ -689,7 +696,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     else
       base_costs[ pd.resource() ] = floor( pd.cost() * player->resources.base[ pd.resource() ] );
 
-    secondary_costs[ pd.resource() ] = pd.max_cost();
+    additional_costs[ pd.resource() ] = pd.max_cost();
 
     if ( pd._cost_per_tick != 0 )
       base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
@@ -1059,9 +1066,9 @@ double action_t::base_cost() const
 {
   resource_e cr = current_resource();
   double c      = base_costs[ cr ];
-  if ( secondary_costs[ cr ] != 0 )
+  if ( additional_costs[ cr ] != 0 )
   {
-    c += secondary_costs[ cr ];
+    c += additional_costs[ cr ];
   }
 
   return c;
@@ -1078,7 +1085,7 @@ double action_t::cost() const
   resource_e cr = current_resource();
 
   double c;
-  if ( secondary_costs[ cr ] == 0 )
+  if ( additional_costs[ cr ] == 0 )
   {
     c = base_costs[ cr ];
   }
@@ -1110,7 +1117,7 @@ double action_t::cost() const
 
   if ( sim->debug )
     sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
-                           base_costs[ cr ], secondary_costs[ cr ], c, cr );
+                           base_costs[ cr ], additional_costs[ cr ], c, cr );
 
   return floor( c );
 }
@@ -5107,8 +5114,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_RESOURCE_COST:
-        base_costs[ resource_current ] += effect.resource( current_resource() );
-        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource_current,
+        base_costs[ resource_primary ] += effect.resource( current_resource() );
+        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource_primary,
                           effect.resource( current_resource() ) );
         break;
 
@@ -5214,9 +5221,9 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_RESOURCE_COST:
-        base_costs[ resource_current ] *= 1.0 + effect.percent();
+        base_costs[ resource_primary ] *= 1.0 + effect.percent();
         sim->print_debug( "{} base resource cost for resource {} (1) modified by {}%", *this,
-                          resource_current, effect.base_value() );
+                          resource_primary, effect.base_value() );
         break;
 
       case P_RESOURCE_COST_1:

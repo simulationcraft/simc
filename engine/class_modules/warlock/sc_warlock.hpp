@@ -887,7 +887,7 @@ public:
   {
     spell_t::consume_resource();
 
-    if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
+    if ( resource_primary == RESOURCE_SOUL_SHARD && p()->in_combat )
     {
       // This event prevents instantaneous reactions by the sim to refunded shards
       if ( p()->talents.soul_conduit->ok() )
