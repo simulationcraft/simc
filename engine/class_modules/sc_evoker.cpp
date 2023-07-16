@@ -4145,7 +4145,13 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
           make_buff<e_buff_t>( *this, "shifting_sands_" + evoker->name_str, evoker->find_spell( 413984 ) )
               ->set_default_value( evoker->cache.mastery_value() )
               ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-              ->set_period( timespan_t::zero() );
+              ->set_tick_callback( [ evoker ]( buff_t* b, int, timespan_t ) {
+                if ( b->current_value != evoker->cache.mastery_value() )
+                {
+                  b->current_value = evoker->cache.mastery_value();
+                  b->invalidate_cache();
+                }
+              } );
 
       buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
                                                                        evoker->find_spell( 395152 ) )
@@ -4576,10 +4582,6 @@ void evoker_t::init_background_actions()
   {
     background_actions.ebon_might =
         get_secondary_action<spells::ebon_might_t>( "ebon_might_helper", timespan_t::min(), "ebon_might_helper" );
-
-    heartbeat.callbacks.push_back( [ ebon = background_actions.ebon_might.get() ]() {
-      static_cast<spells::ebon_might_t*>( ebon )->update_stats();
-    } );
   }
 }
 
@@ -4943,7 +4945,14 @@ void evoker_t::create_buffs()
   // Augmentation
   buff.ebon_might_self_buff = make_buff<e_buff_t>( this, "ebon_might_self", talent.ebon_might_self_buff )
                                   ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-  buff.ebon_might_self_buff->buff_period = timespan_t::zero();
+
+  if ( talent.ebon_might->ok() )
+  {
+    buff.ebon_might_self_buff->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      if ( background_actions.ebon_might )
+        static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->update_stats();
+    } );
+  }
 
   buff.momentum_shift = make_buff<e_buff_t>( this, "momentum_shift", find_spell( 408005 ) )
                             ->set_default_value_from_effect( 1 )
