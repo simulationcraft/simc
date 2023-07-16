@@ -1001,7 +1001,6 @@ public:
 
     // Balance
     const spell_data_t* astral_communion;
-    const spell_data_t* balance;
     const spell_data_t* astral_power;
     const spell_data_t* celestial_alignment;
     const spell_data_t* eclipse_lunar;
@@ -1014,13 +1013,11 @@ public:
     const spell_data_t* starfall;
 
     // Feral
-    const spell_data_t* feral;
     const spell_data_t* feral_overrides;
     const spell_data_t* ashamanes_guidance;
     const spell_data_t* berserk_cat;  // berserk cast/buff spell
 
     // Guardian
-    const spell_data_t* guardian;
     const spell_data_t* bear_form_2;
     const spell_data_t* berserk_bear;  // berserk cast/buff spell
     const spell_data_t* elunes_favored;
@@ -1030,7 +1027,6 @@ public:
     const spell_data_t* ursine_adept;
 
     // Resto
-    const spell_data_t* restoration;
     const spell_data_t* cenarius_guidance;
   } spec;
 
@@ -2118,7 +2114,7 @@ public:
     parse_dot_effects( &druid_td_t::dots_t::moonfire, p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
     parse_dot_effects( &druid_td_t::dots_t::sunfire, p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
     parse_dot_effects( &druid_td_t::dots_t::adaptive_swarm_damage,
-                       p()->spec.adaptive_swarm_damage, false, p()->spec.restoration );
+                       p()->spec.adaptive_swarm_damage, false, p()->spec_spell );
     parse_dot_effects( &druid_td_t::dots_t::thrash_bear, p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
 
     parse_debuff_effects( []( druid_td_t* td ) { return td->debuff.dire_fixation->check(); },
@@ -8709,7 +8705,7 @@ struct druid_melee_t : public Base
     ab::apply_debuffs_effects();
 
     // Auto attack mods
-    ab::parse_passive_effects( p->spec.guardian );
+    ab::parse_passive_effects( p->spec_spell );
     ab::parse_passive_effects( p->talent.killer_instinct );
     ab::range += find_effect( p->talent.astral_influence, A_MOD_AUTO_ATTACK_RANGE ).base_value();
     if ( p->specialization() != DRUID_BALANCE )
@@ -9537,7 +9533,6 @@ void druid_t::init_spells()
   spec.adaptive_swarm_heal      = check( talent.adaptive_swarm, 391891 );
 
   // Balance Abilities
-  spec.balance                  = find_specialization_spell( "Balance Druid" );
   spec.astral_communion         = check( talent.astral_communion, 202359 );
   spec.astral_power             = find_specialization_spell( "Astral Power" );
   spec.celestial_alignment      = talent.celestial_alignment.find_override_spell();
@@ -9551,13 +9546,11 @@ void druid_t::init_spells()
   spec.starfall                 = check( talent.starfall, 191034 );
 
   // Feral Abilities
-  spec.feral                    = find_specialization_spell( "Feral Druid" );
   spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
   spec.ashamanes_guidance       = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
   spec.berserk_cat              = talent.berserk.find_override_spell();
 
   // Guardian Abilities
-  spec.guardian                 = find_specialization_spell( "Guardian Druid" );
   spec.bear_form_2              = find_rank_spell( "Bear Form", "Rank 2" );
   spec.berserk_bear             = check( talent.berserk_ravage ||
                                          talent.berserk_unchecked_aggression ||
@@ -9569,7 +9562,6 @@ void druid_t::init_spells()
   spec.ursine_adept             = find_specialization_spell( "Ursine Adept" );
 
   // Restoration Abilities
-  spec.restoration              = find_specialization_spell( "Restoration Druid" );
   spec.cenarius_guidance        = check( talent.cenarius_guidance, talent.convoke_the_spirits.ok() ? 393374 : 393381 );
 
   // Masteries ==============================================================
@@ -9620,7 +9612,7 @@ void druid_t::init_base_stats()
   // Energy Regen
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + find_effect( spec.feral_affinity, A_MOD_POWER_REGEN_PERCENT ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + find_effect( spec.feral, A_MOD_POWER_REGEN_PERCENT ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + find_effect( spec_spell, A_MOD_POWER_REGEN_PERCENT ).percent();
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + find_effect( talent.tireless_energy, A_MOD_POWER_REGEN_PERCENT ).percent();
 
   base_gcd = 1.5_s;
@@ -9630,14 +9622,8 @@ void druid_t::init_finished()
 {
   player_t::init_finished();
 
-  if ( specialization() == DRUID_BALANCE )
-    spec_override.attack_power = find_effect( spec.balance, A_404 ).percent();
-  else if ( specialization() == DRUID_FERAL )
-    spec_override.spell_power = find_effect( spec.feral, A_366 ).percent();
-  else if ( specialization() == DRUID_GUARDIAN )
-    spec_override.spell_power = find_effect( spec.guardian, A_366 ).percent();
-  else if ( specialization() == DRUID_RESTORATION )
-    spec_override.attack_power = find_effect( spec.restoration, A_404 ).percent();
+  spec_override.attack_power = find_effect( spec_spell, A_404 ).percent();
+  spec_override.spell_power = find_effect( spec_spell, A_366 ).percent();
 
   // PRECOMBAT WRATH SHENANIGANS
   // we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
@@ -12815,10 +12801,7 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Spec-wide auras
   action.apply_affecting_aura( spec.druid );
-  action.apply_affecting_aura( spec.balance );
-  action.apply_affecting_aura( spec.feral );
-  action.apply_affecting_aura( spec.guardian );
-  action.apply_affecting_aura( spec.restoration );
+  action.apply_affecting_aura( spec_spell );
 
   // Rank spells
   action.apply_affecting_aura( spec.moonfire_2 );
