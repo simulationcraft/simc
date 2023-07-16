@@ -32,18 +32,18 @@ role=spell
 position=ranged_back
 talents=BoQAAAAAAAAAAAAAAAAAAAAAAAIJRSCkWKHQkmkESJAAAAAokIJSiAkIJSKaJRCBAAAAAAJ
 
-head=cragshapers_fitted_hood,id=137341,bonus_id=8780,ilevel=447,gem_id=192985
+head=grimhorns_of_the_sinister_savant,id=202533,bonus_id=9410/1808,ilevel=447,gem_id=192991
 neck=magmoraxs_fourth_collar,id=204397,bonus_id=8782,ilevel=447,gem_id=192945/192945/192945
 shoulders=amice_of_the_sinister_savant,id=202531,ilevel=450
 back=voice_of_the_silent_star,id=204465,ilevel=457
-chest=cursed_robes_of_the_sinister_savant,id=202536,ilevel=447,enchant_id=6625
+chest=reanimators_wicked_cassock,id=202600,bonus_id=6652/8783/8784/9414/9415/4800/4786/1504/9382,ilevel=447,enchant_id=6625
 wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8780/8802/8846/8793/9379,ilevel=447,gem_id=192945,enchant_id=6574,crafted_stats=40/32
 hands=grips_of_the_sinister_savant,id=202534,ilevel=447
 waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8960/8780,ilevel=447,gem_id=192945,crafted_stats=36/49
 legs=leggings_of_the_sinister_savant,id=205849,ilevel=450,enchant_id=6541
 feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
-finger1=eternal_sentrys_ring,id=193804,bonus_id=6652/8783/8784/7936/7937/6808/4786/8780/1669,ilevel=447,gem_id=192945,enchant_id=6550
-finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,ilevel=450,gem_id=192945,enchant_id=6550
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/1537/523,ilevel=447,gem_id=192945,enchant_id=6568,crafted_stats=40/32
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,ilevel=450,gem_id=192945,enchant_id=6562
 trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767,ilevel=447
 trinket2=neltharions_call_to_dominance,id=204202,ilevel=457
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
