@@ -1197,6 +1197,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     racials(),
     passive_values(),
     active_during_iteration( false ),
+    class_spell( spell_data_t::nil() ),
+    spec_spell( spell_data_t::nil() ),
     _mastery( &spelleffect_data_t::nil() ),
     cache( this ),
     resource_regeneration( regen_type::STATIC ),
@@ -2937,8 +2939,11 @@ void player_t::init_spells()
   racials.brush_it_off          = find_racial_spell( "Brush It Off" );
   racials.awakened              = find_racial_spell( "Awakened" );
 
-  if ( !is_enemy() )
+  if ( is_player() )
   {
+    class_spell = find_spell( util::player_type_string_long( type ) );
+    spec_spell = find_spell( util::specialization_string( specialization() ) );
+
     const spell_data_t* s = find_mastery_spell( specialization() );
     if ( s->ok() )
       _mastery = &( s->effectN( 1 ) );

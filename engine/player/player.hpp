@@ -660,6 +660,8 @@ struct player_t : public actor_t
   } passive_values;
 
   bool active_during_iteration;
+  const spell_data_t* class_spell;
+  const spell_data_t* spec_spell;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
   player_stat_cache_t cache;
   auto_dispose<std::vector<action_variable_t*>> variables;
@@ -803,6 +805,7 @@ public:
 
   bool is_moving() const;
   double composite_block_dr( double extra_block ) const;
+  bool is_player() const { return type > PLAYER_NONE && type < PLAYER_PET; }
   bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_enemy() const { return _is_enemy( type ); }
   bool is_boss() const { return type == ENEMY || type == ENEMY_ADD_BOSS; }
