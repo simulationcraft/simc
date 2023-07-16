@@ -190,7 +190,6 @@ void demonology( player_t* p )
   default_->add_action( "invoke_external_buff,name=power_infusion,if=(buff.nether_portal.up&buff.nether_portal.remains<8&talent.nether_portal)|fight_remains<20|pet.demonic_tyrant.active&fight_remains<100|fight_remains<25|!talent.nether_portal&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant&buff.dreadstalkers.up)", "Power Infusion is used 6 seconds or less before Demonic Tyrant, without Demonic Tyrant, it will be used 8s before Nether Portal Ends and without both, its used on Cooldown" );
   default_->add_action( "call_action_list,name=fight_end,if=fight_remains<30" );
   default_->add_action( "hand_of_guldan,if=time<0.5&(fight_remains%%95>40|fight_remains%%95<15)" );
-  default_->add_action( "implosion,if=target.time_to_die<2*gcd.max" );
   default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<15&cooldown.summon_vilefiend.remains<gcd.max*5&cooldown.call_dreadstalkers.remains<gcd.max*5&(cooldown.grimoire_felguard.remains<10|!set_bonus.tier30_2pc)&(!variable.shadow_timings|variable.tyrant_cd<15|fight_remains<40|buff.power_infusion.up)" );
   default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<15&(buff.vilefiend.up|!talent.summon_vilefiend&(buff.grimoire_felguard.up|cooldown.grimoire_felguard.up|!set_bonus.tier30_2pc))&(!variable.shadow_timings|variable.tyrant_cd<15|fight_remains<40|buff.power_infusion.up)" );
   default_->add_action( "summon_demonic_tyrant,if=buff.vilefiend.up|buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>90" );
@@ -203,8 +202,8 @@ void demonology( player_t* p )
   default_->add_action( "guillotine,if=buff.nether_portal.remains<gcd.max&(cooldown.demonic_strength.remains|!talent.demonic_strength)" );
   default_->add_action( "bilescourge_bombers,if=!pet.demonic_tyrant.active" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>25|variable.tyrant_cd>25|buff.nether_portal.up" );
-  default_->add_action( "implosion,if=two_cast_imps>0&buff.tyrant.down&active_enemies>1+(talent.sacrificed_souls.enabled)" );
-  default_->add_action( "implosion,if=buff.wild_imps.stack>9&buff.tyrant.up&active_enemies>2+(1*talent.sacrificed_souls.enabled)&cooldown.call_dreadstalkers.remains>17&talent.the_expendables" );
+  default_->add_action( "implosion,if=two_cast_imps>0&buff.tyrant.down&active_enemies>1+(talent.sacrificed_souls.enabled)&!prev_gcd.1.implosion" );
+  default_->add_action( "implosion,if=buff.wild_imps.stack>9&buff.tyrant.up&active_enemies>2+(1*talent.sacrificed_souls.enabled)&cooldown.call_dreadstalkers.remains>17&talent.the_expendables&!prev_gcd.1.implosion" );
   default_->add_action( "soul_strike,if=soul_shard<5&active_enemies>1" );
   default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10&active_enemies>1" );
   default_->add_action( "power_siphon,if=buff.demonic_core.stack<2&cooldown.summon_demonic_tyrant.remains>38&(buff.dreadstalkers.down|buff.dreadstalkers.remains>gcd.max*5)" );
@@ -245,6 +244,7 @@ void demonology( player_t* p )
   fight_end->add_action( "summon_demonic_tyrant,if=fight_remains<20" );
   fight_end->add_action( "demonic_strength,if=fight_remains<10" );
   fight_end->add_action( "power_siphon,if=buff.demonic_core.stack<3&fight_remains<20" );
+  fight_end->add_action( "implosion,if=fight_remains<2*gcd.max" );
 
 
   racials->add_action( "berserking,use_off_gcd=1" );
