@@ -665,6 +665,7 @@ struct player_t : public actor_t
   player_stat_cache_t cache;
   auto_dispose<std::vector<action_variable_t*>> variables;
   std::vector<std::string> action_map;
+  std::vector<std::string> dot_map;
 
   regen_type resource_regeneration;
 
@@ -897,6 +898,7 @@ public:
   sample_data_helper_t* find_sample_data( util::string_view name ) const;
   action_priority_list_t* find_action_priority_list( util::string_view name ) const;
   int find_action_id( util::string_view name ) const;
+  int find_dot_id( util::string_view name ) const;
 
   cooldown_t* get_cooldown( util::string_view name, action_t* action = nullptr );
   target_specific_cooldown_t* get_target_specific_cooldown( util::string_view name, timespan_t duration = timespan_t::zero() );
@@ -914,6 +916,7 @@ public:
   sample_data_helper_t* get_sample_data( util::string_view name );
   action_priority_list_t* get_action_priority_list( util::string_view name, util::string_view comment = {} );
   int get_action_id( util::string_view name );
+  int get_dot_id( util::string_view name );
   cooldown_waste_data_t* get_cooldown_waste_data( const cooldown_t* cd );
 
 
@@ -1262,9 +1265,9 @@ public:
 private:
   std::vector<unsigned> active_dots;
 public:
-  void add_active_dot( unsigned action_id );
-  void remove_active_dot( unsigned action_id );
-  unsigned get_active_dots( unsigned action_id ) const;
+  void add_active_dot( const dot_t* dot );
+  void remove_active_dot( const dot_t* dot );
+  unsigned get_active_dots( const dot_t* dot ) const;
   virtual void adjust_dynamic_cooldowns();
   virtual void adjust_global_cooldown(gcd_haste_type type );
   virtual void adjust_auto_attack(gcd_haste_type type );

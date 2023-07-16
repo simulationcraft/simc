@@ -62,7 +62,7 @@ struct agony_t : public affliction_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    if ( p()->get_active_dots( internal_id ) == 1 )
+    if ( p()->get_active_dots( d ) == 1 )
     {
       p()->agony_accumulator = rng().range( 0.0, 0.99 );
     }
@@ -110,7 +110,7 @@ struct agony_t : public affliction_spell_t
     // code, please also update the Time_to_Shard expression in sc_warlock.cpp.
     double increment_max = 0.368;
 
-    double active_agonies = p()->get_active_dots( internal_id );
+    double active_agonies = p()->get_active_dots( d );
     increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
 
     p()->agony_accumulator += rng().range( 0.0, increment_max );

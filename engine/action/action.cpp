@@ -4348,14 +4348,14 @@ void run_action_list_t::execute()
  * If the action is still ticking and all resources could be successfully consumed,
  * return true to indicate continued ticking.
  */
-bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
+bool action_t::consume_cost_per_tick( const dot_t& dot )
 {
   if ( !consume_per_tick_ )
   {
     return true;
   }
 
-  if ( player->get_active_dots( internal_id ) == 0 )
+  if ( player->get_active_dots( &dot ) == 0 )
   {
     sim->print_debug( "{} {} ticking cost ends because dot is no longer ticking.", *player, *this );
     return false;

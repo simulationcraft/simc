@@ -1981,7 +1981,7 @@ public:
     return std::string( name.substr( std::min( name.size(), name.find( base ) + base.size() ) ) );
   }
 
-  dot_t* get_dot( player_t* t ) override
+  dot_t* get_dot( player_t* t = nullptr ) override
   {
     if ( !t )
       t = ab::target;
@@ -1996,9 +1996,11 @@ public:
 
   unsigned get_dot_count() const
   {
-    return range::accumulate( dot_ids, 0U, [ this ]( int add ) {
-      return ab::player->get_active_dots( add );
-    } );
+    const dot_t* dot = ab::find_dot( ab::target );
+    if ( !dot )
+      return 0;
+
+    return ab::player->get_active_dots( dot );
   }
 
   bool ready() override

@@ -924,7 +924,7 @@ struct vampiric_touch_t final : public priest_spell_t
       if ( priest().talents.shadow.maddening_touch.enabled() && priest().cooldowns.maddening_touch_icd->up() )
       {
         // Not found in spelldata, based on empirical data
-        auto chance = 0.25 * std::pow( priest().get_active_dots( internal_id ), -0.6 );
+        auto chance = 0.25 * std::pow( priest().get_active_dots( d ), -0.6 );
         if ( rng().roll( chance ) )
         {
           priest().cooldowns.maddening_touch_icd->start();

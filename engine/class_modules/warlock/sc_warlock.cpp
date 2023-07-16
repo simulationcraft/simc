@@ -214,7 +214,7 @@ struct corruption_t : public warlock_spell_t
           // Last checked 09-28-2020.
           double increment_max = 0.13;
 
-          double active_corruptions = p()->get_active_dots( internal_id );
+          double active_corruptions = p()->get_active_dots( d );
           increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
 
           p()->corruption_accumulator += rng().range( 0.0, increment_max );
@@ -2130,10 +2130,11 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 
     return make_fn_expr( name_str, [ this, agony_id ]() {
       auto td               = get_target_data( target );
-      double active_agonies = get_active_dots( agony_id );
+      dot_t* agony          = td->dots_agony;
+      double active_agonies = get_active_dots( agony );
       if ( sim->debug )
         sim->out_debug.printf( "active agonies: %f", active_agonies );
-      dot_t* agony = td->dots_agony;
+      
       if ( active_agonies == 0 || !agony->current_action )
       {
         return std::numeric_limits<double>::infinity();

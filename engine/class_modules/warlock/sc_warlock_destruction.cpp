@@ -311,7 +311,7 @@ struct immolate_t : public destruction_spell_t
       {
         double increment_max = 0.07;
 
-        increment_max *= std::pow( p()->get_active_dots( internal_id ), -2.0 / 3.0 );
+        increment_max *= std::pow( p()->get_active_dots( d ), -2.0 / 3.0 );
 
         p()->cdf_accumulator += rng().range( 0.0, increment_max );
 
@@ -1056,12 +1056,10 @@ struct channel_demonfire_tick_t : public destruction_spell_t
 struct channel_demonfire_t : public destruction_spell_t
 {
   channel_demonfire_tick_t* channel_demonfire;
-  int immolate_action_id;
 
   channel_demonfire_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire ),
-      channel_demonfire( new channel_demonfire_tick_t( p ) ),
-      immolate_action_id( 0 )
+      channel_demonfire( new channel_demonfire_tick_t( p ) )
   {
     parse_options( options_str );
     channeled = true;
@@ -1084,7 +1082,6 @@ struct channel_demonfire_t : public destruction_spell_t
     destruction_spell_t::init();
 
     cooldown->hasted = true;
-    immolate_action_id = p()->find_action_id( "immolate" );
   }
 
   std::vector<player_t*>& target_list() const override
@@ -1132,7 +1129,7 @@ struct channel_demonfire_t : public destruction_spell_t
 
   bool ready() override
   {
-    double active_immolates = p()->get_active_dots( immolate_action_id );
+    unsigned active_immolates = p()->get_active_dots( td( target )->dots_immolate );
 
     if ( active_immolates == 0 )
       return false;

@@ -8118,6 +8118,29 @@ int player_t::get_action_id( util::string_view name )
   return static_cast<int>(action_map.size() - 1);
 }
 
+int player_t::find_dot_id( util::string_view name ) const
+{
+  for ( size_t i = 0; i < dot_map.size(); i++ )
+  {
+    if ( util::str_compare_ci( name, dot_map[ i ] ) )
+      return static_cast<int>( i );
+  }
+
+  return -1;
+}
+
+int player_t::get_dot_id( util::string_view name )
+{
+  auto id = find_dot_id( name );
+  if ( id != -1 )
+  {
+    return id;
+  }
+
+  dot_map.emplace_back( name );
+  return static_cast<int>( dot_map.size() - 1 );
+}
+
 cooldown_waste_data_t* player_t::get_cooldown_waste_data( const cooldown_t* cd )
 {
   for ( const auto& cdw : cooldown_waste_data_list )
@@ -11324,10 +11347,10 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
     if ( splits[ 0 ] == "active_dot" )
     {
-      int internal_id = find_action_id( splits[ 1 ] );
-      if ( internal_id > -1 )
+      action_t* action = find_action( splits[ 1 ] );
+      if ( action )
       {
-        return make_fn_expr(expression_str, [this, internal_id] {return get_active_dots( internal_id );});
+        return make_fn_expr( expression_str, [ this, action ] {return get_active_dots( action->get_dot() ); } );
       }
       throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
     }
@@ -13766,32 +13789,42 @@ const pet_t* player_t::cast_pet() const
   return debug_cast<const pet_t*>( this );
 }
 
-void player_t::add_active_dot( unsigned action_id )
+void player_t::add_active_dot( const dot_t* dot )
 {
-  if ( active_dots.size() < action_id + 1 )
-    active_dots.resize( action_id + 1 );
+  assert( dot );
+  if ( !dot )
+    return;
 
-  active_dots[ action_id ]++;
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s Increasing %s dot count to %u", name(), action_map[ action_id ].c_str(), active_dots[ action_id ] );
+  if ( active_dots.size() < dot->internal_id + 1 )
+    active_dots.resize( dot->internal_id + 1 );
+
+  active_dots[ dot->internal_id ]++;
+  if ( sim->debug )
+    sim->out_debug.printf( "%s Increasing %s dot count to %u", name(), dot_map[ dot->internal_id ].c_str(), active_dots[ dot->internal_id ] );
 }
 
-void player_t::remove_active_dot( unsigned action_id )
+void player_t::remove_active_dot( const dot_t* dot )
 {
-  assert( active_dots.size() > action_id );
-  assert( active_dots[ action_id ] > 0 );
+  assert( dot );
+  assert( active_dots.size() > dot->internal_id );
+  assert( active_dots[ dot->internal_id ] > 0 );
 
-  active_dots[ action_id ]--;
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s Decreasing %s dot count to %u", name(), action_map[ action_id ].c_str(), active_dots[ action_id ] );
+  if ( !dot )
+    return;
+
+  active_dots[ dot->internal_id ]--;
+  if ( sim->debug )
+    sim->out_debug.printf( "%s Decreasing %s dot count to %u", name(), dot_map[ dot->internal_id ].c_str(), active_dots[ dot->internal_id ] );
 }
 
-unsigned player_t::get_active_dots( unsigned action_id ) const
+unsigned player_t::get_active_dots( const dot_t* dot ) const
 {
-  if ( active_dots.size() <= action_id )
+  assert( dot );
+
+  if ( !dot || active_dots.size() <= dot->internal_id )
     return 0;
 
-  return active_dots[ action_id ];
+  return active_dots[ dot->internal_id ];
 }
 
 void player_t::adjust_dynamic_cooldowns()

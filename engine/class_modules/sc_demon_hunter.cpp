@@ -4560,7 +4560,7 @@ struct burning_wound_t : public demon_hunter_spell_t
     if ( result_is_hit( s->result ) )
     {
       // This DoT has a limit 3 effect, oldest applications are removed first
-      if ( player->get_active_dots( internal_id ) > data().max_targets() )
+      if ( player->get_active_dots( get_dot() ) > data().max_targets() )
       {
         player_t* lowest_duration =
           *std::min_element( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end(),
@@ -4585,7 +4585,7 @@ struct burning_wound_t : public demon_hunter_spell_t
         tdata->debuffs.burning_wound->cancel();
         tdata->dots.burning_wound->cancel();
 
-        assert( player->get_active_dots( internal_id ) <= data().max_targets() );
+        assert( player->get_active_dots( get_dot() ) <= data().max_targets() );
       }
 
       td( s->target )->debuffs.burning_wound->trigger();
@@ -6158,6 +6158,8 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
             return dh->get_inactive_soul_fragments( type );
           case soul_fragment_filter::TOTAL:
             return dh->get_total_soul_fragments( type );
+          default:
+            return 0;
         }
       }
     };

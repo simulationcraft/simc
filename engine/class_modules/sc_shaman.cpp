@@ -5243,7 +5243,7 @@ struct flame_shock_spreader_t : public shaman_spell_t
     }
 
     // If all targets have flame shock, pick the shortest remaining time
-    if ( player->get_active_dots( source_td->dot.flame_shock->current_action->internal_id ) ==
+    if ( player->get_active_dots( source_td->dot.flame_shock ) ==
          sim->target_non_sleeping_list.size() )
     {
       copy_target = shortest_duration_target();
@@ -6907,7 +6907,7 @@ public:
 
       spreader->set_target( state->target );
       // If all targets have flame shock, pick the shortest remaining time
-      if ( player->get_active_dots( source_td->dot.flame_shock->current_action->internal_id ) ==
+      if ( player->get_active_dots( source_td->dot.flame_shock ) ==
            sim->target_non_sleeping_list.size() )
       {
         additional_target = spreader->shortest_duration_target();

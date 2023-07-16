@@ -3702,7 +3702,7 @@ struct frost_fever_t final : public death_knight_disease_t
     // https://us.forums.blizzard.com/en/wow/t/upcoming-ptr-class-changes-4-23/158332
 
     // 2020-05-05: It would seem that the proc chance is 0.30 * sqrt(FeverCount) / FeverCount
-    unsigned ff_count = p() -> get_active_dots( internal_id );
+    unsigned ff_count = p() -> get_active_dots( d );
     double chance = 0.30;
     if ( ( d -> state -> result == RESULT_CRIT ) && p() -> talent.frost.invigorating_freeze.ok() )
       chance += p() -> talent.frost.invigorating_freeze -> effectN( 1 ).percent();

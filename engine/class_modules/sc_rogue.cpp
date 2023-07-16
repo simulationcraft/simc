@@ -4872,10 +4872,10 @@ struct rupture_t : public rogue_attack_t
       return;
 
     const int current_stacks = p()->buffs.scent_of_blood->check();
-    int desired_stacks = p()->get_active_dots( this->internal_id );
+    int desired_stacks = p()->get_active_dots( this->get_dot() );
     if ( p()->active.deathmark.rupture )
     {
-      desired_stacks += p()->get_active_dots( p()->active.deathmark.rupture->internal_id );
+      desired_stacks += p()->get_active_dots( p()->active.deathmark.rupture->get_dot() );
     }
     desired_stacks = std::min( p()->buffs.scent_of_blood->max_stack(),
                                desired_stacks * as<int>( p()->talent.assassination.scent_of_blood->effectN( 1 ).base_value() ) );
@@ -6150,14 +6150,14 @@ struct serrated_bone_spike_t : public rogue_attack_t
     double cp = rogue_attack_t::generate_cp();
 
     cp += base_impact_cp;
-    cp += p()->get_active_dots( serrated_bone_spike_dot->internal_id );
+    cp += p()->get_active_dots( td( target )->dots.serrated_bone_spike );
 
     return cp;
   }
 
   void impact( action_state_t* state ) override
   {
-    const unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
+    const unsigned active_dots = p()->get_active_dots( get_dot( state->target ) );
 
     rogue_attack_t::impact( state );
     serrated_bone_spike_dot->execute_on_target( state->target );
@@ -8620,7 +8620,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     }
 
     return make_fn_expr( name_str, [ this, action ]() {
-      return get_active_dots( action->internal_id );
+      return get_active_dots( action->get_dot() );
     } );
   }
   else if ( util::str_compare_ci( split[ 0 ], "rtb_buffs" ) )

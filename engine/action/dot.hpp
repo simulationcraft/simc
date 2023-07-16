@@ -44,6 +44,7 @@ public:
   int current_tick;
   int max_stack;
   std::string name_str;
+  int internal_id;
 
   dot_t(util::string_view n, player_t* target, player_t* source);
 
