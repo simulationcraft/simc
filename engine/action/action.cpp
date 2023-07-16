@@ -675,9 +675,14 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   }
   else
   {
-    // Find the first power entry matching current spec or without an aura
-    auto fn_ = [ spec_id = player->spec_spell->id() ]( const spellpower_data_t& pow ) {
-      return pow.aura_id() == 0U || pow.aura_id() == spec_id;
+    // Find the first power entry without an aura or with a known passive spell
+    auto fn_ = [ this ]( const spellpower_data_t& pow ) {
+      if ( pow.aura_id() == 0U )
+        return true;
+
+      // we only want known spells, so first find by id then re-find by name
+      auto s = player->find_spell( player->find_spell( pow.aura_id() )->name_cstr() );
+      return s->ok() && s->flags( SX_PASSIVE );
     };
 
     auto it = range::find_if( spell_powers, fn_ );
