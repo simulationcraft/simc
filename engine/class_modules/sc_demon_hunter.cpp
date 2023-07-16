@@ -2577,9 +2577,10 @@ struct fiery_brand_t : public demon_hunter_spell_t
   struct fiery_brand_state_t : public action_state_t
   {
     bool primary;
+    bool from_t30;
 
     fiery_brand_state_t( action_t* a, player_t* target )
-      : action_state_t( a, target ), primary( false )
+      : action_state_t( a, target ), primary( false ), from_t30( false )
     {
     }
 
@@ -2587,18 +2588,21 @@ struct fiery_brand_t : public demon_hunter_spell_t
     {
       action_state_t::initialize();
       primary = false;
+      from_t30 = false;
     }
 
     void copy_state( const action_state_t* s ) override
     {
       action_state_t::copy_state( s );
       primary = debug_cast<const fiery_brand_state_t*>( s )->primary;
+      from_t30 = debug_cast<const fiery_brand_state_t*>( s )->from_t30;
     }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
     {
       action_state_t::debug_str( s );
       s << " primary=" << primary;
+      s << " from_t30=" << from_t30;
       return s;
     }
   };
@@ -2616,6 +2620,14 @@ struct fiery_brand_t : public demon_hunter_spell_t
       {
         radius = p->find_spell( 207760 )->effectN( 1 ).radius_max();
       }
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      if( debug_cast<const fiery_brand_state_t*>( s )->from_t30 )
+        return timespan_t::from_seconds( p()->set_bonuses.t30_vengeance_4pc->effectN( 2 ).base_value() );
+
+      return demon_hunter_spell_t::composite_dot_duration( s );
     }
 
     timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -2680,14 +2692,34 @@ struct fiery_brand_t : public demon_hunter_spell_t
   };
 
   fiery_brand_dot_t* dot_action;
+  bool from_t30;
 
-  fiery_brand_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
-    : demon_hunter_spell_t( name, p, p->talent.vengeance.fiery_brand, options_str ), dot_action( nullptr )
+  fiery_brand_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {}, bool from_t30 = false )
+    : demon_hunter_spell_t( name, p, p->talent.vengeance.fiery_brand, options_str ),
+    dot_action( nullptr ), from_t30( from_t30 )
   {
     use_off_gcd = true;
 
-    dot_action        = p->get_background_action<fiery_brand_dot_t>( name_str + "_dot" );
-    dot_action->stats = stats;
+    // Merge the action stats for simplified reporting if we aren't using T30, otherwise split out
+    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+    if ( !p->set_bonuses.t30_vengeance_4pc->ok() )
+    {
+      dot_action->stats = stats;
+    }
+    else if ( !from_t30 )
+    {
+      add_child( dot_action );
+    }
+  }
+
+  void init() override
+  {
+    demon_hunter_spell_t::init();
+
+    if ( !from_t30 && p()->active.fiery_brand_t30 )
+    {
+      add_child( p()->active.fiery_brand_t30 );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2707,6 +2739,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
     fiery_brand_state_t* fb_state = debug_cast<fiery_brand_state_t*>( dot_action->get_state() );
     dot_action->snapshot_state( fb_state, result_amount_type::DMG_OVER_TIME );
     fb_state->primary = true;
+    fb_state->from_t30 = from_t30;
     dot_action->schedule_execute( fb_state );
   }
 
@@ -6860,11 +6893,10 @@ void demon_hunter_t::init_spells()
 
   if ( set_bonuses.t30_vengeance_4pc->ok() )
   {
-    fiery_brand_t* fiery_brand_t30 = get_background_action<fiery_brand_t>( "fiery_brand_t30" );
+    fiery_brand_t* fiery_brand_t30 = get_background_action<fiery_brand_t>( "fiery_brand_t30", "", true);
     fiery_brand_t30->internal_cooldown->base_duration = 0_s;
     fiery_brand_t30->cooldown->base_duration = 0_s;
     fiery_brand_t30->cooldown->charges = 0;
-    fiery_brand_t30->dot_action->dot_duration = timespan_t::from_seconds( set_bonuses.t30_vengeance_4pc->effectN( 2 ).base_value() );
     active.fiery_brand_t30 = fiery_brand_t30;
   }
 }
