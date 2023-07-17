@@ -1305,7 +1305,7 @@ struct holy_power_consumer_t : public Base
       c += ab::p()->talents.vanguard_of_justice->effectN( 1 ).base_value();
     }
 
-    return std::max<double>( c, 0.0 );
+    return c.max( 0 );
   }
 
   void impact( action_state_t* s ) override

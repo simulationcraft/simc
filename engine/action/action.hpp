@@ -54,6 +54,9 @@ private:
 public:
   cost_t( double f = 0.0, double s = 0.0 ) : one_( f ), two_( s ) {}
 
+  bool operator!() const
+  { return !one_ && !two_; }
+
   operator double() const
   { return one_; }
 
@@ -63,11 +66,28 @@ public:
   double first() const
   { return one_; }
 
+  double& first()
+  { return one_; }
+
   double second() const
   { return two_; }
 
   double& second()
   { return two_; }
+
+  cost_t& max( double d )
+  {
+    one_ = std::max( one_, d );
+    two_ = std::max( two_, d );
+    return *this;
+  }
+
+  cost_t& min( double d )
+  {
+    one_ = std::min( one_, d );
+    two_ = std::min( two_, d );
+    return *this;
+  }
 };
 
 struct action_t : private noncopyable
@@ -468,7 +488,7 @@ public:
   timespan_t time_to_travel;
 
   /** Last available, effectively used resource cost */
-  double last_resource_cost;
+  cost_t last_resource_cost;
 
   /** Last available number of targets effectively hit */
   int num_targets_hit;
@@ -987,6 +1007,8 @@ public:
 
   virtual void parse_options( util::string_view options_str );
 
+  virtual double consume_resource( resource_e, double );
+
   virtual void consume_resource();
 
   virtual void execute();
@@ -1065,6 +1087,8 @@ public:
   { update_state( s, update_flags, rt ); }
 
   event_t* start_action_execute_event( timespan_t time, action_state_t* state = nullptr );
+
+  virtual double consume_cost_per_tick( resource_e, double, bool& );
 
   virtual bool consume_cost_per_tick( const dot_t& dot );
 

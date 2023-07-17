@@ -2189,10 +2189,9 @@ public:
     auto c = ab::cost();
 
     c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-
     c *= get_buff_effects_value( cost_buffeffects, false, false );
 
-    return std::max<double>( 0.0, c );
+    return c.max( 0 );
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override

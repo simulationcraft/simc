@@ -3640,7 +3640,7 @@ struct execute_arms_t : public warrior_attack_t
   cost_t cost() const override
   {
     auto c = warrior_attack_t::cost();
-    c        = std::min( max_rage, std::max<double>( p()->resources.current[ RESOURCE_RAGE ], c ) );
+    c.max( p()->resources.current[ RESOURCE_RAGE ] ).min( max_rage );
 
     if ( p()->buff.ayalas_stone_heart->check() )
     {
@@ -3848,7 +3848,7 @@ struct fury_execute_parent_t : public warrior_attack_t
   cost_t cost() const override
   {
     auto c = warrior_attack_t::cost();
-    c        = std::min( max_rage, std::max<double>( p()->resources.current[ RESOURCE_RAGE ], c ) );
+    c.max( p()->resources.current[ RESOURCE_RAGE ] ).min( max_rage );
 
     if ( p()->talents.fury.improved_execute->ok() )
     {
@@ -6650,7 +6650,7 @@ struct condemn_arms_t : public warrior_attack_t
   cost_t cost() const override
   {
     auto c = warrior_attack_t::cost();
-    c        = std::min( max_rage, std::max<double>( p()->resources.current[ RESOURCE_RAGE ], c ) );
+    c.max( p()->resources.current[ RESOURCE_RAGE ] ).min( max_rage );
 
     if ( p()->buff.ayalas_stone_heart->check() )
     {
@@ -6847,7 +6847,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
   cost_t cost() const override
   {
     auto c = warrior_attack_t::cost();
-    c = std::min( max_rage, std::max<double>( p()->resources.current[RESOURCE_RAGE], c ) );
+    c.max( p()->resources.current[ RESOURCE_RAGE ] ).min( max_rage );
 
     if ( p()->talents.fury.improved_execute->ok() )
     {

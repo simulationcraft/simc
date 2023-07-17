@@ -673,7 +673,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   {
     resource_primary = spell_powers.front().resource();
   }
-  else
+  else if ( spell_powers.size() )
   {
     // Find the first power entry without an aura or with a known passive spell
     auto fn_ = [ this ]( const spellpower_data_t& pow ) {
@@ -689,7 +689,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     if ( it != spell_powers.end() )
       resource_primary = it->resource();
 
-    it = std::find_if( it, spell_powers.end(), fn_ );
+    it = std::find_if( it + 1, spell_powers.end(), fn_ );
     if ( it != spell_powers.end() )
       resource_secondary = it->resource();
   }
@@ -1530,21 +1530,34 @@ double action_t::composite_target_multiplier(player_t* target) const
   return player->composite_player_target_multiplier(target, get_school());
 }
 
+double action_t::consume_resource( resource_e r, double a )
+{
+  if ( !r || !a )
+    return 0;
+
+  double val;
+  if ( a > 0  )
+    val = player->resource_loss( r, a, nullptr, this );
+  else
+    val = player->resource_gain( r, a, nullptr, this );
+
+  stats->consume_resource( r, val );
+  sim->print_log( "{} consumes {} {} for {} ({})", *player, val, r, *this, player->resources.current[ r ] );
+
+  return val;
+}
+
 void action_t::consume_resource()
 {
-  resource_e cr = primary_resource();
+  resource_e r1 = primary_resource();
+  resource_e r2 = secondary_resource();
 
-  if ( cr == RESOURCE_NONE || !base_cost( cr ) || proc )
+  if ( ( r1 == RESOURCE_NONE && r2 == RESOURCE_NONE ) || !base_cost() || proc )
     return;
 
-  last_resource_cost = cost();
+  auto c = cost();
 
-  player->resource_loss( cr, last_resource_cost, nullptr, this );
-
-  sim->print_log("{} consumes {} {} for {} ({})",
-      *player, last_resource_cost, cr, *this, player->resources.current[ cr ] );
-
-  stats->consume_resource( cr, last_resource_cost );
+  last_resource_cost = { consume_resource( r1, c.first() ), consume_resource( r2, c.second() ) };
 }
 
 timespan_t action_t::cooldown_base_duration( const cooldown_t& cd ) const
@@ -4357,6 +4370,28 @@ void run_action_list_t::execute()
   player->activate_action_list( alist, player->current_execute_type );
 }
 
+double action_t::consume_cost_per_tick( resource_e r, double a, bool& cancel )
+{
+  if ( !r || !a )
+    return 0;
+
+  bool enough = player->resource_available( r, a );
+  if ( !enough )
+  {
+    sim->print_log( "{} {} not enough resource for ticking cost {} {} (current={}). Going to cancel the action.",
+                    *player, *this, a, r, player->resources.current[ r ] );
+    cancel = true;
+  }
+
+  auto val = player->resource_loss( r, a, nullptr, this );
+  stats->consume_resource( r, val );
+
+  sim->print_log( "{} {} consumes ticking cost {} ({}) {} (current={}).", *player, *this, a, val, r,
+                  player->resources.current[ r ] );
+
+  return val;
+}
+
 /**
  * If the action is still ticking and all resources could be successfully consumed,
  * return true to indicate continued ticking.
@@ -4384,30 +4419,12 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
    * philoptik 2015-03-23
    */
   bool cancel_action = false;
-  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
-  {
-    double cost = cost_per_tick( r );
-    if ( cost <= 0.0 )
-      continue;
 
-    bool enough_resource_available = player->resource_available( r, cost );
-    if ( !enough_resource_available )
-    {
-      sim->print_log( "{} {} not enough resource for ticking cost {} {} (current={}). Going to cancel the action.",
-                      *player, *this, cost, r, player->resources.current[ r ] );
-    }
+  resource_e r1 = primary_resource();
+  resource_e r2 = secondary_resource();
 
-    last_resource_cost = player->resource_loss( r, cost, nullptr, this );
-    stats->consume_resource( r, last_resource_cost );
-
-    sim->print_log( "{} {} consumes ticking cost {} ({}) {} (current={}).", *player, *this, cost, last_resource_cost, r,
-                    player->resources.current[ r ] );
-
-    if ( !enough_resource_available )
-    {
-      cancel_action = true;
-    }
-  }
+  last_resource_cost = { consume_cost_per_tick( r1, cost_per_tick( r1 ), cancel_action ),
+                         consume_cost_per_tick( r2, cost_per_tick( r2 ), cancel_action ) };
 
   if ( cancel_action )
   {

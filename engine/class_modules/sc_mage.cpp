@@ -1793,7 +1793,7 @@ struct arcane_mage_spell_t : public mage_spell_t
     for ( auto cr : cost_reductions )
       c *= 1.0 + cr->check_value();
 
-    return std::max<double>( c, 0.0 );
+    return c.max( 0 );
   }
 
   double arcane_charge_multiplier( bool arcane_barrage = false ) const

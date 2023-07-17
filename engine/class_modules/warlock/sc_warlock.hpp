@@ -892,7 +892,7 @@ public:
       // This event prevents instantaneous reactions by the sim to refunded shards
       if ( p()->talents.soul_conduit->ok() )
       {
-        make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
+        make_event<sc_event_t>( *p()->sim, p(), static_cast<int>( last_resource_cost ) );
       }
 
       if ( p()->talents.grand_warlocks_design.ok() )
