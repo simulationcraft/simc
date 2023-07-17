@@ -20088,7 +20088,7 @@ static const std::array<spelltext_data_t, 20120> __spelltext_data { {
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
-  { 417959, "Whenever you or one of your allies falls below $417960s1% health, the Tyrstone will summon an echo of your past self, healing them and nearby allies for the stored amount and granting $s3 Haste for $418080d before the record is lost.", 0, 0 },
+  { 417959, "Whenever you or one of your allies falls below $417960s1% health, the Tyrstone will summon an echo of your past self, healing them for the stored amount split among nearby allies and granting $s3 Haste for $418080d before the record is lost. Deals increased healing when healing multiple allies.", 0, 0 },
   { 417967, "$@spelldesc417939", "Has recorded ${$min($w1,$417959w2)} healing for when an ally reaches $417960s1% health.", 0 },
   { 418080, "$@spelldesc417939", "Haste increased by $w1.", 0 },
   { 418101, "Source of Magic increases the target's healing and damage done by $s1%.", 0, 0 },
@@ -20123,7 +20123,8 @@ static const std::array<spelltext_data_t, 20120> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.5.50469
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  417959,  0, "Whenever you or one of your allies falls below $417960s1% health, the Tyrstone will summon an echo of your past self, healing them and nearby allies for the stored amount and granting $s3 Haste for $418080d before the record is lost.", "Whenever you or one of your allies falls below $417960s1% health, the Tyrstone will summon an echo of your past self, healing them for the stored amount split among nearby allies and granting $s3 Haste for $418080d before the record is lost. Deals increased healing when healing multiple allies." },
 } };
 
 // Spell description variables, wow build 10.1.5.50469
