@@ -1820,7 +1820,7 @@ timespan_t enemy_t::time_to_percent( double percent ) const
 
 void enemy_t::recalculate_health()
 {
-  if ( sim->expected_iteration_time <= timespan_t::zero() || fixed_health > 0 )
+  if ( sim->expected_iteration_time <= timespan_t::zero() || fixed_health > 0 || fixed_health_percentage > 0 )
     return;
 
   if ( initial_health == 0 )  // first iteration
