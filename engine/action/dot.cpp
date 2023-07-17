@@ -313,7 +313,7 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_ac
       new_duration = remains();
 
       // Add an active dot on the source, since we are starting a new one
-      source->add_active_dot( copy_action->get_dot() );
+      source->add_active_dot( other_dot );
     }
 
     sim.print_log( "{} cloning {} from {} to {} on {}: source_remains={:.3f} target_remains={:.3f} target_duration={:.3f}",
