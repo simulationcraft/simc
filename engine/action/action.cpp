@@ -1109,8 +1109,8 @@ cost_t action_t::cost() const
   if ( !harmful && is_precombat )
     return {};
 
-  resource_e r1 = primary_resource();
-  resource_e r2 = secondary_resource();
+  auto r1 = primary_resource();
+  auto r2 = secondary_resource();
   double c1, c2;
 
   c1 = r1 ? cost( r1 ) : 0;
@@ -1549,8 +1549,8 @@ double action_t::consume_resource( resource_e r, double a )
 
 void action_t::consume_resource()
 {
-  resource_e r1 = primary_resource();
-  resource_e r2 = secondary_resource();
+  auto r1 = primary_resource();
+  auto r2 = secondary_resource();
 
   if ( ( r1 == RESOURCE_NONE && r2 == RESOURCE_NONE ) || !base_cost() || proc )
     return;
@@ -2461,8 +2461,12 @@ bool action_t::ready()
   if ( player->is_moving() && !usable_moving() )
     return false;
 
-  auto resource = primary_resource();
-  if ( resource != RESOURCE_NONE && !player->resource_available( resource, cost() ) )
+  auto r1 = primary_resource();
+  auto r2 = secondary_resource();
+  auto c = cost();
+
+  if ( ( r1 && !player->resource_available( r1, c.first() ) ) ||
+       ( r2 && !player->resource_available( r2, c.second() ) ) )
   {
     if ( starved_proc )
       starved_proc->occur();
@@ -4420,8 +4424,8 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
    */
   bool cancel_action = false;
 
-  resource_e r1 = primary_resource();
-  resource_e r2 = secondary_resource();
+  auto r1 = primary_resource();
+  auto r2 = secondary_resource();
 
   last_resource_cost = { consume_cost_per_tick( r1, cost_per_tick( r1 ), cancel_action ),
                          consume_cost_per_tick( r2, cost_per_tick( r2 ), cancel_action ) };
