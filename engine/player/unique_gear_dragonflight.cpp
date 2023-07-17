@@ -4031,9 +4031,10 @@ void neltharions_call_to_chaos( special_effect_t& effect )
           } );
       break;
     case WARRIOR:
-      proc_spell_id = { { 1680, 190411, 396719, 6343, 384318, 376079, 46968, 845, 262161, 227847, 50622, 385059, 228920, 156287, 6572  } };
+      proc_spell_id = { { 1680, 190411, 396719, 6343, 384318, 376079, 46968, 845, 262161, 227847, 50622, 385059, 228920, 156287, 6572, 315961  } };
       // only true AoE, in order - Whirlwind Arms, Whirlwind Fury, Thunder Clap, Thunder Clap Prot, Thunderous Roar
       // Spear of Bastion, Shockwave, Cleave, Warbreaker, Bladestorm, BS Tick, Odyns Fury, Ravager, Rav Tick, Revenge
+      // Dreadnaught added in Patch 10.1.5
       effect.player->callbacks.register_callback_trigger_function(
           driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
           [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
