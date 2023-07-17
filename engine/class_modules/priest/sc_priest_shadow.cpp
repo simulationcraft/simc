@@ -547,11 +547,11 @@ public:
 
     state_t* s = cast_state( get_state() );
 
-    snapshot_state( s, amount_type( s ) );
-
+    s->target = target;
     s->source_crit    = _gets_crit_mod ? 2.0 : 1.0;
     s->number_spawned = vts;
-    s->target         = target;
+
+    snapshot_state( s, amount_type( s ) );
 
     // Darkflame Shroud buffs Apparitions as they spawn, not on hit
     s->buffed_by_darkflame_shroud = priest().buffs.darkflame_shroud->check();
