@@ -4020,6 +4020,9 @@ void neltharions_call_to_chaos( special_effect_t& effect )
       effect.player->callbacks.register_callback_trigger_function(
           driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
           []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+            if ( a->data().id() == 395160 )
+              return false;
+
             auto _s              = a->pre_execute_state;
             a->pre_execute_state = s;
             auto b               = a->is_aoe();
