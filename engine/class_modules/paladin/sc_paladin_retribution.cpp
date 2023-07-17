@@ -548,7 +548,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   void execute() override
   {
     // store cost for potential refunding (see below)
-    double c = cost();
+    auto c = cost();
 
     holy_power_consumer_t::execute();
 

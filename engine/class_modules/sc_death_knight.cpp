@@ -3092,7 +3092,7 @@ struct magus_pet_t : public death_knight_pet_t
     }
 
     // There's a 1 energy cost in spelldata but it might as well be ignored
-    double cost() const override
+    cost_t cost() const override
     { return 0; }
   };
 
@@ -4289,10 +4289,6 @@ struct army_of_the_dead_t final : public death_knight_spell_t
 
   }
 
-  // Army of the Dead should always cost resources
-  double cost() const override
-  { return base_costs[ RESOURCE_RUNE ]; }
-
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -4587,7 +4583,7 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
   }
 
   // Resource cost/loss handled by buff
-  double cost() const override
+  cost_t cost() const override
   {
     return 0;
   }
@@ -5213,7 +5209,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
     damage -> stats = stats;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.crimson_scourge -> check() )
     {
@@ -5446,14 +5442,12 @@ struct death_coil_t final : public death_knight_spell_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( p() -> buffs.sudden_doom -> check() )
       return 0;
 
-    double cost = death_knight_spell_t::cost();
-
-    return cost;
+    return death_knight_spell_t::cost();
   }
 
   void execute() override
@@ -5736,9 +5730,9 @@ struct death_strike_t final : public death_knight_melee_attack_t
     return m;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = death_knight_melee_attack_t::cost();
+    auto c = death_knight_melee_attack_t::cost();
 
     c += p() -> buffs.ossuary -> value();
 
@@ -5907,7 +5901,7 @@ struct epidemic_t final : public death_knight_spell_t
     add_child( impact_action -> impact_action );
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( p() -> buffs.sudden_doom -> check() )
       return 0;
@@ -6652,7 +6646,7 @@ struct howling_blast_t final : public death_knight_spell_t
     return m;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( p() -> buffs.rime -> check() )
     {
@@ -7001,18 +6995,6 @@ struct obliterate_t final : public death_knight_melee_attack_t
     {
       p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
     }
-  }
-
-  double cost() const override
-  {
-    double c = death_knight_melee_attack_t::cost();
-
-    if ( c < 0 )
-    {
-      c = 0;
-    }
-
-    return c;
   }
 
   // Allow on-cast procs

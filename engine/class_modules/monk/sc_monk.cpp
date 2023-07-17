@@ -481,9 +481,9 @@ namespace monk
         }
       }
 
-      double cost() const override
+      cost_t cost() const override
       {
-        double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+        auto c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
 
         if ( c == 0 )
           return c;
@@ -1944,7 +1944,7 @@ namespace monk
           return timespan_t::from_millis( 100 );
         }
 
-        double cost() const override
+        cost_t cost() const override
         {
           return 0;
         }
@@ -2383,7 +2383,7 @@ namespace monk
           return count;
         }
 
-        double cost() const override
+        cost_t cost() const override
         {
           return 0;
         }
@@ -2530,9 +2530,9 @@ namespace monk
           return dot_duration * ( tick_time( s ) / base_tick_time );
         }
 
-        double cost() const override
+        cost_t cost() const override
         {
-          double c = monk_melee_attack_t::cost();
+          auto c = monk_melee_attack_t::cost();
 
           c += p()->buff.dance_of_chiji_hidden->check_value();  // saved as -2
 
@@ -3811,7 +3811,7 @@ namespace monk
           return timespan_t::from_seconds( p()->talent.brewmaster.special_delivery->effectN( 1 ).base_value() );
         }
 
-        double cost() const override
+        cost_t cost() const override
         {
           return 0;
         }
@@ -5510,9 +5510,9 @@ namespace monk
           return am;
         }
 
-        double cost() const override
+        cost_t cost() const override
         {
-          double c = monk_heal_t::cost();
+          cost_t c = monk_heal_t::cost();
 
           if ( p()->buff.thunder_focus_tea->check() )
             c *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 2 ).percent();  // saved as -100
@@ -5867,7 +5867,7 @@ namespace monk
           heal = new zen_pulse_echo_heal_t( *player );
         }
 
-        double cost() const override
+        cost_t cost() const override
         {
           return 0;
         }
@@ -5913,7 +5913,7 @@ namespace monk
           spell_power_mod.tick    = 0;
         }
 
-        double cost() const override
+        cost_t cost() const override
         {
           return 0;
         }
@@ -6246,7 +6246,7 @@ namespace monk
           return timespan_t::from_seconds( p()->talent.brewmaster.special_delivery->effectN( 1 ).base_value() );
         }
 
-        double cost() const override
+        cost_t cost() const override
         {
           return 0;
         }

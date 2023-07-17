@@ -4417,7 +4417,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( from_onslaught )
       return 0.0;

@@ -1067,64 +1067,62 @@ bool action_t::verify_actor_weapon() const
 
 // action_t::base_cost ======================================================
 
-double action_t::base_cost() const
+double action_t::base_cost( resource_e r ) const
 {
-  resource_e cr = primary_resource();
-  double c      = base_costs[ cr ];
-  if ( additional_costs[ cr ] != 0 )
-  {
-    c += additional_costs[ cr ];
-  }
-
-  return c;
+  return r ? base_costs[ r ] + additional_costs[ r ] : 0;
 }
 
-/**
- * Resource cost of the action for primary_resource()
- */
-double action_t::cost() const
+cost_t action_t::base_cost() const
 {
-  if ( !harmful && is_precombat )
-    return 0;
+  return { base_cost( primary_resource() ), base_cost( secondary_resource() ) };
+}
 
-  resource_e cr = primary_resource();
-
+double action_t::cost( resource_e r ) const
+{
   double c;
-  if ( additional_costs[ cr ] == 0 )
-  {
-    c = base_costs[ cr ];
-  }
+
   // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely
   // possible we need to add some additional functionality (such as an overridable method) to
   // determine the cost, if the default behavior is not universal.
+  if ( !additional_costs[ r ] )
+  {
+    c = base_costs[ r ];
+  }
   else
   {
-    if ( player->resources.current[ cr ] >= base_costs[ cr ] )
-    {
-      c = std::min( base_cost(), player->resources.current[ cr ] );
-    }
+    if ( player->resources.current[ r ] >= base_costs[ r ] )
+      c = std::min( base_cost( r ), player->resources.current[ r ] );
     else
-    {
-      c = base_costs[ cr ];
-    }
+      c = base_costs[ r ];
   }
 
   c -= player->current.resource_reduction[ get_school() ];
 
-  if ( cr == RESOURCE_MANA && player->buffs.courageous_primal_diamond_lucidity &&
-       player->buffs.courageous_primal_diamond_lucidity->check() )
-  {
-    c = 0;
-  }
-
   if ( c < 0 )
-    c = 0;
-
-  if ( sim->debug )
-    sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
-                           base_costs[ cr ], additional_costs[ cr ], c, cr );
+    return 0;
 
   return floor( c );
+}
+
+cost_t action_t::cost() const
+{
+  if ( !harmful && is_precombat )
+    return {};
+
+  resource_e r1 = primary_resource();
+  resource_e r2 = secondary_resource();
+  double c1, c2;
+
+  c1 = r1 ? cost( r1 ) : 0;
+  c2 = r2 ? cost( r2 ) : 0;
+
+  if ( r1 )
+    sim->print_debug( "{} {} cost: base={} add={} final={}", *this, r1, base_costs[ r1 ], additional_costs[ r1 ], c1 );
+
+  if ( r2 )
+    sim->print_debug( "{} {} cost: base={} add={} final={}", *this, r2, base_costs[ r2 ], additional_costs[ r2 ], c2 );
+
+  return { c1, c2 };
 }
 
 double action_t::cost_per_tick( resource_e r ) const
@@ -1536,7 +1534,7 @@ void action_t::consume_resource()
 {
   resource_e cr = primary_resource();
 
-  if ( cr == RESOURCE_NONE || base_cost() == 0 || proc )
+  if ( cr == RESOURCE_NONE || !base_cost( cr ) || proc )
     return;
 
   last_resource_cost = cost();
@@ -3041,8 +3039,11 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
   if ( name_str == "usable" )
     return make_mem_fn_expr( name_str, *cooldown, &cooldown_t::is_ready );
 
-  if ( name_str == "cost" )
-    return make_mem_fn_expr( name_str, *this, &action_t::cost );
+  if ( name_str == "cost" || name_str == "cost1" )
+    return make_fn_expr( name_str, [ this ] { return cost().first(); } );
+
+  if ( name_str == "cost2" )  
+    return make_fn_expr( name_str, [ this ] { return cost().second(); } );
 
   if ( name_str == "target" )
     return make_fn_expr( name_str, [this] { return target->actor_index; } );

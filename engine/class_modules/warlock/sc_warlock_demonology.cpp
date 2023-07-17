@@ -206,7 +206,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   void execute() override
   {
-    int shards_used = as<int>( cost() );
+    int shards_used = static_cast<int>( cost() );
     impact_spell->shards_used = shards_used;
 
     demonology_spell_t::execute();
@@ -348,9 +348,9 @@ struct call_dreadstalkers_t : public demonology_spell_t
     may_crit = false;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = demonology_spell_t::cost();
+    auto c = demonology_spell_t::cost();
 
     if ( p()->buffs.demonic_calling->check() )
     {

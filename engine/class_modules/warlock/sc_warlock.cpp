@@ -832,7 +832,7 @@ struct soulburn_t : public warlock_spell_t
     }
     else if ( p()->specialization() == WARLOCK_DESTRUCTION )
     {
-      int shards_used = as<int>( cost() );
+      int shards_used = static_cast<int>( cost() );
       if ( resource_primary == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() && shards_used > 0 )
       {
         for ( int i = 0; i < shards_used; i++ )

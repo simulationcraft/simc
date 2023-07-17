@@ -9680,7 +9680,18 @@ struct pool_resource_t : public action_t
       // If the next action in the list would be "ready" if it was not constrained by energy,
       // then this command will pool energy until we have enough.
 
-      double theoretical_cost = next_action->cost() + ( amount_expr ? amount_expr->eval() : 0 );
+      auto c = next_action->cost();
+      double theoretical_cost;
+
+      if ( resource == next_action->primary_resource() )
+        theoretical_cost = c.first();
+      else if ( resource == next_action->secondary_resource() )
+        theoretical_cost = c.second();
+      else
+        theoretical_cost = 0;
+
+      theoretical_cost += ( amount_expr ? amount_expr->eval() : 0 );
+
       player->resources.current[ resource ] += theoretical_cost;
 
       bool resource_limited = next_action->action_ready();

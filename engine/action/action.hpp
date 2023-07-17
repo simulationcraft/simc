@@ -45,6 +45,31 @@ struct weapon_t;
 
 // Action ===================================================================
 
+struct cost_t
+{
+private:
+  double one_;
+  double two_;
+
+public:
+  cost_t( double f = 0.0, double s = 0.0 ) : one_( f ), two_( s ) {}
+
+  operator double() const
+  { return one_; }
+
+  operator double&()
+  { return one_; }
+
+  double first() const
+  { return one_; }
+
+  double second() const
+  { return two_; }
+
+  double& second()
+  { return two_; }
+};
+
 struct action_t : private noncopyable
 {
 public:
@@ -642,6 +667,10 @@ public:
 
   void parse_target_str();
 
+  double base_cost( resource_e ) const;
+
+  cost_t base_cost() const;
+
   void remove_travel_event( travel_event_t* e );
 
   void reschedule_queue_event();
@@ -677,9 +706,9 @@ public:
 
   virtual bool verify_actor_weapon() const;
 
-  virtual double cost() const;
+  virtual double cost( resource_e ) const;
 
-  virtual double base_cost() const;
+  virtual cost_t cost() const;
 
   virtual double cost_per_tick( resource_e ) const;
 

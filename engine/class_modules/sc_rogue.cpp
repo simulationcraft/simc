@@ -2220,9 +2220,9 @@ public:
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = ab::cost();
+    auto c = ab::cost();
 
     if ( c <= 0 )
       return 0;
@@ -3750,9 +3750,9 @@ struct dispatch_t: public rogue_attack_t
   {
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = rogue_attack_t::cost();
+    auto c = rogue_attack_t::cost();
 
     if ( p()->buffs.summarily_dispatched->check() )
     {
@@ -4426,9 +4426,9 @@ struct pistol_shot_t : public rogue_attack_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = rogue_attack_t::cost();
+    auto c = rogue_attack_t::cost();
 
     if ( p()->buffs.opportunity->check() )
     {
@@ -5832,9 +5832,9 @@ struct cheap_shot_t : public rogue_attack_t
   {
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = rogue_attack_t::cost();
+    cost_t c = rogue_attack_t::cost();
     if ( p()->buffs.shot_in_the_dark->up() )
       return 0.0;
     return c;

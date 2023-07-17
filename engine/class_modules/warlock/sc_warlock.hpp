@@ -877,9 +877,9 @@ public:
     spell_t::reset();
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = spell_t::cost();
+    auto c = spell_t::cost();
     return c;
   }
 

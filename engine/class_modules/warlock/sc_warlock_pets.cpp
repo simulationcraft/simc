@@ -805,7 +805,7 @@ struct demonic_strength_t : public felstorm_t
   }
 
   // 2022-10-03 - Triggering Demonic Strength seems to ignore energy cost for Felstorm
-  double cost() const override
+  cost_t cost() const override
   {
     return 0.0;
   }
@@ -1257,7 +1257,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     double c = warlock_pet_spell_t::cost();
 

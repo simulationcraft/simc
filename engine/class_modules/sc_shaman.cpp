@@ -1548,9 +1548,9 @@ public:
     return et;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = ab::cost();
+    auto c = ab::cost();
 
     // check all effectN entries and apply them if appropriate
     for ( auto i = 1U; i <= p()->talent.eye_of_the_storm->effect_count(); i++ )
@@ -2372,7 +2372,7 @@ struct pet_action_t : public T_ACTION
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   { return 0; }
 };
 

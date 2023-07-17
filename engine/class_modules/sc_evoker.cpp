@@ -1004,13 +1004,13 @@ public:
                           p()->talent.shattering_star );
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( ab::data().powers().size() > 1 && ab::primary_resource() != ab::data().powers()[ 0 ].resource() )
       return ab::cost();
 
-    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
-                              get_buff_effects_value( cost_buffeffects, false, false ) );
+    return std::max<double>( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
+                                      get_buff_effects_value( cost_buffeffects, false, false ) );
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1679,7 +1679,7 @@ struct emerald_blossom_t : public essence_heal_t
 
     resource_e cr = resource_primary = RESOURCE_MANA;
 
-    if ( base_cost() == 0 || proc )
+    if ( !base_cost() || proc )
       return;
 
     last_resource_cost = cost();

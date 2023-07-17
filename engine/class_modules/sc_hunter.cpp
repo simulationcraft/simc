@@ -1098,9 +1098,9 @@ public:
     return cc;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = ab::cost();
+    auto c = ab::cost();
 
     if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
     { 
@@ -2270,9 +2270,9 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     return am;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = hunter_main_pet_attack_t::cost();
+    auto c = hunter_main_pet_attack_t::cost();
 
     if ( use_wild_hunt() )
       c *= wild_hunt.cost_pct;
@@ -2306,7 +2306,7 @@ struct brutal_companion_ba_t : public basic_attack_t
     return am;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     return 0;
   }
@@ -2952,7 +2952,7 @@ struct kill_shot_t : hunter_ranged_attack_t
     return hunter_ranged_attack_t::n_targets();
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     return hunter_ranged_attack_t::cost();
   }
@@ -3028,9 +3028,9 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = hunter_ranged_attack_t::cost();
+    auto c = hunter_ranged_attack_t::cost();
 
     if ( p() -> buffs.eagletalons_true_focus -> check() )
       c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
@@ -3723,7 +3723,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       p() -> cooldowns.bestial_wrath -> adjust( -p() -> tier_set.t30_bm_4pc -> effectN( 1 ).time_value() );
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     double c = hunter_ranged_attack_t::cost();
 
@@ -3889,7 +3889,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     double c = hunter_ranged_attack_t::cost();
 
@@ -4013,7 +4013,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     return m;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     const bool casting = p() -> executing && p() -> executing == this;
     if ( casting ? lock_and_loaded : p() -> buffs.lock_and_load -> check() )
@@ -4346,9 +4346,9 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = hunter_ranged_attack_t::cost();
+    auto c = hunter_ranged_attack_t::cost();
 
     if ( p() -> buffs.eagletalons_true_focus -> check() )
       c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
@@ -5396,9 +5396,9 @@ struct kill_command_t: public hunter_spell_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = hunter_spell_t::cost();
+    auto c = hunter_spell_t::cost();
 
     c *= 1 + p() -> buffs.flamewakers_cobra_sting -> check_value();
     c *= 1 + p() -> buffs.cobra_sting -> check_value();

@@ -20,7 +20,7 @@
 // 3) `get_buff_effects_value( buff effect vector ) returns the modified value.
 //    Add the following overrides with any addtional adjustments as needed (BASE is the parent to the action base class):
 
-/*    double cost() const override
+/*    cost_t cost() const override
       { return std::max( 0.0, ( BASE::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) )
                                              * get_buff_effects_value( cost_buffeffects, false, false ) ); }
 

@@ -1283,7 +1283,7 @@ struct holy_power_consumer_t : public Base
     doesnt_consume_dp( false )
   { }
 
-  double cost() const override
+  cost_t cost() const override
   {
     // paladin_t* p = paladin_action_t<Base>::template p();
 
@@ -1298,14 +1298,14 @@ struct holy_power_consumer_t : public Base
       return 0.0;
     }
 
-    double c = ab::cost();
+    auto c = ab::cost();
 
     if ( ab::p()->talents.vanguard_of_justice->ok() )
     {
       c += ab::p()->talents.vanguard_of_justice->effectN( 1 ).base_value();
     }
 
-    return std::max( c, 0.0 );
+    return std::max<double>( c, 0.0 );
   }
 
   void impact( action_state_t* s ) override

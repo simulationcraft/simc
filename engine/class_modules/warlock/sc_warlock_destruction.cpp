@@ -25,8 +25,8 @@ public:
   {
     warlock_spell_t::consume_resource();
 
-    int shards_used = as<int>( cost() );
-    int base_cost = as<int>( destruction_spell_t::cost() ); // Power Overwhelming is ignoring any cost changes
+    int shards_used = static_cast<int>( cost() );
+    int base_cost = static_cast<int>( destruction_spell_t::cost() ); // Power Overwhelming is ignoring any cost changes
 
     // The shard cost reduction from Crashing Chaos is "undone" for Impending Ruin stacking
     // This can be observed during the free Ritual of Ruin cast, which always increments by 1 stack regardless of spell
@@ -163,9 +163,9 @@ struct shadowburn_t : public destruction_spell_t
     base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = destruction_spell_t::cost();
+    auto c = destruction_spell_t::cost();
 
     if ( c > 0.0 && !p()->min_version_check(VERSION_10_1_5) && p()->talents.crashing_chaos->ok() )
       c += p()->buffs.crashing_chaos->check_value();
@@ -470,7 +470,7 @@ struct incinerate_fnb_t : public destruction_spell_t
     destruction_spell_t::snapshot_state( s, rt );
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     return 0.0;
   }
@@ -707,9 +707,9 @@ struct chaos_bolt_t : public destruction_spell_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = destruction_spell_t::cost();
+    auto c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 2 ).percent();
@@ -947,9 +947,9 @@ struct rain_of_fire_t : public destruction_spell_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = destruction_spell_t::cost();
+    auto c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 5 ).percent();

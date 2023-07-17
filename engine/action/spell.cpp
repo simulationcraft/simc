@@ -41,10 +41,15 @@ spell_base_t::spell_base_t( action_e at,
   crit_multiplier *= util::crit_multiplier( player -> meta_gem );
 }
 
-double spell_base_t::cost() const
+cost_t spell_base_t::cost() const
 {
-  if ( primary_resource() == RESOURCE_MANA && player->buffs.chilled_clarity && player->buffs.chilled_clarity->check() )
-    return 0;
+  if ( primary_resource() == RESOURCE_MANA &&
+       ( ( player->buffs.courageous_primal_diamond_lucidity &&
+           player->buffs.courageous_primal_diamond_lucidity->check() ) ||
+         ( player->buffs.chilled_clarity && player->buffs.chilled_clarity->check() ) ) )
+  {
+    return {};
+  }
 
   return action_t::cost();
 }

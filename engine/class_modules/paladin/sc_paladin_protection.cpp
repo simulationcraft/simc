@@ -847,9 +847,9 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     return am;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = holy_power_consumer_t::cost();
+    auto c = holy_power_consumer_t::cost();
 
     if ( p()->buffs.bastion_of_light->check() )
       c *= 1.0 + p()->buffs.bastion_of_light->data().effectN( 1 ).percent();

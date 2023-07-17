@@ -1042,7 +1042,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( has_crusader_2 )
       return 0;
@@ -1188,9 +1188,9 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     return am;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = holy_power_consumer_t::cost();
+    auto c = holy_power_consumer_t::cost();
 
     if ( p()->buffs.shining_light_free->check() )
       c *= 1.0 + p()->buffs.shining_light_free->data().effectN( 1 ).percent();

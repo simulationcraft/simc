@@ -317,9 +317,9 @@ struct malefic_rapture_t : public affliction_spell_t
     add_child( impact_action );
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = affliction_spell_t::cost();
+    auto c = affliction_spell_t::cost();
 
     if ( p()->buffs.tormented_crescendo->check() )
       c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();

@@ -273,9 +273,9 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     return static_cast<priest_pet_t&>( *player );
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = spell_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+    auto c = spell_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
     return c;
   }
 

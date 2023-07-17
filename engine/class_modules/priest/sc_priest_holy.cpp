@@ -22,7 +22,7 @@ struct holy_word_sanctify_t final : public priest_heal_t
     harmful = false;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( priest().buffs.apotheosis->check() || priest().buffs.answered_prayers->check() )
     {
@@ -52,7 +52,7 @@ struct holy_word_serenity_t final : public priest_heal_t
     harmful = false;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( priest().buffs.apotheosis->check() || priest().buffs.answered_prayers->check() )
     {
@@ -217,7 +217,7 @@ struct holy_fire_t final : public priest_spell_t
     parse_options( options_str );
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( priest().buffs.empyreal_blaze->check() | !casted )
     {
@@ -299,7 +299,7 @@ struct holy_word_chastise_t final : public priest_spell_t
   {
     parse_options( options_str );
   }
-  double cost() const override
+  cost_t cost() const override
   {
     if ( priest().buffs.apotheosis->check() || priest().buffs.answered_prayers->check() )
     {

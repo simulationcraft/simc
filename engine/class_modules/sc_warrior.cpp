@@ -1230,9 +1230,9 @@ public:
     return ab::n_targets();
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = ab::cost();
+    auto c = ab::cost();
 
     return c;
   }
@@ -2308,7 +2308,7 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     return am;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     return 0;
   }
@@ -2425,7 +2425,7 @@ struct mortal_strike_t : public warrior_attack_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( ( !from_mortal_combo ) && p()->buff.battlelord->check() )
     {
@@ -3325,7 +3325,7 @@ struct cleave_t : public warrior_attack_t
     reduced_aoe_targets = 5.0;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( p()->buff.battlelord->check() )
     {
@@ -3637,10 +3637,10 @@ struct execute_arms_t : public warrior_attack_t
     return c;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = warrior_attack_t::cost();
-    c        = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
+    auto c = warrior_attack_t::cost();
+    c        = std::min( max_rage, std::max<double>( p()->resources.current[ RESOURCE_RAGE ], c ) );
 
     if ( p()->buff.ayalas_stone_heart->check() )
     {
@@ -3845,10 +3845,10 @@ struct fury_execute_parent_t : public warrior_attack_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = warrior_attack_t::cost();
-    c        = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
+    auto c = warrior_attack_t::cost();
+    c        = std::min( max_rage, std::max<double>( p()->resources.current[ RESOURCE_RAGE ], c ) );
 
     if ( p()->talents.fury.improved_execute->ok() )
     {
@@ -5344,9 +5344,9 @@ struct revenge_t : public warrior_attack_t
       }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double cost = warrior_attack_t::cost();
+    auto cost = warrior_attack_t::cost();
     cost *= 1.0 + p()->buff.revenge->check_value();
     //cost *= 1.0 + p()->buff.vengeance_revenge->check_value();
     return cost;
@@ -5829,7 +5829,7 @@ struct slam_t : public warrior_attack_t
     return b;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( from_Fervor )
       return 0;
@@ -6426,7 +6426,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     return dot_duration;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( p()->talents.arms.fervor_of_battle->ok() && p()->buff.crushing_assault->check() )
       return 10;
@@ -6647,10 +6647,10 @@ struct condemn_arms_t : public warrior_attack_t
     return c;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = warrior_attack_t::cost();
-    c        = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
+    auto c = warrior_attack_t::cost();
+    c        = std::min( max_rage, std::max<double>( p()->resources.current[ RESOURCE_RAGE ], c ) );
 
     if ( p()->buff.ayalas_stone_heart->check() )
     {
@@ -6844,10 +6844,10 @@ struct fury_condemn_parent_t : public warrior_attack_t
     }
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = warrior_attack_t::cost();
-    c = std::min( max_rage, std::max( p()->resources.current[RESOURCE_RAGE], c ) );
+    auto c = warrior_attack_t::cost();
+    c = std::min( max_rage, std::max<double>( p()->resources.current[RESOURCE_RAGE], c ) );
 
     if ( p()->talents.fury.improved_execute->ok() )
     {
@@ -7700,9 +7700,9 @@ struct ignore_pain_t : public warrior_spell_t
     return da;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    double c = warrior_spell_t::cost();
+    auto c = warrior_spell_t::cost();
 
     //c *= 1.0 + p() -> buff.vengeance_ignore_pain -> value();
 
@@ -7758,7 +7758,7 @@ struct ignore_pain_bom_t : public ignore_pain_t
     //p()->buff.vengeance_revenge->trigger(); // this IP does trigger vengeance but doesnt consume it
   }
 
-  double cost( ) const override
+  cost_t cost( ) const override
   {
     return 0.0;
   }

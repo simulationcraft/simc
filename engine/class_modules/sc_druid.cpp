@@ -2177,18 +2177,22 @@ public:
     return return_value;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
-    if ( is_free() || ( p()->specialization() == DRUID_RESTORATION && p()->buff.innervate->up() ) )
-      return 0.0;
+    if ( is_free() || ( ab::primary_resource() == RESOURCE_MANA &&
+                        p()->specialization() == DRUID_RESTORATION &&
+                        p()->buff.innervate->up() ) )
+    {
+      return {};
+    }
 
-    double c = ab::cost();
+    auto c = ab::cost();
 
     c += get_buff_effects_value( flat_cost_buffeffects, true, false );
 
     c *= get_buff_effects_value( cost_buffeffects, false, false );
 
-    return std::max( 0.0, c );
+    return std::max<double>( 0.0, c );
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
@@ -3038,7 +3042,7 @@ public:
 
   void consume_resource() override
   {
-    double eff_cost = base_cost();
+    auto eff_cost = base_cost();
 
     base_t::consume_resource();
 
@@ -3668,7 +3672,7 @@ struct ferocious_bite_t : public cat_finisher_t
     // Incarn does affect the additional energy consumption.
     double _max_used = max_excess_energy * ( 1.0 + p()->buff.incarnation_cat->check_value() );
 
-    excess_energy = std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cat_finisher_t::cost() ) );
+    excess_energy = std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cost() ) );
     
     cat_finisher_t::execute();
   }
@@ -7260,14 +7264,14 @@ struct swipe_proxy_t : public druid_spell_t
     return false;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( p()->buff.cat_form->check() )
       return swipe_cat->cost();
     else if ( p()->buff.bear_form->check() )
       return swipe_bear->cost();
 
-    return 0;
+    return {};
   }
 };
 
@@ -7350,14 +7354,14 @@ struct thrash_proxy_t : public druid_spell_t
     return false;
   }
 
-  double cost() const override
+  cost_t cost() const override
   {
     if ( p()->buff.cat_form->check() )
       return thrash_cat->cost();
     else if ( p()->buff.bear_form->check() )
       return thrash_bear->cost();
 
-    return 0;
+    return {};
   }
 };
 
