@@ -3505,6 +3505,7 @@ namespace monk
           snapshot_flags = update_flags = 0;
           snapshot_flags |= STATE_VERSATILITY;
         }
+      
       };
 
       struct touch_of_karma_t : public monk_melee_attack_t
@@ -3562,6 +3563,14 @@ namespace monk
           snapshot_flags = update_flags = 0;
         }
 
+        bool target_ready( player_t *target ) override
+        {
+          if ( target->name_str == "Target Dummy" )
+            return false;
+
+          return monk_melee_attack_t::ready();
+        }
+
         void execute() override
         {
           timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
@@ -3583,6 +3592,7 @@ namespace monk
             residual_action::trigger( touch_of_karma_dot, execute_state->target, damage_amount );
           }
         }
+
       };
 
       // ==========================================================================
