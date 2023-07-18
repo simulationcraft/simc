@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -740,7 +740,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=477160)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=477161)   : Apply Aura (6) | Unknown(147)
+#3 (id=477161)   : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 1887 | Target: Self (1)
 #4 (id=728895)   : Apply Aura (6) | Resist Forced Movement% (485)
                    Base Value: -100 | Scaled Value: -100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1959,7 +1959,7 @@ Effects          :
                    Base Value: 225 | Scaled Value: 225 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Howling Blast (237680)
                    Family Flags: 33
-#3 (id=292146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#3 (id=292146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Howling Blast (237680)
                    Family Flags: 33
@@ -2575,7 +2575,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Death and Decay (43265), Defile (152280), Death's Due (324128), Death's Due (324164), Death's Due (324165)
                    Family Flags: 5
-#2 (id=312580)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#2 (id=312580)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Death and Decay (43265), Defile (152280), Death's Due (324128), Death's Due (324164), Death's Due (324165)
                    Family Flags: 5
@@ -4350,7 +4350,7 @@ Effects          :
                    Family Flags: 5, 57
 #2 (id=725985)   : Apply Aura (6) | Dummy (4)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=801034)   : Apply Aura (6) | Add Percent Modifier (108): Spell Damage Taken (27)
+#3 (id=801034)   : Apply Aura (6) | Add Percent Modifier (108): Spell Amplitude (27)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
                    Affected Spells: Blood Plague (55078)
                    Family Flags: 57
@@ -9452,7 +9452,6 @@ Description      : $@spelldesc281208
 Tooltip          : Your next Chains of Ice will deal $281210s1 Frost damage.
 
 Name             : Cold Heart (id=281210) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -10735,7 +10734,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
-#1 (id=801154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#1 (id=801154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Heart Strike (206930), Heart Strike (228645)
                    Family Flags: 24
@@ -11179,7 +11178,6 @@ Effects          :
 Description      : $@spelldesc319230
 
 Name             : Unholy Pact (id=319236) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -15339,7 +15337,6 @@ Effects          :
 Description      : Dancing Rune Weapon generates $s2 Bone Shield charges. When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec.
 
 Name             : Shattering Bone (id=377640) [Spell Family (15), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Blood [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(1, 100)]
                  : Effect#3 [op=mul, values=(1, 2)]
@@ -15854,7 +15851,6 @@ Effects          :
 Description      : Apocalypse and Army of the Dead also summon a Magus of the Dead who hurls Frostbolts and Shadow Bolts at your foes.
 
 Name             : Ruptured Viscera (id=390220) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -16007,7 +16003,6 @@ Effects          :
 Description      : Death Coil causes the target to take an additional $s1% of the direct damage dealt over $253367d.
 
 Name             : Coil of Devastation (id=390271) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic

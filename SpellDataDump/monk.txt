@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -5186,7 +5186,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680)
                    Family Flags: 0, 31
-#2 (id=290810)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(31)
+#2 (id=290810)   : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680)
                    Family Flags: 0, 31
@@ -13869,7 +13869,6 @@ Effects          :
 Description      : Your abilities have a low chance to cast Bonedust Brew at your target's location.
 
 Name             : Charred Passions (id=386959) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Fire
 Spell Type       : Magic
@@ -14387,6 +14386,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 2706: Spatial Paradox (406732 effect#10)
 Affecting spells : Enveloping Mist (124682 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 102
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
@@ -16821,6 +16821,7 @@ Effects          :
 Description      : When you consume a Healing Sphere or cast Expel Harm, your current Stagger amount is lowered by $s1%.
 
 Name             : Chi Surge (id=393400) [Spell Family (53), Passive, Hidden] 
+Hotfixed         : Variables
 Talent Entry     : Brewmaster [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Nature
@@ -16850,7 +16851,7 @@ Deals $<ptadmg> Nature damage.
 $@spellicon387184 $@spellname387184:
 Deals $<dmg> Nature damage and reduces the cooldown of Weapons of Order by $s1 for each affected enemy, to a maximum of ${$s1*5} sec.
 Variables        : $dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}
-$ptadmg=${$<dmg>*$abs($418359s5)/100}
+$ptadmg=${$<dmg>*$abs($418359s3)/100}
 
 Name             : Tea of Serenity (id=393460) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
@@ -17041,7 +17042,6 @@ Effects          :
 Description      : Fists of Fury now instead enhances your next $s1 Rising Sun Kicks or Spinning Crane Kicks and enhanced kicks increase the damage of your next Fists of Fury by $394949s1%, stacking up to 3 times.
 
 Name             : Chi Surge (id=393786) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -18374,7 +18374,8 @@ Effects          :
 #1 (id=1090589)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1090591)  : Apply Aura (6) | Proc Trigger Spell (42): Press the Advantage
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 418361 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Trigger Spell: 418361 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 500)
 #3 (id=1090592)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1090895)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
@@ -18385,7 +18386,6 @@ Description      : Your main hand auto attacks reduce the cooldown on your brews
 Upon reaching $418361u stacks, your next cast of Rising Sun Kick or Keg Smash consumes all stacks to strike again at $418361s2% effectiveness. This bonus attack can trigger effects on behalf of Tiger Palm at reduced effectiveness.
 
 Name             : Press the Advantage (id=418360) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
