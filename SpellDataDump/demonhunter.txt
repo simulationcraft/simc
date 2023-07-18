@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -6026,7 +6026,6 @@ Effects          :
 Description      : $@spelldesc275144
 
 Name             : Unbound Chaos (id=275148) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
@@ -7523,7 +7522,6 @@ Description      : Immolation Aura increases your armor by $s1% and causes melee
 Variables        : $dmg=${$320334s1*(1+$320331s2/100)}
 
 Name             : Infernal Armor (id=320334) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -8224,7 +8222,6 @@ Description      : Charge to your target, striking them for $323802s1 $@spelldes
 The pursuit invigorates your soul, healing you for $?c1[$345422s1%][$345422s2%] of the damage you deal to your Hunt target for $323802d.
 
 Name             : The Hunt (desc=Night Fae) (id=323802) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -10184,7 +10181,6 @@ Effects          :
 Description      : Your damaging abilities have a chance to call forth a demon from the Theater of Pain for $329554d. Throw Glaive deals lethal damage to the demon, which explodes on death, dealing $350631s1 $@spelldesc395041 damage to nearby enemies and healing you for $350631s2% of your maximum health. The explosion deals reduced damage beyond 5 targets.
 
 Name             : Fodder to the Flame (desc=Necrolord) (id=350631) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
@@ -10702,7 +10698,6 @@ Description      : Charge to your target, striking them for $370966s1 $@spelldes
 The pursuit invigorates your soul, healing you for $?c1[$370968s1%][$370968s2%] of the damage you deal to your Hunt target for $370966d.
 
 Name             : The Hunt (id=370966) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -10785,7 +10780,6 @@ Effects          :
 Description      : $@spelldesc370965
 
 Name             : The Hunt (id=370969) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Magic
@@ -12510,7 +12504,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 227255 | Target: Self (1)
 
 Name             : Demon Spikes (id=391159) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -12678,7 +12671,6 @@ Description      : $?s203555[Demon Blades][Demon's Bite] and Throw Glaive leave 
 May be applied to up to $s2 targets.
 
 Name             : Burning Wound (id=391191) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Melee
