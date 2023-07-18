@@ -1106,15 +1106,16 @@ double action_t::cost( resource_e r ) const
 
 cost_t action_t::cost() const
 {
-  if ( !harmful && is_precombat )
-    return {};
-
   auto r1 = primary_resource();
   auto r2 = secondary_resource();
   double c1, c2;
 
   c1 = r1 ? cost( r1 ) : 0;
   c2 = r2 ? cost( r2 ) : 0;
+
+  // allow 'free' precombat casting of rapidly regenerating resources for now
+  if ( is_precombat && ( r1 == RESOURCE_ENERGY || r1 == RESOURCE_FOCUS ) )
+    c1 = 0;
 
   if ( r1 )
     sim->print_debug( "{} {} cost: base={} add={} final={}", *this, r1, base_costs[ r1 ], additional_costs[ r1 ], c1 );
@@ -5343,6 +5344,19 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_MODIFY_SCHOOL:
         set_school( effect.school_type() );
         break;
+
+      case A_MOD_MAX_RESOURCE_COST:
+      {
+        auto resource = util::translate_power_type( static_cast<power_e>( effect.misc_value1() ) );
+        if ( base_costs[ resource ] )
+        {
+          auto value = effect.resource( resource );
+          additional_costs[ resource ] += value;
+          sim->print_debug( "{} maximum {} cost modified by {} to {}", *this, util::resource_type_string( resource ),
+                            value, base_cost( resource ) );
+        }
+        break;
+      }
 
       case A_ADD_FLAT_MODIFIER:
         apply_flat_modifier( effect );

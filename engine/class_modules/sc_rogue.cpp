@@ -1839,7 +1839,7 @@ public:
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
   {
-    int consume_cp = as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) );
+    int consume_cp = as<int>( cost().second() );
     int effective_cp = consume_cp;
 
     // Apply and Snapshot Echoing Reprimand Buffs
@@ -2222,10 +2222,10 @@ public:
 
   cost_t cost() const override
   {
-    auto c = ab::cost();
+    cost_t c = ab::cost();
 
-    if ( c <= 0 )
-      return 0;
+    if ( !c )
+      return c;
 
     if ( p()->talent.subtlety.shadow_focus->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     {
@@ -2253,7 +2253,8 @@ public:
 
     ab::consume_resource();
 
-    spend_combo_points( ab::execute_state );
+    if ( ab::secondary_resource() == RESOURCE_COMBO_POINT )
+      spend_combo_points( ab::execute_state );
 
     if ( ab::primary_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
     {
@@ -4848,7 +4849,7 @@ struct rupture_t : public rogue_attack_t
         new_duration_expr_t( rupture_t* a ) :
           expr_t( "new_duration" ),
           rupture( a ),
-          cp_max_spend( a->p()->consume_cp_max() ),
+          cp_max_spend( a->cost().second() ),
           base_duration( a->data().duration().total_seconds() )
         {
         }
@@ -6830,6 +6831,7 @@ struct slice_and_dice_t : public buff_t
       base_pct_heal = p->talent.rogue.recuperator->effectN( 1 ).percent();
       base_dd_min = base_dd_max = 1; // HAX: Make it always heal as this procs things in-game even with 0 value
       base_costs.fill( 0 );
+      additional_costs.fill( 0 );
     }
 
     result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -7723,20 +7725,16 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     return;
 
   const auto rs = cast_state( state );
-  double max_spend = std::min( p()->current_cp(), p()->consume_cp_max() );
-  ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
-  p()->resource_loss( RESOURCE_COMBO_POINT, max_spend );
-  p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism after CP spend
+  auto cp = rs->get_combo_points();
 
-  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
-                                                        *this, p()->current_cp() );
+  p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism after CP spend
 
   // 2018-06-28 -- Secret Technique does not reduce its own cooldown
   // 2022-11-18 -- Updated to work with Echoing Reprimand via hotfix
   if ( p()->talent.subtlety.secret_technique->ok() && ab::data().id() != p()->talent.subtlety.secret_technique->id() )
   {
     timespan_t sectec_cdr = timespan_t::from_seconds( p()->talent.subtlety.secret_technique->effectN( 5 ).base_value() );
-    sectec_cdr *= rs->get_combo_points();
+    sectec_cdr *= cp;
     p()->cooldowns.secret_technique->adjust( -sectec_cdr, false );
   }
 
@@ -7744,7 +7742,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   if ( p()->spell.echoing_reprimand->ok() && consumes_echoing_reprimand() )
   {
     int base_cp = rs->get_combo_points( true );
-    if ( rs->get_combo_points() > base_cp )
+    if ( cp > base_cp )
     {
       auto it = range::find_if( p()->buffs.echoing_reprimand, [ base_cp ]( const buff_t* buff ) { return buff->check_value() == base_cp; } );
       assert( it != p()->buffs.echoing_reprimand.end() );

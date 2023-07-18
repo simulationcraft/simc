@@ -55,22 +55,25 @@ public:
   cost_t( double f = 0.0, double s = 0.0 ) : one_( f ), two_( s ) {}
 
   bool operator!() const
-  { return !one_ && !two_; }
+  { return !first() && !second(); }
+
+  void operator=( double d )
+  { one_ = ( d > 0 ) ? d : 0; }
 
   operator double() const
-  { return one_; }
+  { return first(); }
 
   operator double&()
   { return one_; }
 
   double first() const
-  { return one_; }
+  { return one_ > 0 ? one_ : 0 ; }
 
   double& first()
   { return one_; }
 
   double second() const
-  { return two_; }
+  { return two_ > 0 ? two_ : 0; }
 
   double& second()
   { return two_; }
