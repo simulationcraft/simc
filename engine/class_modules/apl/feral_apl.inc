@@ -8,22 +8,24 @@ action_priority_list_t* clearcasting = get_action_priority_list( "clearcasting" 
 action_priority_list_t* cooldown = get_action_priority_list( "cooldown" );
 action_priority_list_t* finisher = get_action_priority_list( "finisher" );
 action_priority_list_t* variables = get_action_priority_list( "variables" );
+action_priority_list_t* variable = get_action_priority_list( "variable" );
 
 precombat->add_action( "cat_form,if=!buff.cat_form.up","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "heart_of_the_wild" );
 precombat->add_action( "use_item,name=algethar_puzzle_box" );
 precombat->add_action( "prowl,if=!buff.prowl.up" );
 
-def->add_action( "prowl,if=buff.bs_inc.down&!buff.prowl.up" );
+def->add_action( "prowl,if=(buff.bs_inc.down|!in_combat)&!buff.prowl.up","Executed every time the actor is available." );
 def->add_action( "cat_form,if=!buff.cat_form.up" );
-def->add_action( "invoke_external_buff,name=power_infusion","<a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> does not line up very well with <a href='https://www.wowhead.com/spell=106951/berserk'>Berserk nor <a href='https://www.wowhead.com/spell=102543/incarnation-avatar-of-ashamane'>Incarnation</a> and <a href='https://www.wowhead.com/spell=323764/convoke-the-spirits?spellModifier=768'>Convoke</a> doesn't benefit much from haste." );
+def->add_action( "invoke_external_buff,name=power_infusion","<a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> does not line up very well with <a href='https://www.wowhead.com/spell=106951/berserk'>Berserk</a> nor <a href='https://www.wowhead.com/spell=102543/incarnation-avatar-of-ashamane'>Incarnation</a> and <a href='https://www.wowhead.com/spell=323764/convoke-the-spirits?spellModifier=768'>Convoke</a> doesn't benefit much from haste." );
 def->add_action( "call_action_list,name=variables" );
 def->add_action( "tigers_fury,if=!talent.convoke_the_spirits.enabled&(!buff.tigers_fury.up|energy.deficit>65)" );
 def->add_action( "tigers_fury,if=talent.convoke_the_spirits.enabled&(!variable.lastConvoke|(variable.lastConvoke&!buff.tigers_fury.up))" );
 def->add_action( "rake,target_if=1.4*persistent_multiplier>dot.rake.pmultiplier,if=buff.prowl.up|buff.shadowmeld.up" );
 def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
-def->add_action( "natures_vigil" );
-def->add_action( "adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5,if=!(variable.need_bt&active_bt_triggers=2)" );
+def->add_action( "natures_vigil,if=in_combat" );
+def->add_action( "adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3)&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5,if=!(variable.need_bt&active_bt_triggers=2)&(!talent.unbridled_swarm.enabled|spell_targets.swipe_cat=1)" );
+def->add_action( "adaptive_swarm,target_if=max:(dot.adaptive_swarm_damage.stack*dot.adaptive_swarm_damage.stack<3*time_to_die),if=dot.adaptive_swarm_damage.stack<3&talent.unbridled_swarm.enabled&spell_targets.swipe_cat>1&!(variable.need_bt&active_bt_triggers=2)","in reality, with unbridled talented adaptive swarm should be targeting allies out of combat, and often in single target too. This isn't supported by simc at time of writing though, so will have to settle with just this" );
 def->add_action( "call_action_list,name=cooldown" );
 def->add_action( "feral_frenzy,target_if=max:target.time_to_die,if=combo_points<2|combo_points<3&buff.bs_inc.up" );
 def->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(spell_targets.swipe_cat=1|!talent.primal_wrath.enabled|!buff.sabertooth.up)&!(variable.need_bt&active_bt_triggers=2)" );
@@ -31,8 +33,9 @@ def->add_action( "call_action_list,name=berserk,if=buff.bs_inc.up" );
 def->add_action( "wait,sec=combo_points=5,if=combo_points=4&buff.predator_revealed.react&energy.deficit>40&spell_targets.swipe_cat=1" );
 def->add_action( "call_action_list,name=finisher,if=combo_points>=4&!(combo_points=4&buff.bloodtalons.stack<=1&active_bt_triggers=2&spell_targets.swipe_cat=1)","its acceptable to proc bt when at 4cps in single target for a small gain (0.1-0.2% with t30 4p)" );
 def->add_action( "call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up&combo_points<5" );
-def->add_action( "run_action_list,name=aoe_builder,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled" );
-def->add_action( "call_action_list,name=builder,if=combo_points<5&!buff.bs_inc.up" );
+def->add_action( "call_action_list,name=aoe_builder,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled" );
+def->add_action( "call_action_list,name=builder,if=!buff.bs_inc.up&combo_points<5" );
+def->add_action( "regrowth,if=energy<20&buff.predatory_swiftness.up&!buff.clearcasting.up&variable.regrowth" );
 
 aoe_builder->add_action( "brutal_slash,target_if=min:target.time_to_die,if=cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5","avoid capping brs charges, and in the event of adds, offload charges within reason" );
 aoe_builder->add_action( "thrash_cat,target_if=refreshable,if=buff.clearcasting.react|(spell_targets.thrash_cat>10|(spell_targets.thrash_cat>5&!talent.double_clawed_rake.enabled))&!talent.thrashing_claws" );
@@ -45,7 +48,7 @@ aoe_builder->add_action( "brutal_slash" );
 aoe_builder->add_action( "moonfire_cat,target_if=refreshable,if=spell_targets.swipe_cat<5" );
 aoe_builder->add_action( "swipe_cat" );
 aoe_builder->add_action( "moonfire_cat,target_if=refreshable" );
-aoe_builder->add_action( "shred,target_if=max:target.time_to_die,if=action.shred.damage>action.thrash_cat.damage&!buff.sudden_ambush.up","if we have brs and nothing better to cast, check if thrash DD beats shred (or if SA is up)" );
+aoe_builder->add_action( "shred,target_if=max:target.time_to_die,if=action.shred.damage>action.thrash_cat.damage&!buff.sudden_ambush.up&!(variable.lazy_swipe&talent.wild_slashes)","if we have brs and nothing better to cast, check if thrash DD beats shred (or if SA is up)" );
 aoe_builder->add_action( "thrash_cat" );
 
 berserk->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=combo_points=5&dot.rip.remains>8&variable.zerk_biteweave&spell_targets.swipe_cat>1" );
@@ -72,13 +75,14 @@ bloodtalons->add_action( "thrash_cat,target_if=refreshable,if=buff.bt_thrash.dow
 bloodtalons->add_action( "brutal_slash,if=buff.bt_brutal_slash.down" );
 bloodtalons->add_action( "moonfire_cat,if=refreshable&buff.bt_moonfire.down&spell_targets.swipe_cat=1" );
 bloodtalons->add_action( "thrash_cat,target_if=refreshable,if=buff.bt_thrash.down&!talent.thrashing_claws.enabled" );
-bloodtalons->add_action( "shred,if=buff.bt_shred.down&spell_targets.swipe_cat=1&!talent.wild_slashes.enabled" );
+bloodtalons->add_action( "shred,if=buff.bt_shred.down&spell_targets.swipe_cat=1&(!talent.wild_slashes.enabled|(!debuff.dire_fixation.up&talent.dire_fixation.enabled))" );
 bloodtalons->add_action( "swipe_cat,if=buff.bt_swipe.down&talent.wild_slashes.enabled" );
 bloodtalons->add_action( "moonfire_cat,target_if=max:ticks_gained_on_refresh,if=buff.bt_moonfire.down&spell_targets.swipe_cat<5" );
 bloodtalons->add_action( "swipe_cat,if=buff.bt_swipe.down" );
 bloodtalons->add_action( "moonfire_cat,target_if=max:ticks_gained_on_refresh,if=buff.bt_moonfire.down" );
-bloodtalons->add_action( "shred,target_if=max:target.time_to_die,if=action.shred.damage>action.thrash_cat.damage&buff.bt_shred.down&!buff.sudden_ambush.up","If we have BrS and nothing better to cast, check if shred beats thrash DD (or if SA is up)" );
+bloodtalons->add_action( "shred,target_if=max:target.time_to_die,if=action.shred.damage>action.thrash_cat.damage&buff.bt_shred.down&!buff.sudden_ambush.up&!(variable.lazy_swipe&talent.wild_slashes)","If we have BrS and nothing better to cast, check if shred beats thrash DD (or if SA is up)" );
 bloodtalons->add_action( "thrash_cat,if=buff.bt_thrash.down" );
+bloodtalons->add_action( "rake,target_if=min:(25*(persistent_multiplier<dot.rake.pmultiplier)+dot.rake.remains),if=buff.bt_rake.down&variable.lazy_swipe&talent.wild_slashes","this line is for the lazy-swipe build only, basically the idea is to only use swipe thrash and rake in aoe. This just finds the best reapplication if you really need 3rd builder for bt" );
 
 builder->add_action( "run_action_list,name=clearcasting,if=buff.clearcasting.react" );
 builder->add_action( "brutal_slash,if=cooldown.brutal_slash.full_recharge_time<4" );
@@ -89,7 +93,7 @@ builder->add_action( "run_action_list,name=clearcasting,if=buff.clearcasting.rea
 builder->add_action( "moonfire_cat,target_if=refreshable" );
 builder->add_action( "thrash_cat,target_if=refreshable&!talent.thrashing_claws.enabled" );
 builder->add_action( "brutal_slash" );
-builder->add_action( "swipe_cat,if=spell_targets.swipe_cat>1|talent.wild_slashes.enabled" );
+builder->add_action( "swipe_cat,if=spell_targets.swipe_cat>1|(talent.wild_slashes.enabled&(debuff.dire_fixation.up|!talent.dire_fixation.enabled))" );
 builder->add_action( "shred" );
 
 clearcasting->add_action( "thrash_cat,if=refreshable&!talent.thrashing_claws.enabled" );
@@ -102,12 +106,13 @@ cooldown->add_action( "use_item,name=algethar_puzzle_box,if=variable.align_3minu
 cooldown->add_action( "incarnation,target_if=max:target.time_to_die,if=(target.time_to_die<fight_remains&target.time_to_die>25)|target.time_to_die=fight_remains","next two lines check if the current pull is long enough to justify cd usage. If its the last pull, itll always use cds." );
 cooldown->add_action( "berserk,target_if=max:target.time_to_die,if=((target.time_to_die<fight_remains&target.time_to_die>18)|target.time_to_die=fight_remains)&((!variable.lastZerk)|(fight_remains<23)|(variable.lastZerk&!variable.lastConvoke)|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<10))" );
 cooldown->add_action( "berserking,if=!variable.align_3minutes|buff.bs_inc.up" );
+cooldown->add_action( "use_item,name=mirror_of_fractured_tomorrows|irideus_fragment,if=!variable.align_3minutes|buff.bs_inc.up|(variable.lastConvoke&!variable.lastZerk&cooldown.convoke_the_spirits.remains=0)" );
 cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<32|(fight_remains<cooldown.bs_inc.remains&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)" );
 cooldown->add_action( "convoke_the_spirits,target_if=max:target.time_to_die,if=((target.time_to_die<fight_remains&target.time_to_die>5)|target.time_to_die=fight_remains)&(fight_remains<5|(dot.rip.remains>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points=2))&(!variable.lastConvoke|!variable.lastZerk|buff.bs_inc.up)))","checks to make sure you can actually fit convoke into the pull." );
 cooldown->add_action( "use_item,name=manic_grieftorch,target_if=max:target.time_to_die,if=energy.deficit>40" );
 cooldown->add_action( "use_items" );
 
-finisher->add_action( "primal_wrath,if=((dot.primal_wrath.refreshable&!talent.circle_of_life_and_death.enabled)|dot.primal_wrath.remains<6|talent.tear_open_wounds.enabled)&spell_targets.primal_wrath>1&talent.primal_wrath.enabled" );
+finisher->add_action( "primal_wrath,if=((dot.primal_wrath.refreshable&!talent.circle_of_life_and_death.enabled)|dot.primal_wrath.remains<6|(talent.tear_open_wounds.enabled|(spell_targets.swipe_cat>4&!talent.rampant_ferocity.enabled)))&spell_targets.primal_wrath>1&talent.primal_wrath.enabled" );
 finisher->add_action( "rip,target_if=refreshable" );
 finisher->add_action( "pool_resource,for_next=1,if=!action.tigers_fury.ready&buff.apex_predators_craving.down" );
 finisher->add_action( "ferocious_bite,max_energy=1,target_if=max:target.time_to_die,if=buff.apex_predators_craving.down&(!buff.bs_inc.up|(buff.bs_inc.up&!talent.soul_of_the_forest.enabled))" );
@@ -118,3 +123,6 @@ variables->add_action( "variable,name=align_3minutes,value=spell_targets.swipe_c
 variables->add_action( "variable,name=lastConvoke,value=fight_remains>cooldown.convoke_the_spirits.remains+3&((talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+60))|(!talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+120)))" );
 variables->add_action( "variable,name=lastZerk,value=fight_remains>(30+(cooldown.bs_inc.remains%1.6))&((talent.berserk_heart_of_the_lion.enabled&fight_remains<(90+(cooldown.bs_inc.remains%1.6)))|(!talent.berserk_heart_of_the_lion.enabled&fight_remains<(180+cooldown.bs_inc.remains)))" );
 variables->add_action( "variable,name=zerk_biteweave,op=reset" );
+variables->add_action( "variable,name=regrowth,op=reset" );
+
+variable->add_action( "variable,name=lazy_swipe,op=reset" );
