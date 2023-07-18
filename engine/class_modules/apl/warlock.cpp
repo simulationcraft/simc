@@ -151,6 +151,7 @@ void affliction( player_t* p )
   ogcd->add_action( "blood_fury,if=variable.cds_active" );
   ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active", " Uses Power Infusion together with Cooldown windows like Summon Darkglare, Soul Rot, Phantom Singularity or Vile Taint");
   ogcd->add_action( "fireblood,if=variable.cds_active" );
+  ogcd->add_action( "ancestral_call,if=variable.cds_active" );
 }
 //affliction_apl_end
 
@@ -250,6 +251,7 @@ void demonology( player_t* p )
   racials->add_action( "berserking,use_off_gcd=1" );
   racials->add_action( "blood_fury" );
   racials->add_action( "fireblood" );
+  racials->add_action( "ancestral_call" );
 
 
   items->add_action( "use_item,name=irideus_fragment,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<gcd.max*2|!talent.nether_portal)|fight_remains<22" );
@@ -400,6 +402,8 @@ void destruction( player_t* p )
   ogcd->add_action( "berserking,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains_expected+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains_expected" );
   ogcd->add_action( "blood_fury,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.blood_fury.duration&fight_remains>cooldown.blood_fury.duration)|fight_remains<cooldown.summon_infernal.remains" );
   ogcd->add_action( "fireblood,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.fireblood.duration&fight_remains>cooldown.fireblood.duration)|fight_remains<cooldown.summon_infernal.remains_expected" );
+  ogcd->add_action( "ancestral_call,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains_expected+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains_expected" );
+
 }
 //destruction_apl_end
 
