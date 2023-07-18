@@ -119,7 +119,7 @@ void arcane( player_t* p )
   default_->add_action( "call_action_list,name=aoe_rotation,if=active_enemies>=variable.aoe_target_count" );
   default_->add_action( "call_action_list,name=rotation" );
 
-  cooldown_phase->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage&(action.arcane_barrage.in_flight_remains<=0.2|gcd.remains<=0.2)" );
+  cooldown_phase->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage" );
   cooldown_phase->add_action( "variable,name=conserve_mana,op=set,if=cooldown.radiant_spark.ready,value=0+(cooldown.arcane_surge.remains<10)" );
   cooldown_phase->add_action( "shifting_power,if=buff.arcane_surge.down&!talent.radiant_spark" );
   cooldown_phase->add_action( "arcane_orb,if=cooldown.radiant_spark.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
@@ -178,7 +178,7 @@ void arcane( player_t* p )
   touch_phase->add_action( "arcane_barrage" );
 
   aoe_touch_phase->add_action( "variable,name=conserve_mana,op=set,if=debuff.touch_of_the_magi.remains>9,value=1-variable.conserve_mana" );
-  aoe_touch_phase->add_action( "arcane_barrage,if=(active_enemies=4&buff.arcane_charge.stack=3)|buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
+  aoe_touch_phase->add_action( "arcane_barrage,if=(active_enemies<=4&buff.arcane_charge.stack=3)|buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe_touch_phase->add_action( "arcane_orb,if=buff.arcane_charge.stack<2" );
   aoe_touch_phase->add_action( "arcane_explosion" );
 
@@ -202,7 +202,7 @@ void arcane( player_t* p )
 
   aoe_rotation->add_action( "shifting_power,if=(!talent.evocation|cooldown.evocation.remains>12)&(!talent.arcane_surge|cooldown.arcane_surge.remains>12)&(!talent.touch_of_the_magi|cooldown.touch_of_the_magi.remains>12)&buff.arcane_surge.down&((!talent.charged_orb&cooldown.arcane_orb.remains>12)|(action.arcane_orb.charges=0|cooldown.arcane_orb.remains>12))" );
   aoe_rotation->add_action( "nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_surge.down&(active_enemies>6|!talent.orb_barrage)" );
-  aoe_rotation->add_action( "arcane_barrage,if=active_enemies=4&buff.arcane_charge.stack=3" );
+  aoe_rotation->add_action( "arcane_barrage,if=(active_enemies<=4|buff.clearcasting.up)&buff.arcane_charge.stack=3" );
   aoe_rotation->add_action( "arcane_orb,if=buff.arcane_charge.stack=0&cooldown.touch_of_the_magi.remains>18" );
   aoe_rotation->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack|mana.pct<10" );
   aoe_rotation->add_action( "arcane_explosion" );
