@@ -3357,9 +3357,6 @@ public:
     if ( free_spell & free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
       return;
 
-    p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
-    p()->buff.overflowing_power->expire();
-
     p()->buff.sharpened_claws->trigger( consumed );
 
     if ( p()->buff.tigers_tenacity->check() )
