@@ -3275,8 +3275,6 @@ protected:
   using state_t = druid_action_state_t<Data>;
 
 public:
-  bool consumes_combo_points = true;
-
   combo_point_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
     : cat_attack_t( n, p, s, opt )
   {}
@@ -3296,7 +3294,7 @@ public:
     return static_cast<const state_t*>( s );
   }
 
-  virtual int _combo_points() const
+  int _combo_points() const
   {
     if ( is_free() )
       return as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] );
@@ -3312,22 +3310,14 @@ public:
     cat_attack_t::snapshot_state( s, rt );
   }
 
-  bool ready() override
-  {
-    if ( consumes_combo_points && p()->resources.current[ RESOURCE_COMBO_POINT ] < 1 )
-      return false;
-
-    return cat_attack_t::ready();
-  }
-
   void consume_resource() override
   {
     cat_attack_t::consume_resource();
 
-    if ( background || !hit_any_target || !consumes_combo_points )
+    if ( background || !hit_any_target  )
       return;
 
-    auto consumed = _combo_points();
+    auto consumed = cast_state( execute_state )->combo_points;
 
     if ( p()->talent.berserk_heart_of_the_lion.ok() )
     {
@@ -3367,17 +3357,10 @@ public:
     if ( free_spell & free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
       return;
 
+    p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
+    p()->buff.overflowing_power->expire();
+
     p()->buff.sharpened_claws->trigger( consumed );
-
-    if ( !is_free() )
-    {
-      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
-
-      sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                      util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
-
-      stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
-    }
 
     if ( p()->buff.tigers_tenacity->check() )
     {
@@ -3390,7 +3373,7 @@ public:
   {
     cat_attack_t::execute();
 
-    if ( !consumes_combo_points )
+    if ( !base_cost( RESOURCE_COMBO_POINT ) )
       return;
 
     p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
@@ -4070,7 +4053,8 @@ struct primal_wrath_t : public cat_finisher_t
     rip->dual = rip->background = true;
     rip->stats = stats;
     rip->base_costs[ RESOURCE_ENERGY ] = 0;
-    rip->consumes_combo_points = false;
+    rip->base_costs[ RESOURCE_COMBO_POINT ] = 0;
+    rip->additional_costs[ RESOURCE_COMBO_POINT ] = 0;
     // mods are parsed on construction so set to false so the rip execute doesn't decrement
     rip->snapshots.bloodtalons = false;
 

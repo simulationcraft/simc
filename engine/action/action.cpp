@@ -1532,7 +1532,7 @@ double action_t::composite_target_multiplier(player_t* target) const
 
 double action_t::consume_resource( resource_e r, double a )
 {
-  if ( !r || !a )
+  if ( !r || !a || !player->resources.is_active( r ) )
     return 0;
 
   double val;
@@ -4376,7 +4376,7 @@ void run_action_list_t::execute()
 
 double action_t::consume_cost_per_tick( resource_e r, double a, bool& cancel )
 {
-  if ( !r || !a )
+  if ( !r || !a || !player->resources.is_active( r ) )
     return 0;
 
   bool enough = player->resource_available( r, a );
