@@ -3666,8 +3666,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=265638)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1) -> Self (1)
-#2 (id=340886)   : Apply Party Aura (35) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Self (1) -> Self (1)
 Description      : Your auras restore $210291s1 health to $210291s2 injured allies within $210291A1 yds every $t1 sec.
 
 While Aura Mastery is active, heals all allies within ${$210291A1+$31821s5} yds and healing is increased by $31821s6%.
