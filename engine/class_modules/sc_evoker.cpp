@@ -3350,6 +3350,7 @@ struct eruption_t : public essence_spell_t
       extend_ebon( p->talent.sands_of_time->effectN( 1 ).time_value() ),
       upheaval_cdr( p->talent.accretion->effectN( 1 ).trigger()->effectN( 1 ).time_value() )
   {
+    aoe              = -1;
     split_aoe_damage = true;
   }
 
