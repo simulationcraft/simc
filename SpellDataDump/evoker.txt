@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -4846,7 +4846,6 @@ Description      : Fire Breath damage has $s1% chance to cause your next Living 
 Variables        : $rate=${30}
 
 Name             : Burnout (id=375802) [Spell Family (224)] 
-Hotfixed         : Proc Flags 2 (4 -> 0)
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
@@ -7297,7 +7296,6 @@ $radiusIII=${9}
 $radiusIV=${12}
 
 Name             : Upheaval (desc=Black) (id=396288) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
@@ -7657,7 +7655,6 @@ Effects          :
 Description      : $@spelldesc412774
 
 Name             : Time Skip (desc=Bronze) (id=404977) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Augmentation [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
@@ -7994,7 +7991,6 @@ Effects          :
 Description      : Eruption deals $s1% more damage per enemy struck, up to ${$s2*$s1}%.
 
 Name             : Spatial Paradox (desc=Bronze) (id=406732) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Augmentation [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
@@ -9523,12 +9519,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Ebon Might (395296)
                    Family Flags: 66
-Hotfixed         : PvP Coefficient (0 -> 0.5)
 #2 (id=1084344)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Ebon Might (395296)
                    Family Flags: 66
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Ebon Might increases the damage of your empower spells by $s1%.
 
 Name             : Evoker Augmentation 10.1 Class Set 4pc (id=414878) [Spell Family (224), Passive, Hidden] 
@@ -9550,7 +9544,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ebon Might (395152)
                    Family Flags: 65
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Ebon Might increases allies' primary stat by an additional ${$s1}.1% of your own.
 
 Name             : Dream of Spring (id=414969) [Spell Family (224), Passive] 
@@ -9608,12 +9601,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1085015)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your damage done is increased by $s1%.
 
 Name             : Evoker Augmentation 10.0 Class Set 2pc (id=415222) [Spell Family (224), Passive, Hidden] 
@@ -9635,12 +9626,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Blistering Scales (360827)
                    Family Flags: 68
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1085029)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blistering Scales (360827)
                    Family Flags: 68
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Blistering Scales increases Armor by an additional $s1% of your own.
 
 Name             : Potent Mana (id=418101) [Spell Family (224), Passive] 

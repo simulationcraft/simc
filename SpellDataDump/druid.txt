@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -2536,7 +2536,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Regrowth (8936)
                    Family Flags: 6, 9
-Hotfixed         : Misc Value (14 -> 39)
 #3 (id=167620)   : Apply Aura (6) | Modify Stance Mask (275)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Regrowth (8936)
@@ -6932,7 +6931,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=297122)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (147 -> 4), Misc Value (2071 -> 0)
 #5 (id=297123)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Moonfire (164812), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613)
@@ -15767,7 +15765,6 @@ Description      : Your next Regrowth heals for an additional $s4% and is free, 
 Tooltip          : Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms.
 
 Name             : Ursoc's Fury (id=372505) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -15917,7 +15914,6 @@ Effects          :
 Description      : Frenzied Regeneration's cooldown is reduced by $s1%.
 
 Name             : Ursoc's Fury (id=377210) [Spell Family (7), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Guardian [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical

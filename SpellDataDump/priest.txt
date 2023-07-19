@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -910,7 +910,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 0x9 | Target: Self (1)
 #8 (id=1096713)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Upon death, the Priest becomes the Spirit of Redemption for $27827d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. When the effect ends, the Priest dies.
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 
@@ -17317,7 +17316,6 @@ Effects          :
 Description      : $@spelldesc341491
 
 Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (16384 -> 81920)
 Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(13, 25)]
                  : Effect#2 [op=set, values=(2, 2)]
@@ -17342,10 +17340,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1096650)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1096651)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Your Holy Words have a $s1% chance to reset the cooldown of Prayer of Mending.
 
 Name             : Benevolence (id=415416) [Spell Family (6), Passive, Hidden] 
