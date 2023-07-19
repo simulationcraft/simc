@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.1.5.50379
+// Player trait definitions, wow build 10.1.7.50505
 static const std::array<trait_data_t, 2515> __ptr_trait_data_data { {
   { 1,  1, 112108, 90258, 2, 20, 117113, 384124,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   72,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 1,  1, 112109, 90259, 2, 20, 117114, 394855,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   73,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2517,8 +2517,8 @@ static const std::array<trait_data_t, 2515> __ptr_trait_data_data { {
   { 2, 13, 115881, 93359, 1, 20, 120893, 414969,      0,      0,  8,  5, 200,                   "Dream of Spring", { 1473,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.1.5.50379
-static const std::array<trait_definition_effect_entry_t, 655> __ptr_trait_definition_effect_data { {
+// Player trait definition effect entries, wow build 10.1.7.50505
+static const std::array<trait_definition_effect_entry_t, 657> __ptr_trait_definition_effect_data { {
   { 85156, 0, 0, 60989 },
   { 85156, 1, 0, 60988 },
   { 85159, 0, 0, 52496 },
@@ -2973,6 +2973,8 @@ static const std::array<trait_definition_effect_entry_t, 655> __ptr_trait_defini
   { 108737, 1, 0, 61849 },
   { 108740, 0, 0, 59078 },
   { 108743, 0, 0, 59080 },
+  { 108743, 1, 0, 69277 },
+  { 108743, 2, 0, 69276 },
   { 108745, 0, 0, 59081 },
   { 108746, 0, 0, 59082 },
   { 108749, 0, 0, 59083 },
