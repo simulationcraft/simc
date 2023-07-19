@@ -1914,18 +1914,7 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
     auto t = d->state->target;
 
     if ( t->is_sleeping() )
-    {
       t = nullptr;
-
-      for ( auto enemy : p()->sim->target_non_sleeping_list )
-      {
-        if ( enemy->is_sleeping() || ( enemy->debuffs.invulnerable && enemy->debuffs.invulnerable->check() ) )
-          continue;
-
-        t = enemy;
-        break;
-      }
-    }
 
     return t;
   }
@@ -2392,6 +2381,27 @@ struct fire_breath_t : public empowered_charge_spell_t
     : base_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ), options_str )
   {
     create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
+  }
+
+  player_t* get_release_target( dot_t* d ) override
+  {
+    auto t = d->state->target;
+
+    if ( t->is_sleeping() )
+    {
+      t = nullptr;
+
+      for ( auto enemy : p()->sim->target_non_sleeping_list )
+      {
+        if ( enemy->is_sleeping() || ( enemy->debuffs.invulnerable && enemy->debuffs.invulnerable->check() ) )
+          continue;
+
+        t = enemy;
+        break;
+      }
+    }
+
+    return t;
   }
 };
 
