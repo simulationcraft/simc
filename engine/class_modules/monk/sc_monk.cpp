@@ -3267,6 +3267,8 @@ namespace monk
 
           trigger_shuffle( p()->talent.brewmaster.keg_smash->effectN( 6 ).base_value() );
           brew_cooldown_reduction( time_reduction );
+
+          p()->buff.hit_scheme->expire();
         }
 
         void impact( action_state_t *s ) override
