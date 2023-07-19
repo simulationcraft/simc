@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1241,7 +1241,6 @@ Description      : Breathe fire on targets in front of you, causing $s1 Fire dam
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
 Name             : Fortifying Brew (id=115203) [Spell Family (53)] 
-Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -1264,7 +1263,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1035050)  : Dummy (3)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 1.5)
 Description      : $@spelldesc120954
 Variables        : $health=$?s322960[${20}][${20}]
 $pvp=$?a134735[${1.5}][${1}]
@@ -2404,7 +2402,6 @@ Effects          :
 Description      : Increases your Agility by $s1% while wearing only Leather armor.
 
 Name             : Fortifying Brew (id=120954) [Spell Family (53)] 
-Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -2426,7 +2423,6 @@ Effects          :
 #2 (id=153591)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.50000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (1 -> 1.5)
 #3 (id=153607)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=158673)   : Apply Aura (6) | Unknown(255)
@@ -2618,7 +2614,6 @@ Effects          :
                    Affected School(s): Physical
 #2 (id=240978)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | PvP Coefficient: 1.50000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 1.5)
 #3 (id=358716)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #4 (id=365097)   : Apply Aura (6) | Absorb Damage (69)
@@ -2678,13 +2673,10 @@ Effects          :
                    Affected School(s): All
 #3 (id=220987)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.60000
-Hotfixed         : PvP Coefficient (1 -> 1.6)
 #4 (id=753843)   : Dummy (3)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000
-Hotfixed         : PvP Coefficient (1.5 -> 1)
 #5 (id=1094967)  : Dummy (3)
                    Base Value: 160 | Scaled Value: 160 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Absorbs all damage taken for $d, up to $s3% of your maximum health, and redirects $s4% of that amount to the enemy target as Nature damage over $124280d.
 Tooltip          : Damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
@@ -5194,7 +5186,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680)
                    Family Flags: 0, 31
-#2 (id=290810)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(31)
+#2 (id=290810)   : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Thunder Focus Tea (116680)
                    Family Flags: 0, 31
@@ -13887,9 +13879,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Ignore Line of Sight (66), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Allow While Riding Vehicle (204), Ignore Caster Damage Modifiers (221)
+                 : Ignore Line of Sight (66), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Allow While Riding Vehicle (204), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1021432)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -14180,7 +14172,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021960)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.70000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.5 -> 0.7)
 Description      : Expel Harm's healing is increased by up to $s1%, based on your missing health.
 
 Name             : Dragonfire Brew (id=387621) [Spell Family (53)] 
@@ -14395,6 +14386,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 2706: Spatial Paradox (406732 effect#10)
 Affecting spells : Enveloping Mist (124682 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 102
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
@@ -15792,7 +15784,6 @@ Effects          :
 Description      : Detox additionally removes all Poison and Disease effects.
 
 Name             : Fortifying Brew (id=388917) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Variables
 Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, override="Fortifying Brew" (id=115203)]
 Class            : Monk
 School           : Physical
@@ -16859,7 +16850,7 @@ Deals $<ptadmg> Nature damage.
 $@spellicon387184 $@spellname387184:
 Deals $<dmg> Nature damage and reduces the cooldown of Weapons of Order by $s1 for each affected enemy, to a maximum of ${$s1*5} sec.
 Variables        : $dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}
-$ptadmg=${$<dmg>*$abs($418359s5)/100}
+$ptadmg=${$<dmg>*$abs($418359s3)/100}
 
 Name             : Tea of Serenity (id=393460) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
@@ -17065,9 +17056,9 @@ Attributes       : ....x... ........ ........ x..x....   .....x.. ........ .....
                  : ........ .x..x... .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Suppress Caster Procs (112), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308)
+                 : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Suppress Caster Procs (112), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1032926)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
@@ -18294,7 +18285,6 @@ Effects          :
 #1 (id=1077928)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 2650 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Shadowflame Nova (410139)
-Hotfixed         : Sub Type (507 -> 537)
 Description      : $@spelldesc411375
 Tooltip          : Shadowflame Nova damage increased by $w1%.
 
@@ -18382,17 +18372,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1090589)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4), Base Value (0 -> 500), Trigger Spell (418360 -> 0)
 #2 (id=1090591)  : Apply Aura (6) | Proc Trigger Spell (42): Press the Advantage
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 418361 | Target: Self (1)
-Hotfixed         : Sub Type (4 -> 42), Base Value (500 -> 0), Trigger Spell (0 -> 418361)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Trigger Spell: 418361 | Target: Self (1)
 #3 (id=1090592)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4), Base Value (0 -> 50), Trigger Spell (418361 -> 0)
 #4 (id=1090895)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 2759 (Label) | Target: Self (1)
                    Affected Spells (Label): Chi Surge (393786)
-Hotfixed         : Sub Type (4 -> 218), Base Value (50 -> -50), Misc Value (0 -> 22), Misc Value 2 (0 -> 2759)
 Description      : Your main hand auto attacks reduce the cooldown on your brews by ${$s2/1000}.1 sec and block your target's chi, dealing $418360s1 additional Nature damage and increasing your damage dealt by $418361s1% for $418361d. 
 
 Upon reaching $418361u stacks, your next cast of Rising Sun Kick or Keg Smash consumes all stacks to strike again at $418361s2% effectiveness. This bonus attack can trigger effects on behalf of Tiger Palm at reduced effectiveness.
@@ -18410,15 +18396,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1090590)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc418359
 
 Name             : Press the Advantage (id=418361) [Spell Family (53)] 
-Hotfixed         : Internal Cooldown (0 -> 1000)
 Class            : Monk
 School           : Physical
 Spell Type       : None
