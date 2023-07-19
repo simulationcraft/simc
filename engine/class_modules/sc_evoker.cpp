@@ -3400,6 +3400,7 @@ struct upheaval_t : public empowered_charge_spell_t
   {
     upheaval_damage_t( evoker_t* p, std::string_view name ) : base_t( name, p, p->find_spell( 396288 ) )
     {
+      aoe = -1;
     }
 
     upheaval_damage_t( evoker_t* p ) : upheaval_damage_t( p, "upheaval_damage" )
