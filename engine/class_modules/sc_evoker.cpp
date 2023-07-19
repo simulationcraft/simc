@@ -1491,9 +1491,9 @@ struct empowered_charge_t : public empowered_base_t<BASE>
     ab::stats->iteration_total_execute_time += d->time_to_tick();
   }
 
-  virtual bool validate_release_target( dot_t* )
+  virtual player_t* get_release_target( dot_t* )
   {
-    return true;
+    return ab::target;
   }
 
   void last_tick( dot_t* d ) override
@@ -1507,7 +1507,9 @@ struct empowered_charge_t : public empowered_base_t<BASE>
       return;
     }
 
-    if ( empower_level( d ) == empower_e::EMPOWER_NONE || !validate_release_target( d ) )
+    auto release_target = get_release_target( d );
+
+    if ( empower_level( d ) == empower_e::EMPOWER_NONE || !release_target )
     {
       ab::p()->was_empowering = false;
       return;
@@ -1527,8 +1529,8 @@ struct empowered_charge_t : public empowered_base_t<BASE>
     }
 
     auto emp_state        = release_spell->get_state();
-    emp_state->target     = ab::target;
-    release_spell->target = ab::target;
+    emp_state->target     = release_target;
+    release_spell->target = release_target;
     release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
 
     if ( ab::p()->buff.tip_the_scales->up() )
@@ -1907,7 +1909,7 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
   {
   }
 
-  bool validate_release_target( dot_t* d ) override
+  player_t* get_release_target( dot_t* d ) override
   {
     auto t = d->state->target;
 
@@ -1925,10 +1927,7 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
       }
     }
 
-    if ( !t )
-      return false;
-    else
-      return true;
+    return t;
   }
 };
 
