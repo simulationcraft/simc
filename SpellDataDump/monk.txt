@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -16821,7 +16821,6 @@ Effects          :
 Description      : When you consume a Healing Sphere or cast Expel Harm, your current Stagger amount is lowered by $s1%.
 
 Name             : Chi Surge (id=393400) [Spell Family (53), Passive, Hidden] 
-Hotfixed         : Variables
 Talent Entry     : Brewmaster [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Nature
@@ -18375,7 +18374,6 @@ Effects          :
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1090591)  : Apply Aura (6) | Proc Trigger Spell (42): Press the Advantage
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Trigger Spell: 418361 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 500)
 #3 (id=1090592)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1090895)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)

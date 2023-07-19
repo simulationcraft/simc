@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50469 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -6239,7 +6239,7 @@ Talent Entry     : Restoration [tree=spec, row=9, col=3, max_rank=1, req_points=
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 3% Base Mana (0) (id=191705)[Hotfixed: Percent Cost (15 -> 3)]
+Resource         : 3% Base Mana (0) (id=191705)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
