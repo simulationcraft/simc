@@ -3259,6 +3259,8 @@ namespace monk
             p()->buff.blackout_combo->expire();
           }
 
+          p()->buff.hit_scheme->expire();
+
           if ( p()->buff.press_the_advantage->stack() == 10 && is_base_ks )
           {
             p()->active_actions.keg_smash_press_the_advantage->schedule_execute();
@@ -3267,8 +3269,6 @@ namespace monk
 
           trigger_shuffle( p()->talent.brewmaster.keg_smash->effectN( 6 ).base_value() );
           brew_cooldown_reduction( time_reduction );
-
-          p()->buff.hit_scheme->expire();
         }
 
         void impact( action_state_t *s ) override
@@ -3507,7 +3507,7 @@ namespace monk
           snapshot_flags = update_flags = 0;
           snapshot_flags |= STATE_VERSATILITY;
         }
-      
+
       };
 
       struct touch_of_karma_t : public monk_melee_attack_t
