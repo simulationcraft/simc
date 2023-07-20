@@ -257,15 +257,6 @@ namespace monk_apl
     action_priority_list_t *rotation_pta = p->get_action_priority_list( "rotation_pta" );
     action_priority_list_t *rotation_boc = p->get_action_priority_list( "rotation_boc" );
 
-    // action_priority_list_t *cooldowns_niuzao_woo = p->get_action_priority_list( "cooldowns_niuzao_woo" );
-    // action_priority_list_t *cooldowns_improved_niuzao_woo = p->get_action_priority_list( "cooldowns_improved_niuzao_woo" );
-    // action_priority_list_t *cooldowns_improved_niuzao_cta = p->get_action_priority_list( "cooldowns_improved_niuzao_cta" );
-
-    // action_priority_list_t *rotation_boc_dfb = p->get_action_priority_list( "rotation_boc_dfb" );
-    // action_priority_list_t *rotation_dfb = p->get_action_priority_list( "rotation_dfb" );
-    // action_priority_list_t *rotation_chp = p->get_action_priority_list( "rotation_chp" );
-    // action_priority_list_t *rotation_fallback = p->get_action_priority_list( "rotation_fallback" );
-
     pre->add_action( "flask" );
     pre->add_action( "food" );
     pre->add_action( "augmentation" );
@@ -273,21 +264,19 @@ namespace monk_apl
     pre->add_action( "potion" );
     pre->add_action( "chi_burst,if=talent.chi_burst.enabled" );
     pre->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+    pre->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled")
 
     def->add_action( "auto_attack" );
     def->add_action( "roll,if=movement.distance>5", "Move to target" );
     def->add_action( "chi_torpedo,if=movement.distance>5" );
     def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
-    def->add_action( "potion" ); // TODO: potion sync with cds
-    def->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
+    def->add_action( "potion" );
+    def->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20&talent.weapons_of_order.enabled",
+                     "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
+    def->add_action( "invoke_external_buff,name=power_infusion,if=!talent.weapons_of_order.enabled",
                      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
     def->add_action( "call_action_list,name=item_actions" );
     def->add_action( "call_action_list,name=race_actions" );
-    def->add_action( "invoke_niuzao_the_black_ox,if=debuff.weapons_of_order_debuff.stack>3" );
-    def->add_action( "invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled" );
-    def->add_action( "keg_smash,if=time<5&talent.weapons_of_order.enabled" );
-    def->add_action( "weapons_of_order,if=(talent.weapons_of_order.enabled)" );
-    def->add_action( "purifying_brew,if=(!buff.blackout_combo.up)" );
     def->add_action( "call_action_list,name=rotation_pta,if=talent.press_the_advantage.enabled" );
     def->add_action( "call_action_list,name=rotation_boc,if=!talent.press_the_advantage.enabled" );
 
@@ -300,9 +289,13 @@ namespace monk_apl
     for ( const auto &racial_action : racial_actions )
       race_actions->add_action( racial_action + _BRM_RACIALS( racial_action ));
 
-    rotation_pta->add_action( "rising_sun_kick,if=(buff.press_the_advantage.stack<6|buff.press_the_advantage.stack>9)" );
+    rotation_pta->add_action( "invoke_niuzao_the_black_ox,if=debuff.weapons_of_order_debuff.stack>3" );
+    rotation_pta->add_action( "invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled" );
+    rotation_pta->add_action( "rising_sun_kick,if=(buff.press_the_advantage.stack<6|buff.press_the_advantage.stack>9)&active_enemies<=4" );
+    rotation_pta->add_action( "keg_smash,if=(buff.press_the_advantage.stack<8|buff.press_the_advantage.stack>9)&active_enemies>4" );
     rotation_pta->add_action( "blackout_kick" );
-    rotation_pta->add_action( "black_ox_brew,if=energy.deficit>=50" );
+    rotation_pta->add_action( "purifying_brew,if=(!buff.blackout_combo.up)" );
+    rotation_pta->add_action( "black_ox_brew,if=energy+energy.regen<=40" );
     rotation_pta->add_action( "summon_white_tiger_statue,if=debuff.weapons_of_order_debuff.stack>3" );
     rotation_pta->add_action( "summon_white_tiger_statue,if=!talent.weapons_of_order.enabled" );
     rotation_pta->add_action( "bonedust_brew,if=(time<10&debuff.weapons_of_order_debuff.stack>3)|(time>10&talent.weapons_of_order.enabled)" );
@@ -312,15 +305,23 @@ namespace monk_apl
     rotation_pta->add_action( "breath_of_fire,if=!(buff.press_the_advantage.stack>6&buff.blackout_combo.up)" );
     rotation_pta->add_action( "keg_smash,if=!(buff.press_the_advantage.stack>6&buff.blackout_combo.up)" );
     rotation_pta->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
+    rotation_pta->add_action( "spinning_crane_kick,if=active_enemies>1" );
     rotation_pta->add_action( "expel_harm" );
     rotation_pta->add_action( "chi_wave,if=talent.chi_wave.enabled" );
     rotation_pta->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 
+
     rotation_boc->add_action( "blackout_kick" );
+    rotation_boc->add_action( "invoke_niuzao_the_black_ox,if=debuff.weapons_of_order_debuff.stack>3" );
+    rotation_boc->add_action( "invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled" );
+    rotation_boc->add_action( "weapons_of_order,if=(talent.weapons_of_order.enabled)" );
+    rotation_boc->add_action( "keg_smash,if=time-action.weapons_of_order.last_used<2&talent.weapons_of_order.enabled" );
+    rotation_boc->add_action( "purifying_brew,if=(!buff.blackout_combo.up)" );
     rotation_boc->add_action( "rising_sun_kick" );
-    rotation_boc->add_action( "black_ox_brew,if=energy.deficit>=50" );
+    rotation_boc->add_action( "keg_smash,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.remains<=gcd*2" );
+    rotation_boc->add_action( "black_ox_brew,if=energy+energy.regen<=40" );
     rotation_boc->add_action( "tiger_palm,if=buff.blackout_combo.up&active_enemies=1" );
-    rotation_boc->add_action( "breath_of_fire,if=buff.charred_passions.down" );
+    rotation_boc->add_action( "breath_of_fire,if=buff.charred_passions.remains<cooldown.blackout_kick.remains" );
     rotation_boc->add_action( "keg_smash,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.stack<=3" );
     rotation_boc->add_action( "summon_white_tiger_statue,if=debuff.weapons_of_order_debuff.stack>3" );
     rotation_boc->add_action( "summon_white_tiger_statue,if=!talent.weapons_of_order.enabled" );
@@ -336,7 +337,6 @@ namespace monk_apl
     rotation_boc->add_action( "expel_harm" );
     rotation_boc->add_action( "chi_wave,if=talent.chi_wave.enabled" );
     rotation_boc->add_action( "chi_burst,if=talent.chi_burst.enabled" );
-
   }
 
   void mistweaver( player_t *p )

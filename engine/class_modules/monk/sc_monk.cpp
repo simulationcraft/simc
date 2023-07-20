@@ -1840,6 +1840,9 @@ namespace monk
           blackout_combo = p()->buff.blackout_combo->up();
           counterstrike = p()->buff.counterstrike->up();
 
+          if ( blackout_combo )
+            p()->proc.blackout_combo_rising_sun_kick->occur();
+
           rising_sun_kick_dmg_t::execute();
 
           p()->buff.counterstrike->expire();
@@ -8511,6 +8514,7 @@ namespace monk
     proc.blackout_combo_keg_smash = get_proc( "Blackout Combo - Keg Smash" );
     proc.blackout_combo_celestial_brew = get_proc( "Blackout Combo - Celestial Brew" );
     proc.blackout_combo_purifying_brew = get_proc( "Blackout Combo - Purifying Brew" );
+    proc.blackout_combo_rising_sun_kick = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
     proc.blackout_kick_cdr_with_woo = get_proc( "Blackout Kick CDR with WoO" );
     proc.blackout_kick_cdr = get_proc( "Blackout Kick CDR" );
     proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
