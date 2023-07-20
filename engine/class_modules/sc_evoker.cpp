@@ -4486,7 +4486,7 @@ void evoker_t::init_finished()
         {
           allied_major_cds[ p ] = buff_t::find( p, "commander_of_the_dead" );
         }
-        else if ( ST( p, "unholy Assault" )->ok() )
+        else if ( ST( p, "Unholy Assault" )->ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "unholy_assault" );
         }
