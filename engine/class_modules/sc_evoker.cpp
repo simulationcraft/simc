@@ -117,6 +117,7 @@ struct evoker_t : public player_t
   vector_with_callback<player_t*> allies_with_my_ebon;
   vector_with_callback<player_t*> allies_with_my_prescience;
   mutable std::vector<buff_t*> allied_ebons_on_me;
+  std::map<player_t*, buff_t*> allied_major_cds;
   player_t* last_scales_target;
   bool was_empowering;
   // !!!===========================================================================!!!
@@ -4273,6 +4274,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     allies_with_my_ebon(),
     allies_with_my_prescience(),
     allied_ebons_on_me(),
+    allied_major_cds(),
     last_scales_target( nullptr ),
     was_empowering( false ),
     naszuro(),
@@ -4450,11 +4452,86 @@ void evoker_t::init_action_list()
 
 void evoker_t::init_finished()
 {
+  auto CT = [ this ]( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::CLASS, n ); };
+  auto ST = [ this ]( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::SPECIALIZATION, n ); };
+
   for ( auto p : sim->player_no_pet_list )
   {
-    if ( p != this && p->specialization() == EVOKER_AUGMENTATION )
+    allied_major_cds[ p ] = nullptr;
+
+    if ( p == this )
+      continue;
+    
+    // DEATH_KNIGHT, DEMON_HUNTER, DRUID, EVOKER, HUNTER, MAGE, MONK, PALADIN, PRIEST, ROGUE, SHAMAN, WARLOCK, WARRIOR,
+    if ( p->type == DEATH_KNIGHT )
     {
-      allied_augmentations.push_back( static_cast<evoker_t*>( p ) );
+      if ( p->specialization() == DEATH_KNIGHT_FROST )
+      {
+        if ( ST( p, "Breath of Sindragosa" )->ok() )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "breath_of_sindragosa" );
+        }
+        else if ( ST( p, "Pillar of Frost" )->ok() )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "pillar_of_frost" );
+        }
+        else if ( ST( p, "Empower Rune Weapon" )->ok() || CT( p, "Empower Rune Weapon" )->ok() )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "empower_rune_weapon" );
+        }
+      }
+      else if ( p->specialization() == DEATH_KNIGHT_UNHOLY )
+      {
+        if ( ST( p, "Commander of the Dead" )->ok() )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "commander_of_the_dead" );
+        }
+        else if ( ST( p, "unholy Assault" )->ok() )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "unholy_assault" );
+        }
+        else if ( ST( p, "Defile" )->ok() && ( sim->has_raid_event( "adds" ) || sim->has_raid_event( "pull" ) ) )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "defile" );
+        }
+        else if ( ST( p, "Dark Transformation" )->ok() )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "dark_transformation" );
+        }
+      }
+    }
+    else if ( p->type == EVOKER )
+    {
+      if ( p->specialization() == EVOKER_AUGMENTATION )
+      {
+        allied_augmentations.push_back( static_cast<evoker_t*>( p ) );
+      }
+      else if ( p->specialization() == EVOKER_DEVASTATION )
+      {
+        auto evoker = static_cast<evoker_t*>( p );
+        if ( evoker->talent.dragonrage->ok() )
+        {
+          allied_major_cds[ p ] = evoker->buff.dragonrage;
+        }
+      }
+    }
+    else if ( p->type == PRIEST )
+    {
+      if ( p->specialization() == PRIEST_SHADOW )
+      {
+        if ( CT(p, "Power Infusion" ) )
+        {
+          allied_major_cds[ p ] = p->buffs.power_infusion;
+        }
+        else if ( ST( p, "Void Eruption" ) )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "voidform" );
+        }
+        else if ( ST( p, "Dark Ascension" ) )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "dark_ascension" );
+        }
+      }
     }
   }
 
@@ -5198,6 +5275,35 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
   {
     if ( util::str_compare_ci( splits[ 0 ], "evoker" ) )
     {
+      if ( util::str_compare_ci( splits[ 1 ], "allied_cds_up" ) )
+      {
+        return make_fn_expr( "allied_cds_up", [ this ] {
+          auto& vec = allies_with_my_ebon;
+          if ( allies_with_my_ebon.size() == 0 )
+          {
+            if ( allies_with_my_prescience.size() > 0 )
+            {
+              vec = allies_with_my_prescience;
+            }
+            else
+            {
+              return 0;
+            }
+          }
+
+          int out = 0;
+
+          for ( auto& p : vec )
+          {
+            if ( allied_major_cds[ p ] && allied_major_cds[ p ]->check() )
+            {
+              out++;
+            }
+          }
+
+          return out;
+        } );
+      }
       if ( util::str_compare_ci( splits[ 1 ], "prescience_buffs" ) )
         return make_fn_expr( "prescience_buffs", [ this ] { return allies_with_my_prescience.size(); } );
       if ( util::str_compare_ci( splits[ 1 ], "ebon_buffs" ) )
