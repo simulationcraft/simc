@@ -5278,12 +5278,12 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
       if ( util::str_compare_ci( splits[ 1 ], "allied_cds_up" ) )
       {
         return make_fn_expr( "allied_cds_up", [ this ] {
-          auto& vec = allies_with_my_ebon;
+          auto* vec = &allies_with_my_ebon;
           if ( allies_with_my_ebon.size() == 0 )
           {
             if ( allies_with_my_prescience.size() > 0 )
             {
-              vec = allies_with_my_prescience;
+              vec = &allies_with_my_prescience;
             }
             else
             {
@@ -5293,7 +5293,7 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
           int out = 0;
 
-          for ( auto& p : vec )
+          for ( auto p : *vec )
           {
             if ( allied_major_cds[ p ] && allied_major_cds[ p ]->check() )
             {
