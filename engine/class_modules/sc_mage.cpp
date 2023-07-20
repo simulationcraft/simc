@@ -810,7 +810,7 @@ public:
   action_t* get_icicle();
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
-  bool trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
+  bool trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t adjust = 0_ms );
   bool trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_icicle( player_t* icicle_target, bool chain = false );
@@ -2371,7 +2371,7 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     p()->trigger_merged_buff( p()->buffs.bone_chilling, true );
     if ( p()->rng().roll( p()->talents.frostbite->proc_chance() ) )
-      p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Frostbite only has the initial grace period
+      p()->trigger_crowd_control( s, MECHANIC_ROOT, -0.5_s ); // Frostbite only has the initial grace period
   }
 
   void trigger_winters_chill( const action_state_t* s, int stacks = -1 )
@@ -3435,7 +3435,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( p()->talents.freezing_cold.ok() )
-      p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->options.frozen_duration - 0.5_s ); // Freezing Cold only has the initial grace period
+      p()->trigger_crowd_control( s, MECHANIC_ROOT, -0.5_s ); // Freezing Cold only has the initial grace period
 
     // Cone of Cold currently consumes its own Winter's Chill without benefiting
     if ( p()->talents.coldest_snap.ok() && num_targets_hit >= as<int>( p()->talents.coldest_snap->effectN( 3 ).base_value() ) )
@@ -5864,7 +5864,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.radiant_spark  = target->get_dot( "radiant_spark", mage );
 
   debuffs.frozen                      = make_buff( *this, "frozen" )
-                                          ->set_duration( mage->options.frozen_duration )
                                           ->set_refresh_behavior( buff_refresh_behavior::MAX );
   debuffs.improved_scorch             = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
                                           ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
@@ -7416,7 +7415,7 @@ action_t* mage_t::get_icicle()
   return a;
 }
 
-bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t d )
+bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t adjust )
 {
   if ( type == MECHANIC_INTERRUPT )
     return s->target->debuffs.casting->check();
@@ -7424,8 +7423,8 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
   if ( action_t::result_is_hit( s->result )
     && ( !s->target->is_boss() || s->target->level() < sim->max_player_level + 3 ) )
   {
-    if ( type == MECHANIC_ROOT )
-      get_target_data( s->target )->debuffs.frozen->trigger( d );
+    if ( type == MECHANIC_ROOT && options.frozen_duration + adjust > 0_ms )
+      get_target_data( s->target )->debuffs.frozen->trigger( options.frozen_duration + adjust );
 
     return true;
   }
