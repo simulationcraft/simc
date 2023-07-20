@@ -1053,7 +1053,7 @@ struct combustion_t final : public buff_t
     set_default_value_from_effect( 1 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->talents.improved_combustion->effectN( 1 ).time_value() );
-    modify_duration( base_buff_duration * p->talents.tempered_flames->effectN( 3 ).percent() );
+    set_duration_multiplier( 1.0 + p->talents.tempered_flames->effectN( 3 ).percent() );
 
     set_stack_change_callback( [ this, p ] ( buff_t*, int old, int cur )
     {
