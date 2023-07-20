@@ -4457,8 +4457,6 @@ void evoker_t::init_finished()
 
   for ( auto p : sim->player_no_pet_list )
   {
-    allied_major_cds[ p ] = nullptr;
-
     if ( p == this )
       continue;
     
@@ -5295,7 +5293,7 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
           for ( auto p : *vec )
           {
-            if ( allied_major_cds[ p ] && allied_major_cds[ p ]->check() )
+            if ( allied_major_cds.count( p ) && allied_major_cds[ p ] && allied_major_cds[ p ]->check() )
             {
               out++;
             }
