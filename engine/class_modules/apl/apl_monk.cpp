@@ -264,7 +264,7 @@ namespace monk_apl
     pre->add_action( "potion" );
     pre->add_action( "chi_burst,if=talent.chi_burst.enabled" );
     pre->add_action( "chi_wave,if=talent.chi_wave.enabled" );
-    pre->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled")
+    pre->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled");
 
     def->add_action( "auto_attack" );
     def->add_action( "roll,if=movement.distance>5", "Move to target" );
