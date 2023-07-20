@@ -379,19 +379,19 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=st" );
 
   aoe->add_action( "cone_of_cold,if=talent.coldest_snap&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&!talent.comet_storm)" );
-  aoe->add_action( "frozen_orb,if=!prev_gcd.1.glacial_spike|target.level>=level+3&!target.is_add" );
-  aoe->add_action( "blizzard,if=!prev_gcd.1.glacial_spike|target.level>=level+3&!target.is_add" );
+  aoe->add_action( "frozen_orb,if=!prev_gcd.1.glacial_spike|!freezable" );
+  aoe->add_action( "blizzard,if=!prev_gcd.1.glacial_spike|!freezable" );
   aoe->add_action( "comet_storm,if=!prev_gcd.1.glacial_spike&(!talent.coldest_snap|cooldown.cone_of_cold.ready&cooldown.frozen_orb.remains>25|cooldown.cone_of_cold.remains>20)" );
-  aoe->add_action( "freeze,if=(target.level<level+3|target.is_add)&debuff.frozen.down&(!talent.glacial_spike&!talent.snowstorm|prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack)" );
-  aoe->add_action( "ice_nova,if=(target.level<level+3|target.is_add)&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
-  aoe->add_action( "frost_nova,if=(target.level<level+3|target.is_add)&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
+  aoe->add_action( "freeze,if=freezable&debuff.frozen.down&(!talent.glacial_spike&!talent.snowstorm|prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack)" );
+  aoe->add_action( "ice_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
+  aoe->add_action( "frost_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
   aoe->add_action( "cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack" );
   aoe->add_action( "shifting_power" );
   aoe->add_action( "glacial_spike,if=buff.icicles.react=5&cooldown.blizzard.remains>gcd.max" );
-  aoe->add_action( "flurry,if=target.level>=level+3&!target.is_add&cooldown_react&!debuff.winters_chill.remains&(prev_gcd.1.glacial_spike|charges_fractional>1.8)" );
+  aoe->add_action( "flurry,if=!freezable&cooldown_react&!debuff.winters_chill.remains&(prev_gcd.1.glacial_spike|charges_fractional>1.8)" );
   aoe->add_action( "flurry,if=cooldown_react&!debuff.winters_chill.remains&(buff.brain_freeze.react|!buff.fingers_of_frost.react)" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
-  aoe->add_action( "ice_nova,if=active_enemies>=4&(!talent.snowstorm&!talent.glacial_spike|target.level>=level+3&!target.is_add)" );
+  aoe->add_action( "ice_nova,if=active_enemies>=4&(!talent.snowstorm&!talent.glacial_spike|!freezable)" );
   aoe->add_action( "dragons_breath,if=active_enemies>=7" );
   aoe->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=7" );
   aoe->add_action( "frostbolt" );
