@@ -871,7 +871,7 @@ struct water_elemental_pet_t final : public mage_pet_t
 
   void init_action_list() override
   {
-    action_list_str = "waterbolt";
+    action_list_str = "water_jet/waterbolt";
     mage_pet_t::init_action_list();
   }
 
@@ -917,9 +917,10 @@ struct freeze_t final : public mage_pet_spell_t
 
 struct water_jet_t final : public mage_pet_spell_t
 {
-  water_jet_t( std::string_view n, water_elemental_pet_t* p ) :
+  water_jet_t( std::string_view n, water_elemental_pet_t* p, std::string_view options_str ) :
     mage_pet_spell_t( n, p, p->find_pet_spell( "Water Jet" ) )
   {
+    parse_options( options_str );
     channeled = true;
   }
 
@@ -948,6 +949,7 @@ struct water_jet_t final : public mage_pet_spell_t
 
 action_t* water_elemental_pet_t::create_action( std::string_view name, std::string_view options_str )
 {
+  if ( name == "water_jet" ) return new water_jet_t( name, this, options_str );
   if ( name == "waterbolt" ) return new waterbolt_t( name, this, options_str );
 
   return mage_pet_t::create_action( name, options_str );
@@ -957,8 +959,8 @@ void water_elemental_pet_t::create_actions()
 {
   o()->action.pet_freeze = get_action<freeze_t>( "freeze", this );
 
-  // This is a foreground action (and thus get_action shouldn't be used). Handle with care.
-  o()->action.pet_water_jet = new water_jet_t( "water_jet", this );
+  // Create Water Jet that can be used by the proxy action
+  o()->action.pet_water_jet = create_action( "water_jet", "" );
 
   mage_pet_t::create_actions();
 }
@@ -5590,6 +5592,18 @@ struct water_jet_t final : public proxy_action_t
   water_jet_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     proxy_action_t( n, p, options_str, p->action.pet_water_jet )
   { }
+
+  void init_finished() override
+  {
+    proxy_action_t::init_finished();
+
+    // Prevent the pet from casting Water Jet on its own
+    if ( pet() )
+    {
+      for ( auto a : pet()->action_list )
+        if ( a != action && a->name_str == "water_jet" ) a->background = true;
+    }
+  }
 
   void execute() override
   {
