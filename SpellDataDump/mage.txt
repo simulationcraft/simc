@@ -15606,8 +15606,8 @@ Effects          :
 #1 (id=1083383)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: none | Target: Self (1)
 #2 (id=1083384)  : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.53741 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : SP Coefficient (0.2588 -> 0.53741)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.22868 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+Hotfixed         : SP Coefficient (0.53741 -> 0.228684)
 #3 (id=1083385)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: none | Target: Self (1)
 Description      : Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.$?a137021[
