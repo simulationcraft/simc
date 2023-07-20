@@ -374,7 +374,6 @@ void frost( player_t* p )
   precombat->add_action( "frostbolt,if=active_enemies=1" );
 
   default_->add_action( "counterspell" );
-  default_->add_action( "water_jet" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=7&!set_bonus.tier30_2pc|active_enemies>=3&talent.ice_caller" );
   default_->add_action( "run_action_list,name=st" );
