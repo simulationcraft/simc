@@ -184,6 +184,7 @@ void vengeance( player_t* p )
   default_->add_action( "variable,name=fd,value=talent.fiery_demise&dot.fiery_brand.ticking", "Fiery Demise is up" );
   default_->add_action( "variable,name=frailty_ready,value=!talent.soulcrush|debuff.frailty.stack>=2", "Number of required frailty stacks for CDs" );
   default_->add_action( "auto_attack" );
+  default_->add_action( "use_item,name=elementium_pocket_anvil,use_off_gcd=1" );
   default_->add_action( "disrupt,if=target.debuff.casting.react" );
   default_->add_action( "infernal_strike,use_off_gcd=1" );
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
@@ -192,17 +193,16 @@ void vengeance( player_t* p )
   default_->add_action( "run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5" );
   default_->add_action( "run_action_list,name=big_aoe,if=active_enemies>=6" );
 
-  trinkets->add_action( "use_item,name=elementium_pocket_anvil,use_off_gcd=1" );
-  trinkets->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1" );
   trinkets->add_action( "use_items" );
+  trinkets->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1" );
 
+  maintenance->add_action( "invoke_external_buff,name=symbol_of_hope,if=cooldown.fiery_brand.charges=0" );
+  maintenance->add_action( "metamorphosis,if=talent.first_of_the_illidari" );
   maintenance->add_action( "call_action_list,name=trinkets" );
   maintenance->add_action( "potion" );
-  maintenance->add_action( "metamorphosis,if=talent.first_of_the_illidari" );
   maintenance->add_action( "fiery_brand,if=charges>=2|(!ticking&((variable.next_fire_cd_time<7)|(variable.next_fire_cd_time>28)))" );
   maintenance->add_action( "spirit_bomb,if=soul_fragments>=5" );
   maintenance->add_action( "fracture,target_if=max:dot.fiery_brand.remains,if=dot.fiery_brand.ticking&buff.recrimination.up" );
-  maintenance->add_action( "fracture,if=buff.recrimination.up" );
   maintenance->add_action( "fracture,if=(full_recharge_time<=cast_time+gcd.remains)" );
   maintenance->add_action( "immolation_aura" );
   maintenance->add_action( "sigil_of_flame,if=dot.fiery_brand.ticking" );
@@ -215,14 +215,15 @@ void vengeance( player_t* p )
   single_target->add_action( "elysian_decree,if=variable.frailty_ready" );
   single_target->add_action( "fracture,if=set_bonus.tier30_4pc&variable.fd&(soul_fragments<=3|(buff.metamorphosis.up&soul_fragments<=2))" );
   single_target->add_action( "fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)" );
+  single_target->add_action( "sigil_of_flame,if=fury<70" );
   single_target->add_action( "spirit_bomb,if=((variable.fd&soul_fragments>=4)|soul_fragments>=5)" );
   single_target->add_action( "fracture,if=set_bonus.tier30_4pc&variable.fd" );
-  single_target->add_action( "spirit_bomb,if=((variable.fd&soul_fragments>=3)|soul_fragments>=4)" );
   single_target->add_action( "soul_cleave,if=talent.focused_cleave" );
+  single_target->add_action( "spirit_bomb,if=((variable.fd&soul_fragments>=3)|soul_fragments>=4)" );
+  single_target->add_action( "soul_cleave" );
   single_target->add_action( "fracture" );
   single_target->add_action( "spirit_bomb,if=((variable.fd&soul_fragments>=2)|soul_fragments>=3)" );
   single_target->add_action( "sigil_of_flame" );
-  single_target->add_action( "soul_cleave" );
   single_target->add_action( "call_action_list,name=filler" );
 
   small_aoe->add_action( "elysian_decree,if=variable.frailty_ready" );
