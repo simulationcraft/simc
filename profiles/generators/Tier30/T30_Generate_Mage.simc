@@ -79,16 +79,13 @@ feet=underlight_conjurers_treads,id=202553,ilevel=450,enchant_id=6613
 finger1=onyx_impostors_birthright,id=204398,ilevel=450,gem_id=192958,enchant_id=6562
 finger2=signet_of_titanic_insight,id=192999,ilevel=447,gem_id=192958,enchant_id=6562,crafted_stats=vers/mastery
 trinket1=ominous_chromatic_essence,id=203729,ilevel=447
-trinket2=spoils_of_neltharus,id=193773,ilevel=447
+trinket2=vessel_of_searing_shadow,id=202615,ilevel=447
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
 dragonflight.ominous_chromatic_essence_dragonflight=azure
 dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
 
-potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_corrupting_rage_3
-food=fated_fortune_cookie
-augmentation=draconic
 temporary_enchant=main_hand:hissing_rune_3
 
 save=T30_Mage_Frost.simc
