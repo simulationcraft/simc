@@ -7097,6 +7097,15 @@ void mage_t::combat_begin()
  */
 std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std::string_view name )
 {
+  if ( util::str_compare_ci( name, "freezable" ) )
+  {
+    return make_fn_expr( name, [ &action ]
+    {
+      player_t* t = action.get_expression_target();
+      return !t->is_boss() || t->level() < action.sim->max_player_level + 3;
+    } );
+  }
+
   auto splits = util::string_split<std::string_view>( name, "." );
 
   // Helper for health percentage based effects
@@ -7105,9 +7114,9 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
     if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
       if ( !active )
-        return expr_t::create_constant( name_str, false );
+        return expr_t::create_constant( name, false );
 
-      return make_fn_expr( name_str, [ &action, actual_pct, execute ]
+      return make_fn_expr( name, [ &action, actual_pct, execute ]
       {
         double pct = action.get_expression_target()->health_percentage();
         return execute ? pct <= actual_pct : pct >= actual_pct;
@@ -7117,9 +7126,9 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
     {
       if ( !active )
-        return expr_t::create_constant( name_str, execute ? std::numeric_limits<double>::max() : 0.0 );
+        return expr_t::create_constant( name, execute ? std::numeric_limits<double>::max() : 0.0 );
 
-      return make_fn_expr( name_str, [ &action, actual_pct ]
+      return make_fn_expr( name, [ &action, actual_pct ]
       { return action.get_expression_target()->time_to_percent( actual_pct ).total_seconds(); } );
     }
 
