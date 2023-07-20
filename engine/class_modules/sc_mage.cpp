@@ -4259,8 +4259,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     timespan_t t = frost_mage_spell_t::execute_time();
 
     // If the Mage just gained the final Icicle, add a small delay to approximate the lack of spell queueing.
-    if ( p()->state.gained_full_icicles + p()->options.glacial_spike_delay > sim->current_time() )
-      t += p()->options.glacial_spike_delay;
+    t += std::max( p()->state.gained_full_icicles + p()->options.glacial_spike_delay - sim->current_time(), 0_ms );
 
     return t;
   }
