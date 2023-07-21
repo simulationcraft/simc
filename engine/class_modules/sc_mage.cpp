@@ -1900,13 +1900,20 @@ struct fire_mage_spell_t : public mage_spell_t
           // Searing Touch active. The following code is a huge hack.
           if ( id == 2948 && p->executing && ( p->executing->id == 11366 || p->executing->id == 2120 ) )
           {
-            assert( p->executing->execute_event );
-            p->current_execute_type = execute_type::FOREGROUND;
-            event_t::cancel( p->executing->execute_event );
-            event_t::cancel( p->cast_while_casting_poll_event );
-            // We need to set time_to_execute to zero, start a new action execute event and
-            // adjust GCD. action_t::schedule_execute should handle all these.
-            p->executing->schedule_execute();
+            if ( p->executing->target->is_sleeping() )
+            {
+              make_event( *sim, [ p ] { p->interrupt(); } );
+            }
+            else
+            {
+              assert( p->executing->execute_event );
+              p->current_execute_type = execute_type::FOREGROUND;
+              event_t::cancel( p->executing->execute_event );
+              event_t::cancel( p->cast_while_casting_poll_event );
+              // We need to set time_to_execute to zero, start a new action execute event and
+              // adjust GCD. action_t::schedule_execute should handle all these.
+              p->executing->schedule_execute();
+            }
           }
         }
         // Crit without HU => generate HU
@@ -3972,7 +3979,7 @@ struct flurry_t final : public frost_mage_spell_t
     // Flurry only triggers one stack of Cold Front, but it happens after the first
     // Flurry bolt attempts to consume Cold Front buff, let it execute first.
     if ( p()->talents.cold_front.ok() )
-      make_event( sim, 1_ms, [ this ] { trigger_cold_front(); } );
+      make_event( *sim, 1_ms, [ this ] { trigger_cold_front(); } );
   }
 };
 
@@ -7483,7 +7490,7 @@ bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay
   if ( success )
   {
     if ( delay > 0_ms && buff->check() )
-      make_event( sim, delay, [ buff ] { buff->execute(); } );
+      make_event( *sim, delay, [ buff ] { buff->execute(); } );
     else
       buff->execute();
   }
@@ -7500,7 +7507,7 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
   {
     if ( delay > 0_ms && buffs.brain_freeze->check() )
     {
-      make_event( sim, delay, [ this, chance ]
+      make_event( *sim, delay, [ this, chance ]
       {
         buffs.brain_freeze->execute();
         cooldowns.flurry->reset( chance < 1.0 );
@@ -7580,7 +7587,7 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
     trigger_icicle( icicle_target );
 
   buffs.icicles->trigger( duration );
-  icicles.push_back( { icicle_action, make_event( sim, buffs.icicles->remains(), [ this ]
+  icicles.push_back( { icicle_action, make_event( *sim, buffs.icicles->remains(), [ this ]
   {
     buffs.icicles->decrement();
     icicles.erase( icicles.begin() );
