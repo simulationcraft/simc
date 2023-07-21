@@ -6659,6 +6659,9 @@ void mage_t::create_buffs()
     } );
   }
 
+  // Buffs that use stack_react or may_react need to be reactable regardless of what the APL does
+  buffs.heating_up->reactable = true;
+
   if ( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
   {
     buffs.arcane_surge->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
