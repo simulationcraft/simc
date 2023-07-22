@@ -726,6 +726,7 @@ public:
     // Chance to proc initiative off of the fodder demon (ie. not get damaged by it first)
     double fodder_to_the_flame_initiative_chance = 0.85;
     int fodder_to_the_flame_kill_seconds = 4;
+    // How many seconds of CDR from Darkglare Boon is considered a high roll
     double darkglare_boon_cdr_high_roll_seconds = 18;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
