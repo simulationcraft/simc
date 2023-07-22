@@ -2780,13 +2780,16 @@ void sim_t::init()
 
   if ( fight_style == FIGHT_STYLE_DUNGEON_SLICE || fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    if ( main_target_str.empty() )
+    if ( main_target_str.empty() && target_list.empty() )
     {
       target = module_t::enemy()->create_player( this, "Dungeon" );
       target->initial.sleeping = target->base.sleeping = target->current.sleeping = true;
     }
     else
     {
+      if ( !target_list.empty() )
+        target = target_list.data().front();
+
       range::for_each( target_list, []( player_t* t ) {
         t->initial.sleeping = t->base.sleeping = t->current.sleeping = true;
       } );
