@@ -5,11 +5,11 @@ level=70
 race=tauren
 role=attack
 position=back
-talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAAAQSQSSSSSSTEChWSISikkkIAAAAAAARLgUigDkEpEAAAA
+talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAAgEkEkkkkkk0SECBSISikkkIAAAAAAARLAlIkkEpEAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
@@ -137,31 +137,32 @@ actions.stealth_cds+=/variable,name=shadow_dance_condition,value=talent.shadow_d
 actions.stealth_cds+=/shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)&(!talent.hidden_opportunity|!cooldown.vanish.ready)
 actions.stealth_cds+=/shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))
 
-head=lurking_specters_visage,id=202497,bonus_id=1808,ilevel=447,gem_id=192991
-neck=torc_of_passed_time,id=201759,bonus_id=8782,ilevel=447,gem_id=192932/192932/192932,crafted_stats=32/40
+head=peripheral_vision_projectors,id=198324,bonus_id=8780,ilevel=447,gem_id=192991,crafted_stats=40
+neck=amulet_of_tender_breath,id=206183,bonus_id=8782,ilevel=447,gem_id=192932/192932/192932
 shoulders=lurking_specters_shoulderblades,id=202495,ilevel=450
 back=voice_of_the_silent_star,id=204465,ilevel=457
 chest=lurking_specters_brigandine,id=202500,ilevel=447,enchant=waking_stats_3
 wrists=needlessly_complex_wristguards,id=198327,bonus_id=8780,ilevel=447,gem_id=192932,crafted_stats=40
 hands=lurking_specters_handgrips,id=202498,ilevel=450
 waist=lifebound_belt,id=193407,bonus_id=8797/8780/8960,ilevel=447,gem_id=192932,crafted_stats=32/40
-legs=pustule_bearers_pants,id=159338,ilevel=447,enchant=fierce_armor_kit_3
-feet=toxic_thorn_footwraps,id=193452,ilevel=447
-finger1=onyx_annulet,id=203460,ilevel=424,gem_id=204027/204029/204011,enchant=devotion_of_critical_strike_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
+legs=lurking_specters_tights,id=202496,ilevel=447,enchant=fierce_armor_kit_3
+feet=slimy_expulsion_boots,id=193451,bonus_id=8836/8840/8902/8960/9405/9376/9366,enchant_id=6607
+finger1=signet_of_titanic_insight,id=192999,bonus_id=523,ilevel=447,gem_id=192932,enchant=devotion_of_versatility_3,crafted_stats=40/32
+finger2=tormentors_siphoning_signet,id=204466,bonus_id=523,ilevel=447,gem_id=192932,enchant=devotion_of_versatility_3
 trinket1=dragonfire_bomb_dispenser,id=202610,ilevel=447
 trinket2=beacon_to_the_beyond,id=203963,ilevel=450
-main_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant=shadowflame_wreathe_3
-off_hand=forgestorm,id=193785,ilevel=447,enchant=frozen_devotion_3
+main_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant=sophic_devotion_3
+off_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=445.13
-# gear_agility=5906
-# gear_stamina=21686
-# gear_crit_rating=4598
-# gear_haste_rating=1574
-# gear_mastery_rating=932
-# gear_versatility_rating=4293
+# gear_ilvl=448.19
+# gear_agility=6223
+# gear_stamina=22384
+# gear_crit_rating=4310
+# gear_haste_rating=379
+# gear_mastery_rating=1886
+# gear_versatility_rating=6144
+# gear_speed_rating=250
 # gear_armor=3995
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
