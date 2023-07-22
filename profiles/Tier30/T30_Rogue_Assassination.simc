@@ -2,14 +2,14 @@ rogue="T30_Rogue_Assassination"
 source=default
 spec=assassination
 level=70
-race=orc
+race=tauren
 role=attack
 position=back
-talents=BMQAAAAAAAAAAAAAAAAAAAAAAINJSgIUSAAAAAAAkEAJCAAAAAAg0QiDUSCJJJplSiIJkIRiFE
+talents=BMQAAAAAAAAAAAAAAAAAAAAAAIFJSCiQJBAAAAAAQSAkIAAAAAAASDJOQJJkkkkWKJikQCRiFE
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
@@ -168,31 +168,31 @@ actions.vanish+=/shadow_dance,if=talent.improved_garrote&cooldown.garrote.up&!ex
 # Shadow Dance with Master Assassin: Rupture+Garrote not in refresh range, during Deathmark+Shiv. Sync with Sepsis final hit if possible.
 actions.vanish+=/shadow_dance,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.deathmark.up|cooldown.deathmark.remains>60)&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
 
-head=lifebound_cap,id=193400,bonus_id=8780/8960/8797,ilevel=447,gem_id=192982,crafted_stats=32/40
+head=lurking_specters_visage,id=202497,bonus_id=1808,ilevel=447,gem_id=192982
 neck=choker_of_stolen_thunder,id=206180,bonus_id=8782,ilevel=447,gem_id=192919/192919/192919
 shoulders=lurking_specters_shoulderblades,id=202495,ilevel=450
 back=voice_of_the_silent_star,id=204465,ilevel=457
-chest=lurking_specters_brigandine,id=202500,ilevel=447,enchant=waking_stats_3
-wrists=lifebound_bindings,id=193419,bonus_id=8780,ilevel=447,gem_id=192919,crafted_stats=32/40
+chest=lifebound_chestpiece,id=193399,bonus_id=8960/8797,ilevel=447,enchant=waking_stats_3,crafted_stats=36/49
+wrists=needlessly_complex_wristguards,id=198327,bonus_id=8780,ilevel=447,gem_id=192922,crafted_stats=49
 hands=lurking_specters_handgrips,id=202498,ilevel=450
 waist=oblivions_immortal_coil,id=204399,bonus_id=1808,ilevel=450,gem_id=192919
 legs=lurking_specters_tights,id=202496,ilevel=447,enchant=fierce_armor_kit_3
-feet=slimy_expulsion_boots,id=193451,ilevel=447
-finger1=onyx_annulet,id=203460,ilevel=424,gem_id=204027/204029/204001,enchant=devotion_of_critical_strike_3
+feet=toxic_thorn_footwraps,id=193452,ilevel=447
+finger1=scalebane_signet,id=193768,bonus_id=1808,ilevel=447,gem_id=192919,enchant=devotion_of_critical_strike_3
 finger2=onyx_impostors_birthright,id=204398,bonus_id=1808,ilevel=450,gem_id=192919,enchant=devotion_of_critical_strike_3
-trinket1=beacon_to_the_beyond,id=203963,ilevel=450
-trinket2=dragonfire_bomb_dispenser,id=202610,ilevel=447
-main_hand=fang_of_the_sundered_flame,id=202564,ilevel=450,enchant=wafting_devotion_3
-off_hand=primal_molten_shortblade,id=190505,bonus_id=8836/8840/8902,ilevel=447,enchant=sophic_devotion_3,crafted_stats=32/36
+trinket1=dragonfire_bomb_dispenser,id=202610,ilevel=447
+trinket2=ominous_chromatic_essence,id=203729,ilevel=447
+main_hand=fang_of_the_sundered_flame,id=202564,ilevel=450,enchant=sophic_devotion_3
+off_hand=nick_of_time,id=207996,ilevel=441,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=447.31
-# gear_agility=6245
-# gear_stamina=22215
-# gear_crit_rating=5344
-# gear_haste_rating=1621
-# gear_mastery_rating=3420
-# gear_versatility_rating=1711
+# gear_ilvl=448.19
+# gear_agility=6831
+# gear_stamina=22462
+# gear_crit_rating=5197
+# gear_haste_rating=3047
+# gear_mastery_rating=4058
+# gear_versatility_rating=686
 # gear_armor=4003
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
