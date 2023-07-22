@@ -3905,13 +3905,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     consume_cold_front( s->target );
 
     if ( rng().roll( p()->talents.glacial_assault->effectN( 1 ).percent() ) )
-    {
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( 1.0_s )
-        .target( s->target )
-        .n_pulses( 1 )
-        .action( p()->action.glacial_assault ) );
-    }
+      make_event( *sim, 1.0_s, [ this, t = s->target ] { p()->action.glacial_assault->execute_on_target( t ); } );
 
     if ( p()->action.shattered_ice )
     {
