@@ -80,6 +80,13 @@ struct icicle_tuple_t
   event_t*  expiration;
 };
 
+struct buff_adjust_info_t
+{
+  buff_t* buff;
+  bool expire;
+  int stacks;
+};
+
 struct mage_td_t final : public actor_target_data_t
 {
   struct dots_t
@@ -196,6 +203,9 @@ struct mage_t final : public player_t
 public:
   // Icicles
   std::vector<icicle_tuple_t> icicles;
+
+  // Buffs waiting to be triggered/expired
+  std::vector<buff_adjust_info_t> buff_queue;
 
   // Time Manipulation
   std::vector<cooldown_t*> time_manipulation_cooldowns;
@@ -5720,15 +5730,6 @@ struct from_the_ashes_event_t final : public mage_event_t
 
 struct merged_buff_execute_event_t final : public mage_event_t
 {
-  struct buff_execute_info_t
-  {
-    buff_t* buff;
-    bool expire;
-    int stacks;
-  };
-
-  std::vector<buff_execute_info_t> buffs;
-
   merged_buff_execute_event_t( mage_t& m ) :
     mage_event_t( m, 0_ms )
   { }
@@ -5739,32 +5740,14 @@ struct merged_buff_execute_event_t final : public mage_event_t
   void execute() override
   {
     mage->events.merged_buff_execute = nullptr;
-    for ( const auto& b : buffs )
+    for ( const auto& b : mage->buff_queue )
     {
       if ( b.expire )
         b.buff->expire();
       if ( b.stacks > 0 )
         b.buff->trigger( b.stacks );
     }
-    buffs.clear();
-  }
-
-  void add_buff( buff_t* buff, bool trigger )
-  {
-    auto it = range::find( buffs, buff, [] ( const auto& i ) { return i.buff; } );
-    if ( it == buffs.end() )
-    {
-      buffs.push_back( { buff, !trigger, as<int>( trigger ) } );
-    }
-    else if ( trigger )
-    {
-      it->stacks++;
-    }
-    else
-    {
-      it->expire = true;
-      it->stacks = 0;
-    }
+    mage->buff_queue.clear();
   }
 };
 
@@ -7039,6 +7022,7 @@ void mage_t::reset()
   player_t::reset();
 
   icicles.clear();
+  buff_queue.clear();
   events = events_t();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
@@ -7464,7 +7448,20 @@ void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
   if ( !events.merged_buff_execute )
     events.merged_buff_execute = make_event<events::merged_buff_execute_event_t>( *sim, *this );
 
-  debug_cast<events::merged_buff_execute_event_t*>( events.merged_buff_execute )->add_buff( buff, trigger );
+  auto it = range::find( buff_queue, buff, [] ( const auto& i ) { return i.buff; } );
+  if ( it == buff_queue.end() )
+  {
+    buff_queue.push_back( { buff, !trigger, as<int>( trigger ) } );
+  }
+  else if ( trigger )
+  {
+    it->stacks++;
+  }
+  else
+  {
+    it->expire = true;
+    it->stacks = 0;
+  }
 }
 
 // Triggers a buff. If the buff was already active, the new application
