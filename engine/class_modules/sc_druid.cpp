@@ -5869,7 +5869,8 @@ void druid_action_t<Base>::impact( action_state_t* s )
 {
   ab::impact( s );
 
-  if ( p()->active.moonless_night && s->result_amount > 0 && can_proc_moonless_night() )
+  if ( p()->active.moonless_night && s->result_amount > 0 && can_proc_moonless_night() &&
+       td( s->target )->dots.moonfire->is_ticking() )
   {
     auto moonless = debug_cast<druid_residual_action_t<bear_attacks::bear_attack_t>*>( p()->active.moonless_night );
 
