@@ -7570,8 +7570,8 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
   if ( !spec.icicles->ok() || !rng().roll( chance ) )
     return;
 
-  unsigned max_icicles = as<unsigned>( spec.icicles->effectN( 2 ).base_value() );
-  unsigned old_count = icicles.size();
+  size_t max_icicles = as<size_t>( spec.icicles->effectN( 2 ).base_value() );
+  size_t old_count = icicles.size();
 
   // Shoot one if capped
   if ( old_count == max_icicles )
