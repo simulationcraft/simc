@@ -68,6 +68,7 @@ struct stats_t;
 struct spell_data_t;
 struct player_talent_points_t;
 struct uptime_t;
+struct ground_aoe_params_t;
 namespace azerite {
     class azerite_state_t;
     class azerite_essence_state_t;
@@ -666,6 +667,7 @@ struct player_t : public actor_t
   auto_dispose<std::vector<action_variable_t*>> variables;
   std::vector<std::string> action_map;
   std::vector<std::string> dot_map;
+  auto_dispose<std::vector<ground_aoe_params_t*>> ground_aoe_params_cache;
 
   regen_type resource_regeneration;
 

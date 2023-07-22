@@ -36,6 +36,7 @@
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
 #include "player/covenant.hpp"
+#include "player/ground_aoe.hpp"
 #include "player/instant_absorb.hpp"
 #include "player/pet.hpp"
 #include "player/player_demise_event.hpp"
