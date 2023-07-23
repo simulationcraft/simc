@@ -1728,8 +1728,6 @@ public:
   }
 };
 
-using residual_action_t = residual_action::residual_periodic_action_t<mage_spell_t>;
-
 double mage_spell_state_t::composite_crit_chance() const
 {
   double c = action_state_t::composite_crit_chance();
@@ -2521,7 +2519,7 @@ struct intensifying_flame_t final : public spell_t
   }
 };
 
-struct ignite_t final : public residual_action_t
+struct ignite_t final : public residual_action::residual_periodic_action_t<spell_t>
 {
   action_t* phoenix_reborn = nullptr;
   action_t* intensifying_flame = nullptr;
@@ -2530,7 +2528,6 @@ struct ignite_t final : public residual_action_t
     residual_action_t( n, p, p->find_spell( 12654 ) )
   {
     callbacks = true;
-    affected_by.radiant_spark = false;
 
     if ( p->talents.phoenix_reborn.ok() )
       phoenix_reborn = get_action<phoenix_reborn_t>( "phoenix_reborn", p );
@@ -2539,36 +2536,30 @@ struct ignite_t final : public residual_action_t
       intensifying_flame = get_action<intensifying_flame_t>( "intensifying_flame", p );
   }
 
-  void init() override
-  {
-    residual_action_t::init();
-
-    snapshot_flags = STATE_TGT_MUL_TA;
-    update_flags   = STATE_TGT_MUL_TA;
-  }
-
   void tick( dot_t* d ) override
   {
     residual_action_t::tick( d );
 
-    if ( rng().roll( p()->talents.conflagration->effectN( 1 ).percent() ) )
-      p()->action.conflagration_flare_up->execute_on_target( d->target );
+    auto p = debug_cast<mage_t*>( player );
 
-    if ( p()->cooldowns.fervent_flickering->up() && rng().roll( p()->talents.fervent_flickering->proc_chance() ) )
+    if ( rng().roll( p->talents.conflagration->effectN( 1 ).percent() ) )
+      p->action.conflagration_flare_up->execute_on_target( d->target );
+
+    if ( p->cooldowns.fervent_flickering->up() && rng().roll( p->talents.fervent_flickering->proc_chance() ) )
     {
-      p()->cooldowns.fervent_flickering->start( p()->talents.fervent_flickering->internal_cooldown() );
-      p()->cooldowns.fire_blast->adjust( -1000 * p()->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
+      p->cooldowns.fervent_flickering->start( p->talents.fervent_flickering->internal_cooldown() );
+      p->cooldowns.fire_blast->adjust( -1000 * p->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
     }
 
-    if ( p()->cooldowns.phoenix_reborn->up() && rng().roll( p()->talents.phoenix_reborn->proc_chance() ) )
+    if ( p->cooldowns.phoenix_reborn->up() && rng().roll( p->talents.phoenix_reborn->proc_chance() ) )
     {
-      p()->cooldowns.phoenix_reborn->start( p()->talents.phoenix_reborn->internal_cooldown() );
-      p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
+      p->cooldowns.phoenix_reborn->start( p->talents.phoenix_reborn->internal_cooldown() );
+      p->cooldowns.phoenix_flames->adjust( -1000 * p->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
       phoenix_reborn->execute_on_target( d->target );
     }
 
-    if ( p()->get_active_dots( d ) <= p()->talents.intensifying_flame->effectN( 1 ).base_value() )
-      intensifying_flame->execute_on_target( d->target, p()->talents.intensifying_flame->effectN( 2 ).percent() * d->state->result_total );
+    if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
+      intensifying_flame->execute_on_target( d->target, p->talents.intensifying_flame->effectN( 2 ).percent() * d->state->result_total );
   }
 
   void impact( action_state_t* s ) override
@@ -3854,13 +3845,13 @@ struct glacial_assault_t final : public frost_mage_spell_t
   }
 };
 
-struct shattered_ice_t final : public frost_mage_spell_t
+struct shattered_ice_t final : public spell_t
 {
   shattered_ice_t( std::string_view n, mage_t* p ) :
-    frost_mage_spell_t( n, p, p->find_spell( 408763 ) )
+    spell_t( n, p, p->find_spell( 408763 ) )
   {
     background = true;
-    may_crit = affected_by.shatter = false;
+    may_crit = false;
     aoe = -1;
     reduced_aoe_targets = p->sets->set( MAGE_FROST, T30, B2 )->effectN( 3 ).base_value();
     base_dd_min = base_dd_max = 1.0;
@@ -3868,7 +3859,7 @@ struct shattered_ice_t final : public frost_mage_spell_t
 
   void init() override
   {
-    frost_mage_spell_t::init();
+    spell_t::init();
 
     // TODO: This spell currently ignores damage reductions, which is probably not intended.
     snapshot_flags &= STATE_NO_MULTIPLIER;
@@ -3876,7 +3867,7 @@ struct shattered_ice_t final : public frost_mage_spell_t
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    frost_mage_spell_t::available_targets( tl );
+    spell_t::available_targets( tl );
 
     tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
 
@@ -5101,19 +5092,19 @@ struct pyroblast_t final : public hot_streak_spell_t
 
 // Ray of Frost Spell =======================================================
 
-struct splintering_ray_t final : public mage_spell_t
+struct splintering_ray_t final : public spell_t
 {
   splintering_ray_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( 418735 ) )
+    spell_t( n, p, p->find_spell( 418735 ) )
   {
     background = true;
-    may_miss = may_crit = affected_by.shatter = false;
+    may_miss = may_crit = false;
     base_dd_min = base_dd_max = 1.0;
   }
 
   void init() override
   {
-    mage_spell_t::init();
+    spell_t::init();
 
     snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_TGT_MUL_DA;
@@ -5122,12 +5113,12 @@ struct splintering_ray_t final : public mage_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     // Ignore Positive Damage Taken Modifiers (321)
-    return std::min( mage_spell_t::composite_target_multiplier( target ), 1.0 );
+    return std::min( spell_t::composite_target_multiplier( target ), 1.0 );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    mage_spell_t::available_targets( tl );
+    spell_t::available_targets( tl );
 
     tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
 
@@ -5364,14 +5355,13 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
   { return true; }
 };
 
-struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
+struct touch_of_the_magi_explosion_t final : public spell_t
 {
   touch_of_the_magi_explosion_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 210833 ) )
+    spell_t( n, p, p->find_spell( 210833 ) )
   {
     background = true;
     may_miss = may_crit = callbacks = false;
-    affected_by.radiant_spark = triggers.touch_of_the_magi = false;
     aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
@@ -5380,7 +5370,7 @@ struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
 
   void init() override
   {
-    arcane_mage_spell_t::init();
+    spell_t::init();
 
     snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_TGT_MUL_DA;
@@ -5411,20 +5401,19 @@ struct arcane_echo_t final : public arcane_mage_spell_t
 
 // Radiant Spark Spell ======================================================
 
-struct harmonic_echo_t final : public mage_spell_t
+struct harmonic_echo_t final : public spell_t
 {
   harmonic_echo_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( 384685 ) )
+    spell_t( n, p, p->find_spell( 384685 ) )
   {
     background = true;
     may_miss = may_crit = callbacks = false;
-    affected_by.radiant_spark = triggers.touch_of_the_magi = false;
     base_dd_min = base_dd_max = 1.0;
   }
 
   void init() override
   {
-    mage_spell_t::init();
+    spell_t::init();
 
     snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_TGT_MUL_DA;
@@ -5433,7 +5422,7 @@ struct harmonic_echo_t final : public mage_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     // Ignore Positive Damage Taken Modifiers (321)
-    return std::min( mage_spell_t::composite_target_multiplier( target ), 1.0 );
+    return std::min( spell_t::composite_target_multiplier( target ), 1.0 );
   }
 };
 
