@@ -83,16 +83,17 @@ public:
     assert( !ab::tick_zero );
 
     dot_t* dot = this->get_dot( s->target );
-    double current_amount = 0, old_amount = 0;
-    int ticks_left = 0;
+    double current_amount = 0.0;
+    double old_amount = 0.0;
+    double ticks_left = 0.0;
     residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( dot->state );
 
     // If dot is ticking get current residual pool before we overwrite it
     if ( dot->is_ticking() )
     {
       old_amount = dot_state->tick_amount;
-      ticks_left = dot->ticks_left();
-      current_amount = old_amount * dot->ticks_left();
+      ticks_left = dot->ticks_left_fractional();
+      current_amount = old_amount * ticks_left;
     }
 
     // Add new amount to residual pool
@@ -109,14 +110,14 @@ public:
 
     // Compute tick damage after refresh, so we divide by the correct number of
     // ticks
-    dot_state->tick_amount = current_amount / dot->ticks_left();
+    dot_state->tick_amount = current_amount / dot->ticks_left_fractional();
 
     // Spit out debug for what we did
     ab::sim->print_debug(
         "{} {} residual_action impact amount={} old_total={} old_ticks={} old_tick={} current_total={} "
         "current_ticks={} current_tick={}",
         *ab::player, *this, s->result_amount, old_amount * ticks_left, ticks_left, ticks_left > 0 ? old_amount : 0,
-        current_amount, dot->ticks_left(), dot_state->tick_amount );
+        current_amount, dot->ticks_left_fractional(), dot_state->tick_amount );
   }
 
   // The damage of the tick is simply the tick_amount in the state

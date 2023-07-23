@@ -2561,42 +2561,6 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
       intensifying_flame->execute_on_target( d->target, p->talents.intensifying_flame->effectN( 2 ).percent() * d->state->result_total );
   }
-
-  void impact( action_state_t* s ) override
-  {
-    // Residual periodic actions + tick_zero does not work
-    assert( !tick_zero );
-
-    dot_t* dot = get_dot( s->target );
-    double current_amount = 0.0;
-    double old_amount = 0.0;
-    double ticks_left = 0.0;
-    auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( dot->state );
-
-    // If dot is ticking get current residual pool before we overwrite it
-    if ( dot->is_ticking() )
-    {
-      old_amount = dot_state->tick_amount;
-      ticks_left = dot->ticks_left_fractional();
-      current_amount = old_amount * ticks_left;
-    }
-
-    // Add new amount to residual pool
-    current_amount += s->result_amount;
-
-    // Trigger the dot, refreshing its duration or starting it
-    trigger_dot( s );
-
-    if ( !dot_state )
-      dot_state = debug_cast<residual_action::residual_periodic_state_t*>( dot->state );
-
-    // After a refresh the number of ticks should always be an integer, but Ignite uses the fractional value here too for consistency.
-    dot_state->tick_amount = current_amount / dot->ticks_left_fractional();
-
-    sim->print_debug( "{} {} impact amount={} old_total={} old_ticks={} old_tick={} current_total={} current_ticks={} current_tick={}",
-      player->name(), name(), s->result_amount, old_amount * ticks_left, ticks_left, ticks_left > 0 ? old_amount : 0,
-      current_amount, dot->ticks_left_fractional(), dot_state->tick_amount );
-  }
 };
 
 // Arcane Orb Spell =========================================================
