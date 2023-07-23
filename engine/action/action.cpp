@@ -58,17 +58,26 @@ void do_execute( action_t* action, execute_type type )
     action->player->schedule_cwc_ready( timespan_t::zero() );
   }
 
-  if ( !action->quiet )
+  // Check if the target has died or gone out of range between now and when this was queued
+  // If this is the case, we shouldn't continue with attempting to execute it
+  if ( !action->target_ready( action->target ) )
   {
-    action->player->iteration_executed_foreground_actions++;
-    action->total_executions++;
-    action->player->sequence_add( action, action->target, action->sim->current_time() );
+    action->sim->print_debug( "{} skipping queued do_execute for {} due to failing target_ready() check", *action->player, *action );
   }
-  action->execute();
-  action->line_cooldown->start();
+  else
+  {
+    if ( !action->quiet )
+    {
+      action->player->iteration_executed_foreground_actions++;
+      action->total_executions++;
+      action->player->sequence_add( action, action->target, action->sim->current_time() );
+    }
+    action->execute();
+    action->line_cooldown->start();
 
-  // If the ability has a GCD, we need to start it
-  action->start_gcd();
+    // If the ability has a GCD, we need to start it
+    action->start_gcd();
+  }
 
   if ( action->player->queueing == action )
   {
