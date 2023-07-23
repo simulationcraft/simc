@@ -6403,6 +6403,9 @@ void mage_t::init_base_stats()
   // Mana Attunement
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + find_spell( 121039 )->effectN( 1 ).percent();
 
+  for ( auto rt = RESOURCE_RAGE; rt < RESOURCE_MAX; rt++ )
+    resources.active_resource[ rt ] = false;
+
   if ( specialization() == MAGE_ARCANE )
     regen_caches[ CACHE_MASTERY ] = true;
 }
