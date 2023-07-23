@@ -3738,6 +3738,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     auto tail      = name_str.substr( splits[ 0 ].length() + 1 );
     if ( util::is_number( splits[ 1 ] ) )
     {
+      sim->error(
+          "target.#.* expressions are deprecated and may give unexpected results in simulations with dynamic targets.\n"
+          "Please rewrite to a 'target_if' expression." );
+
       expr_target = find_target_by_number( util::to_int( splits[ 1 ] ) );
 
       if ( !expr_target )
