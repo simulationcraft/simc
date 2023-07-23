@@ -5606,7 +5606,7 @@ struct water_jet_t final : public proxy_action_t
 
   void execute() override
   {
-    if ( pet()->is_sleeping() || pet()->buffs.stunned->check() )
+    if ( target->is_sleeping() || pet()->is_sleeping() || pet()->buffs.stunned->check() )
       return;
 
     pet()->interrupt();
