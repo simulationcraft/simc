@@ -7724,6 +7724,7 @@ namespace monk
     talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
     // Row 6
     talent.mistweaver.nourishing_chi = _ST( "Nourishing Chi" );
+    talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
     talent.mistweaver.overflowing_mists = _ST( "Overflowing Mists" );
     talent.mistweaver.invoke_yulon_the_jade_serpent = _ST( "Invoke Yu'lon, the Jade Serpent" );
     talent.mistweaver.invoke_chi_ji_the_red_crane = _ST( "Invoke Chi-Ji, the Red Crane" );
@@ -7731,7 +7732,6 @@ namespace monk
     talent.mistweaver.accumulating_mist = _ST( "Accumulating Mist" );
     talent.mistweaver.rapid_diffusion = _ST( "Rapid Diffusion" );
     // Row 7
-    talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
     talent.mistweaver.yulons_whisper = _ST( "Yu'lon's Whisper" );
     talent.mistweaver.mist_wrap = _ST( "Mist Wrap" );
     talent.mistweaver.refreshing_jade_wind = _ST( "Refreshing Jade Wind" );
@@ -9595,11 +9595,16 @@ namespace monk
       }
 
       if ( talent.windwalker.power_strikes->ok() )
-        make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
-        [ this ] ()
       {
+        // Player starts combat with buff
         buff.power_strikes->trigger();
-      } );
+        // ... and then regains the buff in time intervals while in combat
+        make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
+          [ this ] ()
+        {
+          buff.power_strikes->trigger();
+        } );
+      }
     }
 
     // Melee Squirm
