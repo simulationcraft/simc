@@ -979,7 +979,7 @@ namespace monk
 
         bool ready() override
         {
-          if ( !p()->buff.storm_earth_and_fire->check() )
+          if ( p()->buff.storm_earth_and_fire->check() )
             return false;
 
           return monk_spell_t::ready();
