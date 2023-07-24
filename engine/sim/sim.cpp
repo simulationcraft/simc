@@ -2338,7 +2338,6 @@ void sim_t::init_fight_style()
     break;
     
     case FIGHT_STYLE_DUNGEON_SLICE:
-      //Based on the Hero Dungeon setup
       desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
 
@@ -2346,17 +2345,13 @@ void sim_t::init_fight_style()
       ignore_invulnerable_targets = true;
 
       raid_events_str +=
-        "/invulnerable,cooldown=500,duration=500,retarget=1"
         "/adds,name=Boss,count=1,cooldown=500,duration=135,type=add_boss,duration_stddev=1"
-        "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
+        "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=18,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
       break;
     
     case FIGHT_STYLE_DUNGEON_ROUTE:
       // To be used in conjunction with "pull" raid events for a simulated dungeon run.
-      range::for_each( target_list, []( player_t* t ) {
-        t -> base.sleeping = true;
-      });
       desired_targets = 1;
       fixed_time = false;
       // Bloodlust is handled by an option on each pull raid event.
@@ -2783,18 +2778,37 @@ void sim_t::init()
   // Find Already defined target, otherwise create a new one.
   print_debug( "Creating Enemies." );
 
-  if ( !target_list.empty() )
+  if ( fight_style == FIGHT_STYLE_DUNGEON_SLICE || fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    if ( main_target_str.empty() && target_list.empty() )
+    {
+      target = module_t::enemy()->create_player( this, "Dungeon" );
+      target->initial.sleeping = target->base.sleeping = target->current.sleeping = true;
+    }
+    else
+    {
+      if ( !target_list.empty() )
+        target = target_list.data().front();
+
+      range::for_each( target_list, []( player_t* t ) {
+        t->initial.sleeping = t->base.sleeping = t->current.sleeping = true;
+      } );
+    }
+  }
+  else if ( !target_list.empty() )
   {
     target = target_list.data().front();
   }
-  else if ( ! main_target_str.empty() )
+  else if ( !main_target_str.empty() )
   {
     player_t* p = find_player( main_target_str );
     if ( p )
       target = p;
   }
   else
-    target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
+  {
+    target = module_t::enemy()->create_player( this, "Fluffy_Pillow" );
+  }
 
   // create additional enemies here
   while ( as<int>(target_list.size()) < desired_targets )

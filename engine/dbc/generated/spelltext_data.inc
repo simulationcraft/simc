@@ -1,4 +1,4 @@
-// Spell text, wow build 10.1.5.50469
+// Spell text, wow build 10.1.5.50504
 static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -115,7 +115,7 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   {   2094, "Blinds the target, causing it to wander disoriented for $d. Damage will interrupt the effect. Limit 1.", "Disoriented.", 0 },
   {   2096, "Allows the caster to see through the target's eyes for $d. Will not work if the target is in another instance or on another continent.", "Sight granted through target's eyes.", 0 },
   {   2098, "Finishing move that dispatches the enemy, dealing damage per combo point:\r\n   1 point  : ${$m1*1} damage\r\n   2 points: ${$m1*2} damage\r\n   3 points: ${$m1*3} damage\r\n   4 points: ${$m1*4} damage\r\n   5 points: ${$m1*5} damage$?s193531|((s394320|s394321)&!s193531)[\r\n   6 points: ${$m1*6} damage][]$?s193531&(s394320|s394321)[\r\n   7 points: ${$m1*7} damage][]", 0, 0 },
-  {   2120, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Movement speed slowed by $s2%.", 0 },
+  {   2120, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d. Deals reduced damage beyond $s3 targets.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Movement speed slowed by $s2%.", 0 },
   {   2139, "Counters the enemy's spellcast, preventing any spell from that school of magic from being cast for $d$?s12598[ and silencing the target for $55021d][].", 0, 0 },
   {   2367, "Increases your Strength by $s1 for $d.  Battle Elixir.", "Strength increased by $w1.  Battle Elixir.", 0 },
   {   2374, "Increases your Agility by $s1 for $d.  Battle Elixir.", "Agility increased by $w1.  Battle Elixir.", 0 },
@@ -6803,7 +6803,7 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   { 205029, "Reduces the cooldown of Fire Blast by $s3 sec and increases the maximum number of charges by $s1.", 0, 0 },
   { 205030, "Frostbolt grants you Fingers of Frost $s1% more often and Brain Freeze $s2% more often.", 0, 0 },
   { 205036, "Frost Nova now has ${1+$m1} charges.", 0, 0 },
-  { 205037, "Flamestrike leaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d. ", 0, 0 },
+  { 205037, "Flamestrike leaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d. Deals reduced damage beyond $205472s2 targets.", 0, 0 },
   { 205065, "Raise your dagger into the sky, channeling a torrent of void energy into the target for $o Shadow damage over $d. Insanity does not drain during this channel.\r\n\r\nRequires Voidform.", "Dealing $s1 Shadow damage to the target every $t sec.\r\n\r\nInsanity drain temporarily stopped.", "Artifact" },
   { 205071, "Discover the hidden power within at the forge in your class hall to empower your artifact. \r\n\r\nConsumes all available items of this type.", 0, 0 },
   { 205144, "Mortal Strike costs ${$m2/-10} less Rage.", 0, 0 },
@@ -20089,7 +20089,7 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
-  { 417959, "Whenever you or one of your allies falls below $417960s1% health, the Tyrstone will summon an echo of your past self, healing them and nearby allies for the stored amount and granting $s3 Haste for $418080d before the record is lost.", 0, 0 },
+  { 417959, "Whenever you or one of your allies falls below $417960s1% health, the Tyrstone will summon an echo of your past self, healing them for the stored amount split among nearby allies and granting $s3 Haste for $418080d before the record is lost. Deals increased healing when healing multiple allies.", 0, 0 },
   { 417967, "$@spelldesc417939", "Has recorded ${$min($w1,$417959w2)} healing for when an ally reaches $417960s1% health.", 0 },
   { 418080, "$@spelldesc417939", "Haste increased by $w1.", 0 },
   { 418101, "Source of Magic increases the target's healing and damage done by $s1%.", 0, 0 },
@@ -20123,11 +20123,13 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   { 421662, "Guarantees that the next Time Rift you complete will grant you a reward.", "The next time rift you complete is guaranteed to grant you a reward.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.5.50469
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.1.5.50504
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {    2120,  0, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d. Deals reduced damage beyond $s3 targets.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]" },
+  {  205037,  0, "Flamestrike leaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d. ", "Flamestrike leaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d. Deals reduced damage beyond $205472s2 targets." },
 } };
 
-// Spell description variables, wow build 10.1.5.50469
+// Spell description variables, wow build 10.1.5.50504
 static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20526,8 +20528,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.5.50469
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
-  {  393400,  0, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s5)/100}", "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
+// spelldesc_vars hotfix entries, wow build 10.1.5.50504
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -908,6 +908,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=1054274)  : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 0x9 | Target: Self (1)
+#8 (id=1096713)  : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 Description      : Upon death, the Priest becomes the Spirit of Redemption for $27827d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. When the effect ends, the Priest dies.
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 
@@ -1034,7 +1036,6 @@ Damage increased by $s3% to targets below $s2% health.]$?c3[][]$?s137033[
 |cFFFFFFFFGenerates ${$s4/100} Insanity.|r][]
 
 Name             : Shadow Word: Death (id=32409) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -2831,11 +2832,11 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-#3 (id=164989)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#3 (id=164989)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-#4 (id=164990)   : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
+#4 (id=164990)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
@@ -3689,11 +3690,11 @@ Effects          :
                    Base Value: 104 | Scaled Value: 104 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-#17 (id=1045166)  : Apply Aura (6) | Add Flat Modifier (107): Spell Damage Taken (27)
+#17 (id=1045166)  : Apply Aura (6) | Add Flat Modifier (107): Spell Amplitude (27)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Misc Value: 27 | Target: Self (1)
                    Affected Spells: Vampiric Touch (34914), Devouring Plague (335467)
                    Family Flags: 42, 87
-#18 (id=1045167)  : Apply Aura (6) | Add Flat Modifier (107): Spell Damage Taken (27)
+#18 (id=1045167)  : Apply Aura (6) | Add Flat Modifier (107): Spell Amplitude (27)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
                    Affected Spells: Vampiric Touch (34914), Devouring Plague (335467)
                    Family Flags: 42, 87
@@ -13375,7 +13376,6 @@ Description      : $@spelldesc373280
 Tooltip          : Each time Echoing Void is applied, it has a chance to collapse, exploding for $373304s1 Shadow damage until no stacks remain.
 
 Name             : Echoing Void (id=373304) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -13568,7 +13568,6 @@ Description      : $@spelldesc373310
 Tooltip          : The duration of Shadowfiend is extended by $s1 sec.
 
 Name             : Inescapable Torment (id=373427) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Discipline [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(500, 1000)]
                  : Effect#3 [op=set, values=(-50, 0)]
@@ -13856,7 +13855,6 @@ Effects          :
 Description      : Shadow Word: Pain periodic damage has a chance to reset the remaining cooldown on Mind Blast and cause your next Mind Blast to be instant.
 
 Name             : Mindgames (id=375901) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=1, req_points=20]
 Class            : Priest
 School           : Shadow
@@ -17318,7 +17316,6 @@ Effects          :
 Description      : $@spelldesc341491
 
 Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (16384 -> 81920)
 Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(13, 25)]
                  : Effect#2 [op=set, values=(2, 2)]
@@ -17343,10 +17340,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1096650)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1096651)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Your Holy Words have a $s1% chance to reset the cooldown of Prayer of Mending.
 
 Name             : Benevolence (id=415416) [Spell Family (6), Passive, Hidden] 

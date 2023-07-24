@@ -51,7 +51,7 @@ cat->add_action( "sunfire,if=prev_gcd.1.moonfire&remains<duration*0.8" );
 cat->add_action( "starsurge,if=active_enemies=1|(active_enemies<8&!buff.cat_form.up)" );
 cat->add_action( "starfire,if=time_to_die<10&spell_targets.starfire>1&(!talent.improved_swipe.enabled|spell_targets.swipe_cat>=9)" );
 cat->add_action( "cat_form,if=!buff.cat_form.up&energy>50" );
-cat->add_action( "ferocious_bite,if=(combo_points>3&target.1.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>10)&spell_targets.swipe_cat<4" );
+cat->add_action( "ferocious_bite,target_if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>10)&spell_targets.swipe_cat<4" );
 cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>2" );
 cat->add_action( "rake,target_if=dot.adaptive_swarm_damage.ticking&refreshable" );
 cat->add_action( "rip,target_if=((refreshable|energy>90&remains<=10)&(combo_points=5&time_to_die>remains+24|(remains+combo_points*4<time_to_die&remains+4+combo_points*4>time_to_die))|!ticking&combo_points>2+spell_targets.swipe_cat*2)" );

@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -4854,7 +4854,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=329489)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5650 | Target: Unknown(87)
-#3 (id=1074552)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Unknown(38)
+#3 (id=1074552)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Cooldown (38)
                    Base Value: 12900 | Scaled Value: 12900 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 2335 (Label) | Target: Self (1)
                    Affected Spells (Label): Mayhem (387506)
 Description      : $?a387506[Your single target spells have a $387506s1% chance to curse][Curses] the ground with a demonic bane, causing all of your single target spells to also strike targets marked with the bane for  $80240s1% of the damage dealt. Lasts $?a387506[${$387506s3/1000} sec][$d].
@@ -6938,7 +6938,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=713552)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(31)
+#1 (id=713552)   : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Backdraft (117828)
                    Family Flags: 121
@@ -8078,7 +8078,6 @@ Effects          :
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Shadow Slash (id=272012) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Melee
@@ -8101,7 +8100,6 @@ Effects          :
 Description      : The Satyr strikes at out with its weapons, dealing Shadow damage.
 
 Name             : Demon Fangs (id=272013) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Melee
@@ -8124,7 +8122,6 @@ Effects          :
 Description      : The Vicious Hellhound chomps at its target, dealing Shadowflame damage.
 
 Name             : Eye of Gul'dan (id=272131) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -8151,7 +8148,6 @@ Description      : The Eye of Gul'dan stares deep into the target's soul, causin
 Tooltip          : Suffering Shadowflame damage every $t1 sec.
 
 Name             : Double Breath (id=272156) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -8175,7 +8171,6 @@ Effects          :
 Description      : The Void Terror unleashes a breath of Fire and Shadow at the target, dealing Shadowflame damage.
 
 Name             : Toxic Bile (id=272167) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Nature
 Spell Type       : Magic
@@ -8199,7 +8194,6 @@ Effects          :
 Description      : The Bilescourge spits wads of Toxic Bile at its target, dealing Nature damage.
 
 Name             : Multi-Slash (id=272172) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -8227,7 +8221,6 @@ Effects          :
 Description      : The Shivarra stabs wildly at her target with all weapons at the same time, dealing physical damage.
 
 Name             : Overhead Assault (id=272432) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -8249,7 +8242,6 @@ Effects          :
 Description      : The Wrathguard smashes its target with a heavy overhand swing.
 
 Name             : Fel Bite (id=272435) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -8271,7 +8263,6 @@ Effects          :
 Description      : The Darkhound bites its target, causing serious Physical damage.
 
 Name             : Many Faced Bite (id=272439) 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -10665,7 +10656,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=830189)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-#2 (id=830190)   : Apply Aura (6) | Add Percent Modifier (108): Spell Damage Taken (27)
+#2 (id=830190)   : Apply Aura (6) | Add Percent Modifier (108): Spell Amplitude (27)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
                    Affected Spells: Drain Life (234153)
                    Family Flags: 3
@@ -11277,7 +11268,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=838476)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Unknown(38)
+#1 (id=838476)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Cooldown (38)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 1067 (Label) | Target: Self (1)
                    Affected Spells (Label): Resolute Barrier (339272), Accrued Vitality (339282), Shade of Terror (339379), Demonic Momentum (339411), Demonic Momentum (339412), Corrupting Leer (339455), Rolling Agony (339481), Focused Malignancy (339500), Withering Bolt (339576), Borne of Blood (339578), Carnivorous Stalkers (339656), Tyrant's Soul (339766), Tyrant's Soul (339784), Fel Commando (339845), Duplicitous Havoc (339890), Ashen Remains (339892), Combusting Engine (339896), Infernal Brand (340041), Infernal Brand (340045), Ashen Remains (387252), Resolute Barrier (389359)
 Description      : Attacks received that deal at least $<health>% of your health decrease Unending Resolve's cooldown by $<cdr> sec. Cannot occur more than once every |cFFFFFFFF${$proccooldown-$s1/-1000} sec|r.
@@ -12817,7 +12808,6 @@ Description      : $@spelldesc386244
 Tooltip          : Blasting nearby enemies for $386265s1 Chaos damage per soul consumed over ${$d-2} sec. Deals reduced damage beyond 8 targets.
 
 Name             : Soul Combustion (id=386265) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Chaos
 Spell Type       : Magic
@@ -12942,7 +12932,6 @@ Description      : $@spelldesc386542
 Tooltip          : Unarmed. Basic attacks deal damage to all nearby enemies and attacks $s1% faster.
 
 Name             : Fel Explosion (id=386609) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -13270,7 +13259,6 @@ Effects          :
 Description      : Refreshing Corruption, Agony, Unstable Affliction, or Siphon Life with less than ${$s1/1000} seconds remaining will deal ${$386760s1*(1+$s3/100)} Shadow damage and has a ${$s2/100}.2% chance to grant you a Soul Shard.
 
 Name             : Pandemic Invocation (id=386760) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -13510,7 +13498,6 @@ Effects          :
 Description      : Corruption damage is increased by $s1%, and each time it deals damage any of your Curses active on the target are extended by ${$s2/1000}.1 sec.
 
 Name             : Soul Rot (desc=Shadowlands) (id=386997) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Nature
@@ -14993,7 +14980,6 @@ Description      : $@spelldesc387494
 Tooltip          : Damage done increased by $w1%. Soul Strike deals $w2% of its damage to nearby enemies.
 
 Name             : Soul Cleave (id=387502) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -15133,7 +15119,6 @@ Effects          :
 Description      : Hand of Gul'dan has a $s1% chance to cast a second time on your target for free.
 
 Name             : Cry Havoc (id=387547) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Chromatic
 Spell Type       : Magic
@@ -15870,7 +15855,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1025583)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Unknown(38)
+#1 (id=1025583)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Cooldown (38)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 1067 (Label) | Target: Self (1)
                    Affected Spells (Label): Resolute Barrier (339272), Accrued Vitality (339282), Shade of Terror (339379), Demonic Momentum (339411), Demonic Momentum (339412), Corrupting Leer (339455), Rolling Agony (339481), Focused Malignancy (339500), Withering Bolt (339576), Borne of Blood (339578), Carnivorous Stalkers (339656), Tyrant's Soul (339766), Tyrant's Soul (339784), Fel Commando (339845), Duplicitous Havoc (339890), Ashen Remains (339892), Combusting Engine (339896), Infernal Brand (340041), Infernal Brand (340045), Ashen Remains (387252), Resolute Barrier (389359)
 #2 (id=1025589)  : None (0)
@@ -16091,7 +16076,6 @@ Effects          :
 Description      : When Darkglare deals damage, it deals $s1% of that damage to all enemies affected by your damage over time effects.
 
 Name             : Grim Reach (id=390097) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -16764,7 +16748,6 @@ Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${0.574241*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Immutable Hatred (id=405681) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -16810,7 +16793,6 @@ Effects          :
 Description      : Hand of Gul'dan has a $s1% chance to burn its target for ${$405802s1*(1+$s2/100)} additional Shadowflame damage every $405802t1 sec for $405802d.
 
 Name             : Umbral Blaze (id=405802) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -17313,7 +17295,6 @@ Effects          :
 Description      : When Seed of Corruption deals damage to a target suffering from your Unstable Affliction they explode, dealing $416699s1 Shadow damage to all enemies within $416699A1 yards.
 
 Name             : Doom Blossom (id=416699) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic

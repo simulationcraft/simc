@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -876,7 +876,6 @@ Effects          :
                    Affected Spells (Label): Energizing Flame (400006)
 
 Name             : Disintegrate (desc=Blue) (id=356995) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : Magic
@@ -1046,7 +1045,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=894957)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=982302)   : Apply Aura (6) | Unknown(147)
+#4 (id=982302)   : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2360 | Target: Self (1)
 #5 (id=1012457)  : Apply Aura (6) | Unknown(488)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1397,7 +1396,7 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=896510)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1017557)  : Apply Aura (6) | Unknown(147)
+#4 (id=1017557)  : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2360 | Target: Self (1)
 #5 (id=1017558)  : Apply Aura (6) | Unknown(488)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2502,7 +2501,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Echo (364343), Field of Dreams (370062)
                    Family Flags: 6, 10, 11
-#2 (id=1027211)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#2 (id=1027211)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Echo (364343), Field of Dreams (370062)
                    Family Flags: 6, 10, 11
@@ -4847,7 +4846,6 @@ Description      : Fire Breath damage has $s1% chance to cause your next Living 
 Variables        : $rate=${30}
 
 Name             : Burnout (id=375802) [Spell Family (224)] 
-Hotfixed         : Proc Flags 2 (4 -> 0)
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
@@ -6812,7 +6810,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Eruption (395160)
                    Family Flags: 54
-#4 (id=1084518)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#4 (id=1084518)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913)
                    Family Flags: 10
@@ -7309,15 +7307,15 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #18, #19), Initial Evoker (356816 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ebon Might (395296 effects: #1, #3, #4, #5), Augmentation Evoker (396186 effects: #1, #2), Tectonic Locus (408002 effect#2), Unyielding Domain (412733 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2)
 Family Flags     : 0, 58
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ....x... 
                  : ..x..... x....... ........ ........   ........ .x...... ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Icon (60), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Not a Proc (105), Not In Spellbook (143), No Aura Log (202), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Allow While Sitting (27), No Aura Icon (60), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Charmed (261), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1037394)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -7548,7 +7546,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1050696)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1050697)  : Apply Aura (6) | Unknown(147)
+#4 (id=1050697)  : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2360 | Target: Self (1)
 #5 (id=1050698)  : Apply Aura (6) | Unknown(488)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -7636,7 +7634,6 @@ Description      : $@spelldesc404195
 Tooltip          : Healing $w1 every $t1 sec.
 
 Name             : Fate Mirror (desc=Bronze) (id=404908) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -7658,7 +7655,6 @@ Effects          :
 Description      : $@spelldesc412774
 
 Name             : Time Skip (desc=Bronze) (id=404977) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Augmentation [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Arcane
@@ -7995,7 +7991,6 @@ Effects          :
 Description      : Eruption deals $s1% more damage per enemy struck, up to ${$s2*$s1}%.
 
 Name             : Spatial Paradox (desc=Bronze) (id=406732) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Augmentation [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Arcane
@@ -8045,7 +8040,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #10 (id=1091013)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 2706 (Label) | Target: Self (1)
-                   Affected Spells (Label): Divine Hymn (64844), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Refreshing Jade Wind (162530), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Symbol of Hope (265144), Holy Word: Salvation (265202), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Restoral (388615)
+                   Affected Spells (Label): Divine Hymn (64844), Stampeding Roar (77764), Light of Dawn (85222), Stampeding Roar (106898), Revival (115310), Tranquility (157982), Refreshing Jade Wind (162530), Flourish (197721), Tyr's Deliverance (200653), Cosmic Ripple (243241), Symbol of Hope (265144), Holy Word: Salvation (265202), Dream Breath (355941), Fire Breath (357209), Rewind (363534), Oppressing Roar (372048), Time Spiral (374968), Ancient Teachings (388024), Restoral (388615)
 Description      : Evoke a paradox for you and a friendly healer, allowing casting while moving and increasing the range of most spells by $s4% for $d.
 
 Affects the nearest healer within $407497A1 yds, if you do not have a healer targeted.
@@ -9524,12 +9519,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Ebon Might (395296)
                    Family Flags: 66
-Hotfixed         : PvP Coefficient (0 -> 0.5)
 #2 (id=1084344)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Ebon Might (395296)
                    Family Flags: 66
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Ebon Might increases the damage of your empower spells by $s1%.
 
 Name             : Evoker Augmentation 10.1 Class Set 4pc (id=414878) [Spell Family (224), Passive, Hidden] 
@@ -9551,7 +9544,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ebon Might (395152)
                    Family Flags: 65
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Ebon Might increases allies' primary stat by an additional ${$s1}.1% of your own.
 
 Name             : Dream of Spring (id=414969) [Spell Family (224), Passive] 
@@ -9584,7 +9576,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916)
                    Family Flags: 49
-#5 (id=1089041)  : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
+#5 (id=1089041)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913)
                    Family Flags: 10
@@ -9609,12 +9601,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1085015)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your damage done is increased by $s1%.
 
 Name             : Evoker Augmentation 10.0 Class Set 2pc (id=415222) [Spell Family (224), Passive, Hidden] 
@@ -9636,12 +9626,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Blistering Scales (360827)
                    Family Flags: 68
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1085029)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blistering Scales (360827)
                    Family Flags: 68
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Blistering Scales increases Armor by an additional $s1% of your own.
 
 Name             : Potent Mana (id=418101) [Spell Family (224), Passive] 

@@ -36,6 +36,7 @@
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
 #include "player/covenant.hpp"
+#include "player/ground_aoe.hpp"
 #include "player/instant_absorb.hpp"
 #include "player/pet.hpp"
 #include "player/player_demise_event.hpp"
@@ -11350,7 +11351,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       action_t* action = find_action( splits[ 1 ] );
       if ( action )
       {
-        return make_fn_expr( expression_str, [ this, action ] {return get_active_dots( action->get_dot() ); } );
+        return make_fn_expr( expression_str, [ this, action ] {
+          return get_active_dots( action->get_dot() );
+        } );
       }
       throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
     }
@@ -12653,10 +12656,14 @@ void player_t::analyze( sim_t& s )
   if ( quiet )
     return;
 
+  // If we have no data collected for an actor, also verify thier pets have data collected
+  // Relevant for fight styles with an initial sleeping target
   if ( collected_data.fight_length.mean() == 0 )
   {
     auto it = range::find_if( pet_list, []( pet_t* pet ) {
-      return pet->collected_data.fight_length.mean() > 0; } );
+      return pet->collected_data.fight_length.mean() > 0 ||
+             pet->iteration_fight_length.total_seconds() > 0;
+    });
 
     if ( it == pet_list.end() )
       return;

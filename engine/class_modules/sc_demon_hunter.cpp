@@ -645,6 +645,7 @@ public:
     proc_t* soul_fragment_greater_demon;
     proc_t* soul_fragment_empowered_demon;
     proc_t* soul_fragment_lesser;
+    proc_t* felblade_reset;
 
     // Havoc
     proc_t* demonic_appetite;
@@ -656,7 +657,6 @@ public:
     proc_t* chaos_strike_in_serrated_glaive;
     proc_t* annihilation_in_serrated_glaive;
     proc_t* eye_beam_tick_in_serrated_glaive;
-    proc_t* felblade_reset;
     proc_t* shattered_destiny;
     proc_t* eye_beam_canceled;
 
@@ -667,7 +667,6 @@ public:
     proc_t* soul_fragment_from_fracture;
     proc_t* soul_fragment_from_fallout;
     proc_t* soul_fragment_from_meta;
-    proc_t* soul_fragment_from_hunger;
 
     // Set Bonuses
     proc_t* soul_fragment_from_t29_2pc;
@@ -727,6 +726,7 @@ public:
     // Chance to proc initiative off of the fodder demon (ie. not get damaged by it first)
     double fodder_to_the_flame_initiative_chance = 0.85;
     int fodder_to_the_flame_kill_seconds = 4;
+    // How many seconds of CDR from Darkglare Boon is considered a high roll
     double darkglare_boon_cdr_high_roll_seconds = 18;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
@@ -4768,14 +4768,11 @@ struct fel_rush_t : public demon_hunter_attack_t
     }
   };
 
-  bool a_cancel;
   timespan_t gcd_lag;
 
   fel_rush_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "fel_rush", p, p->spec.fel_rush ),
-      a_cancel( false )
+    : demon_hunter_attack_t( "fel_rush", p, p->spec.fel_rush )
   {
-    add_option( opt_bool( "animation_cancel", a_cancel ) );
     parse_options( options_str );
 
     may_miss = may_dodge = may_parry = may_block = false;
@@ -4784,13 +4781,10 @@ struct fel_rush_t : public demon_hunter_attack_t
     execute_action = p->get_background_action<fel_rush_damage_t>( "fel_rush_damage" );
     execute_action->stats = stats;
 
-    if ( !a_cancel )
-    {
-      // Fel Rush does damage in a further line than it moves you
-      base_teleport_distance = execute_action->radius - 5;
-      movement_directionality = movement_direction_type::OMNI;
-      p->buff.fel_rush_move->distance_moved = base_teleport_distance;
-    }
+    // Fel Rush does damage in a further line than it moves you
+    base_teleport_distance = execute_action->radius - 5;
+    movement_directionality = movement_direction_type::OMNI;
+    p->buff.fel_rush_move->distance_moved = base_teleport_distance;
 
     // Add damage modifiers in fel_rush_damage_t, not here.
   }
@@ -4807,11 +4801,8 @@ struct fel_rush_t : public demon_hunter_attack_t
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
 
     p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
-
-    if ( !a_cancel )
-    {
-      p()->buff.fel_rush_move->trigger();
-    }
+    
+    p()->buff.fel_rush_move->trigger();
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -6436,7 +6427,6 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_fracture      = get_proc( "soul_fragment_from_fracture" );
   proc.soul_fragment_from_fallout       = get_proc( "soul_fragment_from_fallout" );
   proc.soul_fragment_from_meta          = get_proc( "soul_fragment_from_meta" );
-  proc.soul_fragment_from_hunger        = get_proc( "soul_fragment_from_hunger" );
 
   // Set Bonuses
   proc.soul_fragment_from_t29_2pc       = get_proc( "soul_fragment_from_t29_2pc" );

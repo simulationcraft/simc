@@ -58,17 +58,26 @@ void do_execute( action_t* action, execute_type type )
     action->player->schedule_cwc_ready( timespan_t::zero() );
   }
 
-  if ( !action->quiet )
+  // Check if the target has died or gone out of range between now and when this was queued
+  // If this is the case, we shouldn't continue with attempting to execute it
+  if ( !action->target_ready( action->target ) )
   {
-    action->player->iteration_executed_foreground_actions++;
-    action->total_executions++;
-    action->player->sequence_add( action, action->target, action->sim->current_time() );
+    action->sim->print_debug( "{} skipping queued do_execute for {} due to failing target_ready() check", *action->player, *action );
   }
-  action->execute();
-  action->line_cooldown->start();
+  else
+  {
+    if ( !action->quiet )
+    {
+      action->player->iteration_executed_foreground_actions++;
+      action->total_executions++;
+      action->player->sequence_add( action, action->target, action->sim->current_time() );
+    }
+    action->execute();
+    action->line_cooldown->start();
 
-  // If the ability has a GCD, we need to start it
-  action->start_gcd();
+    // If the ability has a GCD, we need to start it
+    action->start_gcd();
+  }
 
   if ( action->player->queueing == action )
   {
@@ -1395,8 +1404,7 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   // Spell goes over the maximum number of AOE targets - ignore for enemies
   // Note that this split damage factor DOES affect spells that are supposed
   // to do full damage to the main target.
-  if ( !state->action->split_aoe_damage &&
-       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
+  if ( state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
        !state->action->player->is_enemy() )
   {
     amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
@@ -3739,6 +3747,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     auto tail      = name_str.substr( splits[ 0 ].length() + 1 );
     if ( util::is_number( splits[ 1 ] ) )
     {
+      sim->error(
+          "target.#.* expressions are deprecated and may give unexpected results in simulations with dynamic targets.\n"
+          "Please rewrite to a 'target_if' expression." );
+
       expr_target = find_target_by_number( util::to_int( splits[ 1 ] ) );
 
       if ( !expr_target )

@@ -119,7 +119,7 @@ void arcane( player_t* p )
   default_->add_action( "call_action_list,name=aoe_rotation,if=active_enemies>=variable.aoe_target_count" );
   default_->add_action( "call_action_list,name=rotation" );
 
-  cooldown_phase->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage&(action.arcane_barrage.in_flight_remains<=0.2|gcd.remains<=0.2)" );
+  cooldown_phase->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage" );
   cooldown_phase->add_action( "variable,name=conserve_mana,op=set,if=cooldown.radiant_spark.ready,value=0+(cooldown.arcane_surge.remains<10)" );
   cooldown_phase->add_action( "shifting_power,if=buff.arcane_surge.down&!talent.radiant_spark" );
   cooldown_phase->add_action( "arcane_orb,if=cooldown.radiant_spark.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
@@ -178,7 +178,7 @@ void arcane( player_t* p )
   touch_phase->add_action( "arcane_barrage" );
 
   aoe_touch_phase->add_action( "variable,name=conserve_mana,op=set,if=debuff.touch_of_the_magi.remains>9,value=1-variable.conserve_mana" );
-  aoe_touch_phase->add_action( "arcane_barrage,if=(active_enemies=4&buff.arcane_charge.stack=3)|buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
+  aoe_touch_phase->add_action( "arcane_barrage,if=(active_enemies<=4&buff.arcane_charge.stack=3)|buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe_touch_phase->add_action( "arcane_orb,if=buff.arcane_charge.stack<2" );
   aoe_touch_phase->add_action( "arcane_explosion" );
 
@@ -202,7 +202,7 @@ void arcane( player_t* p )
 
   aoe_rotation->add_action( "shifting_power,if=(!talent.evocation|cooldown.evocation.remains>12)&(!talent.arcane_surge|cooldown.arcane_surge.remains>12)&(!talent.touch_of_the_magi|cooldown.touch_of_the_magi.remains>12)&buff.arcane_surge.down&((!talent.charged_orb&cooldown.arcane_orb.remains>12)|(action.arcane_orb.charges=0|cooldown.arcane_orb.remains>12))" );
   aoe_rotation->add_action( "nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_surge.down&(active_enemies>6|!talent.orb_barrage)" );
-  aoe_rotation->add_action( "arcane_barrage,if=active_enemies=4&buff.arcane_charge.stack=3" );
+  aoe_rotation->add_action( "arcane_barrage,if=(active_enemies<=4|buff.clearcasting.up)&buff.arcane_charge.stack=3" );
   aoe_rotation->add_action( "arcane_orb,if=buff.arcane_charge.stack=0&cooldown.touch_of_the_magi.remains>18" );
   aoe_rotation->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack|mana.pct<10" );
   aoe_rotation->add_action( "arcane_explosion" );
@@ -374,25 +374,24 @@ void frost( player_t* p )
   precombat->add_action( "frostbolt,if=active_enemies=1" );
 
   default_->add_action( "counterspell" );
-  default_->add_action( "water_jet" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=7&!set_bonus.tier30_2pc|active_enemies>=3&talent.ice_caller" );
   default_->add_action( "run_action_list,name=st" );
 
   aoe->add_action( "cone_of_cold,if=talent.coldest_snap&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&!talent.comet_storm)" );
-  aoe->add_action( "frozen_orb,if=!prev_gcd.1.glacial_spike|target.level>=level+3&!target.is_add" );
-  aoe->add_action( "blizzard,if=!prev_gcd.1.glacial_spike|target.level>=level+3&!target.is_add" );
+  aoe->add_action( "frozen_orb,if=!prev_gcd.1.glacial_spike|!freezable" );
+  aoe->add_action( "blizzard,if=!prev_gcd.1.glacial_spike|!freezable" );
   aoe->add_action( "comet_storm,if=!prev_gcd.1.glacial_spike&(!talent.coldest_snap|cooldown.cone_of_cold.ready&cooldown.frozen_orb.remains>25|cooldown.cone_of_cold.remains>20)" );
-  aoe->add_action( "freeze,if=(target.level<level+3|target.is_add)&debuff.frozen.down&(!talent.glacial_spike&!talent.snowstorm|prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack)" );
-  aoe->add_action( "ice_nova,if=(target.level<level+3|target.is_add)&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
-  aoe->add_action( "frost_nova,if=(target.level<level+3|target.is_add)&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
+  aoe->add_action( "freeze,if=freezable&debuff.frozen.down&(!talent.glacial_spike&!talent.snowstorm|prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack)" );
+  aoe->add_action( "ice_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
+  aoe->add_action( "frost_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill|cooldown.cone_of_cold.ready&buff.snowstorm.stack=buff.snowstorm.max_stack&gcd.max<1)" );
   aoe->add_action( "cone_of_cold,if=buff.snowstorm.stack=buff.snowstorm.max_stack" );
   aoe->add_action( "shifting_power" );
   aoe->add_action( "glacial_spike,if=buff.icicles.react=5&cooldown.blizzard.remains>gcd.max" );
-  aoe->add_action( "flurry,if=target.level>=level+3&!target.is_add&cooldown_react&!debuff.winters_chill.remains&(prev_gcd.1.glacial_spike|charges_fractional>1.8)" );
+  aoe->add_action( "flurry,if=!freezable&cooldown_react&!debuff.winters_chill.remains&(prev_gcd.1.glacial_spike|charges_fractional>1.8)" );
   aoe->add_action( "flurry,if=cooldown_react&!debuff.winters_chill.remains&(buff.brain_freeze.react|!buff.fingers_of_frost.react)" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
-  aoe->add_action( "ice_nova,if=active_enemies>=4&(!talent.snowstorm&!talent.glacial_spike|target.level>=level+3&!target.is_add)" );
+  aoe->add_action( "ice_nova,if=active_enemies>=4&(!talent.snowstorm&!talent.glacial_spike|!freezable)" );
   aoe->add_action( "dragons_breath,if=active_enemies>=7" );
   aoe->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=7" );
   aoe->add_action( "frostbolt" );

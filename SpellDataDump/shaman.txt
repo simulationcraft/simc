@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3589,7 +3589,7 @@ Effects          :
                    Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-#12 (id=875415)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#12 (id=875415)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
@@ -6239,7 +6239,7 @@ Talent Entry     : Restoration [tree=spec, row=9, col=3, max_rank=1, req_points=
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 15% Base Mana (0) (id=191705)
+Resource         : 3% Base Mana (0) (id=191705)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -13618,7 +13618,6 @@ Effects          :
 Description      : $@spelldesc375982
 
 Name             : Primordial Wave (id=375984) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -13847,11 +13846,11 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
-#4 (id=1088752)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#4 (id=1088752)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
                    Family Flags: 7, 8
-#5 (id=1088753)  : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
+#5 (id=1088753)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
                    Family Flags: 7, 8
@@ -14516,7 +14515,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1012649)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+#1 (id=1012649)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
                    Family Flags: 7, 8
@@ -14524,7 +14523,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
                    Family Flags: 7, 8
-#3 (id=1012765)  : Apply Aura (6) | Add Percent Modifier (108): Unknown(39)
+#3 (id=1012765)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
                    Family Flags: 7, 8
@@ -14648,7 +14647,7 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Earthquake (61882), Earthquake (77478), Earthquake (298762), Earthquake Overload (298765)
                    Family Flags: 83
-#3 (id=1012715)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Generation (34)
+#3 (id=1012715)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 2 (34)
                    Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
@@ -16377,7 +16376,6 @@ Effects          :
 Description      : Your damage or healing spells will now consume up to $s1 Maelstrom Weapon stacks. 
 
 Name             : Doom Winds (id=384352) [Spell Family (11)] 
-Hotfixed         : Attributes
 Talent Entry     : Enhancement [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Shaman
 School           : Physical
@@ -16804,7 +16802,6 @@ Effects          :
 Description      : $@spelldesc386474
 
 Name             : Stormblast (id=390287) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Melee

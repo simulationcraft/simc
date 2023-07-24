@@ -1840,6 +1840,9 @@ namespace monk
           blackout_combo = p()->buff.blackout_combo->up();
           counterstrike = p()->buff.counterstrike->up();
 
+          if ( blackout_combo )
+            p()->proc.blackout_combo_rising_sun_kick->occur();
+
           rising_sun_kick_dmg_t::execute();
 
           p()->buff.counterstrike->expire();
@@ -3259,6 +3262,8 @@ namespace monk
             p()->buff.blackout_combo->expire();
           }
 
+          p()->buff.hit_scheme->expire();
+
           if ( p()->buff.press_the_advantage->stack() == 10 && is_base_ks )
           {
             p()->active_actions.keg_smash_press_the_advantage->schedule_execute();
@@ -3505,7 +3510,7 @@ namespace monk
           snapshot_flags = update_flags = 0;
           snapshot_flags |= STATE_VERSATILITY;
         }
-      
+
       };
 
       struct touch_of_karma_t : public monk_melee_attack_t
@@ -7724,7 +7729,6 @@ namespace monk
     talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
     // Row 6
     talent.mistweaver.nourishing_chi = _ST( "Nourishing Chi" );
-    talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
     talent.mistweaver.overflowing_mists = _ST( "Overflowing Mists" );
     talent.mistweaver.invoke_yulon_the_jade_serpent = _ST( "Invoke Yu'lon, the Jade Serpent" );
     talent.mistweaver.invoke_chi_ji_the_red_crane = _ST( "Invoke Chi-Ji, the Red Crane" );
@@ -7732,6 +7736,7 @@ namespace monk
     talent.mistweaver.accumulating_mist = _ST( "Accumulating Mist" );
     talent.mistweaver.rapid_diffusion = _ST( "Rapid Diffusion" );
     // Row 7
+    talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
     talent.mistweaver.yulons_whisper = _ST( "Yu'lon's Whisper" );
     talent.mistweaver.mist_wrap = _ST( "Mist Wrap" );
     talent.mistweaver.refreshing_jade_wind = _ST( "Refreshing Jade Wind" );
@@ -8509,6 +8514,7 @@ namespace monk
     proc.blackout_combo_keg_smash = get_proc( "Blackout Combo - Keg Smash" );
     proc.blackout_combo_celestial_brew = get_proc( "Blackout Combo - Celestial Brew" );
     proc.blackout_combo_purifying_brew = get_proc( "Blackout Combo - Purifying Brew" );
+    proc.blackout_combo_rising_sun_kick = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
     proc.blackout_kick_cdr_with_woo = get_proc( "Blackout Kick CDR with WoO" );
     proc.blackout_kick_cdr = get_proc( "Blackout Kick CDR" );
     proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
@@ -9595,16 +9601,11 @@ namespace monk
       }
 
       if ( talent.windwalker.power_strikes->ok() )
-      {
-        // Player starts combat with buff
-        buff.power_strikes->trigger();
-        // ... and then regains the buff in time intervals while in combat
         make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
-          [ this ] ()
-        {
-          buff.power_strikes->trigger();
-        } );
-      }
+        [ this ] ()
+      {
+        buff.power_strikes->trigger();
+      } );
     }
 
     // Melee Squirm

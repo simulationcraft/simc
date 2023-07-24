@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -6244,7 +6244,6 @@ Effects          :
 Description      : $@spelldesc259391
 
 Name             : Chakrams (id=259398) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -6544,7 +6543,6 @@ Description      : Rain a volley of arrows down over $d, dealing up to ${$260247
 Tooltip          : Raining arrows down in the target area.
 
 Name             : Volley (id=260247) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -8198,7 +8196,6 @@ Description      : Increases your Haste by $s1 and your Avoidance by $s2.
 Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 
 Name             : Chakrams (id=267666) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -8937,7 +8934,6 @@ Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 $?s259387[Mongoose Bite][Raptor Strike] and Butchery apply a stack of Internal Bleeding.
 
 Name             : Internal Bleeding (id=270343) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -11694,7 +11690,6 @@ $serrated=$?s389882[${1+($389882s1)/100}][${1}]
 $damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Bloodshed (id=321538) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -13437,7 +13432,6 @@ Effects          :
 Description      : The moth vibrates its wings, releasing tranquil dust all over itself, removing $s1 Disease, Magic, and Poison effect.
 
 Name             : Bestial Wrath (id=344572) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -14409,7 +14403,6 @@ Description      : $@spelldesc378014
 Tooltip          : Injected with Latent Poison. $?s137015[Barbed Shot]?s137016[Aimed Shot]?s137017&!s259387[Raptor Strike][Mongoose Bite]  consumes all stacks of Latent Poison, dealing ${$378016s1/$s1} Nature damage per stack consumed.
 
 Name             : Latent Poison (id=378016) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -15377,7 +15370,6 @@ Description      : $@spelldesc385539
 Tooltip          : Heals you for $w1 every $t sec.
 
 Name             : Razor Fragments (id=385638) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -16114,7 +16106,6 @@ Description      : Wildfire Bomb's cooldown is reset at the start and end of Coo
 Variables        : $duration= ${$s1/1000}.1
 
 Name             : Spearhead (id=389881) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
