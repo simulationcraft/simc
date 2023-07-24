@@ -6571,10 +6571,10 @@ void mage_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
 
-  buffs.calefaction    = make_buff( this, "calefaction", find_spell( 408673 ) )
-                           ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
-  buffs.flames_fury    = make_buff( this, "flames_fury", find_spell( 409964 ) )
-                           ->set_default_value_from_effect( 1 );
+  buffs.calefaction = make_buff( this, "calefaction", find_spell( 408673 ) )
+                        ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
+  buffs.flames_fury = make_buff( this, "flames_fury", find_spell( 409964 ) )
+                        ->set_default_value_from_effect( 1 );
 
   buffs.touch_of_ice = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
                          ->set_default_value_from_effect( 1 )
@@ -6791,7 +6791,7 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
     reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
-    reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
+    reg *= 1.0 + cache.mastery() * spec.savant->effectN( 4 ).mastery_value();
     reg *= 1.0 + buffs.enlightened_mana->check_value();
     reg *= 1.0 + buffs.evocation->check_value();
     reg *= 1.0 + buffs.arcane_overload->check() * buffs.arcane_overload->data().effectN( 2 ).percent();
