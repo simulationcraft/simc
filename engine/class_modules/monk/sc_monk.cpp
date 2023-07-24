@@ -977,51 +977,19 @@ namespace monk
           callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
         }
 
-        void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+        bool ready() override
         {
-          // While pets are up, don't trigger cooldown since the sticky targeting does not consume charges
           if ( p()->buff.storm_earth_and_fire->check() )
-          {
-            cd_duration = timespan_t::zero();
-          }
+            return false;
 
-          monk_spell_t::update_ready( cd_duration );
-        }
-
-        bool target_ready( player_t *candidate_target ) override
-        {
-          // Don't let user needlessly trigger SEF sticky targeting mode, if the user would just be
-          // triggering it on the same sticky target
-          if ( p()->buff.storm_earth_and_fire->check() )
-          {
-            auto fixate_target = p()->storm_earth_and_fire_fixate_target( sef_pet_e::SEF_EARTH );
-            if ( fixate_target && candidate_target == fixate_target )
-            {
-              return false;
-            }
-          }
-
-          return monk_spell_t::target_ready( candidate_target );
-        }
-
-        // Monk used SEF while pets are up to sticky target them into an enemy
-        void sticky_targeting()
-        {
-          p()->storm_earth_and_fire_fixate( target );
+          return monk_spell_t::ready();
         }
 
         void execute() override
         {
           monk_spell_t::execute();
 
-          if ( !p()->buff.storm_earth_and_fire->check() )
-          {
-            p()->summon_storm_earth_and_fire( data().duration() );
-          }
-          else
-          {
-            sticky_targeting();
-          }
+          p()->summon_storm_earth_and_fire( data().duration() );
         }
       };
 
@@ -1041,9 +1009,7 @@ namespace monk
         bool target_ready( player_t *target ) override
         {
           if ( !p()->storm_earth_and_fire_fixate_ready( target ) )
-          {
             return false;
-          }
 
           return monk_spell_t::target_ready( target );
         }
