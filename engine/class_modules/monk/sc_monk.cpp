@@ -1841,6 +1841,9 @@ namespace monk
           blackout_combo = p()->buff.blackout_combo->up();
           counterstrike = p()->buff.counterstrike->up();
 
+          if ( blackout_combo )
+            p()->proc.blackout_combo_rising_sun_kick->occur();
+
           rising_sun_kick_dmg_t::execute();
 
           p()->buff.counterstrike->expire();
@@ -3260,6 +3263,8 @@ namespace monk
             p()->proc.blackout_combo_keg_smash->occur();
             p()->buff.blackout_combo->expire();
           }
+
+          p()->buff.hit_scheme->expire();
 
           if ( p()->buff.press_the_advantage->stack() == 10 && is_base_ks )
           {
@@ -7731,7 +7736,7 @@ namespace monk
     talent.mistweaver.font_of_life = _ST( "Font of Life" );
     talent.mistweaver.zen_pulse = _ST( "Zen Pulse" );
     talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
-    // Row 6
+   // Row 6
     talent.mistweaver.nourishing_chi = _ST( "Nourishing Chi" );
     talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
     talent.mistweaver.overflowing_mists = _ST( "Overflowing Mists" );
@@ -8518,6 +8523,7 @@ namespace monk
     proc.blackout_combo_keg_smash = get_proc( "Blackout Combo - Keg Smash" );
     proc.blackout_combo_celestial_brew = get_proc( "Blackout Combo - Celestial Brew" );
     proc.blackout_combo_purifying_brew = get_proc( "Blackout Combo - Purifying Brew" );
+    proc.blackout_combo_rising_sun_kick = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
     proc.blackout_kick_cdr_with_woo = get_proc( "Blackout Kick CDR with WoO" );
     proc.blackout_kick_cdr = get_proc( "Blackout Kick CDR" );
     proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
