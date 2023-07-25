@@ -877,8 +877,8 @@ struct solar_collapse_t : public buff_t
 {
   action_t* damage_event;
 
-  solar_collapse_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s, action_t* a )
-    : buff_t( p, "solar_collapse", s, source_effect.item ), damage_event( a )
+  solar_collapse_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s, action_t* a )
+    : buff_t( p, "solar_collapse", s, e ? e->item : nullptr ), damage_event( a )
   {
     set_duration( timespan_t::from_seconds( 3.0 ) );
   }
@@ -906,7 +906,7 @@ struct fury_of_the_burning_sun_constructor_t : public item_targetdata_initialize
       damage = td->source->find_action( "solar_collapse_damage" );
 
     td->debuff.solar_collapse = make_buff_fallback<solar_collapse_t>(
-        active, *td, "solar_collapse", *effect( td ), debuffs[ td->source ], damage );
+        active, *td, "solar_collapse", effect( td ), debuffs[ td->source ], damage );
     td->debuff.solar_collapse->reset();
   }
 };
@@ -981,8 +981,8 @@ struct thunder_ritual_t : public buff_t
 {
   action_t* damage_event;
 
-  thunder_ritual_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s, action_t* a )
-    : buff_t( p, "thunder_ritual", s, source_effect.item ), damage_event( a )
+  thunder_ritual_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s, action_t* a )
+    : buff_t( p, "thunder_ritual", s, e ? e->item : nullptr ), damage_event( a )
   {
     set_duration( timespan_t::from_seconds( 3.0 ) );
   }
@@ -1030,7 +1030,7 @@ struct mrrgrias_favor_constructor_t : public item_targetdata_initializer_t
       damage = td->source->find_action( "thunder_ritual_damage" );
 
     td->debuff.thunder_ritual = make_buff_fallback<thunder_ritual_t>(
-        active, *td, "thunder_ritual", *effect( td ), debuffs[ td->source ], damage );
+        active, *td, "thunder_ritual", effect( td ), debuffs[ td->source ], damage );
     td->debuff.thunder_ritual->reset();
   }
 };
@@ -3622,8 +3622,8 @@ struct poisoned_dreams_t : public buff_t
   action_t* damage_spell;
   special_effect_t* effect;
 
-  poisoned_dreams_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s, action_t* a )
-    : buff_t( p, "poisoned_dreams", s, source_effect.item ), damage_spell( a )
+  poisoned_dreams_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s, action_t* a )
+    : buff_t( p, "poisoned_dreams", s, e ? e->item : nullptr ), damage_spell( a )
   {
 
     set_activated( false );
@@ -3713,7 +3713,7 @@ struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
       damage = td->source->find_action( "poisoned_dreams_damage" );
 
     td->debuff.poisoned_dreams = make_buff_fallback<poisoned_dreams_t>(
-        active, *td, "poisoned_dreams", *effect( td ), debuffs[ td->source ], damage );
+        active, *td, "poisoned_dreams", effect( td ), debuffs[ td->source ], damage );
     td->debuff.poisoned_dreams->reset();
   }
 };
@@ -4928,9 +4928,9 @@ struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
   {
     action_t* action;
 
-    maddening_whispers_debuff_t( actor_target_data_t& td, const special_effect_t& effect, const spell_data_t* s,
+    maddening_whispers_debuff_t( actor_target_data_t& td, const special_effect_t* e, const spell_data_t* s,
                                  action_t* a )
-      : buff_t( td, "maddening_whispers", s, effect.item ), action( a )
+      : buff_t( td, "maddening_whispers", s, e ? e->item : nullptr ), action( a )
     {}
 
     void expire_override( int stacks, timespan_t dur ) override
@@ -4961,7 +4961,7 @@ struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
       damage = td->source->find_action( "maddening_whispers" );
 
     td->debuff.maddening_whispers = make_buff_fallback<maddening_whispers_debuff_t>(
-        active, *td, "maddening_whispers", *effect( td ), debuffs[ td->source ], damage );
+        active, *td, "maddening_whispers", effect( td ), debuffs[ td->source ], damage );
     td->debuff.maddening_whispers->reset();
   }
 };

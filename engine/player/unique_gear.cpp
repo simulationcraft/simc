@@ -2443,8 +2443,8 @@ void item::matrix_restabilizer( special_effect_t& effect )
 
 struct fel_burn_t : public buff_t
 {
-  fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s )
-    : buff_t( p, "fel_burn", s, source_effect.item )
+  fel_burn_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s )
+    : buff_t( p, "fel_burn", s, e ? e->item : nullptr )
   {
 
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -2526,7 +2526,7 @@ struct empty_drinking_horn_constructor_t : public item_targetdata_initializer_t
     bool active = init( td->source );
 
     td->debuff.fel_burn =
-        make_buff_fallback<fel_burn_t>( active, *td, "fel_burn", *effect( td ), debuffs[ td->source ] );
+        make_buff_fallback<fel_burn_t>( active, *td, "fel_burn", effect( td ), debuffs[ td->source ] );
     td->debuff.fel_burn->reset();
   }
 };
@@ -2734,8 +2734,8 @@ struct mark_of_doom_t : public buff_t
   action_t* damage_spell;
   special_effect_t* effect;
 
-  mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect, const spell_data_t* s, action_t* a )
-    : buff_t( p, "mark_of_doom", s, source_effect.item ), damage_spell( a )
+  mark_of_doom_t( const actor_pair_t& p, const special_effect_t* e, const spell_data_t* s, action_t* a )
+    : buff_t( p, "mark_of_doom", s, e ? e->item : nullptr ), damage_spell( a )
   {
     set_activated( false );
 
@@ -2823,7 +2823,7 @@ struct prophecy_of_fear_constructor_t : public item_targetdata_initializer_t
       damage = td->source->find_action( "doom_nova" );
 
     td->debuff.mark_of_doom =
-        make_buff_fallback<mark_of_doom_t>( active, *td, "mark_of_doom", *effect( td ), debuffs[ td->source ], damage );
+        make_buff_fallback<mark_of_doom_t>( active, *td, "mark_of_doom", effect( td ), debuffs[ td->source ], damage );
     td->debuff.mark_of_doom->reset();
   }
 };
