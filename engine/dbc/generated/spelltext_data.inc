@@ -20323,7 +20323,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  267997, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]" },
   {  269120, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  269751, "$petDamage=${$ap*($s1/100)*(1+$@versadmg)}\r\n$hunterDamage=${$269752s1}\r\n$damage=${$<petDamage>+$<hunterDamage>}" },
-  {  271466, "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*1.9*(1+$@versadmg)*$<benevolence>}" },
+  {  271466, "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*2.47*(1+$@versadmg)*$<benevolence>}" },
   {  272721, "$duration=${$272723d+(($w2-1)*$272718s~2/1000)}" },
   {  272983, "$duration=${10}" },
   {  273007, "$spec=${1+$137037s1/100}.2\r\n$vers=${1+$@versadmg}.2\r\n$mastery=${1+$76803s1/100}.2\r\n$assassinationMastery=${$<spec>*$<vers>*$<mastery>}.2\r\n$assassinationNoMastery=${$<spec>*$<vers>}.2\r\n" },
@@ -20521,12 +20521,14 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  408092, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   {  410261, "$coeff=${0.88}\r\n$dmg=${$INT*$<coeff>*(1+$@versadmg)*$pctD}" },
-  {  410643, "$shield=${$SP*18*(1+$@versadmg)}" },
+  {  410643, "$pvp=$?a134735[${0.7}][${1}]\r\n$shield=${$SP*18*(1+$@versadmg)*$<pvp>}" },
   {  412774, "$doses=${50}" },
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.1.5.50585
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
+  {  271466,  0, "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*1.9*(1+$@versadmg)*$<benevolence>}", "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*2.47*(1+$@versadmg)*$<benevolence>}" },
+  {  410643,  0, "$shield=${$SP*18*(1+$@versadmg)}", "$pvp=$?a134735[${0.7}][${1}]\r\n$shield=${$SP*18*(1+$@versadmg)*$<pvp>}" },
 } };
 
