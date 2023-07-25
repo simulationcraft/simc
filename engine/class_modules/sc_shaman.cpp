@@ -4134,7 +4134,8 @@ struct weapon_imbue_t : public shaman_spell_t
   weapon_imbue_t( util::string_view name, shaman_t* player, slot_e d_, const spell_data_t* spell, util::string_view options_str ) :
     shaman_spell_t( name, player, spell ), slot( SLOT_INVALID ), default_slot( d_ ), imbue( IMBUE_NONE )
   {
-    harmful = false;
+    harmful = callbacks = false;
+    target = player;
 
     add_option( opt_string( "slot", slot_str ) );
 
