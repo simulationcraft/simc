@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50504 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50585 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -583,7 +583,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5, #14), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Bountiful Bloom (370886 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ouroboros (387350 effect#1), Augmentation Evoker (396186 effects: #4, #5, #12), Dream of Spring (414969 effect#4)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5, #14), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Bountiful Bloom (370886 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ouroboros (387350 effect#1), Augmentation Evoker (396186 effects: #4, #5, #12, #19, #20), Dream of Spring (414969 effect#4)
 Family Flags     : 1, 38, 49
 Attributes       : ........ ........ ........ x.......   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -658,7 +658,7 @@ Duration         : 2 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
                  : 2706: Spatial Paradox (406732 effect#10)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Renewing Breath (371257 effects: #1, #2), Call of Ysera (373835 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Evoker Preservation 10.1 Class Set 2pc (405520 effects: #2, #3)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Renewing Breath (371257 effects: #1, #2), Call of Ysera (373835 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20), Evoker Preservation 10.1 Class Set 2pc (405520 effects: #2, #3)
 Family Flags     : 1, 21
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -730,9 +730,10 @@ Effects          :
                    Affected Spells: Fire Breath (357209), Full Belly (377087)
                    Family Flags: 35
 #12 (id=1046956)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 3.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087)
                    Family Flags: 35
+Hotfixed         : PvP Coefficient (0 -> 3)
 #13 (id=1046957)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 69 | Scaled Value: 69 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Verdant Embrace (361195)
@@ -1599,7 +1600,7 @@ Spell Level      : 4
 Range            : 50000 yards
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5, #13), Preservation Evoker (356810 effects: #1, #2, #10), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #11)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5, #13), Preservation Evoker (356810 effects: #1, #2, #10), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #11, #19, #20)
 Family Flags     : 1, 36
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -1623,7 +1624,7 @@ Range            : 40 yards
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20)
 Family Flags     : 1, 14
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1711,7 +1712,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Devastation Evoker (356809 effects: #4, #5, #10, #15), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6, #10), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2), Augmentation Evoker (396186 effects: #4, #5, #10, #13)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5, #10, #15), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6, #10), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2), Augmentation Evoker (396186 effects: #4, #5, #10, #13, #19, #20)
 Family Flags     : 1, 7, 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x ........ ........ ......x. 
@@ -1857,7 +1858,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ......x. 
@@ -2030,7 +2031,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Hover (358267 effect#5), Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Spatial Paradox (406732 effect#3)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Hover (358267 effect#5), Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20), Spatial Paradox (406732 effect#3)
 Family Flags     : 1, 2, 3, 11, 38
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2179,7 +2180,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ .......x   ........ ........ ........ ........   
                  : Helpful Periodic Taken
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Grace Period (376239 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Time Bender (394544 effect#1), Augmentation Evoker (396186 effects: #4, #5)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Grace Period (376239 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Time Bender (394544 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20)
 Family Flags     : 1, 8
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2265,7 +2266,7 @@ Velocity         : 60 yards/sec
 Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20)
 Family Flags     : 1, 27
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3908,7 +3909,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x   ........ ........ ........ ........   
                  : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20)
 Family Flags     : 1
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ......x. 
@@ -6660,7 +6661,7 @@ School           : Nature
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 2669: Devastation Evoker (356809 effect#16), Augmentation Evoker (396186 effect#14)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7012,7 +7013,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Affecting spells : Hover (358267 effect#5), Close as Clutchmates (396043 effect#1), Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#3), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1)
+Affecting spells : Hover (358267 effect#5), Close as Clutchmates (396043 effects: #1, #2), Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#3), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1)
 Family Flags     : 2, 56, 65, 67
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ..x..... ........ ........ ........   ........ x....... ........ ........ 
@@ -7094,7 +7095,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1035409)  : School Damage (2): firestorm
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 1.25000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (2 -> 2.8), PvP Coefficient (1.5 -> 1.25)
 Description      : Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[
 
 Increases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]
@@ -7105,7 +7107,7 @@ School           : Firestorm
 Spell Type       : None
 Duration         : 10 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Affecting spells : Close as Clutchmates (396043 effect#1), Mastery: Timewalker (406380 effect#2), Evoker Augmentation 10.1 Class Set 2pc (414877 effects: #1, #2)
+Affecting spells : Close as Clutchmates (396043 effects: #1, #2), Mastery: Timewalker (406380 effect#2), Evoker Augmentation 10.1 Class Set 2pc (414877 effects: #1, #2)
 Family Flags     : 56, 66, 67
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7118,9 +7120,10 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1035680)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.42800 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
+Hotfixed         : Base Value (10 -> 20), PvP Coefficient (1.428 -> 1)
 #2 (id=1055269)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1084345)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -7132,9 +7135,10 @@ Effects          :
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Upheaval (396288)
                    Family Flags: 35, 58
 #5 (id=1092313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.42800 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.42800 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288)
                    Family Flags: 0
+Hotfixed         : Base Value (10 -> 20)
 Description      : $@spelldesc395152
 Tooltip          : Your Ebon Might is active on allies.
 Your damage done is increased by $w1%.
@@ -7155,9 +7159,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Raid Instances (203), Not in Battleground (284), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1036936)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ebon Might (395152), Ebon Might (395296), Temporal Wound (409560)
                    Family Flags: 56
+Hotfixed         : Base Value (40 -> 20)
+#2 (id=1097602)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Ebon Might (395152), Ebon Might (395296), Temporal Wound (409560)
+                   Family Flags: 56
+Hotfixed         : NEW EFFECT
 Description      : $@spellname395152 and $@spellname403631 are $s1% more effective when not in a raid.
 
 Name             : Augmentation Evoker (id=396186) [Spell Family (224), Passive, Hidden] 
@@ -7186,13 +7196,15 @@ Effects          :
 #3 (id=1037190)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1037191)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763), Defy Fate (404381), Spiritbloom (409895), Molten Blood (410651)
                    Family Flags: 1
+Hotfixed         : Base Value (15 -> 4)
 #5 (id=1037192)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763), Defy Fate (404381), Spiritbloom (409895), Molten Blood (410651)
                    Family Flags: 1
+Hotfixed         : Base Value (15 -> 4)
 #6 (id=1037193)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=1037194)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -7229,6 +7241,22 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Living Flame (361500), Azure Strike (362969), Full Belly (377087)
                    Family Flags: 12, 35, 50
+#17 (id=1097342)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value 2: 2840 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#18 (id=1097343)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 2840 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#19 (id=1097344)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763), Defy Fate (404381), Spiritbloom (409895), Molten Blood (410651)
+                   Family Flags: 1
+Hotfixed         : NEW EFFECT
+#20 (id=1097345)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763), Defy Fate (404381), Spiritbloom (409895), Molten Blood (410651)
+                   Family Flags: 1
+Hotfixed         : NEW EFFECT
 
 Name             : Essence Burst (id=396187) [Spell Family (224), Passive] 
 Talent Entry     : Augmentation [tree=spec, row=2, col=2, max_rank=1, req_points=0]
@@ -7320,7 +7348,8 @@ Effects          :
 #1 (id=1037394)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1037395)  : School Damage (2): firestorm
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.30000 | PvP Coefficient: 1.15000 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.30000 | PvP Coefficient: 1.25000 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1.15 -> 1.25)
 #3 (id=1052932)  : Unknown(144)
                    Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Misc Value: -20 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=1053498)  : Unknown(144)
@@ -7614,7 +7643,7 @@ Range            : 40 yards
 Max Targets      : 5
 Duration         : 9 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8158,7 +8187,7 @@ Tooltip          : The duration of incoming crowd control effects are increased 
 
 Name             : Aspects' Favor (id=407243) [Spell Family (224), Passive] 
 Talent Entry     : Augmentation [tree=spec, row=7, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(6, 12)]
+                 : Effect#1 [op=set, values=(3, 6)]
                  : Effect#2 [op=set, values=(15, 30)]
 Class            : Evoker
 School           : Physical
@@ -8175,7 +8204,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1070580)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 7.5 | Scaled Value: 7.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (7.5 -> 3)
 #2 (id=1073926)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Obsidian Scales activates Black Attunement, and amplifies it to increase maximum health by $<blacktotal>% for $407254d.
@@ -8228,9 +8258,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1070599)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Black Attunement (403264)
                    Family Flags: 70
+Hotfixed         : Base Value (6 -> 3)
 Description      : $@spelldesc407243
 Tooltip          : Black Attunement grants $w1% additional health.
 
@@ -8357,7 +8388,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1071872)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.3)
 #2 (id=1071873)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Upheaval (396288)
@@ -8627,7 +8659,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Close as Clutchmates (396043 effect#1), Mastery: Timewalker (406380 effect#2)
+Affecting spells : Close as Clutchmates (396043 effects: #1, #2), Mastery: Timewalker (406380 effect#2)
 Family Flags     : 56, 67, 71
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -8750,7 +8782,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -8813,13 +8845,14 @@ Effects          :
 Description      : $@spelldesc403631
 
 Name             : Prescience (desc=Bronze) (id=410089) [Spell Family (224)] 
+Hotfixed         : Proc Chance (20 -> 25)
 Class            : Evoker
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 18 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Proc Chance      : 20%
+Proc Chance      : 25%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Affecting spells : Mastery: Timewalker (406380 effect#2)
@@ -8838,6 +8871,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Friend (21)
 #2 (id=1080437)  : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Friend (21)
+#3 (id=1098112)  : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc409311
 Tooltip          : $?$W1>0[$@auracaster is increasing your critical strike chance by $w1%.][]$?e0&e1[
 
@@ -9028,6 +9064,7 @@ Description      : $@spelldesc410352
 Tooltip          : $w1% of damage is being delayed and dealt to you over time.
 
 Name             : Molten Blood (id=410643) [Spell Family (224), Passive] 
+Hotfixed         : Variables
 Talent Entry     : Augmentation [tree=spec, row=7, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Evoker
 School           : Physical
@@ -9046,7 +9083,8 @@ Effects          :
 #1 (id=1076504)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When cast, Blistering Scales grants the target a shield that absorbs up to $<shield> damage for $410651d based on their missing health. Lower health targets gain a larger shield.
-Variables        : $shield=${$SP*18*(1+$@versadmg)}
+Variables        : $pvp=$?a134735[${0.7}][${1}]
+$shield=${$SP*18*(1+$@versadmg)*$<pvp>}
 
 Name             : Molten Blood (id=410651) [Spell Family (224)] 
 Class            : Evoker
@@ -9055,7 +9093,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Mastery: Timewalker (406380 effect#2)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20), Mastery: Timewalker (406380 effect#2)
 Family Flags     : 1, 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9068,8 +9106,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1076514)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.70000 | Misc Value: 0x7f | Target: Friend (21)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : $@spelldesc410643
 Tooltip          : Absorbing $w1 damage.
 

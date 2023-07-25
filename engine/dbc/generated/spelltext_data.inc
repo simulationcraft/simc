@@ -1,4 +1,4 @@
-// Spell text, wow build 10.1.5.50504
+// Spell text, wow build 10.1.5.50585
 static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -20123,13 +20123,11 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   { 421662, "Guarantees that the next Time Rift you complete will grant you a reward.", "The next time rift you complete is guaranteed to grant you a reward.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.5.50504
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
-  {    2120,  0, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d. Deals reduced damage beyond $s3 targets.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]" },
-  {  205037,  0, "Flamestrike leaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d. ", "Flamestrike leaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d. Deals reduced damage beyond $205472s2 targets." },
+// spelltext hotfix entries, wow build 10.1.5.50585
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.5.50504
+// Spell description variables, wow build 10.1.5.50585
 static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20325,7 +20323,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  267997, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]" },
   {  269120, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  269751, "$petDamage=${$ap*($s1/100)*(1+$@versadmg)}\r\n$hunterDamage=${$269752s1}\r\n$damage=${$<petDamage>+$<hunterDamage>}" },
-  {  271466, "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*1.9*(1+$@versadmg)*$<benevolence>}" },
+  {  271466, "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*2.47*(1+$@versadmg)*$<benevolence>}" },
   {  272721, "$duration=${$272723d+(($w2-1)*$272718s~2/1000)}" },
   {  272983, "$duration=${10}" },
   {  273007, "$spec=${1+$137037s1/100}.2\r\n$vers=${1+$@versadmg}.2\r\n$mastery=${1+$76803s1/100}.2\r\n$assassinationMastery=${$<spec>*$<vers>*$<mastery>}.2\r\n$assassinationNoMastery=${$<spec>*$<vers>}.2\r\n" },
@@ -20523,12 +20521,14 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  408092, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   {  410261, "$coeff=${0.88}\r\n$dmg=${$INT*$<coeff>*(1+$@versadmg)*$pctD}" },
-  {  410643, "$shield=${$SP*18*(1+$@versadmg)}" },
+  {  410643, "$pvp=$?a134735[${0.7}][${1}]\r\n$shield=${$SP*18*(1+$@versadmg)*$<pvp>}" },
   {  412774, "$doses=${50}" },
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.5.50504
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.1.5.50585
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
+  {  271466,  0, "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*1.9*(1+$@versadmg)*$<benevolence>}", "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*2.47*(1+$@versadmg)*$<benevolence>}" },
+  {  410643,  0, "$shield=${$SP*18*(1+$@versadmg)}", "$pvp=$?a134735[${0.7}][${1}]\r\n$shield=${$SP*18*(1+$@versadmg)*$<pvp>}" },
 } };
 
