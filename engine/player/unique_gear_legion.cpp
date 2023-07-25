@@ -1851,8 +1851,8 @@ struct shadow_blades_constructor_t : public item_targetdata_initializer_t
   {
     bool active = init( td->source );
 
-    td->debuff.shadow_blades =
-        make_buff_fallback( active, *td, "shadow_blades_debuff", debuffs[ td->source ], effect( td )->item );
+    td->debuff.shadow_blades = make_buff_fallback(
+        active, *td, "shadow_blades_debuff", debuffs[ td->source ], effect( td ) ? effect( td )->item : nullptr );
     td->debuff.shadow_blades->reset();
 
     if ( active )
