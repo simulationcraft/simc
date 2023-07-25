@@ -1722,7 +1722,6 @@ public:
       p()->buffs.calefaction->expire();
       // Trigger the buff outside of impact processing so that Phoenix Flames
       // doesn't benefit from the buff it just triggered.
-      // TODO: refreshing Flame's Fury buff doesn't add stacks, only refreshes duration
       make_event( *sim, [ b = p()->buffs.flames_fury ] { b->trigger( b->max_stack() ); } );
     }
   }
@@ -4988,10 +4987,11 @@ struct phoenix_flames_t final : public fire_mage_spell_t
 
     if ( p()->buffs.flames_fury->check() )
     {
-      // Make sure the cooldown reset happens even if the travel time
-      // somehow ends up being zero.
-      make_event( *sim, [ this ] { cooldown->reset( false ); } );
-      p()->buffs.flames_fury->decrement();
+      make_event( *sim, [ this ]
+      {
+        cooldown->reset( false );
+        p()->buffs.flames_fury->decrement();
+      } );
     }
   }
 };
