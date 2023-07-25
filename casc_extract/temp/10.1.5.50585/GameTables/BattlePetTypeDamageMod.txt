@@ -1,0 +1,11 @@
+PetType	Humanoid	Dragonkin	Flying	Undead	Critter	Magic	Elemental	Beast	Aquatic	Mechanical
+Humanoid	1	1.5	1	1	1	1	1	0.66	1	1
+Dragonkin	1	1	1	0.66	1	1.5	1	1	1	1
+Flying	1	0.66	1	1	1	1	1	1	1.5	1
+Undead	1.5	1	1	1	1	1	1	1	0.66	1
+Critter	0.66	1	1	1.5	1	1	1	1	1	1
+Magic	1	1	1.5	1	1	1	1	1	1	0.66
+Elemental	1	1	1	1	0.66	1	1	1	1	1.5
+Beast	1	1	0.66	1	1.5	1	1	1	1	1
+Aquatic	1	1	1	1	1	0.66	1.5	1	1	1
+Mechanical	1	1	1	1	1	1	0.66	1.5	1	1

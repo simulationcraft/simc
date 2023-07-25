@@ -1,0 +1,11 @@
+Expansion	Inspiration-Craft-Crit	Resourcefulness-Reagent-Reduction	Finesse-Gather-Extra	Deftness-Gather-Time-Decrease	Perception-Gather-Discover	Craft-Speed-Time-Decrease	Multicraft-Craft-Extra	UNUSED-Was-Finesse-Gather-Time-Increase	UNUSED-Was-Perception-Gather-Range
+Vanilla	0	0	0	0	0	0	0	0	0
+TheBurningCrusade	0	0	0	0	0	0	0	0	0
+WrathOfTheLichKing	0	0	0	0	0	0	0	0	0
+Cataclysm	0	0	0	0	0	0	0	0	0
+MistsOfPandaria	0	0	0	0	0	0	0	0	0
+WarlordsOfDraenor	0	0	0	0	0	0	0	0	0
+Legion	0	0	0	0	0	0	0	0	0
+BattleForAzeroth	0	0	0	0	0	0	0	0	0
+Shadowlands	0	0	0	0	0	0	0	0	0
+Dragonflight	10	9	10	3	10	5	11	0	10
