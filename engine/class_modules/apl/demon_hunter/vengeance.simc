@@ -35,10 +35,10 @@ actions+=/run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5
 actions+=/run_action_list,name=big_aoe,if=active_enemies>=6
 
 actions.trinkets+=/use_items
-actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1
+actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=trinket.beacon_to_the_beyond.cooldown.remains>5
 
 actions.maintenance+=/invoke_external_buff,name=symbol_of_hope,if=cooldown.fiery_brand.charges=0
-actions.maintenance+=/metamorphosis,if=talent.first_of_the_illidari
+actions.maintenance+=/metamorphosis,if=talent.first_of_the_illidari&trinket.beacon_to_the_beyond.cooldown.remains<10|fight_remains<20
 actions.maintenance+=/call_action_list,name=trinkets
 actions.maintenance+=/potion
 actions.maintenance+=/fiery_brand,if=charges>=2|(!ticking&((variable.next_fire_cd_time<7)|(variable.next_fire_cd_time>28)))

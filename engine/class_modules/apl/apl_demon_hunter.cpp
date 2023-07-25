@@ -194,10 +194,10 @@ void vengeance( player_t* p )
   default_->add_action( "run_action_list,name=big_aoe,if=active_enemies>=6" );
 
   trinkets->add_action( "use_items" );
-  trinkets->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1" );
+  trinkets->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=trinket.beacon_to_the_beyond.cooldown.remains>5" );
 
   maintenance->add_action( "invoke_external_buff,name=symbol_of_hope,if=cooldown.fiery_brand.charges=0" );
-  maintenance->add_action( "metamorphosis,if=talent.first_of_the_illidari" );
+  maintenance->add_action( "metamorphosis,if=talent.first_of_the_illidari&trinket.beacon_to_the_beyond.cooldown.remains<10|fight_remains<20" );
   maintenance->add_action( "call_action_list,name=trinkets" );
   maintenance->add_action( "potion" );
   maintenance->add_action( "fiery_brand,if=charges>=2|(!ticking&((variable.next_fire_cd_time<7)|(variable.next_fire_cd_time>28)))" );
