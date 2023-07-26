@@ -2862,6 +2862,8 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage", ground_aoe_duration );
     sigil->stats = stats;
 
+    set_target( p ); // Can be self-cast for resources without a hostile target
+
     if ( p->spell.sigil_of_flame_fury->ok() )
     {
       energize_type = action_energize::ON_CAST;
@@ -3109,8 +3111,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     may_miss = false;
     dot_duration = timespan_t::zero();
+    set_target( p ); // Does not require a hostile target
 
-    apply_affecting_aura(p->spec.immolation_aura_cdr);
+    apply_affecting_aura( p->spec.immolation_aura_cdr );
 
     if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
     {
