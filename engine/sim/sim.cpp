@@ -2788,7 +2788,11 @@ void sim_t::init()
     else
     {
       if ( !target_list.empty() )
+      {
         target = target_list.data().front();
+        if ( fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+          target->quiet = true;
+      }
 
       range::for_each( target_list, []( player_t* t ) {
         t->initial.sleeping = t->base.sleeping = t->current.sleeping = true;
