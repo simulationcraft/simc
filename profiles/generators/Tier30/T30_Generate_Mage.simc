@@ -35,25 +35,25 @@ level=70
 race=dwarf
 role=spell
 position=back
-talents=B8DAAAAAAAAAAAAAAAAAAAAAAERIl0QSkkiASCRkEJBAAAAAAAAgIikkQJRJJJJJJJHoBAAACA
+talents=B8DArSxcnei16P8xFL3rzzOyRGJIFNkIRKCikQERkkAAAAAAAAAIiIJJOQJRJJJJJJJaAAAgA
 
-head=vibrant_wildercloth_headcover,id=193523,bonus_id=523/9379/8960,ilevel=447,gem_id=192952,crafted_stats=36/40
-neck=bromachs_disentombed_locket,id=193809,bonus_id=8782,ilevel=447,gem_id=192985/192952/192952
-shoulder=underlight_conjurers_aurora,id=202549,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1498,ilevel=450
-back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6592
-chest=underlight_conjurers_vestment,id=202554,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/1472/4800/4786/1498,enchant_id=6625
-wrist=overengineered_sleeve_extenders,id=198322,bonus_id=523,ilevel=447,gem_id=201409/192952,crafted_stats=36/36
-hands=underlight_conjurers_gloves,id=202552,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1498
-waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=447,gem_id=192952,crafted_stats=36/40
-legs=underlight_conjurers_trousers,id=202550,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1507,enchant_id=6830
-feet=treads_of_fractured_realities,id=204392,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6613
-finger1=loop_of_vitriolic_intent,id=134530,bonus_id=523,ilevel=447,gem_id=192952,enchant_id=6556
-finger2=circle_of_ascended_frost,id=193731,ilevel=447,gem_id=192952,enchant_id=6556
-trinket1=ominous_chromatic_essence,id=203729,ilevel=447
-trinket2=vessel_of_searing_shadow,id=202615,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498/9334
-main_hand=erethos_the_empty_promise,id=202565,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643
+head=vibrant_wildercloth_headcover,id=193523,ilevel=447,gem_id=192985,bonus_id=523/9379/8960,crafted_stats=36/40
+neck=ionized_choker,id=206181,ilevel=447,gem_id=192952/192952/192952,bonus_id=8782
+shoulder=underlight_conjurers_aurora,id=205858,ilevel=450
+back=voice_of_the_silent_star,id=204465,ilevel=457,enchant_id=6592
+chest=underlight_conjurers_vestment,id=205862,ilevel=447,enchant_id=6625
+wrist=overengineered_sleeve_extenders,id=198322,ilevel=447,gem_id=201409/192952,enchant_id=6574,bonus_id=523,crafted_stats=36/36
+hands=underlight_conjurers_gloves,id=205861,ilevel=447
+waist=vibrant_wildercloth_girdle,id=193516,ilevel=447,gem_id=192952,bonus_id=523/9379/8960,crafted_stats=36/40
+legs=underlight_conjurers_trousers,id=205859,ilevel=450,enchant_id=6541
+feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6613
+finger1=circle_of_ascended_frost,id=193731,ilevel=447,gem_id=192952,enchant_id=6556,bonus_id=523
+finger2=signet_of_titanic_insight,id=192999,ilevel=447,gem_id=192952,enchant_id=6556,bonus_id=523,crafted_stats=36/40
+trinket1=vessel_of_searing_shadow,id=202615,ilevel=447
+trinket2=ominous_chromatic_essence,id=203729,ilevel=447
+main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
-dragonflight.ominous_chromatic_essence_dragonflight=bronze
+dragonflight.ominous_chromatic_essence_dragonflight=ruby
 dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
 
 save=T30_Mage_Fire.simc
