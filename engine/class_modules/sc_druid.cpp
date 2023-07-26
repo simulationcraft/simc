@@ -2034,6 +2034,7 @@ public:
     this->schedule_execute( state );
   }
 
+  void init() override;
   void schedule_execute( action_state_t* s = nullptr ) override;
   void execute() override;
   void impact( action_state_t* s ) override;
@@ -5843,6 +5844,15 @@ struct overgrowth_t : public druid_heal_t
   }
 };
 }  // end namespace heals
+
+template <class Base>
+void druid_action_t<Base>::init()
+{
+  ab::init();
+
+  if ( !ab::harmful && !dynamic_cast<heals::druid_heal_t*>( this ) )
+    ab::target = ab::player;
+}
 
 template <class Base>
 void druid_action_t<Base>::schedule_execute( action_state_t* s )
