@@ -1069,6 +1069,7 @@
 5152111, DBFilesClient\CollectableSourceEncounter.db2
 5152112, DBFilesClient\CollectableSourceInfo.db2
 5152256, DBFilesClient\ItemFixup.db2
+5152358, DBFilesClient\PingType.db2
 5152908, DBFilesClient\CollectableSourceEncounterSparse.db2
 5155639, DBFilesClient\ItemBonusSeason.db2
 5155640, DBFilesClient\ItemBonusSeasonBonusListGroup.db2
@@ -1085,3 +1086,5 @@
 5226140, DBFilesClient\ArenaTrackedItem.db2
 5228217, DBFilesClient\JournalInstanceQueueLoc.db2
 5228481, DBFilesClient\JournalInstanceEntrance.db2
+5320971, DBFilesClient\ChrRacesPing.db2
+5330797, DBFilesClient\PerksActivityXHolidays.db2
