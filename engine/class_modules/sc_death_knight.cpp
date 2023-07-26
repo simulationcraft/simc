@@ -4256,6 +4256,7 @@ struct army_of_the_dead_t final : public death_knight_spell_t
 
     harmful = false;
     track_cd_waste = true;
+    target = p;
   }
 
   void init_finished() override
@@ -7210,6 +7211,7 @@ struct raise_dead_t final : public death_knight_spell_t
 
     harmful = false;
     track_cd_waste = true;
+    target = p;
   }
 
   void execute() override
