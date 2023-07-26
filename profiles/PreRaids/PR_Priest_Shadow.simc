@@ -42,9 +42,9 @@ actions.aoe=call_action_list,name=aoe_variables
 actions.aoe+=/vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied),if=variable.max_vts>0&!variable.manual_vts_applied&!action.shadow_crash.in_flight|!talent.whispering_shadows
 # Use Shadow Crash to apply Vampiric Touch to as many adds as possible while being efficient with Vampiric Touch refresh windows
 actions.aoe+=/shadow_crash,if=!variable.holding_crash,target_if=dot.vampiric_touch.refreshable|dot.vampiric_touch.remains<=target.time_to_die&!buff.voidform.up&(raid_event.adds.in-dot.vampiric_touch.remains)<15
-actions.aoe+=/call_action_list,name=cds,if=fight_remains<30|time_to_die>15&(!variable.holding_crash|active_enemies>2)
+actions.aoe+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)
 # Use Shadowfiend or Mindbender on cooldown if DoTs are active and sync with Dark Ascension
-actions.aoe+=/mindbender,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight&talent.whispering_shadows)&(fight_remains<30|time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)
+actions.aoe+=/mindbender,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight&talent.whispering_shadows)&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)
 # Use Mind Blast when capped on charges and talented into Mind Devourer to fish for the buff or if Inescapable Torment is talented with Mindbender active. Only use when facing 3-7 targets.
 actions.aoe+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&active_enemies<=7&!buff.mind_devourer.up
 # High Priority Shadow Word: Death is Mindbender is expiring in less than 2 seconds
@@ -120,9 +120,9 @@ actions.filler+=/shadow_word_death
 actions.filler+=/shadow_word_pain,target_if=min:remains
 
 actions.main=call_action_list,name=main_variables
-actions.main+=/call_action_list,name=cds,if=fight_remains<30|time_to_die>15&(!variable.holding_crash|active_enemies>2)
+actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)
 # Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension
-actions.main+=/mindbender,if=variable.dots_up&(fight_remains<30|time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)
+actions.main+=/mindbender,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)
 # High priority Mind Blast action when using Inescapable Torment
 actions.main+=/mind_blast,target_if=(dot.devouring_plague.ticking&(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time)|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&active_enemies<=7
 # High Priority Shadow Word: Death is Mindbender is expiring in less than 2 seconds
