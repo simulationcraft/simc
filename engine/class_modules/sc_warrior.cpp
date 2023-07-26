@@ -6926,6 +6926,7 @@ struct conquerors_banner_t : public warrior_spell_t
     parse_options( options_str );
     energize_resource       = RESOURCE_NONE;
     harmful = false;
+    target  = p;
   }
 
   void execute() override
@@ -7075,6 +7076,7 @@ struct avatar_t : public warrior_spell_t
     parse_options( options_str );
     callbacks = false;
     harmful   = false;
+    target    = p;
 
     // Vision of Perfection doesn't reduce the cooldown for non-prot
     if ( p -> azerite.vision_of_perfection.enabled() && p -> specialization() == WARRIOR_PROTECTION )
@@ -7179,6 +7181,7 @@ struct torment_avatar_t : public warrior_spell_t
   {
     parse_options( options_str );
     callbacks = false;
+    target    = p;
   }
 
   void execute() override
@@ -7222,6 +7225,7 @@ struct battle_shout_t : public warrior_spell_t
     parse_options( options_str );
     usable_while_channeling = true;
     harmful = false;
+    target  = p;
 
     background = sim->overrides.battle_shout != 0;
   }
@@ -7270,6 +7274,7 @@ struct battle_stance_t : public warrior_spell_t
     add_option( opt_string( "toggle", onoff ) );
     parse_options( options_str );
     harmful = false;
+    target  = p;
 
     if ( onoff == "on" )
     {
@@ -7330,6 +7335,7 @@ struct berserker_stance_t : public warrior_spell_t
     add_option( opt_string( "toggle", onoff ) );
     parse_options( options_str );
     harmful = false;
+    target  = p;
 
     if ( onoff == "on" )
     {
@@ -7387,6 +7393,7 @@ struct defensive_stance_t : public warrior_spell_t
   {
     add_option( opt_string( "toggle", onoff ) );
     parse_options( options_str );
+    target = p;
 
     if ( onoff == "on" )
     {
@@ -7566,8 +7573,8 @@ struct recklessness_t : public warrior_spell_t
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks  = false;
-
-    harmful = false;
+    harmful    = false;
+    target     = p;
 
     if ( p->talents.fury.reckless_abandon->ok() )
     {
@@ -7637,9 +7644,8 @@ struct torment_recklessness_t : public warrior_spell_t
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks  = false;
-
-    harmful = false;
-
+    harmful    = false;
+    target     = p;
   }
 
   void execute() override
