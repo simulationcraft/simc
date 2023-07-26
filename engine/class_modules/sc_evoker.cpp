@@ -3623,6 +3623,7 @@ struct breath_of_eons_t : public evoker_spell_t
     if ( p->talent.overlord->ok() )
     {
       eruption = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
+      eruption->proc = true;
       add_child( eruption );
     }
 
@@ -3637,7 +3638,7 @@ struct breath_of_eons_t : public evoker_spell_t
 
     if ( eruption && s->chain_target < p()->talent.overlord->effectN( 1 ).base_value() )
     {
-      eruption->execute_on_target( s->target );
+      make_event( sim, 200_ms, [ this, s ] { eruption->execute_on_target( s->target ); } );
     }
   }
 
