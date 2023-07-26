@@ -240,8 +240,8 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
 
     if ( main_actor_index >= m_actor_indices.size() )
     {
-      std::cerr << "ERROR! Option profileset_main_actor_index=" << main_actor_index << " is out of range. Only ("
-                << m_actor_indices.size() << " actors are defined)." << std::endl;
+      std::cerr << "ERROR! Option profileset_main_actor_index=" << main_actor_index << " is out of range. Only "
+                << m_actor_indices.size() << " actors are defined." << std::endl;
       return nullptr;
     }
 
