@@ -8291,6 +8291,9 @@ struct arcane_torrent_t : public racial_spell_t
     parse_options( options_str );
     harmful = false;
     energize_type = action_energize::ON_CAST;
+
+    target = p;
+
     // Some specs need special handling here
     switch ( p->specialization() )
     {
@@ -8337,6 +8340,7 @@ struct berserking_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8356,6 +8360,7 @@ struct blood_fury_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8374,6 +8379,7 @@ struct darkflight_t : public racial_spell_t
     racial_spell_t( p, "darkflight", p->find_racial_spell( "Darkflight" ) )
   {
     parse_options( options_str );
+    target = p;
   }
 
   void execute() override
@@ -8406,6 +8412,7 @@ struct stoneform_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8544,6 +8551,7 @@ struct gift_of_the_naaru : public racial_heal_t
     racial_heal_t( p, "gift_of_the_naaru", p->find_racial_spell( "Gift of the Naaru" ) )
   {
     parse_options( options_str );
+    target = p;
   }
 
   double base_ta( const action_state_t* /* state */ ) const override
@@ -8561,6 +8569,7 @@ struct ancestral_call_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8581,6 +8590,7 @@ struct fireblood_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8763,6 +8773,8 @@ struct restore_mana_t : public action_t
     parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
+
+    target = player;
   }
 
   void execute() override
@@ -8790,6 +8802,7 @@ struct wait_action_base_t : public action_t
     trigger_gcd = timespan_t::zero();
     interrupt_auto_attack = false;
     quiet = true;
+    target = player;
   }
 
   void execute() override
