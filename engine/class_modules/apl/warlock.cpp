@@ -262,6 +262,7 @@ void demonology( player_t* p )
   items->add_action( "use_items,if=(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal))&(!equipped.irideus_fragment&!equipped.timebreaching_talon&!equipped.spoils_of_neltharus&!equipped.erupting_spear_fragment&!equipped.voidmenders_shadowgem)" );
   items->add_action( "use_item,name=rotcrusted_voodoo_doll" );
   items->add_action( "use_item,name=beacon_to_the_beyond" );
+  items->add_action( "use_item,name=iridal_the_earths_master,if=buff.demonic_power.down&cooldown.summon_demonic_tyrant.remains>30" );
 }
 //demonology_apl_end
 
@@ -396,6 +397,7 @@ void destruction( player_t* p )
   items->add_action( "use_item,name=desperate_invokers_codex" );
   items->add_action( "use_item,name=iceblood_deathsnare" );
   items->add_action( "use_item,name=conjured_chillglobe" );
+  items->add_action( "use_item,name=iridal_the_earths_master" );
 
   ogcd->add_action( "potion,if=variable.infernal_active|!talent.summon_infernal" );
   ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.infernal_active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains_expected+10+cooldown.invoke_power_infusion_0.duration&fight_remains>cooldown.invoke_power_infusion_0.duration)|fight_remains<cooldown.summon_infernal.remains_expected+15" );
