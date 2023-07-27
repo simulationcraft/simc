@@ -5001,18 +5001,53 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       : pet_t( e.player->sim, e.player, "future_self", true, true ), effect( e ), action( a )
     {
       unsigned pet_id;
-      switch ( e.player->role )
+      switch ( e.player->_spec )
       {
-        case ROLE_SPELL:
+        case HUNTER_BEAST_MASTERY:
+        case HUNTER_MARKSMANSHIP:
+        case PRIEST_SHADOW:
+        case SHAMAN_ELEMENTAL:
+        case MAGE_ARCANE:
+        case MAGE_FIRE:
+        case MAGE_FROST:
+        case WARLOCK_AFFLICTION:
+        case WARLOCK_DEMONOLOGY:
+        case WARLOCK_DESTRUCTION:
+        case DRUID_BALANCE:
+        case EVOKER_DEVASTATION:
+        case EVOKER_AUGMENTATION:
           pet_id = 208887;
           break;
-        case ROLE_TANK:
+        case WARRIOR_PROTECTION:
+        case PALADIN_PROTECTION:
+        case DEATH_KNIGHT_BLOOD:
+        case MONK_BREWMASTER:
+        case DRUID_GUARDIAN:
+        case DEMON_HUNTER_VENGEANCE:
           pet_id = 208958;
           break;
-        case ROLE_HEAL:
+        case PALADIN_HOLY:
+        case PRIEST_DISCIPLINE:
+        case PRIEST_HOLY:
+        case SHAMAN_RESTORATION:
+        case MONK_MISTWEAVER:
+        case DRUID_RESTORATION:
+        case EVOKER_PRESERVATION:
           pet_id = 208959;
           break;
-        case ROLE_ATTACK:
+        case WARRIOR_ARMS:
+        case WARRIOR_FURY:
+        case PALADIN_RETRIBUTION:
+        case HUNTER_SURVIVAL:
+        case ROGUE_ASSASSINATION:
+        case ROGUE_OUTLAW:
+        case ROGUE_SUBTLETY:
+        case DEATH_KNIGHT_FROST:
+        case DEATH_KNIGHT_UNHOLY:
+        case SHAMAN_ENHANCEMENT:
+        case MONK_WINDWALKER:
+        case DRUID_FERAL:
+        case DEMON_HUNTER_HAVOC:
         default:
           pet_id = 208957;
           break;
@@ -5066,21 +5101,56 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       pet_t::init_action_list();
 
       auto def = get_action_priority_list( "default" );
-      switch ( effect.player->role )
+      switch ( effect.player->_spec )
       {
-        case ROLE_SPELL:
+        case HUNTER_BEAST_MASTERY:
+        case HUNTER_MARKSMANSHIP:
+        case PRIEST_SHADOW:
+        case SHAMAN_ELEMENTAL:
+        case MAGE_ARCANE:
+        case MAGE_FIRE:
+        case MAGE_FROST:
+        case WARLOCK_AFFLICTION:
+        case WARLOCK_DEMONOLOGY:
+        case WARLOCK_DESTRUCTION:
+        case DRUID_BALANCE:
+        case EVOKER_DEVASTATION:
+        case EVOKER_AUGMENTATION:
           def->add_action( "sand_bolt" );
           break;
-        case ROLE_TANK:
+        case WARRIOR_PROTECTION:
+        case PALADIN_PROTECTION:
+        case DEATH_KNIGHT_BLOOD:
+        case MONK_BREWMASTER:
+        case DRUID_GUARDIAN:
+        case DEMON_HUNTER_VENGEANCE:
           def->add_action( "sand_shield" );
           def->add_action( "auto_attack" );
           break;
-        case ROLE_HEAL:
+        case PALADIN_HOLY:
+        case PRIEST_DISCIPLINE:
+        case PRIEST_HOLY:
+        case SHAMAN_RESTORATION:
+        case MONK_MISTWEAVER:
+        case DRUID_RESTORATION:
+        case EVOKER_PRESERVATION:
           // Use APL logic to alternate between each spell, more properly emulating in game behavior
           def->add_action( "sand_bolt,if=prev.restorative_sands" );
           def->add_action( "restorative_sands" );
           break;
-        case ROLE_ATTACK:
+        case WARRIOR_ARMS:
+        case WARRIOR_FURY:
+        case PALADIN_RETRIBUTION:
+        case HUNTER_SURVIVAL:
+        case ROGUE_ASSASSINATION:
+        case ROGUE_OUTLAW:
+        case ROGUE_SUBTLETY:
+        case DEATH_KNIGHT_FROST:
+        case DEATH_KNIGHT_UNHOLY:
+        case SHAMAN_ENHANCEMENT:
+        case MONK_WINDWALKER:
+        case DRUID_FERAL:
+        case DEMON_HUNTER_HAVOC:
         default:
           def->add_action( "sand_cleave" );
           def->add_action( "auto_attack" );
@@ -5118,18 +5188,53 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
       unsigned summon_driver;
 
-      switch ( e.player->role )
+      switch ( e.player->_spec )
       {
-        case ROLE_SPELL:
+        case HUNTER_BEAST_MASTERY:
+        case HUNTER_MARKSMANSHIP:
+        case PRIEST_SHADOW:
+        case SHAMAN_ELEMENTAL:
+        case MAGE_ARCANE:
+        case MAGE_FIRE:
+        case MAGE_FROST:
+        case WARLOCK_AFFLICTION:
+        case WARLOCK_DEMONOLOGY:
+        case WARLOCK_DESTRUCTION:
+        case DRUID_BALANCE:
+        case EVOKER_DEVASTATION:
+        case EVOKER_AUGMENTATION:
           summon_driver = 418773;
           break;
-        case ROLE_TANK:
+        case WARRIOR_PROTECTION:
+        case PALADIN_PROTECTION:
+        case DEATH_KNIGHT_BLOOD:
+        case MONK_BREWMASTER:
+        case DRUID_GUARDIAN:
+        case DEMON_HUNTER_VENGEANCE:
           summon_driver = 418775;
           break;
-        case ROLE_HEAL:
+        case PALADIN_HOLY:
+        case PRIEST_DISCIPLINE:
+        case PRIEST_HOLY:
+        case SHAMAN_RESTORATION:
+        case MONK_MISTWEAVER:
+        case DRUID_RESTORATION:
+        case EVOKER_PRESERVATION:
           summon_driver = 418776;
           break;
-        case ROLE_ATTACK:
+        case WARRIOR_ARMS:
+        case WARRIOR_FURY:
+        case PALADIN_RETRIBUTION:
+        case HUNTER_SURVIVAL:
+        case ROGUE_ASSASSINATION:
+        case ROGUE_OUTLAW:
+        case ROGUE_SUBTLETY:
+        case DEATH_KNIGHT_FROST:
+        case DEATH_KNIGHT_UNHOLY:
+        case SHAMAN_ENHANCEMENT:
+        case MONK_WINDWALKER:
+        case DRUID_FERAL:
+        case DEMON_HUNTER_HAVOC:
         default:
           summon_driver = 418774;
           break;
