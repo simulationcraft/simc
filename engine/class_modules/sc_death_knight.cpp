@@ -1869,6 +1869,7 @@ struct death_knight_pet_t : public pet_t
       assert( p -> main_hand_weapon.type != WEAPON_NONE );
       p -> main_hand_attack = p -> create_auto_attack();
       trigger_gcd = 0_ms;
+      school = SCHOOL_PHYSICAL;
       if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
       {
         auto proxy                = proxy_action;
