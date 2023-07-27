@@ -1796,15 +1796,15 @@ struct death_knight_pet_t : public pet_t
       main_hand_weapon.type = WEAPON_BEAST;
     }
 
-    if ( pet_name == "army_ghoul" )
+    if ( pet_name == "army_ghoul" && dk()->find_action( "army_of_the_dead" ) )
     {
       proxy_action = dk()->find_action( "army_of_the_dead" );
     }
-    if ( pet_name == "apoc_ghoul" )
+    if ( pet_name == "apoc_ghoul" && dk()->find_action( "apocalypse" ) )
     {
       proxy_action = dk()->find_action( "apocalypse" );
     }
-    if ( pet_name == "ghoul" )
+    if ( pet_name == "ghoul" && dk()->find_action( "raise_dead" ) )
     {
       proxy_action = dk()->find_action( "raise_dead" );
     }
@@ -1860,18 +1860,16 @@ struct death_knight_pet_t : public pet_t
   }
 
   // Standard Death Knight pet actions
-
-  struct ghoul_auto_attack_t : public melee_attack_t
+  struct auto_attack_t : public melee_attack_t
   {
     action_t* proxy_action;
-    ghoul_auto_attack_t( death_knight_pet_t* p, action_t* a ) :
+    auto_attack_t( death_knight_pet_t* p, action_t* a ) :
       melee_attack_t( "auto_attack", p ), proxy_action( a )
     {
       assert( p -> main_hand_weapon.type != WEAPON_NONE );
       p -> main_hand_attack = p -> create_auto_attack();
-      school = SCHOOL_PHYSICAL;
       trigger_gcd = 0_ms;
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
       {
         auto proxy                = proxy_action;
         auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -1892,36 +1890,9 @@ struct death_knight_pet_t : public pet_t
     }
   };
 
-  struct auto_attack_t : public melee_attack_t
-  {
-    auto_attack_t( death_knight_pet_t* p ) :
-      melee_attack_t( "auto_attack", p )
-    {
-      assert( p -> main_hand_weapon.type != WEAPON_NONE );
-      p -> main_hand_attack = p -> create_auto_attack();
-      trigger_gcd = 0_ms;
-    }
-
-    void execute() override
-    { player -> main_hand_attack -> schedule_execute(); }
-
-    bool ready() override
-    {
-      if ( player -> is_moving() ) return false;
-      return ( player -> main_hand_attack -> execute_event == nullptr );
-    }
-  };
-
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if( pet_name == "ghoul" || pet_name == "army_ghoul" || pet_name == "apoc_ghoul" )
-    {
-      if ( name == "auto_attack" ) return new ghoul_auto_attack_t( this, proxy_action );
-    }
-    else
-    {
-      if ( name == "auto_attack" ) return new auto_attack_t( this );
-    }
+    if ( name == "auto_attack" ) return new auto_attack_t( this, proxy_action );
 
     return pet_t::create_action( name, options_str );
   }
@@ -2191,9 +2162,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       triggers_infected_claws = triggers_runeforge_apocalypse = true;
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
       {
-        auto proxy = dk()->find_action("raise_dead");
+        auto proxy = dk()->find_action( "raise_dead" );
         auto it = range::find(proxy->child_action, data().id(), &action_t::id);
         if (it != proxy->child_action.end())
           stats = (*it)->stats;
@@ -2211,7 +2182,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       parse_options( options_str );
       aoe = -1;
       triggers_infected_claws = triggers_runeforge_apocalypse = true;
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
       {
         auto proxy = dk()->find_action( "raise_dead" );
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -2230,7 +2201,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       cooldown = p -> get_cooldown( "gnaw" );
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
       {
         auto proxy = dk()->find_action( "raise_dead" );
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -2249,7 +2220,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       cooldown = p -> get_cooldown( "gnaw" );
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
       {
         auto proxy = dk()->find_action( "raise_dead" );
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -2434,7 +2405,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
       pet_melee_attack_t( p, "claw", p -> dk() -> pet_spell.army_claw ), proxy_action( a )
     {
       parse_options( options_str );
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
       {
         auto proxy = proxy_action;
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -2454,7 +2425,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     {
       aoe = -1;
       background = true;
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
       {
         auto proxy = proxy_action;
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -2480,11 +2451,11 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   {
     affected_by_commander_of_the_dead = true;
 
-    if( name == "army_ghoul" )
+    if( name == "army_ghoul" && dk()->find_action( "army_of_the_dead" ) )
     {
       proxy_action = dk()->find_action( "army_of_the_dead" );
     }
-    else
+    if( name == "apoc_ghoul" && dk()->find_action( "apocalypse" ) )
     {
       proxy_action = dk()->find_action( "apocalypse" );
     }
@@ -2502,7 +2473,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::init_spells();
 
-    if ( dk()->talent.unholy.ruptured_viscera.ok() )
+    if ( dk()->talent.unholy.ruptured_viscera.ok() && proxy_action )
     {
       ruptured_viscera = new ruptured_viscera_t( this, proxy_action );
     }
@@ -2569,7 +2540,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike ), proxy_action( a )
     { 
       background = repeating = true;
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
       {
         auto proxy = proxy_action;
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -2685,7 +2656,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       aoe = -1;
       base_aoe_multiplier = 0.5;
       repeating = true;
-      if( !p -> dk() -> options.individual_pet_reporting )
+      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
       {
         auto proxy = dk()->find_action( "raise_dead" );
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -3104,7 +3075,7 @@ struct magus_pet_t : public death_knight_pet_t
     {
       // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
       cooldown -> duration = dk() -> pet_spell.frostbolt -> duration();
-      if ( !p->dk()->options.individual_pet_reporting )
+      if ( !p->dk()->options.individual_pet_reporting && proxy_action )
       {
         auto proxy = proxy_action;
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -3134,7 +3105,7 @@ struct magus_pet_t : public death_knight_pet_t
     shadow_bolt_magus_t( magus_pet_t* p, action_t* a, util::string_view options_str ) :
       magus_spell_t( p, "shadow_bolt", p -> dk() -> pet_spell.shadow_bolt, options_str ), proxy_action( a )
     {
-      if ( !p->dk()->options.individual_pet_reporting )
+      if ( !p->dk()->options.individual_pet_reporting && proxy_action )
       {
         auto proxy = proxy_action;
         auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
@@ -3149,11 +3120,11 @@ struct magus_pet_t : public death_knight_pet_t
   magus_pet_t( death_knight_t* owner, util::string_view name = "army_magus" ) :
     death_knight_pet_t( owner, name, true, false ), proxy_action( nullptr )
   {
-    if( name == "army_magus" )
+    if( name == "army_magus" && dk()->find_action( "army_of_the_dead" ) )
     {
       proxy_action = dk()->find_action( "army_of_the_dead" );
     }
-    else
+    if( name == "apoc_magus" && dk()->find_action( "apocalypse" ) )
     {
       proxy_action = dk()->find_action( "apocalypse" );
     }
@@ -3778,6 +3749,7 @@ struct unholy_blight_t final : public death_knight_disease_t
     may_crit = may_miss = may_dodge = may_parry = hasted_ticks = harmful = false;
     tick_zero = true;
     track_cd_waste = true;
+    target = p;
     parse_options( options_str );
     radius = p -> spell.unholy_blight_dot -> effectN( 1 ).radius_max();
     aoe = -1;
@@ -4067,8 +4039,8 @@ struct auto_attack_t final : public death_knight_melee_attack_t
 struct abomination_limb_damage_t final : public death_knight_spell_t
 {
   int bone_shield_stack_gain;
-  abomination_limb_damage_t( death_knight_t* p )
-    : death_knight_spell_t( "abomination_limb_damage", p, p->talent.abomination_limb->effectN( 2 ).trigger() )
+  abomination_limb_damage_t( util::string_view n, death_knight_t* p )
+    : death_knight_spell_t( n, p, p->talent.abomination_limb->effectN( 2 ).trigger() )
   {
     background = true;
     bone_shield_stack_gain = as<int>( p->talent.abomination_limb->effectN( 3 ).base_value() );
@@ -4106,10 +4078,9 @@ struct abomination_limb_damage_t final : public death_knight_spell_t
 
 struct abomination_limb_buff_t final : public buff_t
 {
-  abomination_limb_damage_t* damage;  // (AOE) damage that ticks every second
-
   abomination_limb_buff_t( death_knight_t* p )
-    : buff_t( p, "abomination_limb", p->talent.abomination_limb ), damage( new abomination_limb_damage_t( p ) )
+    : buff_t( p, "abomination_limb", p->talent.abomination_limb ), 
+      damage( get_action<abomination_limb_damage_t>( "abomination_limb_damage", p ) )
   {
     cooldown->duration = 0_ms;  // Controlled by the action
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) 
@@ -4118,12 +4089,15 @@ struct abomination_limb_buff_t final : public buff_t
     } );
     set_partial_tick( true );
   }
+private:
+    action_t* damage;  // (AOE) damage that ticks every second
 };
 
 struct abomination_limb_t : public death_knight_spell_t
 {
   abomination_limb_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "abomination_limb", p, p->talent.abomination_limb )
+    : death_knight_spell_t( "abomination_limb", p, p->talent.abomination_limb ), 
+      damage( get_action<abomination_limb_damage_t>( "abomination_limb_damage", p ) )
   {
     may_crit = may_miss = may_dodge = may_parry = false;
 
@@ -4133,11 +4107,7 @@ struct abomination_limb_t : public death_knight_spell_t
     dot_duration = base_tick_time = 0_ms;
 
     track_cd_waste = true;
-
-    if ( action_t* abomination_limb_damage = p -> find_action( "abomination_limb_damage" ) )
-    {
-      add_child( abomination_limb_damage );
-    }
+    add_child( damage );
   }
 
   void execute() override
@@ -4148,6 +4118,8 @@ struct abomination_limb_t : public death_knight_spell_t
 
     p() -> buffs.abomination_limb -> trigger();
   }
+private:
+    action_t* damage;
 };
 
 // Apocalypse ===============================================================
@@ -4891,6 +4863,7 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     bone_shield_stack_gain( 0 )
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
+    target = p;
     if ( p -> talent.blood.insatiable_blade.ok() )
       bone_shield_stack_gain += as<int>(p -> talent.blood.insatiable_blade -> effectN( 2 ).base_value());
     track_cd_waste = true;
@@ -5036,6 +5009,7 @@ struct dark_transformation_t final : public death_knight_spell_t
   {
     add_option( opt_bool( "precombat_frenzy", precombat_frenzy ) );
     harmful = false;
+    target = p;
     track_cd_waste = true;
 
     // Don't create and use the damage if the spell is used for precombat frenzy
@@ -5790,6 +5764,7 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
+    target = p;
     track_cd_waste = true;
 
     // Buff handles the ticking, this one just triggers the buff
@@ -6551,6 +6526,7 @@ struct horn_of_winter_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
     track_cd_waste = true;
   }
 
@@ -7125,6 +7101,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
+    target = p;
     track_cd_waste = true;
 
     if( p -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
@@ -7681,6 +7658,7 @@ struct summon_gargoyle_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
     track_cd_waste = true;
   }
 
@@ -7703,6 +7681,7 @@ struct tombstone_t final : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = may_crit = false;
+    target = p;
     track_cd_waste = true;
   }
 
@@ -7884,7 +7863,7 @@ struct antimagic_shell_t final : public death_knight_spell_t
     cooldown -> duration += p -> talent.antimagic_barrier -> effectN( 1 ).time_value();
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
-    target = player;
+    target = p;
 
     add_option( opt_float( "interval", interval ) );
     add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
@@ -8029,7 +8008,7 @@ struct antimagic_zone_t final : public death_knight_spell_t
   {
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
-    target = player;
+    target = p;
 
     add_option( opt_float( "interval", interval ) );
     add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
@@ -8084,6 +8063,7 @@ struct icebound_fortitude_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8155,6 +8135,7 @@ struct vampiric_blood_t final : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
+    target = p;
     base_dd_min = base_dd_max = 0;
     track_cd_waste = true;
   }
