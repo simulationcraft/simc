@@ -1796,14 +1796,6 @@ struct death_knight_pet_t : public pet_t
       main_hand_weapon.type = WEAPON_BEAST;
     }
 
-    if ( pet_name == "army_ghoul" && dk()->find_action( "army_of_the_dead" ) )
-    {
-      proxy_action = dk()->find_action( "army_of_the_dead" );
-    }
-    if ( pet_name == "apoc_ghoul" && dk()->find_action( "apocalypse" ) )
-    {
-      proxy_action = dk()->find_action( "apocalypse" );
-    }
     if ( pet_name == "ghoul" && dk()->find_action( "raise_dead" ) )
     {
       proxy_action = dk()->find_action( "raise_dead" );
@@ -1812,10 +1804,7 @@ struct death_knight_pet_t : public pet_t
 
   double composite_melee_speed() const override
   {
-    if ( use_delayed_pet_stat_updates )
-      return current_pet_stats.composite_melee_haste;
-    else
-      return owner->cache.attack_haste();
+    return current_pet_stats.composite_melee_haste;
   }
 
   death_knight_t* dk() const
@@ -2030,14 +2019,38 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 template <typename T>
 struct auto_attack_melee_t : public pet_melee_attack_t<T>
 {
-  auto_attack_melee_t( T* p, util::string_view name = "auto_attack" ) :
-    pet_melee_attack_t<T>( p, name )
+  action_t* proxy_action;
+  auto_attack_melee_t( T* p, util::string_view name = "main_hand" ) :
+    pet_melee_attack_t<T>( p, name ), proxy_action( nullptr )
   {
     this -> background = this -> repeating = true;
     this -> special = false;
     this -> weapon = &( p -> main_hand_weapon );
     this -> weapon_multiplier = 1.0;
     this -> base_execute_time = this -> weapon -> swing_time;
+
+    if ( p -> pet_name == "army_ghoul" && p -> dk()->find_action( "army_of_the_dead" ) )
+    {
+      proxy_action = p -> dk()->find_action( "army_of_the_dead" );
+    }
+    if ( p -> pet_name == "apoc_ghoul" && p -> dk()->find_action( "apocalypse" ) )
+    {
+      proxy_action = p -> dk()->find_action( "apocalypse" );
+    }
+    if ( ( p -> pet_name == "dancing_rune_weapon" || p -> pet_name == "everlasting_bond" ) && p -> dk()->find_action( "dancing_rune_weapon" ) )
+    {
+      proxy_action = p -> dk()->find_action( "dancing_rune_weapon" );
+    }
+
+    if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
+      {
+        auto proxy = proxy_action;
+        auto it    = range::find( proxy->child_action, this -> data().id(), &action_t::id );
+        if ( it != proxy->child_action.end() )
+          this -> stats = ( *it )->stats;
+        else
+          proxy->add_child( this );
+      }
   }
 
   void execute() override
@@ -2739,6 +2752,16 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       this -> weapon = &( p -> main_hand_weapon );
 
       this -> affected_by.blood_plague = this -> data().affected_by( p -> dk() -> spell.blood_plague -> effectN( 4 ) );
+
+      if( !p -> dk() -> options.individual_pet_reporting && p -> dk()->find_action( "dancing_rune_weapon" ) && this -> data().id() )
+      {
+        auto proxy = p -> dk()->find_action( "dancing_rune_weapon" );
+        auto it    = range::find( proxy->child_action, this -> data().id(), &action_t::id );
+        if ( it != proxy->child_action.end() )
+          this -> stats = ( *it )->stats;
+        else
+          proxy->add_child( this );
+      }
     }
 
     double composite_target_multiplier( player_t* target ) const override
