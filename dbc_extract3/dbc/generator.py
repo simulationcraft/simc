@@ -2015,7 +2015,7 @@ class SpellDataGenerator(DataGenerator):
           ( 220358, 3 ), # Cyclone Strikes info
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
-          ( 242387, 3 ), # Thunderfist Artifact trait buff
+          ( 393565, 3 ), # Thunderfist Artifact trait buff
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
           ( 290461, 3 ), # Reverse Harm Damage

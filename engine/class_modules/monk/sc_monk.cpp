@@ -7934,7 +7934,7 @@ namespace monk
     passives.keefers_skyreach_debuff = find_spell( 393047 );
     passives.mark_of_the_crane = find_spell( 228287 );
     passives.power_strikes_chi = find_spell( 121283 );
-    passives.thunderfist = find_spell( 242387 );
+    passives.thunderfist = find_spell( 242387 ); // TODO update to 393565 once spell dump
     passives.touch_of_karma_tick = find_spell( 124280 );
     passives.whirling_dragon_punch_tick = find_spell( 158221 );
 
