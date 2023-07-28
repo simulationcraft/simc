@@ -7931,7 +7931,7 @@ namespace monk
     passives.hidden_masters_forbidden_touch = find_spell( 213114 );
     passives.hit_combo = find_spell( 196741 );
     passives.improved_touch_of_death = find_spell( 322113 );
-    passives.keefers_skyreach_debuff = find_spell( 393048 );
+    passives.keefers_skyreach_debuff = find_spell( 393047 );
     passives.mark_of_the_crane = find_spell( 228287 );
     passives.power_strikes_chi = find_spell( 121283 );
     passives.thunderfist = find_spell( 242387 );
