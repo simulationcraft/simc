@@ -11126,7 +11126,7 @@ void druid_t::init_special_effects()
         }
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( action_t*, action_state_t* s ) override
       {
         moonless->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
           moonless->set_amount( to, from->result_amount );
