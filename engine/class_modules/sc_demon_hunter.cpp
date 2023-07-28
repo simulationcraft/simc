@@ -5126,8 +5126,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
       : demon_hunter_attack_t( name, p, s )
     {
       dual                = true;
-      aoe                 = -1;
-      reduced_aoe_targets = data().effectN( 2 ).base_value();
+      aoe                 = data().effectN( 2 ).base_value();
     }
 
     action_state_t* new_state() override
