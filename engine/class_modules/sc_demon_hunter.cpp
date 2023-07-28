@@ -1093,9 +1093,16 @@ struct soul_fragment_t
     if ( activation && consume_on_activation || velocity == 0 )
       return timespan_t::zero();
 
-    // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time
+    // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
     if ( activation )
-      return 1_s;
+    {
+      if ( dh->specialization() == DEMON_HUNTER_HAVOC )
+      {
+        return 1_s;
+      }
+      // 2023-07-27 -- Recent testing appears to show a roughly 0.85s activation time for Vengeance
+      return 850_ms;
+    }
 
     double distance = get_distance( dh );
     return timespan_t::from_seconds( distance / velocity );
