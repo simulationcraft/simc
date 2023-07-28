@@ -2951,7 +2951,10 @@ struct soul_reaper_t : public drw_action_t<melee_attack_t>
     drw_action_t<melee_attack_t>( p, "soul_reaper", p -> dk() -> talent.soul_reaper ),
     soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_execute", p ) )
   {
-    add_child( soul_reaper_execute );
+    if( dk() -> options.individual_pet_reporting )
+    {
+      add_child( soul_reaper_execute );
+    }
     hasted_ticks = false;
     dot_behavior = DOT_EXTEND;
   }
