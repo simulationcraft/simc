@@ -3544,7 +3544,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
-      reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 2 ).base_value();
+      reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 3 ).base_value();
     }
 
     action_state_t* new_state() override
