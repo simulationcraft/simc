@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50585 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50622 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -525,7 +525,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=2716)     : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.42787 | PvP Coefficient: 1.12000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(77)
-Hotfixed         : PvP Coefficient (1.05 -> 1.12)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
@@ -554,7 +553,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.71640 | PvP Coefficient: 1.18000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.12 -> 1.18)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[
 
 Pyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]
@@ -1337,7 +1335,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324006)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.35930 | PvP Coefficient: 4.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 4)
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -2344,7 +2341,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=120062)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.17445 | PvP Coefficient: 0.97000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.92 -> 0.97)
 Description      : Blasts the enemy for $s1 Fire damage. 
 
 |cFFFFFFFFFire:|r Castable while casting other spells. Always deals a critical strike.
@@ -2572,7 +2568,6 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
 Effects          :
 #1 (id=128479)   : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01880 | PvP Coefficient: 2.50000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 2.5)
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and nearby enemies within 10 yds. Limit 1 target. Deals reduced damage to secondary targets.
@@ -2601,7 +2596,6 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
 Effects          :
 #1 (id=128532)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01880 | PvP Coefficient: 2.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 2.5)
 Description      : $@spelldesc114923
 
 Name             : Rune of Power (id=116011) [Spell Family (3)] 
@@ -3302,7 +3296,6 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=212926)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.19600 | PvP Coefficient: 1.30000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 #2 (id=212927)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: none | Target: Self (1)
 #3 (id=818465)   : Dummy (3)
@@ -5201,7 +5194,6 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
 Effects          :
 #1 (id=324014)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16330 | PvP Coefficient: 4.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 4)
 #2 (id=324015)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc44457
@@ -5443,7 +5435,6 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344284)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70140 | PvP Coefficient: 2.50000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (2 -> 2.5)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Spell Family (3)] 
@@ -6123,7 +6114,6 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
 Effects          :
 #1 (id=372237)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16330 | PvP Coefficient: 4.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 4)
 #2 (id=372238)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc44457
@@ -6539,7 +6529,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=480807)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.85615 | PvP Coefficient: 1.22000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1.16 -> 1.22)
 Description      : $@spelldesc257541
 
 Name             : Haste (id=261582) [Passive] 
@@ -14474,7 +14463,6 @@ Effects          :
 Description      : Damage dealt to enemies affected by Radiant Spark's vulnerability echo to your current enemy target and ${$384685i-1} nearby enemies for $s1% of the damage dealt.
 
 Name             : Harmonic Echo (id=384685) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -16082,7 +16070,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
-Hotfixed         : PvP Coefficient (0.6 -> 0.5)
 Description      : $@spelldesc417491
 Tooltip          : The damage of your next Ray of Frost is increased by $w1%.
 

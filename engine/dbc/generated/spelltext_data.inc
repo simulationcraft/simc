@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.5.50585
-static const std::array<spelltext_data_t, 20121> __spelltext_data { {
+// Spell text, wow build 10.1.5.50622
+static const std::array<spelltext_data_t, 20123> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -8528,7 +8528,6 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   { 242322, "Open the container.", 0, 0 },
   { 242325, "Your healing effects have a chance to do an additional $242327s1 healing. This occurs more often while you are at low mana.", 0, 0 },
   { 242327, "$@spelldesc242325", 0, 0 },
-  { 242387, "$@spelldesc238131", "Melee attacks deal an additional $242390s1 Nature damage.", 0 },
   { 242390, "$@spelldesc238131", 0, 0 },
   { 242458, "While you remain stationary, gain $s2 Haste every $t1 sec stacking up to $u times. Lasts $d.", "Haste increased by $w2.", 0 },
   { 242459, "Your $?a137012[Wild Growth]?a137024[Essence Font]?a137031[Prayer of Healing]?a137032[Power Word: Radiance]?a137029[Light of Dawn]?a137039[Chain Heal][multi-target healing spell] has a chance to grant you Ocean's Embrace, healing your nearest injured ally within $242474A1 yds for $242474s1 every ${$242467t1}.2 sec for $242467d.|CFF808080$?!(a137012|a137024|a137031|a137032|a137029|a137039)[\r\n\r\nValid for healer specializations.][]|R", 0, 0 },
@@ -16823,6 +16822,7 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
+  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -18711,6 +18711,8 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   { 393516, "Activating Purifying Brew or Celestial Brew grants you $393515s1% dodge for $393515d.", 0, 0 },
   { 393518, "Create a piece of Eternal Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 393536, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Shadowlands Season 4.", 0, 0 },
+  { 393565, "$@spelldesc392985", "Melee attacks deal an additional $393566s1 Nature damage.", 0 },
+  { 393566, "$@spelldesc238131", 0, 0 },
   { 393568, "$@spelldesc369089", 0, 0 },
   { 393583, "Repair a weapon or piece of plate armor you have specialized in repairing.", 0, 0 },
   { 393611, "Increases the duration of Barkskin and Ironfur by ${$m1/1000}.1 sec.", 0, 0 },
@@ -20123,11 +20125,11 @@ static const std::array<spelltext_data_t, 20121> __spelltext_data { {
   { 421662, "Guarantees that the next Time Rift you complete will grant you a reward.", "The next time rift you complete is guaranteed to grant you a reward.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.5.50585
+// spelltext hotfix entries, wow build 10.1.5.50622
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.5.50585
+// Spell description variables, wow build 10.1.5.50622
 static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20526,9 +20528,7 @@ static const std::array<spelldesc_vars_data_t, 395> __spelldesc_vars_data { {
   {  414661, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.5.50585
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
-  {  271466,  0, "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*1.9*(1+$@versadmg)*$<benevolence>}", "$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$shield=${$SP*2.47*(1+$@versadmg)*$<benevolence>}" },
-  {  410643,  0, "$shield=${$SP*18*(1+$@versadmg)}", "$pvp=$?a134735[${0.7}][${1}]\r\n$shield=${$SP*18*(1+$@versadmg)*$<pvp>}" },
+// spelldesc_vars hotfix entries, wow build 10.1.5.50622
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
