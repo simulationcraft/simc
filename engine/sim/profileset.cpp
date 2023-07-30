@@ -273,22 +273,14 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
     // set and replace if so
     else
     {
-      // Note, replace the last occurrence of the option to ensure the profileset option
-      // will be set
-      auto end_it = options_copy->options.rend() - profileset_actor_start_index;
-      auto it = std::find_if( options_copy->options.rbegin() + ( options_copy->options.size() - profileset_actor_end_index ), end_it,
-        [&t]( const option_tuple_t& orig_t ) {
-          return orig_t.name == t.name;
-      } );
-
+      // Note, replace the last occurrence of the option to ensure the profileset option will be set
+      auto end_it = std::reverse_iterator( options_copy->options.begin() + profileset_actor_start_index );
+      auto start_it = std::reverse_iterator( options_copy->options.begin() + profileset_actor_end_index );
+      auto it = std::find_if( start_it, end_it, [&t]( const option_tuple_t& orig_t ) { return orig_t.name == t.name; } );
       if ( it != end_it )
-      {
         it->value = t.value;
-      }
       else
-      {
         filtered_opts.push_back( t );
-      }
     }
   }
 
