@@ -1562,12 +1562,12 @@ sim_t::sim_t()
     priority_iteration_dmg( 0 ),
     iteration_heal( 0 ),
     iteration_absorb( 0 ),
-    raid_dps(),
     total_dmg(),
     raid_hps(),
     total_heal(),
     total_absorb(),
     raid_aps(),
+    raid_dps( "Raid Damage Per Second", false ),
     simulation_length( "Simulation Length", false ),
     merge_time(),
     init_time(),
@@ -1624,6 +1624,9 @@ sim_t::sim_t()
     display_hotfixes( false ),
     disable_hotfixes( false ),
     display_bonus_ids( false ),
+    profileset_main_actor_index( 0 ),
+    profileset_report_player_index( 0 ),
+    profileset_multiactor_base_name( "Baseline" ),
     profileset_metric( { SCALE_METRIC_DPS } ),
     profileset_output_data(),
     profileset_enabled( false ),
@@ -2863,6 +2866,7 @@ void sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 2;
 
+  raid_dps.reserve( std::min( iterations, 10000 ) );
   simulation_length.reserve( std::min( iterations, 10000 ) );
 
   for ( const auto& player : player_list )
@@ -2935,6 +2939,8 @@ void sim_t::analyze()
 
   simulation_length.analyze();
   if ( simulation_length.mean() == 0 ) return;
+
+  raid_dps.analyze();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
