@@ -139,6 +139,7 @@ struct player_t : public actor_t
   // dynamic attributes - things which change during combat
   player_t*   target;
   bool        initialized;
+  bool        precombat_initialized;
   bool        potion_used;
 
   std::string talents_str, id_str, target_str;
@@ -980,6 +981,7 @@ public:
   virtual void reset();
   virtual void combat_begin();
   virtual void combat_end();
+  virtual void precombat_init();
   virtual void merge( player_t& other );
   virtual void datacollection_begin();
   virtual void datacollection_end();

@@ -1062,6 +1062,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     default_target( nullptr ),
     target( nullptr ),
     initialized( false ),
+    precombat_initialized( false ),
     potion_used( false ),
     region_str( s->default_region_str ),
     server_str( s->default_server_str ),
@@ -5298,16 +5299,23 @@ void player_t::sequence_add( const action_t* a, const player_t* target, timespan
   }
 }
 
-void player_t::combat_begin()
+void player_t::precombat_init()
 {
-  sim->print_debug( "Combat begins for {}.", *this );
-
+  sim->print_debug( "Precombat begins for {}.", *this );
   if ( !is_pet() && !is_add() )
   {
     arise();
   }
 
+  precombat_initialized = true;
+
   init_resources( true );
+}
+
+void player_t::combat_begin()
+{
+  if ( !precombat_initialized )
+    precombat_init();
 
   // Trigger registered pre-pull functions
   for ( const auto& f : precombat_begin_functions )
@@ -5352,6 +5360,8 @@ void player_t::combat_begin()
     }
   }
   first_cast = false;
+
+  sim->print_debug( "Combat begins for {}.", *this );
 
   if ( !precombat_action_list.empty() )
     enter_combat();
@@ -5931,6 +5941,7 @@ void player_t::reset()
 
   range::for_each( spawners, []( spawner::base_actor_spawner_t* obj ) { obj->reset(); } );
 
+  precombat_initialized = false;
   potion_used = false;
 
   item_cooldown -> reset( false );
