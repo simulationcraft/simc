@@ -1934,7 +1934,7 @@ void sim_t::combat_begin()
 
   // Initialise all actors before (pre)combat.
   for ( auto& target : target_list )
-    target->precombat_init();
+    target -> precombat_init();
 
   for ( auto& target : target_list )
     target -> combat_begin();
@@ -1969,13 +1969,13 @@ void sim_t::combat_begin()
     for ( size_t i = 0; i < player_list.size(); ++i ) // NOLINT(modernize-loop-convert)
     {
       player_t* p = player_list[ i ];
-      p->precombat_init();
+      p -> precombat_init();
     }
 
     for ( size_t i = 0; i < player_list.size(); ++i )  // NOLINT(modernize-loop-convert)
     {
       player_t* p = player_list[ i ];
-      p->combat_begin();
+      p -> combat_begin();
     }
   }
 

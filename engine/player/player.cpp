@@ -5301,13 +5301,13 @@ void player_t::sequence_add( const action_t* a, const player_t* target, timespan
 
 void player_t::precombat_init()
 {
+  precombat_initialized = true;
+
   sim->print_debug( "Precombat begins for {}.", *this );
   if ( !is_pet() && !is_add() )
   {
     arise();
   }
-
-  precombat_initialized = true;
 
   init_resources( true );
 }
