@@ -1929,6 +1929,10 @@ void sim_t::combat_begin()
   // Always call begin() to ensure various counters are initialized.
   datacollection_begin();
 
+  // Initialise all actors before (pre)combat.
+  for ( auto& target : target_list )
+    target->precombat_init();
+
   for ( auto& target : target_list )
     target -> combat_begin();
 
@@ -1945,16 +1949,27 @@ void sim_t::combat_begin()
 
   if ( single_actor_batch )
   {
+    player_no_pet_list[ current_index ] -> precombat_init();
     player_no_pet_list[ current_index ] -> combat_begin();
     for ( auto pet: player_no_pet_list[ current_index ] -> pet_list )
     {
+      // Pets do not need to be initialised individually first
+      pet -> precombat_init();
       pet -> combat_begin();
     }
   }
   else
   {
+
+    // Initialize all actors before (pre)combat.
     // Needs to be a index-based loop, as the player list may be extended during iteration.
     for ( size_t i = 0; i < player_list.size(); ++i ) // NOLINT(modernize-loop-convert)
+    {
+      player_t* p = player_list[ i ];
+      p->precombat_init();
+    }
+
+    for ( size_t i = 0; i < player_list.size(); ++i )  // NOLINT(modernize-loop-convert)
     {
       player_t* p = player_list[ i ];
       p->combat_begin();
