@@ -878,7 +878,7 @@ namespace monk_apl
     default_3t->add_action( "strike_of_the_windlord" );
     default_3t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads|cooldown.rising_sun_kick.remains>1)" );
     default_3t->add_action( "whirling_dragon_punch" );
-    default_3t->add_action( "chi_burst,if=buff.bloodlust.up&chi<5|" );
+    default_3t->add_action( "chi_burst,if=buff.bloodlust.up&chi<5" );
     default_3t->add_action( "chi_burst,if=chi<5&energy<50" );
     default_3t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3" );
     default_3t->add_action( "spinning_crane_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains<3&buff.chi_energy.stack>15" );
