@@ -12378,7 +12378,7 @@ void player_t::create_options()
   add_option( opt_map( "actions.", alist_map ) );
   add_option( opt_map( "apl_variable.", apl_variable_map ) );
   add_option( opt_string( "action_list", choose_action_list ) );
-  add_option( opt_bool( "sleeping", initial.sleeping ) );
+  add_option( opt_bool( "sleeping", base.sleeping ) );
   add_option( opt_bool( "quiet", quiet ) );
   add_option( opt_string( "save", report_information.save_str ) );
   add_option( opt_string( "save_gear", report_information.save_gear_str ) );
