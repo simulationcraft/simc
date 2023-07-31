@@ -109,7 +109,7 @@ struct pet_action_base_t : public BASE
     {
       o()->trigger_empowered_tiger_lightning( s );
 
-      if ( o()->find_target_data( s->target )->debuff.bonedust_brew->check() )
+      if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() )
         o()->bonedust_brew_assessor( s );
     }
   }
@@ -117,12 +117,12 @@ struct pet_action_base_t : public BASE
   void tick( dot_t *dot ) override
   {
     super_t::tick( dot );
-
+    
     if ( !super_t::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
     {
       o()->trigger_empowered_tiger_lightning( dot->state );
 
-      if ( o()->find_target_data( dot->state->target )->debuff.bonedust_brew->check() )
+      if ( o()->get_target_data( dot->state->target )->debuff.bonedust_brew->up() )
         o()->bonedust_brew_assessor( dot->state );
     }
   }
