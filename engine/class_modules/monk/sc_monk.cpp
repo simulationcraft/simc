@@ -10085,7 +10085,8 @@ namespace monk
     // Blacklisted abilities
     if ( s->action->id == 124280    // Touch of Karma
       || s->action->id == 325217    // Bonedust Brew
-      || s->action->id == 389541 )  // Claw of the White Tiger
+      || s->action->id == 389541    // Claw of the White Tiger
+      || s->action->id == 410139 )  // Shadowflame Nova
       return;
 
     // Proc cannot proc from itself
