@@ -632,7 +632,7 @@ namespace monk
 
         if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
         {
-          p()->trigger_empowered_tiger_lightning( s, true );
+          p()->trigger_empowered_tiger_lightning( s );
 
           if ( get_td( s->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( s );
@@ -647,6 +647,8 @@ namespace monk
 
         if ( !ab::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
         {
+          p()->trigger_empowered_tiger_lightning( dot->state );
+
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
         }
@@ -1962,7 +1964,7 @@ namespace monk
             p()->resource_gain( RESOURCE_MANA, ( p()->resources.max[RESOURCE_MANA] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
             p()->gain.spirit_of_the_crane );
 
-    // The initial hit along with each individual TotM hits has a chance to reset the cooldown
+          // The initial hit along with each individual TotM hits has a chance to reset the cooldown
           auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
 
           if ( p()->specialization() == MONK_MISTWEAVER )
@@ -3467,6 +3469,7 @@ namespace monk
         {
           may_miss = may_crit = false;
           dual = true;
+          proc = true;
           ap_type = attack_power_type::NO_WEAPON;
         }
 
@@ -10071,53 +10074,40 @@ namespace monk
     return amount;
   }
 
-  void monk_t::trigger_empowered_tiger_lightning( action_state_t *s, bool trigger_invoke_xuen )
+  void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   {
-    if ( specialization() != MONK_WINDWALKER )
+    if ( specialization() != MONK_WINDWALKER || !talent.windwalker.empowered_tiger_lightning->ok() )
       return;
 
-    if ( talent.windwalker.empowered_tiger_lightning->ok() )
+    if ( s->result_amount <= 0 )
+      return;
+    
+    // Blacklisted abilities
+    if ( s->action->id == 124280    // Touch of Karma
+      || s->action->id == 325217    // Bonedust Brew
+      || s->action->id == 389541 )  // Claw of the White Tiger
+      return;
+
+    // Proc cannot proc from itself
+    if ( s->action->id == passives.empowered_tiger_lightning->id() )
+      return;
+
+    auto td = get_target_data( s->target );
+
+    if ( buff.invoke_xuen->check() )
     {
-      if ( !s->action->harmful )
-        return;
+      if ( td->debuff.empowered_tiger_lightning->check() )
+        td->debuff.empowered_tiger_lightning->current_value += s->result_amount;
+      else
+        td->debuff.empowered_tiger_lightning->trigger( -1, s->result_amount, -1, buff.invoke_xuen->remains() );
+    }
 
-      // Touch of Karma (id = 124280) does not contribute to Empowered Tiger Lightning
-      // Bonedust Brew (id = 325217) does not contribute to Empowered Tiger Lightning
-      if ( s->result_amount <= 0 || s->action->id == 124280 || s->action->id == 325217 )
-        return;
-
-      // Make sure Xuen is up and the action is not the Empowered Tiger Lightning itself (335913 & 360829)
-      if ( s->action->id == 335913 || s->action->id == 360829 )
-        return;
-
-      if ( buff.invoke_xuen->check() && trigger_invoke_xuen )
-      {
-        auto td = get_target_data( s->target );
-
-        if ( td->debuff.empowered_tiger_lightning->check() )
-        {
-          td->debuff.empowered_tiger_lightning->current_value += s->result_amount;
-        }
-        else
-        {
-          td->debuff.empowered_tiger_lightning->trigger( -1, s->result_amount, -1, buff.invoke_xuen->remains() );
-        }
-      }
-
-      if ( buff.fury_of_xuen_haste->check() )
-      {
-        auto td = get_target_data( s->target );
-
-        if ( td->debuff.fury_of_xuen_empowered_tiger_lightning->check() )
-        {
-          td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value += s->result_amount;
-        }
-        else
-        {
-          td->debuff.fury_of_xuen_empowered_tiger_lightning->trigger( -1, s->result_amount, -1,
-            buff.fury_of_xuen_haste->remains() );
-        }
-      }
+    if ( buff.fury_of_xuen_haste->check() )
+    {
+      if ( td->debuff.fury_of_xuen_empowered_tiger_lightning->check() )
+        td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value += s->result_amount;
+      else
+        td->debuff.fury_of_xuen_empowered_tiger_lightning->trigger( -1, s->result_amount, -1, buff.fury_of_xuen_haste->remains() );
     }
   }
 

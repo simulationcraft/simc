@@ -39,15 +39,6 @@ struct monk_pet_t : public pet_t
   void init_assessors() override
   {
     base_t::init_assessors();
-
-    auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ) {
-      auto td = o()->find_target_data( s->target );
-      if ( td && td->debuff.bonedust_brew->check() )
-        o()->bonedust_brew_assessor( s );
-      return assessor::CONTINUE;
-    };
-
-    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
   }
 };
 
@@ -108,6 +99,32 @@ struct pet_action_base_t : public BASE
     this->target = this->player->target;
 
     super_t::execute();
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    super_t::impact( s );
+
+    if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
+    {
+      o()->trigger_empowered_tiger_lightning( s );
+
+      if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() )
+        o()->bonedust_brew_assessor( s );
+    }
+  }
+
+  void tick( dot_t *dot ) override
+  {
+    super_t::tick( dot );
+    
+    if ( !super_t::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
+    {
+      o()->trigger_empowered_tiger_lightning( dot->state );
+
+      if ( o()->get_target_data( dot->state->target )->debuff.bonedust_brew->up() )
+        o()->bonedust_brew_assessor( dot->state );
+    }
   }
 };
 
@@ -514,10 +531,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
     void impact( action_state_t* s ) override
     {
-      auto owner = this->o();
-
-      owner->trigger_empowered_tiger_lightning( s, true );
-
       super_t::impact( s );
     }
 
@@ -1335,13 +1348,6 @@ private:
     melee_t( util::string_view n, xuen_pet_t* player, weapon_t* weapon ) : pet_melee_t( n, player, weapon )
     {
     }
-
-    void impact( action_state_t* s ) override
-    {
-      o()->trigger_empowered_tiger_lightning( s, true );
-
-      pet_melee_attack_t::impact( s );
-    }
   };
 
   struct crackling_tiger_lightning_tick_t : public pet_spell_t
@@ -1351,14 +1357,6 @@ private:
     {
       background   = true;
       merge_report = false;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      auto owner = o();
-      owner->trigger_empowered_tiger_lightning( s, true );
-
-      pet_spell_t::impact( s );
     }
   };
 
@@ -1787,14 +1785,6 @@ private:
         double last_tick_factor(const dot_t*, timespan_t, timespan_t) const override
         {
             return 0.0;
-        }
-
-        void impact( action_state_t* s ) override
-        {
-          auto owner = o();
-          owner->trigger_empowered_tiger_lightning( s, true );
-
-          pet_spell_t::impact( s );
         }
     };
 
