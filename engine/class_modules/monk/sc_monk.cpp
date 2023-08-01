@@ -4733,7 +4733,6 @@ namespace monk
         {
           background = true;
           may_crit = false;
-          may_miss = true;
         }
 
         // For some reason this is a yellow spell that is not following the normal hit rules
