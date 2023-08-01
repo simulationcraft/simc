@@ -941,6 +941,11 @@
       { "data_type": "S", "field": "name" }
     ]
   },
+  "ManifestInterfaceItemIcon": {
+    "fields": [
+      { "data_type": "i", "field": "id" }
+    ]
+  },
   "Map": {
     "fields": [
       { "data_type": "S", "field": "directory" },
