@@ -4735,14 +4735,6 @@ namespace monk
           may_crit = false;
         }
 
-        // For some reason this is a yellow spell that is not following the normal hit rules
-        double miss_chance( double hit, player_t *t ) const override
-        {
-          double miss = monk_spell_t::miss_chance( hit, t );
-          miss += 0.03 + ( 0.015 * ( t->level() - p()->level() ) );
-          return miss;
-        }
-
         bool ready() override
         {
           return p()->talent.windwalker.empowered_tiger_lightning->ok();
