@@ -4733,15 +4733,6 @@ namespace monk
         {
           background = true;
           may_crit = false;
-          may_miss = true;
-        }
-
-        // For some reason this is a yellow spell that is not following the normal hit rules
-        double miss_chance( double hit, player_t *t ) const override
-        {
-          double miss = monk_spell_t::miss_chance( hit, t );
-          miss += 0.03 + ( 0.015 * ( t->level() - p()->level() ) );
-          return miss;
         }
 
         bool ready() override
@@ -10085,7 +10076,8 @@ namespace monk
     // Blacklisted abilities
     if ( s->action->id == 124280    // Touch of Karma
       || s->action->id == 325217    // Bonedust Brew
-      || s->action->id == 389541 )  // Claw of the White Tiger
+      || s->action->id == 389541    // Claw of the White Tiger
+      || s->action->id == 410139 )  // Shadowflame Nova
       return;
 
     // Proc cannot proc from itself

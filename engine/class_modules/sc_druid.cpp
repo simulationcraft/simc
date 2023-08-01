@@ -2021,7 +2021,7 @@ public:
                              std::function<void( const action_state_t*, action_state_t* )> post = nullptr )
   {
     auto state = this->get_state();
-    state->target = s->target;
+    this->target = state->target = s->target;
 
     if ( pre )
       pre( s, state );
@@ -5958,7 +5958,7 @@ struct adaptive_swarm_t : public druid_spell_t
     {
       auto new_state = state( BASE::get_state() );
 
-      new_state->target = t;
+      BASE::target = new_state->target = t;
       new_state->range = new_swarm_range( d->state, t );
       new_state->stacks = d->current_stack() - 1;
       new_state->jump = true;
