@@ -6653,6 +6653,12 @@ namespace monk
                 td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value = 0;
                 if ( value > 0 )
                 {
+
+                  if ( b->tick_time_remains() == timespan_t::zero() )
+                  {
+                    // TODO: BUG: Last tick of Fury of Xuen deals less damage than the first           
+                  }
+
                   p->active_actions.fury_of_xuen_empowered_tiger_lightning->set_target( target );
                   p->active_actions.fury_of_xuen_empowered_tiger_lightning->base_dd_min =
                     value * empowered_tiger_lightning_multiplier;
