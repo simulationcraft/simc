@@ -4748,15 +4748,6 @@ namespace monk
         {
           background = true;
           may_crit = false;
-          may_miss = true;
-        }
-
-        // For some reason this is a yellow spell that is not following the normal hit rules
-        double miss_chance( double hit, player_t *t ) const override
-        {
-          double miss = monk_spell_t::miss_chance( hit, t );
-          miss += 0.03 + ( 0.015 * ( t->level() - p()->level() ) );
-          return miss;
         }
 
         bool ready() override
@@ -6662,6 +6653,12 @@ namespace monk
                 td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value = 0;
                 if ( value > 0 )
                 {
+
+                  if ( b->tick_time_remains() == timespan_t::zero() )
+                  {
+                    // TODO: BUG: Last tick of Fury of Xuen deals less damage than the first           
+                  }
+
                   p->active_actions.fury_of_xuen_empowered_tiger_lightning->set_target( target );
                   p->active_actions.fury_of_xuen_empowered_tiger_lightning->base_dd_min =
                     value * empowered_tiger_lightning_multiplier;
@@ -7928,7 +7925,7 @@ namespace monk
     passives.keefers_skyreach_debuff = find_spell( 393047 );
     passives.mark_of_the_crane = find_spell( 228287 );
     passives.power_strikes_chi = find_spell( 121283 );
-    passives.thunderfist = find_spell( 393565 ); 
+    passives.thunderfist = find_spell( 393565 );
     passives.touch_of_karma_tick = find_spell( 124280 );
     passives.whirling_dragon_punch_tick = find_spell( 158221 );
 
@@ -10072,7 +10069,7 @@ namespace monk
 
     if ( s->result_amount <= 0 )
       return;
-    
+
     // Blacklisted abilities
     if ( s->action->id == 124280    // Touch of Karma
       || s->action->id == 325217    // Bonedust Brew
@@ -10093,6 +10090,10 @@ namespace monk
       else
         td->debuff.empowered_tiger_lightning->trigger( -1, s->result_amount, -1, buff.invoke_xuen->remains() );
     }
+
+    // Bug: Resonant Fists does not contribute to Fury of Xuen's ETL 
+    if ( bugs && s->action->id == 391400 )
+      return;
 
     if ( buff.fury_of_xuen_haste->check() )
     {
@@ -10306,6 +10307,8 @@ namespace monk
       };
 
       // Add bugs / issues with sims here:
+      ReportIssue( "Resonant Fists does not contribute to Empowered Tiger Lightning from Fury of Xuen", "2023-08-01", true );
+      ReportIssue( "Fury of Xuen's second tick of Empowered Tiger Lightning does less damage than the first", "2023-08-01", false );
       ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
       ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
