@@ -71,9 +71,41 @@ enum imbue_e
 
 enum rotation_type_e
 {
+  ROTATION_INVALID,
   ROTATION_STANDARD,
-  ROTATION_SIMPLE
+  ROTATION_SIMPLE,
+  ROTATION_FUNNEL
 };
+
+static std::vector<std::pair<util::string_view, rotation_type_e>> __rotation_options = {
+  { "simple",   ROTATION_SIMPLE   },
+  { "standard", ROTATION_STANDARD },
+  { "funnel",   ROTATION_FUNNEL   },
+};
+
+static rotation_type_e parse_rotation( util::string_view rotation_str )
+{
+  auto it = range::find_if( __rotation_options, [ rotation_str ]( const auto& entry ) {
+    return util::str_compare_ci( entry.first, rotation_str );
+  } );
+
+  if ( it != __rotation_options.end() )
+  {
+    return it->second;
+  }
+
+  return ROTATION_INVALID;
+}
+
+static std::string rotation_options()
+{
+  std::vector<util::string_view> opts;
+  range::for_each( __rotation_options, [ &opts ]( const auto& entry ) {
+    opts.emplace_back( entry.first );
+  } );
+
+  return util::string_join( opts, ", " );
+}
 
 /**
   Check_distance_targeting is only called when distance_targeting_enabled is true. Otherwise,
@@ -8685,6 +8717,18 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     }
   }
 
+  if ( util::str_compare_ci( splits[ 0 ], "rotation" ) )
+  {
+    auto rotation_type = parse_rotation( splits[ 1 ] );
+    if ( rotation_type == ROTATION_INVALID )
+    {
+      throw std::invalid_argument( fmt::format( "Invalid rotation type {}, available values: {}",
+                                               splits[ 1 ], rotation_options() ) );
+    }
+
+    return expr_t::create_constant( name, rotation_type == options.rotation );
+  }
+
   return player_t::create_expression( name );
 }
 
@@ -8739,14 +8783,14 @@ void shaman_t::create_options()
 {
   player_t::create_options();
   add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
-  // option allows Elemental Shamans to switch to a different APL
+  // option allows Shamans to switch to a different APL
   add_option( opt_func( "rotation", [ this ]( sim_t*, util::string_view, util::string_view val ) {
-    if ( util::str_compare_ci( val, "standard" ) )
-      options.rotation = ROTATION_STANDARD;
-    else if ( util::str_compare_ci( val, "simple" ) )
-      options.rotation = ROTATION_SIMPLE;
-    else
-      return false;
+    options.rotation = parse_rotation( val );
+    if ( options.rotation == ROTATION_INVALID )
+    {
+      throw std::invalid_argument( fmt::format( "Available options: {}.", rotation_options() ) );
+    }
+
     return true;
   } ) );
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
