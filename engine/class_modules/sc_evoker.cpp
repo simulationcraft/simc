@@ -4532,6 +4532,44 @@ void evoker_t::init_finished()
         }
       }
     }
+    else if ( p->type == MAGE )
+    {
+      if ( p->specialization() == MAGE_FIRE )
+      {
+        allied_major_cds[ p ] = buff_t::find( p, "combustion" );
+      }
+      else if ( p->specialization() == MAGE_FROST )
+      {
+        if ( ST( p, "Icy Veins" ) )
+          allied_major_cds[ p ] = buff_t::find( p, "icy_veins" );
+      }
+      else if ( p->specialization() == MAGE_ARCANE )
+      {
+        if ( ST( p, "Arcane Surge" ) )
+          allied_major_cds[ p ] = buff_t::find( p, "arcane_surge" );
+      }
+    }
+    else if ( p->type == HUNTER )
+    {
+      if ( p->specialization() == HUNTER_MARKSMANSHIP )
+      {
+        if ( ST( p, "Trueshot" ) )
+          allied_major_cds[ p ] = buff_t::find( p, "trueshot" );
+      }
+      else if ( p->specialization() == HUNTER_SURVIVAL )
+      {
+        if ( ST( p, "Coordinated Assault" ) )
+          allied_major_cds[ p ] = buff_t::find( p, "coordinated_assault" );
+      }
+    }
+    else if (p->type == PALADIN)
+    {
+      if ( CT( p, "Avenging Wrath" ) )
+      {
+        // TODO: Handle sentinel and other special ones
+        allied_major_cds[ p ] = buff_t::find( p, "avenging_wrath" );
+      }
+    }
   }
 
   if ( sim->player_no_pet_list.size() <= 5 )
