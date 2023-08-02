@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50585 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50622 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -16314,7 +16314,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1049820)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
-Description      : @$spelldesc383314
+Description      : $@spelldesc383314
 
 Name             : Lightforged Blessing (id=403460) [Spell Family (10)] 
 Class            : Paladin
