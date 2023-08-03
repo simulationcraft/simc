@@ -1198,6 +1198,27 @@ struct soul_fragment_t
       dh->cooldown.demon_spikes->adjust( -duration );
     }
 
+    if ( dh->talent.vengeance.soul_furnace->ok() )
+    {
+      dh->buff.soul_furnace_stack->trigger();
+      if ( dh->buff.soul_furnace_stack->at_max_stacks() )
+      {
+        dh->buff.soul_furnace_stack->expire();
+        dh->buff.soul_furnace_damage_amp->trigger();
+      }
+    }
+    if ( dh->set_bonuses.t30_vengeance_4pc->ok())
+    {
+      dh->set_bonuses.t30_vengeance_4pc_soul_fragments_tracker += 1;
+      if ( dh->set_bonuses.t30_vengeance_4pc_soul_fragments_tracker >=
+           dh->set_bonuses.t30_vengeance_4pc->effectN( 1 ).base_value() )
+      {
+        dh->buff.t30_vengeance_4pc->trigger();
+        dh->set_bonuses.t30_vengeance_4pc_soul_fragments_tracker -=
+            dh->set_bonuses.t30_vengeance_4pc->effectN( 1 ).base_value();
+      }
+    }
+
     if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
       dh->buff.empowered_demon_soul->trigger();
@@ -7763,26 +7784,6 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
   {
     it->consume( heal );
     souls_consumed++;
-    if ( talent.vengeance.soul_furnace->ok() )
-    {
-      buff.soul_furnace_stack->trigger();
-      if ( buff.soul_furnace_stack->at_max_stacks() )
-      {
-        buff.soul_furnace_stack->expire();
-        buff.soul_furnace_damage_amp->trigger();
-      }
-    }
-    if ( set_bonuses.t30_vengeance_4pc->ok())
-    {
-      set_bonuses.t30_vengeance_4pc_soul_fragments_tracker += 1;
-      if ( set_bonuses.t30_vengeance_4pc_soul_fragments_tracker >=
-           set_bonuses.t30_vengeance_4pc->effectN( 1 ).base_value() )
-      {
-        buff.t30_vengeance_4pc->trigger();
-        set_bonuses.t30_vengeance_4pc_soul_fragments_tracker -=
-            set_bonuses.t30_vengeance_4pc->effectN( 1 ).base_value();
-      }
-    }
     if ( souls_consumed >= max )
       break;
   }
