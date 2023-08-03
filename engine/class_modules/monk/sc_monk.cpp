@@ -10390,8 +10390,9 @@ namespace monk
       };
 
       // Add bugs / issues with sims here:
-      ReportIssue( "Resonant Fists does not contribute to Empowered Tiger Lightning from Fury of Xuen", "2023-08-01", true );
-      ReportIssue( "Fury of Xuen's second tick of Empowered Tiger Lightning does less damage than the first", "2023-08-01", false );
+      ReportIssue( "The spells that contribute to ETL change based on which buff(s) are up", "2023-08-01", true );
+      ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
+      ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
       ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
       ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
