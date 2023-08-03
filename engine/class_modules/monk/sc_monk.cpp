@@ -10153,7 +10153,7 @@ namespace monk
     // Fury of Xuen is up
     if ( mode > 1 )
     {
-      double fox_contribution = 0;
+      double fox_contribution = s->result_amount;
 
       if ( bugs )
       {
@@ -10169,8 +10169,6 @@ namespace monk
           }
         }
       }
-      else
-        fox_contribution = s->result_amount;
 
       amount += fox_contribution;
     }
