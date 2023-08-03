@@ -11679,10 +11679,13 @@ double druid_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
 
-  if ( buff.cat_form->up() )
+  if ( buff.cat_form->check() )
     ms += spec.cat_form_speed->effectN( 1 ).percent();
 
   ms += talent.feline_swiftness->effectN( 1 ).percent();
+
+  if ( race == RACE_NIGHT_ELF && buff.prowl->check() )
+    ms += 0.05;  // elusive racial, TODO: use spell data
 
   return ms;
 }
