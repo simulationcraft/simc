@@ -1791,6 +1791,19 @@ stat_e util::parse_stat_type( util::string_view name )
   return STAT_NONE;
 }
 
+// scale_metric_is_raid =======================================================
+bool util::scale_metric_is_raid( scale_metric_e sm )
+{
+  switch ( sm )
+  {
+    case SCALE_METRIC_TIME:
+    case SCALE_METRIC_RAID_DPS:
+      return true;
+    default:
+      return false;
+  }
+}
+
 // scale_metric_type_string ===================================================
 
 const char* util::scale_metric_type_string( scale_metric_e sm )
@@ -1811,6 +1824,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
     case SCALE_METRIC_DEATHS:    return "Deaths";
     case SCALE_METRIC_TIME:      return "Fight Length";
+    case SCALE_METRIC_RAID_DPS:  return "Raid Damage per Second";
     default:                     return "Unknown";
   }
 }
@@ -1835,6 +1849,7 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
     case SCALE_METRIC_TIME:      return "time";
+    case SCALE_METRIC_RAID_DPS:  return "raid_dps";
     default:                     return "unknown";
   }
 }

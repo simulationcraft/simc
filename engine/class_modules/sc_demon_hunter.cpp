@@ -1093,9 +1093,16 @@ struct soul_fragment_t
     if ( activation && consume_on_activation || velocity == 0 )
       return timespan_t::zero();
 
-    // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time
+    // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
     if ( activation )
-      return 1_s;
+    {
+      if ( dh->specialization() == DEMON_HUNTER_HAVOC )
+      {
+        return 1_s;
+      }
+      // 2023-07-27 -- Recent testing appears to show a roughly 0.85s activation time for Vengeance
+      return 850_ms;
+    }
 
     double distance = get_distance( dh );
     return timespan_t::from_seconds( distance / velocity );
@@ -2862,6 +2869,8 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     sigil = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage", ground_aoe_duration );
     sigil->stats = stats;
 
+    set_target( p ); // Can be self-cast for resources without a hostile target
+
     if ( p->spell.sigil_of_flame_fury->ok() )
     {
       energize_type = action_energize::ON_CAST;
@@ -3109,8 +3118,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     may_miss = false;
     dot_duration = timespan_t::zero();
+    set_target( p ); // Does not require a hostile target
 
-    apply_affecting_aura(p->spec.immolation_aura_cdr);
+    apply_affecting_aura( p->spec.immolation_aura_cdr );
 
     if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
     {
@@ -3534,7 +3544,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
-      reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 2 ).base_value();
+      reduced_aoe_targets = p->talent.vengeance.spirit_bomb->effectN( 3 ).base_value();
     }
 
     action_state_t* new_state() override
@@ -5116,8 +5126,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
       : demon_hunter_attack_t( name, p, s )
     {
       dual                = true;
-      aoe                 = -1;
-      reduced_aoe_targets = data().effectN( 2 ).base_value();
+      aoe                 = data().effectN( 2 ).base_value();
     }
 
     action_state_t* new_state() override

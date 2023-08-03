@@ -467,7 +467,7 @@ private:
   simulation_mode                        m_mode;
   profileset_vector_t                    m_profilesets;
   std::unique_ptr<sim_control_t>         m_original;
-  int64_t                                m_insert_index;
+  std::vector<size_t>                    m_actor_indices;
   size_t                                 m_work_index;
   std::mutex                             m_mutex;
   std::unique_lock<std::mutex>           m_control_lock;
@@ -491,8 +491,6 @@ private:
   chrono::wall_clock::duration           m_total_elapsed;
 #endif
 
-  bool validate( sim_t* sim );
-
   int max_name_length() const;
 
   void output_progressbar( const sim_t* ) const;
@@ -504,7 +502,7 @@ private:
   void cleanup_work();
   void finalize_work();
 
-  sim_control_t* create_sim_options( const sim_control_t*, const std::vector<std::string>& opts );
+  sim_control_t* create_sim_options( const sim_control_t*, const std::vector<std::string>& opts, unsigned main_actor_index );
 public:
   profilesets_t();
 

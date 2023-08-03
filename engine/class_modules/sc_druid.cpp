@@ -2021,7 +2021,7 @@ public:
                              std::function<void( const action_state_t*, action_state_t* )> post = nullptr )
   {
     auto state = this->get_state();
-    state->target = s->target;
+    this->target = state->target = s->target;
 
     if ( pre )
       pre( s, state );
@@ -2034,14 +2034,9 @@ public:
     this->schedule_execute( state );
   }
 
+  void init() override;
   void schedule_execute( action_state_t* s = nullptr ) override;
   void execute() override;
-  void impact( action_state_t* s ) override;
-
-  virtual bool can_proc_moonless_night() const
-  {
-    return ab::special && !ab::background && !ab::dual && !ab::proc && ( ab::aoe == 0 || ab::aoe == 1 );
-  }
 
   void apply_buff_effects()
   {
@@ -4826,11 +4821,6 @@ struct raze_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trig
     reduced_aoe_targets = 5.0;  // PTR not in spell data
   }
 
-  bool can_proc_moonless_night() const override
-  {
-    return true;
-  }
-
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
@@ -5845,6 +5835,15 @@ struct overgrowth_t : public druid_heal_t
 }  // end namespace heals
 
 template <class Base>
+void druid_action_t<Base>::init()
+{
+  ab::init();
+
+  if ( !ab::harmful && !dynamic_cast<heals::druid_heal_t*>( this ) )
+    ab::target = ab::player;
+}
+
+template <class Base>
 void druid_action_t<Base>::schedule_execute( action_state_t* s )
 {
   check_autoshift();
@@ -5861,22 +5860,6 @@ void druid_action_t<Base>::execute()
   {
     p()->buff.prowl->expire();
     p()->buffs.shadowmeld->expire();
-  }
-}
-
-template <class Base>
-void druid_action_t<Base>::impact( action_state_t* s )
-{
-  ab::impact( s );
-
-  if ( p()->active.moonless_night && s->result_amount > 0 && can_proc_moonless_night() &&
-       td( s->target )->dots.moonfire->is_ticking() )
-  {
-    auto moonless = debug_cast<druid_residual_action_t<bear_attacks::bear_attack_t>*>( p()->active.moonless_night );
-
-    moonless->snapshot_and_execute( s, false, [ moonless ]( const action_state_t* from, action_state_t* to ) {
-      moonless->set_amount( to, from->result_amount );
-    } );
   }
 }
 
@@ -5975,7 +5958,7 @@ struct adaptive_swarm_t : public druid_spell_t
     {
       auto new_state = state( BASE::get_state() );
 
-      new_state->target = t;
+      BASE::target = new_state->target = t;
       new_state->range = new_swarm_range( d->state, t );
       new_state->stacks = d->current_stack() - 1;
       new_state->jump = true;
@@ -11102,7 +11085,7 @@ void druid_t::init_special_effects()
       void trigger( action_t* a, action_state_t* s ) override
       {
         if ( a->id != p()->spec.moonfire_dmg->id() && a->id != p()->spec.moonfire->id() )
-          dbc_proc_callback_t::trigger( a, s );
+          druid_cb_t::trigger( a, s );
       }
 
       void execute( action_t*, action_state_t* s ) override
@@ -11119,6 +11102,46 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     new galactic_guardian_cb_t( this, *driver );
+  }
+
+  if ( talent.moonless_night.ok() )
+  {
+    struct moonless_night_cb_t : public druid_cb_t
+    {
+      bear_attacks::moonless_night_t* moonless;
+
+      moonless_night_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e )
+      {
+        moonless = debug_cast<bear_attacks::moonless_night_t*>( p->active.moonless_night );
+      }
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        // raze (400254) triggers moonless night despite being an aoe spell
+        // moonfire damage (164812) does not trigger
+        if ( s->result_amount > 0 && ( a->aoe == 0 || a->aoe == 1 || a->id == 400254 ) && a->id != 164812 &&
+             p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
+        {
+          druid_cb_t::trigger( a, s );
+        }
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        moonless->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
+          moonless->set_amount( to, from->result_amount );
+        } );
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = talent.moonless_night->name_cstr();
+    driver->spell_id = talent.moonless_night->id();
+    driver->proc_flags2_ = PF2_ALL_HIT;
+    driver->set_can_only_proc_from_class_abilites( true );
+    special_effects.push_back( driver );
+
+    new moonless_night_cb_t( this, *driver );
   }
 
   if ( sets->has_set_bonus( DRUID_GUARDIAN, T30, B2 ) )
@@ -11656,10 +11679,13 @@ double druid_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
 
-  if ( buff.cat_form->up() )
+  if ( buff.cat_form->check() )
     ms += spec.cat_form_speed->effectN( 1 ).percent();
 
   ms += talent.feline_swiftness->effectN( 1 ).percent();
+
+  if ( race == RACE_NIGHT_ELF && buff.prowl->check() )
+    ms += 0.05;  // elusive racial, TODO: use spell data
 
   return ms;
 }

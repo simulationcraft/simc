@@ -29,6 +29,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/chi_burst,if=talent.chi_burst.enabled
 actions.precombat+=/chi_wave,if=talent.chi_wave.enabled
+actions.precombat+=/summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -38,14 +39,11 @@ actions+=/chi_torpedo,if=movement.distance>5
 actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/potion
 # Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks.
-actions+=/invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20
+actions+=/invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20&talent.weapons_of_order.enabled
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks.
+actions+=/invoke_external_buff,name=power_infusion,if=!talent.weapons_of_order.enabled
 actions+=/call_action_list,name=item_actions
 actions+=/call_action_list,name=race_actions
-actions+=/invoke_niuzao_the_black_ox,if=debuff.weapons_of_order_debuff.stack>3
-actions+=/invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled
-actions+=/keg_smash,if=time<5&talent.weapons_of_order.enabled
-actions+=/weapons_of_order,if=(talent.weapons_of_order.enabled)
-actions+=/purifying_brew,if=(!buff.blackout_combo.up)
 actions+=/call_action_list,name=rotation_pta,if=talent.press_the_advantage.enabled
 actions+=/call_action_list,name=rotation_boc,if=!talent.press_the_advantage.enabled
 
@@ -61,10 +59,16 @@ actions.race_actions+=/ancestral_call
 actions.race_actions+=/bag_of_tricks
 
 actions.rotation_boc=blackout_kick
+actions.rotation_boc+=/invoke_niuzao_the_black_ox,if=debuff.weapons_of_order_debuff.stack>3
+actions.rotation_boc+=/invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled
+actions.rotation_boc+=/weapons_of_order,if=(talent.weapons_of_order.enabled)
+actions.rotation_boc+=/keg_smash,if=time-action.weapons_of_order.last_used<2&talent.weapons_of_order.enabled
+actions.rotation_boc+=/purifying_brew,if=(!buff.blackout_combo.up)
 actions.rotation_boc+=/rising_sun_kick
-actions.rotation_boc+=/black_ox_brew,if=energy.deficit>=50
+actions.rotation_boc+=/keg_smash,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.remains<=gcd*2
+actions.rotation_boc+=/black_ox_brew,if=energy+energy.regen<=40
 actions.rotation_boc+=/tiger_palm,if=buff.blackout_combo.up&active_enemies=1
-actions.rotation_boc+=/breath_of_fire,if=buff.charred_passions.down
+actions.rotation_boc+=/breath_of_fire,if=buff.charred_passions.remains<cooldown.blackout_kick.remains
 actions.rotation_boc+=/keg_smash,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.stack<=3
 actions.rotation_boc+=/summon_white_tiger_statue,if=debuff.weapons_of_order_debuff.stack>3
 actions.rotation_boc+=/summon_white_tiger_statue,if=!talent.weapons_of_order.enabled
@@ -81,9 +85,13 @@ actions.rotation_boc+=/expel_harm
 actions.rotation_boc+=/chi_wave,if=talent.chi_wave.enabled
 actions.rotation_boc+=/chi_burst,if=talent.chi_burst.enabled
 
-actions.rotation_pta=rising_sun_kick,if=(buff.press_the_advantage.stack<6|buff.press_the_advantage.stack>9)
+actions.rotation_pta=invoke_niuzao_the_black_ox,if=debuff.weapons_of_order_debuff.stack>3
+actions.rotation_pta+=/invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled
+actions.rotation_pta+=/rising_sun_kick,if=(buff.press_the_advantage.stack<6|buff.press_the_advantage.stack>9)&active_enemies<=4
+actions.rotation_pta+=/keg_smash,if=(buff.press_the_advantage.stack<8|buff.press_the_advantage.stack>9)&active_enemies>4
 actions.rotation_pta+=/blackout_kick
-actions.rotation_pta+=/black_ox_brew,if=energy.deficit>=50
+actions.rotation_pta+=/purifying_brew,if=(!buff.blackout_combo.up)
+actions.rotation_pta+=/black_ox_brew,if=energy+energy.regen<=40
 actions.rotation_pta+=/summon_white_tiger_statue,if=debuff.weapons_of_order_debuff.stack>3
 actions.rotation_pta+=/summon_white_tiger_statue,if=!talent.weapons_of_order.enabled
 actions.rotation_pta+=/bonedust_brew,if=(time<10&debuff.weapons_of_order_debuff.stack>3)|(time>10&talent.weapons_of_order.enabled)
@@ -93,6 +101,7 @@ actions.rotation_pta+=/exploding_keg,if=(!talent.bonedust_brew.enabled)
 actions.rotation_pta+=/breath_of_fire,if=!(buff.press_the_advantage.stack>6&buff.blackout_combo.up)
 actions.rotation_pta+=/keg_smash,if=!(buff.press_the_advantage.stack>6&buff.blackout_combo.up)
 actions.rotation_pta+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.rotation_pta+=/spinning_crane_kick,if=active_enemies>1
 actions.rotation_pta+=/expel_harm
 actions.rotation_pta+=/chi_wave,if=talent.chi_wave.enabled
 actions.rotation_pta+=/chi_burst,if=talent.chi_burst.enabled

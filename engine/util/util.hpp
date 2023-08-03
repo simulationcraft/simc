@@ -151,6 +151,7 @@ item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
+bool scale_metric_is_raid( scale_metric_e );
 
 
 template<typename StringType = std::string>

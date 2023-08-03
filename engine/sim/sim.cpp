@@ -1562,12 +1562,12 @@ sim_t::sim_t()
     priority_iteration_dmg( 0 ),
     iteration_heal( 0 ),
     iteration_absorb( 0 ),
-    raid_dps(),
     total_dmg(),
     raid_hps(),
     total_heal(),
     total_absorb(),
     raid_aps(),
+    raid_dps( "Raid Damage Per Second", false ),
     simulation_length( "Simulation Length", false ),
     merge_time(),
     init_time(),
@@ -1624,6 +1624,9 @@ sim_t::sim_t()
     display_hotfixes( false ),
     disable_hotfixes( false ),
     display_bonus_ids( false ),
+    profileset_main_actor_index( 0 ),
+    profileset_report_player_index( 0 ),
+    profileset_multiactor_base_name( "Baseline" ),
     profileset_metric( { SCALE_METRIC_DPS } ),
     profileset_output_data(),
     profileset_enabled( false ),
@@ -1929,6 +1932,10 @@ void sim_t::combat_begin()
   // Always call begin() to ensure various counters are initialized.
   datacollection_begin();
 
+  // Initialise all actors before (pre)combat.
+  for ( auto& target : target_list )
+    target -> precombat_init();
+
   for ( auto& target : target_list )
     target -> combat_begin();
 
@@ -1945,19 +1952,30 @@ void sim_t::combat_begin()
 
   if ( single_actor_batch )
   {
+    player_no_pet_list[ current_index ] -> precombat_init();
     player_no_pet_list[ current_index ] -> combat_begin();
     for ( auto pet: player_no_pet_list[ current_index ] -> pet_list )
     {
+      // Pets do not need to be initialised individually first
+      pet -> precombat_init();
       pet -> combat_begin();
     }
   }
   else
   {
+
+    // Initialize all actors before (pre)combat.
     // Needs to be a index-based loop, as the player list may be extended during iteration.
     for ( size_t i = 0; i < player_list.size(); ++i ) // NOLINT(modernize-loop-convert)
     {
       player_t* p = player_list[ i ];
-      p->combat_begin();
+      p -> precombat_init();
+    }
+
+    for ( size_t i = 0; i < player_list.size(); ++i )  // NOLINT(modernize-loop-convert)
+    {
+      player_t* p = player_list[ i ];
+      p -> combat_begin();
     }
   }
 
@@ -2788,7 +2806,11 @@ void sim_t::init()
     else
     {
       if ( !target_list.empty() )
+      {
         target = target_list.data().front();
+        if ( fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+          target->quiet = true;
+      }
 
       range::for_each( target_list, []( player_t* t ) {
         t->initial.sleeping = t->base.sleeping = t->current.sleeping = true;
@@ -2859,6 +2881,7 @@ void sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 2;
 
+  raid_dps.reserve( std::min( iterations, 10000 ) );
   simulation_length.reserve( std::min( iterations, 10000 ) );
 
   for ( const auto& player : player_list )
@@ -2931,6 +2954,8 @@ void sim_t::analyze()
 
   simulation_length.analyze();
   if ( simulation_length.mean() == 0 ) return;
+
+  raid_dps.analyze();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();

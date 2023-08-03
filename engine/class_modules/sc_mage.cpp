@@ -1441,6 +1441,9 @@ public:
       update_flags   |= STATE_FROZEN | STATE_FROZEN_MUL;
     }
 
+    if ( !harmful )
+      target = player;
+
     if ( affected_by.time_manipulation && !range::contains( p()->time_manipulation_cooldowns, cooldown ) )
       p()->time_manipulation_cooldowns.push_back( cooldown );
   }
@@ -3464,7 +3467,6 @@ struct use_mana_gem_t final : public mage_spell_t
   {
     parse_options( options_str );
     harmful = callbacks = may_crit = may_miss = false;
-    target = player;
 
     if ( p->specialization() != MAGE_ARCANE )
       background = true;
@@ -3565,7 +3567,6 @@ struct evocation_t final : public arcane_mage_spell_t
     parse_options( options_str );
     channeled = ignore_false_positive = tick_zero = true;
     harmful = false;
-    target = player;
     dot_duration *= 1.0 + p->talents.siphon_storm->effectN( 1 ).percent();
   }
 
@@ -3596,6 +3597,9 @@ struct evocation_t final : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
+
+    if ( p()->bugs && p()->talents.siphon_storm.ok() )
+      p()->trigger_arcane_charge();
 
     if ( is_precombat && execute_state )
       cooldown->adjust( -composite_dot_duration( execute_state ) );
