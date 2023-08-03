@@ -56,10 +56,9 @@ actions+=/invoke_external_buff,name=power_infusion,if=(buff.ascendance.up|buff.f
 actions+=/feral_spirit
 actions+=/ascendance,if=dot.flame_shock.ticking&((ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1))
 actions+=/doom_winds,if=raid_event.adds.in>=90|active_enemies>1
-# If_only_one_enemy,_priority_follows_the_'single'_action_list.
 actions+=/call_action_list,name=single,if=active_enemies=1
-# On_multiple_enemies,_the_priority_follows_the_'aoe'_action_list.
-actions+=/call_action_list,name=aoe,if=active_enemies>1
+actions+=/call_action_list,name=aoe,if=active_enemies>1&(rotation.standard|rotation.simple)
+actions+=/call_action_list,name=funnel,if=active_enemies>1&rotation.funnel
 
 # Multi target action priority list
 actions.aoe=crash_lightning,if=talent.crashing_storms.enabled&((talent.unruly_winds.enabled&active_enemies>=10)|active_enemies>=15)
@@ -93,6 +92,40 @@ actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
 actions.aoe+=/flame_shock,if=!ticking
 actions.aoe+=/frost_shock,if=!talent.hailstorm.enabled
+
+# Funnel action priority list
+actions.funnel=lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)
+actions.funnel+=/lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6)|(talent.ashen_catalyst.enabled&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)
+actions.funnel+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
+actions.funnel+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack
+actions.funnel+=/windstrike,if=(talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>1)|buff.converging_storms.stack=buff.converging_storms.max_stack
+actions.funnel+=/stormstrike,if=buff.converging_storms.stack=buff.converging_storms.max_stack
+actions.funnel+=/chain_lightning,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&buff.crackling_thunder.up
+actions.funnel+=/lava_burst,if=(buff.molten_weapon.stack+buff.volcanic_strength.up>buff.crackling_surge.stack)&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack
+actions.funnel+=/lightning_bolt,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack
+actions.funnel+=/crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)|(talent.converging_storms.enabled&buff.converging_storms.stack<buff.converging_storms.max_stack)
+actions.funnel+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
+actions.funnel+=/fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)
+actions.funnel+=/ice_strike,if=talent.hailstorm.enabled&!buff.ice_strike.up
+actions.funnel+=/frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up
+actions.funnel+=/sundering
+actions.funnel+=/flame_shock,if=talent.molten_assault.enabled&!ticking
+actions.funnel+=/flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=(talent.fire_nova.enabled|talent.primordial_wave.enabled)&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6
+actions.funnel+=/fire_nova,if=active_dot.flame_shock>=3
+actions.funnel+=/stormstrike,if=buff.crash_lightning.up&talent.deeply_rooted_elements.enabled
+actions.funnel+=/crash_lightning,if=talent.crashing_storms.enabled&buff.cl_crash_lightning.up&active_enemies>=4
+actions.funnel+=/windstrike
+actions.funnel+=/stormstrike
+actions.funnel+=/ice_strike
+actions.funnel+=/lava_lash
+actions.funnel+=/crash_lightning
+actions.funnel+=/fire_nova,if=active_dot.flame_shock>=2
+actions.funnel+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5
+actions.funnel+=/lava_burst,if=(buff.molten_weapon.stack+buff.volcanic_strength.up>buff.crackling_surge.stack)&buff.maelstrom_weapon.stack>=5
+actions.funnel+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.funnel+=/windfury_totem,if=buff.windfury_totem.remains<30
+actions.funnel+=/flame_shock,if=!ticking
+actions.funnel+=/frost_shock,if=!talent.hailstorm.enabled
 
 # Single target action priority list
 actions.single=primordial_wave,if=!dot.flame_shock.ticking&talent.lashing_flames.enabled&(raid_event.adds.in>42|raid_event.adds.in<6)
