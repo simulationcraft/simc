@@ -4698,6 +4698,20 @@ namespace monk
         {
           monk_spell_t::execute();
 
+          if ( p()->bugs )
+          {
+            // BUG: Invoke Xuen and Fury of Xuen reset both damage cache to 0 when either spawn
+            for ( auto target : p()->sim->target_non_sleeping_list )
+            {
+              auto td = p()->get_target_data( target );
+              if ( td )
+              {
+                td->debuff.empowered_tiger_lightning->current_value = 0;
+                td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value = 0;
+              }
+            }
+          }
+
           p()->pets.xuen.spawn( p()->talent.windwalker.invoke_xuen_the_white_tiger->duration(), 1 );
 
           p()->buff.invoke_xuen->trigger();
@@ -4721,6 +4735,20 @@ namespace monk
         void execute() override
         {
           monk_spell_t::execute();
+
+          if ( p()->bugs )
+          {
+            // BUG: Invoke Xuen and Fury of Xuen reset both damage cache to 0 when either spawn
+            for ( auto target : p()->sim->target_non_sleeping_list )
+            {
+              auto td = p()->get_target_data( target );
+              if ( td )
+              {
+                td->debuff.empowered_tiger_lightning->current_value = 0;
+                td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value = 0;
+              }
+            }
+          }
 
           p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
         }
@@ -6559,6 +6587,7 @@ namespace monk
     // ===============================================================================
     // Invoke Xuen the White Tiger
     // ===============================================================================
+
     struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
     {
       static void invoke_xuen_callback( buff_t *b, int, timespan_t )
@@ -6653,12 +6682,6 @@ namespace monk
                 td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value = 0;
                 if ( value > 0 )
                 {
-
-                  if ( b->tick_time_remains() == timespan_t::zero() )
-                  {
-                    // TODO: BUG: Last tick of Fury of Xuen deals less damage than the first           
-                  }
-
                   p->active_actions.fury_of_xuen_empowered_tiger_lightning->set_target( target );
                   p->active_actions.fury_of_xuen_empowered_tiger_lightning->base_dd_min =
                     value * empowered_tiger_lightning_multiplier;
@@ -10064,43 +10087,103 @@ namespace monk
 
   void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   {
+    /*
+    * From discovery by the Peak of Serenity Discord server, ETL has three major bugs
+    * 1.) The spells that contribute to ETL change based on which buff(s) are up
+    * 2.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
+    * 3.) The spells that FoX contribute to ETL change after the first tick of damage
+    */
+
     if ( specialization() != MONK_WINDWALKER || !talent.windwalker.empowered_tiger_lightning->ok() )
       return;
 
     if ( s->result_amount <= 0 )
       return;
 
-    // Blacklisted abilities
-    if ( s->action->id == 124280    // Touch of Karma
-      || s->action->id == 325217    // Bonedust Brew
-      || s->action->id == 389541    // Claw of the White Tiger
-      || s->action->id == 410139 )  // Shadowflame Nova
-      return;
-
     // Proc cannot proc from itself
     if ( s->action->id == passives.empowered_tiger_lightning->id() )
       return;
 
-    auto td = get_target_data( s->target );
+    // These abilities are always blacklisted by both tigers
+    auto etl_blacklist_always = {
+      124280, // Touch of Karma
+      325217, // Bonedust Brew
+      389541, // Claw of the White Tiger
+      410139, // Shadowflame Nova
+    };
 
-    if ( buff.invoke_xuen->check() )
+    // These abilities are blacklisted when only Fury of Xuen is up and it hasn't ticked yet
+    auto etl_blacklist_fox =
     {
-      if ( td->debuff.empowered_tiger_lightning->check() )
-        td->debuff.empowered_tiger_lightning->current_value += s->result_amount;
-      else
-        td->debuff.empowered_tiger_lightning->trigger( -1, s->result_amount, -1, buff.invoke_xuen->remains() );
-    }
+      391400, // Resonant Fists
+    };
 
-    // Bug: Resonant Fists does not contribute to Fury of Xuen's ETL 
-    if ( bugs && s->action->id == 391400 )
+    // These abilities are blacklisted when Fury of Xuen is up and it has ticked once
+    // OR, both tigers are spawned
+    auto etl_blacklist_fox_2 = {
+      228649, // Teachings of the Monastery 
+      185099, // Rising Sun Kick
+      395519, // Strike of the Windlord MH
+      395519, // Strike of the Windlord OH
+      242390, // Thunderfist
+      345727, // Faeline Stomp
+      327264, // Faeline Stomp WW Hit
+      115129, // Expel Harm
+      391400, // Resonant Fists
+      392959, // Glory of the Dawn
+    };
+
+    for ( auto id : etl_blacklist_always )
+      if ( s->action->id == id )
+        return;
+
+    // 1 = Xuen, 2 = FoX, 3 = Both
+    auto mode = ( 2 * buff.fury_of_xuen_haste->check() ) + buff.invoke_xuen->check();
+
+    if ( mode == 0 )
       return;
 
-    if ( buff.fury_of_xuen_haste->check() )
+    // Return value
+    double amount = mode != 2 ? s->result_amount : 0;
+    auto td = get_target_data( s->target );
+
+    if ( !td )
+      return;
+
+    // Fury of Xuen is up
+    if ( mode > 1 )
     {
-      if ( td->debuff.fury_of_xuen_empowered_tiger_lightning->check() )
-        td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value += s->result_amount;
+      double fox_contribution = 0;
+
+      if ( bugs )
+      {
+        auto blacklist = ( mode == 2 && buff.fury_of_xuen_haste->remains() > buff.fury_of_xuen_haste->tick_time() )
+          ? etl_blacklist_fox : etl_blacklist_fox_2;
+
+        for ( auto id : blacklist )
+        {
+          if ( s->action->id == id )
+          {
+            fox_contribution = 0;
+            break;
+          }
+        }
+      }
       else
-        td->debuff.fury_of_xuen_empowered_tiger_lightning->trigger( -1, s->result_amount, -1, buff.fury_of_xuen_haste->remains() );
+        fox_contribution = s->result_amount;
+
+      amount += fox_contribution;
+    }
+
+    if ( amount > 0 )
+    {
+      auto cache = mode == 2 ? td->debuff.fury_of_xuen_empowered_tiger_lightning : td->debuff.empowered_tiger_lightning;
+      auto duration = std::max( buff.invoke_xuen->remains(), buff.fury_of_xuen_haste->remains() );
+
+      if ( cache->check() )
+        cache->current_value += amount;
+      else
+        cache->trigger( -1, amount, -1, duration );
     }
   }
 
