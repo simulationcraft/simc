@@ -3442,7 +3442,7 @@ protected:
   using base = evoker_external_action_t<spell_t>;
 
 public:
-  fate_mirror_damage_t( player_t* p ) : base( "fate_mirror", p, p->find_spell( 404908 ) )
+  fate_mirror_damage_t( player_t* p ) : base( "fate_mirror_damage", p, p->find_spell( 404908 ) )
   {
     may_dodge = may_parry = may_block = may_crit = false;
     background                                   = true;
@@ -3461,6 +3461,30 @@ public:
   }
 };
 
+struct fate_mirror_heal_t : public evoker_external_action_t<heal_t>
+{
+protected:
+  using base = evoker_external_action_t<heal_t>;
+
+public:
+  fate_mirror_heal_t( player_t* p ) : base( "fate_mirror_heal", p, p->find_spell( 413786 ) )
+  {
+    may_dodge = may_parry = may_block = may_crit = false;
+    background                                   = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    return cast_state( s )->evoker->talent.fate_mirror->effectN( 1 ).percent();
+  }
+
+  void init() override
+  {
+    base::init();
+    snapshot_flags &= STATE_NO_MULTIPLIER & ~STATE_TARGET;
+    snapshot_flags |= STATE_MUL_SPELL_DA;
+  }
+};
 
 struct infernos_blessing_t : public evoker_external_action_t<spell_t>
 {
@@ -3712,7 +3736,8 @@ namespace buffs
 struct fate_mirror_cb_t : public dbc_proc_callback_t
 {
   evoker_t* source;
-  spells::fate_mirror_damage_t* fate_mirror;
+  spells::fate_mirror_damage_t* fate_mirror_damage;
+  spells::fate_mirror_heal_t* fate_mirror_heal;
 
   fate_mirror_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
     : dbc_proc_callback_t( p, e ), source( source )
@@ -3721,7 +3746,8 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     deactivate();
     initialize();
 
-    fate_mirror = debug_cast<spells::fate_mirror_damage_t*>( p->find_action( "fate_mirror" ) );
+    fate_mirror_damage = debug_cast<spells::fate_mirror_damage_t*>( p->find_action( "fate_mirror_damage" ) );
+    fate_mirror_heal   = debug_cast<spells::fate_mirror_heal_t*>( p->find_action( "fate_mirror_heal" ) );
   }
 
   evoker_t* p()
@@ -3729,7 +3755,7 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     return source;
   }
 
-  void execute( action_t*, action_state_t* s ) override
+  void execute( action_t* a, action_state_t* s ) override
   {
     if ( s->target->is_sleeping() )
       return;
@@ -3737,8 +3763,17 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     double da = s->result_amount;
     if ( da > 0 )
     {
-      fate_mirror->evoker = source;
-      fate_mirror->execute_on_target( s->target, da );
+      if ( s->target->is_enemy() )
+      {
+        fate_mirror_damage->evoker = source;
+        fate_mirror_damage->execute_on_target( s->target, da );
+      }
+      else
+      {
+        // Tested 03/08/2023 Self Damage triggers the *healing effect*
+        fate_mirror_heal->evoker = source;
+        fate_mirror_heal->execute_on_target( s->target, da );
+      }
     }
   }
 };
@@ -5632,6 +5667,7 @@ struct evoker_module_t : public module_t
     new spells::infernos_blessing_t( p );
     new spells::blistering_scales_damage_t( p );
     new spells::fate_mirror_damage_t( p );
+    new spells::fate_mirror_heal_t( p );
     new spells::breath_of_eons_damage_t( p );
   }
 
