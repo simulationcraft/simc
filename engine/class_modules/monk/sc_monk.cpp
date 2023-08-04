@@ -5229,12 +5229,8 @@ namespace monk
         faeline_stomp_damage_t *damage;
         faeline_stomp_heal_t *heal;
         faeline_stomp_ww_damage_t *ww_damage;
-        int aoe_initial_cap;
-        int ww_aoe_cap;
         faeline_stomp_t( monk_t &p, util::string_view options_str )
-          : monk_spell_t( "faeline_stomp", &p, p.shared.faeline_stomp ),
-          aoe_initial_cap( 0 ),
-          ww_aoe_cap( 0 )
+          : monk_spell_t( "faeline_stomp", &p, p.shared.faeline_stomp )
         {
           parse_options( options_str );
           may_combo_strike = true;
@@ -5248,9 +5244,7 @@ namespace monk
           ww_damage = new faeline_stomp_ww_damage_t( p );
 
           if ( p.specialization() == MONK_WINDWALKER )
-          {
             add_child( ww_damage );
-          }
 
           add_child( damage );
           add_child( heal );
@@ -5283,11 +5277,6 @@ namespace monk
 
         void execute() override
         {
-          // Values are hard coded into the tooltip.
-          // The initial hit is bugged and hitting 6 targets instead of 5
-          aoe_initial_cap = ( p()->bugs ? 6 : 5 );
-          ww_aoe_cap = 5;
-
           monk_spell_t::execute();
 
           p()->buff.faeline_stomp_reset->expire();
@@ -5299,26 +5288,18 @@ namespace monk
         {
           monk_spell_t::impact( s );
 
-          // Only the first 5 targets are hit with any damage or healing
-          if ( aoe_initial_cap > 0 )
+          heal->execute();
+
+          damage->set_target( s->target );
+          damage->execute();
+
+          if ( p()->specialization() == MONK_WINDWALKER )
           {
-            heal->execute();
-
-            damage->set_target( s->target );
-            damage->execute();
-
-            if ( p()->specialization() == MONK_WINDWALKER && ww_aoe_cap > 0 )
-            {
-              ww_damage->set_target( s->target );
-              ww_damage->execute();
-              ww_aoe_cap--;
-            }
+            ww_damage->set_target( s->target );
+            ww_damage->execute();
           }
 
-          // Fae Exposure is applied to all targets, even if they are healed/damage or not
           get_td( s->target )->debuff.fae_exposure->trigger();
-
-          aoe_initial_cap--;
         }
       };
     }  // namespace spells
@@ -6413,7 +6394,7 @@ namespace monk
 
       bool trigger( int stacks, double value, double chance, timespan_t duration ) override
       {
-        double health_multiplier = ( p().bugs ? 0.2 : 0.15 );  // p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
+        double health_multiplier = p().talent.general.fortifying_brew->effectN( 1 ).percent();
 
         if ( p().talent.brewmaster.fortifying_brew_determination->ok() )
           health_multiplier = p().passives.fortifying_brew->effectN( 6 ).percent();
@@ -10391,8 +10372,6 @@ namespace monk
       ReportIssue( "The spells that contribute to ETL change based on which buff(s) are up", "2023-08-01", true );
       ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
       ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
-      ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
-      ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
       ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
       ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
