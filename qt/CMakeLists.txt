@@ -30,6 +30,10 @@ if (WIN32)
 endif()
 add_executable(SimulationCraft WIN32 ${source_files})
 
+if (${QT_VERSION_MAJOR} EQUAL 6)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
+endif()
+
 sc_common_compiler_options(SimulationCraft)
 
 target_include_directories(SimulationCraft PUBLIC ../engine/)
