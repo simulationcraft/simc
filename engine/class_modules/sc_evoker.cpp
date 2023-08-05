@@ -4243,6 +4243,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
         fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
         fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
+        if ( evoker->talent.prescience_buff->effect_count() > 2 )
+        {
+          fate_mirror_effect->proc_chance_ = evoker->talent.prescience_buff->effectN( 3 ).percent();
+        }
         target->special_effects.push_back( fate_mirror_effect );
 
         auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker );
