@@ -1523,7 +1523,7 @@ public:
       c += p()->buffs.combustion->check_value();
 
     if ( affected_by.overflowing_energy )
-      c += p()->buffs.overflowing_energy->check_value();
+      c += p()->buffs.overflowing_energy->check_stack_value();
 
     return c;
   }
