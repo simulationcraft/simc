@@ -194,7 +194,8 @@ void vengeance( player_t* p )
   default_->add_action( "run_action_list,name=big_aoe,if=active_enemies>=6" );
 
   trinkets->add_action( "use_items" );
-  trinkets->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=trinket.beacon_to_the_beyond.cooldown.remains>5" );
+  trinkets->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=buff.metamorphosis.up|fight_remains<=10|!talent.first_of_the_illidari" );
+  trinkets->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=!trinket.beacon_to_the_beyond.cooldown.remains<=5&!buff.metamorphosis.up|!equipped.beacon_to_the_beyond" );
 
   maintenance->add_action( "invoke_external_buff,name=symbol_of_hope,if=cooldown.fiery_brand.charges=0" );
   maintenance->add_action( "metamorphosis,if=talent.first_of_the_illidari&trinket.beacon_to_the_beyond.cooldown.remains<10|fight_remains<20" );
