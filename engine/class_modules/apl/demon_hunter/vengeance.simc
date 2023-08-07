@@ -35,7 +35,8 @@ actions+=/run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5
 actions+=/run_action_list,name=big_aoe,if=active_enemies>=6
 
 actions.trinkets+=/use_items
-actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=trinket.beacon_to_the_beyond.cooldown.remains>5
+actions.trinkets+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=buff.metamorphosis.up|fight_remains<=10|!talent.first_of_the_illidari
+actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=!trinket.beacon_to_the_beyond.cooldown.remains<=5&!buff.metamorphosis.up|!equipped.beacon_to_the_beyond
 
 actions.maintenance+=/invoke_external_buff,name=symbol_of_hope,if=cooldown.fiery_brand.charges=0
 actions.maintenance+=/metamorphosis,if=talent.first_of_the_illidari&trinket.beacon_to_the_beyond.cooldown.remains<10|fight_remains<20
