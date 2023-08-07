@@ -3910,7 +3910,14 @@ namespace attacks
         m *= damage_buff->stack_value_auto_attack();
 
       // Class Passive
-      m *= 1.0 + p()->spec.havoc_demon_hunter->effectN( 8 ).percent();
+      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+      {
+        m *= 1.0 + p()->spec.havoc_demon_hunter->effectN( 8 ).percent();
+      }
+      else
+      {
+        m *= 1.0 + p()->spec.vengeance_demon_hunter->effectN( 12 ).percent();
+      }
 
       return m;
     }
