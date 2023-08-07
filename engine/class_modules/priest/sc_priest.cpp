@@ -2280,7 +2280,7 @@ void priest_t::create_buffs()
       } ) );
   buffs.rhapsody_timer = make_buff( this, "rhapsody_timer", talents.rhapsody )
                              ->set_quiet( true )
-                             ->set_duration( timespan_t::from_seconds( 5 ) )
+                             ->set_duration( talents.rhapsody->effectN( 1 ).period() )
                              ->set_max_stack( 1 )
                              ->set_stack_change_callback( ( [ this ]( buff_t*, int, int new_ ) {
                                if ( new_ == 0 )
