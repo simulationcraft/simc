@@ -1182,23 +1182,19 @@ struct holy_nova_t final : public priest_spell_t
     if ( priest().talents.rhapsody )
     {
       priest().buffs.rhapsody_timer->trigger();
+
+      if ( priest().buffs.rhapsody->check() )
+      {
+        priest().buffs.rhapsody->expire();
+      }
     }
+
     if ( child_light_eruption && priest().buffs.divine_image->check() )
     {
       for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
       {
         child_light_eruption->execute();
       }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
-    {
-      priest().buffs.rhapsody->expire();
     }
   }
 };
