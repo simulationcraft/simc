@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50585 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50791 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -237,7 +237,7 @@ GCD              : 1.5 seconds
 Duration         : 16 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #4, #5, #11, #12), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Torment of Torments (269555 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8, #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #4, #5, #11, #12, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Torment of Torments (269555 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 15, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -680,7 +680,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=7216)     : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.80000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fills you with the embrace of Shadow energy for $d, causing you to heal a nearby ally for $s1% of any single-target Shadow spell damage you deal.
 Tooltip          : $15286s1% of any single-target Shadow spell damage you deal heals a nearby ally.
 
@@ -1297,7 +1297,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.22216 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.17772 | PvP Coefficient: 1.25000 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 #4 (id=841601)   : School Damage (2): shadow
@@ -1584,7 +1584,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39897)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.15000 | Target: Unknown(77)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
@@ -1606,7 +1606,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.15000 | Target: Unknown(77)
 Description      : $@spelldesc47540
 
 Name             : Divine Aegis (id=47753) [Spell Family (6)] 
@@ -2278,7 +2278,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 36 | Scaled Value: 36 | PvP Coefficient: 1.89000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.89000 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : $?s214205[Power Word: Shield applies Atonement to your target for $214206d.
@@ -3735,6 +3735,14 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #29 (id=1085139)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+#30 (id=1100166)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589)
+                   Family Flags: 15
+#31 (id=1100167)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589)
+                   Family Flags: 15
 
 Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -4801,7 +4809,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=294135)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -45000 | Scaled Value: -45000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Vampiric Embrace (15286)
                    Family Flags: 2
 #2 (id=294136)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
@@ -5471,8 +5479,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=316967)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Friend (21)
@@ -12987,7 +12995,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=998151)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.15000 | Target: Unknown(77)
 Description      : $@spelldesc373129
 
 Name             : Light's Wrath (id=373178) [Spell Family (6)] 
@@ -14268,7 +14276,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1027583)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+#1 (id=1027583)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Every $t1 sec, the damage of your next Holy Nova is increased by $390636s1% and its healing is increased by $390636s2%. 
 
@@ -14332,7 +14340,7 @@ Attributes       : ........ x....... ........ .......x   ........ ........ .....
                  : Do Not Log (8), No Aura Cancel (31), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268)
 Effects          :
 #1 (id=1027604)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Holy Nova (132157)
                    Family Flags: 49
 #2 (id=1027980)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -16689,7 +16697,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1044923)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.15000 | Target: Unknown(77)
 Description      : $@spelldesc400169
 
 Name             : Burning Vehemence (id=400370) 
@@ -17309,7 +17317,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1081317)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.20570 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.17485 | PvP Coefficient: 1.18000 | Target: Enemy (6)
 Description      : $@spelldesc341491
 
 Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 

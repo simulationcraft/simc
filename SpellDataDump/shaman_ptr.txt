@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50585 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50791 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -367,7 +367,7 @@ School           : Nature
 Spell Type       : Magic
 Resource         : 4.8% Base Mana (0) (id=317) w/ Restoration Shaman (id=137039)
 Resource         : 10% Base Mana (0) (id=305236) w/ Elemental Shaman (id=137040)
-Resource         : 10% Base Mana (0) (id=305237) w/ Enhancement Shaman (id=137041)
+Resource         : 8% Base Mana (0) (id=305237) w/ Enhancement Shaman (id=137041)
 Resource         : 10% Base Mana (0) (id=305238) w/ Initial Shaman (id=417374)
 Spell Level      : 4
 Range            : 40 yards
@@ -794,7 +794,7 @@ Effects          :
 #2 (id=1015405)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value 2: 1706 (Label) | Target: Self (1)
                    Affected Spells (Label): Nature's Guardian (31616)
-Description      : When your health is brought below $s1%, you instantly heal for ${$31616s1*(1+$s2/100)}% of your maximum health.  Cannot occur more than once every $proccooldown sec.
+Description      : When your health is brought below $s1%, you instantly heal for ${$31616s1*(1+$s2/100)}% of your maximum health. Cannot occur more than once every $proccooldown sec.
 
 Name             : Nature's Guardian (id=31616) 
 Class            : Shaman
@@ -15234,7 +15234,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1013214)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : $@382021
+Description      : $@spelldesc382021
 Tooltip          : Heals $w1 every $t1 sec.
 
 Name             : Improved Flametongue Weapon (id=382027) [Spell Family (11), Passive, Hidden] 

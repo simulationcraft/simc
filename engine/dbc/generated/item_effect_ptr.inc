@@ -1,5 +1,5 @@
-// Item effects, wow build 10.1.7.50587
-static const std::array<item_effect_t, 8567> __ptr_item_effect_data { {
+// Item effects, wow build 10.1.7.50793
+static const std::array<item_effect_t, 8563> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8563,13 +8563,9 @@ static const std::array<item_effect_t, 8567> __ptr_item_effect_data { {
   { 180017, 421772, 208924,   0,   0,    0,      -1,      -1 }, // Create Necklace
   { 180018, 421775, 208925,   0,   0,    0,      -1,      -1 }, // Create Trinket
   { 180019, 421776, 208926,   0,   0,    0,      -1,      -1 }, // Create Weapon
-  { 180040,  43873, 208986,   0,   0,    0,   30000,      -1 }, // Headless Horseman Laugh
-  { 180041, 177944, 208987,   1,   0,   94,  600000,   60000 }, // Summon Pumpkin Soldiers
-  { 180047, 177944, 209022,   1,   0,   94,  600000,   60000 }, // Summon Pumpkin Soldiers
-  { 180048,  43873, 209023,   0,   0,    0,   30000,      -1 }, // Headless Horseman Laugh
 } };
 
-static const std::array<uint16_t, 8567> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 8563> __ptr_item_effect_id_index { {
     415,   416,   417,   418,   419,   420,   421,   424,
     425,   426,   427,   428,   429,   430,   431,   432,
     433,   434,   435,   436,   439,   440,   441,   442,
@@ -9640,6 +9636,6 @@ static const std::array<uint16_t, 8567> __ptr_item_effect_id_index { {
    8536,  8537,  8538,  8539,  8540,  8541,  8542,  8543,
    8544,  8545,  8546,  8547,  8548,  8549,  8550,  8551,
    8552,  8553,  8554,  8555,  8556,  8557,  8558,  8559,
-   8560,  8561,  8562,  8563,  8564,  8565,  8566,
+   8560,  8561,  8562,
 } };
 
