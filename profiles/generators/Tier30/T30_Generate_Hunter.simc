@@ -27,7 +27,7 @@ save=T30_Hunter_Beast_Mastery.simc
 
 hunter="T30_Hunter_Marksmanship"
 level=70
-race=troll
+race=tauren
 spec=marksmanship
 role=attack
 position=ranged_back
@@ -45,9 +45,12 @@ legs=ashen_predators_poleyns,id=202478,bonus_id=1507,enchant=lambent_armor_kit_3
 feet=acidic_hailstone_treads,id=193466,bonus_id=8960/8840/8836/8902/1537
 finger1=onyx_impostors_birthright,id=204398,bonus_id=9413/1498,gem_id=192945,enchant=devotion_of_critical_strike_3
 finger2=signet_of_titanic_insight,id=192999,bonus_id=9376/9405/8793,gem_id=192945,enchant=devotion_of_haste_3,crafted_stats=32/36
-trinket1=neltharions_call_to_dominance,id=204202,bonus_id=1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1501
 trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
 main_hand=failure_disposal_cannon,id=204322,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant=high_intensity_thermal_scanner_3
+
+dragonflight.ominous_chromatic_essence_dragonflight=bronze
+dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
 
 save=T30_Hunter_Marksmanship.simc
 
