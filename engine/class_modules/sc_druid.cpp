@@ -2474,6 +2474,9 @@ struct druid_residual_action_t : public Base
 
     Base::attack_power_mod.direct = Base::attack_power_mod.tick = 0;
     Base::spell_power_mod.direct = Base::spell_power_mod.tick = 0;
+
+    // 1 point to allow proper snapshot/update flag parsing
+    Base::base_dd_min = Base::base_dd_max = 1.0;
   }
 
   action_state_t* new_state() override
@@ -4009,6 +4012,9 @@ struct primal_wrath_t : public cat_finisher_t
       round_base_dmg = false;
       aoe = -1;
       reduced_aoe_targets = p->talent.tear_open_wounds->effectN( 3 ).base_value();
+
+      // 1 point to allow proper snapshot/update flag parsing
+      base_dd_min = base_dd_max = 1.0;
     }
 
     double _get_amount( const action_state_t* s ) const
@@ -4021,8 +4027,15 @@ struct primal_wrath_t : public cat_finisher_t
       return tic * amt * rip_mul;
     }
 
-    double base_da_min( const action_state_t* s ) const override { return _get_amount( s ); }
-    double base_da_max( const action_state_t* s ) const override { return _get_amount( s ); }
+    double base_da_min( const action_state_t* s ) const override
+    {
+      return _get_amount( s );
+    }
+
+    double base_da_max( const action_state_t* s ) const override
+    {
+      return _get_amount( s );
+    }
 
     std::vector<player_t*>& target_list() const override
     {
@@ -5137,10 +5150,20 @@ struct elunes_favored_heal_t : public druid_heal_t
     : druid_heal_t( "elunes_favored", p, p->find_spell( 370602 ) )
   {
     background = proc = true;
+
+    // 1 point to allow proper snapshot/update flag parsing
+    base_dd_min = base_dd_max = 1.0;
   }
 
-  double base_da_min( const action_state_t* ) const override { return p()->buff.elunes_favored->check_value(); }
-  double base_da_max( const action_state_t* ) const override { return p()->buff.elunes_favored->check_value(); }
+  double base_da_min( const action_state_t* ) const override
+  {
+    return p()->buff.elunes_favored->check_value();
+  }
+
+  double base_da_max( const action_state_t* ) const override
+  {
+    return p()->buff.elunes_favored->check_value();
+  }
 };
 
 // Frenzied Regeneration ====================================================
@@ -7103,6 +7126,9 @@ struct natures_vigil_t : public Base
       : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) )
     {
       Base::dual = Base::proc = true;
+
+      // 1 point to allow proper snapshot/update flag parsing
+      Base::base_dd_min = Base::base_dd_max = 1.0;
     }
 
     double base_da_min( const action_state_t* ) const override
