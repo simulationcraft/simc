@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50747 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50791 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -8657,7 +8657,8 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Taps immediately (215), No Target Duration Mod (225), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1074514)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 3 - 6 yards | Target: Unknown(78) -> AOE enemy (instant) (16)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.50000 | Radius: 3 - 6 yards | Target: Unknown(78) -> AOE enemy (instant) (16)
+Hotfixed         : Base Value (15 -> 10), PvP Coefficient (1 -> 1.5)
 #2 (id=1075735)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Radius: 6 yards | Mechanic: Snare | Target: AOE enemy (instant) (16)
 #3 (id=1075736)  : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
@@ -8856,7 +8857,8 @@ Effects          :
 #2 (id=1080437)  : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Friend (21)
 #3 (id=1098112)  : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (15 -> 10)
 Description      : $@spelldesc409311
 Tooltip          : $?$W1>0[$@auracaster is increasing your critical strike chance by $w1%.][]$?e0&e1[
 
