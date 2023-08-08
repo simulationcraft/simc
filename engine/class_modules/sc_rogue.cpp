@@ -3018,6 +3018,9 @@ struct melee_t : public rogue_attack_t
     for ( auto damage_buff : auto_attack_damage_buffs )
       m *= damage_buff->is_stacking ? damage_buff->stack_value_auto_attack() : damage_buff->value_auto_attack();
 
+    // Class Passive
+    m *= 1.0 + p()->spec.outlaw_rogue->effectN( 18 ).percent();
+
     return m;
   }
 
@@ -3738,6 +3741,8 @@ struct detection_t : public rogue_spell_t
   {
     gcd_type = gcd_haste_type::ATTACK_HASTE;
     min_gcd = 750_ms; // Force 750ms min gcd because rogue player base has a 1s min.
+    harmful = false;
+    set_target( p );
   }
 };
 
@@ -6215,7 +6220,7 @@ struct cancel_autoattack_t : public action_t
     rogue( rogue_ )
   {
     parse_options( options_str );
-
+    set_target( rogue );
     trigger_gcd = timespan_t::zero();
   }
 
@@ -9042,7 +9047,7 @@ void rogue_t::init_spells()
   spell.cheap_shot = find_class_spell( "Cheap Shot" );
   spell.crimson_vial = find_class_spell( "Crimson Vial" );
   spell.crippling_poison = find_class_spell( "Crippling Poison" );
-  spell.detection = find_class_spell( "Detection" );
+  spell.detection = find_spell( 56814 ); // find_class_spell( "Detection" );
   spell.instant_poison = find_class_spell( "Instant Poison" );
   spell.kick = find_class_spell( "Kick" );
   spell.kidney_shot = find_class_spell( "Kidney Shot" );
