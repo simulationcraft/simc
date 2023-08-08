@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50747 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.50791 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -1161,7 +1161,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Always Line of Sight (185), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=157591)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.86229 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.93127 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.86229 -> 0.931273)
 #2 (id=821259)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #3 (id=1050419)  : Trigger Spell (64): Lightforged Blessing
@@ -2947,9 +2948,10 @@ Effects          :
                    Affected Spells: Crusader Strike (35395)
                    Family Flags: 47
 #13 (id=260914)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297)
                    Family Flags: 5
+Hotfixed         : Base Value (-15 -> -6)
 #14 (id=732535)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395)
@@ -3120,13 +3122,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179713)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000
+                   Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0.61600
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
                    Family Flags: 46, 90
+Hotfixed         : Base Value (-8 -> -13), PvP Coefficient (1 -> 0.616)
 #2 (id=191084)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 22
+                   Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0.61600 | Misc Value: 22
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (416771)
                    Family Flags: 46
+Hotfixed         : Base Value (-8 -> -13), PvP Coefficient (1 -> 0.616)
 #3 (id=191085)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Denounce (2812), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Blade of Justice (184575), Divine Hammer (198034), Light of Dawn (225311), Execution Sentence (343527), Final Reckoning (343721), Focused Enmity (378845), Expurgation (383344), Execution Sentence (387113), Blade of Justice (404358), Shield of the Righteous (415091)
@@ -3153,9 +3157,10 @@ Effects          :
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Judgment (197277), Judgment (275773), Judgment (275779), Ashen Hallow (317221), Hallowed Discernment (340203)
                    Family Flags: 18, 23, 39
 #11 (id=260932)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000
+                   Base Value: 58 | Scaled Value: 58 | PvP Coefficient: 1.00000
                    Affected Spells: Consecration (26573), Consecration (81297)
                    Family Flags: 5
+Hotfixed         : Base Value (110 -> 58)
 #12 (id=260933)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #13 (id=1032420)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -3211,8 +3216,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2735 (Label) | Target: Self (1)
                    Affected Spells (Label): Relentless Inquisitor (383388)
 #30 (id=1090441)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2608 (Label) | Target: Self (1)
+                   Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 0.60000 | Misc Value: 12 | Misc Value 2: 2608 (Label) | Target: Self (1)
                    Affected Spells (Label): Fading Light (405768)
+Hotfixed         : Base Value (-10 -> -17), PvP Coefficient (1 -> 0.6)
 #31 (id=1096987)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Misc Value: 22
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091)
@@ -4352,9 +4358,10 @@ Effects          :
 #1 (id=295444)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62687 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=334967)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.68000 | Target: Friend (21)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326)
                    Family Flags: 30, 48, 74
+Hotfixed         : Base Value (25 -> 15), PvP Coefficient (1 -> 1.68)
 Description      : $@spelldesc200652
 Tooltip          : Healing received from Holy Light, Flash of Light, and Holy Shock increased by $s2%.
 
@@ -5425,7 +5432,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Suppress Target Procs (113), Do Not Display Range (126), Treat as Area Effect (175), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=335563)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.86230 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.93127 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.8623 -> 0.931273)
 Description      : $@spelldesc53385
 
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
@@ -5963,7 +5971,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=478180)   : School Damage (2): holyfire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.66000 | PvP Coefficient: 0.80000 | Radius: 14 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.92600 | PvP Coefficient: 0.80000 | Radius: 14 yards | Target: Cone Front (104)
+Hotfixed         : AP Coefficient (2.66 -> 2.926)
 #2 (id=478181)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 #3 (id=478182)   : Trigger Spell (64): Truth's Wake
@@ -14883,7 +14892,8 @@ Attributes       : ........ ...x.... x....... ........   ........ ........ .....
                  : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Newest Exclusive Complete (362)
 Effects          :
 #1 (id=1023420)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.20000 | Target: Friend (21)
+Hotfixed         : Base Value (30 -> 25), PvP Coefficient (1 -> 1.2)
 #2 (id=1023421)  : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388014 | Target: Self (1)
 #3 (id=1023422)  : Apply Aura (6) | Modify Rating (189)
@@ -18409,7 +18419,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1082917)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 30)
 Description      : Judgment has a $s1% chance to cast Consecration at the target's location.
 
 The limit on Consecration does not apply to this effect.
@@ -18433,7 +18444,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1082932)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.67000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 30), PvP Coefficient (1 -> 1.67)
 #2 (id=1082941)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $s1% of Glimmer of Light's overhealing is converted into an absorb shield. The shield amount cannot exceed $s2% of your max health.
@@ -19030,7 +19042,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1087880)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -16 | Scaled Value: -16 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.80000 | Target: Self (1)
+Hotfixed         : Base Value (-16 -> -10), PvP Coefficient (0.5 -> 0.8)
 Description      : Your allies with Glimmer of Light take $s1% reduced damage, split evenly among them.
 
 Name             : Vanguard's Momentum (id=416869) [Spell Family (10), Passive] 
