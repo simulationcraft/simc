@@ -31,6 +31,7 @@ endif()
 add_executable(SimulationCraft WIN32 ${source_files})
 
 if (${QT_VERSION_MAJOR} EQUAL 6)
+  # std::filesystem (used indirectly with Qt6.5 on newer compilers) usage requires minimum osx target version of 10.15
   set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
 endif()
 
