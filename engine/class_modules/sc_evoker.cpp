@@ -4243,6 +4243,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
         fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
         fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
+        fate_mirror_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
         if ( evoker->talent.prescience_buff->effect_count() > 2 )
         {
           fate_mirror_effect->proc_chance_ = evoker->talent.prescience_buff->effectN( 3 ).percent();
