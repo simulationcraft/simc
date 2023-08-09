@@ -5971,8 +5971,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=478180)   : School Damage (2): holyfire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.92600 | PvP Coefficient: 0.80000 | Radius: 14 yards | Target: Cone Front (104)
-Hotfixed         : AP Coefficient (2.66 -> 2.926)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.92600 | PvP Coefficient: 0.72727 | Radius: 14 yards | Target: Cone Front (104)
+Hotfixed         : PvP Coefficient (0.8 -> 0.727272)
 #2 (id=478181)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 #3 (id=478182)   : Trigger Spell (64): Truth's Wake
