@@ -4364,7 +4364,10 @@ public:
   using base_t = trigger_ursocs_fury_t<BASE>;
 
   trigger_ursocs_fury_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
-    : BASE( n, p, s, o ), p_( p ), mul( p->talent.ursocs_fury->effectN( 1 ).percent() )
+    : BASE( n, p, s, o ),
+      p_( p ),
+      mul( p->talent.ursocs_fury->effectN( 1 ).percent() *
+           ( 1.0 + p->talent.nurturing_instinct->effectN( 1 ).percent() ) )
   {}
 
   void trigger_ursocs_fury( const action_state_t* s )
