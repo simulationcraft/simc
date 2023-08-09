@@ -1775,6 +1775,8 @@ struct matted_fur_buff_t : public druid_buff_base_t<absorb_buff_t>
 
   matted_fur_buff_t( druid_t* p ) : base_t( p, "matted_fur", find_trigger( p->talent.matted_fur ).trigger() )
   {
+    set_absorb_source( p->get_stats( "Matted Fur (absorb)" ) );
+
     mul = find_trigger( p->talent.matted_fur ).percent() * 1.25;
   }
 
@@ -10146,7 +10148,10 @@ void druid_t::create_buffs()
   buff.ursocs_fury =
       make_buff_fallback<absorb_buff_t>( talent.ursocs_fury.ok(), this, "ursocs_fury", find_spell( 372505 ) );
   if ( talent.ursocs_fury.ok() )
-    debug_cast<absorb_buff_t*>( buff.ursocs_fury )->set_cumulative( true );
+  {
+    debug_cast<absorb_buff_t*>( buff.ursocs_fury )->set_cumulative( true )
+      ->set_absorb_source( get_stats( "Ursoc's Fury (absorb)" ) );
+  }
 
   buff.vicious_cycle_mangle =
       make_buff_fallback( talent.vicious_cycle.ok(), this, "vicious_cycle_mangle", find_spell( 372019 ) )
@@ -12233,21 +12238,21 @@ void druid_t::init_absorb_priority()
   if ( talent.brambles.ok() )
   {
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( talent.brambles->id(),
-      instant_absorb_t( this, talent.brambles, "brambles_absorb",
+      instant_absorb_t( this, talent.brambles, "Brambles (absorb)",
         &brambles_handler ) ) );
   }
 
   if ( talent.earthwarden.ok() )
   {
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( talent.earthwarden->id(),
-      instant_absorb_t( this, &buff.earthwarden->data(), "earthwarden_absorb",
+      instant_absorb_t( this, &buff.earthwarden->data(), "Earthwarden (absorb)",
         &earthwarden_handler ) ) );
   }
 
   if ( talent.rage_of_the_sleeper.ok() )
   {
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( talent.rage_of_the_sleeper->id(),
-      instant_absorb_t( this, talent.rage_of_the_sleeper, "rage_of_the_sleeper_absorb",
+      instant_absorb_t( this, talent.rage_of_the_sleeper, "Rage of the Sleeper (absorb)",
         &rage_of_the_sleeper_handler ) ) );
   }
 
