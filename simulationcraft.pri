@@ -11,7 +11,7 @@ CONFIG      += c++17
 CONFIG(debug, debug|release): OBJECTS_DIR = build/debug
 CONFIG(release, debug|release): OBJECTS_DIR = build/release
 
-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
 
 isEmpty(SC_NO_NETWORKING) {
   SC_NO_NETWORKING=$$(SC_NO_NETWORKING)
