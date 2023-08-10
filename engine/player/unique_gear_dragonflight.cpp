@@ -6761,6 +6761,9 @@ void timestrike( special_effect_t& effect )
         mul( e.driver()->effectN( 1 ).percent() )
     {
       damage = create_proc_action<generic_proc_t>( "timestrike", e, "timestrike", 419737 );
+
+      // 1 point to allow proper snapshot/update flag parsing
+      damage->base_dd_min = damage->base_dd_max = 1.0;
     }
 
     void execute( action_t*, action_state_t* s ) override
