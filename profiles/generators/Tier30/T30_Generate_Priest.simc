@@ -4,12 +4,12 @@ race=human
 spec=shadow
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIkE5ABAAAAAAAAAAAAIJKRkIlgkERSSBSjkkEpRQCCpItQSAIB
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIkE5ABAAAAAAAAAAAAIJaRkIlgkERSig0IJJRaEkgQKSLkEASA
 
 temporary_enchant=main_hand:hissing_rune_3
 
 head=mask_of_the_furnace_seraph,id=202542,bonus_id=4800/4786/1504/6935,gem_id=192985
-neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948
+neck=magmoraxs_fourth_collar,id=204397,bonus_id=8782,gem_id=192948/192948/192948,bonus_id=4800/4786/1498/6935
 shoulders=devotion_of_the_furnace_seraph,id=202540,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=6652/9330/7979/1485/8767,bonus_id=1498
 chest=vibrant_wildercloth_vestments,id=193509,bonus_id=8846/9405/8793/9379/1498,crafted_stats=36/49,enchant=waking_stats_3

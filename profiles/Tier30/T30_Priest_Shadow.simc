@@ -5,7 +5,7 @@ level=70
 race=human
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIkE5ABAAAAAAAAAAAAIJKRkIlgkERSSBSjkkEpRQCCpItQSAIB
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIkE5ABAAAAAAAAAAAAIJaRkIlgkERSig0IJJRaEkgQKSLkEASA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -171,7 +171,7 @@ actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dar
 actions.trinkets+=/use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex
 
 head=mask_of_the_furnace_seraph,id=202542,bonus_id=4800/4786/1504/6935,gem_id=192985
-neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948
+neck=magmoraxs_fourth_collar,id=204397,bonus_id=4800/4786/1498/6935,gem_id=192948/192948/192948
 shoulders=devotion_of_the_furnace_seraph,id=202540,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=1498
 chest=vibrant_wildercloth_vestments,id=193509,bonus_id=8846/9405/8793/9379/1498,enchant=waking_stats_3,crafted_stats=36/49
@@ -191,9 +191,9 @@ main_hand=erethos_the_empty_promise,id=202565,bonus_id=4800/4786/1498,enchant=so
 # gear_stamina=22495
 # gear_intellect=8495
 # gear_crit_rating=1261
-# gear_haste_rating=6083
-# gear_mastery_rating=4910
-# gear_versatility_rating=1110
+# gear_haste_rating=5080
+# gear_mastery_rating=5565
+# gear_versatility_rating=1458
 # gear_armor=2447
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
