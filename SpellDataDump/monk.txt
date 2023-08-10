@@ -17591,8 +17591,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1043075)  : Dummy (3)
+#1 (id=1043075)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4)
 Description      : When Life Cocoon expires, it releases a burst of mist that restores $399230s2 health to $s3 nearby allies.
 
 Name             : Burst of Life (id=399230) [Spell Family (53)] 
