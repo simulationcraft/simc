@@ -4564,9 +4564,11 @@ double action_t::composite_rolling_ta_multiplier( const action_state_t* s ) cons
   if ( dot && dot->is_ticking() )
   {
     double ticks_left = dot->ticks_left_fractional();
-    double new_base_ticks = composite_dot_duration( s ) / tick_time( s );
+    timespan_t new_tick = tick_time( s );
+    timespan_t new_duration = composite_dot_duration( s );
+    double new_base_ticks = new_duration / new_tick;
     // Calculate ticks_left_fractional for the DoT after it is refreshed.
-    double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, composite_dot_duration( s ) ) - dot->time_to_next_full_tick() ) / tick_time( s );
+    double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, new_duration ) - dot->time_to_next_full_tick() ) / new_tick;
     // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
     m = ( ticks_left * s->rolling_ta_multiplier + new_base_ticks ) / new_ticks_left;
     sim->print_debug( "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} new_ticks_left={}.",
