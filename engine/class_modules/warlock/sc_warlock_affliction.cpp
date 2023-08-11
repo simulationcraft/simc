@@ -487,9 +487,6 @@ struct haunt_t : public affliction_spell_t
     if ( result_is_hit( s->result ) )
     {
       td( s->target )->debuffs_haunt->trigger();
-
-      if ( p()->talents.shadow_embrace->ok() )
-        td( s->target )->debuffs_shadow_embrace->trigger();
     }
   }
 };
