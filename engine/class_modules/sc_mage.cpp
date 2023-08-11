@@ -2509,6 +2509,7 @@ struct intensifying_flame_t final : public spell_t
     spell_t( n, p, p->find_spell( 419800 ) )
   {
     background = true;
+    base_dd_min = base_dd_max = 1.0;
   }
 
   void init() override
