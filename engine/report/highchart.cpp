@@ -153,8 +153,9 @@ std::string highchart::build_id( const player_t& actor,
 
 std::string highchart::build_id( const buff_t& buff, std::string_view suffix )
 {
-  return fmt::format( "buff_{}{}{}", util::remove_special_chars( buff.name_str ),
-                      buff.player ? fmt::format( "_actor{}", buff.player->index ) : "", suffix );
+  return fmt::format( "buff_{}{}{}{}", util::remove_special_chars( buff.name_str ),
+                      buff.player ? fmt::format( "_actor{}", buff.player->index ) : "",
+                      buff.source ? fmt::format( "_source{}", buff.source->index ) : "", suffix );
 }
 
 // Init default (shared) json structure
