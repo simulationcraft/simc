@@ -1587,6 +1587,7 @@ struct shadow_weaving_t final : public priest_spell_t
     may_crit                   = false;
     may_miss                   = false;
     callbacks                  = false;
+    base_dd_min = base_dd_max  = 1.0;  // for state flag parsing
   }
 
   void trigger( player_t* target, double original_amount )
