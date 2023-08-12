@@ -128,6 +128,7 @@ void arcane( player_t* p )
   cooldown_phase->add_action( "radiant_spark" );
   cooldown_phase->add_action( "nether_tempest,if=talent.arcane_echo,line_cd=30" );
   cooldown_phase->add_action( "arcane_surge" );
+  cooldown_phase->add_action( "wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15" );
   cooldown_phase->add_action( "arcane_barrage,if=prev_gcd.1.arcane_surge|prev_gcd.1.nether_tempest|prev_gcd.1.radiant_spark" );
   cooldown_phase->add_action( "arcane_blast,if=prev_gcd.1.arcane_barrage|prev_gcd.2.arcane_barrage|prev_gcd.3.arcane_barrage|(prev_gcd.4.arcane_barrage&cooldown.arcane_surge.remains<60)" );
   cooldown_phase->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max" );
