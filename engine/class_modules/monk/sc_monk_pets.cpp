@@ -835,6 +835,7 @@ struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
       aoe                 = -1;
       reduced_aoe_targets = p->o()->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
       full_amount_targets = 1;
+      base_dd_min = base_dd_max = 1.0;  // parse state flags
     }
   };
 

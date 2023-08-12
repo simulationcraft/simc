@@ -5692,6 +5692,7 @@ namespace monk
         {
           background = true;
           may_crit = false;
+          base_dd_min = base_dd_max = 1.0;  // parse state flags
         }
       };
 
