@@ -10866,14 +10866,9 @@ void druid_t::init_special_effects()
 
       void trigger( action_t* a, action_state_t* s ) override
       {
-        // TODO: whitelist this if need be
-        if ( s->n_targets != 1 )
-          return;
-
-        if ( !s->result_total )
-          return;
-
-        druid_cb_t::trigger( a, s );
+        // raze procs despite being an aoe
+        if ( s->result_total && ( s->n_targets == 1 || a->id == 400254 ) )
+          druid_cb_t::trigger( a, s );
       }
 
       void execute( action_t*, action_state_t* s ) override
