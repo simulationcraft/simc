@@ -19,8 +19,8 @@ hands=underlight_conjurers_gloves,id=202552,ilevel=447
 waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8780/8790,ilevel=447,gem_id=192938,crafted_stats=36/49
 legs=underlight_conjurers_trousers,id=202550,ilevel=450,enchant_id=6544
 feet=underlight_conjurers_treads,id=202553,ilevel=450
-finger1=bloodied_wedding_ring,id=193671,bonus_id=8780,ilevel=447,gem_id=192938,enchant=devotion_of_mastery_3,enchant_id=6556
-finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192938,enchant=devotion_of_mastery_3,enchant_id=6556
+finger1=bloodied_wedding_ring,id=193671,bonus_id=8780,ilevel=447,gem_id=192938,enchant_id=6556
+finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192938,enchant_id=6556
 trinket1=irideus_fragment,id=193743,ilevel=447
 trinket2=ominous_chromatic_essence,id=203729,ilevel=447
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=sophic_devotion_3,enchant_id=6643
