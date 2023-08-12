@@ -7,22 +7,23 @@ position=back
 talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJRSKCikQEJhEJQSQSLJAAAAAAAAAAAgIJJJRSSSgA
 
 flask=phial_of_corrupting_rage_3
+temporary_enchant=main_hand:hissing_rune_3
 
 head=underlight_conjurers_arcanocowl,id=202551,bonus_id=9321/7979/6652/9414/9229/1472/8767,ilevel=447,gem_id=192988
-neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192961/192961/192961
+neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192988/192938/192938
 shoulders=underlight_conjurers_aurora,id=202549,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=6652/9330/7979/1485/8767,ilevel=457
 chest=underlight_conjurers_vestment,id=202554,bonus_id=9321/7979/6652/9231/1466/8767,ilevel=447,enchant_id=6625
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8780,ilevel=447,gem_id=192961,enchant_id=6580,crafted_stats=40/32
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8780/8793,ilevel=447,gem_id=192938,enchant_id=6580,crafted_stats=40/32
 hands=underlight_conjurers_gloves,id=202552,ilevel=447
-waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8780,ilevel=447,gem_id=192961,crafted_stats=36/49
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8780/8790,ilevel=447,gem_id=192938,crafted_stats=36/49
 legs=underlight_conjurers_trousers,id=202550,ilevel=450,enchant_id=6544
 feet=underlight_conjurers_treads,id=202553,ilevel=450
-finger1=bloodied_wedding_ring,id=193671,bonus_id=8780,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
-finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192961,enchant=devotion_of_mastery_3
+finger1=bloodied_wedding_ring,id=193671,bonus_id=8780,ilevel=447,gem_id=192938,enchant=devotion_of_mastery_3,enchant_id=6556
+finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192938,enchant=devotion_of_mastery_3,enchant_id=6556
 trinket1=irideus_fragment,id=193743,ilevel=447
 trinket2=ominous_chromatic_essence,id=203729,ilevel=447
-main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=sophic_devotion_3,enchant_id=6655
+main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=sophic_devotion_3,enchant_id=6643
 
 dragonflight.ominous_chromatic_essence_dragonflight=ruby
 dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
