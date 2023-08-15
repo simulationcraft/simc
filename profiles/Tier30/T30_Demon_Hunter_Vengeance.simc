@@ -30,103 +30,95 @@ actions.precombat+=/sigil_of_flame
 actions.precombat+=/immolation_aura
 
 # Executed every time the actor is available.
-# Time to CD: When will the next cooldown be available?
-actions=variable,name=next_cd_time,value=cooldown.fel_devastation.remains
-actions+=/variable,name=next_cd_time,op=min,value=cooldown.elysian_decree.remains,if=talent.elysian_decree
-actions+=/variable,name=next_cd_time,op=min,value=cooldown.the_hunt.remains,if=talent.the_hunt
-actions+=/variable,name=next_cd_time,op=min,value=cooldown.soul_carver.remains,if=talent.soul_carver
 # When will the next fire damage cooldown be available?
-actions+=/variable,name=next_fire_cd_time,value=cooldown.fel_devastation.remains
+actions=variable,name=next_fire_cd_time,value=cooldown.fel_devastation.remains
 actions+=/variable,name=next_fire_cd_time,op=min,value=cooldown.soul_carver.remains,if=talent.soul_carver
+actions+=/variable,name=incoming_souls,op=reset
+actions+=/variable,name=incoming_souls,op=add,value=2,if=prev_gcd.1.fracture&!buff.metamorphosis.up
+actions+=/variable,name=incoming_souls,op=add,value=3,if=prev_gcd.1.fracture&buff.metamorphosis.up
+actions+=/variable,name=incoming_souls,op=add,value=2,if=talent.soul_sigils&(prev_gcd.2.sigil_of_flame|prev_gcd.2.sigil_of_silence|prev_gcd.2.sigil_of_chains|prev_gcd.2.elysian_decree)
+actions+=/variable,name=incoming_souls,op=add,value=active_enemies>?3,if=talent.elysian_decree&prev_gcd.2.elysian_decree
+actions+=/variable,name=incoming_souls,op=add,value=0.6*active_enemies>?5,if=talent.fallout&prev_gcd.1.immolation_aura
+actions+=/variable,name=incoming_souls,op=add,value=active_enemies>?5,if=talent.bulk_extraction&prev_gcd.1.bulk_extraction
+actions+=/variable,name=incoming_souls,op=add,value=3-(cooldown.soul_carver.duration-ceil(cooldown.soul_carver.remains)),if=talent.soul_carver&cooldown.soul_carver.remains>57
 # Fiery Demise is up
 actions+=/variable,name=fd,value=talent.fiery_demise&dot.fiery_brand.ticking
-# Number of required frailty stacks for CDs
-actions+=/variable,name=frailty_ready,value=!talent.soulcrush|debuff.frailty.stack>=2
 actions+=/auto_attack
-actions+=/use_item,name=elementium_pocket_anvil,use_off_gcd=1
 actions+=/disrupt,if=target.debuff.casting.react
-actions+=/infernal_strike,use_off_gcd=1
 actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
+actions+=/call_action_list,name=externals
+actions+=/metamorphosis,use_off_gcd=1,if=talent.first_of_the_illidari&(trinket.beacon_to_the_beyond.cooldown.remains<10|fight_remains<=20|!equipped.beacon_to_the_beyond|fight_remains%%120>5&fight_remains%%120<30)
+actions+=/infernal_strike,use_off_gcd=1
+actions+=/potion
+actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=maintenance
-actions+=/run_action_list,name=single_target,if=active_enemies=1
+actions+=/run_action_list,name=single_target,if=active_enemies<=1
 actions+=/run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5
 actions+=/run_action_list,name=big_aoe,if=active_enemies>=6
 
-actions.big_aoe=fel_devastation,if=variable.frailty_ready&variable.fd&talent.stoke_the_flames&!(talent.demonic&buff.metamorphosis.up)
-actions.big_aoe+=/elysian_decree,if=variable.frailty_ready
-actions.big_aoe+=/fel_devastation,if=variable.frailty_ready&(variable.fd|talent.stoke_the_flames)&!(talent.demonic&buff.metamorphosis.up)
-actions.big_aoe+=/the_hunt,if=variable.frailty_ready
+# 6+ targets
+actions.big_aoe=spirit_bomb,if=(active_enemies<=7&soul_fragments>=4)|(active_enemies>7&soul_fragments>=3)
 actions.big_aoe+=/fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)
-actions.big_aoe+=/spirit_bomb,if=((variable.fd&soul_fragments>=4)|soul_fragments>=5)
-actions.big_aoe+=/fracture,if=soul_fragments<=3&soul_fragments>=1
-actions.big_aoe+=/soul_carver,if=variable.fd&variable.frailty_ready&soul_fragments<=3
-actions.big_aoe+=/spirit_bomb,if=((variable.fd&soul_fragments>=3)|soul_fragments>=4)
-actions.big_aoe+=/soul_carver,if=soul_fragments<=3
-actions.big_aoe+=/soul_cleave,if=talent.focused_cleave
-actions.big_aoe+=/spirit_bomb,if=((variable.fd&soul_fragments>=2)|soul_fragments>=3)
-actions.big_aoe+=/soul_cleave
-actions.big_aoe+=/fracture,if=soul_fragments<=3
+actions.big_aoe+=/the_hunt
+actions.big_aoe+=/elysian_decree,if=(soul_fragments+variable.incoming_souls)<=2
+actions.big_aoe+=/soul_carver,if=(soul_fragments+variable.incoming_souls)<=3
+actions.big_aoe+=/fracture,if=soul_fragments>=2
+actions.big_aoe+=/spirit_bomb,if=soul_fragments>=3
+actions.big_aoe+=/soul_cleave,if=soul_fragments<=2&variable.incoming_souls=0
 actions.big_aoe+=/call_action_list,name=filler
 
-actions.filler=bulk_extraction
-actions.filler+=/soul_cleave
-actions.filler+=/spirit_bomb
-actions.filler+=/felblade
+# External buffs
+actions.externals=invoke_external_buff,name=symbol_of_hope,if=cooldown.fiery_brand.charges=0
+actions.externals+=/invoke_external_buff,name=power_infusion
+
+# Filler
+actions.filler=sigil_of_flame
+actions.filler+=/immolation_aura
 actions.filler+=/fracture
 actions.filler+=/shear
-actions.filler+=/throw_glaive
+actions.filler+=/felblade
+actions.filler+=/spirit_bomb,if=soul_fragments>=3
+actions.filler+=/soul_cleave,if=soul_fragments<=1
+actions.filler+=/throw_glaive,if=gcd.remains>=0.5*gcd.max
 
-actions.maintenance=invoke_external_buff,name=symbol_of_hope,if=cooldown.fiery_brand.charges=0
-actions.maintenance+=/metamorphosis,if=talent.first_of_the_illidari&trinket.beacon_to_the_beyond.cooldown.remains<10|fight_remains<20
-actions.maintenance+=/call_action_list,name=trinkets
-actions.maintenance+=/potion
-actions.maintenance+=/fiery_brand,if=charges>=2|(!ticking&((variable.next_fire_cd_time<7)|(variable.next_fire_cd_time>28)))
+# Maintenance & upkeep
+actions.maintenance=fiery_brand,if=(!ticking&active_dot.fiery_brand=0)|charges>=2|(full_recharge_time<=cast_time+gcd.remains)
+actions.maintenance+=/bulk_extraction,if=active_enemies>=(5-soul_fragments)
 actions.maintenance+=/spirit_bomb,if=soul_fragments>=5
-actions.maintenance+=/fracture,target_if=max:dot.fiery_brand.remains,if=dot.fiery_brand.ticking&buff.recrimination.up
+actions.maintenance+=/fracture,target_if=max:dot.fiery_brand.remains,if=active_enemies>1&buff.recrimination.up
 actions.maintenance+=/fracture,if=(full_recharge_time<=cast_time+gcd.remains)
-actions.maintenance+=/immolation_aura
-actions.maintenance+=/sigil_of_flame,if=dot.fiery_brand.ticking
+actions.maintenance+=/immolation_aura,if=!talent.fallout|soul_fragments<5
+actions.maintenance+=/sigil_of_flame
 actions.maintenance+=/metamorphosis,if=talent.demonic&!buff.metamorphosis.up&!cooldown.fel_devastation.up
 
-actions.single_target=soul_carver,if=variable.fd&variable.frailty_ready&soul_fragments<=3
-actions.single_target+=/the_hunt,if=variable.frailty_ready
-actions.single_target+=/soul_carver,if=variable.frailty_ready&soul_fragments<=3
-actions.single_target+=/fel_devastation,if=variable.frailty_ready&(variable.fd|talent.stoke_the_flames)&!(talent.demonic&buff.metamorphosis.up)
-actions.single_target+=/elysian_decree,if=variable.frailty_ready
-actions.single_target+=/fracture,if=set_bonus.tier30_4pc&variable.fd&(soul_fragments<=3|(buff.metamorphosis.up&soul_fragments<=2))
-actions.single_target+=/fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)
-actions.single_target+=/sigil_of_flame,if=fury<70
-actions.single_target+=/spirit_bomb,if=((variable.fd&soul_fragments>=4)|soul_fragments>=5)
-actions.single_target+=/fracture,if=set_bonus.tier30_4pc&variable.fd
+# Single Target
+actions.single_target=fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)
+actions.single_target+=/soul_carver
+actions.single_target+=/the_hunt
+actions.single_target+=/elysian_decree
+actions.single_target+=/fracture,if=set_bonus.tier30_4pc&variable.fd&soul_fragments<=4&soul_fragments>=1
+actions.single_target+=/spirit_bomb,if=soul_fragments>=4
 actions.single_target+=/soul_cleave,if=talent.focused_cleave
-actions.single_target+=/spirit_bomb,if=((variable.fd&soul_fragments>=3)|soul_fragments>=4)
-actions.single_target+=/soul_cleave
-actions.single_target+=/fracture
-actions.single_target+=/spirit_bomb,if=((variable.fd&soul_fragments>=2)|soul_fragments>=3)
-actions.single_target+=/sigil_of_flame
+actions.single_target+=/spirit_bomb,if=variable.fd&soul_fragments>=3
+actions.single_target+=/fracture,if=soul_fragments<=3&soul_fragments>=1
+actions.single_target+=/soul_cleave,if=soul_fragments<=1
 actions.single_target+=/call_action_list,name=filler
 
-actions.small_aoe=elysian_decree,if=variable.frailty_ready
-actions.small_aoe+=/fel_devastation,if=variable.frailty_ready&variable.fd&talent.stoke_the_flames&!(talent.demonic&buff.metamorphosis.up)
-actions.small_aoe+=/the_hunt,if=variable.frailty_ready
-actions.small_aoe+=/fel_devastation,if=variable.frailty_ready&(variable.fd|talent.stoke_the_flames)&!(talent.demonic&buff.metamorphosis.up)
-actions.small_aoe+=/spirit_bomb,if=((variable.fd&soul_fragments>=4)|soul_fragments>=5)
-actions.small_aoe+=/soul_carver,if=variable.frailty_ready&variable.fd&soul_fragments<=3
-actions.small_aoe+=/fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)
+# 2-5 targets
+actions.small_aoe=fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)
+actions.small_aoe+=/the_hunt
+actions.small_aoe+=/elysian_decree,if=(soul_fragments+variable.incoming_souls)<=2
+actions.small_aoe+=/soul_carver,if=(soul_fragments+variable.incoming_souls)<=3
 actions.small_aoe+=/fracture,if=soul_fragments<=3&soul_fragments>=1
-actions.small_aoe+=/sigil_of_flame
-actions.small_aoe+=/soul_carver,if=variable.frailty_ready&soul_fragments<=3
-actions.small_aoe+=/spirit_bomb,if=((variable.fd&soul_fragments>=3)|soul_fragments>=4)
-actions.small_aoe+=/soul_cleave,if=talent.focused_cleave
-actions.small_aoe+=/spirit_bomb,if=((variable.fd&soul_fragments>=2)|soul_fragments>=3)
-actions.small_aoe+=/soul_cleave
-actions.small_aoe+=/spirit_bomb,if=((variable.fd&soul_fragments>=1)|soul_fragments>=2)
-actions.small_aoe+=/fracture
+actions.small_aoe+=/spirit_bomb,if=soul_fragments>=3
+actions.small_aoe+=/soul_cleave,if=(talent.focused_cleave|(soul_fragments<=2&variable.incoming_souls=0))
 actions.small_aoe+=/call_action_list,name=filler
 
-actions.trinkets=use_items
-actions.trinkets+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=buff.metamorphosis.up|fight_remains<=10|!talent.first_of_the_illidari
-actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=!trinket.beacon_to_the_beyond.cooldown.remains<=5&!buff.metamorphosis.up|!equipped.beacon_to_the_beyond
+# Trinkets
+actions.trinkets=use_item,name=elementium_pocket_anvil,use_off_gcd=1
+actions.trinkets+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=!talent.first_of_the_illidari|buff.metamorphosis.up|fight_remains<=10|cooldown.metamorphosis.remains>25
+actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=trinket.beacon_to_the_beyond.cooldown.remains>5|!equipped.beacon_to_the_beyond
+actions.trinkets+=/use_items
 
 head=kinslayers_hood,id=202524,bonus_id=9410/1504/9413,gem_id=192945
 neck=torc_of_passed_time,id=201759,bonus_id=8782,ilevel=447,gem_id=192945/192945/192945,crafted_stats=36/32
