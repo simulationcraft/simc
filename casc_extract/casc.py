@@ -1105,6 +1105,11 @@ class CASCRootFile(CASCObject):
 			return False
 		offset += _ROOT_HEADER.size
 
+		if unk_h1 < 100000:
+			# skip new fields for now, one might be a version
+			# note that two of these new fields come before unk_h1 above, but we don't use those
+			offset += 12
+
 		#print(magic, unk_h1, unk_h2)
 
 		while offset < len(data):
