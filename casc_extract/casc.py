@@ -1112,11 +1112,11 @@ class CASCRootFile(CASCObject):
 			return False
 		offset += _ROOT_HEADER.size
 
-		if unk_h1 == _ROOT_HEADER.size + _ROOT_HEADER_2.size:
+		if unk_h1 <= _ROOT_HEADER.size + _ROOT_HEADER_2.size:
 			hdr_size = unk_h1
 			version = unk_h2
 			total_file_count, named_file_count, unk_h5 = _ROOT_HEADER_2.unpack_from(data, offset)
-			offset += _ROOT_HEADER_2.size
+			offset = hdr_size
 		else:
 			hdr_size = _ROOT_HEADER.size
 			total_file_count = unk_h1
