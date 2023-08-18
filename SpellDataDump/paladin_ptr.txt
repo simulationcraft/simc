@@ -1161,7 +1161,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Always Line of Sight (185), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=157591)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.93127 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.93127 | PvP Coefficient: 0.92590 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=821259)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #3 (id=1050419)  : Trigger Spell (64): Lightforged Blessing
@@ -5425,7 +5425,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Suppress Target Procs (113), Do Not Display Range (126), Treat as Area Effect (175), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=335563)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.93127 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.93127 | PvP Coefficient: 0.92590 | Target: Enemy (6)
 Description      : $@spelldesc53385
 
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
@@ -5961,7 +5961,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=478180)   : School Damage (2): holyfire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.92600 | PvP Coefficient: 0.80000 | Radius: 14 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.92600 | PvP Coefficient: 0.72727 | Radius: 14 yards | Target: Cone Front (104)
 #2 (id=478181)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 #3 (id=478182)   : Trigger Spell (64): Truth's Wake
@@ -13285,7 +13285,7 @@ School           : Arcane
 Spell Type       : None
 Range            : 30 yards
 Cast Time        : 3 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13293,6 +13293,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Do Not Log (8)
 Effects          :
 #1 (id=1016434)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)

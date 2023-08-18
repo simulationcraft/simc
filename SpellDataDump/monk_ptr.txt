@@ -14258,7 +14258,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1022770)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Life Cocoon increases healing over time received by an additional $s1%, and this effect lingers for an additional $387766d after the cocoon is removed.
+Description      : Life Cocoon increases healing over time received by an additional $s1%, and this effect lingers on you for an additional $387766d after the cocoon is removed.
 
 Name             : Nourishing Chi (id=387766) [Spell Family (53)] 
 Class            : Monk
@@ -15880,7 +15880,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : When a hit deals more than $m2% of your maximum health, reduce all damage you take by $s1% for $390239d.
 
-This effect cannot occur more than once every $m3  seconds.
+This effect cannot occur more than once every $m3 seconds.
 Tooltip          : When a hit deals more than 20% of your maximum health, reduce all damage you take by $w1% for $390239d.
 
 Name             : Resonant Fists (id=389578) [Spell Family (53), Passive] 
@@ -17561,22 +17561,22 @@ Effects          :
 Description      : Increases maximum Energy by $s1.
 Tiger Palm damage increased by $s2%.
 
-Name             : Burst of Life (id=399226) [Spell Family (53), Passive] 
+Name             : Burst of Life (id=399226) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Mistweaver [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Only Proc From Class Abilities (415)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1043075)  : Dummy (3)
+#1 (id=1043075)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When Life Cocoon expires, it releases a burst of mist that restores $399230s2 health to $s3 nearby allies.
 
