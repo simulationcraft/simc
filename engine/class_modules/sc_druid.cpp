@@ -10468,10 +10468,10 @@ std::string druid_t::default_flask() const
   {
     switch ( specialization() )
     {
-      case DRUID_BALANCE:
       case DRUID_GUARDIAN:
       case DRUID_RESTORATION:
         return "phial_of_elemental_chaos_3";
+      case DRUID_BALANCE:
       case DRUID_FERAL:
         return "iced_phial_of_corrupting_rage_3";
       default:
