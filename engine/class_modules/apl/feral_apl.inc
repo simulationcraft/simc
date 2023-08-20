@@ -13,7 +13,6 @@ precombat->add_action( "cat_form,if=!buff.cat_form.up","Executed before combat b
 precombat->add_action( "heart_of_the_wild" );
 precombat->add_action( "use_item,name=algethar_puzzle_box" );
 precombat->add_action( "prowl,if=!buff.prowl.up" );
-precombat->add_action( "use_item,name=beacon_to_the_beyond,if=!(trinket.1.is.dragonfire_bomb_dispenser|trinket.2.is.dragonfire_bomb_dispenser)" );
 
 def->add_action( "prowl,if=(buff.bs_inc.down|!in_combat)&!buff.prowl.up","Executed every time the actor is available." );
 def->add_action( "cat_form,if=!buff.cat_form.up" );
@@ -112,7 +111,6 @@ cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<32|(!variable.last
 cooldown->add_action( "convoke_the_spirits,target_if=max:target.time_to_die,if=((target.time_to_die<fight_remains&target.time_to_die>5-talent.ashamanes_guidance.enabled)|target.time_to_die=fight_remains)&(fight_remains<5|(dot.rip.remains>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points<=3))))&(!variable.lastConvoke|buff.potion.up|(time+fight_remains+10)%%300>time%%300)&(talent.dire_fixation.enabled&debuff.dire_fixation.up|!talent.dire_fixation.enabled|spell_targets.swipe_cat>1)","checks to make sure you can actually fit convoke into the pull. this portion -> (time+fight_remains+10)%%300<time%%300) is just checking if you'll get another potion use before fight ends." );
 cooldown->add_action( "use_item,name=manic_grieftorch,target_if=max:target.time_to_die,if=energy.deficit>40" );
 cooldown->add_action( "use_items" );
-cooldown->add_action( "use_item,name=beacon_to_the_beyond" );
 
 finisher->add_action( "primal_wrath,if=((dot.primal_wrath.refreshable&!talent.circle_of_life_and_death.enabled)|dot.primal_wrath.remains<6|(talent.tear_open_wounds.enabled|(spell_targets.swipe_cat>4&!talent.rampant_ferocity.enabled)))&spell_targets.primal_wrath>1&talent.primal_wrath.enabled" );
 finisher->add_action( "rip,target_if=refreshable&(!talent.primal_wrath.enabled|spell_targets.swipe_cat=1)" );
