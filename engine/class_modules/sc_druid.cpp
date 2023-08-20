@@ -10682,10 +10682,10 @@ void druid_t::init()
 
   if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    if ( options.adaptive_swarm_melee_targets == 9 )
-      options.adaptive_swarm_melee_targets = 3;
-    if ( options.adaptive_swarm_ranged_targets == 14 )
-      options.adaptive_swarm_ranged_targets = 1;
+    if ( options.adaptive_swarm_melee_targets == 7 )
+      options.adaptive_swarm_melee_targets = 2;
+    if ( options.adaptive_swarm_ranged_targets == 12 )
+      options.adaptive_swarm_ranged_targets = 2;
   }
 }
 
