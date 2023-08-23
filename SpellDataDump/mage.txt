@@ -356,8 +356,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), Periodic Can Crit (265), Aura Points On Client (268), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=126904)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.62694 | PvP Coefficient: 1.24400 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1.12 -> 1.244)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.58932 | PvP Coefficient: 1.24400 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.62694 -> 0.589324)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 8 yards | Mechanic: Snare | Target: AOE enemy (instant) (16)
 #3 (id=1096694)  : Dummy (3)
@@ -4713,8 +4713,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303195)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.06986 | PvP Coefficient: 1.11110 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 1.1111)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.06288 | PvP Coefficient: 1.11110 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.069862 -> 0.062876)
 Description      : $@spelldesc205023
 
 Name             : Flame Patch (id=205470) [Spell Family (3)] 
@@ -4758,8 +4758,8 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), PvP Enabling (96), Treat As Periodic (121), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=303428)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.03911 | PvP Coefficient: 1.11100 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 1.111)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.03598 | PvP Coefficient: 1.11100 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Hotfixed         : SP Coefficient (0.03911 -> 0.035982)
 #2 (id=1096677)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Burning enemies for $s1 Fire damage.
@@ -5365,8 +5365,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=340404)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01913 | PvP Coefficient: 1.11110 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.1111)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01760 | PvP Coefficient: 1.11110 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.019127 -> 0.017597)
 Description      : $@spelldesc205023
 Tooltip          : Deals $w1 Fire damage every $t1 sec.
 
@@ -13721,12 +13721,13 @@ Description      : Increases Arcane Missiles damage by $s1%.
 
 
 Name             : Incendiary Eruptions (id=383665) [Spell Family (3), Passive, Hidden] 
+Hotfixed         : Internal Cooldown (8000 -> 10000)
 Talent Entry     : Fire [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Internal Cooldown: 8 seconds
+Internal Cooldown: 10 seconds
 Proc Chance      : 5%
 Proc Flags       : ........ ....x... x.x..... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -15760,9 +15761,6 @@ Resource         : 6% Base Mana (0) (id=305058)
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 300 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
-                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Affecting spells : Norgannon's Foresight (236380 effect#1), Foresight (384865 effect#1), Improved Mass Invisibility (415945 effect#1)
 Family Flags     : 103
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
