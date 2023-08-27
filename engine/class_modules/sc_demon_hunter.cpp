@@ -7124,11 +7124,10 @@ double demon_hunter_t::composite_armor() const
 {
   double a = player_t::composite_armor();
 
-  if ( buff.demon_spikes->up() )
-  {
-    const double mastery_value = cache.mastery() * mastery.fel_blood ->effectN( 1 ).mastery_value();
-    a += ( buff.demon_spikes->data().effectN( 2 ).percent() + mastery_value ) * cache.agility();
-  }
+  // Mastery: Fel Blood increases Armor by Mastery * AGI and is doubled while Demon Spikes is active.
+  const double mastery_value = cache.mastery() * mastery.fel_blood->effectN( 1 ).mastery_value();
+  const double fel_blood_value = cache.agility() * mastery_value * (1 + buff.demon_spikes->check());
+  a += fel_blood_value;
 
   return a;
 }
