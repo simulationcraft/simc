@@ -6953,8 +6953,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
       adjust_movement();
       break;
     case CACHE_AGILITY:
-      if ( buff.demon_spikes->check() )
-        invalidate_cache( CACHE_ARMOR );
+      invalidate_cache( CACHE_ARMOR );
       break;
     default:
       break;
