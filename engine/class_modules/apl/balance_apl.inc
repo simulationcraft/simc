@@ -6,8 +6,8 @@ action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds" );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
-precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration|trinket.1.is.spoils_of_neltharus" );
-precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration|trinket.2.is.spoils_of_neltharus)*2" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration|trinket.1.is.spoils_of_neltharus|trinket.1.is.mirror_of_fractured_tomorrows" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration|trinket.2.is.spoils_of_neltharus|trinket.1.is.mirror_of_fractured_tomorrows)*2" );
 precombat->add_action( "moonkin_form" );
 precombat->add_action( "wrath" );
 precombat->add_action( "wrath" );
@@ -28,7 +28,6 @@ def->add_action( "run_action_list,name=st" );
 
 st->add_action( "sunfire,target_if=refreshable&remains<2&(target.time_to_die-remains)>6" );
 st->add_action( "variable,name=cd_condition_st,value=!druid.no_cds&(cooldown.ca_inc.remains<5&!buff.ca_inc.up&(target.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune))" );
-st->add_action( "use_item,name=mirror_of_fractured_tomorrows,if=variable.cd_condition_st" );
 st->add_action( "moonfire,target_if=refreshable&remains<2&(target.time_to_die-remains)>6" );
 st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&remains<2&(target.time_to_die-remains)>8" );
 st->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<2&(buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up&buff.starweavers_warp.up|buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up)" );
@@ -66,7 +65,6 @@ st->add_action( "run_action_list,name=fallthru" );
 
 aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+3,if=fight_style.dungeonroute" );
 aoe->add_action( "variable,name=cd_condition_aoe,value=!druid.no_cds&(cooldown.ca_inc.remains<5&!buff.ca_inc.up&(target.time_to_die>10|fight_remains<25+10*talent.incarnation_chosen_of_elune))" );
-aoe->add_action( "use_item,name=mirror_of_fractured_tomorrows,if=variable.cd_condition_aoe" );
 aoe->add_action( "sunfire,target_if=refreshable&(target.time_to_die-remains)>6-(spell_targets%2)&astral_power.deficit>variable.passive_asp+3" );
 aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+3,if=!fight_style.dungeonroute" );
 aoe->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remains-spell_targets.starfire)>8+spell_targets.starfire,if=astral_power.deficit>variable.passive_asp+8&spell_targets.starfire<(11-talent.umbral_intensity.rank-talent.astral_smolder.rank)&variable.cd_condition_aoe" );
