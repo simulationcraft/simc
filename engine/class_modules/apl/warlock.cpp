@@ -103,7 +103,6 @@ void affliction( player_t* p )
   aoe->add_action( "soul_rot,if=variable.vt_up&variable.ps_up" );
   aoe->add_action( "unstable_affliction,if=remains<5" );
   aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)" );
-  aoe->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3&talent.doom_blossom");
   aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
   aoe->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
