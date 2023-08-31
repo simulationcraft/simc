@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50791 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4816,12 +4816,10 @@ Effects          :
                    Base Value: 268 | Scaled Value: 268 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Thrash (77758)
                    Family Flags: 91
-Hotfixed         : Base Value (300 -> 268)
 #8 (id=260759)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Thrash (77758), Thrash (192090)
                    Family Flags: 40, 91
-Hotfixed         : Base Value (300 -> -8), Affects Spells
 #9 (id=260760)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Mangle (33917)
@@ -15935,7 +15933,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1004915)  : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 45)
 Description      : Thrash and Maul grant you an absorb shield for $s1% of the damage dealt for $372505d.
 
 Name             : Berserk: Unchecked Aggression (id=377623) [Spell Family (7), Passive, Hidden] 
@@ -16056,7 +16053,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1005889)  : Apply Aura (6) | Dummy (4)
                    Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (150 -> 120)
 #2 (id=1017562)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1568 | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
@@ -20014,7 +20010,6 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=1045055)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.64400 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
-Hotfixed         : AP Coefficient (0.7 -> 0.644)
 Description      : Strike with the might of Ursoc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage beyond 5 targets.
 
 Name             : Moonless Night (id=400278) [Spell Family (7), Passive] 
