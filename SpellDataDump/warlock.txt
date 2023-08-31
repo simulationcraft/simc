@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50791 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -55,7 +55,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=830260)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13800 | PvP Coefficient: 1.25000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.1 -> 1.25)
 Description      : Corrupts the target, causing$?s334342[ $s3 Shadow damage and an additional][] $146739o1 Shadow damage over $146739d.
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -140,7 +139,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=267)      : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70200 | PvP Coefficient: 1.60000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.3 -> 1.6)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -364,7 +362,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01407 | PvP Coefficient: 1.25000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.1 -> 1.25)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -3385,7 +3382,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.60524 | PvP Coefficient: 1.75000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.6 -> 1.75)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -4770,7 +4766,6 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=291909)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2.5 | SP Coefficient: 0.46406 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 #2 (id=355424)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=734824)   : Dummy (3)
@@ -5097,7 +5092,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302930)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.03500 | PvP Coefficient: 1.10000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Eye Beam (id=205231) [Spell Family (5)] 
@@ -6442,7 +6436,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.88080 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.88080 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Send the fiery soul of a fallen demon at the enemy, causing $s1 Shadowflame damage.$?c2[
@@ -8081,7 +8075,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=722506)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.03500 | PvP Coefficient: 1.10000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Shadow Slash (id=272012) 
