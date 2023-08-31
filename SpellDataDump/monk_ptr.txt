@@ -5338,9 +5338,11 @@ Effects          :
 #1 (id=290836)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
 #2 (id=1097149)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 20)
 #3 (id=1097150)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 20)
 Description      : Vivify has a $s2% chance to cause your next Rising Sun Kick or Enveloping Mist to generate $s1 stack of Mana Tea.
 
 Enveloping Mist and Rising Sun Kick have a $s3% chance to cause your next Vivify to generate $s1 stack of Mana Tea.
@@ -18009,8 +18011,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1053880)  : Apply Aura (6) | Proc Trigger Spell (42): Soulfang Vitality
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 410082 | Target: Self (1)
+#1 (id=1053880)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4), Trigger Spell (410082 -> 0)
 Description      : Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
 Tooltip          : Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
 
@@ -18224,7 +18227,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
-Triggered by     : Monk Mistweaver 10.1 Class Set 4pc (405542)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
