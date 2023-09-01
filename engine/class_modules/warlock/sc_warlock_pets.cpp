@@ -1433,6 +1433,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     if ( p->o()->talents.dreadlash->ok() )
     {
       aoe    = -1;
+      reduced_aoe_targets = 5;
       radius = 8.0;
     }
   }
