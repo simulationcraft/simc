@@ -113,6 +113,11 @@ struct agony_t : public affliction_spell_t
     double active_agonies = p()->get_active_dots( d );
     increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
 
+    // 2023-09-01: Recent test noted that Creeping Death is once again renormalizing shard generation to be neutral with/without the talent.
+    // Unclear if this was changed/bugfixed since beta or if previous beta tests were inaccurate.
+    if ( p()->talents.creeping_death->ok() )
+      increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+
     p()->agony_accumulator += rng().range( 0.0, increment_max );
 
     if ( p()->agony_accumulator >= 1 )
