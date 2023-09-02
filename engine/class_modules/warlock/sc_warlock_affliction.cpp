@@ -426,7 +426,7 @@ struct drain_soul_t : public affliction_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t dur = dot_duration * s->haste;
+    timespan_t dur = dot_duration * ( ( base_tick_time * s->haste ) / base_tick_time );
 
     if ( p()->buffs.nightfall->check() )
       dur *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
