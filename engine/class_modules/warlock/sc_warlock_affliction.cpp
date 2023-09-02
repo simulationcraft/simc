@@ -424,7 +424,6 @@ struct drain_soul_t : public affliction_spell_t
     return t;
   }
 
-  
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t dur = dot_duration * ( ( base_tick_time * s->haste ) / base_tick_time );
@@ -434,7 +433,7 @@ struct drain_soul_t : public affliction_spell_t
 
     return dur;
   }
-  
+
   void execute() override
   {
     affliction_spell_t::execute();
