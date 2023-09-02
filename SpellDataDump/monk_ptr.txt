@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50791 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -5339,10 +5339,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
 #2 (id=1097149)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 20)
 #3 (id=1097150)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 20)
 Description      : Vivify has a $s2% chance to cause your next Rising Sun Kick or Enveloping Mist to generate $s1 stack of Mana Tea.
 
 Enveloping Mist and Rising Sun Kick have a $s3% chance to cause your next Vivify to generate $s1 stack of Mana Tea.
@@ -18013,7 +18011,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053880)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4), Trigger Spell (410082 -> 0)
 Description      : Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
 Tooltip          : Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
 
