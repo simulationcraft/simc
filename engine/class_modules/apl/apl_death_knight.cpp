@@ -387,7 +387,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=variables", "Call Action Lists" );
   default_->add_action( "call_action_list,name=high_prio_actions" );
   default_->add_action( "call_action_list,name=trinkets" );
-  default_->add_action( "run_action_list,name=garg_setup_complete,if=variable.garg_setup_complete=0" );
+  default_->add_action( "run_action_list,name=garg_setup,if=variable.garg_setup_complete=0" );
   default_->add_action( "call_action_list,name=cooldowns,if=variable.st_planning" );
   default_->add_action( "call_action_list,name=aoe_cooldowns,if=variable.adds_remain" );
   default_->add_action( "call_action_list,name=racials" );
