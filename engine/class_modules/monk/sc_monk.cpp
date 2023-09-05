@@ -2613,7 +2613,6 @@ namespace monk
           full_amount_targets = 1;
           ww_mastery = true;
 
-          attack_power_mod.direct = p->talent.windwalker.fists_of_fury->effectN( 5 ).ap_coeff();
           base_costs[RESOURCE_CHI] = 0;
           dot_duration = timespan_t::zero();
           trigger_gcd = timespan_t::zero();
