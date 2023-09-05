@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -755,7 +755,7 @@ Spell Type       : Magic
 Spell Level      : 8
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Category         : 671
+Category         : 671: Angel's Mercy (238100 effect#1)
 Labels           : 1284: Symbol of Hope (265144 effect#2)
 Category Cooldown: 90 seconds
 Stance Mask      : 0x08000000
@@ -5479,8 +5479,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=316967)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Friend (21)
@@ -5934,9 +5934,6 @@ Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20,
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5947,9 +5944,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=360785)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damage you take reduces the cooldown of Desperate Prayer, based on the amount of damage taken.
+#1 (id=360785)   : Apply Aura (6) | Modify Cooldown Time (Category) (341)
+                   Base Value: -20000 | Scaled Value: -20000 | PvP Coefficient: 1.00000 | Misc Value: 671 | Target: Self (1)
+                   Affected Spells (Category): Desperate Prayer (19236)
+Description      : Reduces the cooldown of Desperate Prayer by ${$s1/-1000} sec.
 
 Name             : Aegis of Wrath (id=238135) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=10, col=1, max_rank=1, req_points=20]
@@ -13368,7 +13366,7 @@ Range            : 40 yards
 Duration         : 20 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13376,7 +13374,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : DoT Stacking Rule (103)
+                 : Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103)
 Effects          :
 #1 (id=998390)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)

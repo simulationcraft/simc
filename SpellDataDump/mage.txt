@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -1211,8 +1211,8 @@ Attributes       : ........ ........ ........ ..x..x..   ...x...x ..x..... xx...
 Effects          :
 #1 (id=32866)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : As a side-effect of exposure to intense cold, the caster cannot Ice Block again for $d.
-Tooltip          : Cannot be made invulnerable by Ice Block.
+Description      : As a side-effect of exposure to intense cold, the caster cannot Ice Block or Ice Cold again for $d.
+Tooltip          : $?a414659[Cannot cast Ice Cold][Cannot be made invulnerable by Ice Block].
 
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -15651,7 +15651,7 @@ Description      : Your blood runs cold, reducing all damage you take by $s8% fo
 
 While Ice Cold is active, you heal for ${$382292s1*10}% of your maximum health over the duration.][]
 
-Causes Hypothermia, preventing you from recasting Ice Block for $41425d.
+Causes Hypothermia, preventing you from recasting Ice Cold for $41425d.
 Tooltip          : Damage taken reduced by $s8%.
 
 Name             : Ice Cold (id=414659) [Spell Family (3), Passive] 
