@@ -1275,7 +1275,6 @@ struct flash_heal_t final : public priest_heal_t
 
 // ==========================================================================
 // Desperate Prayer
-// TODO: add Light's Inspiration
 // ==========================================================================
 struct desperate_prayer_t final : public priest_heal_t
 {
