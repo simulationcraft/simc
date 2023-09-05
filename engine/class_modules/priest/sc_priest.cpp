@@ -1275,12 +1275,17 @@ struct flash_heal_t final : public priest_heal_t
 
 // ==========================================================================
 // Desperate Prayer
-// TODO: add Light's Inspiration HoT
+// TODO: add Light's Inspiration
 // ==========================================================================
 struct desperate_prayer_t final : public priest_heal_t
 {
+  double health_change;
+  double max_health_snapshot;
+
   desperate_prayer_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) )
+    : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) ),
+      health_change( data().effectN( 1 ).percent() ),
+      max_health_snapshot( player->resources.max[ RESOURCE_HEALTH ] )
   {
     parse_options( options_str );
     harmful  = false;
@@ -1289,13 +1294,39 @@ struct desperate_prayer_t final : public priest_heal_t
     // does not seem to proc anything other than heal specific actions
     callbacks = false;
 
-    // This is parsed as a HoT, disabling that manually
+    // This is parsed as a Heal and HoT, disabling that manually
+    // The "Heal" portion comes from the buff
     base_td_multiplier = 0.0;
     dot_duration       = timespan_t::from_seconds( 0 );
+
+    // CDR
+    apply_affecting_aura( p.talents.angels_mercy );
+
+    if ( priest().talents.lights_inspiration.enabled() )
+    {
+      health_change += priest().talents.lights_inspiration->effectN( 1 ).percent();
+    }
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    // Calculate this before the increased in health is applied
+    double heal_amount = max_health_snapshot * health_change;
+
+    sim->print_debug( "{} gains desperate_prayer: max_health_snapshot {}, health_change {}, heal_amount: {}",
+                      player->name(), max_health_snapshot, health_change, heal_amount );
+
+    // Record raw amd total amount to state
+    state->result_raw   = heal_amount;
+    state->result_total = heal_amount;
+    return heal_amount;
   }
 
   void execute() override
   {
+    // Before we increase the health of the player in the buff, store how much it was
+    max_health_snapshot = player->resources.max[ RESOURCE_HEALTH ];
+
     priest().buffs.desperate_prayer->trigger();
 
     priest_heal_t::execute();
@@ -1474,9 +1505,10 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
     // Cooldown handled by the action
     cooldown->duration = 0_ms;
 
+    // Additive health increase
     if ( priest().talents.lights_inspiration.enabled() )
     {
-      health_change *= 1.0 + priest().talents.lights_inspiration->effectN( 1 ).percent();
+      health_change += priest().talents.lights_inspiration->effectN( 1 ).percent();
     }
   }
 
@@ -1484,13 +1516,12 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
   {
     buff_t::start( stacks, value, duration );
 
+    // Instead of increasing health here we perform this inside the heal_t action of the spell
     double old_health     = player->resources.current[ RESOURCE_HEALTH ];
     double old_max_health = player->resources.max[ RESOURCE_HEALTH ];
 
     player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
     player->recalculate_resource_max( RESOURCE_HEALTH );
-    player->resources.current[ RESOURCE_HEALTH ] *=
-        1.0 + health_change;  // Update health after the maximum is increased
 
     sim->print_debug( "{} gains desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
                       player->name(), health_change * 100.0, old_health, player->resources.current[ RESOURCE_HEALTH ],
@@ -1499,11 +1530,11 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
 
   void expire_override( int, timespan_t ) override
   {
+    // Whatever is gained by the heal is kept
     double old_health     = player->resources.current[ RESOURCE_HEALTH ];
     double old_max_health = player->resources.max[ RESOURCE_HEALTH ];
 
     player->resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
-    player->resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change;  // Update health before the maximum is reduced
     player->recalculate_resource_max( RESOURCE_HEALTH );
 
     sim->print_debug( "{} loses desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
@@ -2224,7 +2255,7 @@ void priest_t::init_spells()
   talents.twist_of_fate   = CT( "Twist of Fate" );
   talents.throes_of_pain  = CT( "Throes of Pain" );
   // Row 8
-  talents.angels_mercy               = CT( "Angel's Mercy" );  // NYI
+  talents.angels_mercy               = CT( "Angel's Mercy" );
   talents.binding_heals              = CT( "Binding Heals" );  // NYI
   talents.halo                       = CT( "Halo" );
   talents.halo_heal_holy             = find_spell( 120692 );
