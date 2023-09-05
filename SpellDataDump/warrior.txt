@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -12129,7 +12129,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013939)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you take any damage, heal for |cFFFFFFFF${$m1/10}.2%|r of your maximum health. 
+Description      : When you take any damage, heal for ${$m1/10}.2% of your maximum health. 
 
 This can only occur once every $357946d.
 
@@ -15597,7 +15597,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1026752)  : Dummy (3)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Activating Avatar or Bladestorm casts  the other at reduced effectiveness.
+Description      : Activating Avatar or Bladestorm casts the other at reduced effectiveness.
 
 Name             : Warlord's Torment (id=390140) [Spell Family (4), Passive] 
 Talent Entry     : Arms [tree=class, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
@@ -16870,7 +16870,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1038018)  : Apply Party Aura (35) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : @spelldesc394312
+Description      : $@spelldesc394312
 Tooltip          : Auto-attack damage and speed increased by $s1%.
 
 Name             : Immovable Object (id=394314) [Spell Family (4), Passive] 

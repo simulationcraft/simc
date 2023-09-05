@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -864,7 +864,7 @@ Effects          :
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=303680)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.04000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.15000
 #6 (id=480070)   : Dummy (3)
                    Base Value: 59 | Scaled Value: 59 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Pummels all targets in front of you, dealing ${5*$s5} Physical damage over $113656d to your primary target and ${5*$s5*$s6/100} damage over $113656d to all other enemies. Deals reduced damage beyond $s1 targets. Can be channeled while moving.
@@ -1100,8 +1100,8 @@ Resource         : 1.8% Base Mana (0) (id=5696)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
-Charges          : 1 (9 seconds cooldown)
-Category         : 1517: Mastery of Mist (281231 effect#1)
+Charges          : 2 (9 seconds cooldown)
+Category         : 1517
 Affecting spells : Thunder Focus Tea (116680 effect#3), Shelter of Rin (281301 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2)
 Family Flags     : 23, 97
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -1294,6 +1294,34 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: chi | Target: Self (1)
 Description      : Chug an Energizing Elixir, granting $s2 Chi and generating ${$s1/5*5} Energy over $d.
 Tooltip          : Generating ${$w1/5} extra Energy per sec.
+
+Name             : Mana Tea (id=115294) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Magic
+Max Scaling Level: 70
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Affecting spells : Energizing Brew (422031 effects: #1, #2)
+Family Flags     : 53, 64
+Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   
+                 : Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Spell Haste Affects Periodic (173), No Pushback (207), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: -2
+                   Base Value: 3 | Scaled Value: 3000 (coefficient=0.02) | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore $s1 Mana and reduces the Mana cost of your spells by $197908s1% for ${$115869s3/1000}.2 sec per stack of Mana Tea consumed after drinking.
+
+Can be cast while moving, but movement speed is reduced by $s2% while channeling.
+Tooltip          : Restoring $s1 Mana every $t1 sec.
 
 Name             : Ironskin Brew (id=115308) [Spell Family (53)] 
 Class            : Monk
@@ -1554,6 +1582,36 @@ Effects          :
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
+Name             : Mana Tea (id=115869) [Spell Family (53), Passive] 
+Talent Entry     : Mistweaver [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Resource         : 1% Base Mana (0) (id=305364)
+Proc Chance      : 100%
+Proc Flags       : ....x... ..x.x.x. x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ .......x ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Log (8), Do Not Sheath (18), Can Proc From Procs (122), Not In Spellbook (143), Allow Proc While Sitting (147), Do Not Display Power Cost (303), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=130022)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=150790)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1095446)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : For every ${$c*$s1} Mana you spend, you gain 1 stack of Mana Tea, with a chance equal to your critical strike chance to generate 1 extra stack.
+
+$@spellicon115294$@spellname115294:
+$@spelldesc115294
+
 Name             : Afterlife (id=116092) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
 School           : Physical
@@ -1684,7 +1742,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#25), Mistweaver Monk (137024 effects: #1, #2, #22), Windwalker Monk (137025 effect#21), Lifecycles (Vivify) (197916 effect#1), Improved Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Escape from Reality (343249 effect#3), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2), Save Them All (390105 effects: #1, #2), Vivacious Vivification (392883 effect#1), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Lesson of Doubt (400097 effect#1), Soulfang Vitality (410082 effects: #1, #2)
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#25), Mistweaver Monk (137024 effects: #1, #2, #22), Windwalker Monk (137025 effect#21), Improved Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Escape from Reality (343249 effect#3), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2), Save Them All (390105 effects: #1, #2), Vivacious Vivification (392883 effect#1), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Lesson of Doubt (400097 effect#1), Soulfang Vitality (410082 effects: #1, #2)
 Family Flags     : 26, 48
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2026,7 +2084,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=133162)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20750 | PvP Coefficient: 1.15000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 Description      : $@spelldesc113656
@@ -2623,7 +2681,7 @@ Description      : Reduces all damage you take by $m2% to $m3% for $d, with larg
 Tooltip          : Damage taken reduced by $m2% to $m3% for $d, with larger attacks being reduced by more.
 
 Name             : Healing Elixir (id=122281) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=5, max_rank=1, req_points=8]
                  : Brewmaster [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
@@ -2913,7 +2971,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Custom (18)
 
 Name             : Zen Pulse (id=124081) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -3192,7 +3250,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#6), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3), Save Them All (390105 effects: #1, #2), Lesson of Doubt (400097 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#6), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3), Save Them All (390105 effects: #1, #2), Lesson of Doubt (400097 effect#1)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -5236,13 +5294,12 @@ Effects          :
 Description      : Increases Enveloping Mist's duration by ${$m2/1000} sec and its healing bonus by $s1%.
 
 Name             : Mana Tea (id=197908) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Family Flags     : 53, 64
+Family Flags     : 53
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5260,14 +5317,14 @@ Description      : Reduces the mana cost of your spells by $s1% for $d.
 Tooltip          : Mana cost of spells reduced by $s1%.
 
 Name             : Lifecycles (id=197915) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
-                 : Magic Heal
+Proc Flags       : ....x... ......x. ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Magic Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5279,65 +5336,14 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=290836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
-Description      : Enveloping Mist reduces the mana cost of your next Vivify by $197916s1%.
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+#2 (id=1097149)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+#3 (id=1097150)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
+Description      : Vivify has a $s2% chance to cause your next Rising Sun Kick or Enveloping Mist to generate $s1 stack of Mana Tea.
 
-Vivify reduces the mana cost of your next Enveloping Mist by $197919s1%.
-
-Name             : Lifecycles (Vivify) (id=197916) [Spell Family (53)] 
-Class            : Monk
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Duration         : 15 seconds
-Cooldown         : 45 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
-                 : Magic Heal
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
-Effects          :
-#1 (id=290838)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Vivify (116670)
-                   Family Flags: 26
-Description      : $@spelldesc197915
-Tooltip          : Cost of your next Vivify reduced by $s1%.
-
-Name             : Lifecycles (Enveloping Mist) (id=197919) [Spell Family (53)] 
-Class            : Monk
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
-                 : Magic Heal
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
-Effects          :
-#1 (id=290846)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
-                   Family Flags: 79
-Description      : $@spelldesc197915
-Tooltip          : Cost of your next Enveloping Mist reduced by $s1%.
+Enveloping Mist and Rising Sun Kick have a $s3% chance to cause your next Vivify to generate $s1 stack of Mana Tea.
 
 Name             : Zen Pulse (id=198487) [Spell Family (53)] 
 Class            : Monk
@@ -5603,7 +5609,6 @@ While channeling, Effuse and Enveloping Mist are instant cast, and will heal the
 Tooltip          : Healing for $w1 every $t.
 
 Name             : Spirit of the Crane (id=210802) [Spell Family (53), Passive, Hidden] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7610,7 +7615,7 @@ Effects          :
 Description      : $@spelldesc116680
 
 Name             : Invigorating Mists (id=274586) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Frost
 Spell Type       : None
@@ -8746,26 +8751,6 @@ Effects          :
 #1 (id=738417)   : Apply Aura (6) | Unknown(285) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 25.27196 (coefficient=0.055714) | PvP Coefficient: 0.50000 | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
-
-Name             : Mastery of Mist (id=281231) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=3, max_rank=1, req_points=0]
-Class            : Monk
-School           : Frost
-Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143)
-Effects          :
-#1 (id=739500)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1517 | Target: Self (1)
-                   Affected Spells (Category): Renewing Mist (115151)
-Description      : Renewing Mist now has ${$s1+1} charges.
 
 Name             : Unstable Catalyst (id=281514) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -10227,7 +10212,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#6), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3), Save Them All (390105 effects: #1, #2), Lesson of Doubt (400097 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#6), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3), Save Them All (390105 effects: #1, #2), Lesson of Doubt (400097 effect#1)
 Family Flags     : 48, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -11302,7 +11287,7 @@ Effects          :
 Description      : After casting Essence Font, your Tiger Palm, Blackout Kick, and Rising Sun Kick heal an injured ally within $126890A1 yards for $m1% of the damage done. Lasts $347553d.
 
 Name             : Font of Life (id=337209) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14263,7 +14248,7 @@ Description      : Blackout Kick's damage increased by $s2% and it strikes an ad
 Tooltip          : Blackout Kick damage increased by $s2% and strikes an additional $s1 $ltarget;targets.
 
 Name             : Nourishing Chi (id=387765) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14279,7 +14264,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1022770)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Life Cocoon increases healing over time received by an additional $s1%, and this effect lingers for an additional $387766d after the cocoon is removed.
+Description      : Life Cocoon increases healing over time received by an additional $s1%, and this effect lingers on you for an additional $387766d after the cocoon is removed.
 
 Name             : Nourishing Chi (id=387766) [Spell Family (53)] 
 Class            : Monk
@@ -14670,7 +14655,7 @@ Effects          :
 Description      : Reduces the cooldown of $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by 2 min, but decreases its duration to 12 sec. 
 
 Name             : Calming Coalescence (id=388218) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14989,7 +14974,7 @@ Effects          :
 Description      : Thunder Focus Tea also empowers $s1 additional Renewing Mist, Essence Font, or Rising Sun Kick at random.
 
 Name             : Mists of Life (id=388548) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15009,7 +14994,7 @@ Effects          :
 Description      : Life Cocoon applies Renewing Mist and Enveloping Mist to the target. 
 
 Name             : Uplifted Spirits (id=388551) [Spell Family (53), Passive] 
-Talent Entry     : Mistweaver [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Mistweaver [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15901,7 +15886,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : When a hit deals more than $m2% of your maximum health, reduce all damage you take by $s1% for $390239d.
 
-This effect cannot occur more than once every $m3  seconds.
+This effect cannot occur more than once every $m3 seconds.
 Tooltip          : When a hit deals more than 20% of your maximum health, reduce all damage you take by $w1% for $390239d.
 
 Name             : Resonant Fists (id=389578) [Spell Family (53), Passive] 
@@ -17582,20 +17567,20 @@ Effects          :
 Description      : Increases maximum Energy by $s1.
 Tiger Palm damage increased by $s2%.
 
-Name             : Burst of Life (id=399226) [Spell Family (53), Passive] 
+Name             : Burst of Life (id=399226) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Mistweaver [tree=spec, row=7, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Only Proc From Class Abilities (415)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1043075)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -18024,8 +18009,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1053880)  : Apply Aura (6) | Proc Trigger Spell (42): Soulfang Vitality
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 410082 | Target: Self (1)
+#1 (id=1053880)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
 Tooltip          : Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
 
@@ -18239,7 +18224,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
-Triggered by     : Monk Mistweaver 10.1 Class Set 4pc (405542)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18472,5 +18456,30 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc418359
 Tooltip          : Damage increased by $w1%.
+
+Name             : Energizing Brew (id=422031) [Spell Family (53), Passive] 
+Talent Entry     : Mistweaver [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=100]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1097098)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Affected Spells: Mana Tea (115294)
+                   Family Flags: 64
+#2 (id=1097099)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Mana Tea (115294)
+                   Family Flags: 64
+Description      : Mana Tea now channels $s1% faster and generates $s2% more Mana.
 
 
