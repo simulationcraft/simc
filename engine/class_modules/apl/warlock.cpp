@@ -78,7 +78,7 @@ void affliction( player_t* p )
   
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2" );
-  default_->add_action( "actions+=/malefic_rapture,if=variable.cd_dots_up|variable.vt_ps_up&soul_shard>1" );
+  default_->add_action( "malefic_rapture,if=variable.cd_dots_up|variable.vt_ps_up&soul_shard>1" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react" );
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&fight_remains<4" );
   default_->add_action( "drain_soul,if=buff.nightfall.react" );
