@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2315,7 +2315,10 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Labels           : 2381: Felfire Heart (388109 effect#2)
+Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
+Proc Flags       : .....x.. .x...x.. .x...... ........   ........ ........ ........ ........   
+                 : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Extended Sigils (389697 effect#1), Chains of Anger (389715 effect#1), Precise Sigils (389799 effect#5), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 16, 33, 70, 72
 Attributes       : ........ ........ ........ x..x....   .....x.x ........ ........ ........ 
@@ -12307,24 +12310,24 @@ Detonates to deal $389860s1 $@spelldesc395039 damage and shatter up to $s3 Lesse
 
 Name             : Soulrend (id=390181) [Spell Family (107)] 
 Class            : Demon Hunter
-School           : Chaos
-Spell Type       : Melee
+School           : Chromatic
+Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Burning Blood (390213 effects: #1, #2)
 Family Flags     : 43
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
+                 : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
+                 : ........ x....... ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
+                 : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Aura Never Bounces (148), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1026811)  : Apply Aura (6) | Periodic Damage (3): chaos every 2 seconds
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#1 (id=1026811)  : Apply Aura (6) | Periodic Damage (3): chromatic every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc388106
 Tooltip          : Suffering $w1 Chaos damage every $t1 sec.
 
