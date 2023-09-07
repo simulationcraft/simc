@@ -2,10 +2,10 @@ monk="T30_Monk_Windwalker"
 source=default
 spec=windwalker
 level=70
-race=orc
+race=void_elf
 role=attack
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACikkoFJJAAAAAJSSaASSSSgkSkISoUkkUSSaJAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRSS0ikEAAAAgEJJFAJJJJBJiERCtikkWSSLBAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -392,35 +392,34 @@ actions.serenity_st+=/blackout_kick,if=combo_strike
 actions.serenity_st+=/whirling_dragon_punch
 actions.serenity_st+=/tiger_palm,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3
 
-actions.trinkets=use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.serenity.up&!pet.xuen_the_white_tiger.active&(debuff.fae_exposure_damage.remains>2|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains&(debuff.fae_exposure_damage.remains>2|!talent.faeline_harmony)|fight_remains<10
-actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>10&cooldown.serenity.remains&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|fight_remains<10
+actions.trinkets=use_item,name=dragonfire_bomb_dispenser,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>10&cooldown.serenity.remains&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|fight_remains<10
 actions.trinkets+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12
 
-head=cover_of_the_vermillion_forge,id=202506,bonus_id=9410/1504/9413,gem_id=192991
-neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/8783/8784/8782/1537,gem_id=192925/192925/192925,crafted_stats=32/40
-shoulders=spines_of_the_vermillion_forge,id=205833,bonus_id=9410/1507
-back=voice_of_the_silent_star,id=204465,bonus_id=9410/1498
-chest=lifebound_chestpiece,id=193399,bonus_id=8840/8836/8902/1537/9379/8960,enchant=waking_stats_3,crafted_stats=32/40
-wrists=ferocious_hyena_hidebinders,id=193793,bonus_id=7977/1669/4786/7935,gem_id=192925,enchant=devotion_of_avoidance_3
-hands=fists_of_the_vermillion_forge,id=202507,bonus_id=9410/1501
-waist=blackbelt_of_the_vermillion_forge,id=202503,bonus_id=9410/1507,gem_id=192925,enchant=shadowed_belt_clasp_3
-legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1501,enchant=lambent_armor_kit_3
-feet=lifebound_boots,id=193398,bonus_id=8840/8836/8902/1537/9379/8960,enchant=watchers_loam_3,crafted_stats=32/40
-finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204027/204029/204011,enchant=devotion_of_versatility_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/7935/1498,gem_id=192925,enchant=devotion_of_versatility_3
-trinket1=beacon_to_the_beyond,id=203963,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
-main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant=shadowflame_wreathe_3
+head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/9229/9410/9382/1504/8767/9413,gem_id=192991
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8783/8782/9405/8795/9376/8174/9366,gem_id=192932/192932/192932,crafted_stats=36/32
+shoulders=spines_of_the_vermillion_forge,id=205833,bonus_id=6652/9227/9410/9383/1507/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=9410/9385/1498/8767,enchant=graceful_avoidance_3
+chest=lifebound_chestpiece,id=193399,bonus_id=8836/8840/8902/9405/9376/8797/8960/8795/9366,enchant=waking_stats_3,crafted_stats=32/40
+wrists=needlessly_complex_wristguards,id=198327,bonus_id=8836/8840/8902/9405/9376/8951/8865/9366/9413,gem_id=201409/192932,enchant=devotion_of_avoidance_3,crafted_stats=32
+hands=fists_of_the_vermillion_forge,id=202507,bonus_id=6652/9383/9410/8095/9230/1501
+waist=blackbelt_of_the_vermillion_forge,id=202503,bonus_id=9383/9410/8095/1507/9413,gem_id=192932,enchant=shadowed_belt_clasp_3
+legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=6652/9228/9410/9382/1504/8767,enchant=fierce_armor_kit_3
+feet=slimy_expulsion_boots,id=193451,bonus_id=8836/8840/8902/8960/9405/9376/9366,enchant=watchers_loam_3
+finger1=tormentors_siphoning_signet,id=204466,bonus_id=6652/9410/9382/1501/8767/9413,gem_id=192932,enchant=devotion_of_versatility_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/1498/8767/8780,gem_id=192932,enchant=devotion_of_versatility_3
+trinket1=neltharions_call_to_dominance,id=204202,bonus_id=6652/9410/9385/1498/8767
+trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/9382/1498/8767
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=6652/9410/9383/8159/1498/8767,enchant=shadowflame_wreathe_3
 
 # Gear Summary
-# gear_ilvl=445.20
-# gear_agility=6215
-# gear_stamina=21864
-# gear_crit_rating=4937
-# gear_haste_rating=450
-# gear_mastery_rating=1746
-# gear_versatility_rating=4488
-# gear_avoidance_rating=200
-# gear_armor=3991
+# gear_ilvl=447.40
+# gear_agility=6255
+# gear_stamina=22411
+# gear_crit_rating=4623
+# gear_haste_rating=1105
+# gear_mastery_rating=1488
+# gear_versatility_rating=5882
+# gear_avoidance_rating=325
+# gear_armor=4003
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
