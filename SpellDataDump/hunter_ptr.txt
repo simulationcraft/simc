@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.51130 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -1091,7 +1091,7 @@ GCD              : 1.5 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 2067: Hunter (137014 effect#13), Alpha Predator (269737 effect#3), Dire Pack (378747 effect#1)
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Lunge (378934 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Lunge (378934 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2), Savagery (424557 effect#1)
 Family Flags     : 1, 2, 43, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1936,7 +1936,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Roar of the Seven Lions (207318 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2)
+Affecting spells : Roar of the Seven Lions (207318 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2), Savagery (424557 effect#1)
 Family Flags     : 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2909,7 +2909,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Master Handler (389654), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1628 | Target: Self (1)
@@ -4338,7 +4338,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effects: #2, #3), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Killing Frenzy (363760 effect#1), Lunge (378934 effect#2), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Killing Frenzy (363760 effect#1), Lunge (378934 effect#2), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#1)
 Family Flags     : 1, 86, 106
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -4395,47 +4395,6 @@ Effects          :
 Description      : Range of all your ranged abilities is increased by ${$s1}.1% and damage of all abilities increased by ${$s2}.1%.
 Tooltip          : Range increased by $w1%.
 Focus spending abilites deal $s2% increased damage.
-
-Name             : Aspect of the Wild (id=193530) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=7, col=5, max_rank=1, req_points=8]
-Class            : Hunter
-School           : Physical
-Spell Type       : Ranged
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1.5 seconds
-Duration         : 20 seconds
-Cooldown         : 120 seconds
-Affecting spells : Hunter (137014 effect#3), Call of the Wild (206332 effect#1), Ride the Lightning (263821 effect#1), Aspect of the Cheetah (263829 effect#1), Call of the Wild (336742 effect#1), Snake Bite (389660 effect#1)
-Family Flags     : 1, 77
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Can Proc From Procs (122), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
-Effects          :
-#1 (id=283921)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=283922)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Cobra Shot (193455)
-                   Family Flags: 86
-#3 (id=1026083)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cobra Shot (193455)
-                   Family Flags: 86
-Description      : Fire off a Cobra Shot at your current target and $s1 other $Lenemy:enemies; near your current target. For the next $d, your Cobra Shot will fire at $s1 extra $Ltarget:targets; and Cobra Shot Focus cost is reduced by $s2.$?s389654[
-
-Each temporary beast summoned reduces the cooldown of Aspect of the Wild by ${$389654m1/1000}.1 sec.][]$?s389660[
-
-While Aspect of the Wild is active, Cobra Shot deals $389660s1% increased damage.][]
-Tooltip          : Cobra Shot Focus cost reduced by $s2.
-Cobra Shot will fire at $s1 additional $Ltarget:targets;.$?$w3!=0[
-Cobra Shot damage increased by $w3%.][]
 
 Name             : Scent of Blood (id=193532) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=8, col=2, max_rank=2, req_points=20]
@@ -4654,7 +4613,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
 #5 (id=293562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
-Description      : You and your pet blend into the surroundings and gain stealth for $d. While camouflaged, you will heal for $s4% of maximum health every $T4 secs.
+Description      : You and your pet blend into the surroundings and gain stealth for $d. While camouflaged, you will heal for $s4% of maximum health every $T4 sec.
 Tooltip          : Stealthed.
 
 Name             : One with the Pack (id=199528) [Spell Family (9), Passive, Hidden] 
@@ -5396,7 +5355,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1675: Hunter (137014 effect#9), Bloodletting (341440 effect#2)
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Feeding Frenzy (278529 effect#2), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Sharp Barbs (378205 effects: #1, #2), Lunge (378934 effect#2), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Feeding Frenzy (278529 effect#2), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Sharp Barbs (378205 effects: #1, #2), Lunge (378934 effect#2), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2)
 Family Flags     : 1, 78, 106
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6041,8 +6000,8 @@ Effects          :
 Description      : When Bestial Wrath ends, summon a Spitting Cobra to aid you in combat for $194407d. Each Cobra Shot used during Bestial Wrath increases the damage this Spitting Cobra deals by $s1%.
 
 Name             : Thrill of the Hunt (id=257944) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Beast Mastery [tree=spec, row=5, col=2, max_rank=3, req_points=8]
-                 : Effect#2 [op=set, values=(1, 2, 3)]
+Talent Entry     : Beast Mastery [tree=spec, row=5, col=2, max_rank=2, req_points=8]
+                 : Effect#2 [op=set, values=(2, 4)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6086,7 +6045,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=481558)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 0, 106
 Description      : $@spelldesc257944
@@ -6343,7 +6302,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 265163 | Target: Enemy (6)
 #2 (id=997004)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
-Description      : Hurl a bomb at the target, exploding for $265157s1 Fire damage in a cone and coating enemies in wildfire, scorching them for $269747o1 Fire damage over $269747d.
+#3 (id=1099130)  : Dummy (3)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
+Description      : Hurl a bomb at the target, exploding for $265157s1 Fire damage in a cone and coating enemies in wildfire, scorching them for $269747o1 Fire damage over $269747d. Deals reduced damage beyond $s2 targets.
+
+Deals $s3% increased damage to your primary target.
 
 Name             : Flanking Strike (id=259516) [Spell Family (9)] 
 Class            : Hunter
@@ -6403,7 +6366,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7097,7 +7060,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=706817)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 453.6016 (coefficient=1) | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Aspect of the Wild (193530), Master Handler (389654)
                    Family Flags: 77
 #2 (id=709055)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
@@ -7121,7 +7083,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=706828)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 453.6016 (coefficient=1) | PvP Coefficient: 0.20000 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Aspect of the Wild (193530), Master Handler (389654)
                    Family Flags: 77
 Description      : Adds an additional $s1% speed to the initial 3 seconds of Aspect of the Cheetah.
 Tooltip          : Adds an additional $s1% speed to the initial 3 seconds of Aspect of the Cheetah.
@@ -7882,7 +7843,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8670,7 +8631,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8766,7 +8727,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 270327 | Target: Enemy (6)
 #2 (id=719185)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
-Description      : Hurl a bomb at the target, exploding for $270329s1 Fire damage in a cone and coating enemies in pheromones, causing them to suffer $270332o1 Fire damage over $270332d.
+Description      : Hurl a bomb at the target, exploding for $270329s1 Fire damage in a cone and coating enemies in pheromones, causing them to suffer $270332o1 Fire damage over $270332d. Deals reduced damage beyond $259495s2 targets.
+
+Deals $259495s3% increased damage to your primary target.
 
 Kill Command has a $s2% chance to reset against targets coated with Pheromone Bomb.
 
@@ -8797,7 +8760,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8820,7 +8783,7 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8860,7 +8823,9 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .x...
 Effects          :
 #1 (id=719199)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 270336 | Target: Enemy (6)
-Description      : Hurl a bomb at the target, exploding for $270338s1 Fire damage in a cone and impaling enemies with burning shrapnel, scorching them for $270339o1 Fire damage over $270339d.
+Description      : Hurl a bomb at the target, exploding for $270338s1 Fire damage in a cone and impaling enemies with burning shrapnel, scorching them for $270339o1 Fire damage over $270339d. Deals reduced damage beyond $259495s2 targets.
+
+Deals $259495s3% increased damage to your primary target.
 
 $?s259387[Mongoose Bite][Raptor Strike] and $?s212436[Butchery][Carve] apply Internal Bleeding, causing $270343o1 damage over $270343d. Internal Bleeding stacks up to $270343u times.
 
@@ -8891,7 +8856,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8917,7 +8882,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Yellow Ranged Taken
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8946,7 +8911,7 @@ Duration         : 9 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Mechanic         : Bleed
-Affecting spells : Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -9038,7 +9003,9 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=721011)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 271047 | Target: Enemy (6)
-Description      : Hurl a bomb at the target, exploding for $271048s1 Fire damage in a cone and coating enemies in volatile wildfire, scorching them for $271049o1 Fire damage over $271049d.
+Description      : Hurl a bomb at the target, exploding for $271048s1 Fire damage in a cone and coating enemies in volatile wildfire, scorching them for $271049o1 Fire damage over $271049d. Deals reduced damage beyond $259495s2 targets.
+
+Deals $259495s3% increased damage to your primary target.
 
 Volatile Bomb reacts violently with poison, causing an extra $260231s1 Fire damage against enemies suffering from your Serpent Sting, and applies Serpent Sting to up to $271014s2 targets.
 
@@ -9068,7 +9035,7 @@ Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Improved Wildfire Bomb (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9090,7 +9057,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -9475,7 +9442,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Feeding Frenzy (278529 effect#2), Feeding Frenzy (279607 effect#1), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Sharp Barbs (378205 effects: #1, #2), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2)
+Affecting spells : Feeding Frenzy (278529 effect#2), Feeding Frenzy (279607 effect#1), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Sharp Barbs (378205 effects: #1, #2), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2)
 Family Flags     : 10, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11043,7 +11010,7 @@ Spell Level      : 34
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-Affecting spells : Hunter (137014 effect#3), Call of the Wild (336742 effect#1), Eagletalon's True Focus (336849 effect#2), Sharpshooter's Focus (339920 effect#1), Eagletalon's True Focus (389449 effect#2)
+Affecting spells : Hunter (137014 effect#3), Call of the Wild (336742 effect#1), Eagletalon's True Focus (336849 effect#2), Sharpshooter's Focus (339920 effect#1), Eagletalon's True Focus (389449 effect#2), Windrunner's Guidance (424571 effect#1)
 Family Flags     : 1, 53
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11992,7 +11959,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=834321)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Aspect of the Eagle (186289), Aspect of the Wild (193530), Trueshot (288613), Coordinated Assault (360952), Coordinated Assault (360969), Master Handler (389654)
+                   Affected Spells: Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Aspect of the Eagle (186289), Trueshot (288613), Coordinated Assault (360952), Coordinated Assault (360969)
                    Family Flags: 15, 20, 21, 27, 53, 77
 Description      : The cooldown of all of your Aspects$?a137016[ and Trueshot]?a137017[ and Coordinated Assault][] is reduced by $s1%.
 
@@ -13684,7 +13651,7 @@ Spell Type       : None
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
-Cooldown         : 180 seconds
+Cooldown         : 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
@@ -13702,10 +13669,13 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 0 - 55 yards | Target: At Enemy (53) -> Unknown(74)
 #2 (id=899335)   : Apply Aura (6) | Periodic Trigger Spell (23): Call of the Wild every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 361582 | Target: Self (1)
-Description      : You sound the call of the wild, summoning $s1 of your active pets for $d. During this time, a random pet from your stable will appear every $t2 sec to assault your target for $361582d.$?s378442[
+#3 (id=1101626)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : You sound the call of the wild, summoning $s1 of your active pets for $d. During this time, a random pet from your stable will appear every $t2 sec to assault your target for $361582d. 
 
-While Call of the Wild is active, Barbed Shot has a $378442h% chance to gain a charge any time Focus is spent.][]
-Tooltip          : Summoning 1 of your active pets every $t2 sec. Each pet summoned lasts for $361582d.
+Each time Call of the Wild summons a pet, the cooldown of Barbed Shot and Kill Command are reduced by $s3%.
+Tooltip          : Summoning 1 of your active pets every $t2 sec. Each pet summoned lasts for $361582d.
+Each time Call of the Wild summons a pet, the cooldown of Kill Command and Barbed Shot is reduced by $s3%.
 
 Name             : Coordinated Assault (id=360952) [Spell Family (9)] 
 Talent Entry     : Survival [tree=spec, row=8, col=3, max_rank=1, req_points=20]
@@ -14404,7 +14374,7 @@ Effects          :
 #1 (id=1006241)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc378014
-Tooltip          : Injected with Latent Poison. $?s137015[Barbed Shot]?s137016[Aimed Shot]?s137017&!s259387[Raptor Strike][Mongoose Bite]  consumes all stacks of Latent Poison, dealing ${$378016s1/$s1} Nature damage per stack consumed.
+Tooltip          : Injected with Latent Poison. $?s137015[Barbed Shot]?s137016[Aimed Shot]?s137017&!s259387[Raptor Strike][Mongoose Bite] consumes all stacks of Latent Poison, dealing ${$378016s1/$s1} Nature damage per stack consumed.
 
 Name             : Latent Poison (id=378016) [Spell Family (9)] 
 Class            : Hunter
@@ -14584,8 +14554,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1006844)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Call of the Wild is active, Barbed Shot has a $h% chance to gain a charge any time Focus is spent.
-
+Description      : While Call of the Wild is active, each time you Kill Command, your Kill Command target takes $424567s1% increased damage from all of your pets, stacking up to $424567u times.
 
 Name             : Killer Command (id=378740) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=4, col=3, max_rank=2, req_points=0]
@@ -14610,8 +14579,8 @@ Effects          :
 Description      : Kill Command damage increased by $s1%.
 
 Name             : Dire Command (id=378743) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=8, col=1, max_rank=3, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20, 30)]
+Talent Entry     : Beast Mastery [tree=spec, row=8, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(15, 30)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14916,10 +14885,14 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1007401)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1007402)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each Wind Arrow fired has a $s1% chance to grant you ${$s2/1000}.1 sec of Trueshot.
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1101641)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1101642)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each Wind Arrow fired reduces the cooldown of Rapid Fire by ${$m1/1000}.1 sec, and every $s2 Wind Arrows fired increases the duration of your next Trueshot by ${$424571m1/1000}.1 sec, up to a maximum of ${$424571m1/1000*$424571u}.1 sec.
 
 Name             : Sharpshooter (id=378907) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Marksmanship [tree=spec, row=9, col=2, max_rank=2, req_points=20]
@@ -16000,52 +15973,6 @@ Description      : $@spelldesc389449
 Tooltip          : Focus cost of all Aimed Shot reduced by $s1%.
 Focus cost of Arcane Shot, Chimaera Shot, and Multi-Shot reduced by $s2%.
 
-Name             : Master Handler (id=389654) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Beast Mastery [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
-Class            : Hunter
-School           : Physical
-Spell Type       : Ranged
-Spell Level      : 1
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-Affecting spells : Hunter (137014 effect#3), Call of the Wild (206332 effect#1), Ride the Lightning (263821 effect#1), Aspect of the Cheetah (263829 effect#1), Call of the Wild (336742 effect#1), Snake Bite (389660 effect#1)
-Family Flags     : 1, 77
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
-Effects          :
-#1 (id=1026021)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each temporary beast summoned reduces the cooldown of Aspect of the Wild by ${$m1/1000}.1 sec.
-
-Name             : Snake Bite (id=389660) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
-Class            : Hunter
-School           : Physical
-Spell Type       : Ranged
-Spell Level      : 1
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6)
-Effects          :
-#1 (id=1026044)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Aspect of the Wild (193530), Master Handler (389654)
-                   Family Flags: 77
-Description      : While Aspect of the Wild is active, Cobra Shot deals $s1% increased damage.
-
 Name             : Readiness (id=389865) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Marksmanship [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
@@ -17095,7 +17022,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1075530)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Every $s1 Focus spent reduces the cooldown of Wildfire Bomb by ${$m2/1000}.1 sec, and the target of your latest Kill Command takes $410167s2% increased damage from Wildfire Bomb for $410167d.
+Description      : Every $s1 Focus spent reduces the cooldown of Wildfire Bomb by ${$m2/1000}.1 sec.
 
 Name             : Bombardment (id=405804) [Spell Family (9), Passive] 
 Talent Entry     : Marksmanship [tree=spec, row=7, col=2, max_rank=1, req_points=8]
@@ -17298,7 +17225,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1070840)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Call of the Wild is active, your pets have the effects of Beast Cleave, and Cobra Shot applies Serpent Sting to any target hit.
+Description      : While Call of the Wild is active, your pets have the effects of Beast Cleave, and each time Call of the Wild summons a pet, all of your pets Stomp.
 
 Name             : Exposed Wound (id=410147) [Spell Family (9)] 
 Class            : Hunter
@@ -17323,31 +17250,98 @@ Effects          :
 Description      : $@spelldesc405528
 Tooltip          : Damage of your next Kill Command increased by $s1%.
 
-Name             : Shredded Armor (id=410167) [Spell Family (9)] 
+Name             : Savagery (id=424557) [Spell Family (9), Passive] 
+Talent Entry     : Beast Mastery [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Max Targets      : 1
-Duration         : 8 seconds
+Spell Type       : Ranged
+Spell Level      : 1
+Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not Shapeshifted (16), Aura Points On Client (268)
+Effects          :
+#1 (id=1101619)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Family Flags: 43
+#2 (id=1101620)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Barbed Shot (217200), Frenzy (272790)
+                   Family Flags: 78
+Description      : Kill Command damage is increased by $s1%. Barbed Shot lasts ${$m2/1000}.1 sec longer.
+
+Name             : Master Handler (id=424558) [Spell Family (9), Passive] 
+Talent Entry     : Beast Mastery [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Class            : Hunter
+School           : Physical
+Spell Type       : Ranged
+Spell Level      : 1
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
-                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
+                 : Periodic
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display Range (126), Limit N (165)
+                 : Passive (6)
 Effects          :
-#1 (id=1075529)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Enemy (6)
-                   Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
-                   Family Flags: 22
-Description      : $@spelldesc405530
-Tooltip          : Damage taken from Wildfire Bomb increased by $s1%.
+#1 (id=1101621)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each time Barbed Shot deals damage, the cooldown of Kill Command is reduced by ${$m1/1000}.2 sec.
+
+Name             : Wild Instincts (id=424567) [Spell Family (9)] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1101636)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc378442
+Tooltip          : Damage taken from $@auracaster's Pets increased by $s1%.
+
+Name             : Windrunner's Guidance (id=424571) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1101644)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Trueshot (288613)
+                   Family Flags: 53
+Description      : $@spelldesc378905
+Tooltip          : Duration of your next Trueshot increased by ${$m1/1000}.1 sec.
 
 
