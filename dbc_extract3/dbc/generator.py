@@ -1757,6 +1757,7 @@ class SpellDataGenerator(DataGenerator):
           ( 196782, 0 ), # Outbreak Intermediate AoE spell
           ( 281327, 0 ), # Obliteration Rune Generation Spell
           ( 47466, 0 ), # DK Pet Stun
+          ( 425721, 0 ), # T31 Blood 2pc buff
         ),
 
         # Shaman:
