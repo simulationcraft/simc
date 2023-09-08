@@ -41,7 +41,8 @@ enum wolf_type_e
   SPIRIT_WOLF = 0,
   FIRE_WOLF,
   FROST_WOLF,
-  LIGHTNING_WOLF
+  LIGHTNING_WOLF,
+  UNSPECIFIED
 };
 
 enum class elemental
@@ -479,6 +480,8 @@ public:
     rotation_type_e rotation = ROTATION_STANDARD;
     int dre_flat_chance = -1;
     unsigned dre_forced_failures = 2U;
+    bool t31_2pc_enh_enabled     = false;
+    bool t31_4pc_enh_enabled     = false;
   } options;
 
   // Cooldowns
@@ -865,7 +868,8 @@ public:
   // Misc
   bool is_elemental_pet_active() const;
   pet_t* get_active_elemental_pet() const;
-  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false );
+  //void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false );
+  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false, wolf_type_e wolf_type = UNSPECIFIED );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
   timespan_t last_t30_proc;
@@ -8172,6 +8176,11 @@ struct primordial_wave_t : public shaman_spell_t
     {
       p()->buff.primordial_surge->trigger();
     }
+
+    if ( p()->options.t31_2pc_enh_enabled )
+    {
+      p()->summon_feral_spirits( p()->spell.feral_spirit->duration(), 1, false, LIGHTNING_WOLF );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -8796,6 +8805,8 @@ void shaman_t::create_options()
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
   add_option( opt_int( "shaman.dre_flat_chance", options.dre_flat_chance, -1, 1 ) );
   add_option( opt_uint( "shaman.dre_forced_failures", options.dre_forced_failures, 0U, 10U ) );
+  add_option( opt_bool( "shaman.t31_2pc_enh_enabled", options.t31_2pc_enh_enabled ) );
+  add_option( opt_bool( "shaman.t31_4pc_enh_enabled", options.t31_2pc_enh_enabled ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -9304,8 +9315,13 @@ pet_t* shaman_t::get_active_elemental_pet() const
   return nullptr;
 }
 
-void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool t28 )
+void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool t28, wolf_type_e wolf_type)
 {
+  //Evaluate before n gets messed with
+  if ( options.t31_4pc_enh_enabled )
+  {
+    cooldown.feral_spirits->adjust( -(timespan_t::from_seconds( 7 ) * n) );
+  }
   // No elemental spirits selected, just summon normal pets
   if ( !talent.elemental_spirits->ok() )
   {
@@ -9321,8 +9337,14 @@ void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool t28 )
     // the available pool of wolves to spawn.
     while ( n )
     {
-      // +1, because the normal spirit wolves are enum value 0
-      switch ( static_cast<wolf_type_e>( 1 + rng().range( 0, 3 ) ) )
+      wolf_type_e wolfSpawn = wolf_type;
+      if ( wolfSpawn == UNSPECIFIED )
+      {
+        // +1, because the normal spirit wolves are enum value 0
+        wolfSpawn = static_cast<wolf_type_e>( 1 + rng().range( 0, 3 ) );
+      }
+
+      switch ( wolfSpawn )
       {
         case FIRE_WOLF:
           pet.fire_wolves.spawn( duration );
