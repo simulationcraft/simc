@@ -1037,8 +1037,59 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
   }
 };
 
+struct shadow_word_death_state_t : public action_state_t
+{
+  bool tier31_2set;
+  int chain_number;
+  bool tier31_2set_deathspeaker;
+
+  shadow_word_death_state_t( action_t* a, player_t* t )
+    : action_state_t( a, t ), tier31_2set( false ), chain_number( 1 ), tier31_2set_deathspeaker( false )
+  {
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+    fmt::print( s, " tier31_2set={}, chain_number={}", tier31_2set, chain_number );
+    return s;
+  }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    tier31_2set              = false;
+    chain_number             = 1;
+    tier31_2set_deathspeaker = false;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    action_state_t::copy_state( o );
+    auto other_swd_state     = debug_cast<const shadow_word_death_state_t*>( o );
+    tier31_2set              = other_swd_state->tier31_2set;
+    chain_number             = other_swd_state->chain_number;
+    tier31_2set_deathspeaker = other_swd_state->tier31_2set_deathspeaker;
+  }
+};
+
+// T31 Chain Behavior
+// Death and Madness Reset: ?
+// Death and Madness Debuff: Refreshed
+// Deathspeaker Buff: Consumed
+// Deathspeaker Modifier: Caries over
+// Deathspeaker Extra Chain: Does not work
+// Execute Extra Chain: Does work
+// Insanity: All
+// Inescapable Torment: All
+// Psychic Link: Original Only
+// Self-Damage: All, but Chains are reduced by 90% (BUG?)
 struct shadow_word_death_t final : public priest_spell_t
 {
+protected:
+  using state_t = shadow_word_death_state_t;
+
+public:
   double execute_percent;
   double execute_modifier;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
@@ -1069,6 +1120,43 @@ struct shadow_word_death_t final : public priest_spell_t
       energize_resource = RESOURCE_INSANITY;
       energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
     }
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( cast_state( s )->tier31_2set )
+    {
+      m *= priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent();
+    }
+
+    // No access to state in composite_target_da_multiplier
+    if ( cast_state( s )->tier31_2set_deathspeaker )
+    {
+      {
+        sim->print_debug( "Tier 31 Chain Hit gets Deathspeaker bonus. Increasing {} damage by {}%", *this,
+                          execute_modifier * 100 );
+      }
+      m *= 1 + execute_modifier;
+    }
+
+    return m;
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -1136,6 +1224,36 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       double save_health_percentage = s->target->health_percentage();
 
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B2 ) && !cast_state( s )->tier31_2set )
+      {
+        state_t* state       = cast_state( get_state() );
+        int number_of_chains = priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 1 ).base_value();
+
+        // Chains amount differs if you have a Deathspeaker proc or while in execute but you still keep the modifier
+        if ( priest().buffs.deathspeaker->check() || s->target->health_percentage() < execute_percent )
+        {
+          // BUG: Currently Deathspeaker is not correctly increasing the amount of chains
+          if ( !priest().bugs || s->target->health_percentage() < execute_percent )
+          {
+            number_of_chains += priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 2 ).base_value();
+          }
+          state->tier31_2set_deathspeaker = true;
+        }
+
+        for ( int i = 1; i <= number_of_chains; i++ )
+        {
+          // TODO: verify this delay, seems inconsistent
+          timespan_t delay = 200_ms * i;
+          make_event( sim, delay, [ this, i, state ] {
+            state->action->background = true;  // not sure this is legal
+            state->target             = target;
+            state->tier31_2set        = true;
+            state->chain_number       = i + 1;
+            schedule_execute( state );
+          } );
+        }
+      }
+
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
@@ -1164,7 +1282,8 @@ struct shadow_word_death_t final : public priest_spell_t
         }
       }
 
-      if ( priest().talents.shadow.psychic_link.enabled() )
+      // BUG: Unsure if intended but only the original one triggers PL
+      if ( priest().talents.shadow.psychic_link.enabled() && !cast_state( s )->tier31_2set )
       {
         priest().trigger_psychic_link( s );
       }
