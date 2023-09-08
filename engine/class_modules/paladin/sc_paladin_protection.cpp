@@ -642,6 +642,7 @@ struct judgment_prot_t : public judgment_t
       if (p()->spec.judgment_3->ok() )
       {
         p()->sanctification();
+        p()->invalidate_cache( CACHE_BONUS_ARMOR );
       }
     }
   }
@@ -1220,13 +1221,16 @@ void paladin_t::create_buffs_protection()
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
 
-  buffs.sanctification = make_buff( this, "sanctification", find_spell( 394727 ) )
+  buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) )
     ->set_default_value( 1 )
     ->set_max_stack(10)
-    ->add_invalidate( CACHE_ARMOR );
+    ->add_invalidate( CACHE_BONUS_ARMOR );
 
-    buffs.sanctification_empower = make_buff( this, "sanctification_empower", find_spell( 394727 ) )
-        ->set_default_value_from_effect( 1 );
+    buffs.sanctification_empower =
+      make_buff( this, "sanctification_empower", find_spell( 424622 ) )
+        ->set_duration(14000_ms)
+        ->set_default_value_from_effect( 1 )
+        ->add_invalidate( CACHE_BONUS_ARMOR);
 }
 
 void paladin_t::init_spells_protection()

@@ -2867,6 +2867,7 @@ double paladin_t::composite_spell_haste() const
 double paladin_t::composite_bonus_armor() const
 {
   double ba = player_t::composite_bonus_armor();
+  double pre = ba;
 
   if ( buffs.shield_of_the_righteous->check() )
   {
@@ -2874,6 +2875,15 @@ double paladin_t::composite_bonus_armor() const
     ba += bonus;
   }
 
+  if ( buffs.sanctification->check() || buffs.sanctification_empower->check() )
+  {
+    int sanctStacks = 0.0;
+    sanctStacks     = buffs.sanctification->stack();
+    if ( buffs.sanctification_empower->check() )
+      sanctStacks = 10.0;
+    ba *= 1 + sanctStacks * 0.01;
+  }
+  sim->print_debug( "pre: {}, bonus armor%: {}, total armor: {}", pre, ba, cache.armor() );
   return ba;
 }
 
