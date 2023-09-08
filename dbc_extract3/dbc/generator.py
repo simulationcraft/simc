@@ -2182,6 +2182,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
           ( 393957, 1 ), # Waning Twilight
+          ( 393957, 1 ), # Balance T31 2pc buff
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
