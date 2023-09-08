@@ -2090,6 +2090,9 @@ class SpellDataGenerator(DataGenerator):
 
           # Tier 30
           ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
+
+          # Tier 31
+          ( 425298, 1 ), # BrM 4-piece Charred Dreams Healing
         ),
 
         # Druid:
@@ -3747,6 +3750,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'might_of_the_drogbar',
             'bonuses': [ 1539 ],
             'tier'   : 30
+        },
+        {
+            'name'   : 'tier31',
+            'bonuses': [ 1557, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1568, 1569 ],
+            'tier'   : 31
         },
     ]
 

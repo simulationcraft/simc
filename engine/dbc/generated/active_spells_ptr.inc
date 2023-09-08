@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.1.7.51187
-static const std::array<active_class_spell_t, 279> __ptr_active_spells_data { {
+// Active class spells, wow build 10.2.0.51239
+static const std::array<active_class_spell_t, 284> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -85,6 +85,7 @@ static const std::array<active_class_spell_t, 279> __ptr_active_spells_data { {
   {  4,    0,   1966,      0, "Feint"                              },
   {  4,    0,   2983,      0, "Sprint"                             },
   {  4,    0,   3408,      0, "Crippling Poison"                   },
+  {  4,    0,   6770,      0, "Sap"                                },
   {  4,    0,   8676,      0, "Ambush"                             },
   {  4,    0,   8679,      0, "Wound Poison"                       },
   {  4,    0, 114018,      0, "Shroud of Concealment"              },
@@ -99,16 +100,20 @@ static const std::array<active_class_spell_t, 279> __ptr_active_spells_data { {
   {  4,  259,  51723,      0, "Fan of Knives"                      },
   {  4,  259, 185565,      0, "Poisoned Knife"                     },
   {  4,  260,   2098, 196819, "Dispatch"                           },
+  {  4,  260,  13877,      0, "Blade Flurry"                       },
   {  4,  260, 185763,      0, "Pistol Shot"                        },
   {  4,  260, 193315,   1752, "Sinister Strike"                    },
+  {  4,  260, 195457,      0, "Grappling Hook"                     },
   {  4,  260, 199736,      0, "Find Treasure"                      },
   {  4,  260, 315341,      0, "Between the Eyes"                   },
+  {  4,  260, 315508,      0, "Roll the Bones"                     },
   {  4,  261,     53,   1752, "Backstab"                           },
   {  4,  261,   1943,      0, "Rupture"                            },
   {  4,  261, 114014,      0, "Shuriken Toss"                      },
   {  4,  261, 185438,   8676, "Shadowstrike"                       },
   {  4,  261, 197835,      0, "Shuriken Storm"                     },
   {  4,  261, 212283,      0, "Symbols of Death"                   },
+  {  4,  261, 319175,      0, "Black Powder"                       },
   {  5,    0,     17,      0, "Power Word: Shield"                 },
   {  5,    0,    453,      0, "Mind Soothe"                        },
   {  5,    0,    585,      0, "Smite"                              },
@@ -281,7 +286,7 @@ static const std::array<active_class_spell_t, 279> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.1.7.51187
+// Pet active spells, wow build 10.2.0.51239
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
