@@ -281,7 +281,7 @@ void pet_spawner_t<T, O>::extend_expiration( timespan_t adjustment )
       continue;
     }
 
-    timespan_t new_duration = pet -> remains();
+    timespan_t new_duration = pet -> expiration -> remains();
     new_duration += adjustment;
 
     pet -> expiration -> reschedule( new_duration );
