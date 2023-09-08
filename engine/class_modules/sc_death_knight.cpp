@@ -1150,6 +1150,7 @@ public:
     double ams_absorb_percent = 0;
     double amz_absorb_percent = 0;
     bool individual_pet_reporting = false;
+    bool t31_tier_set_enable = false;
   } options;
 
   // Runes
@@ -1851,10 +1852,16 @@ struct death_knight_pet_t : public pet_t
         m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 3 ).percent();
     }
 
-    if (dk()->buffs.amplify_damage->check())
+    if( dk()->buffs.amplify_damage->check())
     {
       m *= 1.0 + dk()->buffs.amplify_damage->check_value();
     }
+
+    if( dk()->is_ptr() && dk()->buffs.unholy_assault->check() )
+    {
+      m *= 1.0 + dk()->buffs.unholy_assault->check_value();
+    }
+
     return m;
   }
 
@@ -2356,7 +2363,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     // Note: for some dumb reason, WCL has the ghoul's AP and SP swapped
     // Running a script ingame shows the correct values
-    owner_coeff.ap_from_ap = 0.594;
+    owner_coeff.ap_from_ap = 0.65;
   }
 
   void init_gains() override
@@ -3165,7 +3172,7 @@ struct magus_pet_t : public death_knight_pet_t
           proxy->add_child( this );
       }
 
-      if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
+      if ( /* dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 ) */ dk()->options.t31_tier_set_enable)
       {
         aoe = 5;
       }
@@ -3220,7 +3227,7 @@ struct magus_pet_t : public death_knight_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
+    if ( /* dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )*/ dk()->options.t31_tier_set_enable )
     {
       def->add_action( "amplify_damage" );
     }
@@ -3233,7 +3240,7 @@ struct magus_pet_t : public death_knight_pet_t
     if ( name == "frostbolt" ) return new frostbolt_magus_t( this, proxy_action, options_str );
     if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, proxy_action, options_str );
 
-    if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
+    if ( /* dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ) */ dk()->options.t31_tier_set_enable )
     {
       if ( name == "amplify_damage" ) return new amplify_damage_t( this, options_str );
     }
@@ -4267,7 +4274,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     {
         p()->pets.apoc_magus.spawn( summon_duration, 1 );
 
-      if ( p()->sets->set(DEATH_KNIGHT_UNHOLY, T31, B2 ) )
+      if ( /*p()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 )*/ p()->options.t31_tier_set_enable )
       {
         p() -> pets.apoc_magus.spawn( summon_duration, 1 );
       }
@@ -8574,7 +8581,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       buffs.rune_mastery -> trigger();
     }
 
-    if ( sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
+    if ( /* sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )*/ options.t31_tier_set_enable )
     {
       auto extension_time = spell.t31_unholy_value_container->effectN( 1 ).time_value();
       /*      pets.apoc_magus.extend_expiration( extension_time );
@@ -8664,6 +8671,7 @@ void death_knight_t::create_options()
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
+  add_option( opt_bool( "deathknight.t31_tier_set_enable", options.t31_tier_set_enable ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
