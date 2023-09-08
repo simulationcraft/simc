@@ -1860,12 +1860,12 @@ struct death_knight_pet_t : public pet_t
 
     if ( is_ptr() )
     {
-      if ( dk()->buffs.amplify_damage->check() )
+      if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.amplify_damage->check() )
       {
         m *= 1.0 + dk()->buffs.amplify_damage->check_value();
       }
 
-      if ( dk()->buffs.unholy_assault->check() )
+      if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.unholy_assault->check() )
       {
         m *= 1.0 + dk()->buffs.unholy_assault->check_value();
       }
