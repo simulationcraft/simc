@@ -202,6 +202,7 @@ public:
     propagate_const<buff_t*> light_weaving;
     propagate_const<buff_t*> darkflame_embers;
     propagate_const<buff_t*> darkflame_shroud;
+    propagate_const<buff_t*> deaths_torment;
   } buffs;
 
   // Talents
@@ -863,6 +864,11 @@ public:
         {
           parse_buff_effects( p().buffs.ancient_madness, 0b0011U, true, true );  // Skip E1 and E2
         }
+      }
+
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
+      {
+        parse_buff_effects( p().buffs.deaths_torment );
       }
     }
 
