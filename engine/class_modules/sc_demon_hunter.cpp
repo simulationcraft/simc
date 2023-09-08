@@ -238,6 +238,7 @@ public:
     buff_t* t30_havoc_4pc;
     buff_t* t30_vengeance_2pc;
     buff_t* t30_vengeance_4pc;
+    damage_buff_t* t31_vengeance_2pc;
   } buff;
 
   // Talents
@@ -557,6 +558,8 @@ public:
     const spell_data_t* t30_vengeance_2pc_buff;
     const spell_data_t* t30_vengeance_4pc_buff;
     double t30_vengeance_4pc_soul_fragments_tracker = 0;
+    double t31_vengeance_4pc_fury_tracker = 0;
+    const spell_data_t* t31_vengeance_4pc_proc;
   } set_bonuses;
 
   // Mastery Spells
@@ -674,6 +677,7 @@ public:
 
     // Set Bonuses
     proc_t* soul_fragment_from_t29_2pc;
+    proc_t* soul_fragment_from_t31_4pc;
   } proc;
 
   // RPPM objects
@@ -709,9 +713,10 @@ public:
     attack_t* relentless_onslaught_annihilation = nullptr;
 
     // Vengeance
-    spell_t* infernal_armor  = nullptr;
-    heal_t* frailty_heal     = nullptr;
-    spell_t* fiery_brand_t30 = nullptr;
+    spell_t* infernal_armor     = nullptr;
+    heal_t* frailty_heal        = nullptr;
+    spell_t* fiery_brand_t30    = nullptr;
+    spell_t* sigil_of_flame_t31 = nullptr;
   } active;
 
   // Pets
@@ -1548,6 +1553,7 @@ public:
     register_damage_buff( p()->buff.momentum );
     register_damage_buff( p()->buff.restless_hunter );
     register_damage_buff( p()->buff.t29_havoc_4pc );
+    register_damage_buff( p()->buff.t31_vengeance_2pc );
 
     if ( track_cd_waste )
     {
@@ -1718,6 +1724,7 @@ public:
       accumulate_spirit_bomb( s );
       trigger_chaos_brand( s );
       trigger_initiative( s );
+      trigger_t31_vengeance_2pc( s );
     }
   }
 
@@ -1819,6 +1826,22 @@ public:
           }
         }
       }
+
+      if ( p()->set_bonuses.t31_vengeance_4pc->ok() )
+      {
+        p()->set_bonuses.t31_vengeance_4pc_fury_tracker += ab::last_resource_cost;
+        const double threshold = p()->set_bonuses.t31_vengeance_4pc->effectN( 1 ).base_value();
+        p()->sim->print_debug( "{} spent {} toward T31 Vengeance 4pc ({}/{})", *p(), ab::last_resource_cost,
+                               p()->set_bonuses.t31_vengeance_4pc_fury_tracker, threshold );
+        if ( p()->set_bonuses.t31_vengeance_4pc_fury_tracker >= threshold )
+        {
+          p()->set_bonuses.t31_vengeance_4pc_fury_tracker -= threshold;
+          timespan_t time_reduction = p()->set_bonuses.t31_vengeance_4pc->effectN( 2 ).time_value();
+          p()->cooldown.sigil_of_flame->adjust( -time_reduction );
+          p()->sim->print_debug( "{} procced T31 Vengeance 4pc ({}/{})", *p(),
+                                 p()->set_bonuses.t31_vengeance_4pc_fury_tracker, threshold );
+        }
+      }
     }
   }
 
@@ -1893,6 +1916,23 @@ public:
 
     p()->buff.initiative->trigger();
     td( s->target )->debuffs.initiative_tracker->trigger();
+  }
+
+  void trigger_t31_vengeance_2pc( action_state_t* s )
+  {
+    if (!p()->set_bonuses.t31_vengeance_2pc->ok())
+      return;
+
+    // Auto-attacks don't seem to trigger it
+    // TODO: It also doesn't trigger from 4pc proc or from Immolation Aura
+    if (!s->action->special)
+      return;
+
+    const demon_hunter_td_t* target_data = td( s->target );
+    if ( !target_data->dots.sigil_of_flame->is_ticking() )
+      return;
+
+    p()->buff.t31_vengeance_2pc->trigger();
   }
 
   void trigger_cycle_of_hatred()
@@ -2836,6 +2876,14 @@ struct glaive_tempest_t : public demon_hunter_spell_t
 
 // Sigil of Flame ===========================================================
 
+struct sigil_of_flame_t31_t : public demon_hunter_spell_t
+{
+  sigil_of_flame_t31_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->set_bonuses.t31_vengeance_4pc_proc )
+  {
+  }
+};
+
 struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
 {
   sigil_of_flame_damage_t( util::string_view name, demon_hunter_t* p, timespan_t delay )
@@ -2879,6 +2927,21 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     if ( !t ) return nullptr;
     return td( t )->dots.sigil_of_flame;
   }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_sigil_t::tick( d );
+
+    // TODO: Verify the 25% chance, it's a sane guess based on current logs
+    // https://www.warcraftlogs.com/reports/qBxWtR4mYna9Zvj1#boss=0&difficulty=0&type=damage-done&source=1
+    // ~25% chance per tick based on above log
+    if (p()->set_bonuses.t31_vengeance_4pc->ok() && rng().roll( 0.25 ))
+    {
+      p()->active.sigil_of_flame_t31->execute_on_target(d->target);
+      p()->spawn_soul_fragment( soul_fragment::LESSER );
+      p()->proc.soul_fragment_from_t31_4pc->occur();
+    }
+  }
 };
 
 struct sigil_of_flame_t : public demon_hunter_spell_t
@@ -2908,6 +2971,11 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       p->active.frailty_heal = new heals::frailty_heal_t( p );
     }
     // Add damage modifiers in sigil_of_flame_damage_t, not here.
+
+    if ( p->set_bonuses.t31_vengeance_4pc->ok() )
+    {
+      add_child(p->active.sigil_of_flame_t31);
+    }
   }
 
   void init_finished() override
@@ -6072,6 +6140,10 @@ void demon_hunter_t::create_buffs()
                                ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   buff.t30_vengeance_4pc = make_buff<buff_t>(
       this, "recrimination", set_bonuses.t30_vengeance_4pc->ok() ? set_bonuses.t30_vengeance_4pc_buff : spell_data_t::not_found() );
+
+  buff.t31_vengeance_2pc = make_buff<damage_buff_t>(
+      this, "fiery_resolve", set_bonuses.t31_vengeance_2pc->ok() ? set_bonuses.t31_vengeance_2pc : spell_data_t::not_found() );
+  buff.t31_vengeance_2pc->add_invalidate( CACHE_STAMINA );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -6465,6 +6537,7 @@ void demon_hunter_t::init_procs()
 
   // Set Bonuses
   proc.soul_fragment_from_t29_2pc       = get_proc( "soul_fragment_from_t29_2pc" );
+  proc.soul_fragment_from_t31_4pc       = get_proc( "soul_fragment_from_t31_4pc" );
 }
 
 // demon_hunter_t::init_resources ===========================================
@@ -6881,11 +6954,15 @@ void demon_hunter_t::init_spells()
   set_bonuses.t31_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T31, B4 );
 
   // Set Bonus Auxilliary
-  set_bonuses.t30_havoc_2pc_buff = set_bonuses.t30_havoc_2pc->ok() ? find_spell( 408737 ) : spell_data_t::not_found();
-  set_bonuses.t30_havoc_4pc_buff = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408754 ) : spell_data_t::not_found();
+  set_bonuses.t30_havoc_2pc_buff   = set_bonuses.t30_havoc_2pc->ok() ? find_spell( 408737 ) : spell_data_t::not_found();
+  set_bonuses.t30_havoc_4pc_buff   = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408754 ) : spell_data_t::not_found();
   set_bonuses.t30_havoc_4pc_refund = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408757 ) : spell_data_t::not_found();
-  set_bonuses.t30_vengeance_2pc_buff = set_bonuses.t30_vengeance_2pc->ok() ? find_spell( 409645 ) : spell_data_t::not_found();
-  set_bonuses.t30_vengeance_4pc_buff = set_bonuses.t30_vengeance_4pc->ok() ? find_spell( 409877 ) : spell_data_t::not_found();
+  set_bonuses.t30_vengeance_2pc_buff =
+      set_bonuses.t30_vengeance_2pc->ok() ? find_spell( 409645 ) : spell_data_t::not_found();
+  set_bonuses.t30_vengeance_4pc_buff =
+      set_bonuses.t30_vengeance_4pc->ok() ? find_spell( 409877 ) : spell_data_t::not_found();
+  set_bonuses.t31_vengeance_4pc_proc =
+      set_bonuses.t31_vengeance_4pc->ok() ? find_spell( 425672 ) : spell_data_t::not_found();
 
   // Spell Initialization ===================================================
 
@@ -6931,6 +7008,11 @@ void demon_hunter_t::init_spells()
     fiery_brand_t30->cooldown->base_duration = 0_s;
     fiery_brand_t30->cooldown->charges = 0;
     active.fiery_brand_t30 = fiery_brand_t30;
+  }
+
+  if ( set_bonuses.t31_vengeance_4pc_proc->ok() )
+  {
+    active.sigil_of_flame_t31 = get_background_action<sigil_of_flame_t31_t>( "sigil_of_flame_t31" );
   }
 }
 
@@ -7145,7 +7227,7 @@ double demon_hunter_t::composite_base_armor_multiplier() const
 
     if ( buff.metamorphosis->check() )
     {
-      am *= 1.0 + spec.metamorphosis_buff->effectN( 7 ).percent();
+      am *= 1.0 + spec.metamorphosis_buff->effectN( 8 ).percent();
     }
   }
 
