@@ -1852,14 +1852,17 @@ struct death_knight_pet_t : public pet_t
         m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 3 ).percent();
     }
 
-    if( dk()->buffs.amplify_damage->check())
+    if ( is_ptr() )
     {
-      m *= 1.0 + dk()->buffs.amplify_damage->check_value();
-    }
+      if ( dk()->buffs.amplify_damage->check() )
+      {
+        m *= 1.0 + dk()->buffs.amplify_damage->check_value();
+      }
 
-    if( dk()->is_ptr() && dk()->buffs.unholy_assault->check() )
-    {
-      m *= 1.0 + dk()->buffs.unholy_assault->check_value();
+      if ( dk()->buffs.unholy_assault->check() )
+      {
+        m *= 1.0 + dk()->buffs.unholy_assault->check_value();
+      }
     }
 
     return m;
@@ -3227,7 +3230,7 @@ struct magus_pet_t : public death_knight_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ))
+    if ( is_ptr() && dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ))
     {
       def->add_action( "amplify_damage" );
     }
@@ -3240,7 +3243,7 @@ struct magus_pet_t : public death_knight_pet_t
     if ( name == "frostbolt" ) return new frostbolt_magus_t( this, proxy_action, options_str );
     if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, proxy_action, options_str );
 
-    if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ))
+    if ( is_ptr() && dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ))
     {
       if ( name == "amplify_damage" ) return new amplify_damage_t( this, options_str );
     }
@@ -3406,7 +3409,7 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
     }
 
-    if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground && p() -> buffs.sanguine_ground -> check() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground && p() -> buffs.sanguine_ground -> check() )
     {
       m *= 1.0 + p() -> buffs.sanguine_ground -> check_value();
     }
@@ -3453,7 +3456,7 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> buffs.unholy_assault -> check_value();
     }
 
-    if ( p()->is_ptr() && p()->specialization() == DEATH_KNIGHT_UNHOLY && this -> affected_by.amplify_damage_periodic && p() -> buffs.amplify_damage -> check() )
+    if( p() -> is_ptr() && p()->specialization() == DEATH_KNIGHT_UNHOLY && this -> affected_by.amplify_damage_periodic && p() -> buffs.amplify_damage -> check() )
     {
       m *= 1.0 + p() -> buffs.amplify_damage -> check_value();
     }
