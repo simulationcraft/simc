@@ -1864,6 +1864,7 @@ class SpellDataGenerator(DataGenerator):
           ( 414381, 0 ),                            # Concentrated Power AE
           ( 418735, 0 ),                            # Splintering Ray
           ( 419800, 0 ),                            # Intensifying Flame
+          ( 424120, 0 ),                            # Glacial Blast
         ),
 
         # Warlock:
