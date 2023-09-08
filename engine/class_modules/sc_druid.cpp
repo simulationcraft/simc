@@ -386,7 +386,6 @@ public:
   // !!!==========================================================================!!!
   moon_stage_e moon_stage;
   bool orbital_bug;
-  double cache_mastery_snapshot;  // for balance mastery snapshot
   std::vector<event_t*> persistent_event_delay;
   event_t* astral_power_decay;
   struct dot_list_t
@@ -1162,7 +1161,6 @@ public:
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
   bool check_astral_power( action_t* a, int over );
-  double cache_mastery_value() const;  // for balance mastery
   void snapshot_mastery();
 
   // secondary actions
@@ -1290,10 +1288,10 @@ struct denizen_of_the_dream_t : public pet_t
       auto td = o->get_target_data( t );
 
       if ( td->dots.moonfire->is_ticking() )
-        tm *= 1.0 + o->cache_mastery_value();
+        tm *= 1.0 + o->cache.mastery_value();
 
       if ( td->dots.sunfire->is_ticking() )
-        tm *= 1.0 + o->cache_mastery_value();
+        tm *= 1.0 + o->cache.mastery_value();
 
       return tm;
     }
@@ -2167,7 +2165,7 @@ public:
         auto eff_val = i.value;
 
         if ( i.mastery )
-          eff_val += p()->cache_mastery_value();
+          eff_val += p()->cache.mastery_value();
 
         return_value *= 1.0 + eff_val * check;
       }
@@ -2724,7 +2722,7 @@ public:
 
     auto dot = std::invoke( other_dot, BASE::td( s->target )->dots );
     if ( !p_->bugs && dot->is_ticking() )
-      amount *= 1.0 + p_->cache_mastery_value();
+      amount *= 1.0 + p_->cache.mastery_value();
 
     residual_action::trigger( p_->active.astral_smolder, s->target, amount );
   }
@@ -7098,9 +7096,6 @@ struct moonfire_t : public druid_spell_t
 
   void execute() override
   {
-    p()->cache.invalidate( CACHE_MASTERY );
-    p()->snapshot_mastery();
-
     druid_spell_t::execute();
 
     // as we use a single secondary action for all instances of sunfire invalidate the damage action cache whenever it
@@ -7862,9 +7857,6 @@ struct sunfire_t : public druid_spell_t
 
   void execute() override
   {
-    p()->cache.invalidate( CACHE_MASTERY );
-    p()->snapshot_mastery();
-
     druid_spell_t::execute();
 
     // as we use a single secondary action for all instances of sunfire invalidate the damage action cache whenever it
@@ -11256,7 +11248,6 @@ void druid_t::reset()
   // Reset runtime variables
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   orbital_bug = true;
-  snapshot_mastery();
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
   dot_list.moonfire.clear();
@@ -11413,15 +11404,6 @@ void druid_t::arise()
         buff.primordial_arcanic_pulsar->increment( as<int>(options.initial_pulsar_value) / 10 - 1 );
       } );
     }
-
-    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
-      snapshot_mastery();
-      make_repeating_event( *sim, 5.25_s, [ this ]() { snapshot_mastery(); } );
-    }, 5.25_s ) );
-
-    // This MUST come last so that any previous changes from other precombat events, such as lycaras update based on
-    // form, happens first
-    register_combat_begin( [ this ]( player_t* ) { snapshot_mastery(); } );
   }
 }
 
@@ -12956,17 +12938,6 @@ bool druid_t::check_astral_power( action_t* a, int over )
   ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
   return ap <= resources.max[ RESOURCE_ASTRAL_POWER ] + over;
-}
-
-// snapshotted mastery for balance druids
-double druid_t::cache_mastery_value() const
-{
-  return cache_mastery_snapshot;
-}
-
-void druid_t::snapshot_mastery()
-{
-  cache_mastery_snapshot = cache.mastery_value();
 }
 
 /* Report Extension Class

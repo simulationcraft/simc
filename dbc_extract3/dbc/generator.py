@@ -1864,6 +1864,7 @@ class SpellDataGenerator(DataGenerator):
           ( 414381, 0 ),                            # Concentrated Power AE
           ( 418735, 0 ),                            # Splintering Ray
           ( 419800, 0 ),                            # Intensifying Flame
+          ( 424120, 0 ),                            # Glacial Blast
         ),
 
         # Warlock:
@@ -2090,6 +2091,9 @@ class SpellDataGenerator(DataGenerator):
 
           # Tier 30
           ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
+
+          # Tier 31
+          ( 425298, 1 ), # BrM 4-piece Charred Dreams Healing
         ),
 
         # Druid:
@@ -2178,6 +2182,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
           ( 393957, 1 ), # Waning Twilight
+          ( 393957, 1 ), # Balance T31 2pc buff
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
@@ -3747,6 +3752,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'might_of_the_drogbar',
             'bonuses': [ 1539 ],
             'tier'   : 30
+        },
+        {
+            'name'   : 'tier31',
+            'bonuses': [ 1557, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1568, 1569 ],
+            'tier'   : 31
         },
     ]
 

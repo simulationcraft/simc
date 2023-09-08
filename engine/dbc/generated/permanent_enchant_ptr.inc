@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 10.1.7.50793
-static const std::array<permanent_enchant_entry_t, 784> __ptr_permanent_enchant_data { {
+// Permanent item enchants, wow build 10.2.0.51239
+static const std::array<permanent_enchant_entry_t, 790> __ptr_permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -150,6 +150,9 @@ static const std::array<permanent_enchant_entry_t, 784> __ptr_permanent_enchant_
   { 6670,  3, 19, 0x20000000, 0x000019d7, "draconic_resourcefulness"          },
   { 4126,  0,  4, 0x00000080, 0x0000001f, "dragonscale_leg_armor"             },
   { 4270,  0,  4, 0x00000080, 0x0000001f, "drakehide_leg_armor"               },
+  { 7001,  1,  2, 0x00000000, 0x000abff3, "dreaming_devotion"                 },
+  { 7002,  2,  2, 0x00000000, 0x000abff3, "dreaming_devotion"                 },
+  { 7003,  3,  2, 0x00000000, 0x000abff3, "dreaming_devotion"                 },
   { 6635,  1,  2, 0x00000000, 0x000abff3, "earthen_devotion"                  },
   { 6636,  2,  2, 0x00000000, 0x000abff3, "earthen_devotion"                  },
   { 6637,  3,  2, 0x00000000, 0x000abff3, "earthen_devotion"                  },
@@ -337,6 +340,9 @@ static const std::array<permanent_enchant_entry_t, 784> __ptr_permanent_enchant_
   { 6682,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_air"            },
   { 6683,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_air"            },
   { 6684,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_air"            },
+  { 6907,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_dreams"         },
+  { 6908,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_dreams"         },
+  { 6909,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_dreams"         },
   { 6685,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_earth"          },
   { 6686,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_earth"          },
   { 6687,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_earth"          },

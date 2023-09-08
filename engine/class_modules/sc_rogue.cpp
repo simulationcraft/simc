@@ -3018,8 +3018,9 @@ struct melee_t : public rogue_attack_t
     for ( auto damage_buff : auto_attack_damage_buffs )
       m *= damage_buff->is_stacking ? damage_buff->stack_value_auto_attack() : damage_buff->value_auto_attack();
 
-    // Class Passive
+    // Class Passives
     m *= 1.0 + p()->spec.outlaw_rogue->effectN( 18 ).percent();
+    m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
 
     return m;
   }

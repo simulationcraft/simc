@@ -547,7 +547,7 @@ public:
 
     state_t* s = cast_state( get_state() );
 
-    s->target = target;
+    s->target         = target;
     s->source_crit    = _gets_crit_mod ? 2.0 : 1.0;
     s->number_spawned = vts;
 
@@ -1102,10 +1102,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( priest().talents.shadow.surge_of_insanity.enabled() )
     {
-      if ( priest().talents.shadow.mind_spike.enabled() )
-        priest().buffs.mind_spike_insanity->trigger();
-      else
-        priest().buffs.mind_flay_insanity->trigger();
+      priest().buffs.surge_of_insanity->trigger();
     }
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
@@ -1601,14 +1598,33 @@ struct shadow_weaving_t final : public priest_spell_t
 
 // ==========================================================================
 // Shadow Crash
+// TODO: Refactor this so we can just use reduced_aoe_targets
 // ==========================================================================
 struct shadow_crash_damage_t final : public priest_spell_t
 {
+  double parent_targets = 1;
+
   shadow_crash_damage_t( priest_t& p )
     : priest_spell_t( "shadow_crash_damage", p, p.talents.shadow.shadow_crash->effectN( 1 ).trigger() )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = priest_spell_t::action_da_multiplier();
+
+    double scaled_m = m;
+
+    if ( parent_targets > 5 && priest().is_ptr() )
+    {
+      scaled_m *= std::sqrt( 5 / parent_targets );
+      sim->print_debug( "{} {} updates da multiplier: Before: {} After: {} with {} targets from the parent spell.",
+                        *player, *this, m, scaled_m, parent_targets );
+    }
+
+    return scaled_m;
   }
 };
 
@@ -1687,11 +1703,13 @@ struct shadow_crash_t final : public priest_spell_t
 {
   double insanity_gain;
   propagate_const<shadow_crash_dots_t*> shadow_crash_dots;
+  propagate_const<shadow_crash_damage_t*> shadow_crash_damage;
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
-      shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed() ) )
+      shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed() ) ),
+      shadow_crash_damage( new shadow_crash_damage_t( p ) )
   {
     parse_options( options_str );
 
@@ -1699,8 +1717,7 @@ struct shadow_crash_t final : public priest_spell_t
     radius = data().effectN( 1 ).radius();
     range  = data().max_range();
 
-    impact_action = new shadow_crash_damage_t( p );
-    add_child( impact_action );
+    add_child( shadow_crash_damage );
   }
 
   // Shadow Crash has fixed travel time
@@ -1717,6 +1734,17 @@ struct shadow_crash_t final : public priest_spell_t
     {
       shadow_crash_dots->execute();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if ( shadow_crash_damage )
+    {
+      shadow_crash_damage->parent_targets = s->n_targets;
+      shadow_crash_damage->execute();
+    }
+
+    priest_spell_t::impact( s );
   }
 };
 }  // namespace spells
@@ -2081,6 +2109,27 @@ void priest_t::create_buffs_shadow()
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 2 ).trigger() )
                         ->set_default_value_from_effect( 1 );
+
+  // Custom buff to track how many stacks you are acquiring
+  buffs.surge_of_insanity =
+      make_buff( this, "surge_of_insanity", talents.shadow.surge_of_insanity )
+          ->set_duration( 0_s )
+          ->set_max_stack( is_ptr() ? talents.shadow.surge_of_insanity->effectN( 3 ).base_value() : 1 )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int _new ) {
+            if ( _new == b->max_stack() )
+            {
+              buffs.surge_of_insanity->expire();
+
+              if ( talents.shadow.mind_spike.enabled() )
+              {
+                buffs.mind_spike_insanity->trigger();
+              }
+              else
+              {
+                buffs.mind_flay_insanity->trigger();
+              }
+            }
+          } );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
 

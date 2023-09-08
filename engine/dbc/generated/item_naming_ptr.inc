@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.1.7.50793
-static const std::array<item_name_description_t, 754> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.2.0.51239
+static const std::array<item_name_description_t, 760> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -744,6 +744,7 @@ static const std::array<item_name_description_t, 754> __ptr_item_name_descriptio
   { 14016, "World Quests and World Drops"                },
   { 14017, "Suffusion Camps and PvP"                     },
   { 14018, "Treasures and Unique Creatures"              },
+  { 14019, "Dream Crafted"                               },
   { 14020, "Scourgebane"                                 },
   { 14021, "Demonbane"                                   },
   { 14022, "Timestrike"                                  },
@@ -754,5 +755,10 @@ static const std::array<item_name_description_t, 754> __ptr_item_name_descriptio
   { 14028, "Time Rifts and Dawn of the Infinite"         },
   { 14029, "Dawn of the Infinite"                        },
   { 14030, "Soridormi"                                   },
+  { 14031, "Dragonflight Season 3"                       },
+  { 14034, "Emerald Bounty"                              },
+  { 14035, "Shadowflame Corrupted"                       },
+  { 14037, "Unique Creatures"                            },
+  { 14041, "Superbloom"                                  },
 } };
 

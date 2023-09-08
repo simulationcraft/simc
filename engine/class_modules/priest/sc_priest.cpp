@@ -972,8 +972,11 @@ struct fade_t final : public priest_spell_t
 // ==========================================================================
 struct shadow_word_death_self_damage_t final : public priest_spell_t
 {
+  double self_damage_coeff;
+
   shadow_word_death_self_damage_t( priest_t& p )
-    : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage )
+    : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage ),
+      self_damage_coeff( p.talents.shadow_word_death->effectN( 5 ).percent() )
   {
     background = true;
     may_crit   = false;
@@ -981,6 +984,29 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     target     = player;
   }
 
+  double base_da_min( const action_state_t* ) const override
+  {
+    return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
+  }
+
+  double base_da_max( const action_state_t* ) const override
+  {
+    return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().talents.tithe_evasion.enabled() && priest().is_ptr() )
+    {
+      m *= priest().talents.tithe_evasion->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  // TODO: Remove when 10.2 PTR goes live
   void trigger( double original_amount )
   {
     if ( priest().talents.tithe_evasion.enabled() )
@@ -997,6 +1023,12 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
     // We don't want this counted towards our dps
     stats->type = stats_e::STATS_NEUTRAL;
+
+    // Make sure we call composite_da_multiplier
+    if ( priest().is_ptr() )
+    {
+      snapshot_flags |= STATE_MUL_DA;
+    }
   }
 
   proc_types proc_type() const override
@@ -1108,7 +1140,14 @@ struct shadow_word_death_t final : public priest_spell_t
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
         // target is not killed
-        shadow_word_death_self_damage->trigger( s->result_amount );
+        if ( priest().is_ptr() )
+        {
+          shadow_word_death_self_damage->execute();
+        }
+        else
+        {
+          shadow_word_death_self_damage->trigger( s->result_amount );
+        }
       }
 
       if ( priest().talents.death_and_madness.enabled() )
@@ -1275,12 +1314,16 @@ struct flash_heal_t final : public priest_heal_t
 
 // ==========================================================================
 // Desperate Prayer
-// TODO: add Light's Inspiration HoT
 // ==========================================================================
 struct desperate_prayer_t final : public priest_heal_t
 {
+  double health_change;
+  double max_health_snapshot;
+
   desperate_prayer_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) )
+    : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) ),
+      health_change( data().effectN( 1 ).percent() ),
+      max_health_snapshot( player->resources.max[ RESOURCE_HEALTH ] )
   {
     parse_options( options_str );
     harmful  = false;
@@ -1289,13 +1332,39 @@ struct desperate_prayer_t final : public priest_heal_t
     // does not seem to proc anything other than heal specific actions
     callbacks = false;
 
-    // This is parsed as a HoT, disabling that manually
+    // This is parsed as a Heal and HoT, disabling that manually
+    // The "Heal" portion comes from the buff
     base_td_multiplier = 0.0;
     dot_duration       = timespan_t::from_seconds( 0 );
+
+    // CDR
+    apply_affecting_aura( p.talents.angels_mercy );
+
+    if ( priest().talents.lights_inspiration.enabled() )
+    {
+      health_change += priest().talents.lights_inspiration->effectN( 1 ).percent();
+    }
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    // Calculate this before the increased in health is applied
+    double heal_amount = max_health_snapshot * health_change;
+
+    sim->print_debug( "{} gains desperate_prayer: max_health_snapshot {}, health_change {}, heal_amount: {}",
+                      player->name(), max_health_snapshot, health_change, heal_amount );
+
+    // Record raw amd total amount to state
+    state->result_raw   = heal_amount;
+    state->result_total = heal_amount;
+    return heal_amount;
   }
 
   void execute() override
   {
+    // Before we increase the health of the player in the buff, store how much it was
+    max_health_snapshot = player->resources.max[ RESOURCE_HEALTH ];
+
     priest().buffs.desperate_prayer->trigger();
 
     priest_heal_t::execute();
@@ -1474,9 +1543,10 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
     // Cooldown handled by the action
     cooldown->duration = 0_ms;
 
+    // Additive health increase
     if ( priest().talents.lights_inspiration.enabled() )
     {
-      health_change *= 1.0 + priest().talents.lights_inspiration->effectN( 1 ).percent();
+      health_change += priest().talents.lights_inspiration->effectN( 1 ).percent();
     }
   }
 
@@ -1484,13 +1554,12 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
   {
     buff_t::start( stacks, value, duration );
 
+    // Instead of increasing health here we perform this inside the heal_t action of the spell
     double old_health     = player->resources.current[ RESOURCE_HEALTH ];
     double old_max_health = player->resources.max[ RESOURCE_HEALTH ];
 
     player->resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
     player->recalculate_resource_max( RESOURCE_HEALTH );
-    player->resources.current[ RESOURCE_HEALTH ] *=
-        1.0 + health_change;  // Update health after the maximum is increased
 
     sim->print_debug( "{} gains desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
                       player->name(), health_change * 100.0, old_health, player->resources.current[ RESOURCE_HEALTH ],
@@ -1499,11 +1568,11 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
 
   void expire_override( int, timespan_t ) override
   {
+    // Whatever is gained by the heal is kept
     double old_health     = player->resources.current[ RESOURCE_HEALTH ];
     double old_max_health = player->resources.max[ RESOURCE_HEALTH ];
 
     player->resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
-    player->resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change;  // Update health before the maximum is reduced
     player->recalculate_resource_max( RESOURCE_HEALTH );
 
     sim->print_debug( "{} loses desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
@@ -2212,8 +2281,8 @@ void priest_t::init_spells()
   talents.sanguine_teachings = CT( "Sanguine Teachings" );
   talents.tithe_evasion      = CT( "Tithe Evasion" );
   // Row 6
-  talents.inspiration                = CT( "Inspiration" );           // NYI
-  talents.improved_mass_dispel       = CT( "Improved Mass Dispel" );  // NYI
+  talents.inspiration                = CT( "Inspiration" );  // NYI
+  talents.mental_agility             = CT( "Mental Agility" );
   talents.body_and_soul              = CT( "Body and Soul" );
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
   talents.void_shield                = CT( "Void Shield" );
@@ -2224,7 +2293,7 @@ void priest_t::init_spells()
   talents.twist_of_fate   = CT( "Twist of Fate" );
   talents.throes_of_pain  = CT( "Throes of Pain" );
   // Row 8
-  talents.angels_mercy               = CT( "Angel's Mercy" );  // NYI
+  talents.angels_mercy               = CT( "Angel's Mercy" );
   talents.binding_heals              = CT( "Binding Heals" );  // NYI
   talents.halo                       = CT( "Halo" );
   talents.halo_heal_holy             = find_spell( 120692 );
@@ -2340,6 +2409,7 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Class Talents
   action.apply_affecting_aura( talents.benevolence );
+  action.apply_affecting_aura( talents.mental_agility );
 
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.malediction );  // Void Torrent CDR

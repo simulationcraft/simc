@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 10.1.7.50793
-static const std::array<item_enchantment_data_t, 4639> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 10.2.0.51239
+static const std::array<item_enchantment_data_t, 4648> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4638,6 +4638,15 @@ static const std::array<item_enchantment_data_t, 4639> __ptr_spell_item_ench_dat
   { 6904,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.2332,  0.0000,  0.0000 }, 411897, "Shadowed Belt Clasp|A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
   { 6905,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.2032,  0.0000,  0.0000 }, 411898, "Shadowed Belt Clasp|A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 6906,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.1632,  0.0000,  0.0000 }, 411899, "Shadowed Belt Clasp|A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 6907,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 414947,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Illusory Adornment: Dreams"        },
+  { 6908,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 414947,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Illusory Adornment: Dreams"        },
+  { 6909,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 414947,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Illusory Adornment: Dreams"        },
+  { 7001,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 416120,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Dreaming Devotion |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7002,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 416122,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Dreaming Devotion |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
+  { 7003,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 416123,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Dreaming Devotion |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
+  { 7009,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "10.2.0 FX Testing - Enchant Visualt - Emerald Dream" },
   { 7010,  39998, -4,   0,  30, 0, 0,   0,   0, {   5,   0,   0 }, {   16,    0,    0 }, {      5,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "+$k1 Intellect"                    },
+  { 7032,      0,  0,   0,  70, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Verdant Crush"                     },
+  { 7052,      0,  0,   0,  60, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 425838,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 426327, "|cnITEM_EPIC_COLOR:Incandescent Essence|r" },
 } };
 

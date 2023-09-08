@@ -5,7 +5,7 @@ level=70
 race=mechagnome
 role=tank
 position=front
-talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAAShWJJhQSSpRAAAASLSJJSkgIJJJJlEgWkIt0KhA
+talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAQShWLJJQSSrRAAAASLSRiEJ0KSSaJJlEgWjIt0KhA
 
 head=crown_of_roaring_storms,id=193751,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,gem_id=192932
 neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192982/192932/192932,crafted_stats=32/40
@@ -32,7 +32,7 @@ level=70
 race=orc
 role=dps
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEJJRLiEBAAAASkkEAJJJJQSJSEJkIJJJJlEcAAAA
+talents=B0QAK5xc05YQdq4E+VOLrE2vpCAAAAAAAIRSS0icgEAAAAgEJJFAJJJJBJtIRkQrIJplk0SAAAA
 
 head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
 neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40
@@ -59,7 +59,7 @@ level=70
 race=orc
 role=dps
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAESkkElISEAAAAIRSSAkkkkAJlkERCJSSSyBSJBAAA
+talents=B0QAK5xc05YQdq4E+VOLrE2vpCAAAAAAAIRSSUicgEAAAAgEJJFAJJJJBJtIRkQrIJplk0SAAAA
 
 head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
 neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40

@@ -78,7 +78,7 @@ void affliction( player_t* p )
   
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2" );
-  default_->add_action( "malefic_rapture,if=variable.cd_dots_up|variable.vt_up&soul_shard>1" );
+  default_->add_action( "malefic_rapture,if=variable.cd_dots_up|variable.vt_ps_up&soul_shard>1" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react" );
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&fight_remains<4" );
   default_->add_action( "drain_soul,if=buff.nightfall.react" );
@@ -90,6 +90,7 @@ void affliction( player_t* p )
 
   variables->add_action( "variable,name=ps_up,op=set,value=dot.phantom_singularity.ticking|!talent.phantom_singularity" );
   variables->add_action( "variable,name=vt_up,op=set,value=dot.vile_taint_dot.ticking|!talent.vile_taint" );
+  variables->add_action( "variable,name=vt_ps_up,op=set,value=dot.vile_taint_dot.ticking|dot.phantom_singularity.ticking|(!talent.vile_taint&!talent.phantom_singularity)" );
   variables->add_action( "variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot" );
   variables->add_action( "variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up" );
   variables->add_action( "variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare" );
@@ -98,16 +99,15 @@ void affliction( player_t* p )
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "call_action_list,name=items" );
   aoe->add_action( "haunt" );
-  aoe->add_action( "vile_taint" );
+  aoe->add_action( "vile_taint,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<2&cooldown.soul_rot.remains>=12" );
   aoe->add_action( "phantom_singularity" );
-  aoe->add_action( "soul_rot" );
+  aoe->add_action( "soul_rot,if=variable.vt_up&variable.ps_up" );
   aoe->add_action( "unstable_affliction,if=remains<5" );
-  aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5" );
-  aoe->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3&talent.doom_blossom");
+  aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)" );
   aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
-  aoe->add_action( "summon_darkglare" );
+  aoe->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
-  aoe->add_action( "malefic_rapture" );
+  aoe->add_action( "malefic_rapture,if=cooldown.summon_darkglare.remains>15|soul_shard>3" );
   aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
   aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10" );
   aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
@@ -191,7 +191,7 @@ void demonology( player_t* p )
   default_->add_action( "invoke_external_buff,name=power_infusion,if=(buff.nether_portal.up&buff.nether_portal.remains<8&talent.nether_portal)|fight_remains<20|pet.demonic_tyrant.active&fight_remains<100|fight_remains<25|!talent.nether_portal&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant&buff.dreadstalkers.up)", "Power Infusion is used 6 seconds or less before Demonic Tyrant, without Demonic Tyrant, it will be used 8s before Nether Portal Ends and without both, its used on Cooldown" );
   default_->add_action( "call_action_list,name=fight_end,if=fight_remains<30" );
   default_->add_action( "hand_of_guldan,if=time<0.5&(fight_remains%%95>40|fight_remains%%95<15)" );
-  default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<15&cooldown.summon_vilefiend.remains<gcd.max*5&cooldown.call_dreadstalkers.remains<gcd.max*5&(cooldown.grimoire_felguard.remains<10|!set_bonus.tier30_2pc)&(!variable.shadow_timings|variable.tyrant_cd<15|fight_remains<40|buff.power_infusion.up)" );
+  default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<15&cooldown.summon_vilefiend.remains<gcd.max*5&cooldown.call_dreadstalkers.remains<gcd.max*5&(cooldown.grimoire_felguard.remains<10|!set_bonus.tier30_2pc)&(!variable.shadow_timings|variable.tyrant_cd<15|fight_remains<40|buff.power_infusion.up)&(!raid_event.adds.in<15-raid_event.add.duration)|talent.summon_vilefiend.enabled&cooldown.summon_demonic_tyrant.remains<15&cooldown.summon_vilefiend.remains<gcd.max*5&cooldown.call_dreadstalkers.remains<gcd.max*5&(cooldown.grimoire_felguard.remains<10|!set_bonus.tier30_2pc)&(!variable.shadow_timings|variable.tyrant_cd<15|fight_remains<40|buff.power_infusion.up)" );
   default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<15&(buff.vilefiend.up|!talent.summon_vilefiend&(buff.grimoire_felguard.up|cooldown.grimoire_felguard.up|!set_bonus.tier30_2pc))&(!variable.shadow_timings|variable.tyrant_cd<15|fight_remains<40|buff.power_infusion.up)" );
   default_->add_action( "summon_demonic_tyrant,if=buff.vilefiend.up|buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>90" );
   default_->add_action( "call_action_list,name=racials,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<=2)|fight_remains<22" );
@@ -230,7 +230,7 @@ void demonology( player_t* p )
   tyrant->add_action( "soulburn,if=buff.nether_portal.up&cooldown.call_dreadstalkers.remains>10&soul_shard>1" );
   tyrant->add_action( "summon_vilefiend,if=(soul_shard=5|buff.nether_portal.up)&cooldown.summon_demonic_tyrant.remains<13&variable.np" );
   tyrant->add_action( "call_dreadstalkers,if=(buff.vilefiend.up|!talent.summon_vilefiend&(!talent.nether_portal|buff.nether_portal.up|cooldown.nether_portal.remains>30)&(buff.nether_portal.up|buff.grimoire_felguard.up|soul_shard=5))&cooldown.summon_demonic_tyrant.remains<11&variable.np");
-  tyrant->add_action( "grimoire_felguard,if=buff.vilefiend.up|!talent.summon_vilefiend&(!talent.nether_portal|buff.nether_portal.up|cooldown.nether_portal.remains>30)&(buff.nether_portal.up|buff.dreadstalkers.up|soul_shard=5)&variable.np&(!raid_event.adds.in<15-raid_event.add.duration)");
+  tyrant->add_action( "grimoire_felguard,if=buff.vilefiend.up|!talent.summon_vilefiend&(!talent.nether_portal|buff.nether_portal.up|cooldown.nether_portal.remains>30)&(buff.nether_portal.up|buff.dreadstalkers.up|soul_shard=5)&variable.np");
   tyrant->add_action( "hand_of_guldan,if=soul_shard>2&(buff.vilefiend.up|!talent.summon_vilefiend&buff.dreadstalkers.up)&(soul_shard>2|buff.vilefiend.remains<gcd.max*2+2%spell_haste)|buff.nether_portal.up" );
   tyrant->add_action( "power_siphon,if=buff.demonic_core.down" );
   tyrant->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.up&(buff.vilefiend.up|!talent.summon_vilefiend&buff.dreadstalkers.up)" );
