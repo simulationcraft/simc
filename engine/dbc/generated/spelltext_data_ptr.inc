@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51239
-static const std::array<spelltext_data_t, 20390> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20392> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20301,6 +20301,7 @@ static const std::array<spelltext_data_t, 20390> __ptr_spelltext_data { {
   { 424075, "$@spelldesc424073", "Burning for $w1 Fire damage every sec.", 0 },
   { 424105, "Taking damage and melee attacks can coat yourself in fiery thorns, granting $s1 Strength and reducing damage taken from enemies by $s2 for $424107d.", 0, 0 },
   { 424107, "$@spelldesc424105", "Strength increased by $w1, and reducing damage taken by $w2.", 0 },
+  { 424120, "$@spelldesc422884", 0, 0 },
   { 424141, "$@spelldesc423921", "Agility increased by $w1, and Speed by $w2.", 0 },
   { 424155, "$@spelldesc422870", "Damage done increased by ${$w1}.1%.", 0 },
   { 424165, "$@spelldesc422852", "Damage increased by $s1%.", 0 },
@@ -20337,6 +20338,7 @@ static const std::array<spelltext_data_t, 20390> __ptr_spelltext_data { {
   { 424949, "$@spelldesc422855", "Damage increased by $s1%.", 0 },
   { 425153, "$@spelldesc422479", "The heat of the brand intensifies, increasing the damage dealt by $@spellname425154.", 0 },
   { 425154, "$@spelldesc422479", "Taking $w2 Fire damage per $t2 sec.", 0 },
+  { 425298, "$@spelldesc422886", 0, 0 },
   { 425407, "$@spelldesc422864", "Absorbing up to $w1 damage.", 0 },
   { 425417, "$@spelldesc422146", "Scorched by the sun for $w1 Fire damage every $t sec.", 0 },
   { 425517, "$@spelldesc422927", "Your next Shield Slam will consume active bleeds on its target.", 0 },

@@ -539,6 +539,7 @@ public:
     buff_t* unholy_t30_2pc_stacking;
     buff_t* unholy_t30_2pc_mastery;
     buff_t* unholy_t30_4pc_mastery;
+    buff_t* amplify_damage;
 
   } buffs;
 
@@ -1029,6 +1030,9 @@ public:
 
     // T30 Blood
     const spell_data_t* vampiric_strength; // Str buff
+
+    // T31 Unholy
+    const spell_data_t* t31_unholy_value_container;
   } spell;
 
   // Pet Abilities
@@ -1050,6 +1054,7 @@ public:
     // Army of the damned magus
     const spell_data_t* frostbolt;
     const spell_data_t* shadow_bolt;
+    const spell_data_t* amplify_damage;
     // Commander of the Dead Talent
     const spell_data_t* commander_of_the_dead;
     // Ruptured Viscera Talent
@@ -1852,6 +1857,20 @@ struct death_knight_pet_t : public pet_t
       else  // Pets
         m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 3 ).percent();
     }
+
+    if ( is_ptr() )
+    {
+      if ( dk()->buffs.amplify_damage->check() )
+      {
+        m *= 1.0 + dk()->buffs.amplify_damage->check_value();
+      }
+
+      if ( dk()->buffs.unholy_assault->check() )
+      {
+        m *= 1.0 + dk()->buffs.unholy_assault->check_value();
+      }
+    }
+
     return m;
   }
 
@@ -2353,7 +2372,14 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     // Note: for some dumb reason, WCL has the ghoul's AP and SP swapped
     // Running a script ingame shows the correct values
-    owner_coeff.ap_from_ap = 0.594;
+    if (is_ptr())
+    {
+      owner_coeff.ap_from_ap = 0.65;
+    }
+    else
+    {
+      owner_coeff.ap_from_ap = 0.594;
+    }
   }
 
   void init_gains() override
@@ -2487,7 +2513,22 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
 
     // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
-    owner_coeff.ap_from_ap = 0.4664;
+    if (!is_ptr())
+    {
+      owner_coeff.ap_from_ap = 0.4664;
+    }
+    if (is_ptr())
+    {
+      if ( name_str == "army_ghoul" )
+      {
+        owner_coeff.ap_from_ap = 0.3525;
+      }
+
+      if ( name_str == "apoc_ghoul" )
+      {
+        owner_coeff.ap_from_ap = 0.526;
+      }
+    }
   }
 
   void init_spells() override
@@ -3148,6 +3189,27 @@ struct magus_pet_t : public death_knight_pet_t
         else
           proxy->add_child( this );
       }
+
+      if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ))
+      {
+        aoe = 1 + as<int>(dk()->find_spell( 422854 )->effectN(2).base_value());
+      }
+    }
+  };
+
+  struct amplify_damage_t final : public magus_spell_t
+  {
+    amplify_damage_t( magus_pet_t* p, util::string_view options_str )
+      : magus_spell_t( p, "amplify_damage", p->dk() -> pet_spell.amplify_damage, options_str )
+    {
+      set_target( p -> owner );
+      trigger_gcd = 0_s; // Doesnt actually stop magus from casting
+    }
+
+    void execute() override
+    {
+      magus_spell_t::execute();
+      dk()->buffs.amplify_damage->trigger();
     }
   };
 
@@ -3183,6 +3245,10 @@ struct magus_pet_t : public death_knight_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
+    if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ))
+    {
+      def->add_action( "amplify_damage" );
+    }
     def -> add_action( "frostbolt" );
     def -> add_action( "shadow_bolt" );
   }
@@ -3191,6 +3257,11 @@ struct magus_pet_t : public death_knight_pet_t
   {
     if ( name == "frostbolt" ) return new frostbolt_magus_t( this, proxy_action, options_str );
     if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, proxy_action, options_str );
+
+    if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ))
+    {
+      if ( name == "amplify_damage" ) return new amplify_damage_t( this, options_str );
+    }
 
     return death_knight_pet_t::create_action( name, options_str );
   }
@@ -3227,6 +3298,8 @@ struct death_knight_action_t : public Base
     bool unholy_blight;
     bool war;
     bool sanguine_ground, sanguine_ground_periodic;
+    bool unholy_assault, unholy_assault_periodic;
+    bool amplify_damage, amplify_damage_periodic;
     bool chilling_rage, chilling_rage_periodic;
     /*
     Pre-emptively writing these in, they are likely to be changed to whitelists too
@@ -3288,6 +3361,13 @@ struct death_knight_action_t : public Base
     this -> affected_by.war = this -> data().affected_by( p -> spell.apocalypse_war_debuff -> effectN( 1 ) );
     this -> affected_by.sanguine_ground = this -> data().affected_by( p -> spell.sanguine_ground -> effectN( 1 ) );
     this -> affected_by.sanguine_ground_periodic = this -> data().affected_by( p -> spell.sanguine_ground -> effectN( 3 ) );
+    if (p->is_ptr())
+    {
+      this->affected_by.unholy_assault = this->data().affected_by( p->talent.unholy.unholy_assault->effectN( 4 ) );
+      this->affected_by.unholy_assault_periodic = this->data().affected_by( p->talent.unholy.unholy_assault->effectN( 5 ) );
+      this->affected_by.amplify_damage = this->data().affected_by( p->pet_spell.amplify_damage->effectN( 1 ) );
+      this->affected_by.amplify_damage_periodic = this->data().affected_by( p->pet_spell.amplify_damage->effectN( 2 ) );
+    }
     this -> affected_by.chilling_rage = this -> data().affected_by( p -> spell.chilling_rage -> effectN( 1 ) );
     this -> affected_by.chilling_rage_periodic = this -> data().affected_by( p -> spell.chilling_rage -> effectN( 2 ) );
     /*
@@ -3347,9 +3427,19 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
     }
 
-    if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground && p() -> buffs.sanguine_ground -> check() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground && p() -> buffs.sanguine_ground -> check() )
     {
       m *= 1.0 + p() -> buffs.sanguine_ground -> check_value();
+    }
+
+    if ( p() -> is_ptr() && p()->specialization() == DEATH_KNIGHT_UNHOLY && this->affected_by.unholy_assault && p() -> buffs.unholy_assault -> check() )
+    {
+      m *= 1.0 + p() -> buffs.unholy_assault -> check_value();
+    }
+
+    if ( p() -> is_ptr() && p()->specialization() == DEATH_KNIGHT_UNHOLY && this->affected_by.amplify_damage && p() -> buffs.amplify_damage -> check() )
+    {
+      m *= 1.0 + p() -> buffs.amplify_damage -> check_value();
     }
 
     if( p() -> specialization() == DEATH_KNIGHT_FROST && this -> affected_by.chilling_rage && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && p() -> buffs.chilling_rage -> up() )
@@ -3387,6 +3477,16 @@ struct death_knight_action_t : public Base
     if( p() -> specialization() == DEATH_KNIGHT_FROST && this -> affected_by.chilling_rage_periodic && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && p() -> buffs.chilling_rage -> up() )
     {
       m *= 1.0 + p() -> buffs.chilling_rage -> check_stack_value();
+    }
+
+    if( p() -> is_ptr() && p() -> specialization() == DEATH_KNIGHT_UNHOLY && this -> affected_by.unholy_assault_periodic && p() -> buffs.unholy_assault -> check() ) 
+    {
+      m *= 1.0 + p() -> buffs.unholy_assault -> check_value();
+    }
+
+    if( p() -> is_ptr() && p()->specialization() == DEATH_KNIGHT_UNHOLY && this -> affected_by.amplify_damage_periodic && p() -> buffs.amplify_damage -> check() )
+    {
+      m *= 1.0 + p() -> buffs.amplify_damage -> check_value();
     }
 
     return m;
@@ -4203,7 +4303,12 @@ struct apocalypse_t final : public death_knight_melee_attack_t
 
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
     {
-      p() -> pets.apoc_magus.spawn( summon_duration, 1 );
+        p()->pets.apoc_magus.spawn( summon_duration, 1 );
+
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ))
+      {
+        p() -> pets.apoc_magus.spawn( summon_duration, 1 );
+      }
     }
 
     if ( p() -> talent.unholy.apocalypse.ok() )
@@ -8550,6 +8655,20 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       buffs.rune_mastery -> trigger();
     }
 
+    if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ))
+    {
+      auto extension_time = spell.t31_unholy_value_container->effectN( 1 ).time_value();
+
+      for ( auto& apoc_magus : pets.apoc_magus )
+      {
+        apoc_magus->adjust_duration( extension_time );
+      }
+      for ( auto& army_magus : pets.army_magus )
+      {
+        army_magus->adjust_duration( extension_time );
+      }
+    }
+
     // Effects that require the player to actually spend runes
     if ( actual_amount > 0 )
     {
@@ -9780,6 +9899,8 @@ void death_knight_t::init_spells()
   spell.vigorous_lifeblood_energize          = find_spell( 394559 );
   // T30 Blood
   spell.vampiric_strength                    = find_spell( 408356 );
+  // T30 Unholy
+  spell.t31_unholy_value_container           = find_spell( 422855 );
 
   // Frost
   spell.murderous_efficiency_gain     = find_spell( 207062 );
@@ -9865,6 +9986,7 @@ void death_knight_t::init_spells()
   // Magus of the dead (army of the damned)
   pet_spell.frostbolt               = find_spell( 317792 );
   pet_spell.shadow_bolt             = find_spell( 317791 );
+  pet_spell.amplify_damage          = find_spell( 424949 );
   // Commander of the Dead Talent
   pet_spell.commander_of_the_dead   = find_spell( 390264 );
   // Ruptured Viscera Talent
@@ -10242,9 +10364,18 @@ void death_knight_t::create_buffs()
                    1 );
 
   buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
-          -> set_default_value_from_effect( 1 )
-          -> set_cooldown( 0_ms ) // Handled by the action
-          -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+          -> set_cooldown( 0_ms ); // Handled by the action
+
+      if (!is_ptr())
+      {
+        buffs.unholy_assault->set_default_value_from_effect( 1 );
+        buffs.unholy_assault->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+      }
+      if (is_ptr())
+      {
+        buffs.unholy_assault->set_default_value_from_effect( 4 );
+      }
+          
 
   buffs.unholy_pact = new unholy_pact_buff_t( this );
 
@@ -10285,6 +10416,9 @@ void death_knight_t::create_buffs()
           -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
           -> set_max_stack( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) ? spell.unholy_t30_2pc_stacking -> max_stacks() : 1 )
           -> add_invalidate( CACHE_MASTERY );
+
+  buffs.amplify_damage = make_buff( this, "amplify_damage", pet_spell.amplify_damage )
+      ->set_default_value( pet_spell.amplify_damage -> effectN( 1 ).percent() );
   }
 }
 
