@@ -2090,6 +2090,9 @@ class SpellDataGenerator(DataGenerator):
 
           # Tier 30
           ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
+
+          # Tier 31
+          ( 425298, 1 ), # BrM 4-piece Charred Dreams Healing
         ),
 
         # Druid:
