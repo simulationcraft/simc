@@ -866,7 +866,7 @@ public:
   // Misc
   bool is_elemental_pet_active() const;
   pet_t* get_active_elemental_pet() const;
-  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false, bool t31_2pc = false, bool t31_4pc = false );
+  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false, bool t31_2pc = false );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
   timespan_t last_t30_proc;
@@ -8174,11 +8174,10 @@ struct primordial_wave_t : public shaman_spell_t
       p()->buff.primordial_surge->trigger();
     }
 
-    if (true)
+    if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
     {
-      bool twoPiece = p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 );
-      bool fourPiece = p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B4 );
-      p()->summon_feral_spirits( p()->spell.feral_spirit->duration(), 1, false, twoPiece, fourPiece );
+      p()->summon_feral_spirits( p()->spell.feral_spirit->duration(), 1, true,
+                                 p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) );
     }
   }
 
@@ -9312,17 +9311,17 @@ pet_t* shaman_t::get_active_elemental_pet() const
   return nullptr;
 }
 
-void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool t28, bool t31_2pc, bool t31_4pc )
+void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool resetFeralSpiritMaelstrom, bool t31_2pc )
 {
   //Evaluate before n gets messed with
-  if ( t31_4pc )
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B4 ) )
   {
     cooldown.feral_spirits->adjust( -1.0 * ( timespan_t::from_seconds( 7 ) * n ) );
   }
   if ( t31_2pc )
   {
     pet.lightning_wolves.spawn( duration );
-    buff.crackling_surge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+    buff.crackling_surge->trigger( n, buff_t::DEFAULT_VALUE(), -1, duration );
   }
   else
   {
@@ -9366,7 +9365,8 @@ void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool t28, 
 
   // Enhancement T28 bonus will only override the buff from manually cast spell
   // if the new duration exceeds the remaining duration of the buff.
-  if ( !t28 || ( t28 && duration > buff.feral_spirit_maelstrom->remains() ) )
+  if ( !resetFeralSpiritMaelstrom ||
+       ( resetFeralSpiritMaelstrom && duration > buff.feral_spirit_maelstrom->remains() ) )
   {
     buff.feral_spirit_maelstrom->trigger( 1, duration );
   }
