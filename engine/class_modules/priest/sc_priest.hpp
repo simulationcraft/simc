@@ -158,6 +158,7 @@ public:
     propagate_const<buff_t*> devoured_despair;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> mind_melt;
+    propagate_const<buff_t*> surge_of_insanity;
     propagate_const<buff_t*> mind_flay_insanity;
     propagate_const<buff_t*> mind_spike_insanity;
     propagate_const<buff_t*> deathspeaker;
@@ -217,7 +218,7 @@ public:
     player_talent_t tithe_evasion;
     // Row 6
     player_talent_t inspiration;
-    player_talent_t improved_mass_dispel;
+    player_talent_t mental_agility;
     player_talent_t body_and_soul;
     player_talent_t twins_of_the_sun_priestess;
     player_talent_t void_shield;

@@ -972,8 +972,11 @@ struct fade_t final : public priest_spell_t
 // ==========================================================================
 struct shadow_word_death_self_damage_t final : public priest_spell_t
 {
+  double self_damage_coeff;
+
   shadow_word_death_self_damage_t( priest_t& p )
-    : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage )
+    : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage ),
+      self_damage_coeff( p.talents.shadow_word_death->effectN( 5 ).percent() )
   {
     background = true;
     may_crit   = false;
@@ -981,6 +984,29 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     target     = player;
   }
 
+  double base_da_min( const action_state_t* ) const override
+  {
+    return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
+  }
+
+  double base_da_max( const action_state_t* ) const override
+  {
+    return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().talents.tithe_evasion.enabled() && priest().is_ptr() )
+    {
+      m *= priest().talents.tithe_evasion->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  // TODO: Remove when 10.2 PTR goes live
   void trigger( double original_amount )
   {
     if ( priest().talents.tithe_evasion.enabled() )
@@ -997,6 +1023,12 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
     // We don't want this counted towards our dps
     stats->type = stats_e::STATS_NEUTRAL;
+
+    // Make sure we call composite_da_multiplier
+    if ( priest().is_ptr() )
+    {
+      snapshot_flags |= STATE_MUL_DA;
+    }
   }
 
   proc_types proc_type() const override
@@ -1108,7 +1140,14 @@ struct shadow_word_death_t final : public priest_spell_t
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
         // target is not killed
-        shadow_word_death_self_damage->trigger( s->result_amount );
+        if ( priest().is_ptr() )
+        {
+          shadow_word_death_self_damage->execute();
+        }
+        else
+        {
+          shadow_word_death_self_damage->trigger( s->result_amount );
+        }
       }
 
       if ( priest().talents.death_and_madness.enabled() )
@@ -2242,8 +2281,8 @@ void priest_t::init_spells()
   talents.sanguine_teachings = CT( "Sanguine Teachings" );
   talents.tithe_evasion      = CT( "Tithe Evasion" );
   // Row 6
-  talents.inspiration                = CT( "Inspiration" );           // NYI
-  talents.improved_mass_dispel       = CT( "Improved Mass Dispel" );  // NYI
+  talents.inspiration                = CT( "Inspiration" );  // NYI
+  talents.mental_agility             = CT( "Mental Agility" );
   talents.body_and_soul              = CT( "Body and Soul" );
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
   talents.void_shield                = CT( "Void Shield" );
@@ -2370,6 +2409,7 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Class Talents
   action.apply_affecting_aura( talents.benevolence );
+  action.apply_affecting_aura( talents.mental_agility );
 
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.malediction );  // Void Torrent CDR
