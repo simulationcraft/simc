@@ -973,6 +973,7 @@ struct fade_t final : public priest_spell_t
 struct shadow_word_death_self_damage_t final : public priest_spell_t
 {
   double self_damage_coeff;
+  int parent_chain_number = 0;
 
   shadow_word_death_self_damage_t( priest_t& p )
     : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage ),
@@ -1003,6 +1004,13 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
       m *= priest().talents.tithe_evasion->effectN( 1 ).percent();
     }
 
+    // Chained Shadow Word: Deaths only hit the character for 10% of what they normally do.
+    // TODO: Unsure if a bug or not
+    if ( parent_chain_number > 0 )
+    {
+      m *= .1;
+    }
+
     return m;
   }
 
@@ -1014,6 +1022,12 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
       original_amount /= ( 1.0 + priest().talents.tithe_evasion->effectN( 1 ).percent() );
     }
     base_td = original_amount;
+    execute();
+  }
+
+  void trigger( int chain_number )
+  {
+    parent_chain_number = chain_number;
     execute();
   }
 
@@ -1061,10 +1075,10 @@ protected:
   struct swd_data
   {
     int chain_number = 0;
-    int max_chain = 2;
+    int max_chain    = 2;
   };
   using state_t = priest_action_state_t<swd_data>;
-  using ab = priest_spell_t;
+  using ab      = priest_spell_t;
 
 public:
   double execute_percent;
@@ -1081,7 +1095,6 @@ public:
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light )
   {
-
     affected_by_shadow_weaving = true;
 
     if ( priest().talents.discipline.expiation.enabled() )
@@ -1224,11 +1237,11 @@ public:
 
         if ( curr_state->chain_number < curr_state->max_chain )
         {
-          shadow_word_death_t* child_death    = priest().background_actions.shadow_word_death.get();
-          state_t* state = child_death->cast_state( child_death->get_state() );
-          state->target                       = s->target;
-          state->chain_number                 = curr_state->chain_number + 1;
-          state->max_chain                    = number_of_chains;
+          shadow_word_death_t* child_death = priest().background_actions.shadow_word_death.get();
+          state_t* state                   = child_death->cast_state( child_death->get_state() );
+          state->target                    = s->target;
+          state->chain_number              = curr_state->chain_number + 1;
+          state->max_chain                 = number_of_chains;
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
           make_event( sim, 200_ms, [ this, state, child_death ] { child_death->schedule_execute( state ); } );
@@ -1241,7 +1254,7 @@ public:
         // target is not killed
         if ( priest().is_ptr() )
         {
-          shadow_word_death_self_damage->execute();
+          shadow_word_death_self_damage->trigger( cast_state( s )->chain_number );
         }
         else
         {
