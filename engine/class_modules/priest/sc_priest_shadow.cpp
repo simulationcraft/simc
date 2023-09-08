@@ -1620,7 +1620,7 @@ struct shadow_crash_damage_t final : public priest_spell_t
 
     double scaled_m = m;
 
-    if ( parent_targets > 5 )
+    if ( parent_targets > 5 && priest().is_ptr() )
     {
       scaled_m *= std::sqrt( 5 / parent_targets );
       sim->print_debug( "{} {} updates da multiplier: Before: {} After: {} with {} targets from the parent spell.",
