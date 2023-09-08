@@ -2366,7 +2366,14 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     // Note: for some dumb reason, WCL has the ghoul's AP and SP swapped
     // Running a script ingame shows the correct values
-    owner_coeff.ap_from_ap = 0.65;
+    if (is_ptr())
+    {
+      owner_coeff.ap_from_ap = 0.65;
+    }
+    else
+    {
+      owner_coeff.ap_from_ap = 0.594;
+    }
   }
 
   void init_gains() override
