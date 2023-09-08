@@ -342,6 +342,8 @@ public:
 
     buff_t* calefaction;
     buff_t* flames_fury;
+    buff_t* searing_rage;
+    buff_t* tier31_4pc;
 
     buff_t* touch_of_ice;
   } buffs;
@@ -1346,6 +1348,8 @@ struct mage_spell_t : public spell_t
     bool shifting_power = true;
     bool time_manipulation = false;
     bool wildfire = true;
+
+    bool searing_rage = true;
   } affected_by;
 
   struct triggers_t
@@ -1534,6 +1538,12 @@ public:
 
     if ( affected_by.wildfire )
       m *= 1.0 + p()->buffs.wildfire->check_value();
+
+    if ( affected_by.searing_rage )
+    {
+      double eff_mult = 1.0 + p()->buffs.tier31_4pc->check_value();
+      m *= 1.0 + eff_mult * p()->buffs.searing_rage->check_stack_value();
+    }
 
     return m;
   }
@@ -2238,6 +2248,14 @@ struct hot_streak_spell_t : public fire_mage_spell_t
         p()->buffs.hot_streak->trigger();
       }
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( MAGE_FIRE, T31, B2 ) )
+      p()->trigger_merged_buff( p()->buffs.searing_rage, true );
   }
 };
 
@@ -3306,6 +3324,7 @@ struct combustion_t final : public fire_mage_spell_t
 
     p()->buffs.combustion->trigger();
     p()->buffs.wildfire->trigger();
+    p()->buffs.tier31_4pc->trigger();
     p()->expression_support.kindling_reduction = 0_ms;
   }
 };
@@ -6576,10 +6595,16 @@ void mage_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
 
-  buffs.calefaction = make_buff( this, "calefaction", find_spell( 408673 ) )
-                        ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
-  buffs.flames_fury = make_buff( this, "flames_fury", find_spell( 409964 ) )
-                        ->set_default_value_from_effect( 1 );
+  buffs.calefaction  = make_buff( this, "calefaction", find_spell( 408673 ) )
+                         ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
+  buffs.flames_fury  = make_buff( this, "flames_fury", find_spell( 409964 ) )
+                         ->set_default_value_from_effect( 1 );
+  buffs.searing_rage = make_buff( this, "searing_rage", find_spell( 424285 ) )
+                         ->set_default_value_from_effect( 1 )
+                         ->set_chance( sets->has_set_bonus( MAGE_FIRE, T31, B2 ) );
+  buffs.tier31_4pc   = make_buff( this, "tier31_4pc", find_spell( 424289 ) )
+                         ->set_default_value_from_effect( 1 )
+                         ->set_chance( sets->has_set_bonus( MAGE_FIRE, T31, B4 ) );
 
   buffs.touch_of_ice = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
                          ->set_default_value_from_effect( 1 )
