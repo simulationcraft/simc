@@ -851,8 +851,6 @@ public:
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
 
-      parse_buff_effects( p().buffs.deathspeaker );
-
       if ( p().talents.shadow.ancient_madness.enabled() )
       {
         // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list

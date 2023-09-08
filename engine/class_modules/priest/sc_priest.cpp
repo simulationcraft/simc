@@ -1066,6 +1066,7 @@ protected:
   {
     int chain_number = 0;
     int max_chain    = 2;
+    bool deathspeaker = false;
   };
   using state_t = priest_action_state_t<swd_data>;
   using ab      = priest_spell_t;
@@ -1073,6 +1074,7 @@ protected:
 public:
   double execute_percent;
   double execute_modifier;
+  double deathspeaker_mult;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
@@ -1081,6 +1083,8 @@ public:
     : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
+      deathspeaker_mult( p.talents.shadow.deathspeaker.ok() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent()
+                                                            : 1.0 ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light )
@@ -1123,6 +1127,9 @@ public:
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
+    if ( cast_state( s )->chain_number == 0 )
+      cast_state( s )->deathspeaker = p().buffs.deathspeaker->check();
+
     ab::snapshot_state( s, rt );
   }
 
@@ -1135,24 +1142,22 @@ public:
       m *= priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent();
     }
 
-    return m;
-  }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double tdm = ab::composite_target_da_multiplier( t );
-
-    if ( t->health_percentage() < execute_percent || priest().buffs.deathspeaker->check() )
+    if ( s->target->health_percentage() < execute_percent || cast_state( s )->deathspeaker )
     {
       if ( sim->debug )
       {
-        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}%", t->name_str, execute_percent, *this,
+        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}%", s->target->name_str, execute_percent, *this,
                           execute_modifier * 100 );
       }
-      tdm *= 1 + execute_modifier;
+      m *= 1 + execute_modifier;
     }
 
-    return tdm;
+    if ( cast_state( s )->deathspeaker )
+    {
+      m *= deathspeaker_mult;
+    }
+
+    return m;
   }
 
   void execute() override
@@ -1234,7 +1239,9 @@ public:
           state_t* state                   = child_death->cast_state( child_death->get_state() );
           state->target                    = s->target;
           state->chain_number              = curr_state->chain_number + 1;
+          state->deathspeaker              = curr_state->deathspeaker;
           state->max_chain                 = number_of_chains;
+
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
           make_event( sim, 200_ms, [ this, state, child_death ] { child_death->schedule_execute( state ); } );
