@@ -158,6 +158,7 @@ public:
     propagate_const<buff_t*> devoured_despair;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> mind_melt;
+    propagate_const<buff_t*> surge_of_insanity;
     propagate_const<buff_t*> mind_flay_insanity;
     propagate_const<buff_t*> mind_spike_insanity;
     propagate_const<buff_t*> deathspeaker;

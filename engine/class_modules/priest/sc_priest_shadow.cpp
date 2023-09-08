@@ -1102,10 +1102,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( priest().talents.shadow.surge_of_insanity.enabled() )
     {
-      if ( priest().talents.shadow.mind_spike.enabled() )
-        priest().buffs.mind_spike_insanity->trigger();
-      else
-        priest().buffs.mind_flay_insanity->trigger();
+      priest().buffs.surge_of_insanity->trigger();
     }
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
@@ -2112,6 +2109,27 @@ void priest_t::create_buffs_shadow()
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 2 ).trigger() )
                         ->set_default_value_from_effect( 1 );
+
+  // Custom buff to track how many stacks you are acquiring
+  buffs.surge_of_insanity =
+      make_buff( this, "surge_of_insanity", talents.shadow.surge_of_insanity )
+          ->set_duration( 0_s )
+          ->set_max_stack( is_ptr() ? talents.shadow.surge_of_insanity->effectN( 3 ).base_value() : 1 )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int _new ) {
+            if ( _new == b->max_stack() )
+            {
+              buffs.surge_of_insanity->expire();
+
+              if ( talents.shadow.mind_spike.enabled() )
+              {
+                buffs.mind_spike_insanity->trigger();
+              }
+              else
+              {
+                buffs.mind_flay_insanity->trigger();
+              }
+            }
+          } );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
 
