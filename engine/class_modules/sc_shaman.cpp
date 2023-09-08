@@ -866,7 +866,8 @@ public:
   // Misc
   bool is_elemental_pet_active() const;
   pet_t* get_active_elemental_pet() const;
-  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false, bool t31_2pc = false );
+  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool resetFeralSpiritMaelstrom = false,
+                             bool t31_2pc = false );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
   timespan_t last_t30_proc;
@@ -9316,7 +9317,7 @@ void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool reset
   //Evaluate before n gets messed with
   if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B4 ) )
   {
-    cooldown.feral_spirits->adjust( -1.0 * ( timespan_t::from_seconds( 7 ) * n ) );
+    cooldown.primordial_wave->adjust( -1.0 * ( timespan_t::from_seconds( 7 ) * n ) );
   }
   if ( t31_2pc )
   {
@@ -9363,7 +9364,7 @@ void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool reset
     }
   }
 
-  // Enhancement T28 bonus will only override the buff from manually cast spell
+  // Enhancement T28 or T31 bonuses will only override the buff from manually cast spell
   // if the new duration exceeds the remaining duration of the buff.
   if ( !resetFeralSpiritMaelstrom ||
        ( resetFeralSpiritMaelstrom && duration > buff.feral_spirit_maelstrom->remains() ) )
