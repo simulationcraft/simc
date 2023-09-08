@@ -217,7 +217,7 @@ public:
     player_talent_t tithe_evasion;
     // Row 6
     player_talent_t inspiration;
-    player_talent_t improved_mass_dispel;
+    player_talent_t mental_agility;
     player_talent_t body_and_soul;
     player_talent_t twins_of_the_sun_priestess;
     player_talent_t void_shield;

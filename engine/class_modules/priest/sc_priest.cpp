@@ -2281,8 +2281,8 @@ void priest_t::init_spells()
   talents.sanguine_teachings = CT( "Sanguine Teachings" );
   talents.tithe_evasion      = CT( "Tithe Evasion" );
   // Row 6
-  talents.inspiration                = CT( "Inspiration" );           // NYI
-  talents.improved_mass_dispel       = CT( "Improved Mass Dispel" );  // NYI
+  talents.inspiration                = CT( "Inspiration" );  // NYI
+  talents.mental_agility             = CT( "Mental Agility" );
   talents.body_and_soul              = CT( "Body and Soul" );
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
   talents.void_shield                = CT( "Void Shield" );
@@ -2409,6 +2409,7 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Class Talents
   action.apply_affecting_aura( talents.benevolence );
+  action.apply_affecting_aura( talents.mental_agility );
 
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.malediction );  // Void Torrent CDR
