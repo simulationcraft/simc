@@ -1237,6 +1237,7 @@ public:
           if ( priest().buffs.deathspeaker->check() || s->target->health_percentage() < execute_percent )
           {
             // BUG: Currently Deathspeaker is not correctly increasing the amount of chains
+            // https://github.com/SimCMinMax/WoW-BugTracker/issues/1124
             if ( !priest().bugs || s->target->health_percentage() < execute_percent )
             {
               number_of_chains += priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 2 ).base_value();
@@ -1292,6 +1293,7 @@ public:
       }
 
       // BUG: Unsure if intended but only the original one triggers PL
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/1123
       if ( priest().talents.shadow.psychic_link.enabled() && cast_state( s )->chain_number == 0 )
       {
         priest().trigger_psychic_link( s );
