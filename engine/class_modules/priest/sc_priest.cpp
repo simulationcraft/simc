@@ -1254,7 +1254,8 @@ public:
         // target is not killed
         if ( priest().is_ptr() )
         {
-          shadow_word_death_self_damage->trigger( cast_state( s )->chain_number );
+          make_event( sim, 1_s,
+                      [ this, s ] { shadow_word_death_self_damage->trigger( cast_state( s )->chain_number ); } );
         }
         else
         {
