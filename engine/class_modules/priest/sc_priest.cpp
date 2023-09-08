@@ -969,6 +969,7 @@ struct fade_t final : public priest_spell_t
 
 // ==========================================================================
 // Shadow Word: Death
+// https://github.com/simulationcraft/simc/wiki/Priests#shadow-word-death
 // ==========================================================================
 struct shadow_word_death_self_damage_t final : public priest_spell_t
 {
@@ -1058,17 +1059,6 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
   }
 };
 
-// T31 Chain Behavior
-// Death and Madness Reset: ?
-// Death and Madness Debuff: Refreshed
-// Deathspeaker Buff: Consumed
-// Deathspeaker Modifier: Caries over
-// Deathspeaker Extra Chain: Does not work
-// Execute Extra Chain: Does work
-// Insanity: All
-// Inescapable Torment: All
-// Psychic Link: Original Only
-// Self-Damage: All, but Chains are reduced by 90% (BUG?)
 struct shadow_word_death_t final : public priest_spell_t
 {
 protected:
@@ -1234,6 +1224,9 @@ public:
             }
           }
         }
+
+        sim->print_debug( "{} shadow_word_death_state: chain_number: {}, max_chain: {}", player->name(),
+                          curr_state->chain_number, number_of_chains );
 
         if ( curr_state->chain_number < curr_state->max_chain )
         {
