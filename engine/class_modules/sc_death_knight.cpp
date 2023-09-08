@@ -4800,25 +4800,35 @@ private:
 struct chill_streak_damage_t final : public death_knight_spell_t
 {
   int hit_count;
+  int max_hits;
 
   chill_streak_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "chill_streak_damage", p, p -> spell.chill_streak_damage )
   {
     background = proc = true;
+    max_hits = p -> talent.frost.chill_streak -> effectN( 1 ).base_value();
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) )
+    {
+      max_hits += p -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value();
+    }
   }
   
   double composite_target_multiplier( player_t* t ) const override
   {
-  double m = death_knight_spell_t::composite_target_multiplier( t );
+    double m = death_knight_spell_t::composite_target_multiplier( t );
 
-  if ( auto td = get_td( t ) )
-    m *= 1.0 + td -> debuff.piercing_chill -> check_value();
+    if ( auto td = get_td( t ) )
+      m *= 1.0 + td -> debuff.piercing_chill -> check_value();
 
-  return m;
+    return m;
   }
 
   void impact( action_state_t* state ) override
   {
+    if ( state -> target -> is_player() )
+    {
+      state->action->base_dd_min = state->action->base_dd_max = 0;
+    }
     death_knight_spell_t::impact( state );
     hit_count++;
 
@@ -4860,30 +4870,21 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       }
     }
 
-    int hits = p() -> talent.frost.chill_streak -> effectN( 1 ).base_value();
     vector_with_callback<player_t*> target_list_plus_player = sim -> target_non_sleeping_list;
 
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) )
     {
-      target_list_plus_player.push_back( sim -> active_player );
-      
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) )
-      {
-        hits += p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value();
-      }
+      target_list_plus_player.push_back( p() );      
     }
 
     for ( const auto target : target_list_plus_player )
     {
-      if ( target != state -> target )
+      if ( target != state -> target && hit_count < max_hits )
       {
-        if ( hit_count < hits )
-        {
-          this -> set_target( target );
-          this -> schedule_execute();
-          return;
-        }
-      }
+        this -> set_target( target );
+        this -> schedule_execute();
+        return;
+       }
     }
   }
 };
