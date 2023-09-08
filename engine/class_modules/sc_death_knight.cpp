@@ -2511,15 +2511,17 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     {
       owner_coeff.ap_from_ap = 0.4664;
     }
-    
-    if (name_str == "army_ghoul")
+    if (is_ptr())
     {
-      owner_coeff.ap_from_ap = 0.3525;
-    }
+      if ( name_str == "army_ghoul" )
+      {
+        owner_coeff.ap_from_ap = 0.3525;
+      }
 
-    if ( name_str == "apoc_ghoul" )
-    {
-      owner_coeff.ap_from_ap = 0.526;
+      if ( name_str == "apoc_ghoul" )
+      {
+        owner_coeff.ap_from_ap = 0.526;
+      }
     }
   }
 
@@ -3184,7 +3186,7 @@ struct magus_pet_t : public death_knight_pet_t
 
       if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 ))
       {
-        aoe = 5;
+        aoe = 1 + as<int>(dk()->find_spell( 422854 )->effectN(2).base_value());
       }
     }
   };
