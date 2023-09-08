@@ -3748,6 +3748,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1539 ],
             'tier'   : 30
         },
+        {
+            'name'   : 'tier31',
+            'bonuses': [ 1557, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1568, 1569 ],
+            'tier'   : 30
+        },
     ]
 
     @staticmethod
