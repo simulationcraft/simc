@@ -272,6 +272,10 @@ struct consecration_tick_t : public paladin_spell_t
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
     }
+    if (p()->buffs.sanctification_empower->up())
+    {
+      m *= 1.0 + 2;
+    }
     return m;
   }
 

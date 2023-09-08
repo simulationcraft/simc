@@ -157,6 +157,8 @@ public:
     buff_t* barricade_of_faith;
     buff_t* ally_of_the_light; // T29 2pc
     buff_t* deflecting_light; // T29 4pc
+    buff_t* sanctification; // T31 2pc building
+    buff_t* sanctification_empower;  // T31 2pc consecration effect
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -616,6 +618,7 @@ public:
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    heartfire( action_state_t* s );
   void    t29_4p_prot();
+  void    sanctification();
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
   int     get_local_enemies( double distance ) const;
