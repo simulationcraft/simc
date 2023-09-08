@@ -5837,6 +5837,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             break;
           case TA_COMBUSTION:
             mage->buffs.combustion->trigger( 1000 * mage->talents.time_anomaly->effectN( 4 ).time_value() );
+            mage->buffs.tier31_4pc->trigger();
             break;
           case TA_FIRE_BLAST:
             mage->cooldowns.fire_blast->reset( true );
