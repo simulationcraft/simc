@@ -4223,6 +4223,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
 // Glacial Spike Spell ======================================================
 
+// TODO: this spell currently benefits from all target mods, double check before 10.2 goes live
 struct glacial_blast_t final : public spell_t
 {
   glacial_blast_t( std::string_view n, mage_t* p ) :
@@ -5837,7 +5838,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             break;
           case TA_COMBUSTION:
             mage->buffs.combustion->trigger( 1000 * mage->talents.time_anomaly->effectN( 4 ).time_value() );
-            mage->buffs.tier31_4pc->trigger();
+            mage->buffs.tier31_4pc->trigger(); // TODO: double check this before 10.2 goes live
             break;
           case TA_FIRE_BLAST:
             mage->cooldowns.fire_blast->reset( true );
