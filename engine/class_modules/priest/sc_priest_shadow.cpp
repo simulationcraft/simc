@@ -634,7 +634,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
         priest().buffs.deathspeaker->trigger();
-        priest().procs.deathspeaker->occur();
       }
 
       priest().refresh_insidious_ire_buff( s );
@@ -699,7 +698,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
         priest().buffs.deathspeaker->trigger();
-        priest().procs.deathspeaker->occur();
       }
     }
   }
@@ -1628,9 +1626,9 @@ struct shadow_crash_damage_t final : public priest_spell_t
 {
 protected:
   using state_t = shadow_crash_state_t;
-  using ab = priest_spell_t;
-public:
+  using ab      = priest_spell_t;
 
+public:
   double parent_targets = 1;
 
   shadow_crash_damage_t( priest_t& p )
@@ -1798,7 +1796,6 @@ public:
     cast_state( s )->deaths_torment_mult = 1 + p().buffs.deaths_torment->check() * torment_mult;
   }
 
-
   void execute() override
   {
     priest_spell_t::execute();
@@ -1815,13 +1812,13 @@ public:
   {
     if ( shadow_crash_damage )
     {
-      state_t* state                   = shadow_crash_damage->cast_state( shadow_crash_damage->get_state() );
-      state->target                    = s->target;
-      state->deaths_torment_mult       = cast_state( s )->deaths_torment_mult;
+      state_t* state             = shadow_crash_damage->cast_state( shadow_crash_damage->get_state() );
+      state->target              = s->target;
+      state->deaths_torment_mult = cast_state( s )->deaths_torment_mult;
       shadow_crash_damage->snapshot_state( state, shadow_crash_damage->amount_type( state ) );
-      
+
       shadow_crash_damage->parent_targets = s->n_targets;
-      shadow_crash_damage->schedule_execute(state);
+      shadow_crash_damage->schedule_execute( state );
     }
 
     priest_spell_t::impact( s );
@@ -2217,7 +2214,13 @@ void priest_t::create_buffs_shadow()
 
   buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() )
                            ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-                             cooldowns.shadow_word_death->adjust_max_charges( cur - old );
+                             // Deathspeaker is not adjusting max charges on PTR
+                             // https://github.com/SimCMinMax/WoW-BugTracker/issues/1125
+                             if ( !bugs || !is_ptr() )
+                             {
+                               procs.deathspeaker->occur();
+                               cooldowns.shadow_word_death->adjust_max_charges( cur - old );
+                             }
                            } );
 
   buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )
@@ -2259,7 +2262,7 @@ void priest_t::create_buffs_shadow()
       make_buff( this, "darkflame_shroud", find_spell( 410871 ) )->set_default_value_from_effect( 1 );
 
   buffs.deaths_torment = make_buff( this, "deaths_torment", find_spell( 423726 ) );
-}
+}  // namespace priestspace
 
 void priest_t::init_rng_shadow()
 {
