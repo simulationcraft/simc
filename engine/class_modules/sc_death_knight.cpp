@@ -4827,7 +4827,7 @@ struct chill_streak_damage_t final : public death_knight_spell_t
   {
     if ( state -> target -> is_player() )
     {
-      state->action->base_dd_min = state->action->base_dd_max = 0;
+      state->result_raw = state->result_amount = state->result_total = 0;
     }
     death_knight_spell_t::impact( state );
     hit_count++;
