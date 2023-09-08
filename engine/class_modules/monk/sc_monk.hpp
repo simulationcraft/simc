@@ -173,6 +173,10 @@ public:
     propagate_const<action_t*> niuzao_call_to_arms_summon;
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
 
+    propagate_const<action_t*> rising_sun_kick_press_the_advantage;
+    propagate_const<action_t*> keg_smash_press_the_advantage;
+    propagate_const<action_t*> chi_surge;
+
     // Windwalker
     propagate_const<action_t*> empowered_tiger_lightning;
     propagate_const<action_t*> fury_of_xuen_summon;
@@ -182,6 +186,7 @@ public:
   struct passive_actions_t
   {
     action_t* thunderfist;
+    action_t* press_the_advantage;
   } passive_actions;
 
   std::vector<action_t*> combo_strike_actions;
@@ -299,6 +304,7 @@ public:
     propagate_const<buff_t*> rushing_jade_wind;
     propagate_const<buff_t*> spinning_crane_kick;
     propagate_const<buff_t*> windwalking_driver;
+    propagate_const<absorb_buff_t*> yulons_grace;
 
     // Brewmaster
     propagate_const<buff_t*> bladed_armor;
@@ -316,6 +322,7 @@ public:
     propagate_const<buff_t*> graceful_exit;
     propagate_const<buff_t*> hit_scheme;
     propagate_const<buff_t*> invoke_niuzao;
+    propagate_const<buff_t*> press_the_advantage;
     propagate_const<buff_t*> pretense_of_instability;
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
@@ -416,6 +423,7 @@ public:
     propagate_const<proc_t*> blackout_combo_keg_smash;
     propagate_const<proc_t*> blackout_combo_celestial_brew;
     propagate_const<proc_t*> blackout_combo_purifying_brew;
+    propagate_const<proc_t*> blackout_combo_rising_sun_kick;
     propagate_const<proc_t*> blackout_kick_cdr_with_woo;
     propagate_const<proc_t*> blackout_kick_cdr;
     propagate_const<proc_t*> blackout_kick_cdr_serenity_with_woo;
@@ -488,8 +496,10 @@ public:
       player_talent_t expeditious_fortification;
       // Row 7
       player_talent_t profound_rebuttal;
+      player_talent_t yulons_grace;
       player_talent_t diffuse_magic;
       player_talent_t eye_of_the_tiger;
+      player_talent_t dance_of_the_wind;
       player_talent_t dampen_harm;
       player_talent_t improved_touch_of_death;
       player_talent_t strength_of_spirit;
@@ -569,6 +579,7 @@ public:
       player_talent_t improved_invoke_niuzao_the_black_ox;
       player_talent_t exploding_keg;
       player_talent_t blackout_combo;
+      player_talent_t press_the_advantage;
       player_talent_t weapons_of_order;
       // Row 10
       player_talent_t bountiful_brew;
@@ -1072,7 +1083,7 @@ public:
   void trigger_bonedust_brew( const action_state_t* );
   void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empowered_tiger_lightning( action_state_t*, bool );
+  void trigger_empowered_tiger_lightning( action_state_t* );
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();

@@ -218,14 +218,22 @@ void variable_t::reset()
 }
 
 // A variable action is constant if
-// 1) The operation is not SETIF and the value expression is constant
-// 2) The operation is SETIF and both the condition expression and the value (or value expression)
+// 1) The operation does not use the current value
+// 2) The operation is not SETIF and the value expression is constant
+// 3) The operation is SETIF and both the condition expression and the value (or value expression)
 //    are both constant
-// 3) The operation is reset/floor/ceil and all of the other actions manipulating the variable are
+// 4) The operation is reset/floor/ceil and all of the other actions manipulating the variable are
 //    constant
 
 bool variable_t::is_constant() const
 {
+  // If the operation uses the current value, the variable isn't constant
+  // TODO: technically, we could handle special cases such as adding zero, but that doesn't seem all that important
+  if ( operation >= OPERATION_ADD && operation <= OPERATION_MAX )
+  {
+    return false;
+  }
+
   // If the variable action is conditionally executed, and the conditional execution is not
   // constant, the variable cannot be constant.
   if (if_expr && !if_expr->is_constant())

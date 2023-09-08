@@ -28,50 +28,51 @@ struct spec_map_t
 
 const spec_map_t spec_map[] =
 {
-  { WARRIOR_ARMS,         "Arms Warrior"         },
-  { WARRIOR_FURY,         "Fury Warrior"         },
-  { WARRIOR_PROTECTION,   "Protection Warrior"   },
-  { PALADIN_HOLY,         "Holy Paladin"         },
-  { PALADIN_PROTECTION,   "Protection Paladin"   },
-  { PALADIN_RETRIBUTION,  "Retribution Paladin"  },
-  { HUNTER_BEAST_MASTERY, "Beast Mastery Hunter" },
-  { HUNTER_BEAST_MASTERY, "Beast-Mastery Hunter" }, // Alternate
-  { HUNTER_MARKSMANSHIP,  "Marksmanship Hunter"  },
-  { HUNTER_SURVIVAL,      "Survival Hunter"      },
-  { ROGUE_ASSASSINATION,  "Assassination Rogue"  },
-  { ROGUE_OUTLAW,         "Outlaw Rogue"         },
-  { ROGUE_SUBTLETY,       "Subtlety Rogue"       },
-  { PRIEST_DISCIPLINE,    "Discipline Priest"    },
-  { PRIEST_HOLY,          "Holy Priest"          },
-  { PRIEST_SHADOW,        "Shadow Priest"        },
-  { DEATH_KNIGHT_BLOOD,   "Blood Death Knight"   }, // Default
-  { DEATH_KNIGHT_BLOOD,   "Blood DeathKnight"    }, // Alternate (battle.net match)
-  { DEATH_KNIGHT_FROST,   "Frost Death Knight"   }, // Default
-  { DEATH_KNIGHT_FROST,   "Frost DeathKnight"    }, // Alternate (battle.net match)
-  { DEATH_KNIGHT_UNHOLY,  "Unholy Death Knight"  }, // Default
-  { DEATH_KNIGHT_UNHOLY,  "Unholy DeathKnight"   }, // Alternate (battle.net match)
-  { SHAMAN_ELEMENTAL,     "Elemental Shaman"     },
-  { SHAMAN_ENHANCEMENT,   "Enhancement Shaman"   },
-  { SHAMAN_RESTORATION,   "Restoration Shaman"   },
-  { MAGE_ARCANE,          "Arcane Mage"          },
-  { MAGE_FIRE,            "Fire Mage"            },
-  { MAGE_FROST,           "Frost Mage"           },
-  { WARLOCK_AFFLICTION,   "Affliction Warlock"   },
-  { WARLOCK_DEMONOLOGY,   "Demonology Warlock"   },
-  { WARLOCK_DESTRUCTION,  "Destruction Warlock"  },
-  { MONK_BREWMASTER,      "Brewmaster Monk"      },
-  { MONK_MISTWEAVER,      "Mistweaver Monk"      },
-  { MONK_WINDWALKER,      "Windwalker Monk"      },
-  { DRUID_BALANCE,        "Balance Druid"        },
-  { DRUID_FERAL,          "Feral Druid"          },
-  { DRUID_GUARDIAN,       "Guardian Druid"       },
-  { DRUID_RESTORATION,    "Restoration Druid"    },
-  { DEMON_HUNTER_HAVOC,   "Havoc Demon Hunter"   },
-  { DEMON_HUNTER_HAVOC,   "Havoc DemonHunter"    },
+  { WARRIOR_ARMS,           "Arms Warrior"           },
+  { WARRIOR_FURY,           "Fury Warrior"           },
+  { WARRIOR_PROTECTION,     "Protection Warrior"     },
+  { PALADIN_HOLY,           "Holy Paladin"           },
+  { PALADIN_PROTECTION,     "Protection Paladin"     },
+  { PALADIN_RETRIBUTION,    "Retribution Paladin"    },
+  { HUNTER_BEAST_MASTERY,   "Beast Mastery Hunter"   },
+  { HUNTER_BEAST_MASTERY,   "Beast-Mastery Hunter"   }, // Alternate
+  { HUNTER_MARKSMANSHIP,    "Marksmanship Hunter"    },
+  { HUNTER_SURVIVAL,        "Survival Hunter"        },
+  { ROGUE_ASSASSINATION,    "Assassination Rogue"    },
+  { ROGUE_OUTLAW,           "Outlaw Rogue"           },
+  { ROGUE_SUBTLETY,         "Subtlety Rogue"         },
+  { PRIEST_DISCIPLINE,      "Discipline Priest"      },
+  { PRIEST_HOLY,            "Holy Priest"            },
+  { PRIEST_SHADOW,          "Shadow Priest"          },
+  { DEATH_KNIGHT_BLOOD,     "Blood Death Knight"     }, // Default
+  { DEATH_KNIGHT_BLOOD,     "Blood DeathKnight"      }, // Alternate (battle.net match)
+  { DEATH_KNIGHT_FROST,     "Frost Death Knight"     }, // Default
+  { DEATH_KNIGHT_FROST,     "Frost DeathKnight"      }, // Alternate (battle.net match)
+  { DEATH_KNIGHT_UNHOLY,    "Unholy Death Knight"    }, // Default
+  { DEATH_KNIGHT_UNHOLY,    "Unholy DeathKnight"     }, // Alternate (battle.net match)
+  { SHAMAN_ELEMENTAL,       "Elemental Shaman"       },
+  { SHAMAN_ENHANCEMENT,     "Enhancement Shaman"     },
+  { SHAMAN_RESTORATION,     "Restoration Shaman"     },
+  { MAGE_ARCANE,            "Arcane Mage"            },
+  { MAGE_FIRE,              "Fire Mage"              },
+  { MAGE_FROST,             "Frost Mage"             },
+  { WARLOCK_AFFLICTION,     "Affliction Warlock"     },
+  { WARLOCK_DEMONOLOGY,     "Demonology Warlock"     },
+  { WARLOCK_DESTRUCTION,    "Destruction Warlock"    },
+  { MONK_BREWMASTER,        "Brewmaster Monk"        },
+  { MONK_MISTWEAVER,        "Mistweaver Monk"        },
+  { MONK_WINDWALKER,        "Windwalker Monk"        },
+  { DRUID_BALANCE,          "Balance Druid"          },
+  { DRUID_FERAL,            "Feral Druid"            },
+  { DRUID_GUARDIAN,         "Guardian Druid"         },
+  { DRUID_RESTORATION,      "Restoration Druid"      },
+  { DEMON_HUNTER_HAVOC,     "Havoc Demon Hunter"     },
+  { DEMON_HUNTER_HAVOC,     "Havoc DemonHunter"      },
   { DEMON_HUNTER_VENGEANCE, "Vengeance Demon Hunter" },
   { DEMON_HUNTER_VENGEANCE, "Vengeance DemonHunter"  },
-  { EVOKER_DEVASTATION,   "Devastation Evoker" },
-  { EVOKER_PRESERVATION,   "Preservation Evoker" },
+  { EVOKER_DEVASTATION,     "Devastation Evoker"     },
+  { EVOKER_PRESERVATION,    "Preservation Evoker"    },
+  { EVOKER_AUGMENTATION,    "Augmentation Evoker"    },
 };
 
 struct html_named_character_t
@@ -224,34 +225,36 @@ std::string util::version_info_str( const dbc_t* dbc )
     return {};
   }
 
-  std::string build_info;
+  return fmt::format( "SimulationCraft {} for World of Warcraft {} {}", SC_VERSION,
+                      dbc::client_data_version_str( dbc->ptr ), dbc->wow_ptr_status() );
+}
+
+std::string util::build_info_str( const dbc_t* dbc )
+{
+  if ( !dbc )
+  {
+    return {};
+  }
+
+  std::vector<std::string> build_strings;
+
   if ( !dbc::hotfix_date_str( dbc->ptr ).empty() )
   {
-    build_info += fmt::format( "hotfix {}/{}",
-        dbc::hotfix_date_str( dbc->ptr ),
-        dbc::hotfix_build_version( dbc->ptr ) );
+    build_strings.emplace_back(
+        fmt::format( "hotfix {}/{}", dbc::hotfix_date_str( dbc->ptr ), dbc::hotfix_build_version( dbc->ptr ) ) );
   }
 
   if ( git_info::available() )
   {
-    if ( !build_info.empty() )
-    {
-      build_info += ", ";
-    }
-
-    build_info += fmt::format( "git build {} {}",
-        git_info::branch(), git_info::revision());
+    build_strings.emplace_back( fmt::format( "git build {} {}", git_info::branch(), git_info::revision() ) );
   }
 
   if constexpr ( SC_NO_NETWORKING_ON )
   {
-    build_info += ", no-networking";
+    build_strings.emplace_back( "no-networking" );
   }
 
-  return fmt::format( "SimulationCraft {} for World of Warcraft {} {} ({})",
-      SC_VERSION, dbc::client_data_version_str( dbc->ptr ),
-      dbc->wow_ptr_status(),
-      build_info );
+  return util::string_join( build_strings );
 }
 
 double util::stat_value( const player_t* p, stat_e stat )
@@ -1382,31 +1385,31 @@ const char* util::proc_type_string( proc_types type )
 {
   switch ( type )
   {
-    case PROC1_KILLED:               return "Killed";
-    case PROC1_KILLING_BLOW:         return "KillingBlow";
-    case PROC1_MELEE:                return "MeleeSwing";
-    case PROC1_MELEE_TAKEN:          return "MeleeSwingTaken";
-    case PROC1_MELEE_ABILITY:        return "MeleeAbility";
-    case PROC1_MELEE_ABILITY_TAKEN:  return "MeleeAbilityTaken";
-    case PROC1_RANGED:               return "RangedShot";
-    case PROC1_RANGED_TAKEN:         return "RangedShotTaken";
-    case PROC1_RANGED_ABILITY:       return "RangedAbility";
-    case PROC1_RANGED_ABILITY_TAKEN: return "RangedAbilityTaken";
-    case PROC1_NONE_HEAL:            return "GenericHeal";
-    case PROC1_NONE_HEAL_TAKEN:      return "GenericHealTaken";
-    case PROC1_NONE_SPELL:           return "GenericHarmfulSpell";
-    case PROC1_NONE_SPELL_TAKEN:     return "GenericHarmfulSpellTaken";
-    case PROC1_MAGIC_HEAL:           return "MagicHeal";
-    case PROC1_MAGIC_HEAL_TAKEN:     return "MagicHealTaken";
-    case PROC1_MAGIC_SPELL:          return "MagicHarmfulSpell";
-    case PROC1_MAGIC_SPELL_TAKEN:    return "MagicHarmfulSpellTaken";
-    case PROC1_PERIODIC:             return "HarmfulTick";
-    case PROC1_PERIODIC_TAKEN:       return "HarmfulTickTaken";
-    case PROC1_ANY_DAMAGE_TAKEN:     return "AnyDamageTaken";
-    case PROC1_PERIODIC_HEAL:        return "TickHeal";
-    case PROC1_PERIODIC_HEAL_TAKEN:  return "TickHealTaken";
-    case PROC1_CAST_SUCCESSFUL:      return "CastSuccessful";
-    default:                         return "Unknown";
+    case PROC1_KILLED:                 return "Killed";
+    case PROC1_KILLING_BLOW:           return "KillingBlow";
+    case PROC1_MELEE:                  return "MeleeSwing";
+    case PROC1_MELEE_TAKEN:            return "MeleeSwingTaken";
+    case PROC1_MELEE_ABILITY:          return "MeleeAbility";
+    case PROC1_MELEE_ABILITY_TAKEN:    return "MeleeAbilityTaken";
+    case PROC1_RANGED:                 return "RangedShot";
+    case PROC1_RANGED_TAKEN:           return "RangedShotTaken";
+    case PROC1_RANGED_ABILITY:         return "RangedAbility";
+    case PROC1_RANGED_ABILITY_TAKEN:   return "RangedAbilityTaken";
+    case PROC1_NONE_HEAL:              return "GenericHeal";
+    case PROC1_NONE_HEAL_TAKEN:        return "GenericHealTaken";
+    case PROC1_NONE_SPELL:             return "GenericHarmfulSpell";
+    case PROC1_NONE_SPELL_TAKEN:       return "GenericHarmfulSpellTaken";
+    case PROC1_MAGIC_HEAL:             return "MagicHeal";
+    case PROC1_MAGIC_HEAL_TAKEN:       return "MagicHealTaken";
+    case PROC1_MAGIC_SPELL:            return "MagicHarmfulSpell";
+    case PROC1_MAGIC_SPELL_TAKEN:      return "MagicHarmfulSpellTaken";
+    case PROC1_PERIODIC:               return "HarmfulTick";
+    case PROC1_PERIODIC_TAKEN:         return "HarmfulTickTaken";
+    case PROC1_ANY_DAMAGE_TAKEN:       return "AnyDamageTaken";
+    case PROC1_HELPFUL_PERIODIC:       return "HelpfulTick";
+    case PROC1_HELPFUL_PERIODIC_TAKEN: return "HelpfulTickTaken";
+    case PROC1_CAST_SUCCESSFUL:        return "CastSuccessful";
+    default:                           return "Unknown";
   }
 }
 
@@ -1712,84 +1715,46 @@ const char* util::spec_string_no_class( const player_t& p )
   // Player spec
   switch ( p.specialization() )
   {
-    case DEATH_KNIGHT_BLOOD:
-    return "Blood";
-    case DEATH_KNIGHT_FROST:
-    return "Frost";
-    case DEATH_KNIGHT_UNHOLY:
-    return "Unholy";
-    case DEMON_HUNTER_HAVOC:
-    return "Havoc";
-    case DEMON_HUNTER_VENGEANCE:
-    return "Vengeance";
-    case DRUID_BALANCE:
-    return "Balance";
-    case DRUID_FERAL:
-    return "Feral";
-    case DRUID_GUARDIAN:
-    return "Guardian";
-    case DRUID_RESTORATION:
-    return "Restoration";
-    case EVOKER_DEVASTATION:
-    return "Devastation";
-    case EVOKER_PRESERVATION:
-    return "Preservation";
-    case HUNTER_BEAST_MASTERY:
-    return "BeastMastery";
-    case HUNTER_MARKSMANSHIP:
-    return "Marksmanship";
-    case HUNTER_SURVIVAL:
-    return "Survival";
-    case MAGE_ARCANE:
-    return "Arcane";
-    case MAGE_FIRE:
-    return "Fire";
-    case MAGE_FROST:
-    return "Frost";
-    case MONK_BREWMASTER:
-    return "Brewmaster";
-    case MONK_MISTWEAVER:
-    return "Mistweaver";
-    case MONK_WINDWALKER:
-    return "Windwalker";
-    case PALADIN_HOLY:
-    return "Holy";
-    case PALADIN_PROTECTION:
-    return "Protection";
-    case PALADIN_RETRIBUTION:
-    return "Retribution";
-    case PRIEST_DISCIPLINE:
-    return "Discipline";
-    case PRIEST_HOLY:
-    return "Holy";
-    case PRIEST_SHADOW:
-    return "Shadow";
-    case ROGUE_ASSASSINATION:
-    return "Assassination";
-    case ROGUE_OUTLAW:
-    return "Outlaw";
-    case ROGUE_SUBTLETY:
-    return "Subtlety";
-    case SHAMAN_ELEMENTAL:
-    return "Elemental";
-    case SHAMAN_ENHANCEMENT:
-    return "Enhancement";
-    case SHAMAN_RESTORATION:
-    return "Restoration";
-    case WARLOCK_AFFLICTION:
-    return "Affliction";
-    case WARLOCK_DEMONOLOGY:
-    return "Demonology";
-    case WARLOCK_DESTRUCTION:
-    return "Destruction";
-    case WARRIOR_ARMS:
-    return "Arms";
-    case WARRIOR_FURY:
-    return "Fury";
-    case WARRIOR_PROTECTION:
-    return "Protection";
-    default:
-    return "";
+    case DEATH_KNIGHT_BLOOD:     return "Blood";
+    case DEATH_KNIGHT_FROST:     return "Frost";
+    case DEATH_KNIGHT_UNHOLY:    return "Unholy";
+    case DEMON_HUNTER_HAVOC:     return "Havoc";
+    case DEMON_HUNTER_VENGEANCE: return "Vengeance";
+    case DRUID_BALANCE:          return "Balance";
+    case DRUID_FERAL:            return "Feral";
+    case DRUID_GUARDIAN:         return "Guardian";
+    case DRUID_RESTORATION:      return "Restoration";
+    case EVOKER_DEVASTATION:     return "Devastation";
+    case EVOKER_PRESERVATION:    return "Preservation";
+    case EVOKER_AUGMENTATION:    return "Augmentation";
+    case HUNTER_BEAST_MASTERY:   return "BeastMastery";
+    case HUNTER_MARKSMANSHIP:    return "Marksmanship";
+    case HUNTER_SURVIVAL:        return "Survival";
+    case MAGE_ARCANE:            return "Arcane";
+    case MAGE_FIRE:              return "Fire";
+    case MAGE_FROST:             return "Frost";
+    case MONK_BREWMASTER:        return "Brewmaster";
+    case MONK_MISTWEAVER:        return "Mistweaver";
+    case MONK_WINDWALKER:        return "Windwalker";
+    case PALADIN_HOLY:           return "Holy";
+    case PALADIN_PROTECTION:     return "Protection";
+    case PALADIN_RETRIBUTION:    return "Retribution";
+    case PRIEST_DISCIPLINE:      return "Discipline";
+    case PRIEST_HOLY:            return "Holy";
+    case PRIEST_SHADOW:          return "Shadow";
+    case ROGUE_ASSASSINATION:    return "Assassination";
+    case ROGUE_OUTLAW:           return "Outlaw";
+    case ROGUE_SUBTLETY:         return "Subtlety";
+    case SHAMAN_ELEMENTAL:       return "Elemental";
+    case SHAMAN_ENHANCEMENT:     return "Enhancement";
+    case SHAMAN_RESTORATION:     return "Restoration";
+    case WARLOCK_AFFLICTION:     return "Affliction";
+    case WARLOCK_DEMONOLOGY:     return "Demonology";
+    case WARLOCK_DESTRUCTION:    return "Destruction";
+    case WARRIOR_ARMS:           return "Arms";
+    case WARRIOR_FURY:           return "Fury";
+    case WARRIOR_PROTECTION:     return "Protection";
+    default:                     return "";
   }
 }
 
@@ -1826,6 +1791,19 @@ stat_e util::parse_stat_type( util::string_view name )
   return STAT_NONE;
 }
 
+// scale_metric_is_raid =======================================================
+bool util::scale_metric_is_raid( scale_metric_e sm )
+{
+  switch ( sm )
+  {
+    case SCALE_METRIC_TIME:
+    case SCALE_METRIC_RAID_DPS:
+      return true;
+    default:
+      return false;
+  }
+}
+
 // scale_metric_type_string ===================================================
 
 const char* util::scale_metric_type_string( scale_metric_e sm )
@@ -1846,6 +1824,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
     case SCALE_METRIC_DEATHS:    return "Deaths";
     case SCALE_METRIC_TIME:      return "Fight Length";
+    case SCALE_METRIC_RAID_DPS:  return "Raid Damage per Second";
     default:                     return "Unknown";
   }
 }
@@ -1870,6 +1849,7 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
     case SCALE_METRIC_TIME:      return "time";
+    case SCALE_METRIC_RAID_DPS:  return "raid_dps";
     default:                     return "unknown";
   }
 }

@@ -9,6 +9,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <stdio.h>
 
 #if defined( SC_WINDOWS )
 #define NOMINMAX

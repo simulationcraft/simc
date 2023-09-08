@@ -572,7 +572,6 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 buff_t::buff_t(actor_pair_t q, util::string_view name)
   : buff_t(q, name, spell_data_t::nil(), nullptr)
 {
-
 }
 
 buff_t::buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell_data, const item_t* item )
@@ -618,6 +617,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     quiet(),
     overridden(),
     can_cancel( true ),
+    is_fallback(),
     requires_invalidation(),
     expire_at_max_stack(),
     reverse_stack_reduction( 1 ),
@@ -670,6 +670,11 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 {
   if ( source )  // Player Buffs
   {
+    // remove matching name from fallback buff list
+    auto &fl = player->fallback_buff_names;
+    fl.erase( std::remove_if( fl.begin(), fl.end(), [ name, source]( std::pair<std::string, player_t*> f ) {
+      return f.first == name && f.second == source;
+    } ), fl.end() );
     player->buff_list.push_back( this );
     cooldown = source->get_cooldown( "buff_" + name_str );
   }
@@ -769,8 +774,12 @@ void buff_t::update_trigger_calculations()
 
 buff_t* buff_t::set_chance( double chance )
 {
-  manual_chance = chance;
-  update_trigger_calculations();
+  if ( !is_fallback )
+  {
+    manual_chance = chance;
+    update_trigger_calculations();
+  }
+
   return this;
 }
 
@@ -1110,6 +1119,9 @@ buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multipl
 buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, property_type_t p_type, double multiplier,
                                                     effect_type_t e_type )
 {
+  if ( !s_data->ok() )
+    return this;
+
   for ( size_t idx = 1; idx <= s_data->effect_count(); idx++ )
   {
     const spelleffect_data_t& eff = s_data->effectN( idx );
@@ -1131,12 +1143,9 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
     return this;  // return out after matching the first effect
   }
 
-  if ( s_data->ok() )
-  {
-    sim->error(
-        "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
-        name(), s_data->id(), static_cast<int>(a_type), static_cast<int>(p_type), static_cast<int>(e_type) );
-  }
+  sim->error( "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
+              name(), s_data->id(), static_cast<int>( a_type ), static_cast<int>( p_type ),
+              static_cast<int>( e_type ) );
 
   return this;
 }
@@ -1186,14 +1195,22 @@ buff_t* buff_t::set_tick_behavior( buff_tick_behavior behavior )
 
 buff_t* buff_t::set_tick_callback( buff_tick_callback_t fn )
 {
-  tick_callback = std::move( fn );
+  if ( fn && !is_fallback )
+  {
+    tick_callback = std::move( fn );
+  }
+
   return this;
 }
 
 buff_t* buff_t::set_tick_time_callback( buff_tick_time_callback_t cb )
 {
-  set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
-  tick_time_callback = std::move( cb );
+  if ( cb && !is_fallback )
+  {
+    set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
+    tick_time_callback = std::move( cb );
+  }
+
   return this;
 }
 
@@ -1238,7 +1255,7 @@ buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
 
 buff_t* buff_t::set_refresh_duration_callback( buff_refresh_duration_callback_t cb )
 {
-  if ( cb )
+  if ( cb && !is_fallback )
   {
     refresh_behavior          = buff_refresh_behavior::CUSTOM;
     refresh_duration_callback = std::move( cb );
@@ -1288,7 +1305,11 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
 
 buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& cb )
 {
-  stack_change_callback = cb;
+  if ( !is_fallback )
+  {
+    stack_change_callback = cb;
+  }
+
   return this;
 }
 
@@ -1318,7 +1339,7 @@ buff_t* buff_t::set_name_reporting( std::string_view n )
 
 buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
 {
-  if ( !spell->ok() )
+  if ( !spell->ok() || !s_data->ok() )
     return this;
 
   assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting buffs." );
@@ -2731,6 +2752,11 @@ static buff_t* find_potion_buff( util::span<buff_t* const> buffs, player_t* sour
     }
   }
 
+  if ( source )
+  {
+    return source->sim->auras.fallback;
+  }
+
   return nullptr;
 }
 
@@ -2740,6 +2766,16 @@ buff_t* buff_t::find_expressable( util::span<buff_t* const> buffs, util::string_
     return find_potion_buff( buffs, source );
   else
     return find( buffs, name, source );
+}
+
+buff_t* buff_t::make_fallback( player_t* player, std::string_view name, player_t* source )
+{
+  for ( const auto& fb : player->fallback_buff_names )
+    if ( fb.first == name && fb.second == source )
+      return player->sim->auras.fallback;
+
+  player->fallback_buff_names.emplace_back( name, source );
+  return player->sim->auras.fallback;
 }
 
 std::string buff_t::to_str() const
@@ -2797,6 +2833,10 @@ buff_t* buff_t::find( sim_t* s, util::string_view name )
 
 buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
+  for ( const auto& fb : p->fallback_buff_names )
+    if ( fb.first == name && fb.second == source )
+      return p->sim->auras.fallback;
+
   return find( p->buff_list, name, source );
 }
 
@@ -3041,7 +3081,7 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
 
   if ( eff.subtype() == A_MOD_STAT )
   {
-    auto misc = eff.misc_value1();
+    auto misc   = eff.misc_value1();
     stat_e stat = STAT_NONE;
 
     if ( misc >= 0 )
@@ -3064,6 +3104,17 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
 
       return this;
     }
+  }
+  else if ( eff.subtype() == A_MOD_SUPPORT_STAT )
+  {
+    auto misc   = eff.misc_value1();
+    stat_e stat = STAT_NONE;
+
+    if ( misc == 1 )
+      stat = player->convert_hybrid_stat( STAT_STR_AGI_INT );
+
+    if ( stat != STAT_NONE )
+      return add_stat( stat, a, c );
   }
 
   return do_error( "STAT_NONE" );
@@ -3399,7 +3450,7 @@ absorb_buff_t* absorb_buff_t::set_cumulative( bool c )
 
 bool movement_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
-  if ( player->buffs.norgannons_sagacity_stacks )
+  if ( player->buffs.norgannons_sagacity_stacks && player->buffs.norgannons_sagacity )
   {
     auto sagacity = player->buffs.norgannons_sagacity_stacks->check();
 

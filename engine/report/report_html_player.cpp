@@ -258,8 +258,8 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   }
 
   // If we are printing a stats object that belongs to a pet, for an actual
-  // actor, print out the pet name too
-  if ( actor && !actor->is_pet() && s.player->is_pet() )
+  // actor, print out the pet name too unless the action already has a parent
+  if ( actor && !actor->is_pet() && s.player->is_pet() && !s.parent )
     name += " (" + util::encode_html( s.player->name_str ) + ")";
 
   return "<span" + class_attr + ">" + name + "</span>";
@@ -600,7 +600,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   os.printf( "<td class=\"right\"%s>%.1f</td>\n", rowspan.c_str(), s.num_executes.pretty_mean() );
 
   // Execute interval
-  os.printf( "<td class=\"right\"%s>%.2fsec</td>\n", rowspan.c_str(), s.total_intervals.pretty_mean() );
+  os.printf( "<td class=\"right\"%s>%.2fs</td>\n", rowspan.c_str(), s.total_intervals.pretty_mean() );
 
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
@@ -1947,6 +1947,7 @@ int raidbots_talent_render_width( specialization_e spec, int height )
     case DEMON_HUNTER_HAVOC:
     case EVOKER_DEVASTATION:
     case EVOKER_PRESERVATION:
+    case EVOKER_AUGMENTATION:
     case HUNTER_BEAST_MASTERY:
     case HUNTER_MARKSMANSHIP:
     case HUNTER_SURVIVAL:
@@ -2447,7 +2448,7 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
     os.printf( "<td class=\"left\">Waiting</td>\n"
                "<td class=\"left\">&#160;</td>\n"
                "<td class=\"left\">&#160;</td>\n"
-               "<td class=\"left\">%.3f sec</td>\n",
+               "<td class=\"left\">%.3fs</td>\n",
                data.wait_time.total_seconds() );
   }
 
@@ -3357,9 +3358,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   if ( !constant_buffs )
     os.printf( "<td class=\"right\">%.1f</td>\n"
                "<td class=\"right\">%.1f</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
                "<td class=\"right\">%.2f%%</td>\n"
                "<td class=\"right\">%.2f%%</td>\n"
                "<td class=\"right\">%.1f&#160;(%.1f)</td>\n"
@@ -3491,6 +3492,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    "<li><span class=\"label\">trigger_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
                    "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n"
                    "<li><span class=\"label\">duration_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
+                   "<li><span class=\"label\">uptime_min/max:</span>%.2f%%&#160;/&#160;%.2f%%</li>\n"
                    "</ul>\n",
                    b.start_intervals.min(),
                    b.start_intervals.max(),
@@ -3498,7 +3500,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    b.trigger_intervals.max(),
                    b.trigger_pct.mean(),
                    b.duration_lengths.min(),
-                   b.duration_lengths.max() );
+                   b.duration_lengths.max(),
+                   b.uptime_pct.min(),
+                   b.uptime_pct.max() );
       }
 
       if ( break_second )  // if stack rows will overflow past first column

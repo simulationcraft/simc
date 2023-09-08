@@ -37,6 +37,24 @@ struct pet_t : public player_t
     double sp_from_sp = 0.0;
   } owner_coeff;
 
+  struct current_pet_stats_t
+  {
+    // current pet stats stored in these doubles, and updated on the heartbeat event
+    // testing as of 6-6-2023 shows that Mastery, and Versatility update instantly, and are ommited due to that
+    double attack_power_from_ap = 0.0;
+    double attack_power_from_sp = 0.0;
+    double spell_power_from_ap = 0.0;
+    double spell_power_from_sp = 0.0;
+    double composite_melee_haste = 0.0;
+    double composite_melee_speed = 0.0;
+    double composite_spell_haste = 0.0;
+    double composite_spell_speed = 0.0;
+    double composite_melee_crit = 0.0;
+    double composite_spell_crit = 0.0;
+  } current_pet_stats;
+  bool use_delayed_pet_stat_updates;
+
+
 public:
   pet_t( sim_t* sim, player_t* owner, util::string_view name, bool guardian = false, bool dynamic = false );
   pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_type, bool guardian = false,
@@ -50,12 +68,15 @@ public:
   void init_finished() override;
   void reset() override;
   void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
+  void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* ) override;
 
   virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );
   // Adjust pet remaining duration. New duration of <= 0 dismisses pet. No-op on
   // persistent pets.
   virtual void adjust_duration( timespan_t adjustment );
+
+  void update_stats();
 
   const char* name() const override { return full_name_str.c_str(); }
   const player_t* get_owner_or_self() const override
@@ -82,24 +103,22 @@ public:
   double composite_spell_hit() const override
   { return hit_exp() * 2.0; }
 
-  double pet_crit() const;
+  virtual double pet_crit() const;
 
   double composite_melee_crit_chance() const override
   { return pet_crit(); }
   double composite_spell_crit_chance() const override
   { return pet_crit(); }
 
-  double composite_melee_speed() const override
-  { return owner -> cache.attack_speed(); }
+  double composite_melee_speed() const override;
 
-  double composite_melee_haste() const override
-  { return owner -> cache.attack_haste(); }
+  double composite_melee_haste() const override;
 
-  double composite_spell_haste() const override
-  { return owner -> cache.spell_haste(); }
+  void adjust_auto_attack( gcd_haste_type type ) override;
 
-  double composite_spell_speed() const override
-  { return owner -> cache.spell_speed(); }
+  double composite_spell_haste() const override;
+
+  double composite_spell_speed() const override;
 
   double composite_bonus_armor() const override
   { return owner -> cache.bonus_armor(); }

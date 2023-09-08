@@ -6,7 +6,7 @@ race=dwarf
 role=tank
 position=front
 professions=blacksmithing=100/jewelcrafting=100
-talents=BkEAAAAAAAAAAAAAAAAAAAAAAIkEAAAAIJJkkg0SKJJp1QEIUEQJJBgIJJ0QSCQ4AhAAAAAAAARAAKKBAC
+talents=BkEAAAAAAAAAAAAAAAAAAAAAAIkEAAAAIJJSSCikSSSaNEBCFBUSSAISSCNkkAyB4AhAAAAAAAARAAKaBAC
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -25,10 +25,8 @@ temporary_enchant=main_hand:howling_rune_3
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/battle_stance,toggle=on
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/battle_stance,toggle=on
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -57,9 +55,10 @@ actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
 actions+=/call_action_list,name=generic
 
 actions.aoe=thunder_clap,if=dot.rend.remains<=1
+actions.aoe+=/shield_slam,if=(set_bonus.tier30_2pc|set_bonus.tier30_4pc)&spell_targets.thunder_clap<=7|buff.earthen_tenacity.up
 actions.aoe+=/thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>5&buff.avatar.up&talent.unstoppable_force.enabled
 actions.aoe+=/revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3
-actions.aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=4
+actions.aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=7
 actions.aoe+=/thunder_clap
 actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
 
@@ -75,33 +74,33 @@ actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield
 actions.generic+=/devastate
 
 head=primal_molten_helm,id=190498,bonus_id=8840/8836/8902/1537/9379,gem_id=192985,crafted_stats=36/32
-neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/8783/8784/8782/1537,gem_id=192945/192945/192945,crafted_stats=36/32
+neck=tuskarr_bone_necklace,id=193666,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192945/192945/192945
 shoulders=pauldrons_of_the_onyx_crucible,id=202441,bonus_id=4800/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=battlechest_of_the_onyx_crucible,id=202446,bonus_id=4800/4786/1501,enchant=sustained_strength_3
+chest=battlechest_of_the_onyx_crucible,id=202446,bonus_id=4800/4786/1501,enchant=waking_stats_3
 wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192945,enchant=devotion_of_leech_3
 hands=handguards_of_the_onyx_crucible,id=202444,bonus_id=4800/4786/1501
 waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537/9379,gem_id=192945,crafted_stats=32/36
 legs=legplates_of_the_onyx_crucible,id=202442,bonus_id=4800/4786/1504,enchant=frosted_armor_kit_3
 feet=spittleresistant_sollerets,id=204396,bonus_id=4800/4786/1498
-finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204029/204027,enchant=devotion_of_haste_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/1808,gem_id=192948,enchant=devotion_of_haste_3
-trinket1=neltharions_call_to_chaos,id=204201,bonus_id=9410/1498
+finger1=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498/6935,gem_id=192945,enchant=devotion_of_versatility_3
+finger2=circle_of_ascended_frost,id=193731,bonus_id=6652/8783/8784/7936/7937/6808/4786/8780/1669/9382/6935,gem_id=192945,enchant=devotion_of_versatility_3
+trinket1=elementium_pocket_anvil,id=202617,bonus_id=6652/8783/8784/9414/9415/4800/4786/1504/9382
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=1498
-main_hand=forgestorm,id=193785,bonus_id=1669/6808/4786,enchant=shadowflame_wreathe_3
-off_hand=monstrous_gluttony,id=205974,bonus_id=1669/6808/4786
+main_hand=forgestorm,id=193785,bonus_id=1669/6808/4786,enchant=sophic_devotion_3
+off_hand=calamitys_herald,id=202558,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
 
 # Gear Summary
-# gear_ilvl=446.13
-# gear_strength=5292
-# gear_stamina=22070
-# gear_intellect=973
-# gear_crit_rating=4560
-# gear_haste_rating=4368
-# gear_mastery_rating=1106
-# gear_versatility_rating=2208
+# gear_ilvl=448.94
+# gear_strength=5943
+# gear_stamina=22487
+# gear_intellect=1001
+# gear_crit_rating=4961
+# gear_haste_rating=5068
+# gear_mastery_rating=1073
+# gear_versatility_rating=2279
 # gear_leech_rating=200
-# gear_armor=12872
+# gear_armor=12962
 # gear_bonus_armor=141
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1

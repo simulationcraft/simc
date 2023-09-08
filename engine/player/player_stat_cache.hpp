@@ -46,7 +46,7 @@ private:
   // cached values
   mutable double _strength, _agility, _stamina, _intellect, _spirit;
   mutable std::array<double, SCHOOL_MAX + 1> _spell_power;
-  mutable double  _attack_power;
+  mutable double  _attack_power, _total_melee_attack_power;
   mutable double _attack_expertise;
   mutable double _attack_hit, _spell_hit;
   mutable double _attack_crit_chance, _spell_crit_chance;
@@ -75,6 +75,7 @@ public:
   double spirit() const;
   double spell_power( school_e ) const;
   double attack_power() const;
+  double total_melee_attack_power() const;
   double attack_expertise() const;
   double attack_hit() const;
   double attack_crit_chance() const;
@@ -113,8 +114,9 @@ public:
   double stamina() const   { return _player -> stamina();   }
   double intellect() const { return _player -> intellect(); }
   double spirit() const    { return _player -> spirit();    }
-  double spell_power( school_e s ) const { return _player -> composite_spell_power( s ); }
-  double attack_power() const            { return _player -> composite_melee_attack_power();   }
+  double spell_power( school_e s ) const  { return _player -> composite_spell_power( s ); }
+  double attack_power() const             { return _player -> composite_melee_attack_power();   }
+  double total_melee_attack_power() const { return _player -> composite_melee_attack_power_by_type( _player -> default_ap_type() ); }
   double attack_expertise() const { return _player -> composite_melee_expertise(); }
   double attack_hit() const       { return _player -> composite_melee_hit();       }
   double attack_crit_chance() const      { return _player -> composite_melee_crit_chance();      }

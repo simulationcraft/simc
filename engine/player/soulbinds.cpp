@@ -2470,8 +2470,24 @@ void register_soulbind_special_effect( unsigned spell_id, const custom_cb_t& ini
       },
       fallback );
 }
-
 }  // namespace
+
+soulbind_targetdata_initializer_t::soulbind_targetdata_initializer_t( std::string_view n, unsigned id )
+  : targetdata_initializer_t(), name( n )
+{
+  active_fn = []( const spell_data_t* s ) { return s->ok(); };
+  debuff_fn = [ id ]( player_t* p, const spell_data_t* ) { return p->find_spell( id ); };
+}
+
+const spell_data_t* soulbind_targetdata_initializer_t::find( player_t* p ) const
+{
+  return p->find_soulbind_spell( name );
+}
+
+const spell_data_t* soulbind_targetdata_initializer_t::soulbind( actor_target_data_t* td ) const
+{
+  return data[ td->source ];
+}
 
 void register_special_effects()
 {
@@ -2528,7 +2544,7 @@ void register_special_effects()
   register_soulbind_special_effect( 350936, soulbinds::mnemonic_equipment );
 }
 
-action_t* create_action( player_t* player, util::string_view name, util::string_view options )
+action_t* create_action( player_t* player, std::string_view name, std::string_view options )
 {
   if ( util::str_compare_ci( name, "newfound_resolve" ) ) return new soulbinds::newfound_resolve_t( player, options );
 
@@ -2609,131 +2625,167 @@ void initialize_soulbinds( player_t* player )
 void register_target_data_initializers( sim_t* sim )
 {
   // Dauntless Duelist
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( td->source->find_soulbind_spell( "Dauntless Duelist" )->ok() )
-    {
-      assert( !td->debuff.adversary );
+  struct dauntless_duelist_init_t : public soulbind_targetdata_initializer_t
+  {
+    dauntless_duelist_init_t() : soulbind_targetdata_initializer_t( "Dauntless Duelist", 331934 ) {}
 
-      td->debuff.adversary = make_buff( *td, "adversary", td->source->find_spell( 331934 ) )
-                                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.adversary = make_buff_fallback( active, *td, "adversary", debuffs[ td->source ] );
       td->debuff.adversary->reset();
+
+      if ( active )
+        td->debuff.adversary->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
     }
-    else
-      td->debuff.adversary = make_buff( *td, "adversary" )->set_quiet( true );
-  } );
+  };
+
+  sim->register_target_data_initializer( dauntless_duelist_init_t() );
 
   // Plaguey's Preemptive Strike
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( td->source->find_soulbind_spell( "Plaguey's Preemptive Strike" )->ok() )
+  struct plagueys_preemptive_strike_init_t : public soulbind_targetdata_initializer_t
+  {
+    plagueys_preemptive_strike_init_t() : soulbind_targetdata_initializer_t( "Plaguey's Preemptive Strike", 323416 ) {}
+
+    void operator()( actor_target_data_t* td ) const override
     {
-      assert( !td->debuff.plagueys_preemptive_strike );
+      bool active = init( td->source );
 
       td->debuff.plagueys_preemptive_strike =
-          make_buff( *td, "plagueys_preemptive_strike", td->source->find_spell( 323416 ) )
-              ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+          make_buff_fallback( active, *td, "plagueys_preemptive_strike", debuffs[ td->source ] );
       td->debuff.plagueys_preemptive_strike->reset();
+
+      if ( active )
+        td->debuff.plagueys_preemptive_strike->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
     }
-    else
-      td->debuff.plagueys_preemptive_strike = make_buff( *td, "plagueys_preemptive_strike" )->set_quiet( true );
-  } );
+  };
+
+  sim->register_target_data_initializer( plagueys_preemptive_strike_init_t() );
 
   // Dream Delver
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( td->source->find_soulbind_spell( "Dream Delver" )->ok() )
-    {
-      assert( !td->debuff.dream_delver );
+  struct dream_delver_init_t : public soulbind_targetdata_initializer_t
+  {
+    dream_delver_init_t() : soulbind_targetdata_initializer_t( "Dream Delver", 353354 ) {}
 
-      td->debuff.dream_delver = make_buff( *td, "dream_delver", td->source->find_spell( 353354 ) )
-                                    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.dream_delver = make_buff_fallback( active, *td, "dream_delver", debuffs[ td->source ] );
       td->debuff.dream_delver->reset();
+
+      if ( active )
+        td->debuff.dream_delver->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
     }
-    else
-      td->debuff.dream_delver = make_buff( *td, "dream_delver" )->set_quiet( true );
-  } );
+  };
+
+  sim->register_target_data_initializer( dream_delver_init_t() );
 
   // Carver's Eye dummy buff to track cooldown
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    auto carvers_eye = td->source->find_soulbind_spell( "Carver's Eye" );
-    if ( carvers_eye->ok() )
-    {
-      assert( !td->debuff.carvers_eye_debuff );
+  struct carvers_eye_init_t : public soulbind_targetdata_initializer_t
+  {
+    carvers_eye_init_t() : soulbind_targetdata_initializer_t( "Carver's Eye", 350899 ) {}
 
-      td->debuff.carvers_eye_debuff =
-          make_buff( *td, "carvers_eye_debuff", td->source->find_spell( 350899 ) )
-              ->set_quiet( true )
-              ->set_duration( timespan_t::from_seconds( carvers_eye->effectN( 2 ).base_value() ) );
-      td->debuff.carvers_eye_debuff->reset();
+    void operator()( actor_target_data_t* td ) const override
+    {
+      bool active = init( td->source );
+
+      td->debuff.carvers_eye_debuff = make_buff_fallback( active, *td, "carvers_eye_debuff", debuffs[ td->source ] );
+      td->debuff.carvers_eye_debuff->set_quiet( true )->reset();
+
+      if ( active )
+      {
+        td->debuff.carvers_eye_debuff->set_duration(
+            timespan_t::from_seconds( soulbind( td )->effectN( 2 ).base_value() ) );
+      }
     }
-    else
-      td->debuff.carvers_eye_debuff = make_buff( *td, "carvers_eye_debuff" )->set_quiet( true );
-  } );
+  };
+
+  sim->register_target_data_initializer( carvers_eye_init_t() );
 
   // Soulglow Spectrometer
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    auto data = td->source->find_soulbind_spell( "Soulglow Spectrometer" );
+  struct soulglow_spectrometer_init_t : public soulbind_targetdata_initializer_t
+  {
+    target_specific_t<action_callback_t> callbacks;
 
-    if ( !data->ok() )
+    soulglow_spectrometer_init_t()
+      : soulbind_targetdata_initializer_t( "Soulglow Spectrometer", 352939 ), callbacks( false )
+    {}
+
+    void operator()( actor_target_data_t* td ) const override
     {
-      td->debuff.soulglow_spectrometer = make_buff( *td, "soulglow_spectrometer" )->set_quiet( true );
-      return;
-    }
+      // Disable healing procs for now until the healing proc is implemented correctly
+      bool active = init( td->source ) && td->target->is_enemy();
 
-    // Disable healing procs for now until the healing proc is implemented correctly
-    if ( td->target->is_enemy() )
-    {
-      assert( !td->debuff.soulglow_spectrometer );
+      td->debuff.soulglow_spectrometer =
+          make_buff_fallback( active, *td, "soulglow_spectrometer", debuffs[ td->source ] );
+      td->debuff.soulglow_spectrometer->reset();
 
-      auto soulglow_spectrometer_damage_cb =
-        *(range::find_if( td->source->callbacks.all_callbacks, [ data ]( action_callback_t* t ) {
-        return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == data->id();
-      } ));
+      if ( !active )
+        return;
+
+      action_callback_t*& cb = callbacks[ td->source ];
+      if ( !cb )
+      {
+        auto it =
+            range::find_if( td->source->callbacks.all_callbacks, [ id = soulbind( td )->id() ]( action_callback_t* t ) {
+              return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == id;
+            } );
+        if ( it != td->source->callbacks.all_callbacks.end() )
+          cb = *it;
+      }
 
       // When an enemy dies or the debuff expires allow the user to proc the debuff again on the next target
-      td->debuff.soulglow_spectrometer =
-        make_buff( *td, "soulglow_spectrometer", td->source->find_spell( 352939 ) )
-        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
+      td->debuff.soulglow_spectrometer->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
         ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-        ->set_stack_change_callback( [ soulglow_spectrometer_damage_cb ]( buff_t*, int old, int cur ) {
+        ->set_stack_change_callback( [ cb ]( buff_t*, int old, int cur ) {
           if ( old == 0 )
-            soulglow_spectrometer_damage_cb->deactivate();
+            cb->deactivate();
           else if ( cur == 0 )
-            soulglow_spectrometer_damage_cb->activate();
-      } );
-      td->debuff.soulglow_spectrometer->reset();
+            cb->activate();
+        } );
     }
-    else
-    {
-      td->debuff.soulglow_spectrometer = make_buff( *td, "soulglow_spectrometer" )->set_quiet( true );
-    }
-  } );
+  };
+
+  sim->register_target_data_initializer( soulglow_spectrometer_init_t() );
 
   // Kevin's Wrath
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    auto kevins_wrath = td->source->find_soulbind_spell( "Kevin's Oozeling" );
-    if ( kevins_wrath->ok() )
+  struct kevins_wrath_init_t : public soulbind_targetdata_initializer_t
+  {
+    kevins_wrath_init_t() : soulbind_targetdata_initializer_t( "Kevin's Oozeling", 352528 ) {}
+
+    void operator()( actor_target_data_t* td ) const override
     {
-      assert( !td->debuff.kevins_wrath );
-      td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath", td->source->find_spell( 352528 ) )
-        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      bool active = init( td->source );
+
+      td->debuff.kevins_wrath = make_buff_fallback( active, *td, "kevins_wrath", debuffs[ td->source ] );
       td->debuff.kevins_wrath->reset();
+
+      if ( active )
+        td->debuff.kevins_wrath->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
     }
-    else
-      td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath" )->set_quiet( true );
-  } );
+  };
+
+  sim->register_target_data_initializer( kevins_wrath_init_t() );
 
   // Wild Hunt Strategem
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( td->source->find_soulbind_spell( "Wild Hunt Strategem" )->ok() )
+  struct wild_hunt_strategem_init_t : public soulbind_targetdata_initializer_t
+  {
+    wild_hunt_strategem_init_t() : soulbind_targetdata_initializer_t( "Wild Hunt Strategem", 353254 ) {}
+
+    void operator()( actor_target_data_t* td ) const override
     {
-      assert( !td->debuff.wild_hunt_strategem );
+      bool active = init( td->source );
 
-      td->debuff.wild_hunt_strategem = make_buff( *td, "wild_hunt_strategem", td->source->find_spell( 353254 ) )
-                                           ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      td->debuff.wild_hunt_strategem = make_buff_fallback( active, *td, "wild_hunt_strategem", debuffs[ td->source ] );
       td->debuff.wild_hunt_strategem->reset();
-    }
-    else
-      td->debuff.wild_hunt_strategem = make_buff( *td, "wild_hunt_strategem" )->set_quiet( true );
-  } );
-}
 
+      if ( active )
+        td->debuff.wild_hunt_strategem->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+    }
+  };
+
+  sim->register_target_data_initializer( wild_hunt_strategem_init_t() );
+}
 }  // namespace covenant

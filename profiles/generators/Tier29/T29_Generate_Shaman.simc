@@ -26,7 +26,7 @@ off_hand=broodsworn_legionnaires_pavise,id=195520,ilevel=424
 
 save=T29_Shaman_Elemental.simc
 
-shaman="T29_Shaman_Enhancement"
+shaman="T29_Shaman_Enhancement_Ele"
 level=70
 race=troll
 spec=enhancement
@@ -51,9 +51,9 @@ trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
-save=T29_Shaman_Enhancement.simc
+save=T29_Shaman_Enhancement_Ele.simc
 
-shaman="T29_Shaman_Enhancement_Storm"
+shaman="T29_Shaman_Enhancement"
 level=70
 race=troll
 spec=enhancement
@@ -78,7 +78,7 @@ trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
-save=T29_Shaman_Enhancement_Storm.simc
+save=T29_Shaman_Enhancement.simc
 
 # shaman="T29_Shaman_Restoration"
 # level=70

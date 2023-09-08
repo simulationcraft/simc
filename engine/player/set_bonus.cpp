@@ -315,6 +315,10 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
 
 std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , util::string_view type )
 {
+  int spec_id = dbc::spec_idx( actor->specialization() );
+  if ( spec_id < 0 )
+    return expr_t::create_constant( type, 0.0 );
+
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
   set_bonus_e bonus = B_NONE;
 
@@ -323,7 +327,7 @@ std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , util::
     throw std::invalid_argument(fmt::format("Cannot parse set bonus '{}'.", type));
   }
 
-  bool state = set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( actor->specialization() ) ][ bonus ].spell->id() > 0;
+  bool state = set_bonus_spec_data[ set_bonus ][ spec_id ][ bonus ].spell->id() > 0;
 
   return expr_t::create_constant( type, static_cast<double>(state) );
 }

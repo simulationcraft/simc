@@ -184,7 +184,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        tier: [ Tier29 ]
+        tier: [ Tier29, Tier30 ]
         compiler: [clang++-14]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,

@@ -414,6 +414,7 @@ enum dot_behavior_e
   DOT_EXTEND,           // DoT is extended indefinitely by Duration
   DOT_REFRESH_DURATION, // Duration + Current Tick
   DOT_REFRESH_PANDEMIC, // Duration + Current Duration up to 1.3x
+  DOT_ROLLING,          // Duration + Current Tick, except for during last partial tick
   DOT_NONE              // Does not refresh
 };
 
@@ -848,6 +849,8 @@ enum set_bonus_type_e
   T29_WOVEN_CHRONOCLOTH,
   T29_RAGING_TEMPESTS,
   T30,
+  T30_MIGHT_OF_THE_DROGBAR,
+  T31,
   SET_BONUS_MAX
 };
 
@@ -1052,6 +1055,7 @@ enum scale_metric_e
   SCALE_METRIC_ETMI,
   SCALE_METRIC_DEATHS,
   SCALE_METRIC_TIME,
+  SCALE_METRIC_RAID_DPS,
   SCALE_METRIC_MAX
 };
 
@@ -1068,6 +1072,7 @@ enum cache_e
   CACHE_STR_INT,
   CACHE_SPELL_POWER,
   CACHE_ATTACK_POWER,
+  CACHE_TOTAL_MELEE_ATTACK_POWER,
   CACHE_EXP,
   CACHE_ATTACK_EXP,
   CACHE_HIT,
@@ -1350,6 +1355,8 @@ enum snapshot_state_e
   /// Multiplier from the owner to pet damage
   STATE_MUL_PET        = 0x100000,
   STATE_TGT_MUL_PET    = 0x200000,
+
+  STATE_ROLLING_TA     = 0x400000,
 
   // User-defined target-specific state flags
   STATE_TGT_USER_1     = 0x10000000,

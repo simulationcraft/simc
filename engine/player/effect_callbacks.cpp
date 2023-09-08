@@ -22,6 +22,14 @@ void add_callback( std::vector<action_callback_t*>& callbacks, action_callback_t
 
 }  // namespace
 
+void effect_callbacks_t::add_callback( proc_types type, proc_types2 type2, action_callback_t* cb )
+{
+  ::add_callback( procs[ type ][ type2 ], cb );
+
+  if ( cb->allow_pet_procs )
+    ::add_callback( pet_procs[ type ][ type2 ], cb );
+}
+
 void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags, action_callback_t* cb )
 {
   std::string s;
@@ -38,28 +46,27 @@ void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags, act
     // automatically convert a "proc on spell landed" type to "proc on
     // hit/crit".
     if ( pt == PROC2_LANDED &&
-         ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN || type == PROC1_PERIODIC_HEAL ||
-           type == PROC1_PERIODIC_HEAL_TAKEN || type == PROC1_NONE_HEAL || type == PROC1_MAGIC_HEAL ) )
+         ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN || type == PROC1_HELPFUL_PERIODIC ||
+           type == PROC1_HELPFUL_PERIODIC_TAKEN || type == PROC1_NONE_HEAL || type == PROC1_MAGIC_HEAL ) )
     {
-      add_callback( procs[ type ][ PROC2_HIT ], cb );
+      add_callback( type, PROC2_HIT, cb );
       if ( cb->listener->sim->debug )
         s.append( util::proc_type_string( type ) ).append( util::proc_type2_string( PROC2_HIT ) ).append( " " );
 
-      add_callback( procs[ type ][ PROC2_CRIT ], cb );
+      add_callback( type, PROC2_CRIT, cb );
       if ( cb->listener->sim->debug )
         s.append( util::proc_type_string( type ) ).append( util::proc_type2_string( PROC2_CRIT ) ).append( " " );
     }
     // Do normal registration based on the existence of the flag
     else
     {
-      add_callback( procs[ type ][ pt ], cb );
+      add_callback( type, pt, cb );
       if ( cb->listener->sim->debug )
         s.append( util::proc_type_string( type ) ).append( util::proc_type2_string( pt ) ).append( " " );
     }
   }
 
-  if ( sim->debug )
-    sim->out_debug.print( "{}", s );
+  sim->print_debug( "{}{}", s, cb->allow_pet_procs ? "(+pet) " : "" );
 }
 
 effect_callbacks_t::~effect_callbacks_t()
@@ -191,8 +198,7 @@ void effect_callbacks_t::register_callback( uint64_t proc_flags, uint64_t proc_f
   // they need to be non-zero
   assert( proc_flags != 0 && cb != nullptr );
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Registering callback proc_flags=%#.8x proc_flags2=%#.8x", proc_flags, proc_flags2 );
+  sim->print_debug( "Registering callback proc_flags={:#010x} proc_flags2={:#010x}", proc_flags, proc_flags2 );
 
   // Default method for proccing is "on spell landing", if no "what type of
   // result procs this callback" is given
@@ -201,76 +207,23 @@ void effect_callbacks_t::register_callback( uint64_t proc_flags, uint64_t proc_f
 
   for ( proc_types t = PROC1_TYPE_MIN; t < PROC1_TYPE_BLIZZARD_MAX; t++ )
   {
-    // If there's no proc-by-X, we don't need to add anything
+    // If there's no proc-by-X, we don't need to add anything.
+    // Note that PROC1_ enums that don't sequentially align with PF_ enums need special handling further below.
     if ( !( proc_flags & ( UINT64_C( 1 ) << t ) ) )
       continue;
 
-    // Skip periodic procs, they are handled below as a special case
-    if ( t == PROC1_PERIODIC || t == PROC1_PERIODIC_TAKEN )
-      continue;
-
     add_proc_callback( t, proc_flags2, cb );
+  }
+
+  if ( proc_flags & PF_HELPFUL_PERIODIC_TAKEN )
+  {
+    add_proc_callback( PROC1_HELPFUL_PERIODIC_TAKEN, proc_flags2, cb );
   }
 
   // Cast Successful: Eventually, this can be part of the loop above.
   if ( proc_flags & PF_CAST_SUCCESSFUL )
   {
     add_proc_callback( PROC1_CAST_SUCCESSFUL, proc_flags2, cb );
-  }
-
-  // Periodic X done
-  if ( proc_flags & PF_PERIODIC )
-  {
-    // 1) Periodic damage only. This is the default behavior of our system when
-    // only PROC1_PERIODIC is defined on a trinket.
-    if ( !( proc_flags & PF_ALL_HEAL ) &&        // No healing ability type flags
-         !( proc_flags2 & PF2_PERIODIC_HEAL ) )  // .. nor periodic healing result type flag
-    {
-      add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
-    }
-    // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag,
-    //    or by "proc on periodic heal ticks" flag, but require that there's
-    //    no direct / ticked spell damage in flags.
-    else if ( ( ( proc_flags & PF_ALL_HEAL ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) &&  // Healing ability
-              !( proc_flags & PF_ALL_DAMAGE ) &&        // .. with no damaging ability type flags
-              !( proc_flags2 & PF2_PERIODIC_DAMAGE ) )  // .. nor periodic damage result type flag
-    {
-      add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
-    }
-    // Both
-    else
-    {
-      add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
-      add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
-    }
-  }
-
-  // Periodic X taken
-  if ( proc_flags & PF_PERIODIC_TAKEN )
-  {
-    // 1) Periodic damage only. This is the default behavior of our system when
-    // only PROC1_PERIODIC is defined on a trinket.
-    if ( !( proc_flags & PF_ALL_HEAL_TAKEN ) &&  // No healing ability type flags
-         !( proc_flags2 & PF2_PERIODIC_HEAL ) )  // .. nor periodic healing result type flag
-    {
-      add_proc_callback( PROC1_PERIODIC_TAKEN, proc_flags2, cb );
-    }
-    // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag,
-    //    or by "proc on periodic heal ticks" flag, but require that there's
-    //    no direct / ticked spell damage in flags.
-    else if ( ( ( proc_flags & PF_ALL_HEAL_TAKEN ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) &&  // Healing ability
-              !( proc_flags & PF_DAMAGE_TAKEN ) &&      // .. with no damaging ability type flags
-              !( proc_flags & PF_ANY_DAMAGE_TAKEN ) &&  // .. nor Blizzard's own "any damage taken" flag
-              !( proc_flags2 & PF2_PERIODIC_DAMAGE ) )  // .. nor periodic damage result type flag
-    {
-      add_proc_callback( PROC1_PERIODIC_HEAL_TAKEN, proc_flags2, cb );
-    }
-    // Both
-    else
-    {
-      add_proc_callback( PROC1_PERIODIC_TAKEN, proc_flags2, cb );
-      add_proc_callback( PROC1_PERIODIC_HEAL_TAKEN, proc_flags2, cb );
-    }
   }
 }
 

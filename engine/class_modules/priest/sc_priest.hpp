@@ -21,6 +21,36 @@ namespace priestspace
  */
 struct priest_t;
 
+template <typename Data, typename Base = action_state_t>
+struct priest_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> );  // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> );        // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const priest_action_state_t*>( o ) );
+  }
+};
+
 namespace actions::spells
 {
 struct shadowy_apparition_spell_t;
@@ -28,6 +58,7 @@ struct psychic_link_t;
 struct shadow_weaving_t;
 struct echoing_void_t;
 struct echoing_void_demise_t;
+struct shadow_word_death_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
@@ -36,6 +67,11 @@ struct purge_the_wicked_t;
 struct holy_fire_t;
 struct burning_vehemence_t;
 }  // namespace actions::spells
+
+namespace actions::heals
+{
+struct essence_devourer_t;
+}  // namespace actions::heals
 
 /**
  * Priest target data
@@ -97,6 +133,7 @@ public:
     propagate_const<buff_t*> desperate_prayer;
     absorb_buff_t* power_word_shield;
     propagate_const<buff_t*> fade;
+    propagate_const<buff_t*> levitate;
 
     // Talents
     propagate_const<buff_t*> twist_of_fate;
@@ -152,6 +189,7 @@ public:
     propagate_const<buff_t*> devoured_despair;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> mind_melt;
+    propagate_const<buff_t*> surge_of_insanity;
     propagate_const<buff_t*> mind_flay_insanity;
     propagate_const<buff_t*> mind_spike_insanity;
     propagate_const<buff_t*> deathspeaker;
@@ -164,6 +202,7 @@ public:
     propagate_const<buff_t*> light_weaving;
     propagate_const<buff_t*> darkflame_embers;
     propagate_const<buff_t*> darkflame_shroud;
+    propagate_const<buff_t*> deaths_torment;
   } buffs;
 
   // Talents
@@ -211,7 +250,7 @@ public:
     player_talent_t tithe_evasion;
     // Row 6
     player_talent_t inspiration;
-    player_talent_t improved_mass_dispel;
+    player_talent_t mental_agility;
     player_talent_t body_and_soul;
     player_talent_t twins_of_the_sun_priestess;
     player_talent_t void_shield;
@@ -245,8 +284,12 @@ public:
     player_talent_t improved_fade;
     player_talent_t manipulation;
     // Row 10
+    player_talent_t benevolence;
     player_talent_t power_word_life;
     player_talent_t angelic_bulwark;
+    player_talent_t essence_devourer;
+    const spell_data_t* essence_devourer_shadowfiend;
+    const spell_data_t* essence_devourer_mindbender;
     player_talent_t void_shift;
     player_talent_t shattered_perceptions;
 
@@ -524,7 +567,6 @@ public:
     propagate_const<proc_t*> mindgames_casts_no_mastery;
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
-    propagate_const<proc_t*> bug_void_lasher_retarget_failure;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
@@ -537,6 +579,7 @@ public:
     propagate_const<actions::spells::shadow_weaving_t*> shadow_weaving;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
+    propagate_const<actions::spells::shadow_word_death_t*> shadow_word_death;
     propagate_const<actions::spells::echoing_void_demise_t*> echoing_void_demise;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
@@ -547,6 +590,7 @@ public:
     propagate_const<action_t*> searing_light;
     propagate_const<action_t*> light_eruption;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
+    propagate_const<actions::heals::essence_devourer_t*> essence_devourer;
   } background_actions;
 
   // Items
@@ -569,9 +613,6 @@ public:
   // Options
   struct
   {
-    bool autoUnshift = true;  // Shift automatically out of stance/form
-    bool fixed_time  = true;
-
     // Default param to set if you should cast Power Infusion on yourself
     bool self_power_infusion = true;
 
@@ -584,8 +625,9 @@ public:
     // Time in seconds between prayer of mending bounces
     double prayer_of_mending_bounce_rate = 2;
 
-    // Void Lasher re-target on demise bug
-    bool void_lasher_retarget = false;
+    // Option whether or not to start with higher than 0 Insanity based on talents
+    // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
+    bool init_insanity = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -619,6 +661,7 @@ public:
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
+  double composite_leech() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void init_action_list() override;
@@ -681,6 +724,7 @@ public:
   void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
+  void trigger_essence_devourer();
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -807,8 +851,6 @@ public:
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
 
-      parse_buff_effects( p().buffs.deathspeaker );
-
       if ( p().talents.shadow.ancient_madness.enabled() )
       {
         // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
@@ -820,6 +862,11 @@ public:
         {
           parse_buff_effects( p().buffs.ancient_madness, 0b0011U, true, true );  // Skip E1 and E2
         }
+      }
+
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
+      {
+        parse_buff_effects( p().buffs.deaths_torment );
       }
     }
 
@@ -1004,7 +1051,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twilight_equilibrium_holy_amp->trigger();
         priest().buffs.twilight_equilibrium_shadow_amp->expire();
       }
-      // Holy and Radiant (holyfire) applies this buff
+      // Holy and Radiant (SCHOOL_HOLYFIRE) applies this buff
       // Non-harmful actions don't apply this buff
       if ( ( this->school == SCHOOL_HOLY || this->school == SCHOOL_HOLYFIRE ) && this->harmful == true )
       {
@@ -1110,6 +1157,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
 namespace buffs
 {
+struct symbol_of_hope_t : public buff_t
+{
+  // This is player_t* instead of priest_t* because it can be any type of player.
+  symbol_of_hope_t( player_t* p );
+  void update_cooldowns( int new_ );
+
+private:
+  bool affected_actions_initialized;
+  std::vector<std::pair<action_t*, double>> affected_actions;
+};
+
 /**
  * This is a template for common code between priest buffs.
  * The template is instantiated with any type of buff ( buff_t, debuff_t,

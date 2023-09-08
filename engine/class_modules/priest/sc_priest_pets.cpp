@@ -587,6 +587,7 @@ struct fiend_melee_t : public priest_pet_melee_t
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
         p().o().trigger_shadow_weaving( s );
+        p().o().trigger_essence_devourer();
       }
 
       if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )
@@ -889,21 +890,6 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     priest_pet_spell_t::init();
 
     merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    priest_pet_spell_t::last_tick( d );
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1108
-    if ( p().o().bugs && !p().o().options.void_lasher_retarget )
-    {
-      make_event( sim, 10_ms, [ this ] {
-        p().o().procs.bug_void_lasher_retarget_failure->occur();
-        sim->print_debug( "Original target for void_lasher died, destroying pet." );
-        p().demise();
-      } );
-    }
   }
 };
 

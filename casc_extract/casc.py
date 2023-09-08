@@ -39,6 +39,7 @@ _ENCRYPTED_CHUNK = 0x45
 
 _ROOT_MAGIC = b'TSFM'
 _ROOT_HEADER = struct.Struct('<4sII')
+_ROOT_HEADER_2 = struct.Struct('<III')
 
 _ENCRYPTION_HEADER = struct.Struct('<B8sBIc')
 
@@ -1097,6 +1098,12 @@ class CASCRootFile(CASCObject):
 		offset = 0
 		n_md5s = 0
 
+		hdr_size = 0
+		version = 0
+		total_file_count = 0
+		named_file_count = 0
+		unk_h5 = 0
+
 		magic, unk_h1, unk_h2 = _ROOT_HEADER.unpack_from(data, offset)
 
 		if magic != _ROOT_MAGIC:
@@ -1105,7 +1112,17 @@ class CASCRootFile(CASCObject):
 			return False
 		offset += _ROOT_HEADER.size
 
-		#print(magic, unk_h1, unk_h2)
+		if unk_h1 <= _ROOT_HEADER.size + _ROOT_HEADER_2.size:
+			hdr_size = unk_h1
+			version = unk_h2
+			total_file_count, named_file_count, unk_h5 = _ROOT_HEADER_2.unpack_from(data, offset)
+			offset = hdr_size
+		else:
+			hdr_size = _ROOT_HEADER.size
+			total_file_count = unk_h1
+			named_file_count = unk_h2
+
+		#print(magic, hdr_size, version, total_file_count, named_file_count, unk_h5)
 
 		while offset < len(data):
 			n_entries, flags, locale = struct.unpack_from('<iII', data, offset)

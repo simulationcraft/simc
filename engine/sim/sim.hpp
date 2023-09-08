@@ -228,6 +228,7 @@ struct sim_t : private sc_thread_t
 
   struct auras_t
   {
+    buff_t* fallback; // generic global fallback buff
     buff_t* arcane_intellect;
     buff_t* battle_shout;
     buff_t* mark_of_the_wild;
@@ -491,7 +492,7 @@ struct sim_t : private sc_thread_t
     // Chance for nearby enemies to move out of range for Allied Wristguards of Companionship
     double allied_wristguards_ally_leave_chance = 0.05;
     // Corrupting Rages Average Uptime
-    double corrupting_rage_uptime = 0.5;
+    double corrupting_rage_uptime = 0.80;
     // Hood of Surging Time proc chance when the period is set
     double hood_of_surging_time_chance = 0.0;
     // Hood of Surging Time proc period
@@ -509,7 +510,7 @@ struct sim_t : private sc_thread_t
     // Enable or Disable Seething Black Dragonscale's damage
     bool screaming_black_dragonscale_damage = false;
     // Period in which to try to trigger adapative Stonescales. Based on spell data, does not trigger on periodic damage.
-    timespan_t adaptive_stonescales_period = 30_s;
+    timespan_t adaptive_stonescales_period = 3_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs
@@ -534,8 +535,8 @@ struct sim_t : private sc_thread_t
   std::vector<size_t> work_per_thread;
   size_t work_done;
   double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
-  simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
-  extended_sample_data_t simulation_length;
+  simple_sample_data_t total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
+  extended_sample_data_t raid_dps, simulation_length;
   chrono::wall_clock::duration merge_time, init_time, analyze_time;
   // Deterministic simulation iteration data collectors for specific iteration
   // replayability
@@ -564,6 +565,7 @@ struct sim_t : private sc_thread_t
   std::string output_file_str, html_file_str, json_file_str;
   std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;
+  int display_build;
   int report_precision;
   int report_pets_separately;
   int report_targets;
@@ -642,6 +644,9 @@ struct sim_t : private sc_thread_t
 
   // Profilesets
   opts::map_list_t profileset_map;
+  unsigned profileset_main_actor_index;
+  unsigned profileset_report_player_index;
+  std::string profileset_multiactor_base_name;
   std::vector<scale_metric_e> profileset_metric;
   std::vector<std::string> profileset_output_data;
   bool profileset_enabled;
@@ -729,6 +734,10 @@ struct sim_t : private sc_thread_t
 
   // Activates the necessary actor/actors before iteration begins.
   void activate_actors();
+
+  void heartbeat_event_callback();
+  std::vector<std::function<void(sim_t*)>> heartbeat_event_callback_function;
+  void register_heartbeat_event_callback( std::function<void( sim_t*)> fn );
 
   timespan_t current_time() const
   { return event_mgr.current_time; }

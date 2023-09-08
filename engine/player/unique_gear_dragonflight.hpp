@@ -67,6 +67,7 @@ void primal_ritual_shell( special_effect_t& );
 void seasoned_hunters_trophy( special_effect_t& );
 void desperate_invokers_codex( special_effect_t& );
 void iceblood_deathsnare( special_effect_t& );
+void fractured_crystalspine_quill( special_effect_t& );
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& );

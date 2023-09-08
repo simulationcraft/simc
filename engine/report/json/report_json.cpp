@@ -1150,6 +1150,8 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "desired_targets" ] = sim.desired_targets;
   options_root[ "default_aura_delay" ] = sim.default_aura_delay;
   options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay_stddev;
+  options_root[ "profileset_metric" ] = util::scale_metric_type_abbrev( sim.profileset_metric.front() );
+  options_root[ "profileset_multiactor_base_name" ] = sim.profileset_multiactor_base_name;
 
   to_json( options_root[ "dbc" ], *sim.dbc );
 

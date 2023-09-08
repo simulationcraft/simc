@@ -1,5 +1,5 @@
-// 573 talents, wow build 10.1.0.49444
-static std::array<talent_data_t, 573> __ptr_talent_data { {
+// 572 talents, wow build 10.2.0.51239
+static std::array<talent_data_t, 572> __ptr_talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -14,7 +14,6 @@ static std::array<talent_data_t, 573> __ptr_talent_data { {
   { "Rule of Law"                       , 17593, 0x00, 0x0002,   65,   2,   3,  214202,       0,  0 },
   { "Divine Purpose"                    , 17597, 0x00, 0x0002,    0,   0,   4,  223817,       0,  0 },
   { "Holy Avenger"                      , 17599, 0x00, 0x0002,    0,   1,   4,  105809,       0,  0 },
-  { "Seraphim"                          , 17601, 0x00, 0x0002,    0,   2,   4,  152262,       0,  0 },
   { "Abundance"                         , 18569, 0x00, 0x0400,  105,   0,   0,  207383,       0,  0 },
   { "Renewal"                           , 18570, 0x00, 0x0400,    0,   1,   1,  108238,       0,  0 },
   { "Wild Charge"                       , 18571, 0x00, 0x0400,    0,   2,   1,  102401,       0,  0 },
@@ -205,7 +204,7 @@ static std::array<talent_data_t, 573> __ptr_talent_data { {
   { "Light Brewing"                     , 22099, 0x00, 0x0200,  268,   0,   2,  325093,       0,  0 },
   { "Refreshing Jade Wind"              , 22101, 0x00, 0x0200,  270,   1,   5,  196725,       0,  0 },
   { "Dance of Chi-Ji"                   , 22102, 0x00, 0x0200,  269,   2,   5,  325201,       0,  0 },
-  { "Exploding Keg"                     , 22103, 0x00, 0x0200,  268,   2,   5,  325153,       0,  0 },
+  { "Press the Advantage"               , 22103, 0x00, 0x0200,  268,   2,   5,  418359,  100780,  0 },
   { "Celestial Flames"                  , 22104, 0x00, 0x0200,  268,   1,   6,  325177,       0,  0 },
   { "Whirling Dragon Punch"             , 22105, 0x00, 0x0200,  269,   1,   6,  152175,       0,  0 },
   { "High Tolerance"                    , 22106, 0x00, 0x0200,  268,   0,   6,  196737,       0,  0 },
@@ -214,8 +213,8 @@ static std::array<talent_data_t, 573> __ptr_talent_data { {
   { "Obliteration"                      , 22109, 0x00, 0x0020,  251,   1,   6,  281238,       0,  0 },
   { "Summon Gargoyle"                   , 22110, 0x00, 0x0020,  252,   1,   6,   49206,       0,  0 },
   { "Blinding Powder"                   , 22114, 0x00, 0x0008,  260,   1,   4,  256165,       0,  0 },
-  { "Prey on the Weak"                  , 22115, 0x00, 0x0008,    0,   2,   4,  131511,       0,  0 },
-  { "Weaponmaster"                      , 22118, 0x00, 0x0008,  260,   0,   0,  200733,       0,  0 },
+  { "Sting Like a Bee"                  , 22115, 0x00, 0x0008,    0,   2,   4,  131511,       0,  0 },
+  { "Airborne Irritant"                 , 22118, 0x00, 0x0008,  260,   0,   0,  200733,       0,  0 },
   { "Quick Draw"                        , 22119, 0x00, 0x0008,  260,   1,   0,  196938,       0,  0 },
   { "Ghostly Strike"                    , 22120, 0x00, 0x0008,  260,   2,   0,  196937,       0,  0 },
   { "Iron Stomach"                      , 22121, 0x00, 0x0008,  260,   0,   3,  193546,       0,  0 },

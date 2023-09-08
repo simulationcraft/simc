@@ -36,6 +36,7 @@ stat_e highest_stat( const player_t* p, util::span<const stat_e> stat );
 stat_e lowest_stat( const player_t* p, util::span<const stat_e> stat );
 
 std::string version_info_str( const dbc_t* dbc );
+std::string build_info_str( const dbc_t* dbc );
 
 const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
@@ -150,6 +151,7 @@ item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
+bool scale_metric_is_raid( scale_metric_e );
 
 
 template<typename StringType = std::string>

@@ -1238,6 +1238,29 @@ struct bloodlust_check_t : public event_t
    }
  };
 
+struct heartbeat_event_t : public event_t
+ {
+   heartbeat_event_t( sim_t& s, timespan_t t ) : event_t( s, t )
+   {
+   }
+
+   const char* name() const override
+   {
+     return "heartbeat_event";
+   }
+
+   void execute() override
+   {
+     if ( !sim().heartbeat_event_callback_function.empty() )
+     {
+      sim().heartbeat_event_callback();
+     }
+
+     make_event<heartbeat_event_t>( sim(), sim(),
+                                    rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
+   }
+ };
+
 // compare_dps ==============================================================
 
 struct compare_dps
@@ -1408,159 +1431,212 @@ sim_progress_t work_queue_t::progress( int idx )
 
 // sim_t::sim_t =============================================================
 
-sim_t::sim_t() :
-  event_mgr( this ),
-  out_log( *this, &std::cout, sim_ostream_t::no_close() ),
-  out_debug(*this, &std::cout, sim_ostream_t::no_close() ),
-  debug( false ),
-  strict_parsing( false ),
-  canceled( false ),
-  cleanup_threads( false ),
-  initialized( false ),
-  fixed_time( true ),
-  save_profiles( false ),
-  save_profile_with_actions( true ),
-  default_actions( false ),
-  max_time( timespan_t::zero() ),
-  expected_iteration_time( timespan_t::zero() ),
-  vary_combat_length( 0.0 ),
-  current_iteration( -1 ),
-  iterations( 0 ),
-  target_error( 0 ),
-  target_error_role( ROLE_DPS ),
-  current_error( 0 ),
-  current_mean( 0 ),
-  analyze_error_interval( 100 ),
-  analyze_number( 0 ),
-  control( nullptr ),
-  parent( nullptr ),
-  target( nullptr ),
-  heal_target( nullptr ),
-  target_list(),
-  target_non_sleeping_list(),
-  player_list(),
-  player_no_pet_list(),
-  player_non_sleeping_list(),
-  active_player( nullptr ),
-  current_index( 0 ),
-  num_players( 0 ),
-  num_enemies( 0 ), num_tanks( 0 ), enemy_targets( 0 ), healing( 0 ),
-  global_spawn_index( 0 ),
-  max_player_level( -1 ),
-  queue_lag( timespan_t::from_seconds( 0.005 ) ), queue_lag_stddev( timespan_t::zero() ),
-  gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
-  channel_lag( timespan_t::from_seconds( 0.250 ) ), channel_lag_stddev( timespan_t::zero() ),
-  queue_gcd_reduction( timespan_t::from_seconds( 0.1 ) ),
-  default_cooldown_tolerance( timespan_t::from_millis( 250 ) ),
-  strict_gcd_queue( false ),
-  confidence( 0.95 ), confidence_estimator( 0.0 ),
-  world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
-  travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
-  regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
-  ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  optimize_expressions( 2 ),
-  optimize_expressions_rounds( 1 ),
-  current_slot( -1 ),
-  optimal_raid( 0 ), log( 0 ),
-  debug_each( 0 ),
-  normalized_stat( STAT_NONE ),
-  default_region_str( "us" ),
-  save_prefix_str( "save_" ),
-  save_talent_str( false ),
-  talent_input_format(talent_format::UNCHANGED ),
-  stat_cache( 1 ),
-  max_aoe_enemies( 20 ),
-  tmi_window_global( 0 ),
-  tmi_bin_size( 0.5 ),
-  show_etmi( false ),
-  requires_regen_event( false ),
-  single_actor_batch( false ),
-  allow_experimental_specializations( false ),
-  progressbar_type( 0 ),
-  armory_retries( 3 ),
-  enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
-  target_adds( 0 ), desired_targets( 1 ), 
-  dbc(new dbc_t()),
-  dbc_override( std::make_unique<dbc_override_t>() ),
-  timewalk( -1 ),
-  scale_to_itemlevel( -1 ),
-  keystone_level( 10 ),
-  keystone_pct_hp( 27 ),
-  dungeon_route_smart_targeting( true ),
-  challenge_mode( false ),
-  scale_itemlevel_down_only( false ),
-  disable_set_bonuses( false ),
-  enable_taunts( false ),
-  use_item_verification( true ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
-  pvp_rules(),
-  pvp_mode( false ),
-  auto_attacks_always_land( false ),
-  log_spell_id(),
-  active_enemies( 0 ), active_allies( 0 ),
-  _rng(), seed( 0 ), deterministic( 0 ), strict_work_queue( 0 ),
-  average_range( true ), average_gauss( false ),
-  fight_style(), add_waves( 0 ), overrides( overrides_t() ),
-  default_aura_delay( timespan_t::from_millis( 30 ) ),
-  default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
-  azerite_status( azerite_control::DISABLED_ALL ),
-  progress_bar( *this ),
-  scaling( new scale_factor_control_t( this ) ),
-  plot( new plot_t( this ) ),
-  reforge_plot( new reforge_plot_t( this ) ),
-  elapsed_cpu(),
-  elapsed_time(),
-  work_done( 0 ),
-  iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
-  raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
-  simulation_length( "Simulation Length", false ),
-  merge_time(), init_time(), analyze_time(),
-  report_iteration_data( 0.025 ), min_report_iteration_data( -1 ),
-  report_progress( 1 ),
-  bloodlust_percent( 0 ), bloodlust_time( timespan_t::from_seconds( 0 ) ),
-  // Report
-  report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
-  report_rng( 0 ), hosted_html( 0 ),
-  save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ),
-  buff_uptime_timeline( 1 ), buff_stack_uptime_timeline( 1 ),
-  json_full_states( 0 ),
-  decorated_tooltips( -1 ),
-  allow_potions( true ),
-  allow_food( true ),
-  allow_flasks( true ),
-  allow_augmentations( true ),
-  solo_raid( false ),
-  maximize_reporting( false ),
-  apikey( get_api_key() ),
-  distance_targeting_enabled( false ),
-  ignore_invulnerable_targets( false ),
-  enable_dps_healing( false ),
-  count_overheal_as_heal( false ),
-  scaling_normalized( 1.0 ),
-  merge_enemy_priority_dmg( false ),
-  // Multi-Threading
-  threads( 0 ), thread_index( 0 ), process_priority( computer_process::BELOW_NORMAL ),
-  work_queue( new work_queue_t() ),
-  spell_query(), spell_query_level( MAX_LEVEL ),
-  pause_mutex( nullptr ),
-  paused( false ),
-  chart_show_relative_difference( false ),
-  relative_difference_from_max( false ),
-  relative_difference_base(),
-  chart_boxplot_percentile( .25 ),
-  display_hotfixes( false ),
-  disable_hotfixes( false ),
-  display_bonus_ids( false ),
-  profileset_metric( { SCALE_METRIC_DPS } ),
-  profileset_output_data(),
-  profileset_enabled( false ),
-  profileset_work_threads( 0 ),
-  profileset_init_threads( 1 ),
-  profilesets(std::make_unique<profileset::profilesets_t>())
+sim_t::sim_t()
+  : event_mgr( this ),
+    out_log( *this, &std::cout, sim_ostream_t::no_close() ),
+    out_debug( *this, &std::cout, sim_ostream_t::no_close() ),
+    debug( false ),
+    strict_parsing( false ),
+    canceled( false ),
+    cleanup_threads( false ),
+    initialized( false ),
+    fixed_time( true ),
+    save_profiles( false ),
+    save_profile_with_actions( true ),
+    default_actions( false ),
+    max_time( 0_ms ),
+    expected_iteration_time( 0_ms ),
+    vary_combat_length( 0.0 ),
+    current_iteration( -1 ),
+    iterations( 0 ),
+    target_error( 0 ),
+    target_error_role( ROLE_DPS ),
+    current_error( 0 ),
+    current_mean( 0 ),
+    analyze_error_interval( 100 ),
+    analyze_number( 0 ),
+    control( nullptr ),
+    parent( nullptr ),
+    target( nullptr ),
+    heal_target( nullptr ),
+    target_list(),
+    target_non_sleeping_list(),
+    player_list(),
+    player_no_pet_list(),
+    player_non_sleeping_list(),
+    active_player( nullptr ),
+    current_index( 0 ),
+    num_players( 0 ),
+    num_enemies( 0 ),
+    num_tanks( 0 ),
+    enemy_targets( 0 ),
+    healing( 0 ),
+    global_spawn_index( 0 ),
+    max_player_level( -1 ),
+    queue_lag( 5_ms ),
+    queue_lag_stddev( 0_ms ),
+    gcd_lag( 150_ms ),
+    gcd_lag_stddev( 0_ms ),
+    channel_lag( 250_ms ),
+    channel_lag_stddev( 0_ms ),
+    queue_gcd_reduction( 100_ms ),
+    default_cooldown_tolerance( 250_ms ),
+    strict_gcd_queue( false ),
+    confidence( 0.95 ),
+    confidence_estimator( 0.0 ),
+    world_lag( 100_ms ),
+    world_lag_stddev( timespan_t::min() ),
+    travel_variance( 0 ),
+    default_skill( 1.0 ),
+    reaction_time( 500_ms ),
+    regen_periodicity( 250_ms ),
+    ignite_sampling_delta( 200_ms ),
+    optimize_expressions( 2 ),
+    optimize_expressions_rounds( 1 ),
+    current_slot( -1 ),
+    optimal_raid( 0 ),
+    log( 0 ),
+    debug_each( 0 ),
+    normalized_stat( STAT_NONE ),
+    default_region_str( "us" ),
+    save_prefix_str( "save_" ),
+    save_talent_str( false ),
+    talent_input_format( talent_format::UNCHANGED ),
+    stat_cache( 1 ),
+    max_aoe_enemies( 20 ),
+    tmi_window_global( 0 ),
+    tmi_bin_size( 0.5 ),
+    show_etmi( false ),
+    requires_regen_event( false ),
+    single_actor_batch( false ),
+    allow_experimental_specializations( false ),
+    progressbar_type( 0 ),
+    armory_retries( 3 ),
+    enemy_death_pct( 0 ),
+    rel_target_level( -1 ),
+    target_level( -1 ),
+    target_adds( 0 ),
+    desired_targets( 1 ),
+    dbc( new dbc_t() ),
+    dbc_override( std::make_unique<dbc_override_t>() ),
+    timewalk( -1 ),
+    scale_to_itemlevel( -1 ),
+    keystone_level( 10 ),
+    keystone_pct_hp( 27 ),
+    dungeon_route_smart_targeting( true ),
+    challenge_mode( false ),
+    scale_itemlevel_down_only( false ),
+    disable_set_bonuses( false ),
+    enable_taunts( false ),
+    use_item_verification( true ),
+    disable_2_set( 1 ),
+    disable_4_set( 1 ),
+    enable_2_set( 1 ),
+    enable_4_set( 1 ),
+    pvp_rules(),
+    pvp_mode( false ),
+    auto_attacks_always_land( false ),
+    log_spell_id(),
+    active_enemies( 0 ),
+    active_allies( 0 ),
+    _rng(),
+    seed( 0 ),
+    deterministic( 0 ),
+    strict_work_queue( 0 ),
+    average_range( true ),
+    average_gauss( false ),
+    fight_style(),
+    add_waves( 0 ),
+    overrides( overrides_t() ),
+    default_aura_delay( 30_ms ),
+    default_aura_delay_stddev( 5_ms ),
+    azerite_status( azerite_control::DISABLED_ALL ),
+    progress_bar( *this ),
+    scaling( new scale_factor_control_t( this ) ),
+    plot( new plot_t( this ) ),
+    reforge_plot( new reforge_plot_t( this ) ),
+    elapsed_cpu(),
+    elapsed_time(),
+    work_done( 0 ),
+    iteration_dmg( 0 ),
+    priority_iteration_dmg( 0 ),
+    iteration_heal( 0 ),
+    iteration_absorb( 0 ),
+    total_dmg(),
+    raid_hps(),
+    total_heal(),
+    total_absorb(),
+    raid_aps(),
+    raid_dps( "Raid Damage Per Second", false ),
+    simulation_length( "Simulation Length", false ),
+    merge_time(),
+    init_time(),
+    analyze_time(),
+    report_iteration_data( 0.025 ),
+    min_report_iteration_data( -1 ),
+    report_progress( 1 ),
+    bloodlust_percent( 0 ),
+    bloodlust_time( 0_ms ),
+    // Report
+    display_build( 1 ),
+    report_precision( 2 ),
+    report_pets_separately( 0 ),
+    report_targets( 1 ),
+    report_details( 1 ),
+    report_raw_abilities( 1 ),
+    report_rng( 0 ),
+    hosted_html( 0 ),
+    save_raid_summary( 0 ),
+    save_gear_comments( 0 ),
+    statistics_level( 1 ),
+    separate_stats_by_actions( 0 ),
+    report_raid_summary( 0 ),
+    buff_uptime_timeline( 1 ),
+    buff_stack_uptime_timeline( 1 ),
+    json_full_states( 0 ),
+    decorated_tooltips( -1 ),
+    allow_potions( true ),
+    allow_food( true ),
+    allow_flasks( true ),
+    allow_augmentations( true ),
+    solo_raid( false ),
+    maximize_reporting( false ),
+    apikey( get_api_key() ),
+    distance_targeting_enabled( false ),
+    ignore_invulnerable_targets( false ),
+    enable_dps_healing( false ),
+    count_overheal_as_heal( false ),
+    scaling_normalized( 1.0 ),
+    merge_enemy_priority_dmg( false ),
+    // Multi-Threading
+    threads( 0 ),
+    thread_index( 0 ),
+    process_priority( computer_process::BELOW_NORMAL ),
+    work_queue( new work_queue_t() ),
+    spell_query(),
+    spell_query_level( MAX_LEVEL ),
+    pause_mutex( nullptr ),
+    paused( false ),
+    chart_show_relative_difference( false ),
+    relative_difference_from_max( false ),
+    relative_difference_base(),
+    chart_boxplot_percentile( .25 ),
+    display_hotfixes( false ),
+    disable_hotfixes( false ),
+    display_bonus_ids( false ),
+    profileset_main_actor_index( 0 ),
+    profileset_report_player_index( 0 ),
+    profileset_multiactor_base_name( "Baseline" ),
+    profileset_metric( { SCALE_METRIC_DPS } ),
+    profileset_output_data(),
+    profileset_enabled( false ),
+    profileset_work_threads( 0 ),
+    profileset_init_threads( 1 ),
+    profilesets( std::make_unique<profileset::profilesets_t>() )
 {
-  item_db_sources.assign( std::begin( default_item_db_sources ),
-                          std::end( default_item_db_sources ) );
+  item_db_sources.assign( std::begin( default_item_db_sources ), std::end( default_item_db_sources ) );
 
-  max_time = timespan_t::from_seconds( 300 );
+  max_time = 300_s;
   vary_combat_length = 0.2;
   use_optimal_buffs_and_debuffs( 1 );
 
@@ -1856,6 +1932,10 @@ void sim_t::combat_begin()
   // Always call begin() to ensure various counters are initialized.
   datacollection_begin();
 
+  // Initialise all actors before (pre)combat.
+  for ( auto& target : target_list )
+    target -> precombat_init();
+
   for ( auto& target : target_list )
     target -> combat_begin();
 
@@ -1872,19 +1952,30 @@ void sim_t::combat_begin()
 
   if ( single_actor_batch )
   {
+    player_no_pet_list[ current_index ] -> precombat_init();
     player_no_pet_list[ current_index ] -> combat_begin();
     for ( auto pet: player_no_pet_list[ current_index ] -> pet_list )
     {
+      // Pets do not need to be initialised individually first
+      pet -> precombat_init();
       pet -> combat_begin();
     }
   }
   else
   {
+
+    // Initialize all actors before (pre)combat.
     // Needs to be a index-based loop, as the player list may be extended during iteration.
     for ( size_t i = 0; i < player_list.size(); ++i ) // NOLINT(modernize-loop-convert)
     {
       player_t* p = player_list[ i ];
-      p->combat_begin();
+      p -> precombat_init();
+    }
+
+    for ( size_t i = 0; i < player_list.size(); ++i )  // NOLINT(modernize-loop-convert)
+    {
+      player_t* p = player_list[ i ];
+      p -> combat_begin();
     }
   }
 
@@ -1906,6 +1997,10 @@ void sim_t::combat_begin()
     target -> death_pct = enemy_death_pct;
   }
   make_event<sim_safeguard_end_event_t>( *this, *this, expected_iteration_time + expected_iteration_time );
+
+  // Create the 5.25s average heartbeat event used for pet stat updates, and other aura update events.
+  if ( !heartbeat_event_callback_function.empty() )
+    make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 0, 5249 ) ) );
 
   raid_event_t::combat_begin( this );
 }
@@ -2261,7 +2356,6 @@ void sim_t::init_fight_style()
     break;
     
     case FIGHT_STYLE_DUNGEON_SLICE:
-      //Based on the Hero Dungeon setup
       desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
 
@@ -2269,17 +2363,13 @@ void sim_t::init_fight_style()
       ignore_invulnerable_targets = true;
 
       raid_events_str +=
-        "/invulnerable,cooldown=500,duration=500,retarget=1"
         "/adds,name=Boss,count=1,cooldown=500,duration=135,type=add_boss,duration_stddev=1"
-        "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
+        "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=18,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
       break;
     
     case FIGHT_STYLE_DUNGEON_ROUTE:
       // To be used in conjunction with "pull" raid events for a simulated dungeon run.
-      range::for_each( target_list, []( player_t* t ) {
-        t -> base.sleeping = true;
-      });
       desired_targets = 1;
       fixed_time = false;
       // Bloodlust is handled by an option on each pull raid event.
@@ -2662,6 +2752,27 @@ void sim_t::init()
     }
   }
 
+  struct fallback_buff_t : public buff_t
+  {
+    fallback_buff_t( sim_t* sim ) : buff_t( sim, "fallback" )
+    {
+      is_fallback = true;
+      manual_chance = 0.0;
+      default_chance = 0.0;
+    }
+    bool trigger( int, double, double, timespan_t ) override { return false; }
+    void execute( int, double, timespan_t ) override { return; }
+    void increment( int, double, timespan_t ) override { return; }
+    void decrement( int, double ) override { return; }
+    void start( int, double, timespan_t ) override { return; }
+    void refresh( int, double, timespan_t ) override { return; }
+    void bump( int, double ) override { return; }
+    void reset() override { return; }
+    void invalidate_cache() override { return; }
+  };
+
+  auras.fallback = make_buff<fallback_buff_t>( this );
+
   auras.arcane_intellect = make_buff( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
                                ->set_default_value( dbc::find_spell( this, 1459 )->effectN( 1 ).percent() )
                                ->add_invalidate( CACHE_INTELLECT );
@@ -2685,18 +2796,41 @@ void sim_t::init()
   // Find Already defined target, otherwise create a new one.
   print_debug( "Creating Enemies." );
 
-  if ( !target_list.empty() )
+  if ( fight_style == FIGHT_STYLE_DUNGEON_SLICE || fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    if ( main_target_str.empty() && target_list.empty() )
+    {
+      target = module_t::enemy()->create_player( this, "Dungeon" );
+      target->initial.sleeping = target->base.sleeping = target->current.sleeping = true;
+    }
+    else
+    {
+      if ( !target_list.empty() )
+      {
+        target = target_list.data().front();
+        if ( fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+          target->quiet = true;
+      }
+
+      range::for_each( target_list, []( player_t* t ) {
+        t->initial.sleeping = t->base.sleeping = t->current.sleeping = true;
+      } );
+    }
+  }
+  else if ( !target_list.empty() )
   {
     target = target_list.data().front();
   }
-  else if ( ! main_target_str.empty() )
+  else if ( !main_target_str.empty() )
   {
     player_t* p = find_player( main_target_str );
     if ( p )
       target = p;
   }
   else
-    target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
+  {
+    target = module_t::enemy()->create_player( this, "Fluffy_Pillow" );
+  }
 
   // create additional enemies here
   while ( as<int>(target_list.size()) < desired_targets )
@@ -2747,6 +2881,7 @@ void sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 2;
 
+  raid_dps.reserve( std::min( iterations, 10000 ) );
   simulation_length.reserve( std::min( iterations, 10000 ) );
 
   for ( const auto& player : player_list )
@@ -2819,6 +2954,8 @@ void sim_t::analyze()
 
   simulation_length.analyze();
   if ( simulation_length.mean() == 0 ) return;
+
+  raid_dps.analyze();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
@@ -3537,6 +3674,7 @@ void sim_t::create_options()
   add_option( opt_bool( "save_profile_with_actions", save_profile_with_actions ) );
   add_option( opt_bool( "default_actions", default_actions ) );
   add_option( opt_bool( "debug", debug ) );
+
   add_option( opt_bool( "strict_parsing", strict_parsing ) );
   add_option( opt_bool( "debug_each", debug_each ) );
   add_option( opt_func( "debug_seed", parse_debug_seed ) );
@@ -3659,6 +3797,7 @@ void sim_t::create_options()
   add_option( opt_float( "default_enchant_focus", enchant.resource[RESOURCE_FOCUS] ) );
   add_option( opt_float( "default_enchant_runic", enchant.resource[RESOURCE_RUNIC_POWER] ) );
   // Report
+  add_option( opt_int( "display_build", display_build ) );
   add_option( opt_int( "report_precision", report_precision ) );
   add_option( opt_bool( "report_pets_separately", report_pets_separately ) );
   add_option( opt_bool( "report_targets", report_targets ) );
@@ -4018,7 +4157,7 @@ void sim_t::setup( sim_control_t* c )
     }
   }
 
-  if ( player_list.empty() && spell_query == nullptr && ! display_bonus_ids )
+  if ( player_list.empty() && spell_query == nullptr && !display_bonus_ids && display_build <= 1 )
   {
     throw std::runtime_error( "Nothing to sim!" );
   }
@@ -4462,4 +4601,15 @@ bool sim_t::requires_cleanup() const
 
   // .. or finally, clean up child threads based on the "cleanup_threads" option value
   return cleanup_threads;
+}
+
+void sim_t::heartbeat_event_callback()
+{
+  for( size_t i = 0; i < heartbeat_event_callback_function.size(); ++i )
+    heartbeat_event_callback_function[ i ]( this );
+}
+
+void sim_t::register_heartbeat_event_callback(std::function<void(sim_t*)> fn)
+{
+  heartbeat_event_callback_function.emplace_back( std::move( fn ) );
 }

@@ -687,6 +687,7 @@ public:
     action_t* latent_poison = nullptr;
     action_t* arctic_bola = nullptr;
     action_t* dire_command = nullptr; 
+    action_t* windrunners_guidance_background = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -3104,7 +3105,14 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> talents.windrunners_guidance.ok() && rng().roll( p() -> talents.windrunners_guidance -> effectN( 1 ).percent() ) ) {
+    if ( p() -> talents.windrunners_guidance.ok() && rng().roll( p() -> talents.windrunners_guidance -> effectN( 1 ).percent() ) ) 
+    {
+      
+      //12/05/2023: Windrunners Guidance can proc the class trinket, but only if Trueshot is not already running
+      if(!p() -> buffs.trueshot -> up()) 
+      {
+        p() -> actions.windrunners_guidance_background -> execute();
+      }
       p() -> buffs.trueshot -> trigger( p() -> talents.windrunners_guidance -> effectN( 2 ).time_value() );
       p() -> procs.windrunners_guidance -> occur();
     }
@@ -3376,6 +3384,19 @@ struct arctic_bola_t final : hunter_spell_t
   }
 };
 
+// Windrunner's Guidance =====================================================
+struct windrunners_guidance_background_t : public hunter_spell_t
+{
+  windrunners_guidance_background_t( hunter_t* p):
+    hunter_spell_t( "windrunners_guidance", p, p -> talents.windrunners_guidance )
+  {
+    background = true;
+    dual = true;
+    //Only set to harmful for the 10.1 class trinket effect
+    harmful = true;
+  }
+};
+
 // Latent Poison ==================================================
 
 struct latent_poison_t final : hunter_spell_t
@@ -3549,8 +3570,6 @@ struct single_target_event_t final : public event_t
 struct death_chakram_t : death_chakram::base_t
 {
   death_chakram::single_target_t* single_target;
-  explosive_shot_background_t* explosive = nullptr;
-  int munitions_targets = 0;
 
   death_chakram_t( hunter_t* p, util::string_view options_str ):
     death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram )
@@ -3589,9 +3608,6 @@ struct death_chakram_t : death_chakram::base_t
       // Hit only a single target, schedule the repeating single target hitter
       make_event<single_target_event_t>( *sim, *single_target, s -> target, ST_FIRST_HIT_DELAY );
     }
-
-    if ( explosive && s -> chain_target < explosive -> targets )
-      explosive -> execute_on_target( s -> target );
 
     td( s -> target ) -> debuffs.death_chakram -> trigger();
   }
@@ -5453,8 +5469,7 @@ struct dire_beast_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    //Specifically set to harmful for 10.1 class trinket
-    harmful = true;
+    harmful = false;
   }
 
   void init_finished() override
@@ -5485,10 +5500,9 @@ struct dire_command_summon_t final : hunter_spell_t
     hunter_spell_t( "dire_command_summon", p, p -> find_spell( 219199 ) )
     {
       cooldown -> duration = 0_ms;
-      track_cd_waste= false;
+      track_cd_waste = false;
       background = true;
-      //Specifically set for 10.1 class trinket
-      harmful = true;
+      harmful = false;
     }
 
   void execute() override
@@ -5498,8 +5512,8 @@ struct dire_command_summon_t final : hunter_spell_t
     p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
   }
 };
-// Bestial Wrath ============================================================
 
+// Bestial Wrath ============================================================
 struct bestial_wrath_t: public hunter_spell_t
 {
   timespan_t precast_time = 0_ms;
@@ -5509,6 +5523,9 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
+
+    //Specifically set to true for 10.1 class trinket 
+    harmful = true;
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
@@ -5520,6 +5537,7 @@ struct bestial_wrath_t: public hunter_spell_t
 
     hunter_spell_t::init_finished();
 
+    //Used to ensure that during precombat this isn't harmful for the duration of 10.1 due to the class trinket existing
     if ( is_precombat )
       harmful = false;
   }
@@ -5703,6 +5721,18 @@ struct trueshot_t: public hunter_spell_t
     hunter_spell_t( "trueshot", p, p -> talents.trueshot )
   {
     parse_options( options_str );
+
+    //Only set to harmful for the 10.1 class trinket effect
+    harmful = true;
+  }
+
+  //Used to ensure that during precombat this isn't harmful for the duration of 10.1 due to the class trinket existing
+  void init_finished() override
+  {
+    hunter_spell_t::init_finished();
+
+    if ( is_precombat )
+      harmful = false;
   }
 
   void execute() override
@@ -5713,14 +5743,6 @@ struct trueshot_t: public hunter_spell_t
     p() -> buffs.trueshot -> expire();
 
     p() -> buffs.trueshot -> trigger();
-  }
-
-  void init_finished() override
-  {
-    hunter_spell_t::init_finished();
-
-    if ( is_precombat )
-      harmful = false;
   }
 };
 
@@ -5880,6 +5902,11 @@ struct wildfire_bomb_t: public hunter_spell_t
           am *= 1.0 + td -> debuffs.shredded_armor -> value();
         }
 
+        if ( as<double>( s -> n_targets ) > reduced_aoe_targets )
+        {
+          am *= std::sqrt( reduced_aoe_targets / s -> n_targets );
+        }
+
         return am;
       }
     };
@@ -5892,8 +5919,10 @@ struct wildfire_bomb_t: public hunter_spell_t
       dual = true;
 
       aoe = -1;
+      reduced_aoe_targets = p() -> talents.wildfire_bomb -> effectN( 2 ).base_value();
       radius = 5; // XXX: It's actually a circle + cone, but we sadly can't really model that
 
+      dot_action -> reduced_aoe_targets = reduced_aoe_targets;
       dot_action -> aoe = aoe;
       dot_action -> radius = radius;
 
@@ -6749,6 +6778,9 @@ void hunter_t::create_actions()
   
   if ( talents.dire_command.ok() )
     actions.dire_command = new spells::dire_command_summon_t( this );
+  
+  if( talents.windrunners_guidance.ok() )
+    actions.windrunners_guidance_background = new attacks::windrunners_guidance_background_t( this );
 }
 
 void hunter_t::create_buffs()

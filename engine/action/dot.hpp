@@ -44,11 +44,12 @@ public:
   int current_tick;
   int max_stack;
   std::string name_str;
+  int internal_id;
 
   dot_t(util::string_view n, player_t* target, player_t* source);
 
   void adjust_duration( timespan_t extra_seconds, timespan_t max_total_time = timespan_t::min(),
-                        uint32_t state_flags = -1, bool count_as_refresh = true );
+                        uint32_t state_flags = 0, bool count_as_refresh = false );
   void adjust_duration( timespan_t extra_seconds, uint32_t state_flags )
   {
     adjust_duration( extra_seconds, timespan_t::min(), state_flags );

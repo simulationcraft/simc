@@ -5,7 +5,6 @@ level=70
 race=void_elf
 role=tank
 position=front
-talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAgkCtSSSgkkWjAAAAkSSkEJSQRSikkSCQLSkWaCB
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -92,7 +91,8 @@ actions.cooldowns_niuzao_woo+=/purifying_brew,if=stagger.amounttototalpct>=0.7&!
 actions.cooldowns_niuzao_woo+=/purifying_brew,if=cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up
 
 actions.item_actions=use_item,name=beacon_to_the_beyond,if=(debuff.weapons_of_order_debuff.stack>3)|(fight_remains<cooldown.weapons_of_order.remains-3)
-actions.item_actions+=/use_item,name=dragonfire_bomb_dispenser
+actions.item_actions+=/use_item,name=dragonfire_bomb_dispenser,if=(trinket.1.ready_cooldown>10)&((!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|(debuff.weapons_of_order_debuff.up)|((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains))
+actions.item_actions+=/use_item,name=djaruun_pillar_of_the_elder_flame
 
 actions.race_actions=blood_fury
 actions.race_actions+=/berserking
@@ -156,32 +156,31 @@ actions.rotation_fallback+=/celestial_brew,if=!buff.blackout_combo.up&talent.cel
 actions.rotation_fallback+=/chi_wave,if=talent.chi_wave.enabled
 actions.rotation_fallback+=/chi_burst,if=talent.chi_burst.enabled
 
-head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/8780/1504,gem_id=192982
-neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/8783/8784/8782/1537,gem_id=192932/192932/192932,crafted_stats=32/40
-shoulders=spines_of_the_vermillion_forge,id=202504,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504
+head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/8780/1504,gem_id=192991
+neck=amulet_of_tender_breath,id=206183,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669/9382,gem_id=192932/192932/192932
+shoulders=spines_of_the_vermillion_forge,id=202504,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6598
-chest=lifebound_chestpiece,id=193399,bonus_id=8840/8836/8902/1537,enchant_id=6625,crafted_stats=32/40
-wrists=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537/1808/8797/8960,gem_id=192932,enchant_id=6580,crafted_stats=32/40
+chest=lifebound_chestpiece,id=193399,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6625,crafted_stats=32/40
+wrists=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537,gem_id=192932,enchant_id=6580,crafted_stats=32/40
 hands=fists_of_the_vermillion_forge,id=202507,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
-waist=blackbelt_of_the_vermillion_forge,id=202503,bonus_id=4800/4786/1507/1808,gem_id=192925
+waist=blackbelt_of_the_vermillion_forge,id=202503,bonus_id=4800/4786/1507/1808,gem_id=192932
 legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,enchant_id=6490
-feet=toxic_thorn_footwraps,id=193451,bonus_id=8960/8840/8836/8902/1537,enchant_id=6613
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192932,enchant_id=6568
-finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,enchant_id=6550
+feet=slimy_expulsion_boots,id=193451,bonus_id=8960/8840/8836/8902/1537,enchant_id=6613
+finger1=tormentors_siphoning_signet,id=204466,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1501/9382,gem_id=192932,enchant_id=6568
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/8780/1498,gem_id=192932,enchant_id=6568
 trinket1=beacon_to_the_beyond,id=203963,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
 trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-main_hand=bilestained_crawg_tusks,id=159653,bonus_id=6652/8811/8812/6808/4786/3317,enchant_id=6827
-off_hand=forgestorm,id=193785,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669,enchant_id=6827
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6827
 
 # Gear Summary
-# gear_ilvl=445.13
-# gear_agility=5906
-# gear_stamina=21817
-# gear_crit_rating=4564
-# gear_haste_rating=682
-# gear_mastery_rating=1819
-# gear_versatility_rating=4332
+# gear_ilvl=446.93
+# gear_agility=6255
+# gear_stamina=22305
+# gear_crit_rating=4643
+# gear_haste_rating=454
+# gear_mastery_rating=2120
+# gear_versatility_rating=5862
 # gear_leech_rating=325
-# gear_armor=3993
+# gear_armor=4003
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1

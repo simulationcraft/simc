@@ -49,7 +49,7 @@ actions.cleave=barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.la
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains
 actions.cleave+=/multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25
 actions.cleave+=/bestial_wrath
-actions.cleave+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator&talent.kill_cleave
+actions.cleave+=/kill_command,if=talent.kill_cleave
 actions.cleave+=/call_of_the_wild
 actions.cleave+=/explosive_shot
 actions.cleave+=/stampede,if=buff.bestial_wrath.up|target.time_to_die<15

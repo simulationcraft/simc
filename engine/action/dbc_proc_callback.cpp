@@ -111,7 +111,11 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     if ( !can_proc_from_procs )
     {
       if ( !a->not_a_proc && ( a->background || a->proc ) )
-        return;
+      {
+        // only direct damage obeys proc-related attributes
+        if ( state->proc_type() != PROC1_PERIODIC && state->proc_type() != PROC1_HELPFUL_PERIODIC )
+          return;
+      }
     }
 
     // Additional trigger condition to check before performing proc chance process.
@@ -276,7 +280,7 @@ void dbc_proc_callback_t::initialize()
   }
 
   can_only_proc_from_class_abilites = effect.can_only_proc_from_class_abilites();
-  can_proc_from_procs = allow_procs = effect.can_proc_from_procs();
+  can_proc_from_procs = effect.can_proc_from_procs();
 }
 
 // Determine target for the callback (action).
@@ -297,6 +301,7 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
   //
   // Technically, this information is exposed in the client data, but simc needs a proper
   // targeting system first before we start using it.
+  assert( proc_action && "Cannot determine target of incoming callback, there is no proc_action" );
   switch ( proc_action->type )
   {
       // Heals are always targeted to the callback actor on incoming events

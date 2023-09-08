@@ -332,7 +332,7 @@ static constexpr auto _resource_strings = util::make_static_map<int, util::strin
   {  5, "Rune",          },
   {  6, "Runic Power",   },
   {  7, "Soul Shard",    },
-  {  8, "Eclipse",       },
+  {  8, "Astral Power",  },
   {  9, "Holy Power",    },
   { 11, "Maelstrom",     },
   { 12, "Chi",           },
@@ -811,6 +811,7 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 10, "Spell Cast Time"           },
   { 11, "Spell Cooldown"            },
   { 12, "Spell Effect 2"            },
+  { 13, "Spell Target Resistance"   },
   { 14, "Spell Resource Cost"       },
   { 15, "Spell Critical Damage"     },
   { 16, "Spell Penetration"         },
@@ -822,14 +823,21 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 22, "Spell Periodic Amount"     },
   { 23, "Spell Effect 3"            },
   { 24, "Spell Power"               },
+  { 25, "Spell Trigger Damage"      },
   { 26, "Spell Proc Frequency"      },
-  { 27, "Spell Damage Taken"        },
+  { 27, "Spell Amplitude"           },
   { 28, "Spell Dispel Chance"       },
+  { 29, "Spell Crowd Damage"        },
+  { 30, "Spell Cost On Miss"        },
+  { 31, "Spell Doses"               },
   { 32, "Spell Effect 4"            },
   { 33, "Spell Effect 5"            },
-  { 34, "Spell Resource Generation" },
-    { 35, "Spell Chain Target Range" },
-    { 37, "Spell Max Stacks" },
+  { 34, "Spell Resource Cost 2"     },
+  { 35, "Spell Chain Target Range"  },
+  { 36, "Spell Area Max Summons"    },
+  { 37, "Spell Max Stacks"          },
+  { 38, "Spell Proc Cooldown"       },
+  { 39, "Spell Resource Cost 3"     },
 } );
 
 static constexpr auto _effect_type_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -1033,6 +1041,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 142, "Modify Base Resistance"                       },
   { 143, "Modify Cooldown Recharge Rate% (Label)"       },
   { 144, "Reduce Fall Damage"                           },
+  { 147, "Mechanic Immunity"                            },
   { 148, "Modify Cooldown Recharge Rate% (Category)"    },
   { 149, "Modify Casting Pushback"                      },
   { 150, "Modify Block Effectiveness"                   },
@@ -1139,8 +1148,10 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 485, "Resist Forced Movement%"                      },
   { 493, "Hunter Animal Companion"                      },
   { 501, "Modify Crit Damage Done% from Caster's Spells" },
-  { 507, "Modify Damage Taken% from Caster's Spells (Label)" },
+  { 507, "Modify Damage Taken% from Spells (Label)"     },
   { 531, "Modify Guardian Damage Done%"                 },
+  { 537, "Modify Damage Taken% from Caster's Spells (Label)" },
+  { 540, "Modify Stat With Support Triggers"            },
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -1482,7 +1493,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     else if ( e->type() == E_ENERGIZE )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s",
                 util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );
-    else if ( e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+    else if ( e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value1() );
     else
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value1() );
@@ -1586,7 +1597,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   }
 
   if ( e->type() == E_APPLY_AURA &&
-       ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ) )
+       ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL ||
+         e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ) )
   {
     auto str = label_str( e->misc_value1(), dbc );
     if ( str != "" )
@@ -2168,6 +2180,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     std::vector<rppm_modifier_t> modifiers( mod_span.begin(), mod_span.end() );
     range::sort( modifiers, []( rppm_modifier_t a, rppm_modifier_t b ) {
+      if ( a.modifier_type == RPPM_MODIFIER_SPEC && b.modifier_type == RPPM_MODIFIER_SPEC )
+        return a.type < b.type;
+
       return a.modifier_type < b.modifier_type;
     } );
 

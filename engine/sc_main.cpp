@@ -235,9 +235,14 @@ struct special_effect_initializer_t
   { unique_gear::unregister_special_effects(); }
 };
 
-void print_version_info(const dbc_t& dbc)
+void print_version_info( const dbc_t& dbc )
 {
-  fmt::print( "{}\n", util::version_info_str( &dbc ) );
+  fmt::print( "{}", util::version_info_str( &dbc ) );
+}
+
+void print_build_info ( const dbc_t& dbc )
+{
+  fmt::print( " ({})", util::build_info_str( &dbc ) );
 }
 
 } // anonymous namespace ====================================================
@@ -256,30 +261,41 @@ int sim_t::main( const std::vector<std::string>& args )
 
     special_effect_initializer_t special_effect_init;
 
-    print_version_info(*dbc);
+    print_version_info( *dbc );
 
     sim_control_t control;
 
     try
     {
-      control.options.parse_args(args);
+      control.options.parse_args( args );
     }
-    catch (const std::exception&) {
-
-      std::throw_with_nested(std::invalid_argument("Incorrect option format"));
+    catch ( const std::exception& )
+    {
+      fmt::print( "\n" );
+      std::throw_with_nested( std::invalid_argument( "Incorrect option format" ) );
     }
 
-    // Hotfixes are applies right before the sim context (control) is created, and simulator setup
-    // begins
+    // Hotfixes are applies right before the sim context (control) is created, and simulator setup begins
     hotfix::apply();
 
     try
     {
       setup( &control );
     }
-    catch( const std::exception& ){
-      std::throw_with_nested(std::runtime_error("Setup failure"));
+    catch ( const std::exception& )
+    {
+      fmt::print( "\n" );
+      std::throw_with_nested( std::runtime_error( "Setup failure" ) );
     }
+
+    if ( display_build > 0 )
+      print_build_info( *dbc );
+
+    // newline as print_version_info does not include it
+    fmt::print( "\n" );
+
+    if ( display_build > 1 )
+      return 0;
 
     if ( display_hotfixes )
     {
@@ -298,16 +314,16 @@ int sim_t::main( const std::vector<std::string>& args )
       return 1;
     }
 
-
     if ( spell_query )
     {
       try
       {
-        spell_query -> evaluate();
+        spell_query->evaluate();
         print_spell_query();
       }
-      catch( const std::exception& ){
-        std::throw_with_nested(std::runtime_error("Spell Query Error"));
+      catch ( const std::exception& )
+      {
+        std::throw_with_nested( std::runtime_error( "Spell Query Error" ) );
       }
     }
     else if ( need_to_save_profiles( this ) )
@@ -318,23 +334,26 @@ int sim_t::main( const std::vector<std::string>& args )
         fmt::print( "\nGenerating profiles... \n" );
         report::print_profiles( this );
       }
-      catch( const std::exception& ){
-        std::throw_with_nested(std::runtime_error("Generating profiles"));
+      catch ( const std::exception& )
+      {
+        std::throw_with_nested( std::runtime_error( "Generating profiles" ) );
       }
     }
     else
     {
-      fmt::print( "\nSimulating... ( iterations={}, threads={}, target_error={:.3f}, max_time={:.0f}, vary_combat_length={:0.2f}, optimal_raid={}, fight_style={} )\n\n",
-        iterations, threads, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style );
+      fmt::print(
+          "\nSimulating... ( iterations={}, threads={}, target_error={:.3f}, max_time={:.0f}, "
+          "vary_combat_length={:0.2f}, optimal_raid={}, fight_style={} )\n\n",
+          iterations, threads, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style );
 
       progress_bar.set_base( "Baseline" );
       if ( execute() )
       {
-        scaling      -> analyze();
-        plot         -> analyze();
-        reforge_plot -> analyze();
+        scaling->analyze();
+        plot->analyze();
+        reforge_plot->analyze();
 
-        if ( canceled == 0 && ! profilesets->iterate( this ))
+        if ( canceled == 0 && !profilesets->iterate( this ) )
         {
           canceled = true;
         }
@@ -345,16 +364,17 @@ int sim_t::main( const std::vector<std::string>& args )
       }
       else
       {
-        fmt::print("Simulation was canceled.\n");
+        fmt::print( "Simulation was canceled.\n" );
         canceled = true;
       }
     }
 
-    fmt::print("\n");
+    fmt::print( "\n" );
 
     return canceled;
   }
-  catch (const std::nested_exception& e) {
+  catch ( const std::nested_exception& e )
+  {
     // Only catch exception we have already re-thrown in init functions.
     fmt::print( stderr, "Error: " );
     util::print_chained_exception( e.nested_ptr(), stderr );

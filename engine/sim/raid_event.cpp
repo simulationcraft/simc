@@ -334,6 +334,14 @@ struct adds_event_t final : public raid_event_t
     }
 
     regenerate_cache();
+
+    if ( enemy_type == ENEMY_ADD_BOSS )
+    {
+      for ( auto p : affected_players )
+      {
+        p->in_boss_encounter++;
+      }
+    }
   }
 
   void _finish() override
@@ -345,6 +353,22 @@ struct adds_event_t final : public raid_event_t
     for ( size_t i = 0; i < adds_to_remove; i++ )
     {
       adds[ i ]->dismiss();
+    }
+
+    if ( enemy_type == ENEMY_ADD_BOSS )
+    {
+      for ( auto p : affected_players )
+      {
+        assert( p->in_boss_encounter );
+        p->in_boss_encounter--;
+      }
+    }
+
+    // trigger leave combat state callbacks if no adds are remaining
+    if ( sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_SLICE && !sim->target_non_sleeping_list.size() )
+    {
+      for ( auto p : affected_players )
+        p->leave_combat();
     }
   }
 };
@@ -469,11 +493,10 @@ struct pull_event_t final : raid_event_t
   int pull;
   bool bloodlust;
   bool shared_health;
-  timespan_t mark_duration;
   bool spawned;
   bool demised;
+  bool has_boss;
   event_t* spawn_event;
-  event_t* thundering_event;
   event_t* redistribute_event;
 
   struct spawn_parameter
@@ -495,10 +518,9 @@ struct pull_event_t final : raid_event_t
       pull( 0 ),
       bloodlust( false ),
       shared_health( false ),
-      mark_duration( 15_s ),
       spawned( false ),
+      has_boss( false ),
       spawn_event( nullptr ),
-      thundering_event( nullptr ),
       redistribute_event( nullptr )
   {
     add_option( opt_string( "enemies", enemies_str ) );
@@ -506,7 +528,6 @@ struct pull_event_t final : raid_event_t
     add_option( opt_int( "pull", pull ) );
     add_option( opt_bool( "bloodlust", bloodlust ) );
     add_option( opt_bool( "shared_health", shared_health ) );
-    add_option( opt_timespan( "mark_duration", mark_duration ) );
 
     parse_options( options_str );
 
@@ -516,8 +537,6 @@ struct pull_event_t final : raid_event_t
       first = timespan_t::max();
 
     cooldown = sim->max_time * 2;
-
-    mark_duration = clamp<timespan_t>( mark_duration, 0_s, 15_s );
 
     master = sim->target_list.data().front();
     if ( !master )
@@ -559,7 +578,10 @@ struct pull_event_t final : raid_event_t
             spawn_parameter spawn;
 
             if ( util::starts_with( splits[ 0 ], "BOSS_" ) )
+            {
               spawn.boss = true;
+              has_boss   = true;
+            }
 
             spawn.name   = splits[ 0 ];
             spawn.health = util::to_double( splits[ 1 ] );
@@ -597,15 +619,28 @@ struct pull_event_t final : raid_event_t
     demised = true;
     sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
-    timespan_t thundering_timer = thundering_event->remains();
-    event_t::cancel(thundering_event);
-
     event_t::cancel( redistribute_event );
+
+    if ( has_boss )
+    {
+      for ( auto p : affected_players )
+      {
+        assert( p->in_boss_encounter );
+        p->in_boss_encounter--;
+      }
+    }
+
+    // trigger leave combat state callbacks if no adds are remaining
+    if ( !sim->target_non_sleeping_list.size() )
+    {
+      for ( auto p : affected_players )
+        p->leave_combat();
+    }
 
     // find the next pull and spawn it
     if ( auto next = next_pull() )
     {
-      make_event( *sim, next->delay, [ next, thundering_timer ] { next->spawn_pull( thundering_timer ); } );
+      make_event( *sim, next->delay, [ next ] { next->spawn_pull(); } );
       return;
     }
 
@@ -625,7 +660,7 @@ struct pull_event_t final : raid_event_t
   void _start() override
   {
     if ( !spawned )
-      make_event( *sim, delay, [ this ] { spawn_pull( 20_s ); } );
+      make_event( *sim, delay, [ this ] { spawn_pull(); } );
   }
 
   void _finish() override
@@ -681,39 +716,13 @@ struct pull_event_t final : raid_event_t
     return nullptr;
   }
 
-  void trigger_thundering()
-  {
-    if ( !sim->single_actor_batch )
-    {
-      for ( auto* p : sim->player_non_sleeping_list )
-      {
-        if ( p->is_pet() )
-          continue;
-
-        p->buffs.mark_of_lightning->trigger(mark_duration);
-      }
-    }
-    else
-    {
-      auto p = sim->player_no_pet_list[ sim->current_index ];
-      if ( p )
-      {
-        p->buffs.mark_of_lightning->trigger(mark_duration);
-      }
-    }
-
-    thundering_event = make_event( sim, 70_s, [this] { trigger_thundering(); });
-  }
-
-  void spawn_pull( timespan_t thundering_timer )
+  void spawn_pull()
   {
     if ( spawned )
       return;
     
     spawned = true;
     spawn_time = sim->current_time();
-
-    thundering_event = make_event( sim, thundering_timer, [this] { trigger_thundering(); });
 
     if ( bloodlust )
     {
@@ -766,6 +775,14 @@ struct pull_event_t final : raid_event_t
                     pull, adds.size(), total_health, delay.total_seconds() );
 
     regenerate_cache();
+
+    if ( has_boss )
+    {
+      for ( auto p : affected_players )
+      {
+        p->in_boss_encounter++;
+      }
+    }
   }
 
   void reset() override

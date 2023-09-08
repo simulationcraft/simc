@@ -45,7 +45,6 @@
 #include "item/special_effect.hpp"
 #include "item/item.hpp"
 #include "item/enchants.hpp"
-#include "item/item_targetdata_initializer.hpp"
 
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
@@ -67,6 +66,7 @@
 #include "player/player_resources.hpp"
 #include "player/player.hpp"
 #include "player/target_specific.hpp"
+#include "player/targetdata_initializer.hpp"
 #include "player/player_event.hpp"
 #include "player/pet.hpp"
 #include "player/stats.hpp"
