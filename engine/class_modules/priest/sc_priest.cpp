@@ -1037,42 +1037,6 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
   }
 };
 
-struct shadow_word_death_state_t : public action_state_t
-{
-  bool tier31_2set;
-  int chain_number;
-  bool tier31_2set_deathspeaker;
-
-  shadow_word_death_state_t( action_t* a, player_t* t )
-    : action_state_t( a, t ), tier31_2set( false ), chain_number( 1 ), tier31_2set_deathspeaker( false )
-  {
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s );
-    fmt::print( s, " tier31_2set={}, chain_number={}", tier31_2set, chain_number );
-    return s;
-  }
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-    tier31_2set              = false;
-    chain_number             = 1;
-    tier31_2set_deathspeaker = false;
-  }
-
-  void copy_state( const action_state_t* o ) override
-  {
-    action_state_t::copy_state( o );
-    auto other_swd_state     = debug_cast<const shadow_word_death_state_t*>( o );
-    tier31_2set              = other_swd_state->tier31_2set;
-    chain_number             = other_swd_state->chain_number;
-    tier31_2set_deathspeaker = other_swd_state->tier31_2set_deathspeaker;
-  }
-};
-
 // T31 Chain Behavior
 // Death and Madness Reset: ?
 // Death and Madness Debuff: Refreshed
@@ -1087,7 +1051,13 @@ struct shadow_word_death_state_t : public action_state_t
 struct shadow_word_death_t final : public priest_spell_t
 {
 protected:
-  using state_t = shadow_word_death_state_t;
+  struct swd_data
+  {
+    int chain_number = 0;
+    int max_chain = 2;
+  };
+  using state_t = priest_action_state_t<swd_data>;
+  using ab = priest_spell_t;
 
 public:
   double execute_percent;
@@ -1096,15 +1066,14 @@ public:
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
 
-  shadow_word_death_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
+  shadow_word_death_t( priest_t& p )
+    : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light )
   {
-    parse_options( options_str );
 
     affected_by_shadow_weaving = true;
 
@@ -1122,6 +1091,11 @@ public:
     }
   }
 
+  shadow_word_death_t( priest_t& p, util::string_view options_str ) : shadow_word_death_t( p )
+  {
+    parse_options( options_str );
+  }
+
   action_state_t* new_state() override
   {
     return new state_t( this, target );
@@ -1137,23 +1111,18 @@ public:
     return static_cast<const state_t*>( s );
   }
 
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    ab::snapshot_state( s, rt );
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double m = priest_spell_t::composite_da_multiplier( s );
+    double m = ab::composite_da_multiplier( s );
 
-    if ( cast_state( s )->tier31_2set )
+    if ( cast_state( s )->chain_number > 0 )
     {
       m *= priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent();
-    }
-
-    // No access to state in composite_target_da_multiplier
-    if ( cast_state( s )->tier31_2set_deathspeaker )
-    {
-      {
-        sim->print_debug( "Tier 31 Chain Hit gets Deathspeaker bonus. Increasing {} damage by {}%", *this,
-                          execute_modifier * 100 );
-      }
-      m *= 1 + execute_modifier;
     }
 
     return m;
@@ -1161,7 +1130,7 @@ public:
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
-    double tdm = priest_spell_t::composite_target_da_multiplier( t );
+    double tdm = ab::composite_target_da_multiplier( t );
 
     if ( t->health_percentage() < execute_percent || priest().buffs.deathspeaker->check() )
     {
@@ -1178,7 +1147,7 @@ public:
 
   void execute() override
   {
-    priest_spell_t::execute();
+    ab::execute();
 
     if ( priest().talents.death_and_madness.enabled() )
     {
@@ -1208,12 +1177,12 @@ public:
       cooldown->charges = data().charges();
     }
 
-    priest_spell_t::reset();
+    ab::reset();
   }
 
   void impact( action_state_t* s ) override
   {
-    priest_spell_t::impact( s );
+    ab::impact( s );
 
     if ( priest().talents.shadow.inescapable_torment.enabled() )
     {
@@ -1224,33 +1193,38 @@ public:
     {
       double save_health_percentage = s->target->health_percentage();
 
-      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B2 ) && !cast_state( s )->tier31_2set )
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B2 ) )
       {
-        state_t* state       = cast_state( get_state() );
-        int number_of_chains = priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 1 ).base_value();
-
-        // Chains amount differs if you have a Deathspeaker proc or while in execute but you still keep the modifier
-        if ( priest().buffs.deathspeaker->check() || s->target->health_percentage() < execute_percent )
+        int number_of_chains;
+        state_t* curr_state = cast_state( s );
+        if ( curr_state->chain_number > 0 )
         {
-          // BUG: Currently Deathspeaker is not correctly increasing the amount of chains
-          if ( !priest().bugs || s->target->health_percentage() < execute_percent )
+          number_of_chains = curr_state->max_chain;
+        }
+        else
+        {
+          number_of_chains = priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 1 ).base_value();
+          // Chains amount differs if you have a Deathspeaker proc or while in execute but you still keep the modifier
+          if ( priest().buffs.deathspeaker->check() || s->target->health_percentage() < execute_percent )
           {
-            number_of_chains += priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 2 ).base_value();
+            // BUG: Currently Deathspeaker is not correctly increasing the amount of chains
+            if ( !priest().bugs || s->target->health_percentage() < execute_percent )
+            {
+              number_of_chains += priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 2 ).base_value();
+            }
           }
-          state->tier31_2set_deathspeaker = true;
         }
 
-        for ( int i = 1; i <= number_of_chains; i++ )
+        if ( curr_state->chain_number < curr_state->max_chain )
         {
-          // TODO: verify this delay, seems inconsistent
-          timespan_t delay = 200_ms * i;
-          make_event( sim, delay, [ this, i, state ] {
-            state->action->background = true;  // not sure this is legal
-            state->target             = target;
-            state->tier31_2set        = true;
-            state->chain_number       = i + 1;
-            schedule_execute( state );
-          } );
+          shadow_word_death_t* child_death    = priest().background_actions.shadow_word_death.get();
+          state_t* state = child_death->cast_state( child_death->get_state() );
+          state->target                       = s->target;
+          state->chain_number                 = curr_state->chain_number + 1;
+          state->max_chain                    = number_of_chains;
+          child_death->snapshot_state( state, child_death->amount_type( state ) );
+
+          make_event( sim, 200_ms, [ this, state, child_death ] { child_death->schedule_execute( state ); } );
         }
       }
 
@@ -1283,7 +1257,7 @@ public:
       }
 
       // BUG: Unsure if intended but only the original one triggers PL
-      if ( priest().talents.shadow.psychic_link.enabled() && !cast_state( s )->tier31_2set )
+      if ( priest().talents.shadow.psychic_link.enabled() && cast_state( s )->chain_number == 0 )
       {
         priest().trigger_psychic_link( s );
       }
@@ -2506,8 +2480,14 @@ void priest_t::init_background_actions()
   player_t::init_background_actions();
 
   background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
+  background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
+
+  background_actions.shadow_word_death->background = true;
+  background_actions.shadow_word_death->dual       = true;
+  background_actions.shadow_word_death->proc       = true;
+
   init_background_actions_shadow();
   init_background_actions_discipline();
   init_background_actions_holy();

@@ -21,6 +21,36 @@ namespace priestspace
  */
 struct priest_t;
 
+template <typename Data, typename Base = action_state_t>
+struct priest_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> );  // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> );        // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const priest_action_state_t*>( o ) );
+  }
+};
+
 namespace actions::spells
 {
 struct shadowy_apparition_spell_t;
@@ -28,6 +58,7 @@ struct psychic_link_t;
 struct shadow_weaving_t;
 struct echoing_void_t;
 struct echoing_void_demise_t;
+struct shadow_word_death_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
@@ -547,6 +578,7 @@ public:
     propagate_const<actions::spells::shadow_weaving_t*> shadow_weaving;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
+    propagate_const<actions::spells::shadow_word_death_t*> shadow_word_death;
     propagate_const<actions::spells::echoing_void_demise_t*> echoing_void_demise;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;

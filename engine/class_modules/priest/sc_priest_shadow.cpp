@@ -1095,11 +1095,6 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.shadow.mind_flay_insanity.enabled() )
-    {
-      priest().buffs.mind_flay_insanity->trigger();
-    }
-
     if ( priest().talents.shadow.surge_of_insanity.enabled() )
     {
       priest().buffs.surge_of_insanity->trigger();
