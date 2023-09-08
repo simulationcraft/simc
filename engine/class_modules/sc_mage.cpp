@@ -339,6 +339,7 @@ public:
     // Set Bonuses
     buff_t* arcane_overload;
     buff_t* bursting_energy;
+    buff_t* forethought;
 
     buff_t* calefaction;
     buff_t* flames_fury;
@@ -1337,6 +1338,7 @@ struct mage_spell_t : public spell_t
 
     bool arcane_overload = true;
     bool charring_embers = true;
+    bool forethought = true;
     bool touch_of_ice = true;
 
     // Misc
@@ -1478,11 +1480,14 @@ public:
     if ( affected_by.invigorating_powder )
       m *= 1.0 + p()->buffs.invigorating_powder->check_value();
 
-    if ( affected_by.touch_of_ice )
-      m *= 1.0 + p()->buffs.touch_of_ice->check_value();
-
     if ( affected_by.unleashed_inferno && p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 1 ).percent();
+
+    if ( affected_by.forethought )
+      m *= 1.0 + p()->buffs.forethought->check_stack_value();
+
+    if ( affected_by.touch_of_ice )
+      m *= 1.0 + p()->buffs.touch_of_ice->check_value();
 
     return m;
   }
@@ -1802,7 +1807,10 @@ struct arcane_mage_spell_t : public mage_spell_t
         // Effects that trigger when Clearcasting is consumed do not trigger
         // if the buff decrement is skipped because of Concentration.
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
+        {
           p()->buffs.nether_precision->trigger();
+          p()->buffs.forethought->trigger();
+        }
         break;
       }
     }
@@ -6639,6 +6647,9 @@ void mage_t::create_buffs()
   buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
+  buffs.forethought     = make_buff( this, "forethought", find_spell( 424293 ) )
+                            ->set_default_value_from_effect( 1 )
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T31, B2 ) );
 
   buffs.calefaction  = make_buff( this, "calefaction", find_spell( 408673 ) )
                          ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
