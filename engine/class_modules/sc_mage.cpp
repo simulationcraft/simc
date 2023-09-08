@@ -4215,8 +4215,32 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
 // Glacial Spike Spell ======================================================
 
+struct glacial_blast_t final : public spell_t
+{
+  glacial_blast_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 424120 ) )
+  {
+    background = true;
+    may_crit = false;
+    aoe = -1;
+    reduced_aoe_targets = p->sets->set( MAGE_FROST, T31, B2 )->effectN( 3 ).base_value();
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    spell_t::available_targets( tl );
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
 struct glacial_spike_t final : public frost_mage_spell_t
 {
+  action_t* glacial_blast = nullptr;
+
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.glacial_spike )
   {
@@ -4225,6 +4249,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
     triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T31, B2 )->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     if ( p->talents.splitting_ice.ok() )
@@ -4232,6 +4257,18 @@ struct glacial_spike_t final : public frost_mage_spell_t
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_aoe_multiplier *= p->talents.splitting_ice->effectN( 4 ).percent();
     }
+
+    if ( p->sets->has_set_bonus( MAGE_FROST, T31, B2 ) )
+    {
+      glacial_blast = get_action<glacial_blast_t>( "glacial_blast", p );
+      add_child( glacial_blast );
+    }
+  }
+
+  void init_finished() override
+  {
+    proc_brain_freeze = p()->get_proc( "Brain Freeze from Glacial Spike" );
+    frost_mage_spell_t::init_finished();
   }
 
   bool ready() override
@@ -4281,6 +4318,8 @@ struct glacial_spike_t final : public frost_mage_spell_t
       p()->get_icicle();
       p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
     }
+
+    p()->trigger_brain_freeze( p()->sets->set( MAGE_FROST, T31, B4 )->effectN( 1 ).percent(), proc_brain_freeze );
   }
 
   void impact( action_state_t* s ) override
@@ -4291,6 +4330,12 @@ struct glacial_spike_t final : public frost_mage_spell_t
       p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 3 ).time_value() );
 
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
+
+    if ( glacial_blast && result_is_hit( s->result ) && cast_state( s )->frozen )
+    {
+      double pct = p()->sets->set( MAGE_FROST, T31, B2 )->effectN( 2 ).percent();
+      glacial_blast->execute_on_target( s->target, pct * s->result_total );
+    }
   }
 };
 
