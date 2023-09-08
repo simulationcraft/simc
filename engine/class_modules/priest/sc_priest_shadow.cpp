@@ -2214,12 +2214,16 @@ void priest_t::create_buffs_shadow()
 
   buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() )
                            ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+                             procs.deathspeaker->occur();
                              // Deathspeaker is not adjusting max charges on PTR
                              // https://github.com/SimCMinMax/WoW-BugTracker/issues/1125
                              if ( !bugs || !is_ptr() )
                              {
-                               procs.deathspeaker->occur();
                                cooldowns.shadow_word_death->adjust_max_charges( cur - old );
+                             }
+                             else if ( cur > old )
+                             {
+                               cooldowns.shadow_word_death->reset( false );
                              }
                            } );
 
