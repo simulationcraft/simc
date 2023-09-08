@@ -3172,7 +3172,7 @@ struct magus_pet_t : public death_knight_pet_t
           proxy->add_child( this );
       }
 
-      if ( /* dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 ) */ dk()->options.t31_tier_set_enable)
+      if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 ))
       {
         aoe = 5;
       }
@@ -3227,7 +3227,7 @@ struct magus_pet_t : public death_knight_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( /* dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )*/ dk()->options.t31_tier_set_enable )
+    if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ))
     {
       def->add_action( "amplify_damage" );
     }
@@ -3240,7 +3240,7 @@ struct magus_pet_t : public death_knight_pet_t
     if ( name == "frostbolt" ) return new frostbolt_magus_t( this, proxy_action, options_str );
     if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, proxy_action, options_str );
 
-    if ( /* dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ) */ dk()->options.t31_tier_set_enable )
+    if ( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ))
     {
       if ( name == "amplify_damage" ) return new amplify_damage_t( this, options_str );
     }
@@ -4274,7 +4274,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     {
         p()->pets.apoc_magus.spawn( summon_duration, 1 );
 
-      if ( /*p()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 )*/ p()->options.t31_tier_set_enable )
+      if ( p()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 ))
       {
         p() -> pets.apoc_magus.spawn( summon_duration, 1 );
       }
@@ -8581,7 +8581,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       buffs.rune_mastery -> trigger();
     }
 
-    if ( /* sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )*/ options.t31_tier_set_enable )
+    if ( sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 ))
     {
       auto extension_time = spell.t31_unholy_value_container->effectN( 1 ).time_value();
       /*      pets.apoc_magus.extend_expiration( extension_time );
