@@ -1357,10 +1357,8 @@ public:
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
     {
-      affected_by_ele_t31_4pc = ab::data().affected_by( 
-        player->spell.t31_4pc_ele->effectN( 1 ) || 
-        player->spell.t31_4pc_ele->effectN( 2 ) 
-      );
+      affected_by_ele_t31_4pc = ab::data().affected_by( player->spell.t31_4pc_ele->effectN( 1 ) ) ||
+                                ab::data().affected_by( player->spell.t31_4pc_ele->effectN( 2 ) );
     }
   }
 
