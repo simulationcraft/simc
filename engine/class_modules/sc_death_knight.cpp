@@ -4933,10 +4933,6 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     if ( state -> target -> is_player() )
     {
       state->result_raw = state->result_amount = state->result_total = 0;
-      if ( p() -> bugs )
-      {
-        hit_count--;
-      }
     }
     death_knight_spell_t::impact( state );
     hit_count++;
@@ -4979,14 +4975,14 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       }
     }
 
-    vector_with_callback<player_t*> target_list_plus_player = sim -> target_non_sleeping_list;
+    vector_with_callback<player_t*> target_list = sim -> target_non_sleeping_list;
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2 )
     {
-      target_list_plus_player.push_back( p() );      
+      target_list.push_back( p() );      
     }
 
-    for ( const auto target : target_list_plus_player )
+    for ( const auto target : target_list )
     {
       if ( target != state -> target && hit_count < max_hits )
       {
