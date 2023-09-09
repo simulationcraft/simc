@@ -304,6 +304,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* death_chakram;
     buff_t* stampede;
     buff_t* shredded_armor;
+    buff_t* wild_instincts;
   } debuffs;
 
   struct dots_t
@@ -587,12 +588,15 @@ public:
     spell_data_ptr_t stomp;
     spell_data_ptr_t barbed_wrath;
     spell_data_ptr_t wild_call;
+    //TODO Delete in 10.2
     spell_data_ptr_t aspect_of_the_wild;
+    spell_data_ptr_t savagery;
 
     spell_data_ptr_t dire_command;
     spell_data_ptr_t scent_of_blood;
     spell_data_ptr_t one_with_the_pack;
     spell_data_ptr_t master_handler;
+    //TODO Delete in 10.2
     spell_data_ptr_t snake_bite;
 
     spell_data_ptr_t dire_frenzy;
@@ -927,6 +931,7 @@ public:
     ab::apply_affecting_aura( p -> talents.killer_command );
     ab::apply_affecting_aura( p -> talents.sharp_barbs );
     ab::apply_affecting_aura( p -> talents.war_orders );
+    ab::apply_affecting_aura( p -> talents.savagery );
 
     // Survival Tree Passives
     ab::apply_affecting_aura( p -> talents.terms_of_engagement );
@@ -1397,6 +1402,7 @@ struct stable_pet_t : public hunter_pet_t
   struct actives_t
   {
     action_t* beast_cleave = nullptr;
+    action_t* stomp = nullptr; 
   } active;
 
   stable_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pet_type ):
@@ -1430,7 +1436,7 @@ struct stable_pet_t : public hunter_pet_t
   {
     hunter_pet_t::summon( duration );
 
-    if (duration > 0_s)
+    if ( duration > 0_s && !o() -> is_ptr() )
       o() -> cooldowns.aspect_of_the_wild -> adjust( -o() -> talents.master_handler -> effectN( 1 ).time_value() );
   }
 
@@ -1839,7 +1845,10 @@ struct dire_critter_t final : public hunter_pet_t
     if ( main_hand_attack )
       main_hand_attack -> execute();
 
-    o() -> cooldowns.aspect_of_the_wild -> adjust( -o() -> talents.master_handler -> effectN( 1 ).time_value() );
+    if( !o() -> is_ptr() )
+    {
+      o() -> cooldowns.aspect_of_the_wild -> adjust( -o() -> talents.master_handler -> effectN( 1 ).time_value() );
+    }
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2133,6 +2142,12 @@ struct kill_command_bm_mm_t: public kill_command_base_t
       const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
       const double amount = s -> result_total * o() -> talents.kill_cleave -> effectN( 1 ).percent() * target_da_multiplier;
       p() -> active.kill_cleave -> execute_on_target( s -> target, amount );
+    }
+
+    auto pet = o() -> pets.main;
+    if (  p() -> is_ptr() && pet == p() && o() -> talents.wild_instincts.ok() )
+    {
+      o() -> get_target_data( s -> target ) -> debuffs.wild_instincts -> trigger();
     }
   }
 
@@ -2434,6 +2449,9 @@ void stable_pet_t::init_spells()
 
   if ( o() -> talents.beast_cleave.ok() || o() -> talents.bloody_frenzy.ok() )
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
+  
+  if( o() -> talents.bloody_frenzy.ok() && o() -> is_ptr() )
+    active.stomp = new actions::stomp_t( this );
 }
 
 void hunter_main_pet_base_t::init_spells()
@@ -2649,7 +2667,7 @@ void hunter_t::trigger_latent_poison( const action_state_t* s )
   debuff -> expire();
 }
 
-// 24-3-23: Currently only applying Beast Cleave with the remaining Call of the Wild duration as the result of a Cobra Shot, Serpent Sting, Arcant Shot, or Multi-Shot.
+// 24-3-23: Currently only applying Beast Cleave with the remaining Call of the Wild duration as the result of a Cobra Shot, Serpent Sting, Arcane Shot, or Multi-Shot.
 void hunter_t::trigger_bloody_frenzy()
 {
   if ( !talents.bloody_frenzy.ok() || !buffs.call_of_the_wild -> check() )
@@ -3015,7 +3033,10 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> trigger_bloody_frenzy();
+    if( !p() -> is_ptr() )
+    {
+      p() -> trigger_bloody_frenzy();
+    }
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
@@ -3368,7 +3389,10 @@ struct serpent_sting_t final : public serpent_sting_base_t
   {
     serpent_sting_base_t::execute();
 
-    p() -> trigger_bloody_frenzy();
+    if( !p() -> is_ptr() )
+    {
+      p() -> trigger_bloody_frenzy();
+    }
   }
 };
 
@@ -3690,7 +3714,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> talents.bloody_frenzy.ok() )
+    if ( p -> talents.bloody_frenzy.ok() && !p -> is_ptr() )
       cotw_serpent_sting = p -> get_background_action<serpent_sting_cotw_t>( "serpent_sting_cotw" );
   }
 
@@ -3704,7 +3728,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if ( p() -> talents.killer_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
 
-    if ( !dual )
+    if ( !dual && !p() -> is_ptr() )
       p() -> trigger_bloody_frenzy();
   }
 
@@ -3820,6 +3844,16 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     p() -> trigger_latent_poison( s );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    hunter_ranged_attack_t::tick( d );
+
+    if( p() -> is_ptr() && p() -> talents.master_handler -> ok() )
+    {
+      p() -> cooldowns.kill_command -> adjust( -p() -> talents.master_handler -> effectN( 1 ).time_value() );
+    }
   }
 };
 
@@ -6260,6 +6294,9 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs.stampede = make_buff( *this, "stampede", p -> find_spell( 201594 ) )
     -> set_default_value_from_effect( 3 );
 
+  debuffs.wild_instincts = make_buff( *this, "wild_instincts", p -> find_spell( 424567 ) )
+    -> set_default_value_from_effect( 1 );
+
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
@@ -6482,7 +6519,7 @@ double hunter_t::resource_loss( resource_e resource_type, double amount, gain_t*
 {
   double loss = player_t::resource_loss(resource_type, amount, g, a);
 
-  if ( loss > 0 && talents.wild_instincts.ok() && buffs.call_of_the_wild -> check() && rng().roll( talents.wild_instincts -> proc_chance() ) )
+  if ( loss > 0 && !is_ptr() && talents.wild_instincts.ok() && buffs.call_of_the_wild -> check() && rng().roll( talents.wild_instincts -> proc_chance() ) )
   {
     procs.wild_instincts -> occur();
     cooldowns.barbed_shot -> reset( true );
@@ -6619,7 +6656,7 @@ void hunter_t::init_spells()
     talents.barbed_wrath                      = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Wrath", HUNTER_BEAST_MASTERY);
     talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY);
     talents.aspect_of_the_wild                = find_talent_spell( talent_tree::SPECIALIZATION, "Aspect of the Wild", HUNTER_BEAST_MASTERY);
-
+    talents.savagery                          = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY);
 
     talents.dire_command                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Command", HUNTER_BEAST_MASTERY);
     talents.scent_of_blood                    = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood", HUNTER_BEAST_MASTERY);
@@ -6959,6 +6996,28 @@ void hunter_t::create_buffs()
       -> set_tick_callback(
         [ this ]( buff_t*, int, timespan_t ) {
           pets.cotw_stable_pet.spawn( talents.call_of_the_wild -> effectN( 2 ).trigger() -> duration(), 1 );
+
+          if( is_ptr() )
+          {
+            double percent_reduction = talents.call_of_the_wild -> effectN(3).base_value() / 100.0; 
+            cooldowns.kill_command -> adjust( -( cooldowns.kill_command -> duration * percent_reduction ) );
+            cooldowns.barbed_shot -> adjust( -( cooldowns.barbed_shot -> duration * percent_reduction ) );
+
+            //09/09/2023
+            //Further investigate how the stomp after summoning works when talented into Bloody Frenzy. 
+            //It seems to trigger almost immediately after the pet comes out. 
+            if( talents.bloody_frenzy.ok() )
+            {
+              for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( pets.main, pets.animal_companion ) )
+              {
+                pet -> active.stomp -> execute();
+              }
+              for ( auto pet : ( pets.cotw_stable_pet.active_pets() ) )
+              {
+                pet -> active.stomp -> execute();
+              }
+            }
+          }
         } );
 
   buffs.dire_pack =
@@ -7137,7 +7196,7 @@ void hunter_t::init_procs()
   if ( talents.wild_call.ok() )
     procs.wild_call           = get_proc( "Wild Call" );
   
-  if( talents.wild_instincts.ok() )
+  if( talents.wild_instincts.ok() && !is_ptr() )
     procs.wild_instincts      = get_proc( "Wild Instincts");
 
   if ( tier_set.t30_sv_4pc.ok() )
@@ -7480,6 +7539,15 @@ double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target
   double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
 
   m *= 1 + get_target_data( target ) -> debuffs.death_chakram -> value();
+
+  if( is_ptr() )
+  {
+    int wild_instincts_stacks = get_target_data( target ) -> debuffs.wild_instincts -> stack();
+    if( wild_instincts_stacks > 0 )
+    {
+      m *= 1 + wild_instincts_stacks * talents.wild_instincts -> effectN( 1 ).percent();
+    }
+  }
 
   return m;
 }
