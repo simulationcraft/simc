@@ -165,7 +165,7 @@ public:
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
 
-    spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers; // TODO: Damage increased by 15% in 10.1.5
+    spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
     spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
