@@ -272,8 +272,6 @@ public:
     player_talent_t summon_darkglare; 
     player_talent_t soul_rot;
 
-    player_talent_t malefic_affliction; // TODO: REMOVED in 10.1.5
-    const spell_data_t* malefic_affliction_buff; // TODO: REMOVED in 10.1.5
     player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier, replaces Malefic Affliction in 10.1.5
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
@@ -532,7 +530,6 @@ public:
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> tormented_crescendo;
-    propagate_const<buff_t*> malefic_affliction;
     propagate_const<buff_t*> haunted_soul;
     propagate_const<buff_t*> active_haunts; // Dummy buff used for tracking Haunts in multi-target to properly handle Haunted Soul
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
