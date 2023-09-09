@@ -332,13 +332,10 @@ public:
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    player_talent_t fel_covenant; // TODO: REMOVED in 10.1.5
-    const spell_data_t* fel_covenant_buff;
     player_talent_t umbral_blaze; // Reworked in 10.1.5: Location changed in tree and increased proc chance.
     const spell_data_t* umbral_blaze_dot; // Reworked in 10.1.5: "retains remaining damage when reapplied"
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
-    player_talent_t ripped_through_the_portal; // TODO: REMOVED in 10.1.5
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage. Reworked in 10.1.5: Now 2 ranks and tree location has changed
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     player_talent_t cavitation; // Increased critical strike damage for primary Felguard. TOCHECK: As of 2023-06-21 PTR, this is actually granting double the stated value

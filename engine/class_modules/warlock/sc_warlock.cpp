@@ -503,9 +503,6 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    if ( p()->talents.fel_covenant->ok() )
-      p()->buffs.fel_covenant->trigger();
-
     p()->buffs.stolen_power_final->expire();
   }
 

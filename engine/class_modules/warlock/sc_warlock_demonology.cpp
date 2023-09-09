@@ -312,9 +312,6 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.shadows_bite->ok() )
       m *= 1.0 + p()->buffs.shadows_bite->check_value();
 
-    if ( p()->talents.fel_covenant->ok() )
-      m *= 1.0 + p()->buffs.fel_covenant->check_stack_value();
-
     if ( p()->talents.stolen_power->ok() && p()->buffs.stolen_power_final->check() )
       m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
 
@@ -1187,9 +1184,6 @@ void warlock_t::create_buffs_demonology()
   buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
                            ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
 
-  buffs.fel_covenant = make_buff( this, "fel_covenant", talents.fel_covenant_buff )
-                           ->set_default_value( talents.fel_covenant->effectN( 2 ).percent() );
-
   buffs.stolen_power_building = make_buff( this, "stolen_power_building", talents.stolen_power_stacking_buff )
                                     ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                     {
@@ -1297,17 +1291,12 @@ void warlock_t::init_spells_demonology()
   talents.fel_sunder = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Sunder" ); // Should be ID 387399
   talents.fel_sunder_debuff = find_spell( 387402 );
 
-  talents.fel_covenant = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Covenant" ); // Should be ID 387432
-  talents.fel_covenant_buff = find_spell( 387437 );
-
   talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
   talents.umbral_blaze_dot = find_spell( 405802 );
 
   talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
 
   talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
-
-  talents.ripped_through_the_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Ripped Through the Portal" ); // Should be ID 387485
 
   talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
   talents.dread_calling_buff = find_spell( 387393 );
