@@ -8181,11 +8181,8 @@ struct primordial_wave_t : public shaman_spell_t
       p()->buff.primordial_surge->trigger();
     }
 
-    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B2))
+    if ( p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B2) )
     {
-      p()->action.elemental_blast->set_target( target );
-      p()->action.elemental_blast->execute();
-
       p()->buff.elemental_blast_haste->trigger( p()->spell.t31_2pc_ele->effectN( 2 ).time_value() );
       p()->proc.elemental_blast_haste->occur();
       p()->buff.elemental_blast_mastery->trigger( p()->spell.t31_2pc_ele->effectN( 2 ).time_value() );
@@ -8211,6 +8208,12 @@ struct primordial_wave_t : public shaman_spell_t
     shaman_spell_t::impact( s );
 
     p()->trigger_secondary_flame_shock( s );
+
+    if ( p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B2) )
+    {
+      p()->action.elemental_blast->set_target( target );
+      p()->action.elemental_blast->execute();
+    }
   }
 };
 
@@ -8812,6 +8815,8 @@ void shaman_t::create_actions()
   {
     action.elemental_blast = new elemental_blast_t( this, "" );
     action.elemental_blast->background = true;
+    action.elemental_blast->base_costs[ RESOURCE_MANA ] = 0;
+    action.elemental_blast->base_costs[ RESOURCE_MAELSTROM ] = 0;
   }
 }
 
