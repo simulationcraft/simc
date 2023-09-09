@@ -787,6 +787,7 @@ public:
     const spell_data_t* t29_4pc_ele;
     const spell_data_t* t30_2pc_ele;
     const spell_data_t* t30_4pc_ele;
+    const spell_data_t* t31_2pc_ele;
     const spell_data_t* inundate;
   } spell;
 
@@ -8185,11 +8186,11 @@ struct primordial_wave_t : public shaman_spell_t
       p()->action.elemental_blast->set_target( target );
       p()->action.elemental_blast->execute();
 
-      p()->buff.elemental_blast_haste->trigger(timespan_t::from_seconds(15));
+      p()->buff.elemental_blast_haste->trigger( p()->spell.t31_2pc_ele->effectN( 2 ).time_value() );
       p()->proc.elemental_blast_haste->occur();
-      p()->buff.elemental_blast_mastery->trigger(timespan_t::from_seconds( 15 ));
+      p()->buff.elemental_blast_mastery->trigger( p()->spell.t31_2pc_ele->effectN( 2 ).time_value() );
       p()->proc.elemental_blast_mastery->occur();
-      p()->buff.elemental_blast_crit->trigger(timespan_t::from_seconds( 15 ));
+      p()->buff.elemental_blast_crit->trigger( p()->spell.t31_2pc_ele->effectN( 2 ).time_value() );
       p()->proc.elemental_blast_crit->occur();
     }
 
@@ -9242,6 +9243,8 @@ void shaman_t::init_spells()
 
   spell.t30_2pc_ele        = find_spell( 405565 );
   spell.t30_4pc_ele        = find_spell( 410018 ); // 405566 otherwise empty T30 base spell
+
+  spell.t31_2pc_ele        = find_spell( 422911 ); // 4pc bonus: 422912, but that's currently empty
 
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
