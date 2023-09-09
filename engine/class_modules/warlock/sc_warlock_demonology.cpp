@@ -108,9 +108,6 @@ struct hand_of_guldan_t : public demonology_spell_t
 
       m *= shards_used;
 
-      if ( p()->talents.demonic_meteor->ok() )
-        m *= 1.0 + p()->talents.demonic_meteor->effectN( 1 ).percent();
-
       if ( p()->buffs.blazing_meteor->check() )
         m *= 1.0 + p()->buffs.blazing_meteor->check_value();
 
@@ -231,12 +228,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       p()->procs.two_shard_hog->occur();
     if ( last_resource_cost == 3.0 )
       p()->procs.three_shard_hog->occur();
-
-    if ( p()->talents.demonic_meteor->ok() && rng().roll( last_resource_cost * p()->talents.demonic_meteor->effectN( 2 ).percent() ) )
-    {
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.demonic_meteor );
-      p()->procs.demonic_meteor->occur();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -1283,8 +1274,6 @@ void warlock_t::init_spells_demonology()
 
   talents.fel_and_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Fel and Steel" ); // Should be ID 386200
 
-  talents.fel_might = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Might" ); // Should be ID 387338
-
   talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
 
   talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
@@ -1304,8 +1293,6 @@ void warlock_t::init_spells_demonology()
   
   talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
   talents.demonic_calling_buff = find_spell( 205146 );
-
-  talents.demonic_meteor = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Meteor" ); // Should be ID 387396
 
   talents.fel_sunder = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Sunder" ); // Should be ID 387399
   talents.fel_sunder_debuff = find_spell( 387402 );
@@ -1381,7 +1368,6 @@ void warlock_t::init_gains_demonology()
 {
   gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
   gains.doom = get_gain( "doom" );
-  gains.demonic_meteor = get_gain( "demonic_meteor" );
 }
 
 void warlock_t::init_rng_demonology()
@@ -1392,7 +1378,6 @@ void warlock_t::init_procs_demonology()
 {
   procs.summon_random_demon = get_proc( "summon_random_demon" );
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
-  procs.demonic_meteor = get_proc( "demonic_meteor" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
   procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );

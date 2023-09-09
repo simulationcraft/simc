@@ -745,9 +745,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "Felstorm" )
     : felstorm_t( p, options_str, n )
   {
-    if ( main_pet && p->o()->talents.fel_might->ok() )
-      cooldown->duration += p->o()->talents.fel_might->effectN( 1 ).time_value();
-
     if ( main_pet && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 

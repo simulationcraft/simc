@@ -316,7 +316,6 @@ public:
     const spell_data_t* shadows_bite_buff;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t fel_and_steel; // Reworked in 10.1.5: Increase's primary Felguard's Legion Strike and Felstorm damage
-    player_talent_t fel_might; // TODO: REMOVED in 10.1.5, replaced by Heavy Handed
     player_talent_t heavy_handed; // Primary Felguard crit chance increase (additive)
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
@@ -330,7 +329,6 @@ public:
     player_talent_t doom;
     player_talent_t demonic_calling; // Reworked in 10.1.5: Now only 1 rank and tree location changed
     const spell_data_t* demonic_calling_buff;
-    player_talent_t demonic_meteor; // TODO: REMOVED in 10.1.5
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
@@ -606,7 +604,6 @@ public:
     // Demonology
     gain_t* doom;
     gain_t* soulbound_tyrant;
-    gain_t* demonic_meteor;
   } gains;
 
   // Procs
@@ -635,7 +632,6 @@ public:
     proc_t* summon_random_demon;
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers;
-    proc_t* demonic_meteor;
     proc_t* imp_gang_boss;
     proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
