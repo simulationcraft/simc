@@ -521,7 +521,8 @@ public:
     propagate_const<buff_t*> enduring_strength_builder;
     propagate_const<buff_t*> enduring_strength;
     propagate_const<buff_t*> frostwhelps_aid;
-    buff_t* wrath_of_the_frostwyrm; // T30 4pc
+    propagate_const<buff_t*> wrath_of_the_frostwyrm; // T30 4pc
+    propagate_const<buff_t*> chilling_rage;
 
     // Unholy
     propagate_const<buff_t*> dark_transformation;
@@ -575,7 +576,9 @@ public:
     propagate_const<cooldown_t*> frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wield attack
     propagate_const<cooldown_t*> enduring_strength_icd; // internal cooldown that prevents several procs on the same dual-wield attacl
     propagate_const<cooldown_t*> pillar_of_frost;
-    cooldown_t* frostwyrms_fury;
+    propagate_const<cooldown_t*> frostwyrms_fury;
+    propagate_const<cooldown_t*> chill_streak;
+    propagate_const<cooldown_t*> empower_rune_weapon;
     
     // Unholy
     propagate_const<cooldown_t*> apocalypse;
@@ -638,6 +641,7 @@ public:
     propagate_const<gain_t*> rage_of_the_frozen_champion;
     propagate_const<gain_t*> runic_attenuation;
     propagate_const<gain_t*> runic_empowerment;
+    propagate_const<gain_t*> t31_4pc;
 
     // Unholy
     propagate_const<gain_t*> apocalypse;
@@ -986,6 +990,7 @@ public:
     const spell_data_t* frost_t30_4pc; // TODO rename when blizz gives it a name
     const spell_data_t* wrath_of_the_frostwyrm_damage;
     const spell_data_t* obliteration_gains;
+    const spell_data_t* chilling_rage; // T31 Frost 2 set
 
     // Unholy
     const spell_data_t* runic_corruption; // buff
@@ -1196,6 +1201,8 @@ public:
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
     cooldown.mind_freeze              = get_cooldown( "mind_freeze" );
     cooldown.frostwyrms_fury          = get_cooldown( "frostwyrms_fury_driver" );
+    cooldown.chill_streak             = get_cooldown( "chill_streak" );
+    cooldown.empower_rune_weapon      = get_cooldown( "empower_rune_weapon" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -1853,12 +1860,12 @@ struct death_knight_pet_t : public pet_t
 
     if ( is_ptr() )
     {
-      if ( dk()->buffs.amplify_damage->check() )
+      if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.amplify_damage->check() )
       {
         m *= 1.0 + dk()->buffs.amplify_damage->check_value();
       }
 
-      if ( dk()->buffs.unholy_assault->check() )
+      if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.unholy_assault->check() )
       {
         m *= 1.0 + dk()->buffs.unholy_assault->check_value();
       }
@@ -3293,6 +3300,7 @@ struct death_knight_action_t : public Base
     bool sanguine_ground, sanguine_ground_periodic;
     bool unholy_assault, unholy_assault_periodic;
     bool amplify_damage, amplify_damage_periodic;
+    bool chilling_rage, chilling_rage_periodic;
     /*
     Pre-emptively writing these in, they are likely to be changed to whitelists too
     bool ghoulish_frenzy;
@@ -3360,6 +3368,8 @@ struct death_knight_action_t : public Base
       this->affected_by.amplify_damage = this->data().affected_by( p->pet_spell.amplify_damage->effectN( 1 ) );
       this->affected_by.amplify_damage_periodic = this->data().affected_by( p->pet_spell.amplify_damage->effectN( 2 ) );
     }
+    this -> affected_by.chilling_rage = this -> data().affected_by( p -> spell.chilling_rage -> effectN( 1 ) );
+    this -> affected_by.chilling_rage_periodic = this -> data().affected_by( p -> spell.chilling_rage -> effectN( 2 ) );
     /*
     this -> affected_by.ghoulish_frenzy = this -> data().affected_by( p -> spell.ghoulish_frenzy_player -> effectN() );
     this -> affected_by.bonegrinder = this -> data().affected_by( p -> spell.bonegrinder_frost_buff -> effectN() );
@@ -3432,6 +3442,11 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> buffs.amplify_damage -> check_value();
     }
 
+    if( p() -> specialization() == DEATH_KNIGHT_FROST && this -> affected_by.chilling_rage && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && p() -> buffs.chilling_rage -> up() )
+    {
+      m *= 1.0 + p() -> buffs.chilling_rage -> check_stack_value();
+    }
+
     return m;
   }
 
@@ -3456,7 +3471,12 @@ struct death_knight_action_t : public Base
 
     if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground_periodic && p() -> buffs.sanguine_ground -> check() )
     {
-      m *= 1.0 + p() -> buffs.sanguine_ground -> check_value();
+      m *= 1.0 + p() -> buffs.sanguine_ground -> check_stack_value();
+    }
+
+    if( p() -> specialization() == DEATH_KNIGHT_FROST && this -> affected_by.chilling_rage_periodic && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && p() -> buffs.chilling_rage -> up() )
+    {
+      m *= 1.0 + p() -> buffs.chilling_rage -> check_stack_value();
     }
 
     if( p() -> is_ptr() && p() -> specialization() == DEATH_KNIGHT_UNHOLY && this -> affected_by.unholy_assault_periodic && p() -> buffs.unholy_assault -> check() ) 
@@ -4885,27 +4905,42 @@ private:
 struct chill_streak_damage_t final : public death_knight_spell_t
 {
   int hit_count;
+  int max_hits;
 
   chill_streak_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "chill_streak_damage", p, p -> spell.chill_streak_damage )
   {
     background = proc = true;
+    max_hits = p -> talent.frost.chill_streak -> effectN( 1 ).base_value();
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) )
+    {
+      max_hits += p -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value();
+    }
   }
   
   double composite_target_multiplier( player_t* t ) const override
   {
-  double m = death_knight_spell_t::composite_target_multiplier( t );
+    double m = death_knight_spell_t::composite_target_multiplier( t );
 
-  if ( auto td = get_td( t ) )
-    m *= 1.0 + td -> debuff.piercing_chill -> check_value();
+    if ( auto td = get_td( t ) )
+      m *= 1.0 + td -> debuff.piercing_chill -> check_value();
 
-  return m;
+    return m;
   }
 
   void impact( action_state_t* state ) override
   {
+    if ( state -> target -> is_player() )
+    {
+      state->result_raw = state->result_amount = state->result_total = 0;
+    }
     death_knight_spell_t::impact( state );
     hit_count++;
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && state -> target -> is_enemy() ) 
+    {
+      p() -> buffs.chilling_rage->trigger();
+    }
 
     if ( p()->talent.frost.enduring_chill.ok() &&
          rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
@@ -4918,19 +4953,43 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       return;
     }
 
-    get_td( state -> target ) -> debuff.piercing_chill -> trigger();
-
-    for ( const auto target : sim -> target_non_sleeping_list )
+    if ( p() -> talent.frost.piercing_chill.ok() )
     {
-      if ( target != state -> target )
+      get_td( state -> target ) -> debuff.piercing_chill -> trigger();
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) && rng().roll( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 4 ).base_value() / 100 ) )
+    {
+      double roll = rng().real();
+      if ( roll < .3333 )
       {
-        if ( hit_count < p() -> talent.frost.chill_streak -> effectN( 1 ).base_value() )
-        {
-          this -> set_target( target );
-          this -> schedule_execute();
-          return;
-        }
+        p() -> cooldown.chill_streak -> adjust( -timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 2 ).base_value() ) );
       }
+      else if ( roll < .6666 )
+      {
+        p() -> cooldown.empower_rune_weapon -> adjust( -timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 3 ).base_value() ) );
+      }
+      else
+      {
+        p() -> replenish_rune( 1, p() -> gains.t31_4pc );
+      }
+    }
+
+    vector_with_callback<player_t*> target_list = sim -> target_non_sleeping_list;
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2 )
+    {
+      target_list.push_back( p() );      
+    }
+
+    for ( const auto target : target_list )
+    {
+      if ( target != state -> target && hit_count < max_hits )
+      {
+        this -> set_target( target );
+        this -> schedule_execute();
+        return;
+       }
     }
   }
 };
@@ -9870,6 +9929,8 @@ void death_knight_t::init_spells()
   spell.frost_t30_4pc                 = find_spell( 405502 );
   spell.lingering_chill               = find_spell( 410879 );
   spell.wrath_of_the_frostwyrm_damage = find_spell( 410790 );
+  // T31 Frost
+  spell.chilling_rage                 = find_spell( 424165 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -10278,6 +10339,10 @@ void death_knight_t::create_buffs()
   buffs.wrath_of_the_frostwyrm = make_buff( this, "wrath_of_the_frostwyrm", find_spell ( 408368 ) )
       -> set_default_value( find_spell ( 408368 ) -> effectN( 1 ).percent() );
 
+  buffs.chilling_rage = make_buff( this, "chilling_rage", spell.chilling_rage )
+      -> set_default_value_from_effect( 1 )
+      -> set_schools_from_effect( 1 );
+
   }
 
   // Unholy
@@ -10388,6 +10453,7 @@ void death_knight_t::init_gains()
   gains.runic_empowerment                = get_gain( "Runic Empowerment" );
   gains.koltiras_favor                   = get_gain( "Koltira's Favor" );
   gains.frigid_executioner               = get_gain( "Frigid Executioner" );
+  gains.t31_4pc                          = get_gain( "T31 4PC" );
 
   // Unholy
   gains.apocalypse                       = get_gain( "Apocalypse" );
