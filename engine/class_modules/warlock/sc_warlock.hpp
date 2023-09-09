@@ -272,7 +272,7 @@ public:
     player_talent_t summon_darkglare; 
     player_talent_t soul_rot;
 
-    player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier, replaces Malefic Affliction in 10.1.5
+    player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
     player_talent_t seized_vitality; // Additional Haunt damage
@@ -281,9 +281,9 @@ public:
     const spell_data_t* wrath_of_consumption_buff;
     player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction
 
-    player_talent_t doom_blossom; // Reworked in 10.1.5: Seed of Corruption damage on Unstable Affliction target procs AoE damage
-    const spell_data_t* doom_blossom_proc; // Spell data updated in 10.1.5 to new spell ID
-    player_talent_t dread_touch; // Reworked in 10.1.5: Malefic Rapture on Unstable Affliction target applies debuff increasing DoT damage
+    player_talent_t doom_blossom; // Seed of Corruption damage on Unstable Affliction target procs AoE damage
+    const spell_data_t* doom_blossom_proc;
+    player_talent_t dread_touch; // Malefic Rapture on Unstable Affliction target applies debuff increasing DoT damage
     const spell_data_t* dread_touch_debuff; // Applied to target when Dread Touch procs
     player_talent_t haunted_soul; // Haunt increase ALL DoT damage while active
     const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
@@ -304,7 +304,7 @@ public:
     player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     player_talent_t summon_vilefiend;
     player_talent_t soul_strike;
-    player_talent_t bilescourge_bombers; // Reworked in 10.1.5: Soul Shard cost reduced to 0
+    player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
     player_talent_t the_houndmasters_stratagem; // Whitelisted warlock spells do more damage to target afflicted with debuff
@@ -315,7 +315,7 @@ public:
     player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
-    player_talent_t fel_and_steel; // Reworked in 10.1.5: Increase's primary Felguard's Legion Strike and Felstorm damage
+    player_talent_t fel_and_steel; // Increase's primary Felguard's Legion Strike and Felstorm damage
     player_talent_t heavy_handed; // Primary Felguard crit chance increase (additive)
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
@@ -325,18 +325,18 @@ public:
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
-    player_talent_t inner_demons; // Reworked in 10.1.5: Now only 1 rank and tree location changed
+    player_talent_t inner_demons;
     player_talent_t doom;
-    player_talent_t demonic_calling; // Reworked in 10.1.5: Now only 1 rank and tree location changed
+    player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    player_talent_t umbral_blaze; // Reworked in 10.1.5: Location changed in tree and increased proc chance.
-    const spell_data_t* umbral_blaze_dot; // Reworked in 10.1.5: "retains remaining damage when reapplied"
+    player_talent_t umbral_blaze;
+    const spell_data_t* umbral_blaze_dot;
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
-    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage. Reworked in 10.1.5: Now 2 ranks and tree location has changed
+    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     player_talent_t cavitation; // Increased critical strike damage for primary Felguard. TOCHECK: As of 2023-06-21 PTR, this is actually granting double the stated value
 
@@ -429,8 +429,8 @@ public:
     const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
     const spell_data_t* ritual_of_ruin_buff;
     
-    player_talent_t crashing_chaos; // Reworked in 10.1.5: Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
-    const spell_data_t* crashing_chaos_buff; // Spell data updated in 10.1.5 to new spell ID
+    player_talent_t crashing_chaos; // Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
+    const spell_data_t* crashing_chaos_buff;
     player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
