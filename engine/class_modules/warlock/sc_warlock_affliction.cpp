@@ -283,7 +283,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
       auto target_data = td( s->target );
 
-      if ( p()->talents.dread_touch->ok() && p()->min_version_check( VERSION_10_1_5 ) )
+      if ( p()->talents.dread_touch->ok() )
       {
         if ( target_data->dots_unstable_affliction->is_ticking() )
           target_data->debuffs_dread_touch->trigger();
@@ -530,17 +530,6 @@ struct phantom_singularity_t : public affliction_spell_t
       if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
         base_dd_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 3 ).percent();
     }
-
-    void impact( action_state_t* s ) override
-    {
-      affliction_spell_t::impact( s );
-
-      if ( s->chain_target == 0 && !p()->min_version_check(VERSION_10_1_5) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
-        // Debuff lasts 2 seconds but refreshes on every tick. 2023-04-04 PTR: Currently only applies to target with PS DoT
-        td( s->target )->debuffs_infirmity->trigger();
-      }
-    }
   };
   
   phantom_singularity_t( warlock_t* p, util::string_view options_str )
@@ -578,7 +567,7 @@ struct phantom_singularity_t : public affliction_spell_t
   {
     affliction_spell_t::impact( s );
 
-    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
     {
       td( s->target )->debuffs_infirmity->trigger();
     }
@@ -588,7 +577,7 @@ struct phantom_singularity_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
 
-    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
     {
       td( d->target )->debuffs_infirmity->expire();
     }
@@ -611,21 +600,11 @@ struct vile_taint_t : public affliction_spell_t
         base_td_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 4 ).percent();
     }
 
-    void tick( dot_t* d ) override
-    {
-      affliction_spell_t::tick( d );
-
-      if ( !p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
-        td( d->target )->debuffs_infirmity->trigger();
-      }
-    }
-
     void last_tick( dot_t* d ) override
     {
       affliction_spell_t::last_tick( d );
 
-      if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
       {
         td( d->target )->debuffs_infirmity->expire();
       }
@@ -656,7 +635,7 @@ struct vile_taint_t : public affliction_spell_t
   {
     affliction_spell_t::impact( s );
 
-    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
     {
       td( s->target )->debuffs_infirmity->trigger();
     }
