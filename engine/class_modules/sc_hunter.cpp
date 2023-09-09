@@ -330,9 +330,10 @@ public:
     pets::animal_companion_t* animal_companion = nullptr;
     pets::dire_critter_t* dire_beast = nullptr;
     spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dc_dire_beast;
+    spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> tier_dire_beast;
     spawner::pet_spawner_t<pets::call_of_the_wild_pet_t, hunter_t> cotw_stable_pet;
 
-    pets_t( hunter_t* p ) : dc_dire_beast( "dire_beast_(dc)", p ), cotw_stable_pet( "call_of_the_wild_pet", p ) { }
+    pets_t( hunter_t* p ) : dc_dire_beast( "dire_beast_(dc)", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), tier_dire_beast( "dire_beast_(tier)", p ) { }
   } pets;
 
   struct tier_sets_t {
@@ -351,6 +352,9 @@ public:
     spell_data_ptr_t t30_mm_4pc; 
     spell_data_ptr_t t30_sv_2pc; 
     spell_data_ptr_t t30_sv_4pc; 
+    // T31 - Amirdrassil: The Dream's Hope
+    spell_data_ptr_t t31_bm_2pc;
+    spell_data_ptr_t t31_bm_4pc;
   } tier_set;
 
   // Buffs
@@ -5597,6 +5601,12 @@ struct bestial_wrath_t: public hunter_spell_t
 
     if ( p() -> talents.scent_of_blood.ok() )
       p() -> cooldowns.barbed_shot -> reset( true, as<int>( p() -> talents.scent_of_blood -> effectN( 1 ).base_value() ) );
+
+    //(2) Set Bonus: Bestial Wrath summons a Dire Beast for 15 seconds.
+    if ( p() -> tier_set.t31_bm_2pc.ok() )
+    {
+      p() -> pets.tier_dire_beast.spawn( timespan_t::from_seconds( p() -> tier_set.t31_bm_2pc -> effectN( 1 ).base_value() ) );
+    }
   }
 
   bool ready() override
@@ -6509,6 +6519,10 @@ void hunter_t::create_pets()
   if ( talents.dire_command.ok() )
     pets.dc_dire_beast.set_creation_callback(
       []( hunter_t* p ) { return new pets::dire_critter_t( p, "dire_beast_(dc)" ); });
+
+  if ( tier_set.t31_bm_2pc.ok() )
+    pets.tier_dire_beast.set_creation_callback(
+      []( hunter_t* p ) { return new pets::dire_critter_t( p, "dire_beast_(tier)" ); });
 }
 
 void hunter_t::init()
@@ -6766,6 +6780,9 @@ void hunter_t::init_spells()
   tier_set.t30_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T30, B4 );
   tier_set.t30_sv_2pc = sets -> set( HUNTER_SURVIVAL, T30, B2 );
   tier_set.t30_sv_4pc = sets -> set( HUNTER_SURVIVAL, T30, B4 );
+
+  tier_set.t31_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, T31, B2 );
+  tier_set.t31_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, T31, B4 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
