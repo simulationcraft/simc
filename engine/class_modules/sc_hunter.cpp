@@ -2145,7 +2145,8 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     }
 
     auto pet = o() -> pets.main;
-    if (  p() -> is_ptr() && pet == p() && o() -> talents.wild_instincts.ok() )
+    //09/09/2023 - Currently the debuff is applied even if the buff is not up
+    if (  p() -> is_ptr() && pet == p() && o() -> talents.wild_instincts.ok() && (o() -> buffs.call_of_the_wild -> up() || p() -> bugs ) )
     {
       o() -> get_target_data( s -> target ) -> debuffs.wild_instincts -> trigger();
     }
@@ -6295,6 +6296,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     -> set_default_value_from_effect( 3 );
 
   debuffs.wild_instincts = make_buff( *this, "wild_instincts", p -> find_spell( 424567 ) )
+    -> set_max_stack ( p -> talents.wild_instincts -> max_stacks() )
     -> set_default_value_from_effect( 1 );
 
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
