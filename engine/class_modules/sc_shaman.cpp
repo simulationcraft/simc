@@ -6007,13 +6007,17 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
 
 struct elemental_blast_t : public shaman_spell_t
 {
-  elemental_blast_t( shaman_t* player, util::string_view options_str = {}) :
-    shaman_spell_t( "elemental_blast", player,
+  elemental_blast_t( shaman_t* player, execute_type type_, util::string_view options_str = {}) :
+    shaman_spell_t(
+      ::action_name("elemental_blast", type_), 
+      player,
       player->specialization() == SHAMAN_ELEMENTAL
         ? player->talent.elemental_blast
         : player->talent.elemental_blast.ok()
           ? player->find_spell( 117014 )
-          : spell_data_t::not_found() )
+          : spell_data_t::not_found(),
+      type_
+    )
   {
     parse_options( options_str );
     if ( player->specialization() == SHAMAN_ELEMENTAL )
@@ -6043,6 +6047,13 @@ struct elemental_blast_t : public shaman_spell_t
 
     m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    // Note, only Elemental Shaman with T31-2p gets the primordial_wave state set, so don't need
+    // separate specialization checks here
+    if ( exec_type == execute_type::PRIMORDIAL_WAVE )
+    {
+      m *= p()->spell.t31_2pc_ele->effectN( 1 ).percent();
+    }
 
     return m;
   }
@@ -8393,7 +8404,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new shaman_totem_t<spell_t, shaman_spell_t>( "capacitor_totem",
         this, options_str, talent.capacitor_totem, pet.capacitor_totem );
   if ( name == "elemental_blast" )
-    return new elemental_blast_t( this, options_str );
+    return new elemental_blast_t( this, execute_type::NORMAL, options_str );
   if ( name == "flame_shock" )
     return new flame_shock_t( this, options_str );
   if ( name == "frost_shock" )
@@ -8811,9 +8822,9 @@ void shaman_t::create_actions()
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
 
-  if (sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B2))
+  if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
   {
-    action.elemental_blast = new elemental_blast_t( this, "" );
+    action.elemental_blast = new elemental_blast_t( this, execute_type::PRIMORDIAL_WAVE );
     action.elemental_blast->background = true;
     action.elemental_blast->base_costs[ RESOURCE_MANA ] = 0;
     action.elemental_blast->base_costs[ RESOURCE_MAELSTROM ] = 0;
