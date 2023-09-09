@@ -314,8 +314,7 @@ struct seed_of_corruption_t : public warlock_spell_t
       corruption->dual = true;
       corruption->base_costs[ RESOURCE_MANA ] = 0;
 
-      if ( p->min_version_check( VERSION_10_1_5 ) )
-        add_child( doom_blossom );
+      add_child( doom_blossom );
     }
 
     void impact( action_state_t* s ) override
@@ -331,7 +330,7 @@ struct seed_of_corruption_t : public warlock_spell_t
           tdata->dots_seed_of_corruption->cancel();
         }
 
-        if ( p()->min_version_check( VERSION_10_1_5 ) && p()->talents.doom_blossom->ok() && tdata->dots_unstable_affliction->is_ticking() )
+        if ( p()->talents.doom_blossom->ok() && tdata->dots_unstable_affliction->is_ticking() )
         {
           doom_blossom->execute_on_target( s->target );
           p()->procs.doom_blossom->occur();
