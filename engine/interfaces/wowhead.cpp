@@ -28,6 +28,7 @@ std::string source_str( wowhead::wowhead_e source )
   switch ( source )
   {
     case wowhead::PTR:  return "ptr";
+    case wowhead::PTR2:  return "ptr-2";
 #if SC_BETA
     case wowhead::BETA: return SC_BETA_STR;
 #endif
@@ -40,6 +41,7 @@ std::string source_desc_str( wowhead::wowhead_e source )
   switch ( source )
   {
     case wowhead::PTR:  return "PTR";
+    case wowhead::PTR2:  return "PTR2";
 #if SC_BETA
     case wowhead::BETA: return "Beta";
 #endif

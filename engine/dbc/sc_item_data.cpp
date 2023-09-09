@@ -599,6 +599,7 @@ bool item_database::initialize_item_sources( item_t& item, std::vector<std::stri
       if ( ! util::str_compare_ci( split, "local" ) &&
            ! util::str_compare_ci( split, "wowhead" ) &&
            ! util::str_compare_ci( split, "ptrhead" ) &&
+           ! util::str_compare_ci( split, "ptr2head" ) &&
            ! util::str_compare_ci( split, "bcpapi" ) )
       {
         continue;
