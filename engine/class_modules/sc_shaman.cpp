@@ -340,6 +340,7 @@ public:
     action_t* ti_trigger;
     action_t* lava_burst_pw;
     action_t* flame_shock;
+    action_t* elemental_blast;
 
     action_t* lightning_rod;
 
@@ -5597,6 +5598,10 @@ struct lava_burst_t : public shaman_spell_t
     if ( !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
     {
       p()->buff.lava_surge->decrement();
+      if ( p()->buff.molten_charge_active->up())
+      {
+        p()->buff.molten_charge->trigger());
+      }
     }
 
     p()->lava_surge_during_lvb = false;
@@ -6001,7 +6006,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
 
 struct elemental_blast_t : public shaman_spell_t
 {
-  elemental_blast_t( shaman_t* player, util::string_view options_str ) :
+  elemental_blast_t( shaman_t* player, util::string_view options_str = {}) :
     shaman_spell_t( "elemental_blast", player,
       player->specialization() == SHAMAN_ELEMENTAL
         ? player->talent.elemental_blast
@@ -8175,6 +8180,24 @@ struct primordial_wave_t : public shaman_spell_t
       p()->buff.primordial_surge->trigger();
     }
 
+    if (p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B2))
+    {
+      p()->action.elemental_blast->set_target( target );
+      p()->action.elemental_blast->execute();
+
+      p()->buff.elemental_blast_haste->trigger(timespan_t::from_seconds(15));
+      p()->proc.elemental_blast_haste->occur();
+      p()->buff.elemental_blast_mastery->trigger(timespan_t::from_seconds( 15 ));
+      p()->proc.elemental_blast_mastery->occur();
+      p()->buff.elemental_blast_crit->trigger(timespan_t::from_seconds( 15 ));
+      p()->proc.elemental_blast_crit->occur();
+    }
+
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
+    {
+      p()->buff.molten_charge->trigger();
+    }
+
     if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
     {
       p()->summon_feral_spirits( p()->spell.feral_spirit->duration(), 1, true,
@@ -8783,6 +8806,12 @@ void shaman_t::create_actions()
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
+
+  if (sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B2))
+  {
+    action.elemental_blast = new elemental_blast_t( this, "" );
+    action.elemental_blast->background = true;
+  }
 }
 
 // shaman_t::create_options =================================================
