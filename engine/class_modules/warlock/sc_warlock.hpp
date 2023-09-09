@@ -662,7 +662,6 @@ public:
   bool disable_auto_felstorm; // For Demonology main pet
   bool use_pet_stat_update_delay;
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_10_1_5_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 

@@ -1507,8 +1507,6 @@ void warlock_t::init_spells()
 {
   player_t::init_spells();
 
-  version_10_1_5_data = find_spell( 417282 ); // For 10.1.5 version checking, New Crashing Chaos Buff
-
   // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
   // find_class_spell - active_spells.inc
   // find_specialization_spell - specialization_spells.inc
@@ -1964,7 +1962,6 @@ bool warlock_t::min_version_check( version_check_e version ) const
     case VERSION_PTR:
       return is_ptr();
     case VERSION_10_1_5:
-      return !( version_10_1_5_data == spell_data_t::not_found() );
     case VERSION_10_1_0:
     case VERSION_10_0_7:
     case VERSION_10_0_5:
