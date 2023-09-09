@@ -175,16 +175,10 @@ struct corruption_t : public warlock_spell_t
 {
   struct corruption_dot_t : public warlock_spell_t
   {
-    doom_blossom_t* doom_blossom_proc;
-
-    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
-      doom_blossom_proc( new doom_blossom_t( p ) )
+    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
     {
       tick_zero = false;
       background = dual = true;
-
-      if ( !p->min_version_check( VERSION_10_1_5 ) )
-        add_child( doom_blossom_proc );
 
       if ( p->talents.absolute_corruption->ok() )
       {
@@ -225,15 +219,6 @@ struct corruption_t : public warlock_spell_t
             p()->buffs.nightfall->trigger();
             p()->corruption_accumulator -= 1.0;
 
-          }
-        }
-
-        if ( p()->talents.doom_blossom->ok() && !p()->min_version_check( VERSION_10_1_5 ) && td( d->state->target )->dots_unstable_affliction->is_ticking() )
-        {
-          if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
-          {
-            doom_blossom_proc->execute_on_target( d->state->target );
-            p()->procs.doom_blossom->occur();
           }
         }
       }
