@@ -1348,6 +1348,7 @@ public:
     ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
     ab::apply_affecting_aura( o() -> talents.killer_command );
     ab::apply_affecting_aura( o() -> tier_set.t30_bm_2pc );
+    ab::apply_affecting_aura( o() -> talents.savagery );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -1423,6 +1424,7 @@ struct stable_pet_t : public hunter_pet_t
     buffs.frenzy =
       make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
       -> set_default_value_from_effect( 1 )
+      -> apply_affecting_aura( o() -> talents.savagery )
       -> add_invalidate( CACHE_ATTACK_SPEED );
 
     buffs.beast_cleave =
