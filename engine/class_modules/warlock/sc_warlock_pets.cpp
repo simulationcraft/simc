@@ -95,6 +95,9 @@ void warlock_pet_t::create_buffs()
                                       }
                                     } );
 
+  buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
+                            ->set_default_value( o()->talents.summon_demonic_tyrant->effectN( 1 ).percent() );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -227,6 +230,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.nerzhuls_volition->check() )
     m *= 1.0 + buffs.nerzhuls_volition->check_value();
+
+  if ( buffs.demonic_power->check() )
+    m *= 1.0 + buffs.demonic_power->check_value();
 
   if ( is_main_pet && o()->talents.wrathful_minion->ok() )
     m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
@@ -1268,7 +1274,8 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
 
-    if ( p()->o()->buffs.demonic_power->check() )
+    // TODO: 10.2 moves this from owner to pet, remove owner code when 10.2 goes live
+    if ( p()->o()->buffs.demonic_power->check() || p()->buffs.demonic_power->check() )
     {
       // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
       c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();

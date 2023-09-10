@@ -1230,7 +1230,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
 
-    if ( talents.summon_demonic_tyrant->ok() )
+    if ( talents.summon_demonic_tyrant->ok() && !min_version_check( VERSION_10_2_0 ) )
       m *= 1.0 + buffs.demonic_power->check_value();
 
     if ( buffs.rite_of_ruvaraad->check() )
