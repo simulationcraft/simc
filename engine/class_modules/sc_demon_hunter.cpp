@@ -559,6 +559,7 @@ public:
     const spell_data_t* t30_vengeance_4pc_buff;
     double t30_vengeance_4pc_soul_fragments_tracker = 0;
     double t31_vengeance_4pc_fury_tracker = 0;
+    const spell_data_t* t31_vengeance_2pc_buff;
     const spell_data_t* t31_vengeance_4pc_proc;
   } set_bonuses;
 
@@ -6142,7 +6143,7 @@ void demon_hunter_t::create_buffs()
       this, "recrimination", set_bonuses.t30_vengeance_4pc->ok() ? set_bonuses.t30_vengeance_4pc_buff : spell_data_t::not_found() );
 
   buff.t31_vengeance_2pc = make_buff<damage_buff_t>(
-      this, "fiery_resolve", set_bonuses.t31_vengeance_2pc->ok() ? set_bonuses.t31_vengeance_2pc : spell_data_t::not_found() );
+      this, "fiery_resolve", set_bonuses.t31_vengeance_2pc->ok() ? set_bonuses.t31_vengeance_2pc_buff : spell_data_t::not_found() );
   buff.t31_vengeance_2pc->add_invalidate( CACHE_STAMINA );
 }
 
@@ -6961,6 +6962,7 @@ void demon_hunter_t::init_spells()
       set_bonuses.t30_vengeance_2pc->ok() ? find_spell( 409645 ) : spell_data_t::not_found();
   set_bonuses.t30_vengeance_4pc_buff =
       set_bonuses.t30_vengeance_4pc->ok() ? find_spell( 409877 ) : spell_data_t::not_found();
+  set_bonuses.t31_vengeance_2pc_buff = set_bonuses.t31_vengeance_2pc->ok() ? find_spell( 425653 ) : spell_data_t::not_found();
   set_bonuses.t31_vengeance_4pc_proc =
       set_bonuses.t31_vengeance_4pc->ok() ? find_spell( 425672 ) : spell_data_t::not_found();
 
