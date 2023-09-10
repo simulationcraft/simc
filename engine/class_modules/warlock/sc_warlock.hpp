@@ -888,7 +888,7 @@ public:
         make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
       }
 
-      if ( p()->talents.grand_warlocks_design.ok() )
+      if ( p()->talents.grand_warlocks_design.ok() && !p()->min_version_check( VERSION_10_2_0 ) )
       {
         switch ( p()->specialization() )
         {
