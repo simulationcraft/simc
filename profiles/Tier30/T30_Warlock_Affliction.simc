@@ -97,7 +97,6 @@ actions.cleave+=/phantom_singularity
 actions.cleave+=/vile_taint
 actions.cleave+=/soul_rot
 actions.cleave+=/summon_darkglare
-actions.cleave+=/malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3
 actions.cleave+=/malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<gcd
 actions.cleave+=/malefic_rapture,if=!talent.dread_touch&buff.tormented_crescendo.up
 actions.cleave+=/malefic_rapture,if=!talent.dread_touch&(dot.soul_rot.remains>cast_time|dot.phantom_singularity.remains>cast_time|dot.vile_taint_dot.remains>cast_time|pet.darkglare.active)
