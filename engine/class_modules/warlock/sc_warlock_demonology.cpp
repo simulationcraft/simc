@@ -371,7 +371,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
       //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2022-10-04)
       double base_cost = demonology_spell_t::cost();
 
-      if ( p()->talents.grand_warlocks_design->ok() )
+      if ( p()->talents.grand_warlocks_design->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
         p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
 
       if ( p()->buffs.nether_portal->up() )
@@ -541,6 +541,9 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     parse_options( options_str );
     harmful = true; // Needs to be enabled specifically for 10.1 class trinket
     may_crit = false;
+
+    if ( p->min_version_check( VERSION_10_2_0 ) && p->talents.grand_warlocks_design->ok() )
+      cooldown->duration += p->talents.grand_warlocks_design->effectN( 2 ).time_value();
   }
 
   void execute() override

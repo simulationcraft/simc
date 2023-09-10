@@ -844,6 +844,9 @@ struct summon_infernal_t : public destruction_spell_t
     may_crit = false;
     impact_action = new infernal_awakening_t( p );
     add_child( impact_action );
+
+    if ( p->min_version_check( VERSION_10_2_0 ) && p->talents.grand_warlocks_design->ok() )
+      cooldown->duration += p->talents.grand_warlocks_design->effectN( 3 ).time_value();
   }
 
   void execute() override
