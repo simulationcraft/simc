@@ -355,6 +355,10 @@ public:
     // T31 - Amirdrassil: The Dream's Hope
     spell_data_ptr_t t31_bm_2pc;
     spell_data_ptr_t t31_bm_4pc;
+    spell_data_ptr_t t31_mm_2pc;
+    spell_data_ptr_t t31_mm_4pc;
+    spell_data_ptr_t t31_sv_2pc;
+    spell_data_ptr_t t31_sv_4pc;
   } tier_set;
 
   // Buffs
@@ -6783,6 +6787,10 @@ void hunter_t::init_spells()
 
   tier_set.t31_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, T31, B2 );
   tier_set.t31_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, T31, B4 );
+  tier_set.t31_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T31, B2 );
+  tier_set.t31_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T31, B4 );
+  tier_set.t31_sv_2pc = sets -> set( HUNTER_SURVIVAL, T31, B2 );
+  tier_set.t31_sv_4pc = sets -> set( HUNTER_SURVIVAL, T31, B4 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
