@@ -1695,7 +1695,7 @@ void pit_lord_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->buffs.nether_portal_total->check() )
+  if ( o()->buffs.nether_portal_total->check() && !o()->min_version_check( VERSION_10_2_0 ) )
   {
     buffs.soul_glutton->trigger( o()->buffs.nether_portal_total->current_stack );
     o()->buffs.nether_portal_total->expire();

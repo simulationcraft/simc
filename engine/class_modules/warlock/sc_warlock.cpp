@@ -797,7 +797,7 @@ struct soulburn_t : public warlock_spell_t
           p()->proc_actions.summon_random_demon->execute();
           p()->procs.portal_summon->occur();
 
-          if ( p()->talents.guldans_ambition->ok() )
+          if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
             p()->buffs.nether_portal_total->trigger();
 
           if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
@@ -805,7 +805,7 @@ struct soulburn_t : public warlock_spell_t
             p()->proc_actions.summon_random_demon->execute();
             p()->procs.nerzhuls_volition->occur();
 
-            if ( p()->talents.guldans_ambition->ok() )
+            if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
               p()->buffs.nether_portal_total->trigger();
           }
         }

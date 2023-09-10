@@ -26,7 +26,7 @@ public:
         p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
 
-        if ( p()->talents.guldans_ambition->ok() )
+        if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
           p()->buffs.nether_portal_total->trigger();
 
         if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
@@ -34,7 +34,7 @@ public:
           p()->proc_actions.summon_random_demon->execute();
           p()->procs.nerzhuls_volition->occur();
 
-          if ( p()->talents.guldans_ambition->ok() )
+          if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
             p()->buffs.nether_portal_total->trigger();
         }
       }
@@ -379,7 +379,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
         p()->proc_actions.summon_random_demon->execute();
         p()->procs.portal_summon->occur();
 
-        if ( p()->talents.guldans_ambition->ok() )
+        if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
           p()->buffs.nether_portal_total->trigger();
 
         if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
@@ -387,7 +387,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
           p()->proc_actions.summon_random_demon->execute();
           p()->procs.nerzhuls_volition->occur();
 
-          if ( p()->talents.guldans_ambition->ok() )
+          if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
             p()->buffs.nether_portal_total->trigger();
         }
       }
@@ -1177,7 +1177,7 @@ void warlock_t::create_buffs_demonology()
                             ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
                               if ( !sim->event_mgr.canceled && cur == 0 && talents.guldans_ambition.ok() )
                               {
-                                warlock_pet_list.pit_lords.spawn( talents.soul_glutton->duration(), 1u );
+                                warlock_pet_list.pit_lords.spawn( talents.guldans_ambition_summon->duration(), 1u );
                               };
                             } );
 
@@ -1201,8 +1201,9 @@ void warlock_t::create_buffs_demonology()
 
   buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
 
+  // TODO: This can be removed once 10.2 goes live
   buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
-                                  ->set_max_stack( talents.soul_glutton->max_stacks() )
+                                  ->set_max_stack( !min_version_check( VERSION_10_2_0 ) ? talents.soul_glutton->max_stacks() : 1 )
                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
@@ -1331,6 +1332,7 @@ void warlock_t::init_spells_demonology()
   talents.infernal_command = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Command" ); // Should be ID 387549
 
   talents.guldans_ambition = find_talent_spell( talent_tree::SPECIALIZATION, "Gul'dan's Ambition" ); // Should be ID 387578
+  talents.guldans_ambition_summon = find_spell( 387590 );
   talents.soul_glutton = find_spell( 387595 );
 
   talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
