@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51239
-static const std::array<spelltext_data_t, 20394> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20395> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20155,6 +20155,7 @@ static const std::array<spelltext_data_t, 20394> __ptr_spelltext_data { {
   { 421775, "Create a soulbound item for your class.", 0, 0 },
   { 421776, "Create a soulbound item for your class.", 0, 0 },
   { 421841, "Call down a bombardment of celestial energy over the target area, blasting all enemies for $361237s1 Astral damage and applying Stellar Flare to them for $361237s2 sec.\r\n\r\n|cFFFFFFFFGenerates ${$m2/10} Astral Power.|r", 0, 0 },
+  { 421970, "$@spelldesc387526", "Damage done increased by $w1%.", 0 },
   { 421975, "Using Mutilate on a target afflicted by your Rupture and Deadly Poison applies Caustic Spatter for $421976d. Limit 1.\r\n\r\nCaustic Spatter causes $421976s1% of your Poison damage dealt to splash onto other nearby enemies, reduced beyond $421976s2 targets.", 0, 0 },
   { 421976, "$@spelldesc421975", "$w1% of Poison damage taken from $@auracaster splashes onto other nearby enemies.", 0 },
   { 421990, "Taking damage from nearby enemies causes you to counterattack for $s1 damage and gain 1 stack of $@spellname421994, granting $s2 $pri and stacking up to $421994u times. This effect may occur every 3 sec.\r\n\r\nAt $421994u stacks of $@spellname421994, gain $@spellname422016 for $422016d before consuming them, counterattacking all blows and regenerating ${$s3/($422016d/$422016t3)} health every $422016T3 sec.", 0, 0 },
