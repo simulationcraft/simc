@@ -141,7 +141,7 @@ public:
     const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
     const spell_data_t* wild_imp; // Data for pet summoning
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
-    const spell_data_t* demonic_core; // The passive responsible for the proc chance
+    const spell_data_t* demonic_core; // The passive responsible for the proc chance. TODO: 10.2 has made this contingent on the Demonbolt talent, may need shuffling
     const spell_data_t* demonic_core_buff; // Buff spell data
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
     const spell_data_t* demonology_warlock; // Spec aura
@@ -166,7 +166,7 @@ public:
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
-    spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
+    spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends; // TODO: 10.2 has buffed Vilefiend damage by 15%
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
@@ -219,7 +219,7 @@ public:
     player_talent_t grimoire_of_sacrifice; // Aff/Destro only
     const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
-    player_talent_t grand_warlocks_design; // One spell data for all 3 specs
+    player_talent_t grand_warlocks_design; // One spell data for all 3 specs. TODO: Changed in 10.2 to be a flat CDR
 
     // Affliction
     player_talent_t malefic_rapture;
@@ -324,8 +324,9 @@ public:
     player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
     player_talent_t grimoire_felguard;
 
-    player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
-    player_talent_t inner_demons;
+    player_talent_t bloodbound_imps; // TODO: REMOVED in 10.2
+    // TODO: 10.2 New talent Volatile Fiends - increased damage for Implosion and Bilescourge Bombers as well as proc for BB
+    player_talent_t inner_demons; // TODO: 10.2 has removed the "Summon Random Demon" proc
     player_talent_t doom;
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
@@ -342,11 +343,11 @@ public:
 
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
     const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
-    player_talent_t summon_demonic_tyrant; // TOCHECK: 2022-10-07 Pit Lord is not currently extendable by Tyrant
-    const spell_data_t* demonic_power_buff; // Buff on player when Tyrant is summoned, should grant 15% damage to pets
+    player_talent_t summon_demonic_tyrant; // TODO: 10.2 has reworked Tyrant, including Wild Imp caps and a smaller pet whitelist.
+    const spell_data_t* demonic_power_buff; // TODO: 10.2 has changed this buff to not be universal, but only applicable to "extended" demons
     player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
 
-    player_talent_t nerzhuls_volition; // Chance to summon additional demon from Nether Portal summons (TOCHECK: It is currently assumed this cannot proc itself)
+    player_talent_t nerzhuls_volition; // TODO: Changed in 10.2 to buff demons summoned by Nether Portal (buff on pets inccl. Pit Lord)
     player_talent_t stolen_power; // Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage
     const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
     const spell_data_t* stolen_power_final_buff;
@@ -356,9 +357,9 @@ public:
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active
 
-    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal
+    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal. TODO: 10.2 has reworked Pit Lord behavior
     const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned
-    player_talent_t reign_of_tyranny; // Each summoned active pet gives stacks of Demonic Servitude. Tyrant snapshots this buff on summon for more damage
+    player_talent_t reign_of_tyranny; // TODO: 10.2 has capped this at 15 stacks and may have changed other behavior
     const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     player_talent_t immutable_hatred;
@@ -434,10 +435,11 @@ public:
     player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
-    player_talent_t madness_of_the_azjaqir; // Buffs that reward repeating certain spells
+    player_talent_t madness_of_the_azjaqir; // TODO: REMOVED in 10.2
     const spell_data_t* madness_cb;
     const spell_data_t* madness_rof;
     const spell_data_t* madness_sb;
+    // TODO: 10.2 New talent Chaosbringer - increased damage to previous Madness-affected spells
     player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
     player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
     const spell_data_t* burn_to_ashes_buff;
