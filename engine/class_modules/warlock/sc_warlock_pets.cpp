@@ -646,7 +646,7 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    if ( main_pet && p()->o()->talents.fel_and_steel->ok() && p()->o()->min_version_check( VERSION_10_1_5 ) )
+    if ( main_pet && p()->o()->talents.fel_and_steel->ok() )
       m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
 
     return m;
@@ -710,7 +710,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
       if ( fel_and_steel_bonus )
       {
-        m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( p()->o()->min_version_check( VERSION_10_1_5 ) ? 2 : 1 ).percent();
+        m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 2 ).percent();
       }
 
       if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
@@ -745,13 +745,10 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "Felstorm" )
     : felstorm_t( p, options_str, n )
   {
-    if ( main_pet && p->o()->talents.fel_might->ok() )
-      cooldown->duration += p->o()->talents.fel_might->effectN( 1 ).time_value();
-
     if ( main_pet && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
-    if ( ( main_pet || !p->o()->min_version_check( VERSION_10_1_5 ) ) && p->o()->talents.fel_and_steel->ok() )
+    if ( main_pet && p->o()->talents.fel_and_steel->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->fel_and_steel_bonus = true;
 
     if ( !main_pet )
@@ -1455,11 +1452,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
       m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
     }
 
-    if ( p()->o()->talents.fel_and_steel->ok() && !p()->o()->min_version_check( VERSION_10_1_5 ) )
-    {
-      m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
-    }
-
     return m;
   }
 
@@ -1508,7 +1500,7 @@ void dreadstalker_t::init_base_stats()
   warlock_pet_t::init_base_stats();
   resources.base[ RESOURCE_ENERGY ] = 0;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-  melee_attack = new dreadstalker_melee_t( this, o()->min_version_check( VERSION_10_1_5 ) ? 0.96 : 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
+  melee_attack = new dreadstalker_melee_t( this, 0.96 ); // TOCHECK: This number may require tweaking if the AP coeff changes
 }
 
 void dreadstalker_t::arise()

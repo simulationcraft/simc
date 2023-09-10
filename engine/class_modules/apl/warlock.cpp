@@ -129,7 +129,6 @@ void affliction( player_t* p )
   cleave->add_action( "vile_taint" );
   cleave->add_action( "soul_rot" );
   cleave->add_action( "summon_darkglare" );
-  cleave->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3" );
   cleave->add_action( "malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<gcd" );
   cleave->add_action( "malefic_rapture,if=!talent.dread_touch&buff.tormented_crescendo.up" );
   cleave->add_action( "malefic_rapture,if=!talent.dread_touch&(dot.soul_rot.remains>cast_time|dot.phantom_singularity.remains>cast_time|dot.vile_taint_dot.remains>cast_time|pet.darkglare.active)" );
@@ -197,7 +196,6 @@ void demonology( player_t* p )
   default_->add_action( "call_action_list,name=racials,if=pet.demonic_tyrant.active&(buff.nether_portal.remains<=2)|fight_remains<22" );
   default_->add_action( "potion,if=pet.demonic_tyrant.active" );
   default_->add_action( "call_action_list,name=items,use_off_gcd=1" );
-  default_->add_action( "shadow_bolt,if=talent.fel_covenant&buff.fel_covenant.remains<5&!prev_gcd.1.shadow_bolt&soul_shard<5");
   default_->add_action( "hand_of_guldan,if=buff.nether_portal.remains>cast_time" );
   default_->add_action( "demonic_strength,if=buff.nether_portal.remains<gcd.max&(fight_remains>63&!(fight_remains>cooldown.summon_demonic_tyrant.remains+69)|cooldown.summon_demonic_tyrant.remains>30|variable.shadow_timings|buff.rite_of_ruvaraad.up|!talent.summon_demonic_tyrant|!talent.grimoire_felguard|!set_bonus.tier30_2pc)" );
   default_->add_action( "guillotine,if=buff.nether_portal.remains<gcd.max&(cooldown.demonic_strength.remains|!talent.demonic_strength)" );
@@ -222,8 +220,7 @@ void demonology( player_t* p )
   tyrant->add_action( "invoke_external_buff,name=power_infusion,if=variable.shadow_timings&variable.pet_expire>0&variable.pet_expire>0&variable.pet_expire<action.summon_demonic_tyrant.execute_time+(buff.demonic_core.down*action.shadow_bolt.execute_time+buff.demonic_core.up*gcd.max)+gcd.max" );
   tyrant->add_action( "hand_of_guldan,if=variable.pet_expire>gcd.max+action.summon_demonic_tyrant.cast_time&variable.pet_expire<gcd.max*4" );
   tyrant->add_action( "summon_demonic_tyrant,if=variable.pet_expire>0&variable.pet_expire<action.summon_demonic_tyrant.execute_time+(buff.demonic_core.down*action.shadow_bolt.execute_time+buff.demonic_core.up*gcd.max)+gcd.max" );
-  tyrant->add_action( "shadow_bolt,if=buff.fel_covenant.remains<15&(!buff.vilefiend.up|!talent.summon_vilefiend&(!buff.dreadstalkers.up))&time>30,line_cd=40" );
-  tyrant->add_action( "shadow_bolt,if=prev_gcd.1.grimoire_felguard&time>30&buff.nether_portal.down&buff.demonic_core.down|time<10&buff.fel_covenant.stack<2&talent.fel_covenant&fight_remains%%90>40" );
+  tyrant->add_action( "shadow_bolt,if=prev_gcd.1.grimoire_felguard&time>30&buff.nether_portal.down&buff.demonic_core.down" );
   tyrant->add_action( "power_siphon,if=buff.demonic_core.stack<2&soul_shard=5&(!buff.vilefiend.up|!talent.summon_vilefiend&(!buff.dreadstalkers.up))&(buff.nether_portal.down)" );
   tyrant->add_action( "shadow_bolt,if=buff.vilefiend.down&buff.nether_portal.down&buff.dreadstalkers.down&soul_shard<5-buff.demonic_core.stack" );
   tyrant->add_action( "nether_portal,if=soul_shard=5" );

@@ -169,7 +169,6 @@ struct unstable_affliction_t : public affliction_spell_t
     if ( p()->ua_target && p()->ua_target != target )
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
-      p()->buffs.malefic_affliction->expire();
     }
 
     p()->ua_target = target;
@@ -204,18 +203,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
 
-    p()->buffs.malefic_affliction->expire();
     p()->ua_target = nullptr;
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double m = affliction_spell_t::composite_ta_multiplier( s );
-
-    if ( p()->talents.malefic_affliction->ok() && p()->buffs.malefic_affliction->check() )
-      m *= 1.0 + p()->buffs.malefic_affliction->check_stack_value();
-
-    return m;
   }
 };
 
@@ -283,18 +271,10 @@ struct malefic_rapture_t : public affliction_spell_t
 
       auto target_data = td( s->target );
 
-      if ( p()->talents.dread_touch->ok() && p()->min_version_check( VERSION_10_1_5 ) )
+      if ( p()->talents.dread_touch->ok() )
       {
         if ( target_data->dots_unstable_affliction->is_ticking() )
           target_data->debuffs_dread_touch->trigger();
-      }
-      else if ( p()->talents.malefic_affliction->ok() && target_data->dots_unstable_affliction->is_ticking() )
-      {
-        if ( ( p()->talents.dread_touch->ok() &&
-               p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
-          target_data->debuffs_dread_touch->trigger();
-
-        p()->buffs.malefic_affliction->trigger();
       }
     }
 
@@ -530,17 +510,6 @@ struct phantom_singularity_t : public affliction_spell_t
       if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
         base_dd_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 3 ).percent();
     }
-
-    void impact( action_state_t* s ) override
-    {
-      affliction_spell_t::impact( s );
-
-      if ( s->chain_target == 0 && !p()->min_version_check(VERSION_10_1_5) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
-        // Debuff lasts 2 seconds but refreshes on every tick. 2023-04-04 PTR: Currently only applies to target with PS DoT
-        td( s->target )->debuffs_infirmity->trigger();
-      }
-    }
   };
   
   phantom_singularity_t( warlock_t* p, util::string_view options_str )
@@ -578,7 +547,7 @@ struct phantom_singularity_t : public affliction_spell_t
   {
     affliction_spell_t::impact( s );
 
-    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
     {
       td( s->target )->debuffs_infirmity->trigger();
     }
@@ -588,7 +557,7 @@ struct phantom_singularity_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
 
-    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
     {
       td( d->target )->debuffs_infirmity->expire();
     }
@@ -611,21 +580,11 @@ struct vile_taint_t : public affliction_spell_t
         base_td_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 4 ).percent();
     }
 
-    void tick( dot_t* d ) override
-    {
-      affliction_spell_t::tick( d );
-
-      if ( !p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
-        td( d->target )->debuffs_infirmity->trigger();
-      }
-    }
-
     void last_tick( dot_t* d ) override
     {
       affliction_spell_t::last_tick( d );
 
-      if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
       {
         td( d->target )->debuffs_infirmity->expire();
       }
@@ -656,7 +615,7 @@ struct vile_taint_t : public affliction_spell_t
   {
     affliction_spell_t::impact( s );
 
-    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
     {
       td( s->target )->debuffs_infirmity->trigger();
     }
@@ -706,7 +665,6 @@ struct soul_swap_t : public affliction_spell_t
     {
       p()->soul_swap_state.unstable_affliction.action_copied = true;
       p()->soul_swap_state.unstable_affliction.duration = tar->dots_unstable_affliction->remains();
-      p()->soul_swap_state.unstable_affliction.stacks = p()->buffs.malefic_affliction->check(); // While there are no stacks for UA, Soul Swap *will* reapply Malefic Affliction if UA is put on another target
       tar->dots_unstable_affliction->cancel();
     }
 
@@ -810,11 +768,6 @@ struct soul_swap_exhale_t : public affliction_spell_t
 
       p()->soul_swap_state.unstable_affliction.action->execute_on_target( s->target );
       td( s->target )->dots_unstable_affliction->adjust_duration( p()->soul_swap_state.unstable_affliction.duration - td( s->target)->dots_unstable_affliction->remains() );
-
-      if ( p()->soul_swap_state.unstable_affliction.stacks > 0 )
-      {
-        p()->buffs.malefic_affliction->trigger( p()->soul_swap_state.unstable_affliction.stacks );
-      }
     }
 
     if ( p()->soul_swap_state.siphon_life.action_copied )
@@ -927,9 +880,6 @@ void warlock_t::create_buffs_affliction()
 
   buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
-  buffs.malefic_affliction = make_buff( this, "malefic_affliction", talents.malefic_affliction_buff )
-                                 ->set_default_value( talents.malefic_affliction->effectN( 1 ).percent() );
-
   buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
                            ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
 
@@ -1023,9 +973,6 @@ void warlock_t::init_spells_affliction()
   talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare" ); // Should be ID 205180
 
   talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
- 
-  talents.malefic_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Affliction" ); // Should be ID 389761
-  talents.malefic_affliction_buff = find_spell( 389845 ); // Buff data, infinite duration, cancelled by UA ending
 
   talents.xavius_gambit = find_talent_spell( talent_tree::SPECIALIZATION, "Xavius' Gambit" ); // Should be ID 416615
 
@@ -1042,7 +989,7 @@ void warlock_t::init_spells_affliction()
   talents.souleaters_gluttony = find_talent_spell( talent_tree::SPECIALIZATION, "Soul-Eater's Gluttony" ); // Should be ID 389630
 
   talents.doom_blossom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" ); // Should be ID 389764
-  talents.doom_blossom_proc = find_spell( min_version_check( VERSION_10_1_5 ) ? 416699 : 389869 ); // AoE damage data
+  talents.doom_blossom_proc = find_spell( 416699 ); // AoE damage data
 
   talents.dread_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Touch" ); // Should be ID 389775
   talents.dread_touch_debuff = find_spell( 389868 ); // Applied to target on proc

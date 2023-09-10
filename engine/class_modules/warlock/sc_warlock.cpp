@@ -175,16 +175,10 @@ struct corruption_t : public warlock_spell_t
 {
   struct corruption_dot_t : public warlock_spell_t
   {
-    doom_blossom_t* doom_blossom_proc;
-
-    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
-      doom_blossom_proc( new doom_blossom_t( p ) )
+    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
     {
       tick_zero = false;
       background = dual = true;
-
-      if ( !p->min_version_check( VERSION_10_1_5 ) )
-        add_child( doom_blossom_proc );
 
       if ( p->talents.absolute_corruption->ok() )
       {
@@ -225,15 +219,6 @@ struct corruption_t : public warlock_spell_t
             p()->buffs.nightfall->trigger();
             p()->corruption_accumulator -= 1.0;
 
-          }
-        }
-
-        if ( p()->talents.doom_blossom->ok() && !p()->min_version_check( VERSION_10_1_5 ) && td( d->state->target )->dots_unstable_affliction->is_ticking() )
-        {
-          if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
-          {
-            doom_blossom_proc->execute_on_target( d->state->target );
-            p()->procs.doom_blossom->occur();
           }
         }
       }
@@ -329,8 +314,7 @@ struct seed_of_corruption_t : public warlock_spell_t
       corruption->dual = true;
       corruption->base_costs[ RESOURCE_MANA ] = 0;
 
-      if ( p->min_version_check( VERSION_10_1_5 ) )
-        add_child( doom_blossom );
+      add_child( doom_blossom );
     }
 
     void impact( action_state_t* s ) override
@@ -346,7 +330,7 @@ struct seed_of_corruption_t : public warlock_spell_t
           tdata->dots_seed_of_corruption->cancel();
         }
 
-        if ( p()->min_version_check( VERSION_10_1_5 ) && p()->talents.doom_blossom->ok() && tdata->dots_unstable_affliction->is_ticking() )
+        if ( p()->talents.doom_blossom->ok() && tdata->dots_unstable_affliction->is_ticking() )
         {
           doom_blossom->execute_on_target( s->target );
           p()->procs.doom_blossom->occur();
@@ -518,9 +502,6 @@ struct shadow_bolt_t : public warlock_spell_t
     
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
-
-    if ( p()->talents.fel_covenant->ok() )
-      p()->buffs.fel_covenant->trigger();
 
     p()->buffs.stolen_power_final->expire();
   }
@@ -1523,8 +1504,6 @@ void warlock_t::init_spells()
 {
   player_t::init_spells();
 
-  version_10_1_5_data = find_spell( 417282 ); // For 10.1.5 version checking, New Crashing Chaos Buff
-
   // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
   // find_class_spell - active_spells.inc
   // find_specialization_spell - specialization_spells.inc
@@ -1980,7 +1959,6 @@ bool warlock_t::min_version_check( version_check_e version ) const
     case VERSION_PTR:
       return is_ptr();
     case VERSION_10_1_5:
-      return !( version_10_1_5_data == spell_data_t::not_found() );
     case VERSION_10_1_0:
     case VERSION_10_0_7:
     case VERSION_10_0_5:

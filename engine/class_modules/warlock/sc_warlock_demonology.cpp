@@ -108,9 +108,6 @@ struct hand_of_guldan_t : public demonology_spell_t
 
       m *= shards_used;
 
-      if ( p()->talents.demonic_meteor->ok() )
-        m *= 1.0 + p()->talents.demonic_meteor->effectN( 1 ).percent();
-
       if ( p()->buffs.blazing_meteor->check() )
         m *= 1.0 + p()->buffs.blazing_meteor->check_value();
 
@@ -231,12 +228,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       p()->procs.two_shard_hog->occur();
     if ( last_resource_cost == 3.0 )
       p()->procs.three_shard_hog->occur();
-
-    if ( p()->talents.demonic_meteor->ok() && rng().roll( last_resource_cost * p()->talents.demonic_meteor->effectN( 2 ).percent() ) )
-    {
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.demonic_meteor );
-      p()->procs.demonic_meteor->occur();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -287,9 +278,6 @@ struct demonbolt_t : public demonology_spell_t
     {
       auto reduction = -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).time_value();
 
-      if ( !p()->min_version_check( VERSION_10_1_5 ) )
-        reduction *= 1000;
-
       p()->cooldowns.grimoire_felguard->adjust( reduction );
     }
 
@@ -323,9 +311,6 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->talents.shadows_bite->ok() )
       m *= 1.0 + p()->buffs.shadows_bite->check_value();
-
-    if ( p()->talents.fel_covenant->ok() )
-      m *= 1.0 + p()->buffs.fel_covenant->check_stack_value();
 
     if ( p()->talents.stolen_power->ok() && p()->buffs.stolen_power_final->check() )
       m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
@@ -377,12 +362,6 @@ struct call_dreadstalkers_t : public demonology_spell_t
     demonology_spell_t::execute();
 
     unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
-
-    if ( !p()->min_version_check( VERSION_10_1_5 ) )
-    {
-      if ( p()->talents.ripped_through_the_portal->ok() && rng().roll( p()->talents.ripped_through_the_portal->effectN( 1 ).percent() ) )
-        count++;
-    }
 
     auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
 
@@ -1205,9 +1184,6 @@ void warlock_t::create_buffs_demonology()
   buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
                            ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
 
-  buffs.fel_covenant = make_buff( this, "fel_covenant", talents.fel_covenant_buff )
-                           ->set_default_value( talents.fel_covenant->effectN( 2 ).percent() );
-
   buffs.stolen_power_building = make_buff( this, "stolen_power_building", talents.stolen_power_stacking_buff )
                                     ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                     {
@@ -1292,8 +1268,6 @@ void warlock_t::init_spells_demonology()
 
   talents.fel_and_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Fel and Steel" ); // Should be ID 386200
 
-  talents.fel_might = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Might" ); // Should be ID 387338
-
   talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
 
   talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
@@ -1314,13 +1288,8 @@ void warlock_t::init_spells_demonology()
   talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
   talents.demonic_calling_buff = find_spell( 205146 );
 
-  talents.demonic_meteor = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Meteor" ); // Should be ID 387396
-
   talents.fel_sunder = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Sunder" ); // Should be ID 387399
   talents.fel_sunder_debuff = find_spell( 387402 );
-
-  talents.fel_covenant = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Covenant" ); // Should be ID 387432
-  talents.fel_covenant_buff = find_spell( 387437 );
 
   talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
   talents.umbral_blaze_dot = find_spell( 405802 );
@@ -1328,8 +1297,6 @@ void warlock_t::init_spells_demonology()
   talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
 
   talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
-
-  talents.ripped_through_the_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Ripped Through the Portal" ); // Should be ID 387485
 
   talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
   talents.dread_calling_buff = find_spell( 387393 );
@@ -1390,7 +1357,6 @@ void warlock_t::init_gains_demonology()
 {
   gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
   gains.doom = get_gain( "doom" );
-  gains.demonic_meteor = get_gain( "demonic_meteor" );
 }
 
 void warlock_t::init_rng_demonology()
@@ -1401,7 +1367,6 @@ void warlock_t::init_procs_demonology()
 {
   procs.summon_random_demon = get_proc( "summon_random_demon" );
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
-  procs.demonic_meteor = get_proc( "demonic_meteor" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
   procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
