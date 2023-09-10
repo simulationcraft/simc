@@ -349,6 +349,7 @@ public:
     player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
 
     player_talent_t nerzhuls_volition; // TODO: Changed in 10.2 to buff demons summoned by Nether Portal (buff on pets inccl. Pit Lord)
+    const spell_data_t* nerzhuls_volition_buff; // New in 10.2
     player_talent_t stolen_power; // Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage
     const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
     const spell_data_t* stolen_power_final_buff;
@@ -359,7 +360,8 @@ public:
     player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active
 
     player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal. TODO: 10.2 has reworked Pit Lord behavior
-    const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned
+    const spell_data_t* guldans_ambition_summon; // Contains Pit Lord duration data
+    const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned. TODO: This buff is REMOVED in 10.2
     player_talent_t reign_of_tyranny; // TODO: 10.2 has capped this at 15 stacks and may have changed other behavior
     const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
@@ -468,7 +470,8 @@ public:
     action_t* soul_flame_proc;
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
-    action_t* summon_random_demon; // Nether Portal and Inner Demons
+    action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
+    action_t* summon_nether_portal_demon; // Separate version for Nether Portal based summons due to Ner'zhul's Volition
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick

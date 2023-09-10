@@ -23,15 +23,15 @@ public:
     {
       if ( p()->buffs.nether_portal->up() )
       {
-        p()->proc_actions.summon_random_demon->execute();
+        p()->proc_actions.summon_nether_portal_demon->execute();
         p()->procs.portal_summon->occur();
 
-        if ( p()->talents.guldans_ambition->ok() )
+        if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
           p()->buffs.nether_portal_total->trigger();
 
-        if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+        if ( !p()->min_version_check( VERSION_10_2_0 ) && p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
-          p()->proc_actions.summon_random_demon->execute();
+          p()->proc_actions.summon_nether_portal_demon->execute();
           p()->procs.nerzhuls_volition->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
@@ -376,15 +376,15 @@ struct call_dreadstalkers_t : public demonology_spell_t
 
       if ( p()->buffs.nether_portal->up() )
       {
-        p()->proc_actions.summon_random_demon->execute();
+        p()->proc_actions.summon_nether_portal_demon->execute();
         p()->procs.portal_summon->occur();
 
-        if ( p()->talents.guldans_ambition->ok() )
+        if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
           p()->buffs.nether_portal_total->trigger();
 
-        if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+        if ( !p()->min_version_check( VERSION_10_2_0 ) && p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
-          p()->proc_actions.summon_random_demon->execute();
+          p()->proc_actions.summon_nether_portal_demon->execute();
           p()->procs.nerzhuls_volition->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
@@ -996,14 +996,24 @@ struct summon_random_demon_t : public demonology_spell_t
   };
 
   timespan_t summon_duration;
+  bool from_nether_portal;
+
   summon_random_demon_t( warlock_t* p )
     : demonology_spell_t( "Summon Random Demon", p ), summon_duration( timespan_t::from_seconds( p->talents.inner_demons->effectN( 2 ).base_value() ) )
   {
     background = true;
 
+    from_nether_portal = false;
+
     // Fallback if Inner Demons data is not present
     if ( p->talents.nether_portal.ok() )
       summon_duration = p->talents.nether_portal->duration();
+  }
+
+  summon_random_demon_t( warlock_t* p, bool from_np )
+    : summon_random_demon_t( p )
+  {
+    from_nether_portal = from_np;
   }
 
   void execute() override
@@ -1011,7 +1021,7 @@ struct summon_random_demon_t : public demonology_spell_t
     demonology_spell_t::execute();
 
     auto random_pet = roll_random_pet();
-    summon_random_pet( random_pet );
+    summon_random_pet( random_pet, from_nether_portal );
     p()->procs.summon_random_demon->occur();
   }
 
@@ -1020,15 +1030,23 @@ private:
    * Helper function to actually summon 'num_summons' random pets from a given pet list.
    */
   template <typename pet_list_type>
-  void summon_random_pet_helper( pet_list_type& pet_list, int num_summons = 1 )
+  void summon_random_pet_helper( pet_list_type& pet_list, int num_summons = 1, bool from_nether_portal = false )
   {
-    pet_list.spawn( summon_duration, as<unsigned>( num_summons ) );
+    auto list = pet_list.spawn( summon_duration, as<unsigned>( num_summons ) );
+
+    if ( p()->min_version_check( VERSION_10_2_0 ) && from_nether_portal && p()->talents.nerzhuls_volition->ok() )
+    {
+      for ( auto& pet : list )
+      {
+        debug_cast<warlock_pet_t*>( pet )->buffs.nerzhuls_volition->trigger();
+      }
+    }
   }
 
   /**
    * Summon the random pet(s) specified.
    */
-  void summon_random_pet( random_pet_type random_pet )
+  void summon_random_pet( random_pet_type random_pet, bool from_nether_portal = false )
   {
     switch ( random_pet )
     {
@@ -1039,31 +1057,31 @@ private:
       {
         // TODO - eyes appear to spawn in #s randomly between 1 and 4 in SL beta 09-24-2020.
         // eyes summon in groups of 4. Confirmed by pip 2018-06-23.
-        summon_random_pet_helper( p()->warlock_pet_list.eyes_of_guldan, 4 );
+        summon_random_pet_helper( p()->warlock_pet_list.eyes_of_guldan, 4, from_nether_portal );
         break;
         case random_pet_type::shivarra:
-          summon_random_pet_helper( p()->warlock_pet_list.shivarra );
+          summon_random_pet_helper( p()->warlock_pet_list.shivarra, 1, from_nether_portal );
           break;
         case random_pet_type::darkhounds:
-          summon_random_pet_helper( p()->warlock_pet_list.darkhounds );
+          summon_random_pet_helper( p()->warlock_pet_list.darkhounds, 1, from_nether_portal );
           break;
         case random_pet_type::bilescourges:
-          summon_random_pet_helper( p()->warlock_pet_list.bilescourges );
+          summon_random_pet_helper( p()->warlock_pet_list.bilescourges, 1, from_nether_portal );
           break;
         case random_pet_type::urzuls:
-          summon_random_pet_helper( p()->warlock_pet_list.urzuls );
+          summon_random_pet_helper( p()->warlock_pet_list.urzuls, 1, from_nether_portal );
           break;
         case random_pet_type::void_terrors:
-          summon_random_pet_helper( p()->warlock_pet_list.void_terrors );
+          summon_random_pet_helper( p()->warlock_pet_list.void_terrors, 1, from_nether_portal );
           break;
         case random_pet_type::wrathguards:
-          summon_random_pet_helper( p()->warlock_pet_list.wrathguards );
+          summon_random_pet_helper( p()->warlock_pet_list.wrathguards, 1, from_nether_portal );
           break;
         case random_pet_type::vicious_hellhounds:
-          summon_random_pet_helper( p()->warlock_pet_list.vicious_hellhounds );
+          summon_random_pet_helper( p()->warlock_pet_list.vicious_hellhounds, 1, from_nether_portal );
           break;
         case random_pet_type::illidari_satyrs:
-          summon_random_pet_helper( p()->warlock_pet_list.illidari_satyrs );
+          summon_random_pet_helper( p()->warlock_pet_list.illidari_satyrs, 1, from_nether_portal );
           break;
         default:
           assert( false && "trying to summon invalid random demon." );
@@ -1177,7 +1195,7 @@ void warlock_t::create_buffs_demonology()
                             ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
                               if ( !sim->event_mgr.canceled && cur == 0 && talents.guldans_ambition.ok() )
                               {
-                                warlock_pet_list.pit_lords.spawn( talents.soul_glutton->duration(), 1u );
+                                warlock_pet_list.pit_lords.spawn( talents.guldans_ambition_summon->duration(), 1u );
                               };
                             } );
 
@@ -1201,8 +1219,9 @@ void warlock_t::create_buffs_demonology()
 
   buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
 
+  // TODO: This can be removed once 10.2 goes live
   buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
-                                  ->set_max_stack( talents.soul_glutton->max_stacks() )
+                                  ->set_max_stack( !min_version_check( VERSION_10_2_0 ) ? talents.soul_glutton->max_stacks() : 1 )
                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
@@ -1315,6 +1334,7 @@ void warlock_t::init_spells_demonology()
   talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
 
   talents.nerzhuls_volition = find_talent_spell( talent_tree::SPECIALIZATION, "Ner'zhul's Volition" ); // Should be ID 387526
+  talents.nerzhuls_volition_buff = find_spell( 421970 );
 
   talents.stolen_power = find_talent_spell( talent_tree::SPECIALIZATION, "Stolen Power" ); // Should be ID 387602
   talents.stolen_power_stacking_buff = find_spell( 387603 );
@@ -1331,6 +1351,7 @@ void warlock_t::init_spells_demonology()
   talents.infernal_command = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Command" ); // Should be ID 387549
 
   talents.guldans_ambition = find_talent_spell( talent_tree::SPECIALIZATION, "Gul'dan's Ambition" ); // Should be ID 387578
+  talents.guldans_ambition_summon = find_spell( 387590 );
   talents.soul_glutton = find_spell( 387595 );
 
   talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
@@ -1349,6 +1370,7 @@ void warlock_t::init_spells_demonology()
   tier.rite_of_ruvaraad = find_spell( 409725 );
 
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
+  proc_actions.summon_nether_portal_demon = new actions_demonology::summon_random_demon_t( this, true );
 
   // Initialize some default values for pet spawners
   warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
