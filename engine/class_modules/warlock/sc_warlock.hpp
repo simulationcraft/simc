@@ -349,6 +349,7 @@ public:
     player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
 
     player_talent_t nerzhuls_volition; // TODO: Changed in 10.2 to buff demons summoned by Nether Portal (buff on pets inccl. Pit Lord)
+    const spell_data_t* nerzhuls_volition_buff; // New in 10.2
     player_talent_t stolen_power; // Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage
     const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
     const spell_data_t* stolen_power_final_buff;
@@ -469,7 +470,8 @@ public:
     action_t* soul_flame_proc;
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
-    action_t* summon_random_demon; // Nether Portal and Inner Demons
+    action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
+    action_t* summon_nether_portal_demon; // Separate version for Nether Portal based summons due to Ner'zhul's Volition
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick

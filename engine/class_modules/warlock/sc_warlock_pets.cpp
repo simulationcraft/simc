@@ -73,6 +73,9 @@ void warlock_pet_t::create_buffs()
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_default_value( o()->talents.soul_glutton->effectN( 2 ).percent() );
 
+  buffs.nerzhuls_volition = make_buff( this, "nerzhuls_volition", o()->talents.nerzhuls_volition_buff )
+                                ->set_default_value( o()->talents.nerzhuls_volition->effectN( 1 ).percent() );
+
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
@@ -132,6 +135,7 @@ void warlock_pet_t::create_buffs()
   buffs.infernal_command->quiet = true;
   buffs.embers->quiet = true;
   buffs.fury_of_ruvaraad->quiet = true;
+  buffs.nerzhuls_volition->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -220,6 +224,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.infernal_command->check() )
     m *= 1.0 + buffs.infernal_command->check_value();
+
+  if ( buffs.nerzhuls_volition->check() )
+    m *= 1.0 + buffs.nerzhuls_volition->check_value();
 
   if ( is_main_pet && o()->talents.wrathful_minion->ok() )
     m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
@@ -1699,6 +1706,11 @@ void pit_lord_t::arise()
   {
     buffs.soul_glutton->trigger( o()->buffs.nether_portal_total->current_stack );
     o()->buffs.nether_portal_total->expire();
+  }
+
+  if ( o()->talents.nerzhuls_volition->ok() && o()->min_version_check( VERSION_10_2_0 ) )
+  {
+    buffs.nerzhuls_volition->trigger();
   }
 
   melee_attack->set_target( target );
