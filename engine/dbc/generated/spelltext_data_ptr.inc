@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51239
-static const std::array<spelltext_data_t, 20392> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20394> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20308,6 +20308,7 @@ static const std::array<spelltext_data_t, 20392> __ptr_spelltext_data { {
   { 424173, "$@spelldesc423926", 0, 0 },
   { 424213, "$@spelldesc424214", 0, 0 },
   { 424214, "Throw the spear at an enemy, dealing $s1 Nature damage.", 0, 0 },
+  { 424248, "$@spelldesc422862", "Wrath and Starfire damage increased by $s3% and cast time reduced by $s1%.", 0 },
   { 424285, "$@spelldesc422882", "Critical Strike damage increased by $w1%.", 0 },
   { 424289, "$@spelldesc422883", 0, 0 },
   { 424293, "$@spelldesc422880", "Spell damage increased by $w1%.", 0 },
@@ -20349,6 +20350,7 @@ static const std::array<spelltext_data_t, 20392> __ptr_spelltext_data { {
   { 425672, "$@spelldesc422861", "Damage and healing increased by $s1%. Stamina increased by $s3%.", 0 },
   { 425693, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Bracers, Belts, or Rings.", 0, 0 },
   { 425719, "$@spelldesc422850", "Dealing $w1% reduced damage to you. Taking $w2% increased damage from you.", 0 },
+  { 425721, "$@spelldesc422850", "Your next Heart Strike will apply $@spellname425719.", 0 },
   { 425748, "Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt. Lasts $d.", "Garrote, Rupture, and Crimson Tempest will consume Energy to duplicate damage.", 0 },
   { 425830, "$@spelldesc422878", "Critical strike chance for you and your pet increased by $s2%.\r\nCritical damage dealt for you and your pet increased by $s1%.", 0 },
   { 425838, "$?a426288[Smolderon's Delusions of Grandeur]?a426262[Larodar's Fiery Reverie]?a426341[Tindral's Fowl Fantasia]?a426339[Igira's Cruel Nightmare][]", 0, 0 },

@@ -431,6 +431,7 @@ struct death_knight_td_t : public actor_target_data_t {
     // Blood
     propagate_const<buff_t*> mark_of_blood;
     propagate_const<buff_t*> tightening_grasp;
+    propagate_const<buff_t*> ashen_decay; // T31 Blood
 	
     // Frost
     propagate_const<buff_t*> piercing_chill;
@@ -504,6 +505,7 @@ public:
     buff_t* vigorous_lifeblood_4pc;  // T29 4pc
     propagate_const<buff_t*> vampiric_strength; // T30 4pc str buff
     propagate_const<buff_t*> voracious;
+    propagate_const<buff_t*> ashen_decay_2pc;
 
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
@@ -1031,6 +1033,10 @@ public:
     // T30 Blood
     const spell_data_t* vampiric_strength; // Str buff
 
+    // T31 Blood
+    const spell_data_t* ashen_decay_buff; // Self buff for proc
+    const spell_data_t* ashen_decay_debuff; // Debuff on mob
+
     // T31 Unholy
     const spell_data_t* t31_unholy_value_container;
   } spell;
@@ -1358,6 +1364,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.tightening_grasp = make_buff( *this, "tightening_grasp", p -> spell.tightening_grasp_debuff )
                               -> set_default_value( p -> spell.tightening_grasp_debuff -> effectN( 1 ).percent() );
+
+  debuff.ashen_decay = make_buff( *this, "ashen_decay_debuff", p -> spell.ashen_decay_debuff )
+                            -> set_default_value_from_effect( 2 );
   // Frost
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
                             -> set_default_value_from_effect( 1 )
@@ -3299,6 +3308,7 @@ struct death_knight_action_t : public Base
     bool war;
     bool sanguine_ground, sanguine_ground_periodic;
     bool unholy_assault, unholy_assault_periodic;
+    bool ashen_decay; // T31 Blood
     bool amplify_damage, amplify_damage_periodic;
     bool chilling_rage, chilling_rage_periodic;
     /*
@@ -3365,6 +3375,7 @@ struct death_knight_action_t : public Base
     {
       this->affected_by.unholy_assault = this->data().affected_by( p->talent.unholy.unholy_assault->effectN( 4 ) );
       this->affected_by.unholy_assault_periodic = this->data().affected_by( p->talent.unholy.unholy_assault->effectN( 5 ) );
+      this->affected_by.ashen_decay = this->data().affected_by( p -> spell.ashen_decay_debuff -> effectN( 2 ) );
       this->affected_by.amplify_damage = this->data().affected_by( p->pet_spell.amplify_damage->effectN( 1 ) );
       this->affected_by.amplify_damage_periodic = this->data().affected_by( p->pet_spell.amplify_damage->effectN( 2 ) );
     }
@@ -3511,6 +3522,11 @@ struct death_knight_action_t : public Base
     if ( td && this -> affected_by.tightening_grasp )
     {
       m *= 1.0 + td -> debuff.tightening_grasp -> check_stack_value();
+    }
+    
+    if ( p() -> is_ptr() && p() -> specialization() == DEATH_KNIGHT_BLOOD && td && this -> affected_by.ashen_decay ) // T31 Blood
+    {
+      m *= 1.0 + td -> debuff.ashen_decay -> check_stack_value();
     }
 
     if ( td && this -> affected_by.death_rot )
@@ -4265,6 +4281,14 @@ struct abomination_limb_t : public death_knight_spell_t
 
     p() -> buffs.abomination_limb -> trigger();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+      get_td( s -> target ) -> debuff.ashen_decay -> trigger();
+  }
 private:
     action_t* damage;
 };
@@ -4529,6 +4553,13 @@ struct blood_boil_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
 
     p() -> buffs.hemostasis -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+    {
+      auto td = get_td( state -> target );
+      if ( td -> debuff.ashen_decay -> check() )
+        td -> debuff.ashen_decay -> extend_duration( p(), p() -> sets ->set( DEATH_KNIGHT_BLOOD, T31, B4 ) -> effectN( 1 ).time_value() );
+    }
   }
 
 };
@@ -6688,6 +6719,9 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     {
       p() -> buffs.vampiric_strength -> extend_duration( p(), p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B4 )->effectN( 1 ).time_value() );
     }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2) && p() -> buffs.ashen_decay_2pc -> check() )  // T31 Blood, expire buff after debuff has been applied
+      p() -> buffs.ashen_decay_2pc -> expire();
   }
 
   void impact ( action_state_t* state ) override
@@ -6702,6 +6736,18 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     if ( p() -> talent.blood.leeching_strike.ok() && get_td( state -> target ) -> dot.blood_plague -> is_ticking() )
     {
       leeching_strike -> execute();
+    }
+
+    if ( p() -> buffs.ashen_decay_2pc -> up() )
+    {
+      get_td( state -> target ) -> debuff.ashen_decay -> trigger();
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+    {
+      auto td = get_td( state -> target );
+      if ( td -> debuff.ashen_decay -> check() )
+        td -> debuff.ashen_decay -> extend_duration( p(), p() -> sets ->set( DEATH_KNIGHT_BLOOD, T31, B4 ) -> effectN( 1 ).time_value() );
     }
   }
 private:
@@ -7774,6 +7820,14 @@ struct soul_reaper_execute_t : public death_knight_spell_t
 
     return m;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+      get_td( s -> target ) -> debuff.ashen_decay -> trigger();
+  }
 };
 
 struct soul_reaper_t final : public death_knight_melee_attack_t
@@ -7916,6 +7970,13 @@ struct tombstone_t final : public death_knight_spell_t
           p() -> buffs.vigorous_lifeblood_4pc -> trigger();
         }
       }
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
+    {
+      double chance = 0.10 * charges; // Seems to be roughly a 10% chance per bone consumed.  Needs verification
+      if ( rng().roll( chance ) )
+        p() -> buffs.ashen_decay_2pc -> trigger();
     }
 
     if ( charges > 0 && p() -> talent.blood.shattering_bone.ok() )
@@ -9895,8 +9956,9 @@ void death_knight_t::init_spells()
   spell.vigorous_lifeblood_energize          = find_spell( 394559 );
   // T30 Blood
   spell.vampiric_strength                    = find_spell( 408356 );
-  // T30 Unholy
-  spell.t31_unholy_value_container           = find_spell( 422855 );
+  // T31 Blood
+  spell.ashen_decay_buff                     = find_spell( 425721 );
+  spell.ashen_decay_debuff                   = find_spell( 425719 );
 
   // Frost
   spell.murderous_efficiency_gain     = find_spell( 207062 );
@@ -9963,6 +10025,8 @@ void death_knight_t::init_spells()
   spell.unholy_t30_4pc_mastery     = find_spell( 408377 );
   spell.unholy_t30_2pc_values      = find_spell( 405503 );
   spell.unholy_t30_4pc_values      = find_spell( 405504 );
+  // T30 Unholy
+  spell.t31_unholy_value_container = find_spell( 422855 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10132,6 +10196,7 @@ void death_knight_t::create_buffs()
   // Blood
   if ( this -> specialization() == DEATH_KNIGHT_BLOOD)
   {
+  buffs.ashen_decay_2pc = make_buff( this, "ashen_decay", spell.ashen_decay_buff ); // T31 Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
@@ -10635,6 +10700,14 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
       buffs.vigorous_lifeblood_4pc -> trigger();
     }
   }
+
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
+  {
+    if( rng().roll( 0.10 ) ) // Very very rough testing, to be 10% proc chance
+    {
+      dk -> buffs.ashen_decay_2pc -> trigger();
+    }
+  }
 }
 
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
@@ -10729,6 +10802,9 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   const death_knight_td_t* td = get_target_data( state -> action -> player );
   if ( td && runeforge.rune_of_apocalypse )
     state -> result_amount *= 1.0 + td -> debuff.apocalypse_famine -> check_stack_value();
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD && td && td -> debuff.ashen_decay -> check() )
+    state -> result_amount *= 1.0 + spell.ashen_decay_debuff -> effectN( 1 ).base_value();
 
   if ( dbc::is_school( school, SCHOOL_MAGIC ) && runeforge.rune_of_spellwarding )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellwarding;
