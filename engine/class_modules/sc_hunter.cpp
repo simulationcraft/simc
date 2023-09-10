@@ -358,6 +358,7 @@ public:
     spell_data_ptr_t t31_mm_2pc;
     spell_data_ptr_t t31_mm_4pc;
     spell_data_ptr_t t31_sv_2pc;
+    spell_data_ptr_t t31_sv_2pc_buff; 
     spell_data_ptr_t t31_sv_4pc;
   } tier_set;
 
@@ -413,12 +414,15 @@ public:
     buff_t* predators_thirst;
 
     // Tier Set Bonuses
+    //T29
     buff_t* find_the_mark;
     buff_t* focusing_aim;
     buff_t* lethal_command;
     buff_t* bestial_barrage;
-
-    buff_t* exposed_wound; 
+    //T30
+    buff_t* exposed_wound;
+    //T31
+    buff_t* fury_strikes; 
   } buffs;
 
   // Cooldowns
@@ -886,6 +890,8 @@ public:
     bool coordinated_assault = false;
     bool t29_sv_4pc_cost = false;
     damage_affected_by t29_sv_4pc_dmg;
+    bool t31_sv_2pc_crit_chance = false;
+    bool t31_sv_2pc_crit_damage = false;  
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -916,6 +922,9 @@ public:
 
     affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
     affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
+
+    affected_by.t31_sv_2pc_crit_chance = check_affected_by( this, p -> tier_set.t31_sv_2pc_buff -> effectN( 2 ) ); 
+    affected_by.t31_sv_2pc_crit_damage = check_affected_by( this, p -> tier_set.t31_sv_2pc_buff -> effectN( 1 ) ); 
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
@@ -1107,8 +1116,25 @@ public:
 
     if ( affected_by.t29_mm_4pc )
       cc += p() -> buffs.focusing_aim -> check_value();
+    
+    if ( affected_by.t31_sv_2pc_crit_chance && p() -> buffs.fury_strikes -> check() )
+    {
+      cc += p() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ).percent();
+    }
 
     return cc;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( affected_by.t31_sv_2pc_crit_damage && p() -> buffs.fury_strikes -> check() )
+    {
+      cm *= 1.0 + p() -> buffs.fury_strikes -> check_value();
+    }
+
+    return cm;
   }
 
   double cost() const override
@@ -1582,6 +1608,11 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     cc += buffs.thrill_of_the_hunt -> check_stack_value();
 
+    if ( o() -> buffs.fury_strikes -> check() )
+    {
+      cc += o() -> tier_set.t31_sv_2pc -> effectN( 2 ).percent();
+    }
+
     return cc;
   }
 
@@ -1591,6 +1622,12 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
       m *= 1 + buffs.piercing_fangs -> check_value();
+
+    if ( o() -> buffs.fury_strikes -> check() && 
+        o() -> buffs.fury_strikes -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
+    {
+      m *= 1 + o() -> tier_set.t31_sv_2pc -> effectN( 1 ).percent();
+    }
 
     return m;
   }
@@ -4973,6 +5010,11 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
   void execute() override
   {
     hunter_melee_attack_t::execute();
+
+    if ( p() -> tier_set.t31_sv_2pc.ok() )
+    {
+      p() -> buffs.fury_strikes -> trigger();
+    }
   }
 
   void tick( dot_t* dot ) override
@@ -6790,6 +6832,7 @@ void hunter_t::init_spells()
   tier_set.t31_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T31, B2 );
   tier_set.t31_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T31, B4 );
   tier_set.t31_sv_2pc = sets -> set( HUNTER_SURVIVAL, T31, B2 );
+  tier_set.t31_sv_2pc_buff = find_spell( 425830 );
   tier_set.t31_sv_4pc = sets -> set( HUNTER_SURVIVAL, T31, B4 );
 
   // Cooldowns
@@ -7161,6 +7204,10 @@ void hunter_t::create_buffs()
   buffs.exposed_wound = 
     make_buff( this, "exposed_wound", tier_set.t30_sv_2pc -> effectN( 2 ).trigger() ) 
       -> set_default_value_from_effect( 1 ); 
+
+  buffs.fury_strikes = 
+    make_buff( this, "fury_strikes", tier_set.t31_sv_2pc_buff ) 
+      -> set_default_value_from_effect( 1 );
 }
 
 // hunter_t::init_gains =====================================================
