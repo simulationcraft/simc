@@ -1966,6 +1966,7 @@ class SpellDataGenerator(DataGenerator):
           ( 405681, 0 ),    # Immutable Hatred Damage Proc
           ( 409890, 0 ),    # T30 - Channel Demonfire
           ( 417282, 3 ),    # Crashing Chaos Buff 10.1.5
+          ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
         ),
 
         # Monk:
