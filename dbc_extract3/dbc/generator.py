@@ -1865,6 +1865,7 @@ class SpellDataGenerator(DataGenerator):
           ( 414381, 0 ),                            # Concentrated Power AE
           ( 418735, 0 ),                            # Splintering Ray
           ( 419800, 0 ),                            # Intensifying Flame
+          ( 424120, 0 ),                            # Glacial Blast
         ),
 
         # Warlock:
@@ -2182,6 +2183,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
           ( 393957, 1 ), # Waning Twilight
+          ( 424248, 1 ), # Balance T31 2pc buff
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage

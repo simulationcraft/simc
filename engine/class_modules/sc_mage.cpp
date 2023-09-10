@@ -339,6 +339,9 @@ public:
     // Set Bonuses
     buff_t* arcane_overload;
     buff_t* bursting_energy;
+    buff_t* forethought;
+    buff_t* arcane_battery;
+    buff_t* arcane_artillery;
 
     buff_t* calefaction;
     buff_t* flames_fury;
@@ -1337,6 +1340,7 @@ struct mage_spell_t : public spell_t
 
     bool arcane_overload = true;
     bool charring_embers = true;
+    bool forethought = true;
     bool touch_of_ice = true;
 
     // Misc
@@ -1478,11 +1482,14 @@ public:
     if ( affected_by.invigorating_powder )
       m *= 1.0 + p()->buffs.invigorating_powder->check_value();
 
-    if ( affected_by.touch_of_ice )
-      m *= 1.0 + p()->buffs.touch_of_ice->check_value();
-
     if ( affected_by.unleashed_inferno && p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 1 ).percent();
+
+    if ( affected_by.forethought )
+      m *= 1.0 + p()->buffs.forethought->check_stack_value();
+
+    if ( affected_by.touch_of_ice )
+      m *= 1.0 + p()->buffs.touch_of_ice->check_value();
 
     return m;
   }
@@ -1802,7 +1809,15 @@ struct arcane_mage_spell_t : public mage_spell_t
         // Effects that trigger when Clearcasting is consumed do not trigger
         // if the buff decrement is skipped because of Concentration.
         if ( cr == p()->buffs.clearcasting && cr->check() < before )
+        {
           p()->buffs.nether_precision->trigger();
+          p()->buffs.forethought->trigger();
+          // Technically, the buff disappears immediately when it reaches 6 stacks
+          // and the Artillery buff is applied with a delay. Here, we just use
+          // 6 stacks of the buff to track the delay.
+          // TODO: the 4pc says something about consuming Forethought?
+          p()->buffs.arcane_battery->trigger();
+        }
         break;
       }
     }
@@ -2868,6 +2883,12 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
       p()->buffs.bursting_energy->trigger();
 
     p()->state.trigger_cc_channel = false;
+
+    if ( !background && p()->buffs.arcane_battery->at_max_stacks() )
+    {
+      p()->buffs.arcane_battery->expire();
+      p()->buffs.arcane_artillery->trigger();
+    }
   }
 
   double composite_crit_chance() const override
@@ -2943,6 +2964,40 @@ struct arcane_intellect_t final : public mage_spell_t
 
 // Arcane Missiles Spell ====================================================
 
+struct am_state_t final : public mage_spell_state_t
+{
+  double tick_time_multiplier;
+  int targets;
+
+  am_state_t( action_t* action, player_t* target ) :
+    mage_spell_state_t( action, target ),
+    tick_time_multiplier( 1.0 ),
+    targets( 0 )
+  { }
+
+  void initialize() override
+  {
+    mage_spell_state_t::initialize();
+    tick_time_multiplier = 1.0;
+    targets = 0;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    mage_spell_state_t::debug_str( s ) << " tick_time_multiplier=" << tick_time_multiplier << " targets=" << targets;
+    return s;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    mage_spell_state_t::copy_state( s );
+
+    auto ams = debug_cast<const am_state_t*>( s );
+    tick_time_multiplier = ams->tick_time_multiplier;
+    targets              = ams->targets;
+  }
+};
+
 struct arcane_missiles_tick_t final : public arcane_mage_spell_t
 {
   arcane_missiles_tick_t( std::string_view n, mage_t* p ) :
@@ -2953,6 +3008,27 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p->talents.improved_arcane_missiles->effectN( 1 ).percent();
   }
 
+  action_state_t* new_state() override
+  { return new am_state_t( this, target ); }
+
+  int n_targets() const override
+  {
+    // If pre_execute_state exists, we need to respect the n_targets amount
+    // as it existed when the state was updated.
+    if ( pre_execute_state )
+      return debug_cast<am_state_t*>( pre_execute_state )->targets;
+
+    return p()->buffs.arcane_artillery->check()
+      ? as<int>( p()->buffs.arcane_artillery->data().effectN( 2 ).base_value() )
+      : arcane_mage_spell_t::n_targets();
+  }
+
+  void update_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    arcane_mage_spell_t::update_state( s, flags, rt );
+    debug_cast<am_state_t*>( s )->targets = n_targets();
+  }
+
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
@@ -2960,33 +3036,14 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) )
       p()->buffs.arcane_harmony->trigger();
   }
-};
 
-struct am_state_t final : public mage_spell_state_t
-{
-  double tick_time_multiplier;
-
-  am_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ),
-    tick_time_multiplier( 1.0 )
-  { }
-
-  void initialize() override
+  double action_multiplier() const override
   {
-    mage_spell_state_t::initialize();
-    tick_time_multiplier = 1.0;
-  }
+    double am = arcane_mage_spell_t::action_multiplier();
 
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    mage_spell_state_t::debug_str( s ) << " tick_time_multiplier=" << tick_time_multiplier;
-    return s;
-  }
+    am *= 1.0 + p()->buffs.arcane_artillery->check_value();
 
-  void copy_state( const action_state_t* s ) override
-  {
-    mage_spell_state_t::copy_state( s );
-    tick_time_multiplier = debug_cast<const am_state_t*>( s )->tick_time_multiplier;
+    return am;
   }
 };
 
@@ -3046,8 +3103,23 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     return t;
   }
 
+  void channel_finish()
+  {
+    p()->buffs.clearcasting_channel->expire();
+    p()->buffs.arcane_artillery->expire();
+
+    if ( p()->buffs.arcane_battery->at_max_stacks() )
+    {
+      p()->buffs.arcane_battery->expire();
+      p()->buffs.arcane_artillery->trigger();
+    }
+  }
+
   void execute() override
   {
+    if ( get_dot( target )->is_ticking() )
+      channel_finish();
+
     // Set up the hidden Clearcasting buff before executing the spell
     // so that tick time and dot duration have the correct values.
     if ( p()->buffs.clearcasting->check() )
@@ -3108,7 +3180,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
   void last_tick( dot_t* d ) override
   {
     arcane_mage_spell_t::last_tick( d );
-    p()->buffs.clearcasting_channel->expire();
+    channel_finish();
   }
 };
 
@@ -4215,8 +4287,33 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
 // Glacial Spike Spell ======================================================
 
+// TODO: this spell currently benefits from all target mods, double check before 10.2 goes live
+struct glacial_blast_t final : public spell_t
+{
+  glacial_blast_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 424120 ) )
+  {
+    background = true;
+    may_crit = false;
+    aoe = -1;
+    reduced_aoe_targets = p->sets->set( MAGE_FROST, T31, B2 )->effectN( 3 ).base_value();
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    spell_t::available_targets( tl );
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
 struct glacial_spike_t final : public frost_mage_spell_t
 {
+  action_t* glacial_blast = nullptr;
+
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.glacial_spike )
   {
@@ -4225,6 +4322,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
     triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T31, B2 )->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     if ( p->talents.splitting_ice.ok() )
@@ -4232,6 +4330,18 @@ struct glacial_spike_t final : public frost_mage_spell_t
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_aoe_multiplier *= p->talents.splitting_ice->effectN( 4 ).percent();
     }
+
+    if ( p->sets->has_set_bonus( MAGE_FROST, T31, B2 ) )
+    {
+      glacial_blast = get_action<glacial_blast_t>( "glacial_blast", p );
+      add_child( glacial_blast );
+    }
+  }
+
+  void init_finished() override
+  {
+    proc_brain_freeze = p()->get_proc( "Brain Freeze from Glacial Spike" );
+    frost_mage_spell_t::init_finished();
   }
 
   bool ready() override
@@ -4281,6 +4391,8 @@ struct glacial_spike_t final : public frost_mage_spell_t
       p()->get_icicle();
       p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
     }
+
+    p()->trigger_brain_freeze( p()->sets->set( MAGE_FROST, T31, B4 )->effectN( 1 ).percent(), proc_brain_freeze );
   }
 
   void impact( action_state_t* s ) override
@@ -4291,6 +4403,12 @@ struct glacial_spike_t final : public frost_mage_spell_t
       p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 3 ).time_value() );
 
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
+
+    if ( glacial_blast && result_is_hit( s->result ) && cast_state( s )->frozen )
+    {
+      double pct = p()->sets->set( MAGE_FROST, T31, B2 )->effectN( 2 ).percent();
+      glacial_blast->execute_on_target( s->target, pct * s->result_total );
+    }
   }
 };
 
@@ -5784,6 +5902,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             break;
           case TA_COMBUSTION:
             mage->buffs.combustion->trigger( 1000 * mage->talents.time_anomaly->effectN( 4 ).time_value() );
+            mage->buffs.tier31_4pc->trigger(); // TODO: double check this before 10.2 goes live
             break;
           case TA_FIRE_BLAST:
             mage->cooldowns.fire_blast->reset( true );
@@ -6588,12 +6707,19 @@ void mage_t::create_buffs()
 
 
   // Set Bonuses
-  buffs.arcane_overload = make_buff( this, "arcane_overload", find_spell( 409022 ) )
-                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
-                            ->set_affects_regen( true );
-  buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
-                            ->set_default_value_from_effect( 1 )
-                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
+  buffs.arcane_overload  = make_buff( this, "arcane_overload", find_spell( 409022 ) )
+                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
+                             ->set_affects_regen( true );
+  buffs.bursting_energy  = make_buff( this, "bursting_energy", find_spell( 395006 ) )
+                             ->set_default_value_from_effect( 1 )
+                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
+  buffs.forethought      = make_buff( this, "forethought", find_spell( 424293 ) )
+                             ->set_default_value_from_effect( 1 )
+                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T31, B2 ) );
+  buffs.arcane_battery   = make_buff( this, "arcane_battery", find_spell( 424334 ) )
+                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T31, B4 ) );
+  buffs.arcane_artillery = make_buff( this, "arcane_artillery", find_spell( 424331 ) )
+                             ->set_default_value_from_effect( 1 );
 
   buffs.calefaction  = make_buff( this, "calefaction", find_spell( 408673 ) )
                          ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );

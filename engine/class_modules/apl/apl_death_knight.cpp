@@ -287,7 +287,7 @@ void frost( player_t* p )
   high_prio_actions->add_action( "remorseless_winter,if=!talent.breath_of_sindragosa&!talent.obliteration&variable.rw_buffs" );
   high_prio_actions->add_action( "remorseless_winter,if=talent.obliteration&active_enemies>=3&variable.adds_remain" );
 
-  obliteration->add_action( "remorseless_winter,if=active_enemies>3", "Obliteration Active Rotation" );
+  obliteration->add_action( "remorseless_winter,if=active_enemies>3|talent.gathering_storm", "Obliteration Active Rotation" );
   obliteration->add_action( "howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react" );
   obliteration->add_action( "frost_strike,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );
   obliteration->add_action( "glacial_advance,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );

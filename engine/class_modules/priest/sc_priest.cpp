@@ -969,14 +969,16 @@ struct fade_t final : public priest_spell_t
 
 // ==========================================================================
 // Shadow Word: Death
+// https://github.com/simulationcraft/simc/wiki/Priests#shadow-word-death
 // ==========================================================================
 struct shadow_word_death_self_damage_t final : public priest_spell_t
 {
   double self_damage_coeff;
+  int parent_chain_number = 0;
 
   shadow_word_death_self_damage_t( priest_t& p )
     : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage ),
-      self_damage_coeff( p.talents.shadow_word_death->effectN( 5 ).percent() )
+      self_damage_coeff( p.is_ptr() ? p.talents.shadow_word_death->effectN( 5 ).percent() : 1 )
   {
     background = true;
     may_crit   = false;
@@ -986,12 +988,26 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
   double base_da_min( const action_state_t* ) const override
   {
-    return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
+    if ( priest().is_ptr() )
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
+    }
+    else
+    {
+      return base_dd_min;
+    }
   }
 
   double base_da_max( const action_state_t* ) const override
   {
-    return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
+    if ( priest().is_ptr() )
+    {
+      return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
+    }
+    else
+    {
+      return base_dd_max;
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1001,6 +1017,13 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     if ( priest().talents.tithe_evasion.enabled() && priest().is_ptr() )
     {
       m *= priest().talents.tithe_evasion->effectN( 1 ).percent();
+    }
+
+    // Chained Shadow Word: Deaths only hit the character for 10% of what they normally do.
+    // TODO: Unsure if a bug or not
+    if ( parent_chain_number > 0 )
+    {
+      m *= .1;
     }
 
     return m;
@@ -1015,6 +1038,19 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     }
     base_td = original_amount;
     execute();
+  }
+
+  void trigger( int chain_number )
+  {
+    parent_chain_number = chain_number;
+    execute();
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+    if ( priest().sets->set( PRIEST_SHADOW, T31, B4 ) )
+      p().buffs.deaths_torment->trigger();
   }
 
   void init() override
@@ -1039,22 +1075,34 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
 struct shadow_word_death_t final : public priest_spell_t
 {
+protected:
+  struct swd_data
+  {
+    int chain_number  = 0;
+    int max_chain     = 2;
+    bool deathspeaker = false;
+  };
+  using state_t = priest_action_state_t<swd_data>;
+  using ab      = priest_spell_t;
+
+public:
   double execute_percent;
   double execute_modifier;
+  double deathspeaker_mult;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
 
-  shadow_word_death_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
+  shadow_word_death_t( priest_t& p )
+    : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
+      deathspeaker_mult( p.talents.shadow.deathspeaker.ok() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent()
+                                                            : 1.0 ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light )
   {
-    parse_options( options_str );
-
     affected_by_shadow_weaving = true;
 
     if ( priest().talents.discipline.expiation.enabled() )
@@ -1071,26 +1119,64 @@ struct shadow_word_death_t final : public priest_spell_t
     }
   }
 
-  double composite_target_da_multiplier( player_t* t ) const override
+  shadow_word_death_t( priest_t& p, util::string_view options_str ) : shadow_word_death_t( p )
   {
-    double tdm = priest_spell_t::composite_target_da_multiplier( t );
+    parse_options( options_str );
+  }
 
-    if ( t->health_percentage() < execute_percent || priest().buffs.deathspeaker->check() )
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    if ( cast_state( s )->chain_number == 0 )
+      cast_state( s )->deathspeaker = p().buffs.deathspeaker->check();
+
+    ab::snapshot_state( s, rt );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = ab::composite_da_multiplier( s );
+
+    if ( cast_state( s )->chain_number > 0 )
+    {
+      m *= priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent();
+    }
+
+    if ( s->target->health_percentage() < execute_percent || cast_state( s )->deathspeaker )
     {
       if ( sim->debug )
       {
-        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}%", t->name_str, execute_percent, *this,
+        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}%", s->target->name_str, execute_percent, *this,
                           execute_modifier * 100 );
       }
-      tdm *= 1 + execute_modifier;
+      m *= 1 + execute_modifier;
     }
 
-    return tdm;
+    if ( cast_state( s )->deathspeaker )
+    {
+      m *= deathspeaker_mult;
+    }
+
+    return m;
   }
 
   void execute() override
   {
-    priest_spell_t::execute();
+    ab::execute();
 
     if ( priest().talents.death_and_madness.enabled() )
     {
@@ -1120,12 +1206,12 @@ struct shadow_word_death_t final : public priest_spell_t
       cooldown->charges = data().charges();
     }
 
-    priest_spell_t::reset();
+    ab::reset();
   }
 
   void impact( action_state_t* s ) override
   {
-    priest_spell_t::impact( s );
+    ab::impact( s );
 
     if ( priest().talents.shadow.inescapable_torment.enabled() )
     {
@@ -1136,13 +1222,55 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       double save_health_percentage = s->target->health_percentage();
 
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B2 ) )
+      {
+        int number_of_chains;
+        state_t* curr_state = cast_state( s );
+        if ( curr_state->chain_number > 0 )
+        {
+          number_of_chains = curr_state->max_chain;
+        }
+        else
+        {
+          number_of_chains = priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 1 ).base_value();
+          // Chains amount differs if you have a Deathspeaker proc or while in execute but you still keep the modifier
+          if ( priest().buffs.deathspeaker->check() || s->target->health_percentage() < execute_percent )
+          {
+            // BUG: Currently Deathspeaker is not correctly increasing the amount of chains
+            // https://github.com/SimCMinMax/WoW-BugTracker/issues/1124
+            if ( !priest().bugs || s->target->health_percentage() < execute_percent )
+            {
+              number_of_chains += priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 2 ).base_value();
+            }
+          }
+        }
+
+        sim->print_debug( "{} shadow_word_death_state: chain_number: {}, max_chain: {}", player->name(),
+                          curr_state->chain_number, number_of_chains );
+
+        if ( curr_state->chain_number < curr_state->max_chain )
+        {
+          shadow_word_death_t* child_death = priest().background_actions.shadow_word_death.get();
+          state_t* state                   = child_death->cast_state( child_death->get_state() );
+          state->target                    = s->target;
+          state->chain_number              = curr_state->chain_number + 1;
+          state->deathspeaker              = curr_state->deathspeaker;
+          state->max_chain                 = number_of_chains;
+
+          child_death->snapshot_state( state, child_death->amount_type( state ) );
+
+          make_event( sim, 200_ms, [ this, state, child_death ] { child_death->schedule_execute( state ); } );
+        }
+      }
+
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
         // target is not killed
         if ( priest().is_ptr() )
         {
-          shadow_word_death_self_damage->execute();
+          make_event( sim, 1_s,
+                      [ this, s ] { shadow_word_death_self_damage->trigger( cast_state( s )->chain_number ); } );
         }
         else
         {
@@ -1164,7 +1292,9 @@ struct shadow_word_death_t final : public priest_spell_t
         }
       }
 
-      if ( priest().talents.shadow.psychic_link.enabled() )
+      // BUG: Unsure if intended but only the original one triggers PL
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/1123
+      if ( priest().talents.shadow.psychic_link.enabled() && cast_state( s )->chain_number == 0 )
       {
         priest().trigger_psychic_link( s );
       }
@@ -2387,8 +2517,14 @@ void priest_t::init_background_actions()
   player_t::init_background_actions();
 
   background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
+  background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
+
+  background_actions.shadow_word_death->background = true;
+  background_actions.shadow_word_death->dual       = true;
+  background_actions.shadow_word_death->proc       = true;
+
   init_background_actions_shadow();
   init_background_actions_discipline();
   init_background_actions_holy();
