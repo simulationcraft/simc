@@ -8228,6 +8228,8 @@ struct primordial_wave_t : public shaman_spell_t
     {
       shaman_spell_t::impact( s );
 
+      p()->buff.primordial_wave->trigger();
+
       p()->trigger_secondary_flame_shock( s );
 
       if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
@@ -8258,8 +8260,6 @@ struct primordial_wave_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    p()->buff.primordial_wave->trigger();
 
     if ( p()->talent.primal_maelstrom.ok() )
     {
