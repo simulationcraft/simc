@@ -6004,7 +6004,8 @@ void trigger_elemental_blast_proc( shaman_t* p )
 
 void trigger_all_elemental_blast_buffs( shaman_t* p )
 {
-  if ( !p->specialization() == SHAMAN_ELEMENTAL || !p->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
+  if ( p->specialization() != SHAMAN_ELEMENTAL ||
+       !p->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
   { 
     return trigger_elemental_blast_proc( p );
   }
@@ -8215,13 +8216,34 @@ struct thundercharge_t : public shaman_spell_t
 
 struct primordial_wave_t : public shaman_spell_t
 {
+  struct primordial_wave_damage_t : public shaman_spell_t
+  {
+    primordial_wave_damage_t( shaman_t* player ) :
+      shaman_spell_t( "primordial_wave_damage", player, player->find_spell( 375984 )  )
+    {
+      background = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      shaman_spell_t::impact( s );
+
+      p()->trigger_secondary_flame_shock( s );
+
+      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
+      {
+        p()->action.elemental_blast->set_target( target );
+        p()->action.elemental_blast->execute();
+      }
+    }
+  };
+
   primordial_wave_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "primordial_wave", player, player->talent.primordial_wave )
   {
     parse_options( options_str );
-    // attack/spell power valujes are on a secondary spell
-    attack_power_mod.direct = player->find_spell( 327162 )->effectN( 1 ).ap_coeff();
-    spell_power_mod.direct  = player->find_spell( 327162 )->effectN( 1 ).sp_coeff();
+
+    impact_action = new primordial_wave_damage_t( player );
   }
 
   void init() override
@@ -8259,19 +8281,6 @@ struct primordial_wave_t : public shaman_spell_t
     {
       p()->summon_feral_spirits( p()->spell.feral_spirit->duration(), 1, true,
                                  p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    shaman_spell_t::impact( s );
-
-    p()->trigger_secondary_flame_shock( s );
-
-    if ( p()->sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B2) )
-    {
-      p()->action.elemental_blast->set_target( target );
-      p()->action.elemental_blast->execute();
     }
   }
 };
