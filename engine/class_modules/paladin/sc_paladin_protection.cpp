@@ -639,10 +639,9 @@ struct judgment_prot_t : public judgment_t
         td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.heartfire_sentinels_authority_2pc->duration() );
         p()->trigger_grand_crusader( GC_JUDGMENT );
       }
-      if (p()->spec.judgment_3->ok() )
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T31, B2 ) && !p()->buffs.sanctification_empower->up() )
       {
-        p()->sanctification();
-        p()->invalidate_cache( CACHE_BONUS_ARMOR );
+        p()->buffs.sanctification->trigger();
       }
     }
   }
@@ -1091,21 +1090,6 @@ void paladin_t::t29_4p_prot()
     buffs.ally_of_the_light->extend_duration( this, tier_sets.ally_of_the_light_4pc->effectN( 1 ).time_value() );
 }
 
-void paladin_t::sanctification()
-{
-    if (!buffs.sanctification_empower->up())
-    {
-    buffs.sanctification->trigger();
-    }
-  double stacks = 0.0;
-  int stackBefore = buffs.sanctification->stack();
-  if ( stackBefore >= 10 )
-  {
-    buffs.sanctification->expire();
-    buffs.sanctification_empower->trigger();
-  }
-};
-
 
 void paladin_t::adjust_health_percent( )
 {
@@ -1222,15 +1206,13 @@ void paladin_t::create_buffs_protection()
     ->add_invalidate( CACHE_PARRY );
 
   buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) )
-    ->set_default_value( 1 )
+    ->set_default_value_from_effect( 1 )
     ->set_max_stack(10)
     ->add_invalidate( CACHE_BONUS_ARMOR );
 
     buffs.sanctification_empower =
       make_buff( this, "sanctification_empower", find_spell( 424622 ) )
-        ->set_duration(14000_ms)
-        ->set_default_value_from_effect( 1 )
-        ->add_invalidate( CACHE_BONUS_ARMOR);
+        ->add_invalidate( CACHE_BONUS_ARMOR );
 }
 
 void paladin_t::init_spells_protection()
