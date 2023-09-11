@@ -1553,6 +1553,7 @@ class SpellDataGenerator(DataGenerator):
 
         # Rogue:
         (
+            ( 115192, 0 ),          # Subterfuge Buff
             ( 121474, 0 ),          # Shadow Blades off hand
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
