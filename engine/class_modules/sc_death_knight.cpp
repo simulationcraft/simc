@@ -3201,7 +3201,7 @@ struct magus_pet_t : public death_knight_pet_t
 
       if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ))
       {
-        aoe = 1 + as<int>(dk()->find_spell( 422854 )->effectN(2).base_value());
+        aoe = as<int>(dk()->find_spell( 422854 )->effectN(2).base_value());
       }
     }
   };
