@@ -1582,7 +1582,15 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   action_list_str += "/travel";
   action_list_str += "/headbutt";
 
-  owner_coeff.ap_from_sp = 0.23;
+  owner_coeff.ap_from_sp = 0.39; // 2023-09-01 update: Live VF damage was found to be lower in sims than on Live
+  owner_coeff.sp_from_sp = 1.7;
+
+  if ( owner->min_version_check( VERSION_10_2_0 ) )
+  {
+    owner_coeff.ap_from_sp *= 1.15;
+    owner_coeff.sp_from_sp *= 1.15;
+  }
+
   owner_coeff.health     = 0.75;
 
   bile_spit_executes = 1; // Only one Bile Spit per summon
@@ -1625,7 +1633,6 @@ void vilefiend_t::init_base_stats()
   warlock_simple_pet_t::init_base_stats();
 
   melee_attack = new warlock_pet_melee_t( this, 2.0 );
-  melee_attack->base_dd_multiplier *= 1.3; // 2023-03-19 Last minute hotfix for 10.0.7
 
   special_ability = new headbutt_t( this );
 }
