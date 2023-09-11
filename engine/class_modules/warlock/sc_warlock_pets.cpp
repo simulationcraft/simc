@@ -1385,10 +1385,13 @@ void wild_imp_pet_t::demise()
 
     if ( !power_siphon )
     {
-      double core_chance = o()->warlock_base.demonic_core->effectN( 1 ).percent();
+      double core_chance = o()->min_version_check( VERSION_10_2_0 ) ? o()->talents.demonic_core_spell->effectN( 1 ).percent() : o()->warlock_base.demonic_core->effectN( 1 ).percent();
 
       if ( o()->talents.bloodbound_imps.ok() )
         core_chance += o()->talents.bloodbound_imps->effectN( imploded ? 2 : 1 ).percent();
+
+      if ( !o()->talents.demoniac->ok() && o()->min_version_check( VERSION_10_2_0 ) )
+        core_chance = 0.0;
 
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
 
@@ -1537,8 +1540,16 @@ void dreadstalker_t::demise()
   if ( !current.sleeping )
   {
     o()->buffs.dreadstalkers->decrement();
-    o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->warlock_base.demonic_core->effectN( 2 ).percent() );
-    
+
+    if ( o()->talents.demoniac->ok() && o()->min_version_check( VERSION_10_2_0 ) )
+    {
+      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+    }
+    else
+    {
+      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->warlock_base.demonic_core->effectN( 2 ).percent() );
+    }
+
     if ( o()->talents.shadows_bite->ok() )
       o()->buffs.shadows_bite->trigger();
   }

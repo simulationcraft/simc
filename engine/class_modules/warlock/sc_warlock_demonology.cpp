@@ -208,7 +208,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     demonology_spell_t::execute();
 
-    if ( p()->talents.demonic_knowledge->ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
+    if ( ( p()->talents.demoniac || !p()->min_version_check( VERSION_10_2_0 ) ) && p()->talents.demonic_knowledge->ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
     {
       p()->buffs.demonic_core->trigger();
       p()->procs.demonic_knowledge->occur();
@@ -247,7 +247,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
 struct demonbolt_t : public demonology_spell_t
 {
-  demonbolt_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Demonbolt", p, p->talents.demonbolt )
+  demonbolt_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Demonbolt", p, ( p->min_version_check( VERSION_10_2_0 ) && p->talents.demoniac->ok() ) ? p->talents.demonbolt_spell : p->talents.demonbolt )
   {
     parse_options( options_str );
     energize_type = action_energize::ON_CAST;
@@ -261,7 +261,14 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->buffs.demonic_core->check() )
     {
-      et *= 1.0 + p()->warlock_base.demonic_core_buff->effectN( 1 ).percent();
+      if ( p()->min_version_check( VERSION_10_2_0 ) )
+      {
+        et *= 1.0 + p()->talents.demonic_core_buff->effectN( 1 ).percent();
+      }
+      else
+      {
+        et *= 1.0 + p()->warlock_base.demonic_core_buff->effectN( 1 ).percent();
+      }
     }
 
     return et;
@@ -751,7 +758,16 @@ struct power_siphon_t : public demonology_spell_t
     if ( is_precombat )
     {
       p()->buffs.power_siphon->trigger( 2, p()->talents.power_siphon_buff->duration() );
-      p()->buffs.demonic_core->trigger( 2, p()->warlock_base.demonic_core_buff->duration() );
+
+      if ( p()->min_version_check( VERSION_10_2_0 ) )
+      {
+        p()->buffs.demonic_core->trigger( 2, p()->talents.demonic_core_buff->duration() );
+      }
+      else
+      {
+        p()->buffs.demonic_core->trigger( 2, p()->warlock_base.demonic_core_buff->duration() );
+      }
+
       return;
     }
 
@@ -1193,7 +1209,7 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
 
 void warlock_t::create_buffs_demonology()
 {
-  buffs.demonic_core = make_buff( this, "demonic_core", warlock_base.demonic_core_buff );
+  buffs.demonic_core = make_buff( this, "demonic_core", min_version_check( VERSION_10_2_0 ) ? talents.demonic_core_buff : warlock_base.demonic_core_buff );
 
   buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
                            ->set_default_value_from_effect( 1 );
@@ -1284,6 +1300,11 @@ void warlock_t::init_spells_demonology()
   talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
 
   talents.demonbolt = find_talent_spell( talent_tree::SPECIALIZATION, "Demonbolt" ); // Should be ID 264178
+
+  talents.demoniac = find_talent_spell( talent_tree::SPECIALIZATION, "Demoniac" ); // Should be ID 426115
+  talents.demonbolt_spell = find_spell( 264178 );
+  talents.demonic_core_spell = find_spell( 267102 );
+  talents.demonic_core_buff = find_spell( 264173 );
 
   talents.dreadlash = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadlash" ); // Should be ID 264078
 
