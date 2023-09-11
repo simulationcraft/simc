@@ -575,7 +575,8 @@ public:
     buff_t* rattled_stars;
     buff_t* umbral_embrace;
     buff_t* warrior_of_elune;
-    buff_t* balance_t31_4pc_buff; // buff to track 4pc value
+    buff_t* balance_t31_4pc_buff; // buff to track t31 4pc value
+    buff_t* dreamstate;  // 2t31
 
     // Feral
     buff_t* apex_predators_craving;
@@ -7599,6 +7600,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
   double smolder_mul;
   double sotf_mul;
   unsigned sotf_cap;
+  bool dreamstate = false;
 
   starfire_t( druid_t* p, std::string_view opt )
     : base_t( "starfire", p, p->talent.starfire, opt ),
@@ -7634,6 +7636,35 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
       energize_type = action_energize::NONE;
   }
 
+  void schedule_execute( action_state_t* execute_state ) override
+  {
+    dreamstate = p()->buff.dreamstate->up();
+
+    druid_spell_t::schedule_execute( execute_state );
+  }
+
+  timespan_t execute_time() const override
+  {
+    auto et = druid_spell_t::execute_time();
+
+    if ( p()->buff.dreamstate->check() )
+      et *= 1 - p()->buff.dreamstate->data().effectN( 1 ).percent();
+
+    return et;
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.dreamstate->check() )
+      g *= 1 - p()->buff.dreamstate->data().effectN( 2 ).percent();
+
+    g = std::max( min_gcd, g );
+
+    return g;
+  }
+
   double sotf_multiplier( const action_state_t* s ) const
   {
     auto mul = 1.0;
@@ -7659,6 +7690,16 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
     return da;
   }
 
+  double action_multiplier() const override
+  {
+    auto am = base_t::action_multiplier();
+
+    if ( dreamstate && p()->buff.dreamstate->check() )
+      am *= 1.0 + p()->buff.dreamstate->data().effectN( 3 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     base_t::execute();
@@ -7682,6 +7723,10 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
       p()->buff.warrior_of_elune->decrement();
 
     p()->buff.gathering_starstuff->expire();
+
+    if ( dreamstate )
+      p()->buff.dreamstate->decrement();
+    dreamstate = false;
 
     if ( is_free_proc() )
       return;
@@ -8155,6 +8200,7 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
   double gcd_mul;
   double smolder_mul;
   unsigned count = 0;
+  bool dreamstate = false;
 
   wrath_t( druid_t* p, std::string_view opt ) : wrath_t( p, "wrath", opt ) {}
 
@@ -8182,6 +8228,13 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     return p()->buff.eclipse_solar->check() ? ap_eclipse : ap_base;
   }
 
+  void schedule_execute( action_state_t* execute_state ) override
+  {
+    dreamstate = p()->buff.dreamstate->up();
+
+    druid_spell_t::schedule_execute( execute_state );
+  }
+
   timespan_t travel_time() const override
   {
     if ( !count )
@@ -8192,6 +8245,16 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     return std::max( 1_ms, base_t::travel_time() - base_execute_time * composite_haste() * count );
   }
 
+  timespan_t execute_time() const override
+  {
+    auto et = druid_spell_t::execute_time();
+
+    if ( p()->buff.dreamstate->check() )
+      et *= 1 - p()->buff.dreamstate->data().effectN( 1 ).percent();
+
+    return et;
+  }
+
   timespan_t gcd() const override
   {
     timespan_t g = base_t::gcd();
@@ -8199,6 +8262,9 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     // Move this into parse_buff_effects if it becomes more prevalent. Currently only used for wrath & dash
     if ( p()->buff.eclipse_solar->up() )
       g *= 1.0 + gcd_mul;
+
+    if ( p()->buff.dreamstate->check() )
+      g *= 1 - p()->buff.dreamstate->data().effectN( 2 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -8215,11 +8281,25 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     return base_t::target_ready( t );
   }
 
+  double action_multiplier() const override
+  {
+    auto am = base_t::action_multiplier();
+
+    if ( dreamstate && p()->buff.dreamstate->check() )
+      am *= 1.0 + p()->buff.dreamstate->data().effectN( 3 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     base_t::execute();
 
     p()->buff.gathering_starstuff->expire();
+
+    if ( dreamstate )
+      p()->buff.dreamstate->decrement();
+    dreamstate = false;
 
     if ( is_free_proc() )
       return;
@@ -9985,18 +10065,22 @@ void druid_t::create_buffs()
   buff.warrior_of_elune =
       make_buff_fallback( talent.warrior_of_elune.ok(), this, "warrior_of_elune", talent.warrior_of_elune )
           ->set_reverse( true );
-
   buff.balance_t31_4pc_buff =
-      make_buff_fallback( sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff",
+      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff",
                           sets->set( DRUID_BALANCE, T31, B4 ) )
           ->set_default_value_from_effect( 1 )
-          ->set_max_stack( as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
-                                    sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() ) )
+          ->set_max_stack( is_ptr() ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
+                                               sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
+                                    : 1 )
           ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
             if ( new_ )
               buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->stack_value();
             buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->stack_value();
           } );
+  
+  buff.dreamstate = make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B2 ), this, "dreamstate",
+                                        find_spell( 424248 ) )
+                        ->set_reverse( true );
 
   // Feral buffs
   buff.apex_predators_craving = make_buff_fallback( talent.apex_predators_craving.ok(),
@@ -11474,6 +11558,9 @@ void druid_t::combat_begin()
       if ( curr > cap )
         sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
     }
+
+    if ( sets->has_set_bonus( DRUID_BALANCE, T31, B2 ) )
+      buff.dreamstate->trigger();
   }
 /*
   if ( talent.adaptive_swarm.ok() && !prepull_swarm.empty() && find_action( "adaptive_swarm" ) )
@@ -12699,6 +12786,7 @@ void eclipse_handler_t::advance_eclipse()
 
     case IN_SOLAR:
       p->buff.natures_grace->trigger();
+      p->buff.dreamstate->trigger();
 
       state = ANY_NEXT;
       p->uptime.eclipse_solar->update( false, p->sim->current_time() );
@@ -12707,6 +12795,7 @@ void eclipse_handler_t::advance_eclipse()
 
     case IN_LUNAR:
       p->buff.natures_grace->trigger();
+      p->buff.dreamstate->trigger();
 
       state = ANY_NEXT;
       p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
@@ -12715,6 +12804,7 @@ void eclipse_handler_t::advance_eclipse()
 
     case IN_BOTH:
       p->buff.natures_grace->trigger();
+      p->buff.dreamstate->trigger();
 
       state = ANY_NEXT;
       p->uptime.eclipse_solar->update( false, p->sim->current_time() );
