@@ -10016,9 +10016,9 @@ void druid_t::create_buffs()
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
           ->set_max_stack( 99 );
 
-  buff.rattled_stars = make_buff_fallback( talent.rattle_the_stars.ok(),
-      this, "rattled_stars", find_trigger( talent.rattle_the_stars ).trigger() )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buff.rattled_stars = make_buff_fallback( !is_ptr() && talent.rattle_the_stars.ok(), this, "rattled_stars",
+                                           find_trigger( talent.rattle_the_stars ).trigger() )
+                           ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.shooting_stars_moonfire = make_buff_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok(),
       this, "shooting_stars_moonfire", dot_list.moonfire, active.shooting_stars_moonfire );
@@ -12986,6 +12986,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
   action.apply_affecting_aura( talent.wild_surges );
+  if ( is_ptr() )
+    action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
   // Feral
