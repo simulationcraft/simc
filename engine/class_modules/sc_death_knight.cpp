@@ -2383,7 +2383,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     // Running a script ingame shows the correct values
     if (is_ptr())
     {
-      owner_coeff.ap_from_ap = 0.65;
+      owner_coeff.ap_from_ap = 0.6534;
     }
     else
     {
@@ -2530,12 +2530,12 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     {
       if ( name_str == "army_ghoul" )
       {
-        owner_coeff.ap_from_ap = 0.3525;
+        owner_coeff.ap_from_ap = 0.3498;
       }
 
       if ( name_str == "apoc_ghoul" )
       {
-        owner_coeff.ap_from_ap = 0.526;
+        owner_coeff.ap_from_ap = 0.522368;
       }
     }
   }
