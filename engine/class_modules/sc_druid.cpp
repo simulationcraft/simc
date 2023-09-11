@@ -10069,7 +10069,8 @@ void druid_t::create_buffs()
       make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff",
                           sets->set( DRUID_BALANCE, T31, B4 ) )
           ->set_default_value_from_effect( 1 )
-          ->set_max_stack( is_ptr() ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
+          ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
+                               ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
                                                sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
                                     : 1 )
           ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
