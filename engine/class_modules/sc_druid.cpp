@@ -7648,7 +7648,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
     auto et = druid_spell_t::execute_time();
 
     if ( p()->buff.dreamstate->check() )
-      et *= 1 - p()->buff.dreamstate->data().effectN( 1 ).percent();
+      et *= 1 + p()->buff.dreamstate->data().effectN( 1 ).percent();
 
     return et;
   }
@@ -7658,7 +7658,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
     timespan_t g = druid_spell_t::gcd();
 
     if ( p()->buff.dreamstate->check() )
-      g *= 1 - p()->buff.dreamstate->data().effectN( 2 ).percent();
+      g *= 1 + p()->buff.dreamstate->data().effectN( 2 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -8250,7 +8250,7 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     auto et = druid_spell_t::execute_time();
 
     if ( p()->buff.dreamstate->check() )
-      et *= 1 - p()->buff.dreamstate->data().effectN( 1 ).percent();
+      et *= 1 + p()->buff.dreamstate->data().effectN( 1 ).percent();
 
     return et;
   }
@@ -8264,7 +8264,7 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
       g *= 1.0 + gcd_mul;
 
     if ( p()->buff.dreamstate->check() )
-      g *= 1 - p()->buff.dreamstate->data().effectN( 2 ).percent();
+      g *= 1 + p()->buff.dreamstate->data().effectN( 2 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -10071,12 +10071,11 @@ void druid_t::create_buffs()
           ->set_default_value_from_effect( 1 )
           ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
                                ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
-                                               sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
-                                    : 1 )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
-            if ( new_ )
-              buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->stack_value();
-            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->stack_value();
+                                          sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
+                               : 1 )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+            buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->check_stack_value();
+            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->check_stack_value();
           } );
   
   buff.dreamstate = make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B2 ), this, "dreamstate",
