@@ -331,7 +331,7 @@ public:
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // TODO: REMOVED in 10.2
-    // TODO: 10.2 New talent Volatile Fiends - increased damage for Implosion and Bilescourge Bombers as well as proc for BB
+    player_talent_t volatile_fiends; // Increase Implosion and Bilescourge Bombers damage. Other spells may proc a BB
     player_talent_t inner_demons; // TODO: 10.2 has removed the "Summon Random Demon" proc
     player_talent_t doom;
     player_talent_t demonic_calling;

@@ -434,6 +434,9 @@ struct implosion_t : public demonology_spell_t
       aoe = -1;
       background = dual = true;
       callbacks = false;
+
+      if ( p->talents.volatile_fiends->ok() )
+        base_dd_multiplier *= 1.0 + p->talents.volatile_fiends->effectN( 1 ).percent();
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -1347,6 +1350,8 @@ void warlock_t::init_spells_demonology()
   talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
 
   talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
+
+  talents.volatile_fiends = find_talent_spell( talent_tree::SPECIALIZATION, "Volatile Fiends" ); // Should be ID 422054
   
   talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 
