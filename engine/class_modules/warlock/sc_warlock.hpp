@@ -117,6 +117,7 @@ public:
   double corruption_accumulator;
   double cdf_accumulator; // For T30 Destruction tier set
   int incinerate_last_target_count; // For use with T30 Destruction tier set
+  double volatile_fiends_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Volatile Fiends
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
 
   unsigned active_pets;
@@ -331,7 +332,7 @@ public:
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // TODO: REMOVED in 10.2
-    // TODO: 10.2 New talent Volatile Fiends - increased damage for Implosion and Bilescourge Bombers as well as proc for BB
+    player_talent_t volatile_fiends; // Increase Implosion and Bilescourge Bombers damage. Other spells may proc a BB
     player_talent_t inner_demons; // TODO: 10.2 has removed the "Summon Random Demon" proc
     player_talent_t doom;
     player_talent_t demonic_calling;
@@ -475,6 +476,7 @@ public:
     action_t* soul_flame_proc;
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
+    action_t* bilescourge_bombers_proc; // From Volatile Fiends talent
     action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
     action_t* summon_nether_portal_demon; // Separate version for Nether Portal based summons due to Ner'zhul's Volition
     action_t* rain_of_fire_tick;
@@ -640,6 +642,7 @@ public:
     proc_t* summon_random_demon;
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers;
+    proc_t* volatile_fiends; // Bilescourge Bomber proc on most spells
     proc_t* imp_gang_boss;
     proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
