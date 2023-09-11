@@ -492,6 +492,7 @@ public:
     const spell_data_t* cruel_inspiration; // T29 2pc procs haste buff
     const spell_data_t* cruel_epiphany; // T29 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
     const spell_data_t* infirmity; // T30 4pc applies this debuff when using Vile Taint/Phantom Singularity
+    const spell_data_t* soulstealer; // T31 4pc buff from casting Soulrot
 
     // Demonology
     const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
@@ -544,6 +545,7 @@ public:
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
     propagate_const<buff_t*> cruel_inspiration; // T29 2pc
     propagate_const<buff_t*> cruel_epiphany; // T29 4pc
+    propagate_const<buff_t*> soulstealer;  // T31 4pc buff
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_power; // Buff from Summon Demonic Tyrant (increased demon damage + duration)

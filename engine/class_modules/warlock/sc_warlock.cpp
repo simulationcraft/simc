@@ -583,6 +583,9 @@ struct soul_rot_t : public warlock_spell_t
   {
     parse_options( options_str );
     aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
+
+    if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B2 ) )
+      apply_affecting_aura( p->sets->set( WARLOCK_AFFLICTION, T31, B2 ) );
   }
 
   soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
@@ -598,6 +601,9 @@ struct soul_rot_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p()->buffs.soul_rot->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
+      p()->buffs.soulstealer->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -2286,7 +2292,6 @@ void warlock_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.dark_virtuosity );
   action.apply_affecting_aura( talents.kindled_malice );
   action.apply_affecting_aura( talents.xavius_gambit ); // TOCHECK: Should this just go in Unstable Affliction struct for clarity?
-
 }
 
 struct warlock_module_t : public module_t
