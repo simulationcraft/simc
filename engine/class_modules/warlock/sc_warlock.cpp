@@ -1152,8 +1152,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     procs(),
     initial_soul_shards( 3 ),
     disable_auto_felstorm( false ),
-    default_pet(),
-    use_pet_stat_update_delay( false )
+    default_pet()
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.darkglare = get_cooldown( "summon_darkglare" );
@@ -1841,7 +1840,6 @@ void warlock_t::create_options()
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
   add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
-  add_option( opt_bool( "use_pet_stat_update_delay", use_pet_stat_update_delay ) );
 }
 
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan

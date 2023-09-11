@@ -52,7 +52,6 @@ struct pet_t : public player_t
     double composite_melee_crit = 0.0;
     double composite_spell_crit = 0.0;
   } current_pet_stats;
-  bool use_delayed_pet_stat_updates;
 
 
 public:
