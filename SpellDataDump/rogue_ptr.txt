@@ -104,7 +104,7 @@ Cooldown         : 6 seconds
 Labels           : 2353: Sepsis (375939 effect#3), Sepsis (375939 effect#4)
                  : 2865: Indiscriminate Carnage (385747 effect#1), Indiscriminate Carnage (385747 effect#2), Indiscriminate Carnage (385754 effect#1), Indiscriminate Carnage (385754 effect#2)
 Mechanic         : Bleed
-Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effects: #5, #6), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Sepsis (375939 effect#2), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Septic Wounds (394845 effect#1), Sudden Demise (423136 effect#1)
+Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effects: #5, #6), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Sepsis (375939 effect#2), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Septic Wounds (394845 effect#1), Sudden Demise (423136 effect#1)
 Family Flags     : 8, 54
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ....x... ........   ........ ..x..... ........ ........ 
@@ -822,7 +822,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Tree of Life (5420 effects: #7, #8), Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6, #8), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #4, #5, #22), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Umbral Embrace (393763 effect#2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Friend of the Fae (394083 effects: #1, #2), Gathering Starstuff (394412 effect#1), Circle of Life and Death (400320 effects: #1, #3), Wild Surges (406890 effects: #1, #2), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #7, #8), Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6, #8), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #4, #5, #22), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Umbral Embrace (393763 effect#2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Friend of the Fae (394083 effects: #1, #2), Gathering Starstuff (394412 effect#1), Circle of Life and Death (400320 effects: #1, #3), Wild Surges (406890 effects: #1, #2), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effects: #1, #2), Dreamstate (424248 effects: #1, #2, #3), Liveliness (426702 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2664,6 +2664,7 @@ Effects          :
                    Family Flags: 22
 #2 (id=322830)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 2890 (Label) | Target: Self (1)
+                   Affected Spells (Label): Subterfuge (115192)
 #3 (id=370946)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Vanish (11327)
@@ -2916,6 +2917,32 @@ Effects          :
                    Family Flags: 8
 Description      : Conceals you in the shadows until cancelled, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3%. ]?s13975[Movement speed while stealthed is increased by $s3%. ][]$?s31223[Attacks from Stealth and for $31223s1 sec after deal $31665s1% more damage.][]
 Tooltip          : Stealthed.
+
+Name             : Subterfuge (id=115192) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 2890: Subterfuge (108208 effect#2), Underhanded Upper Hand (424044 effect#2)
+Attributes       : ........ ........ ........ .......x   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31), Allow While Stealthed (37), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=128893)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=339938)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+#3 (id=339939)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Garrote (703), Garrote (360830)
+                   Family Flags: 8
+Description      : $@spelldesc108208
+Tooltip          : Temporarily concealed in the shadows.
 
 Name             : Crippling Poison (id=115196) [Spell Family (8)] 
 Class            : Rogue
@@ -12148,7 +12175,7 @@ Duration         : 18 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Labels           : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
 Mechanic         : Bleed
-Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effects: #5, #6), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Sepsis (375939 effect#2), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Septic Wounds (394845 effect#1), Sudden Demise (423136 effect#1)
+Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effects: #5, #6), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Sepsis (375939 effect#2), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Septic Wounds (394845 effect#1), Sudden Demise (423136 effect#1)
 Family Flags     : 8, 54
 Attributes       : ....x... ........ x.x..x.. ........   .....x.. .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -17083,6 +17110,7 @@ Effects          :
                    Family Flags: 22
 #2 (id=1100577)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 2890 (Label) | Target: Self (1)
+                   Affected Spells (Label): Subterfuge (115192)
 Description      : Slice and Dice does not lose duration during Blade Flurry.
 
 Blade Flurry does not lose duration during Adrenaline Rush.

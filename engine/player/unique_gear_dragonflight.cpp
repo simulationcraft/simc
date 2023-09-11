@@ -654,6 +654,155 @@ void shadowflame_wreathe( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 425838 Main Driver & Values
+// 426339 Melee Driver
+// 426534 Melee ST damage
+// 426535 Melee AoE damage
+// 426341 Ranged Driver
+// 426486 Ranged AoE damage 1
+// 426431 Ranged AoE damage 2 -- Both of these proc in game as of 8/9/23. Recheck in the future. See log below.
+// https://www.warcraftlogs.com/reports/RpDBKMy8TzN3Pw4n#fight=last&type=damage-done&source=12&ability=-426341
+// 426288 Tank Driver
+// 426289 Tank Buff
+// 426306 Tank Damage
+// 426262 Healer Driver
+// 426269 Healer Buff
+// 426297 Healer Damage
+// 426321 Healer HoT
+// 426322 Healer Stat Buff
+// 426382 Healer Unknown
+// TODO : Double check the right effects are mapped to the right spells
+// Implement delay between Ranged DPS damage events, 1_s delay between every 2 hits.
+// Implement Tank/Healer versions
+void incandescent_essence( special_effect_t& e )
+{
+  auto melee_driver  = e.player->find_spell( 426339 );
+  auto ranged_driver = e.player->find_spell( 426341 );
+  auto tank_driver   = e.player->find_spell( 426288 );
+  auto healer_driver = e.player->find_spell( 426262 );
+
+  struct ingras_cruel_nightmare_t : public generic_proc_t
+  {
+  action_t* aoe_damage;
+  action_t* st_damage;
+  ingras_cruel_nightmare_t( const special_effect_t& e )
+    : generic_proc_t( e, "igiras_cruel_nightmare", 426339 ),
+      aoe_damage( create_proc_action<generic_aoe_proc_t>( "igias_sharpened_iron", e, "igiras_sharpened_iron",
+                                                          e.player->find_spell( 426535 ), true ) ),
+      st_damage(
+          create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard", e.player->find_spell( 426534 ) ) )
+  {
+    aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+    st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 5 ).average( e.item );
+
+    add_child( aoe_damage );
+    add_child( st_damage );
+  }
+
+  void execute() override
+  {
+    if ( sim->target_non_sleeping_list.size() == 1 )
+    {
+      st_damage->execute();
+    }
+    else
+    {
+      aoe_damage->execute();
+    }
+    generic_proc_t::execute();
+  }
+  };
+
+  struct tindrals_fowl_fantasia_t : public generic_proc_t
+  {
+  action_t* main_damage;
+  action_t* secondary_damage;
+  tindrals_fowl_fantasia_t( const special_effect_t& e )
+    : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
+      main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
+                                                           e.player->find_spell( 426486 ), true ) ),
+      secondary_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame_secondary", e,
+                                                                "denizen_of_the_flame_secondary",
+                                                                e.player->find_spell( 426431 ), true ) )
+  {
+    main_damage->base_dd_min = main_damage->base_dd_max =
+        e.driver()->effectN( 7 ).average( e.item ) / 2;  // Damage appears to be divided between the two main hits
+    secondary_damage->base_dd_min = secondary_damage->base_dd_max =
+        e.driver()->effectN( 7 ).average( e.item ) / 4;  // Damage appears to be divided between the 4 secondary hits
+
+    add_child( main_damage );
+    add_child( secondary_damage );
+  }
+
+  void execute() override
+  {
+    main_damage->execute();
+    main_damage->execute();  // Main damage seems to execute twice
+    secondary_damage->execute();
+    secondary_damage->execute();
+    secondary_damage->execute();
+    secondary_damage->execute();  // Secondary damage seems to execute 4 times
+    generic_proc_t::execute();
+  }
+  };
+
+  switch ( e.player->_spec )
+  {
+  case HUNTER_BEAST_MASTERY:
+  case HUNTER_MARKSMANSHIP:
+  case PRIEST_SHADOW:
+  case SHAMAN_ELEMENTAL:
+  case MAGE_ARCANE:
+  case MAGE_FIRE:
+  case MAGE_FROST:
+  case WARLOCK_AFFLICTION:
+  case WARLOCK_DEMONOLOGY:
+  case WARLOCK_DESTRUCTION:
+  case DRUID_BALANCE:
+  case EVOKER_DEVASTATION:
+  case EVOKER_AUGMENTATION:
+    e.spell_id       = ranged_driver->id();
+    e.execute_action = create_proc_action<tindrals_fowl_fantasia_t>( "tindrals_fowl_fantasia", e );
+    break;
+  case WARRIOR_PROTECTION:
+  case PALADIN_PROTECTION:
+  case DEATH_KNIGHT_BLOOD:
+  case MONK_BREWMASTER:
+  case DRUID_GUARDIAN:
+  case DEMON_HUNTER_VENGEANCE:
+    e.spell_id = tank_driver->id();
+    break;
+  case PALADIN_HOLY:
+  case PRIEST_DISCIPLINE:
+  case PRIEST_HOLY:
+  case SHAMAN_RESTORATION:
+  case MONK_MISTWEAVER:
+  case DRUID_RESTORATION:
+  case EVOKER_PRESERVATION:
+    e.spell_id = healer_driver->id();
+    break;
+  case WARRIOR_ARMS:
+  case WARRIOR_FURY:
+  case PALADIN_RETRIBUTION:
+  case HUNTER_SURVIVAL:
+  case ROGUE_ASSASSINATION:
+  case ROGUE_OUTLAW:
+  case ROGUE_SUBTLETY:
+  case DEATH_KNIGHT_FROST:
+  case DEATH_KNIGHT_UNHOLY:
+  case SHAMAN_ENHANCEMENT:
+  case MONK_WINDWALKER:
+  case DRUID_FERAL:
+  case DEMON_HUNTER_HAVOC:
+  default:
+    e.spell_id       = melee_driver->id();
+    e.execute_action = create_proc_action<ingras_cruel_nightmare_t>( "ingras_cruel_nightmare", e );
+    break;
+  }
+
+  new dbc_proc_callback_t( e.player, e );
+}
+
 }  // namespace enchants
 
 namespace items
@@ -7841,6 +7990,7 @@ void register_special_effects()
   register_special_effect( { 385939, 386127, 386136 }, enchants::projectile_propulsion_pinion );
   register_special_effect( { 387302, 387303, 387306 }, enchants::temporal_spellthread );
   register_special_effect( { 405764, 405765, 405766 }, enchants::shadowflame_wreathe );
+  register_special_effect( 425838, enchants::incandescent_essence );
 
   // Trinkets
   register_special_effect( 408671, items::dragonfire_bomb_dispenser );

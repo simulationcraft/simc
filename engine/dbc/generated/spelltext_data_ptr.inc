@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51239
-static const std::array<spelltext_data_t, 20395> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20400> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -3573,6 +3573,7 @@ static const std::array<spelltext_data_t, 20395> __ptr_spelltext_data { {
   { 115176, "Reduces all damage taken by $s2% for $d. Being hit by a melee attack, or taking another action$?s328682[ other than movement][] will cancel this effect.", "Damage taken reduced by $s2%.", 0 },
   { 115181, "Breathe fire on targets in front of you, causing $s1 Fire damage. Deals reduced damage to secondary targets.\r\n\r\nTargets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.", 0, 0 },
   { 115191, "Conceals you in the shadows until cancelled, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3%. ]?s13975[Movement speed while stealthed is increased by $s3%. ][]$?s31223[Attacks from Stealth and for $31223s1 sec after deal $31665s1% more damage.][]", "Stealthed.", 0 },
+  { 115192, "$@spelldesc108208", "Temporarily concealed in the shadows.", 0 },
   { 115196, "An intense application of Crippling Poison reduces the target's movement speed by $s1% for $d.", "Movement speed slowed by $s1%.", 0 },
   { 115203, "$@spelldesc120954", 0, 0 },
   { 115288, "Chug an Energizing Elixir, granting $s2 Chi and generating ${$s1/5*5} Energy over $d.", "Generating ${$w1/5} extra Energy per sec.", 0 },
@@ -20375,9 +20376,13 @@ static const std::array<spelltext_data_t, 20395> __ptr_spelltext_data { {
   { 426386, "Taking damage has a chance to cause a |CFFffffffSlumbering Dream|R to flourish, shielding you for $s2 over $426388d and causing a |CFFffffffFlourishing Dream|R to mark a friendly ally within $426388a2 yards.\r\n\r\nMoving within 5 yards of an ally marked with a |CFFffffffFlourishing Dream|R causes it to awaken, shielding you and your ally for $s3 over $426388d sec. ", 0, 0 },
   { 426388, "$@spelldesc426386", "Slumbering Dream grants an absorb shield for $w1 damage.", 0 },
   { 426401, "$@spelldesc45243", "All magical damage taken reduced by $w1%.\r\n\r\nAll physical damage taken reduced by $w2%.", 0 },
+  { 426431, "@$spelldesc426341", 0, 0 },
   { 426450, "$@spelldesc424406", "Preventing further visuals from Thorn Burst.", 0 },
   { 426468, "$@spelldesc426552", "Versatility increased by $w1. Move closer to the tethered target to increase Versatility.", 0 },
+  { 426486, "@$spelldesc426341", 0, 0 },
   { 426512, "Touching the Ironfur grants you immense resilience for a few minutes while outdoors in the Emerald Dream!", "The Ironfur has granted you immense resilience, increasing your armor by $w1.", 0 },
+  { 426534, "$@spelldesc426339", 0, 0 },
+  { 426535, "$@spelldesc426339", 0, 0 },
   { 426552, "Your healing abilities have the chance to tether you to a friendly ally, granting both players between ${$s2/2} to $s2 versatility depending distance.", "Your healing abilities have the chance to tether you to a friendly ally, granting both players between ${$w2/2} to $w2 versatility depending distance.", 0 },
   { 426553, "$@spelldesc423124", "Your critical strikes deal $423124w2% additional damage as Fire split between nearby enemies.", 0 },
   { 426555, "Symbols of Death increases your Haste by $s1%.", 0, 0 },

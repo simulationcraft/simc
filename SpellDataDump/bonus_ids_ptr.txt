@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4726,7 +4726,7 @@ bonus_id={ 9366 }, base_ilevel={ 411 }, desc={ Shadowflame Crafted }
 bonus_id={ 9367 }, base_ilevel={ 411 }
 bonus_id={ 9368 }, ilevel_adjust={ 7 }
 bonus_id={ 9369 }, ilevel_adjust={ 13 }
-bonus_id={ 9370 }, ilevel={ 1 @plvl 1 - 174 @plvl 70 }
+bonus_id={ 9370 }, ilevel={ 14 @plvl 1 - 187 @plvl 70 }
 bonus_id={ 9371 }, base_ilevel={ 382 }, quality={ rare }
 bonus_id={ 9372 }, base_ilevel={ 395 }, quality={ epic }
 bonus_id={ 9373 }, base_ilevel={ 424 }
@@ -4787,4 +4787,60 @@ bonus_id={ 9474 }, ilevel_adjust={ -408 }
 bonus_id={ 9475 }, ilevel_adjust={ -409 }
 bonus_id={ 9476 }, ilevel_adjust={ -410 }
 bonus_id={ 9492 }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
+bonus_id={ 9498 }, base_ilevel={ 437 }, desc={ Dream Crafted }
+bonus_id={ 9499 }, base_ilevel={ 450 }
+bonus_id={ 9500 }, base_ilevel={ 460 }
+bonus_id={ 9502 }, base_ilevel={ 421 }, quality={ epic }
+bonus_id={ 9516 }, socket={ 1 }
 bonus_id={ 9520 }, ilevel={ 206 @plvl 58 - 316 @plvl 69 }
+bonus_id={ 9521 }, effects={ Verdant Conduit (id=418410, index=0, type=equip) }
+bonus_id={ 9527 }, base_ilevel={ 399 }
+bonus_id={ 9532 }, effects={ Dreamtender's Charm (id=419368, index=0, type=equip) }
+bonus_id={ 9533 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 411 @plvl 70 }
+bonus_id={ 9534 }, quality={ rare }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
+bonus_id={ 9535 }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
+bonus_id={ 9536 }, quality={ rare }
+bonus_id={ 9537 }, quality={ rare }
+bonus_id={ 9538 }, quality={ rare }
+bonus_id={ 9539 }, quality={ rare }
+bonus_id={ 9540 }, quality={ epic }
+bonus_id={ 9541 }, quality={ epic }
+bonus_id={ 9542 }, quality={ epic }
+bonus_id={ 9543 }, quality={ epic }
+bonus_id={ 9544 }, quality={ uncommon }
+bonus_id={ 9545 }, quality={ uncommon }
+bonus_id={ 9546 }, quality={ rare }
+bonus_id={ 9547 }, quality={ rare }
+bonus_id={ 9548 }, quality={ rare }
+bonus_id={ 9549 }, quality={ rare }
+bonus_id={ 9550 }, quality={ rare }
+bonus_id={ 9551 }, quality={ rare }
+bonus_id={ 9552 }, quality={ epic }
+bonus_id={ 9553 }, quality={ epic }
+bonus_id={ 9554 }, quality={ epic }
+bonus_id={ 9555 }, quality={ epic }
+bonus_id={ 9556 }, quality={ epic }
+bonus_id={ 9557 }, quality={ epic }
+bonus_id={ 9558 }, quality={ epic }
+bonus_id={ 9559 }, quality={ epic }
+bonus_id={ 9560 }, quality={ epic }
+bonus_id={ 9561 }, quality={ epic }
+bonus_id={ 9562 }, quality={ epic }
+bonus_id={ 9563 }, quality={ epic }
+bonus_id={ 9564 }, quality={ epic }
+bonus_id={ 9565 }, quality={ epic }
+bonus_id={ 9566 }, quality={ epic }
+bonus_id={ 9567 }, quality={ epic }
+bonus_id={ 9568 }, quality={ epic }
+bonus_id={ 9569 }, quality={ epic }
+bonus_id={ 9570 }, quality={ epic }
+bonus_id={ 9571 }, quality={ epic }
+bonus_id={ 9572 }, quality={ epic }
+bonus_id={ 9573 }, quality={ epic }
+bonus_id={ 9574 }, quality={ epic }
+bonus_id={ 9575 }, quality={ epic }
+bonus_id={ 9576 }, quality={ epic }
+bonus_id={ 9577 }, quality={ epic }
+bonus_id={ 9578 }, quality={ epic }
+bonus_id={ 9581 }, quality={ epic }
+bonus_id={ 9614 }, effects={ Verdant Tether (id=426552, index=0, type=equip) }

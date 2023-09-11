@@ -16296,6 +16296,26 @@ Effects          :
 Description      : Casting Glacial Spike has a $s1% chance to trigger Brain Freeze.
 
 
+Name             : Glacial Blast (id=424120) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
+                 : x....... ........ ........ .....x..   ........ ........ ........ ......x. 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Redirection (35), No Reflection (39), Allow Dead Target (64), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Do Not Chain To Crowd-Controlled Targets (200), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1100599)  : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : $@spelldesc422884
+
 Name             : Searing Rage (id=424285) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
