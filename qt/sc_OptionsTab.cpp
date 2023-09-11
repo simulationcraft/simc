@@ -236,6 +236,8 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) : QTabWidget( parent ), ma
 #if SC_USE_PTR
   itemSourceOptions.emplace_back( tr( "Wowhead.com (PTR)" ), "ptrhead",
                                   tr( "Remote Wowhead.com PTR item data source" ) );
+  itemSourceOptions.emplace_back( tr( "Wowhead.com (PTR2)" ), "ptr2head",
+                                  tr( "Remote Wowhead.com PTR2 item data source" ) );
 #endif
 #if SC_BETA
   itemSourceOptions.emplace_back( tr( "Wowhead.com (Beta)" ), SC_BETA_STR "head",

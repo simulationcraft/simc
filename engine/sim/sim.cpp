@@ -793,7 +793,7 @@ bool parse_spell_query( sim_t*             sim,
 // and the complete set of valid data source names.
 const char* const default_item_db_sources[] =
 {
-  "local", "bcpapi", "wowhead", "ptrhead"
+  "local", "bcpapi", "wowhead", "ptrhead", "ptr2head"
 #if SC_BETA
   , SC_BETA_STR "head"
 #endif

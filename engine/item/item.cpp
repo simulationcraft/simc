@@ -2146,6 +2146,8 @@ bool item_t::download_item( item_t& item )
         success = wowhead::download_item( item, wowhead::LIVE, cache::ONLY );
       else if ( sources[ i ] == "ptrhead" )
         success = wowhead::download_item( item, wowhead::PTR, cache::ONLY );
+      else if ( sources[ i ] == "ptr2head" )
+        success = wowhead::download_item( item, wowhead::PTR2, cache::ONLY );
 #if SC_BETA
       else if ( sources[ i ] == SC_BETA_STR "head" )
         success = wowhead::download_item( item, wowhead::BETA, cache::ONLY );
@@ -2164,6 +2166,8 @@ bool item_t::download_item( item_t& item )
         success = wowhead::download_item( item, wowhead::LIVE, cache::items() );
       else if ( sources[ i ] == "ptrhead" )
         success = wowhead::download_item( item, wowhead::PTR, cache::items() );
+      else if ( sources[ i ] == "ptr2head" )
+        success = wowhead::download_item( item, wowhead::PTR2, cache::items() );
 #if SC_BETA
       else if ( sources[ i ] == SC_BETA_STR "head" )
         success = wowhead::download_item( item, wowhead::BETA, cache::items() );
