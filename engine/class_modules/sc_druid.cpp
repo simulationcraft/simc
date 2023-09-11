@@ -2634,10 +2634,6 @@ public:
          ( p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check() ) )
     {
       p()->buff.balance_t31_4pc_buff->trigger();
-      p()->buff.eclipse_lunar->current_value =
-          p()->buff.eclipse_lunar->default_value + p()->buff.balance_t31_4pc_buff->stack_value();
-      p()->buff.eclipse_solar->current_value =
-          p()->buff.eclipse_solar->default_value + p()->buff.balance_t31_4pc_buff->stack_value();
     }
 
     p()->buff.starlord->trigger();
