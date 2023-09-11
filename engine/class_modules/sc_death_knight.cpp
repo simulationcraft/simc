@@ -4237,6 +4237,14 @@ struct abomination_limb_damage_t final : public death_knight_spell_t
       p() -> cooldown.abomination_limb -> start();
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+      get_td( s -> target ) -> debuff.ashen_decay -> trigger();
+  }
 };
 
 struct abomination_limb_buff_t final : public buff_t
@@ -4280,14 +4288,6 @@ struct abomination_limb_t : public death_knight_spell_t
     // Pull affect for this ability is NYI
 
     p() -> buffs.abomination_limb -> trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
-      get_td( s -> target ) -> debuff.ashen_decay -> trigger();
   }
 private:
     action_t* damage;
