@@ -1584,6 +1584,13 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
 
   owner_coeff.ap_from_sp = 0.39; // 2023-09-01 update: Live VF damage was found to be lower in sims than on Live
   owner_coeff.sp_from_sp = 1.7;
+
+  if ( owner->min_version_check( VERSION_10_2_0 ) )
+  {
+    owner_coeff.ap_from_sp *= 1.15;
+    owner_coeff.sp_from_sp *= 1.15;
+  }
+
   owner_coeff.health     = 0.75;
 
   bile_spit_executes = 1; // Only one Bile Spit per summon
