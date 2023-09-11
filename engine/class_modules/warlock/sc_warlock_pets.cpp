@@ -96,7 +96,7 @@ void warlock_pet_t::create_buffs()
                                     } );
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
-                            ->set_default_value( o()->talents.summon_demonic_tyrant->effectN( 1 ).percent() );
+                            ->set_default_value( o()->talents.demonic_power_buff->effectN( 1 ).percent() );
 
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
@@ -139,6 +139,7 @@ void warlock_pet_t::create_buffs()
   buffs.embers->quiet = true;
   buffs.fury_of_ruvaraad->quiet = true;
   buffs.nerzhuls_volition->quiet = true;
+  buffs.demonic_power->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
