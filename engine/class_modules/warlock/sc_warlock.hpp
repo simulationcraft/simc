@@ -297,7 +297,12 @@ public:
     player_talent_t call_dreadstalkers;
     const spell_data_t* call_dreadstalkers_2; // Contains duration data
 
-    player_talent_t demonbolt; // Note: Demonic Core is a guaranteed passive, even though this talent is optional
+    player_talent_t demonbolt; // TODO: Remove/refactor when 10.2 goes live
+    player_talent_t demoniac; // 10.2 combines Demonbolt and Demonic Core under this talent
+    const spell_data_t* demonbolt_spell;
+    const spell_data_t* demonic_core_spell;
+    const spell_data_t* demonic_core_buff;
+
     player_talent_t dreadlash;
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
