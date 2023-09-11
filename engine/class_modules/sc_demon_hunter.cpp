@@ -225,6 +225,7 @@ public:
 
     // Vengeance
     buff_t* demon_spikes;
+    buff_t* calcified_spikes;
     buff_t* painbringer;
     absorb_buff_t* soul_barrier;
     buff_t* soul_furnace_damage_amp;
@@ -374,7 +375,7 @@ public:
       player_talent_t fiery_brand;
 
       player_talent_t perfectly_balanced_glaive;
-      player_talent_t deflecting_spikes;          // NYI
+      player_talent_t deflecting_spikes;
       player_talent_t meteoric_strikes;
 
       player_talent_t shear_fury;
@@ -409,12 +410,12 @@ public:
       player_talent_t focused_cleave;
       player_talent_t soulmonger;                 // NYI
       player_talent_t stoke_the_flames;
-      player_talent_t burning_alive;              // NYI
+      player_talent_t burning_alive;
       player_talent_t cycle_of_binding;
 
       player_talent_t vulnerability;
-      player_talent_t feed_the_demon;             // NYI
-      player_talent_t charred_flesh;              // NYI
+      player_talent_t feed_the_demon;
+      player_talent_t charred_flesh;
 
       player_talent_t soulcrush;
       player_talent_t soul_carver;
@@ -529,6 +530,7 @@ public:
     const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
     const spell_data_t* painbringer_buff;
+    const spell_data_t* calcified_spikes_buff;
     const spell_data_t* soul_furnace_damage_amp;
     const spell_data_t* soul_furnace_stack;
     const spell_data_t* immolation_aura_cdr;
@@ -5762,6 +5764,27 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
 
     return demon_hunter_buff_t::trigger(stacks, value, chance, duration);
   }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    if (p()->talent.vengeance.calcified_spikes->ok())
+    {
+      p()->buff.calcified_spikes->trigger();
+    }
+  }
+};
+
+struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
+{
+  calcified_spikes_t(demon_hunter_t* p): base_t(*p, "calcified_spikes", p->spec.calcified_spikes_buff)
+  {
+    set_period(1_s);
+    set_reverse(true);
+    set_initial_stack(12);
+    set_default_value(-0.01);
+  }
 };
 
 }  // end namespace buffs
@@ -6096,6 +6119,8 @@ void demon_hunter_t::create_buffs()
   // Vengeance ==============================================================
 
   buff.demon_spikes = new buffs::demon_spikes_t(this);
+
+  buff.calcified_spikes = new buffs::calcified_spikes_t(this);
 
   buff.painbringer = make_buff( this, "painbringer", spec.painbringer_buff )
                          ->set_default_value( talent.vengeance.painbringer->effectN( 1 ).percent() )
@@ -6901,6 +6926,7 @@ void demon_hunter_t::init_spells()
   spec.frailty_debuff       = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
   spec.charred_flesh_buff   = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
   spec.painbringer_buff     = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
+  spec.calcified_spikes_buff = talent.vengeance.calcified_spikes->ok() ? find_spell( 391171 ) : spell_data_t::not_found();
   spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
   spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
 
@@ -7383,6 +7409,11 @@ double demon_hunter_t::composite_parry() const
 
   cp += talent.demon_hunter.aldrachi_design->effectN( 1 ).percent();
 
+  if ( talent.vengeance.deflecting_spikes->ok() && buff.demon_spikes->check() )
+  {
+    cp += buff.demon_spikes->data().effectN( 1 ).percent();
+  }
+
   return cp;
 }
 
@@ -7714,6 +7745,8 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       + spec.demonic_wards_3->effectN( 1 ).percent();
 
     s->result_amount *= 1.0 + buff.painbringer->check_stack_value();
+
+    s->result_amount *= 1.0 + buff.calcified_spikes->check_stack_value();
 
     const demon_hunter_td_t* td = get_target_data( s->action->player );
     if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
