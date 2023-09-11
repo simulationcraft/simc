@@ -946,7 +946,7 @@ public:
 
   
   template <typename... Ts>
-  void parse_buff_effects_mods( buff_t* buff, const bfun& f, unsigned ignore_mask, bool use_stacks, bool use_default,
+  void parse_buff_effects_mods( buff_t* buff, const bfun& f, unsigned ignore_mask, bool use_stacks, value_type_e value_type,
                                 Ts... mods )
   {
     if ( !buff )
@@ -959,17 +959,23 @@ public:
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( buff, f, spell, i, use_stacks, use_default, false, mods... );
+      parse_buff_effect( buff, f, spell, i, use_stacks, value_type, false, mods... );
     }
   }
 
-  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
-  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
-  //  use_stacks = optional, default true, whether to multiply value by stacks
-  //  use_default = optional, default false, whether to use buff's default value over effect's value
-  //  S = optional list of template parameter(s) to indicate spell(s) with redirect effects
-  //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
+  //  value_type = optional, default USE_DATA, where the value comes from.
+  //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
+  //  spell = optional list of spell with redirect effects that modify the effects on the buff
+  //
+  // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
+  //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
+  //
+  // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
+  //  parse_buff_effects( buff2, false, USE_DEFAULT );
   void apply_buff_effects()
   {
     // using S = const spell_data_t*;
@@ -988,11 +994,11 @@ public:
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
       parse_buff_effects_mods(
-          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, false,
+          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, USE_DATA,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
 
       parse_buff_effects_mods(
-          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, false,
+          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, USE_DATA,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 

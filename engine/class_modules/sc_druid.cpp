@@ -2074,7 +2074,7 @@ public:
     parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
-    parse_buff_effects( p()->buff.sabertooth, true, true );
+    parse_buff_effects( p()->buff.sabertooth, USE_DEFAULT );
     parse_buff_effects( p()->buff.sharpened_claws );
 
     // Guardian
@@ -2096,8 +2096,8 @@ public:
     parse_buff_effects( p()->buff.rage_of_the_sleeper );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
     parse_buff_effects( p()->buff.tooth_and_claw, false );
-    parse_buff_effects( p()->buff.vicious_cycle_mangle, true, true );
-    parse_buff_effects( p()->buff.vicious_cycle_maul, true, true );
+    parse_buff_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT );
+    parse_buff_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT );
 
     // Restoration
     parse_buff_effects( p()->buff.abundance );
@@ -2647,8 +2647,8 @@ public:
     // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
     if ( p_->talent.umbral_embrace.ok() )
     {
-      BASE::da_multiplier_buffeffects.emplace_back( nullptr, p_->buff.umbral_embrace->default_value, false, false,
-                                                    [ this ] { return umbral_embrace_check(); } );
+      BASE::da_multiplier_buffeffects.emplace_back( nullptr, p_->buff.umbral_embrace->default_value, USE_DATA, false,
+                                                    false, [ this ] { return umbral_embrace_check(); } );
 
       BASE::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", BASE::name(),
                               BASE::id, p_->buff.umbral_embrace->default_value, p_->buff.umbral_embrace->name(),
@@ -3069,7 +3069,7 @@ public:
     size_t da_old   = da_multiplier_buffeffects.size();
     size_t cost_old = cost_buffeffects.size();
 
-    parse_buff_effects( buff, ignore_mask, use_stacks, false, mods... );
+    parse_buff_effects( buff, ignore_mask, use_stacks, USE_DATA, mods... );
 
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
     if ( ta_multiplier_buffeffects.size() > ta_old )
@@ -8725,7 +8725,7 @@ struct druid_melee_t : public Base
     // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
     val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
 
-    ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, false, false, nullptr );
+    ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr );
 
     ab::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", ab::name(), ab::id,
                           val, p->buff.tigers_fury->name(), p->buff.tigers_fury->data().id() );
