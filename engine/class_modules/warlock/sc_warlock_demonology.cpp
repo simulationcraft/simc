@@ -1225,7 +1225,7 @@ void warlock_t::create_buffs_demonology()
                            ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                            ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                              warlock_pet_list.wild_imps.spawn();
-                             if ( rng().roll( talents.inner_demons->effectN( 1 ).percent() ) )
+                             if ( !min_version_check( VERSION_10_2_0 ) && rng().roll( talents.inner_demons->effectN( 1 ).percent() ) )
                              {
                                proc_actions.summon_random_demon->execute();
                              }
