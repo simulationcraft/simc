@@ -7648,7 +7648,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
     auto et = druid_spell_t::execute_time();
 
     if ( p()->buff.dreamstate->check() )
-      et *= 1 - p()->buff.dreamstate->data().effectN( 1 ).percent();
+      et *= 1 + p()->buff.dreamstate->data().effectN( 1 ).percent();
 
     return et;
   }
@@ -7658,7 +7658,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
     timespan_t g = druid_spell_t::gcd();
 
     if ( p()->buff.dreamstate->check() )
-      g *= 1 - p()->buff.dreamstate->data().effectN( 2 ).percent();
+      g *= 1 + p()->buff.dreamstate->data().effectN( 2 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -8124,6 +8124,13 @@ struct wild_mushroom_t : public druid_spell_t
     fungal_growth_t( druid_t* p ) : residual_action_t( "fungal_growth", p, p->find_spell( 81281 ) ) {}
   };
 
+  struct fungal_growth_ptr_t : public trigger_waning_twilight_t<druid_spell_t>
+  {
+    fungal_growth_ptr_t( druid_t* p ) : base_t( "fungal_growth", p, p->find_spell( 81281 ) )
+    {
+    }
+  };
+
   struct wild_mushroom_damage_t : public druid_spell_t
   {
     action_t* driver;
@@ -8141,9 +8148,12 @@ struct wild_mushroom_t : public druid_spell_t
       background = dual = true;
       aoe = -1;
 
-      if ( p->talent.fungal_growth.ok() )
+      if ( p->talent.fungal_growth.ok() || p->is_ptr() )
       {
-        fungal = p->get_secondary_action<fungal_growth_t>( "fungal_growth" );
+        if ( p->is_ptr() )
+          fungal = p->get_secondary_action<fungal_growth_ptr_t>( "fungal_growth" );
+        else
+          fungal = p->get_secondary_action<fungal_growth_t>( "fungal_growth" );
         driver->add_child( fungal );
       }
     }
@@ -8160,8 +8170,14 @@ struct wild_mushroom_t : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
-      if ( fungal && s->result_amount > 0 && result_is_hit( s->result ) )
-        residual_action::trigger( fungal, s->target, s->result_amount * fungal_mul );
+      if ( !s->target->is_ptr() )
+      {
+        if ( fungal && s->result_amount > 0 && result_is_hit( s->result ) )
+          residual_action::trigger( fungal, s->target, s->result_amount * fungal_mul );
+      }
+      else
+        fungal->execute_on_target( s->target );  // flare is applied before impact damage
+
     }
   };
 
@@ -8250,7 +8266,7 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     auto et = druid_spell_t::execute_time();
 
     if ( p()->buff.dreamstate->check() )
-      et *= 1 - p()->buff.dreamstate->data().effectN( 1 ).percent();
+      et *= 1 + p()->buff.dreamstate->data().effectN( 1 ).percent();
 
     return et;
   }
@@ -8264,7 +8280,7 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
       g *= 1.0 + gcd_mul;
 
     if ( p()->buff.dreamstate->check() )
-      g *= 1 - p()->buff.dreamstate->data().effectN( 2 ).percent();
+      g *= 1 + p()->buff.dreamstate->data().effectN( 2 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -9430,7 +9446,8 @@ void druid_t::init_spells()
   talent.elunes_guidance                = ST( "Elune's Guidance" );
   talent.force_of_nature                = ST( "Force of Nature" );
   talent.friend_of_the_fae              = ST( "Friend of the Fae" );
-  talent.fungal_growth                  = ST( "Fungal Growth" );
+  if ( !is_ptr() )
+    talent.fungal_growth                = ST( "Fungal Growth" );
   talent.fury_of_elune                  = ST( "Fury of Elune" );
   talent.incarnation_moonkin            = ST( "Incarnation: Chosen of Elune" );
   talent.light_of_the_sun               = ST( "Light of the Sun" );
@@ -10016,9 +10033,9 @@ void druid_t::create_buffs()
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
           ->set_max_stack( 99 );
 
-  buff.rattled_stars = make_buff_fallback( talent.rattle_the_stars.ok(),
-      this, "rattled_stars", find_trigger( talent.rattle_the_stars ).trigger() )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buff.rattled_stars = make_buff_fallback( !is_ptr() && talent.rattle_the_stars.ok(), this, "rattled_stars",
+                                           find_trigger( talent.rattle_the_stars ).trigger() )
+                           ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.shooting_stars_moonfire = make_buff_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok(),
       this, "shooting_stars_moonfire", dot_list.moonfire, active.shooting_stars_moonfire );
@@ -10071,12 +10088,11 @@ void druid_t::create_buffs()
           ->set_default_value_from_effect( 1 )
           ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
                                ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
-                                               sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
-                                    : 1 )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
-            if ( new_ )
-              buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->stack_value();
-            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->stack_value();
+                                          sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
+                               : 1 )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+            buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->check_stack_value();
+            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->check_stack_value();
           } );
   
   buff.dreamstate = make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B2 ), this, "dreamstate",
@@ -12987,6 +13003,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
   action.apply_affecting_aura( talent.wild_surges );
+  if ( is_ptr() )
+    action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
   // Feral
