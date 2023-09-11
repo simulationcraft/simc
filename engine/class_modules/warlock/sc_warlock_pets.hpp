@@ -49,6 +49,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     propagate_const<buff_t*> fury_of_ruvaraad; // T30 Demo 4pc buff for Grimoire: Felguard
+    propagate_const<buff_t*> demonic_power; // Starting in 10.2, this buff is on the pets rather than the player
   } buffs;
 
   bool is_main_pet          = false;

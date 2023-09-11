@@ -95,6 +95,9 @@ void warlock_pet_t::create_buffs()
                                       }
                                     } );
 
+  buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
+                            ->set_default_value( o()->talents.demonic_power_buff->effectN( 1 ).percent() );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -136,6 +139,7 @@ void warlock_pet_t::create_buffs()
   buffs.embers->quiet = true;
   buffs.fury_of_ruvaraad->quiet = true;
   buffs.nerzhuls_volition->quiet = true;
+  buffs.demonic_power->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -227,6 +231,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.nerzhuls_volition->check() )
     m *= 1.0 + buffs.nerzhuls_volition->check_value();
+
+  if ( buffs.demonic_power->check() )
+    m *= 1.0 + buffs.demonic_power->check_value();
 
   if ( is_main_pet && o()->talents.wrathful_minion->ok() )
     m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
@@ -1268,7 +1275,8 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
 
-    if ( p()->o()->buffs.demonic_power->check() )
+    // TODO: 10.2 moves this from owner to pet, remove owner code when 10.2 goes live
+    if ( p()->o()->buffs.demonic_power->check() || p()->buffs.demonic_power->check() )
     {
       // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
       c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
@@ -1662,7 +1670,7 @@ void demonic_tyrant_t::arise()
 
   if ( o()->talents.reign_of_tyranny->ok() )
   {
-    buffs.demonic_servitude->trigger( 1, ( o()->buffs.demonic_servitude->check() + 1 ) * o()->buffs.demonic_servitude->check_value() ); // Demonic Servitude has a permanent extra 1 stack on tracking (last checked 2023-03-17)
+    buffs.demonic_servitude->trigger( 1, ( ( o()->min_version_check( VERSION_10_2_0 ) ? 0 : 1 ) + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() ); // 2023-09-10: On 10.2 PTR, the stack cap is interfering with the previous 1 "permanent" stack value
   }
 }
 
@@ -1673,7 +1681,9 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
   if ( o()->talents.reign_of_tyranny->ok() )
   {
     m *= 1.0 + buffs.demonic_servitude->check_value();
-    m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
+
+    if ( !o()->min_version_check( VERSION_10_2_0 ) )
+      m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
   }
 
   return m;

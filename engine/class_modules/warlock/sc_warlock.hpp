@@ -363,7 +363,7 @@ public:
     const spell_data_t* guldans_ambition_summon; // Contains Pit Lord duration data
     const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned. TODO: This buff is REMOVED in 10.2
     player_talent_t reign_of_tyranny; // TODO: 10.2 has capped this at 15 stacks and may have changed other behavior
-    const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
+    const spell_data_t* demonic_servitude; // TOCHECK: 2023-09-10 On 10.2 PTR, expiring demons will always lower the full amount even if overcapped. When Blizzard fixes it, implement that fix.
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     player_talent_t immutable_hatred;
     player_talent_t guillotine;

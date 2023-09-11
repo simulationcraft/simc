@@ -553,16 +553,18 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     // Last tested 2021-07-13
     // Ingame there is a chance for tyrant to get an extra cast off before reaching the required haste breakpoint. In-game testing
     // found the tyrant sometimes stayed longer than the specified duration and can be modelled fairly closely using a normal distribution.
-    timespan_t extraTyrantTime = timespan_t::from_millis(rng().gauss( 380.0, 220.0, true ));
+    timespan_t extraTyrantTime = timespan_t::from_millis( rng().gauss( 380.0, 220.0, true ) );
     p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
-    p()->buffs.demonic_power->trigger();
+    if ( !p()->min_version_check( VERSION_10_2_0 ) )
+      p()->buffs.demonic_power->trigger();
 
     if ( p()->talents.soulbound_tyrant->ok() )
       p()->resource_gain( RESOURCE_SOUL_SHARD, p()->talents.soulbound_tyrant->effectN( 1 ).base_value() / 10.0, p()->gains.soulbound_tyrant );
 
     timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
 
+    int wild_imp_counter = 0;
     for ( auto& pet : p()->pet_list )
     {
       auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
@@ -575,13 +577,35 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
         continue;
 
-      // Pit Lord is not extended by Demonic Tyrant
-      if ( lock_pet->pet_type == PET_PIT_LORD )
-        continue;
-
-      if ( lock_pet->expiration )
+      if ( p()->min_version_check( VERSION_10_2_0 ) )
       {
-        lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
+        // Note: Wild Imp cap appears to be hardcoded
+        if ( lock_pet->pet_type == PET_WILD_IMP && wild_imp_counter < 10 )
+        {
+          if ( lock_pet->expiration )
+            lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
+
+          lock_pet->buffs.demonic_power->trigger();
+          wild_imp_counter++;
+        }
+        else if ( lock_pet->pet_type == PET_DREADSTALKER || lock_pet->pet_type == PET_VILEFIEND || lock_pet->pet_type == PET_SERVICE_FELGUARD )
+        {
+          if ( lock_pet->expiration )
+            lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
+
+          lock_pet->buffs.demonic_power->trigger();
+        }
+      }
+      else
+      {
+        // Pit Lord is not extended by Demonic Tyrant
+        if ( lock_pet->pet_type == PET_PIT_LORD )
+          continue;
+
+        if ( lock_pet->expiration )
+        {
+          lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
+        }
       }
     }
 
