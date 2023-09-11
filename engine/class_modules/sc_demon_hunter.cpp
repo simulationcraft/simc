@@ -383,7 +383,7 @@ public:
       player_talent_t calcified_spikes;           // NYI
       player_talent_t roaring_fire;               // NYI
       player_talent_t sigil_of_silence;           // NYI
-      player_talent_t retaliation;                // NYI
+      player_talent_t retaliation;
       player_talent_t fel_flame_fortification;    // NYI
 
       player_talent_t spirit_bomb;
@@ -535,6 +535,7 @@ public:
     const spell_data_t* soul_furnace_stack;
     const spell_data_t* immolation_aura_cdr;
     const spell_data_t* soul_fragments_buff;
+    const spell_data_t* retaliation_damage;
   } spec;
 
   // Set Bonus effects
@@ -717,6 +718,7 @@ public:
 
     // Vengeance
     spell_t* infernal_armor     = nullptr;
+    spell_t* retaliation        = nullptr;
     heal_t* frailty_heal        = nullptr;
     spell_t* fiery_brand_t30    = nullptr;
     spell_t* sigil_of_flame_t31 = nullptr;
@@ -2341,6 +2343,16 @@ struct demon_spikes_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
     p()->buff.demon_spikes->trigger();
+  }
+};
+
+// Retaliation ==============================================================
+
+struct retaliation_t : public demon_hunter_spell_t
+{
+  retaliation_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->spec.retaliation_damage )
+  {
   }
 };
 
@@ -6922,13 +6934,15 @@ void demon_hunter_t::init_spells()
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
 
-  spec.fiery_brand_debuff   = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
-  spec.frailty_debuff       = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
-  spec.charred_flesh_buff   = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
-  spec.painbringer_buff     = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
-  spec.calcified_spikes_buff = talent.vengeance.calcified_spikes->ok() ? find_spell( 391171 ) : spell_data_t::not_found();
+  spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
+  spec.frailty_debuff     = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
+  spec.charred_flesh_buff = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
+  spec.painbringer_buff   = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
+  spec.calcified_spikes_buff =
+      talent.vengeance.calcified_spikes->ok() ? find_spell( 391171 ) : spell_data_t::not_found();
   spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
   spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
+  spec.retaliation_damage      = talent.vengeance.retaliation->ok() ? find_spell( 391159 ) : spell_data_t::not_found();
 
   if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
   {
@@ -7027,6 +7041,11 @@ void demon_hunter_t::init_spells()
   if ( talent.havoc.ragefire->ok() )
   {
     active.ragefire = get_background_action<ragefire_t>( "ragefire" );
+  }
+
+  if ( talent.vengeance.retaliation->ok() )
+  {
+    active.retaliation = get_background_action<retaliation_t>( "retaliation" );
   }
 
   if ( set_bonuses.t30_vengeance_4pc->ok() )
@@ -7621,6 +7640,12 @@ void demon_hunter_t::assess_damage( school_e school, result_amount_type dt, acti
   {
     active.infernal_armor->set_target( s->action->player );
     active.infernal_armor->execute();
+  }
+
+  if ( active.retaliation && buff.demon_spikes->check() && s->action->player->is_enemy() &&
+       dt == result_amount_type::DMG_DIRECT && !s->action->special && s->action->result_is_hit( s->result ) )
+  {
+    active.retaliation->execute_on_target(s->action->player);
   }
 }
 
