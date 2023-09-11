@@ -10,10 +10,17 @@ using namespace actions;
 
 struct demonology_spell_t : public warlock_spell_t
 {
+
+bool procs_volatile_fiends_direct;
+bool procs_volatile_fiends_tick;
+
 public:
   demonology_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
     : warlock_spell_t( token, p, s )
-  {  }
+  {
+    procs_volatile_fiends_direct = false;
+    procs_volatile_fiends_tick = false;
+  }
 
   void consume_resource() override
   {
@@ -62,6 +69,28 @@ public:
 
     return pm;
   }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( procs_volatile_fiends_direct && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+    {
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( target );
+      p()->procs.volatile_fiends->occur();
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warlock_spell_t::tick( d );
+
+    if ( procs_volatile_fiends_tick && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+    {
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
+      p()->procs.volatile_fiends->occur();
+    }
+  }
 };
 
 struct hand_of_guldan_t : public demonology_spell_t
@@ -73,6 +102,7 @@ struct hand_of_guldan_t : public demonology_spell_t
       background = dual = true;
       hasted_ticks = false;
       base_td_multiplier = 1.0 + p->talents.umbral_blaze->effectN( 2 ).percent();
+      procs_volatile_fiends_tick = true;
     }
   };
 
@@ -89,6 +119,8 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       aoe = -1;
       dual = true;
+
+      procs_volatile_fiends_direct = true;
 
       if ( p->talents.umbral_blaze->ok() )
       {
@@ -253,6 +285,8 @@ struct demonbolt_t : public demonology_spell_t
     energize_type = action_energize::ON_CAST;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 2.0;
+
+    procs_volatile_fiends_direct = true;
   }
 
   timespan_t execute_time() const override
@@ -684,6 +718,21 @@ struct demonic_strength_t : public demonology_spell_t
   }
 };
 
+// Separate struct because you can get the procs without the talent so we'll be safe
+struct bilescourge_bombers_proc_t : public demonology_spell_t
+{
+  bilescourge_bombers_proc_t( warlock_t* p )
+    : demonology_spell_t( "Bilescourge Bombers (proc)", p, p->find_spell( 267213 ) )
+  {
+    aoe = -1;
+    background = dual = direct_tick = true;
+    callbacks = false;
+    radius = p->find_spell( 267211 )->effectN( 1 ).radius();
+
+    base_dd_multiplier *= 1.0 + p->talents.volatile_fiends->effectN( 2 ).percent();
+  }
+};
+
 struct bilescourge_bombers_t : public demonology_spell_t
 {
   struct bilescourge_bombers_tick_t : public demonology_spell_t
@@ -695,6 +744,8 @@ struct bilescourge_bombers_t : public demonology_spell_t
       background = dual = direct_tick = true;
       callbacks = false;
       radius = p->talents.bilescourge_bombers->effectN( 1 ).radius();
+
+      base_dd_multiplier *= 1.0 + p->talents.volatile_fiends->effectN( 2 ).percent();
     }
   };
 
@@ -823,6 +874,8 @@ struct doom_t : public demonology_spell_t
     energize_amount = 1;
 
     hasted_ticks = true;
+
+    procs_volatile_fiends_tick = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -1421,6 +1474,7 @@ void warlock_t::init_spells_demonology()
 
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
   proc_actions.summon_nether_portal_demon = new actions_demonology::summon_random_demon_t( this, true );
+  proc_actions.bilescourge_bombers_proc = new actions_demonology::bilescourge_bombers_proc_t( this );
 
   // Initialize some default values for pet spawners
   warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
@@ -1442,6 +1496,7 @@ void warlock_t::init_procs_demonology()
 {
   procs.summon_random_demon = get_proc( "summon_random_demon" );
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
+  procs.volatile_fiends = get_proc( "volatile_fiends" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
   procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );

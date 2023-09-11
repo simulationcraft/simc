@@ -137,6 +137,17 @@ struct drain_life_t : public warlock_spell_t
     return m;
   }
 
+  void tick( dot_t* d ) override
+  {
+    warlock_spell_t::tick( d );
+
+    if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+    {
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
+      p()->procs.volatile_fiends->occur();
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
     p()->buffs.drain_life->expire();
@@ -220,6 +231,12 @@ struct corruption_t : public warlock_spell_t
             p()->corruption_accumulator -= 1.0;
 
           }
+        }
+
+        if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+        {
+          p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
+          p()->procs.volatile_fiends->occur();
         }
       }
     }
@@ -502,6 +519,12 @@ struct shadow_bolt_t : public warlock_spell_t
     
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
+
+    if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+    {
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( target );
+      p()->procs.volatile_fiends->occur();
+    }
 
     p()->buffs.stolen_power_final->expire();
   }
@@ -1117,6 +1140,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     corruption_accumulator( 0.0 ),
     cdf_accumulator( 0.0 ),
     incinerate_last_target_count( 0 ),
+    volatile_fiends_proc_chance( 0.0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -1806,6 +1830,7 @@ void warlock_t::reset()
   corruption_accumulator             = rng().range( 0.0, 0.99 );
   cdf_accumulator                    = rng().range( 0.0, 0.99 );
   incinerate_last_target_count       = 0;
+  volatile_fiends_proc_chance        = 0.2;
   wild_imp_spawns.clear();
 }
 
