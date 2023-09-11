@@ -8124,6 +8124,13 @@ struct wild_mushroom_t : public druid_spell_t
     fungal_growth_t( druid_t* p ) : residual_action_t( "fungal_growth", p, p->find_spell( 81281 ) ) {}
   };
 
+  struct fungal_growth_ptr_t : public trigger_waning_twilight_t<druid_spell_t>
+  {
+    fungal_growth_ptr_t( druid_t* p ) : base_t( "fungal_growth", p, p->find_spell( 81281 ) )
+    {
+    }
+  };
+
   struct wild_mushroom_damage_t : public druid_spell_t
   {
     action_t* driver;
@@ -8141,9 +8148,12 @@ struct wild_mushroom_t : public druid_spell_t
       background = dual = true;
       aoe = -1;
 
-      if ( p->talent.fungal_growth.ok() )
+      if ( p->talent.fungal_growth.ok() || p->is_ptr() )
       {
-        fungal = p->get_secondary_action<fungal_growth_t>( "fungal_growth" );
+        if ( p->is_ptr() )
+          fungal = p->get_secondary_action<fungal_growth_ptr_t>( "fungal_growth" );
+        else
+          fungal = p->get_secondary_action<fungal_growth_t>( "fungal_growth" );
         driver->add_child( fungal );
       }
     }
@@ -8160,8 +8170,14 @@ struct wild_mushroom_t : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
-      if ( fungal && s->result_amount > 0 && result_is_hit( s->result ) )
-        residual_action::trigger( fungal, s->target, s->result_amount * fungal_mul );
+      if ( !s->target->is_ptr() )
+      {
+        if ( fungal && s->result_amount > 0 && result_is_hit( s->result ) )
+          residual_action::trigger( fungal, s->target, s->result_amount * fungal_mul );
+      }
+      else
+        fungal->execute_on_target( s->target );  // flare is applied before impact damage
+
     }
   };
 
@@ -9430,7 +9446,8 @@ void druid_t::init_spells()
   talent.elunes_guidance                = ST( "Elune's Guidance" );
   talent.force_of_nature                = ST( "Force of Nature" );
   talent.friend_of_the_fae              = ST( "Friend of the Fae" );
-  talent.fungal_growth                  = ST( "Fungal Growth" );
+  if ( !is_ptr() )
+    talent.fungal_growth                = ST( "Fungal Growth" );
   talent.fury_of_elune                  = ST( "Fury of Elune" );
   talent.incarnation_moonkin            = ST( "Incarnation: Chosen of Elune" );
   talent.light_of_the_sun               = ST( "Light of the Sun" );
