@@ -672,13 +672,12 @@ void shadowflame_wreathe( special_effect_t& effect )
 // 426322 Healer Stat Buff
 // 426382 Healer Unknown
 // TODO : Double check the right effects are mapped to the right spells
-// Implement delay between Ranged DPS damage events, 1_s delay between every 2 hits.
 // Implement Tank/Healer versions
 void incandescent_essence( special_effect_t& e )
 {
-  auto melee_driver = e.player->find_spell( 426339 );
+  auto melee_driver  = e.player->find_spell( 426339 );
   auto ranged_driver = e.player->find_spell( 426341 );
-  auto tank_driver = e.player->find_spell( 426288 );
+  auto tank_driver   = e.player->find_spell( 426288 );
   auto healer_driver = e.player->find_spell( 426262 );
 
   struct ingras_cruel_nightmare_t : public generic_proc_t
@@ -687,13 +686,13 @@ void incandescent_essence( special_effect_t& e )
     action_t* st_damage;
     ingras_cruel_nightmare_t( const special_effect_t& e )
       : generic_proc_t( e, "igiras_cruel_nightmare", 426339 ),
-      aoe_damage( create_proc_action<generic_aoe_proc_t>( "igias_sharpened_iron", e, "igiras_sharpened_iron",
-                  e.player->find_spell( 426535 ), true ) ),
-      st_damage(
-      create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard", e.player->find_spell( 426534 ) ) )
+        aoe_damage( create_proc_action<generic_aoe_proc_t>( "igias_sharpened_iron", e, "igiras_sharpened_iron",
+                                                            e.player->find_spell( 426535 ), true ) ),
+        st_damage( create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard",
+                                                       e.player->find_spell( 426534 ) ) )
     {
-      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 5 ).average( e.item );
+      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 9 ).average( e.item );
+      st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 8 ).average( e.item );
 
       add_child( aoe_damage );
       add_child( st_damage );
@@ -701,7 +700,7 @@ void incandescent_essence( special_effect_t& e )
 
     void execute() override
     {
-      if (sim->target_non_sleeping_list.size() == 1)
+      if ( sim->target_non_sleeping_list.size() == 1 )
       {
         st_damage->execute();
       }
@@ -716,19 +715,23 @@ void incandescent_essence( special_effect_t& e )
   struct tindrals_fowl_fantasia_t : public generic_proc_t
   {
     action_t* main_damage;
-    action_t* secondary_damage;
+    buff_t* buff;
     tindrals_fowl_fantasia_t( const special_effect_t& e )
       : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
-      main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
-                   e.player->find_spell( 426486 ), true ) ),
-      secondary_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame_secondary", e,
-                        "denizen_of_the_flame_secondary",
-                        e.player->find_spell( 426431 ), true ) )
+        main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
+                                                             e.player->find_spell( 426486 ), true ) ),
+        buff( make_buff<buff_t>( e.player, "tindrals_fowl_fantasia", e.player->find_spell( 426341 ) ) )
     {
-      main_damage->base_dd_min = main_damage->base_dd_max =
-        e.driver()->effectN( 7 ).average( e.item ) / 2;  // Damage appears to be divided between the two main hits
-      secondary_damage->base_dd_min = secondary_damage->base_dd_max =
-        e.driver()->effectN( 7 ).average( e.item ) / 4;  // Damage appears to be divided between the 4 secondary hits
+      main_damage->base_dd_min = main_damage->base_dd_max = e.driver()->effectN( 8 ).average( e.item );
+
+      auto secondary_damage = create_proc_action<generic_aoe_proc_t>(
+          "denizen_of_the_flame_secondary", e, "denizen_of_the_flame_secondary", e.player->find_spell( 426431 ), true );
+      secondary_damage->base_dd_min = secondary_damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+
+      buff->set_quiet( true );
+      buff->set_duration( 2_s );
+      buff->set_period( 1_s );
+      buff->set_tick_callback( [ secondary_damage ]( buff_t* b, int, timespan_t ) { secondary_damage->execute(); } );
 
       add_child( main_damage );
       add_child( secondary_damage );
@@ -736,17 +739,13 @@ void incandescent_essence( special_effect_t& e )
 
     void execute() override
     {
-      main_damage->execute();
-      main_damage->execute();  // Main damage seems to execute twice
-      secondary_damage->execute();
-      secondary_damage->execute();
-      secondary_damage->execute();
-      secondary_damage->execute();  // Secondary damage seems to execute 4 times
       generic_proc_t::execute();
+      main_damage->execute();
+      buff->trigger();
     }
   };
 
-  switch (e.player->_spec)
+  switch ( e.player->_spec )
   {
     case HUNTER_BEAST_MASTERY:
     case HUNTER_MARKSMANSHIP:
@@ -761,7 +760,7 @@ void incandescent_essence( special_effect_t& e )
     case DRUID_BALANCE:
     case EVOKER_DEVASTATION:
     case EVOKER_AUGMENTATION:
-      e.spell_id = ranged_driver->id();
+      e.spell_id       = ranged_driver->id();
       e.execute_action = create_proc_action<tindrals_fowl_fantasia_t>( "tindrals_fowl_fantasia", e );
       break;
     case WARRIOR_PROTECTION:
@@ -795,7 +794,7 @@ void incandescent_essence( special_effect_t& e )
     case DRUID_FERAL:
     case DEMON_HUNTER_HAVOC:
     default:
-      e.spell_id = melee_driver->id();
+      e.spell_id       = melee_driver->id();
       e.execute_action = create_proc_action<ingras_cruel_nightmare_t>( "ingras_cruel_nightmare", e );
       break;
   }
