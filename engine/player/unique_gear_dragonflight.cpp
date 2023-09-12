@@ -692,9 +692,10 @@ void incandescent_essence( special_effect_t& e )
       st_damage( create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard",
                  e.player->find_spell( 426534 ) ) )
     {
-      auto st_damage_mult = e.player->find_spell( 426527 )->duration() / e.player->find_spell( 426527 )->effectN( 1 ).period();
+      // In the tooltip, but currently unused
+      auto st_damage_mult = e.player->find_spell( 426527 )->duration() / e.player->find_spell( 426527 )->effectN( 1 ).period(); 
       aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 9 ).average( e.item );
-      st_damage->base_dd_min = st_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item ) * st_damage_mult;
+      st_damage->base_dd_min = st_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
 
       add_child( aoe_damage );
       add_child( st_damage );
