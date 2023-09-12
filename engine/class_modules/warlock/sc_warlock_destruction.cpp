@@ -155,6 +155,9 @@ struct shadowburn_t : public destruction_spell_t
     chaos_incarnate = p->talents.chaos_incarnate->ok();
 
     base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+
+    if ( p->talents.chaosbringer->ok() )
+      base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 3 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -675,6 +678,9 @@ struct chaos_bolt_t : public destruction_spell_t
     can_havoc = true;
     chaos_incarnate = p->talents.chaos_incarnate->ok();
 
+    if ( p->talents.chaosbringer->ok() )
+      base_dd_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 1 ).percent();
+
     if ( p->talents.internal_combustion->ok() )
     {
       internal_combustion = new internal_combustion_t( p );
@@ -871,6 +877,10 @@ struct rain_of_fire_t : public destruction_spell_t
       background = dual = direct_tick = true;
       radius = p->talents.rain_of_fire->effectN( 1 ).radius();
       base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+
+      if ( p->talents.chaosbringer->ok() )
+        base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 2 ).percent();
+
       chaos_incarnate = p->talents.chaos_incarnate->ok();
     }
 
@@ -1638,6 +1648,8 @@ void warlock_t::init_spells_destruction()
   talents.madness_cb = find_spell( 387409 );
   talents.madness_rof = find_spell( 387413 );
   talents.madness_sb = find_spell( 387414 );
+
+  talents.chaosbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Chaosbringer" ); // Should be ID 422057
 
   talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
 

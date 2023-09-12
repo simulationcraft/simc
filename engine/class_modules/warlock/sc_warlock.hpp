@@ -448,7 +448,7 @@ public:
     const spell_data_t* madness_cb;
     const spell_data_t* madness_rof;
     const spell_data_t* madness_sb;
-    // TODO: 10.2 New talent Chaosbringer - increased damage to previous Madness-affected spells
+    player_talent_t chaosbringer; // Increased damage to Chaos Bolt, Rain of Fire, Shadowburn
     player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
     player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
     const spell_data_t* burn_to_ashes_buff;
