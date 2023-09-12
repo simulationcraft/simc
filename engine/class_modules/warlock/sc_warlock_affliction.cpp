@@ -369,7 +369,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
     p()->buffs.tormented_crescendo->decrement();
     p()->buffs.cruel_epiphany->decrement();
-    p()->buffs.soulstealer->decrement();
+    p()->buffs.soulstealer->decrement(); // 2023-09-11: On PTR spell-queuing with an instant MR can cause this to decrement without giving the extensions. NOT CURRENTLY IMPLEMENTED
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -1049,7 +1049,7 @@ void warlock_t::init_spells_affliction()
   tier.infirmity = find_spell( 409765 );
 
   // T31 (Amirdrassil, the Dream's Hope)
-  tier.soulstealer = sets->set( WARLOCK_AFFLICTION, T31, B4 )->effectN( 2 ).trigger();
+  tier.soulstealer = sets->set( WARLOCK_AFFLICTION, T31, B4 )->effectN( 2 ).trigger(); // Should be ID 423765
 }
 
 void warlock_t::create_soul_swap_actions()
