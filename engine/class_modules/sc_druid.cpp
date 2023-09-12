@@ -2628,14 +2628,14 @@ public:
     p()->buff.touch_the_cosmos->expire();
     p()->buff.gathering_starstuff->trigger();
 
-    if ( is_free_proc() )
-      return;
-
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T31, B4 ) &&
          ( p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check() ) )
     {
       p()->buff.balance_t31_4pc_buff->trigger();
     }
+
+    if ( is_free_proc() )
+      return;
 
     p()->buff.starlord->trigger();
     p()->buff.rattled_stars->trigger();
