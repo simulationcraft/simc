@@ -937,8 +937,9 @@ void warlock_t::create_buffs_affliction()
   buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
                              ->set_default_value_from_effect( 1 );
 
-  buffs.soulstealer = make_buff( this, "soulstealer", tier.soulstealer )->set_default_value_from_effect( 1 );
-  buffs.soulstealer->set_initial_stack( buffs.soulstealer->max_stack() );
+  buffs.soulstealer = make_buff( this, "soulstealer", tier.soulstealer )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_reverse( true );
 }
 
 void warlock_t::init_spells_affliction()
