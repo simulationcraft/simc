@@ -246,8 +246,11 @@ struct malefic_rapture_t : public affliction_spell_t
 {
   struct malefic_rapture_damage_t : public affliction_spell_t
   {
+    timespan_t t31_soulstealer_extend;
+
     malefic_rapture_damage_t( warlock_t* p )
-      : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
+      : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg ),
+        t31_soulstealer_extend( p->sets->set( WARLOCK_AFFLICTION, T31, B4 )->effectN( 1 ).time_value() )
     {
       background = dual = true;
       spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
@@ -264,6 +267,8 @@ struct malefic_rapture_t : public affliction_spell_t
 
       if ( p()->talents.focused_malignancy->ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
         m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
+      
+      m *= 1.0 + p()->buffs.soulstealer->check_value();
 
       return m;
     }
@@ -278,6 +283,30 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         if ( target_data->dots_unstable_affliction->is_ticking() )
           target_data->debuffs_dread_touch->trigger();
+      }
+
+      if ( p()->buffs.soulstealer->check() )
+      {
+        if ( target_data->dots_agony->is_ticking() )
+          target_data->dots_agony->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_corruption->is_ticking() )
+          target_data->dots_corruption->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_siphon_life->is_ticking() )
+          target_data->dots_siphon_life->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_unstable_affliction->is_ticking() )
+          target_data->dots_unstable_affliction->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->debuffs_haunt->up() )
+          target_data->debuffs_haunt->extend_duration( p(), t31_soulstealer_extend );
+
+        if ( target_data->dots_vile_taint->is_ticking() )
+          target_data->dots_vile_taint->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_phantom_singularity->is_ticking() )
+          target_data->dots_phantom_singularity->adjust_duration( t31_soulstealer_extend );
       }
     }
 
@@ -340,6 +369,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
     p()->buffs.tormented_crescendo->decrement();
     p()->buffs.cruel_epiphany->decrement();
+    p()->buffs.soulstealer->decrement(); // 2023-09-11: On PTR spell-queuing with an instant MR can cause this to decrement without giving the extensions. NOT CURRENTLY IMPLEMENTED
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -906,6 +936,10 @@ void warlock_t::create_buffs_affliction()
 
   buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
                              ->set_default_value_from_effect( 1 );
+
+  buffs.soulstealer = make_buff( this, "soulstealer", tier.soulstealer )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_reverse( true );
 }
 
 void warlock_t::init_spells_affliction()
@@ -1013,6 +1047,9 @@ void warlock_t::init_spells_affliction()
 
   // T30 (Aberrus, the Shadowed Crucible)
   tier.infirmity = find_spell( 409765 );
+
+  // T31 (Amirdrassil, the Dream's Hope)
+  tier.soulstealer = sets->set( WARLOCK_AFFLICTION, T31, B4 )->effectN( 2 ).trigger(); // Should be ID 423765
 }
 
 void warlock_t::create_soul_swap_actions()
