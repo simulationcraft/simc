@@ -1506,7 +1506,8 @@ void warlock_t::create_buffs()
   create_buffs_affliction();
 
   buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
-                       ->set_cooldown( 0_ms );
+                       ->set_cooldown( 0_ms )
+                       ->set_duration( talents.soul_rot->duration() + sets->set( WARLOCK_AFFLICTION, T31, B2 )->effectN( 2 ).time_value() );
 
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
                                ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
