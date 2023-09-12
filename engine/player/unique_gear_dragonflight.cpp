@@ -683,67 +683,67 @@ void incandescent_essence( special_effect_t& e )
 
   struct ingras_cruel_nightmare_t : public generic_proc_t
   {
-  action_t* aoe_damage;
-  action_t* st_damage;
-  ingras_cruel_nightmare_t( const special_effect_t& e )
-    : generic_proc_t( e, "igiras_cruel_nightmare", 426339 ),
-      aoe_damage( create_proc_action<generic_aoe_proc_t>( "igias_sharpened_iron", e, "igiras_sharpened_iron",
+    action_t* aoe_damage;
+    action_t* st_damage;
+    ingras_cruel_nightmare_t( const special_effect_t& e )
+      : generic_proc_t( e, "igiras_cruel_nightmare", 426339 ),
+        aoe_damage( create_proc_action<generic_aoe_proc_t>( "igias_sharpened_iron", e, "igiras_sharpened_iron",
                                                           e.player->find_spell( 426535 ), true ) ),
-      st_damage(
-          create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard", e.player->find_spell( 426534 ) ) )
-  {
-    aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-    st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 5 ).average( e.item );
-
-    add_child( aoe_damage );
-    add_child( st_damage );
-  }
-
-  void execute() override
-  {
-    if ( sim->target_non_sleeping_list.size() == 1 )
+        st_damage(
+            create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard", e.player->find_spell( 426534 ) ) )
     {
-      st_damage->execute();
+      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+      st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 5 ).average( e.item );
+
+      add_child( aoe_damage );
+      add_child( st_damage );
     }
-    else
+
+    void execute() override
     {
-      aoe_damage->execute();
+      if ( sim->target_non_sleeping_list.size() == 1 )
+      {
+        st_damage->execute();
+      }
+      else
+      {
+        aoe_damage->execute();
+      }
+      generic_proc_t::execute();
     }
-    generic_proc_t::execute();
-  }
   };
 
   struct tindrals_fowl_fantasia_t : public generic_proc_t
   {
-  action_t* main_damage;
-  action_t* secondary_damage;
-  tindrals_fowl_fantasia_t( const special_effect_t& e )
-    : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
-      main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
-                                                           e.player->find_spell( 426486 ), true ) ),
-      secondary_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame_secondary", e,
-                                                                "denizen_of_the_flame_secondary",
-                                                                e.player->find_spell( 426431 ), true ) )
-  {
-    main_damage->base_dd_min = main_damage->base_dd_max =
-        e.driver()->effectN( 7 ).average( e.item ) / 2;  // Damage appears to be divided between the two main hits
-    secondary_damage->base_dd_min = secondary_damage->base_dd_max =
-        e.driver()->effectN( 7 ).average( e.item ) / 4;  // Damage appears to be divided between the 4 secondary hits
+    action_t* main_damage;
+    action_t* secondary_damage;
+    tindrals_fowl_fantasia_t( const special_effect_t& e )
+      : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
+        main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
+                                                             e.player->find_spell( 426486 ), true ) ),
+        secondary_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame_secondary", e,
+                                                                  "denizen_of_the_flame_secondary",
+                                                                  e.player->find_spell( 426431 ), true ) )
+    {
+      main_damage->base_dd_min = main_damage->base_dd_max =
+          e.driver()->effectN( 7 ).average( e.item ) / 2;  // Damage appears to be divided between the two main hits
+      secondary_damage->base_dd_min = secondary_damage->base_dd_max =
+          e.driver()->effectN( 7 ).average( e.item ) / 4;  // Damage appears to be divided between the 4 secondary hits
 
-    add_child( main_damage );
-    add_child( secondary_damage );
-  }
+      add_child( main_damage );
+      add_child( secondary_damage );
+    }
 
-  void execute() override
-  {
-    main_damage->execute();
-    main_damage->execute();  // Main damage seems to execute twice
-    secondary_damage->execute();
-    secondary_damage->execute();
-    secondary_damage->execute();
-    secondary_damage->execute();  // Secondary damage seems to execute 4 times
-    generic_proc_t::execute();
-  }
+    void execute() override
+    {
+      main_damage->execute();
+      main_damage->execute();  // Main damage seems to execute twice
+      secondary_damage->execute();
+      secondary_damage->execute();
+      secondary_damage->execute();
+      secondary_damage->execute();  // Secondary damage seems to execute 4 times
+      generic_proc_t::execute();
+    }
   };
 
   switch ( e.player->_spec )
