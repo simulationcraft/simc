@@ -1379,6 +1379,7 @@ public:
     bool frailty = false;
     bool fiery_demise = false;
     bool fires_of_fel = false;
+    bool t31_vengeance_2pc = true;
   } affected_by;
 
   std::vector<damage_buff_t*> direct_damage_buffs;
@@ -1928,9 +1929,7 @@ public:
     if (!p()->set_bonuses.t31_vengeance_2pc->ok())
       return;
 
-    // Auto-attacks don't seem to trigger it
-    // TODO: It also doesn't trigger from 4pc proc or from Immolation Aura
-    if (!s->action->special)
+    if (!affected_by.t31_vengeance_2pc)
       return;
 
     const demon_hunter_td_t* target_data = td( s->target );
@@ -3154,6 +3153,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
       aoe = -1;
       reduced_aoe_targets = p->spell.immolation_aura->effectN( 2 ).base_value();
 
+      affected_by.t31_vengeance_2pc = false;
+
       // Rename gain for periodic energizes. Initial hit action doesn't energize.
       // Gains are encoded in the 258922 spell data differently for Havoc vs. Vengeance
       gain = p->get_gain( "immolation_aura_tick" );
@@ -3227,6 +3228,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
     may_miss = false;
     dot_duration = timespan_t::zero();
     set_target( p ); // Does not require a hostile target
+
+    affected_by.t31_vengeance_2pc = false;
 
     apply_affecting_aura( p->spec.immolation_aura_cdr );
 
@@ -3979,6 +3982,8 @@ namespace attacks
       weapon = w;
       weapon_multiplier = 1.0;
       base_execute_time = weapon->swing_time;
+
+      affected_by.t31_vengeance_2pc = false;
 
       status.main_hand = status.off_hand = aa_contact::LOST_RANGE;
 
