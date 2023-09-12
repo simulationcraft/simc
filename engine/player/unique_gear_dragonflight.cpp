@@ -728,7 +728,7 @@ void incandescent_essence( special_effect_t& e )
           "denizen_of_the_flame_secondary", e, "denizen_of_the_flame_secondary", e.player->find_spell( 426431 ), true );
       secondary_damage->base_dd_min = secondary_damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
 
-      // buff->set_quiet( true );
+      buff->set_quiet( true );
       buff->set_duration( 2_s );
       buff->set_period( 1_s );
       buff->set_tick_callback( [ secondary_damage ]( buff_t* b, int, timespan_t ) { secondary_damage->execute(); } );
