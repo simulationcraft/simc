@@ -321,8 +321,6 @@ struct malefic_rapture_t : public affliction_spell_t
       }
 
       affliction_spell_t::execute();
-
-      p()->buffs.soulstealer->decrement();
     }
   };
 
@@ -371,6 +369,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
     p()->buffs.tormented_crescendo->decrement();
     p()->buffs.cruel_epiphany->decrement();
+    p()->buffs.soulstealer->decrement();
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
