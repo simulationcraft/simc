@@ -12887,6 +12887,8 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->buff.parting_skies->trigger();
   p->buff.parting_skies->trigger();
   p->buff.solstice->trigger();
+  // Check if this changes as it may not be intended
+  p->buff.dreamstate->trigger();
 
   state = IN_BOTH;
   p->uptime.eclipse_none->update( false, p->sim->current_time() );
