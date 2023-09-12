@@ -388,6 +388,7 @@ public:
     buff_t* salvo;
     buff_t* unerring_vision_hidden;
     buff_t* unerring_vision;
+    buff_t* windrunners_guidance; 
 
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
@@ -520,7 +521,6 @@ public:
     // Shared
     spell_data_ptr_t wailing_arrow;
 
-    //TODO Update for 10.2 talent changes
     // Marksmanship Tree
     spell_data_ptr_t aimed_shot;
 
@@ -726,6 +726,7 @@ public:
     unsigned dire_pack_counter = 0;
     unsigned bombardment_counter = 0;
     unsigned lotw_counter = 0;
+    unsigned windrunners_guidance_counter = 0; 
   } state;
 
   struct options_t {
@@ -3149,6 +3150,10 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     double focus_gain;
   } lotw;
 
+  struct {
+    unsigned trigger_threshold;
+  } windrunners_guidance; 
+
   wind_arrow_t( util::string_view n, hunter_t* p ):
     hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
   {
@@ -3173,13 +3178,18 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     lotw.trigger_threshold = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 2 ).base_value() );
     lotw.focus_gain = p -> talents.legacy_of_the_windrunners -> effectN( 3 ).base_value();
     lotw.aimed_recharges = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 4 ).base_value() );
+
+    if( p -> is_ptr() )
+    {
+      windrunners_guidance.trigger_threshold = as<int>( p -> talents.windrunners_guidance -> effectN( 2 ).base_value() );
+    } 
   }
 
   void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> talents.windrunners_guidance.ok() && rng().roll( p() -> talents.windrunners_guidance -> effectN( 1 ).percent() ) ) 
+    if ( !p() -> is_ptr() && p() -> talents.windrunners_guidance.ok() && rng().roll( p() -> talents.windrunners_guidance -> effectN( 1 ).percent() ) ) 
     {
       
       //12/05/2023: Windrunners Guidance can proc the class trinket, but only if Trueshot is not already running
@@ -3196,6 +3206,17 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
       p() -> state.lotw_counter = 0;
       p() -> cooldowns.aimed_shot -> reset( true, lotw.aimed_recharges );
       p() -> resource_gain( RESOURCE_FOCUS, lotw.focus_gain, p() -> gains.legacy_of_the_windrunners, this );
+    }
+
+    if(p() -> is_ptr() && p() -> talents.windrunners_guidance.ok() )
+    {
+      p() -> state.windrunners_guidance_counter += 1;
+      if( p() -> state.windrunners_guidance_counter >= windrunners_guidance.trigger_threshold )
+      {
+        p() -> state.windrunners_guidance_counter -= windrunners_guidance.trigger_threshold;
+        p() -> buffs.windrunners_guidance -> trigger();
+      }
+      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> talents.windrunners_guidance -> effectN( 1 ).base_value() ) );
     }
   }
 
@@ -5840,7 +5861,17 @@ struct trueshot_t: public hunter_spell_t
     // Applying Trueshot directly does not extend an existing Trueshot and resets Unerring Vision stacks.
     p() -> buffs.trueshot -> expire();
 
-    p() -> buffs.trueshot -> trigger();
+    if( p() -> is_ptr() )
+    {
+      auto increase_from_wg = timespan_t::from_millis( p() -> buffs.windrunners_guidance -> check_stack_value() );
+      sim -> print_debug( "Trueshot cast while Windrunner's Guidance had {} stacks, which each increase duration by {} for a total of {}", p() -> buffs.windrunners_guidance -> stack(), p() -> buffs.windrunners_guidance -> check_value(), p() -> buffs.windrunners_guidance -> check_stack_value() );
+      p() -> buffs.trueshot -> trigger( p() -> talents.trueshot -> duration() + increase_from_wg );
+      p() -> buffs.windrunners_guidance -> expire(); 
+    }
+    else 
+    {
+      p() -> buffs.trueshot -> trigger(); 
+    }
   }
 };
 
@@ -7018,6 +7049,12 @@ void hunter_t::create_buffs()
   buffs.salvo =
     make_buff( this, "salvo", find_spell( 400456 ) );
 
+  if( is_ptr() )
+  {
+    buffs.windrunners_guidance = 
+      make_buff( this, "windrunners_guidance", find_spell( 424571 ) )
+        -> set_default_value( talents.windrunners_guidance -> effectN( 3 ).base_value() );
+  }
   // Beast Mastery Tree
 
   const spell_data_t* barbed_shot = find_spell( 246152 );
