@@ -723,7 +723,7 @@ void incandescent_essence( special_effect_t& e )
       : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
       main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
                    e.player->find_spell( 426486 ), true ) ),
-      buff( make_buff<buff_t>( e.player, "tindrals_fowl_fantasia", e.player->find_spell( 426341 ) ) )
+      buff( make_buff<buff_t>( e.player, "tindrals_fowl_fantasia", e.player->find_spell( 426431 ) ) )
     {
       auto secondary_damage = create_proc_action<generic_aoe_proc_t>(
         "denizen_of_the_flame_secondary", e, "denizen_of_the_flame_secondary", e.player->find_spell( 426431 ), true );
