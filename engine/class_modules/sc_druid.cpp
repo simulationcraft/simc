@@ -7956,7 +7956,7 @@ struct orbital_strike_t : public druid_spell_t
     orbital_strike_damage_t( druid_t* p, orbital_strike_t* driver )
       : druid_spell_t( "orbital_strike_damage", p, p->find_spell( 361237 ) )
     {
-      background   = true;
+      background = dual = true;
       aoe          = -1;
       travel_speed = 75.0;  // guesstimate
 
