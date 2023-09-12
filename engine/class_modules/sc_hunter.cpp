@@ -354,11 +354,15 @@ public:
     spell_data_ptr_t t30_sv_4pc; 
     // T31 - Amirdrassil: The Dream's Hope
     spell_data_ptr_t t31_bm_2pc;
+    //TODO NYI
     spell_data_ptr_t t31_bm_4pc;
+     //TODO NYI
     spell_data_ptr_t t31_mm_2pc;
+     //TODO NYI
     spell_data_ptr_t t31_mm_4pc;
     spell_data_ptr_t t31_sv_2pc;
     spell_data_ptr_t t31_sv_2pc_buff; 
+    //TODO NYI
     spell_data_ptr_t t31_sv_4pc;
   } tier_set;
 
@@ -516,6 +520,7 @@ public:
     // Shared
     spell_data_ptr_t wailing_arrow;
 
+    //TODO Update for 10.2 talent changes
     // Marksmanship Tree
     spell_data_ptr_t aimed_shot;
 
@@ -5968,6 +5973,7 @@ struct steel_trap_t: public trap_base_t
 
 // Wildfire Bomb ==============================================================
 
+//TODO Add 40% increase damage to main target (effectN #3 on spell data) for 10.2
 struct wildfire_bomb_t: public hunter_spell_t
 {
   struct state_data_t {
