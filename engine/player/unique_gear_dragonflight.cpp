@@ -658,6 +658,7 @@ void shadowflame_wreathe( special_effect_t& effect )
 // 426339 Melee Driver
 // 426534 Melee ST damage
 // 426535 Melee AoE damage
+// 426527 Melee DoT (Unused?)
 // 426341 Ranged Driver
 // 426486 Ranged AoE damage 1
 // 426431 Ranged AoE damage 2 -- Both of these proc in game as of 8/9/23. Recheck in the future. See log below.
@@ -675,9 +676,9 @@ void shadowflame_wreathe( special_effect_t& effect )
 // Implement Tank/Healer versions
 void incandescent_essence( special_effect_t& e )
 {
-  auto melee_driver  = e.player->find_spell( 426339 );
+  auto melee_driver = e.player->find_spell( 426339 );
   auto ranged_driver = e.player->find_spell( 426341 );
-  auto tank_driver   = e.player->find_spell( 426288 );
+  auto tank_driver = e.player->find_spell( 426288 );
   auto healer_driver = e.player->find_spell( 426262 );
 
   struct ingras_cruel_nightmare_t : public generic_proc_t
@@ -686,13 +687,14 @@ void incandescent_essence( special_effect_t& e )
     action_t* st_damage;
     ingras_cruel_nightmare_t( const special_effect_t& e )
       : generic_proc_t( e, "igiras_cruel_nightmare", 426339 ),
-        aoe_damage( create_proc_action<generic_aoe_proc_t>( "igias_sharpened_iron", e, "igiras_sharpened_iron",
-                                                            e.player->find_spell( 426535 ), true ) ),
-        st_damage( create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard",
-                                                       e.player->find_spell( 426534 ) ) )
+      aoe_damage( create_proc_action<generic_aoe_proc_t>( "igias_sharpened_iron", e, "igiras_sharpened_iron",
+                  e.player->find_spell( 426535 ), true ) ),
+      st_damage( create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard",
+                 e.player->find_spell( 426534 ) ) )
     {
-      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 9 ).average( e.item );
-      st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 8 ).average( e.item );
+      auto st_damage_mult = e.player->find_spell( 426527 )->duration() / e.player->find_spell( 426527 )->effectN( 1 ).period();
+      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 9 ).average( e.item );
+      st_damage->base_dd_min = st_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item ) * st_damage_mult;
 
       add_child( aoe_damage );
       add_child( st_damage );
@@ -700,7 +702,7 @@ void incandescent_essence( special_effect_t& e )
 
     void execute() override
     {
-      if ( sim->target_non_sleeping_list.size() == 1 )
+      if (sim->target_non_sleeping_list.size() == 1)
       {
         st_damage->execute();
       }
@@ -718,15 +720,14 @@ void incandescent_essence( special_effect_t& e )
     buff_t* buff;
     tindrals_fowl_fantasia_t( const special_effect_t& e )
       : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
-        main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
-                                                             e.player->find_spell( 426486 ), true ) ),
-        buff( make_buff<buff_t>( e.player, "tindrals_fowl_fantasia", e.player->find_spell( 426341 ) ) )
+      main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
+                   e.player->find_spell( 426486 ), true ) ),
+      buff( make_buff<buff_t>( e.player, "tindrals_fowl_fantasia", e.player->find_spell( 426341 ) ) )
     {
-      main_damage->base_dd_min = main_damage->base_dd_max = e.driver()->effectN( 8 ).average( e.item );
-
       auto secondary_damage = create_proc_action<generic_aoe_proc_t>(
-          "denizen_of_the_flame_secondary", e, "denizen_of_the_flame_secondary", e.player->find_spell( 426431 ), true );
-      secondary_damage->base_dd_min = secondary_damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+        "denizen_of_the_flame_secondary", e, "denizen_of_the_flame_secondary", e.player->find_spell( 426431 ), true );
+      secondary_damage->base_dd_min = secondary_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 6 ).average( e.item );
+      main_damage->base_dd_min = main_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
 
       buff->set_quiet( true );
       buff->set_duration( 2_s );
