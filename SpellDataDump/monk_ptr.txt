@@ -18016,8 +18016,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053880)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
-Tooltip          : Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
+Description      : Drinking a Tea increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
+Tooltip          : Drinking a Tea increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.
 
 Name             : Monk Windwalker 10.1 Class Set 2pc (id=405543) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -18485,9 +18485,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1098484)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103007)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Breath of Fire deals $s1% bonus damage as Shadowflame and causes you to heal for $s2% of all Fire damage dealt.
 
 Name             : Monk Brewmaster 10.2 Class Set 4pc (id=422887) [Passive, Hidden] 
@@ -18505,9 +18505,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103027)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your attacks against targets afflicted by Breath of Fire have a chance to deal $s1% extra damage as Shadowflame, and each Celestial Brew also grants a Stagger absorb for $s2% of the Shadowflame damage you have dealt, causing damage delayed by Stagger to instead be prevented.
 
 Name             : Monk Mistweaver 10.2 Class Set 2pc (id=422889) [Spell Family (53), Passive, Hidden] 
@@ -18526,7 +18526,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098487)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Renewing Mist and its jumps apply Chi Harmony, increasing its targets healing taken from you by $423439s1% for $423439d.
+Description      : Renewing Mist applies Chi Harmony to its initial target, increasing their healing taken from you by $423439s1% for $423439d.
 
 Name             : Monk Mistweaver 10.2 Class Set 4pc (id=422890) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -18543,7 +18543,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098488)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $s1% of all healing you do to targets with Chi Harmony is stored and then dispersed evenly among your allies with Renewing Mist when Chi Harmony fades or is refreshed.
 
 Name             : Monk Windwalker 10.2 Class Set 2pc (id=422891) [Passive, Hidden] 
@@ -18564,7 +18564,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098489)  : Apply Aura (6) | Proc Trigger Spell (42): Windfoot
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 425578 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Trigger Spell: 425578 | Target: Self (1)
 Description      : Melee attacks have a chance to make your next Spinning Crane Kick free.
 Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%. 
 Tooltip          : Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%.
@@ -18584,8 +18584,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098490)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec. 
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. 
 Tooltip          : Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.
 
 Name             : Chi Harmony (id=423439) [Spell Family (53)] 
@@ -18608,7 +18608,7 @@ Attributes       : ........ ........ ........ ...x....   .....x.. ........ .....
                  : Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow Cast While Casting (135), Aura Is Buff (140), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1099439)  : Apply Aura (6) | Unknown(504)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Friend (21)
 Description      : $@spelldesc422889
 Tooltip          : Healing taken increased by $s1%.
 
