@@ -46,6 +46,13 @@
       { return BASE::composite_target_multiplier( t ) * get_debuff_effect_value( td( t ) ); }
 */
 
+enum value_type_e
+{
+  USE_DATA,
+  USE_DEFAULT,
+  USE_CURRENT
+};
+
 template <typename TD>
 struct parse_buff_effects_t
 {
@@ -54,15 +61,17 @@ struct parse_buff_effects_t
   {
     buff_t* buff;
     double value;
+    value_type_e type;
     bool use_stacks;
     bool mastery;
     bfun func;
 
-    buff_effect_t( buff_t* b, double v, bool s = true, bool m = false, bfun f = nullptr )
-      : buff( b ), value( v ), use_stacks( s ), mastery( m ), func( std::move( f ) )
+    buff_effect_t( buff_t* b, double v, value_type_e t = USE_DATA, bool s = true, bool m = false, bfun f = nullptr )
+      : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) )
     {}
   };
 
+  // TODO: add value type to debuffs if it becomes necessary in the future
   using dfun = std::function<int( TD* )>;
   struct dot_debuff_t
   {
@@ -139,21 +148,22 @@ public:
     parse_spell_effects_mods( val, m, base, idx, mods... );
   }
 
-  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, use_default]][, spell][,...] )
+  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
   //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
-  //  use_default = optional, default false, whether to use buff's default value over effect's value
+  //  value_type = optional, default USE_DATA, where the value comes from.
+  //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
   //  spell = optional list of spell with redirect effects that modify the effects on the buff
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
   //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
   //
   // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
-  //  parse_buff_effects( buff2, false, true );
+  //  parse_buff_effects( buff2, false, USE_DEFAULT );
   template <typename... Ts>
   void parse_buff_effect( buff_t* buff, const bfun& f, const spell_data_t* s_data, size_t i, bool use_stacks,
-                          bool use_default, bool force, Ts... mods )
+                           value_type_e value_type, bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
     double val      = eff.base_value();
@@ -202,7 +212,7 @@ public:
     if ( !action_->data().affected_by_all( eff ) && !force )
       return;
 
-    if ( use_default && buff)
+    if ( value_type == USE_DEFAULT && buff)
     {
       val = buff->default_value;
       val_mul = 1.0;
@@ -216,27 +226,27 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
-          da_multiplier_buffeffects.emplace_back( buff, val * val_mul, use_stacks, mastery, f );
+          da_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f );
           debug_message( "direct damage" );
           break;
         case P_DURATION:
-          dot_duration_buffeffects.emplace_back( buff, val * val_mul, use_stacks, mastery, f );
+          dot_duration_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f );
           debug_message( "duration" );
           break;
         case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.emplace_back( buff, val * val_mul, use_stacks, mastery, f );
+          ta_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f );
           debug_message( "tick damage" );
           break;
         case P_CAST_TIME:
-          execute_time_buffeffects.emplace_back( buff, val * val_mul, use_stacks, false, f );
+          execute_time_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
           debug_message( "cast time" );
           break;
         case P_COOLDOWN:
-          recharge_multiplier_buffeffects.emplace_back( buff, val * val_mul, use_stacks, false, f );
+          recharge_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
           debug_message( "cooldown" );
           break;
         case P_RESOURCE_COST:
-          cost_buffeffects.emplace_back( buff, val * val_mul, use_stacks, false, f );
+          cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
           debug_message( "cost percent" );
           break;
         default:
@@ -248,12 +258,12 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_CRIT:
-          crit_chance_buffeffects.emplace_back( buff, val * val_mul, use_stacks, false, f );
+          crit_chance_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
           debug_message( "crit chance" );
           break;
         case P_RESOURCE_COST:
           val_mul = eff.resource_multiplier( action_->current_resource() );
-          flat_cost_buffeffects.emplace_back( buff, val * val_mul, use_stacks, false, f );
+          flat_cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
           debug_message( "flat cost" );
           break;
         default:
@@ -263,7 +273,7 @@ public:
   }
 
   template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, bool use_default, Ts... mods )
+  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, value_type_e value_type, Ts... mods )
   {
     if ( !buff )
       return;
@@ -275,51 +285,51 @@ public:
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( buff, nullptr, spell, i, use_stacks, use_default, false, mods... );
+      parse_buff_effect( buff, nullptr, spell, i, use_stacks, value_type, false, mods... );
     }
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, unsigned ignore_mask, Ts... mods )
   {
-    parse_buff_effects( buff, ignore_mask, true, false, mods... );
-  }
-
-  template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, bool stack, bool use_default, Ts... mods )
-  {
-    parse_buff_effects( buff, 0U, stack, use_default, mods... );
+    parse_buff_effects( buff, ignore_mask, true, USE_DATA, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
   {
-    parse_buff_effects( buff, 0U, stack, false, mods... );
+    parse_buff_effects( buff, 0U, stack, USE_DATA, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, value_type_e value_type, Ts... mods )
+  {
+    parse_buff_effects( buff, 0U, true, value_type, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, Ts... mods )
   {
-    parse_buff_effects( buff, 0U, true, false, mods... );
+    parse_buff_effects( buff, 0U, true, USE_DATA, mods... );
   }
 
   template <typename... Ts>
-  void force_buff_effect( buff_t* buff, unsigned idx, bool stack, bool use_default, Ts... mods )
+  void force_buff_effect( buff_t* buff, unsigned idx, bool stack, value_type_e value_type, Ts... mods )
   {
     if ( action_->data().affected_by_all( buff->data().effectN( idx ) ) )
       return;
 
-    parse_buff_effect( buff, nullptr, &buff->data(), idx, stack, use_default, true, mods... );
+    parse_buff_effect( buff, nullptr, &buff->data(), idx, stack, value_type, true, mods... );
   }
 
   template <typename... Ts>
   void force_buff_effect( buff_t* buff, unsigned idx, Ts... mods )
   {
-    force_buff_effect( buff, idx, true, false, mods... );
+    force_buff_effect( buff, idx, true, USE_DATA, mods... );
   }
 
   void parse_conditional_effects( const spell_data_t* spell, const bfun& func, unsigned ignore_mask = 0U,
-                                  bool use_stack = true, bool use_default = false )
+                                  bool use_stack = true, value_type_e value_type = USE_DATA )
   {
     if ( !spell || !spell->ok() )
       return;
@@ -329,17 +339,17 @@ public:
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( nullptr, func, spell, i, use_stack, use_default, false );
+      parse_buff_effect( nullptr, func, spell, i, use_stack, value_type, false );
     }
   }
 
   void force_conditional_effect( const spell_data_t* spell, const bfun& func, unsigned idx, bool use_stack = true,
-                                 bool use_default = false )
+                                 value_type_e value_type = USE_DATA )
   {
     if ( action_->data().affected_by_all( spell->effectN( idx ) ) )
       return;
 
-    parse_buff_effect( nullptr, func, spell, idx, use_stack, use_default, true );
+    parse_buff_effect( nullptr, func, spell, idx, use_stack, value_type, true );
   }
 
   void parse_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
@@ -368,6 +378,9 @@ public:
           continue;  // continue to next effect if stacks == 0 (buff is down)
 
         mod = i.use_stacks ? stack : 1;
+
+        if ( i.type == USE_CURRENT )
+          eff_val = i.buff->check_value();
       }
 
       if ( i.mastery )

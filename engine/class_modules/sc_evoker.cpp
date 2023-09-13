@@ -191,6 +191,8 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> snapfire;
     propagate_const<buff_t*> feed_the_flames_stacking;
     propagate_const<buff_t*> feed_the_flames_pyre;
+    propagate_const<buff_t*> emerald_trance_stacking;
+    propagate_const<buff_t*> emerald_trance;
     propagate_const<buff_t*> ebon_might_self_buff;
     propagate_const<buff_t*> momentum_shift;
 
@@ -417,6 +419,7 @@ struct evoker_t : public player_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
+    propagate_const<proc_t*> emerald_trance;
     propagate_const<proc_t*> anachronism_essence_burst;
     propagate_const<proc_t*> echoing_strike;
   } proc;
@@ -943,7 +946,7 @@ public:
 
   
   template <typename... Ts>
-  void parse_buff_effects_mods( buff_t* buff, const bfun& f, unsigned ignore_mask, bool use_stacks, bool use_default,
+  void parse_buff_effects_mods( buff_t* buff, const bfun& f, unsigned ignore_mask, bool use_stacks, value_type_e value_type,
                                 Ts... mods )
   {
     if ( !buff )
@@ -956,17 +959,23 @@ public:
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_buff_effect( buff, f, spell, i, use_stacks, use_default, false, mods... );
+      parse_buff_effect( buff, f, spell, i, use_stacks, value_type, false, mods... );
     }
   }
 
-  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
-  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
-  //  use_stacks = optional, default true, whether to multiply value by stacks
-  //  use_default = optional, default false, whether to use buff's default value over effect's value
-  //  S = optional list of template parameter(s) to indicate spell(s) with redirect effects
-  //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
+  //  value_type = optional, default USE_DATA, where the value comes from.
+  //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
+  //  spell = optional list of spell with redirect effects that modify the effects on the buff
+  //
+  // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
+  //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
+  //
+  // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
+  //  parse_buff_effects( buff2, false, USE_DEFAULT );
   void apply_buff_effects()
   {
     // using S = const spell_data_t*;
@@ -979,14 +988,17 @@ public:
 
     parse_buff_effects( p()->buff.imminent_destruction );
 
+    parse_buff_effects( p()->buff.emerald_trance_stacking, true );
+    parse_buff_effects( p()->buff.emerald_trance, true );
+
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
       parse_buff_effects_mods(
-          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, false,
+          p()->buff.ebon_might_self_buff, [ this ] { return p()->close_as_clutchmates; }, 0U, true, USE_DATA,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ), p()->spec.close_as_clutchmates );
 
       parse_buff_effects_mods(
-          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, false,
+          p()->buff.ebon_might_self_buff, [ this ] { return !p()->close_as_clutchmates; }, 0U, true, USE_DATA,
           p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
     }
 
@@ -1848,7 +1860,12 @@ public:
       if ( use_full_mastery() )
         tm *= 1.0 + p()->cache.mastery_value();
       else
-        tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
+      {
+        if ( p()->is_ptr() )
+          tm *= 1.0 + p()->cache.mastery_value() * std::max( 0.3, t->health_percentage() / 100 );
+        else
+          tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
+      }
     }
 
     return tm;
@@ -3342,6 +3359,12 @@ struct dragonrage_t : public evoker_spell_t
     evoker_spell_t::execute();
 
     p()->buff.dragonrage->trigger();
+
+    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, T31, B2 ) )
+    {
+      p()->buff.emerald_trance_stacking->trigger();
+    }
+
     damage->execute_on_target( target );
   }
 };
@@ -4717,6 +4740,7 @@ void evoker_t::init_procs()
 
   proc.ruby_essence_burst        = get_proc( "Ruby Essence Burst" );
   proc.azure_essence_burst       = get_proc( "Azure Essence Burst" );
+  proc.emerald_trance            = get_proc( "Emerald Trance" );
   proc.anachronism_essence_burst = get_proc( "Anachronism" );
   proc.echoing_strike            = get_proc( "Echoing Strike" );
 }
@@ -5040,7 +5064,14 @@ void evoker_t::create_buffs()
   buff.charged_blast = make_buff<e_buff_t>( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
                            ->set_default_value_from_effect( 1 );
 
-  buff.dragonrage = make_buff<e_buff_t>( this, "dragonrage", talent.dragonrage )->set_cooldown( 0_ms );
+  buff.dragonrage = make_buff<e_buff_t>( this, "dragonrage", talent.dragonrage )
+                        ->set_cooldown( 0_ms )
+                        ->set_stack_change_callback( [ this ]( buff_t*, int old, int ) {
+                          if ( old )
+                          {
+                            buff.emerald_trance_stacking->expire();
+                          }
+                        } );
 
   buff.fury_of_the_aspects =
       make_buff<e_buff_t>( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
@@ -5104,6 +5135,25 @@ void evoker_t::create_buffs()
           }
         } );
   }
+
+  buff.emerald_trance_stacking =
+      make_buff<e_buff_t>( this, "emerald_trance_stacking", find_spell( 424155 ) )
+          ->set_stack_change_callback( [ this ]( buff_t*, int old, int _new) {
+            if ( _new < old && sets->has_set_bonus( EVOKER_DEVASTATION, T31, B4 ) )
+            {
+              buff.emerald_trance->trigger( old, old * buff.emerald_trance->buff_duration() );
+            }
+          } )
+          ->set_duration( 0_s )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  buff.emerald_trance =
+      make_buff<e_buff_t>( this, "emerald_trance", find_spell( 424402 ) )
+                            ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                              buff.essence_burst->trigger();
+                              proc.emerald_trance->occur();
+                            } )
+          ->set_freeze_stacks( true );
 
   // Preservation
 

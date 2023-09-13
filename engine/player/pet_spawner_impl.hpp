@@ -264,30 +264,6 @@ size_t pet_spawner_t<T, O>::despawn( const check_arg_fn_t& fn )
   return despawned;
 }
 
-// Time adjustments
-
-template <typename T, typename O>
-void pet_spawner_t<T, O>::extend_expiration( timespan_t adjustment )
-{
-  if ( adjustment <= timespan_t::zero() )
-  {
-    return;
-  }
-
-  for ( auto pet : m_active_pets )
-  {
-    if ( ! pet->expiration )
-    {
-      continue;
-    }
-
-    timespan_t new_duration = pet -> expiration -> remains();
-    new_duration += adjustment;
-
-    pet -> expiration -> reschedule( new_duration );
-  }
-}
-
 // Spawning
 
 template <typename T, typename O>

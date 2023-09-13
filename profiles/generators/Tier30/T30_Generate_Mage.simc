@@ -10,7 +10,7 @@ flask=phial_of_corrupting_rage_3
 temporary_enchant=main_hand:hissing_rune_3
 
 head=underlight_conjurers_arcanocowl,id=202551,bonus_id=9321/7979/6652/9414/9229/1472/8767,ilevel=447,gem_id=192988
-neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192988/192938/192938
+neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192938/192938/192938
 shoulders=underlight_conjurers_aurora,id=202549,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=6652/9330/7979/1485/8767,ilevel=457
 chest=underlight_conjurers_vestment,id=202554,bonus_id=9321/7979/6652/9231/1466/8767,ilevel=447,enchant_id=6625

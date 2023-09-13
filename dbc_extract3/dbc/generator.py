@@ -1435,6 +1435,10 @@ class SpellDataGenerator(DataGenerator):
          414928, 414936, 414951, 414950, 414935, # Paracausal Fragment of Doomhammer/Shalamayne
          419737, 420144, # Timestrike
          419262, 419261, # Demonsbane
+         # 10.2
+         425838, 426339, 426262, 426288, 426341, 426535, 426534, 426486, 426431, # Incandescent Essence Enchant
+         422858, 426676, 426647, 426672, # Pip's Emerald Frendship Badge
+         423611, 426898, 426911, 426906, 423021, 426897, # Ashes of the Embersoul
         ),
 
         # Warrior:
@@ -1553,6 +1557,7 @@ class SpellDataGenerator(DataGenerator):
 
         # Rogue:
         (
+            ( 115192, 0 ),          # Subterfuge Buff
             ( 121474, 0 ),          # Shadow Blades off hand
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
@@ -1757,6 +1762,7 @@ class SpellDataGenerator(DataGenerator):
           ( 196782, 0 ), # Outbreak Intermediate AoE spell
           ( 281327, 0 ), # Obliteration Rune Generation Spell
           ( 47466, 0 ), # DK Pet Stun
+          ( 425721, 0 ), # T31 Blood 2pc buff
         ),
 
         # Shaman:
@@ -1965,6 +1971,7 @@ class SpellDataGenerator(DataGenerator):
           ( 405681, 0 ),    # Immutable Hatred Damage Proc
           ( 409890, 0 ),    # T30 - Channel Demonfire
           ( 417282, 3 ),    # Crashing Chaos Buff 10.1.5
+          ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
         ),
 
         # Monk:
@@ -2182,7 +2189,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
           ( 393957, 1 ), # Waning Twilight
-          ( 393957, 1 ), # Balance T31 2pc buff
+          ( 424248, 1 ), # Balance T31 2pc buff
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage

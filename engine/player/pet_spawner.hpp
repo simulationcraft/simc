@@ -159,9 +159,6 @@ public:
   /// Despawn a set of active pets based on a functor, return number of pets despawned
   size_t despawn( const check_arg_fn_t& fn );
 
-  /// Adjust the expiration time of active pets of type T
-  void extend_expiration( timespan_t adjustment );
-
   /// Number of active pets of type T
   size_t n_active_pets() const;
   /// Number of active pets of type T satisfying fn check

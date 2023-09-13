@@ -617,6 +617,14 @@ struct shadow_word_pain_t final : public priest_spell_t
     execute();
   }
 
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( casted )
+      p().buffs.deaths_torment->expire();
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -625,8 +633,8 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
-        priest().buffs.deathspeaker->trigger();
         priest().procs.deathspeaker->occur();
+        priest().buffs.deathspeaker->trigger();
       }
 
       priest().refresh_insidious_ire_buff( s );
@@ -690,8 +698,8 @@ struct shadow_word_pain_t final : public priest_spell_t
 
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
-        priest().buffs.deathspeaker->trigger();
         priest().procs.deathspeaker->occur();
+        priest().buffs.deathspeaker->trigger();
       }
     }
   }
@@ -1094,11 +1102,6 @@ struct devouring_plague_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
-
-    if ( priest().talents.shadow.mind_flay_insanity.enabled() )
-    {
-      priest().buffs.mind_flay_insanity->trigger();
-    }
 
     if ( priest().talents.shadow.surge_of_insanity.enabled() )
     {
@@ -1596,12 +1599,38 @@ struct shadow_weaving_t final : public priest_spell_t
   }
 };
 
+struct shadow_crash_data
+{
+  double deaths_torment_mult = 1.0;
+};
+
+struct shadow_crash_state_t : public priest_action_state_t<shadow_crash_data>
+{
+protected:
+  using ab = priest_action_state_t<shadow_crash_data>;
+
+public:
+  shadow_crash_state_t( action_t* a, player_t* t ) : ab( a, t )
+  {
+  }
+
+  double composite_da_multiplier() const override
+  {
+    return ab::composite_da_multiplier() * deaths_torment_mult;
+  }
+};
+
 // ==========================================================================
 // Shadow Crash
 // TODO: Refactor this so we can just use reduced_aoe_targets
 // ==========================================================================
 struct shadow_crash_damage_t final : public priest_spell_t
 {
+protected:
+  using state_t = shadow_crash_state_t;
+  using ab      = priest_spell_t;
+
+public:
   double parent_targets = 1;
 
   shadow_crash_damage_t( priest_t& p )
@@ -1609,6 +1638,21 @@ struct shadow_crash_damage_t final : public priest_spell_t
   {
     background                 = true;
     affected_by_shadow_weaving = true;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
   }
 
   double action_da_multiplier() const override
@@ -1701,15 +1745,22 @@ struct shadow_crash_dots_t final : public priest_spell_t
 
 struct shadow_crash_t final : public priest_spell_t
 {
+protected:
+  using state_t = shadow_crash_state_t;
+  using ab      = priest_spell_t;
+
+public:
   double insanity_gain;
   propagate_const<shadow_crash_dots_t*> shadow_crash_dots;
   propagate_const<shadow_crash_damage_t*> shadow_crash_damage;
+  double torment_mult;
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
       shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed() ) ),
-      shadow_crash_damage( new shadow_crash_damage_t( p ) )
+      shadow_crash_damage( new shadow_crash_damage_t( p ) ),
+      torment_mult( p.buffs.deaths_torment->data().effectN( 2 ).percent() )
   {
     parse_options( options_str );
 
@@ -1726,6 +1777,27 @@ struct shadow_crash_t final : public priest_spell_t
     return timespan_t::from_seconds( data().missile_speed() );
   }
 
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    ab::snapshot_state( s, rt );
+    cast_state( s )->deaths_torment_mult = 1 + p().buffs.deaths_torment->check() * torment_mult;
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -1734,14 +1806,21 @@ struct shadow_crash_t final : public priest_spell_t
     {
       shadow_crash_dots->execute();
     }
+
+    p().buffs.deaths_torment->expire();
   }
 
   void impact( action_state_t* s ) override
   {
     if ( shadow_crash_damage )
     {
+      state_t* state             = shadow_crash_damage->cast_state( shadow_crash_damage->get_state() );
+      state->target              = s->target;
+      state->deaths_torment_mult = cast_state( s )->deaths_torment_mult;
+      shadow_crash_damage->snapshot_state( state, shadow_crash_damage->amount_type( state ) );
+
       shadow_crash_damage->parent_targets = s->n_targets;
-      shadow_crash_damage->execute();
+      shadow_crash_damage->schedule_execute( state );
     }
 
     priest_spell_t::impact( s );
@@ -2177,7 +2256,9 @@ void priest_t::create_buffs_shadow()
 
   buffs.darkflame_shroud =
       make_buff( this, "darkflame_shroud", find_spell( 410871 ) )->set_default_value_from_effect( 1 );
-}
+
+  buffs.deaths_torment = make_buff( this, "deaths_torment", find_spell( 423726 ) );
+}  // namespace priestspace
 
 void priest_t::init_rng_shadow()
 {

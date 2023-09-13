@@ -233,33 +233,39 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     }
   }
 
-  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
-  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
-  //  use_stacks = optional, default true, whether to multiply value by stacks
-  //  use_default = optional, default false, whether to use buff's default value over effect's value
-  //  S = optional list of template parameter(s) to indicate spell(s) with redirect effects
-  //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
+  //  value_type = optional, default USE_DATA, where the value comes from.
+  //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
+  //  spell = optional list of spell with redirect effects that modify the effects on the buff
+  //
+  // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
+  //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
+  //
+  // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
+  //  parse_buff_effects( buff2, false, USE_DEFAULT );
   void apply_buff_effects()
   {
     // using S = const spell_data_t*;
 
-    parse_buff_effects( p().o().buffs.voidform, 0x4U, false, false );  // Skip E3 for AM
+    parse_buff_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
     parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
     parse_buff_effects( p().o().buffs.devoured_pride );
-    parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false, false );  // Buffs non-periodic spells - Skip E4
+    parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
     {
       // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
       if ( p().o().talents.shadow.dark_ascension.enabled() )
       {
-        parse_buff_effects( p().o().buffs.ancient_madness, 0b0001U, true, true );  // Skip E1
+        parse_buff_effects( p().o().buffs.ancient_madness, 0b0001U, true, USE_DEFAULT );  // Skip E1
       }
       else
       {
-        parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, true );  // Skip E1 and E2
+        parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
       }
     }
   }
