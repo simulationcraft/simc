@@ -5879,8 +5879,8 @@ void ashes_of_the_embersoul( special_effect_t& e )
         current_tick( 0 )
     {
       tick_zero = true;
+      set_stat_from_effect( 1, current_value() );
       set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-        set_stat_from_effect( 1, current_value() );
         current_tick++;
         effect.player->invalidate_cache( CACHE_AGILITY );
         effect.player->invalidate_cache( CACHE_STRENGTH );
