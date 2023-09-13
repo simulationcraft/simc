@@ -5872,17 +5872,13 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
     soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff )
       : stat_buff_t( e.player, "soul_ignition", e.driver() ),
-        haste_debuff( haste_debuff ),
-        effect( e ),
-        current_tick( 0 )
+        haste_debuff( haste_debuff ), effect( e ), current_tick( 0 )
     {
       set_period( e.driver()->effectN( 3 ).period() );
-      add_stat_from_effect( 1, current_value() );
+      set_tick_zero( true );
       set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        recalculate();
         current_tick++;
-        effect.player->invalidate_cache( CACHE_AGILITY );
-        effect.player->invalidate_cache( CACHE_STRENGTH );
-        effect.player->invalidate_cache( CACHE_INTELLECT );
       } );
     }
 
@@ -5895,6 +5891,27 @@ void ashes_of_the_embersoul( special_effect_t& e )
       double value = base_value - ( decrease_value * current_tick );
 
       return value;
+    }
+
+    void recalculate()
+    {
+      for ( auto& buff_stat : stats )
+      {
+        double delta = buff_stat.current_value - current_value();
+        if ( delta > 0 )
+        {
+          effect.player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if ( delta < 0 )
+        {
+          effect.player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
+                                    buff_duration() > timespan_t::zero() );
+        }
+        buff_stat.current_value -= delta;
+      }
+      effect.player->invalidate_cache( CACHE_AGILITY );
+      effect.player->invalidate_cache( CACHE_STRENGTH );
+      effect.player->invalidate_cache( CACHE_INTELLECT );
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
