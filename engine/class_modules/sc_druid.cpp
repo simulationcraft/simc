@@ -3745,7 +3745,7 @@ struct ferocious_bite_t : public cat_finisher_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto dam = cat_finisher_t::composite_da_multiplier( s );
-    auto energy_mul = is_free() ? 2.0 : 1.0 + (excess_energy / max_excess_energy * p()->talent.saber_jaws->effectN( 1 ).percent());
+    auto energy_mul = is_free() ? 2.0 : 1.0 + (excess_energy / max_excess_energy * (1+p()->talent.saber_jaws->effectN( 1 ).percent()));
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     auto combo_mul = cast_state( s )->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
