@@ -5878,19 +5878,14 @@ void ashes_of_the_embersoul( special_effect_t& e )
         effect( e ),
         current_tick( 0 )
     {
-      tick_zero = true;
-      set_stat_from_effect( 1, current_value() );
+      set_period( e.driver()->effectN( 3 ).period() );
+      add_stat_from_effect( 1, current_value() );
       set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
         current_tick++;
         effect.player->invalidate_cache( CACHE_AGILITY );
         effect.player->invalidate_cache( CACHE_STRENGTH );
         effect.player->invalidate_cache( CACHE_INTELLECT );
       } );
-    }
-
-    timespan_t tick_time() const override
-    {
-      return effect.driver()->effectN( 3 ).period();
     }
 
     double current_value()
@@ -5906,19 +5901,19 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
+      stat_buff_t::expire_override( expiration_stacks, remaining_duration );
       haste_debuff->trigger();
+      current_tick = 0;
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
       current_tick = 0;
     }
   };
 
-  
-  auto buff = buff_t::find( e.player, "soul_ignition" );
-  if (!buff)
-  {
-    buff = make_buff<soul_ignition_buff_t>( e, haste_debuff );
-  }
-  e.custom_buff = buff;
+  e.custom_buff = make_buff<soul_ignition_buff_t>( e, haste_debuff );
 }
 
 // Weapons
