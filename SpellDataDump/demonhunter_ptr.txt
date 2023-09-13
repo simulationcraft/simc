@@ -13667,7 +13667,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098454)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1101763)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each slash of Blade Dance has a $s2% chance to Throw Glaive an enemy for $s1% damage.
@@ -13687,9 +13687,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098457)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1100502)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: The Hunt (345335), The Hunt (370969)
                    Family Flags: 87
 Description      : Throw Glaive reduces the remaining cooldown of The Hunt by ${$s1/1000}.1 sec, and The Hunt's damage over time effect lasts ${$s2/1000} sec longer.
@@ -13732,7 +13732,7 @@ Effects          :
 #1 (id=1098459)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1103654)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Sigil of Flame's periodic damage has a chance to flare up, shattering an additional Soul Fragment from a target and dealing $425672s1 additional damage. Each $s1 Fury you spend reduces its cooldown by ${$s2/1000}.1 sec.
 
 Name             : Fiery Resolve (id=425653) [Spell Family (107)] 
@@ -13752,15 +13752,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1103635)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Consume Soul (178963), Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Consume Soul (203794), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Consume Soul (210042), Fel Devastation (212105), Fel Devastation (212106), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Consume Soul (228532), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Consume Soul (328953), Fel Devastation (333120), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Eye Beam (391058), Demon Spikes (391159)
                    Family Flags: 4, 20, 70, 80
 #2 (id=1103636)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Fel Devastation (212106), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333120), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Eye Beam (391058), Demon Spikes (391159)
                    Family Flags: 70, 80
 #3 (id=1103637)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : When you attack a target afflicted by Sigil of Flame, your damage and healing are increased by $s1% and your Stamina is increased by $s2% for $d, stacking up to $U.
 Tooltip          : Damage and healing increased by $s1%. Stamina increased by $s3%.
 
@@ -13782,7 +13782,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1103666)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75900 | PvP Coefficient: 0.50000 | Target: Enemy (6)
 Description      : $@spelldesc422861
 Tooltip          : Damage and healing increased by $s1%. Stamina increased by $s3%.
 
