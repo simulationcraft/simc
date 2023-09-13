@@ -6062,11 +6062,7 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t(
       ::action_name("elemental_blast", type_), 
       player,
-      player->specialization() == SHAMAN_ELEMENTAL
-        ? player->talent.elemental_blast
-        : player->talent.elemental_blast.ok()
-          ? player->find_spell( 117014 )
-          : spell_data_t::not_found(),
+      player->find_spell( 117014 ),
       type_
     )
   {
@@ -6107,6 +6103,16 @@ struct elemental_blast_t : public shaman_spell_t
     }
 
     return m;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.elemental_blast->ok() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 
   void execute() override
