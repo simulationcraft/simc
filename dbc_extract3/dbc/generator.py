@@ -1435,7 +1435,9 @@ class SpellDataGenerator(DataGenerator):
          414928, 414936, 414951, 414950, 414935, # Paracausal Fragment of Doomhammer/Shalamayne
          419737, 420144, # Timestrike
          419262, 419261, # Demonsbane
+         # 10.2
          425838, 426339, 426262, 426288, 426341, 426535, 426534, 426486, 426431, # Incandescent Essence Enchant
+         423611, 426898, 426911, 426906, 423021, 426897, # Ashes of the Embersoul
         ),
 
         # Warrior:
