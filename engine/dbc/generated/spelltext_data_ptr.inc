@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51297
-static const std::array<spelltext_data_t, 20409> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20413> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20404,6 +20404,10 @@ static const std::array<spelltext_data_t, 20409> __ptr_spelltext_data { {
   { 426676, "$@spelldesc422858", "Critical Strike increased by $w1.", 0 },
   { 426702, "Your damage over time effects deal their damage $s1% faster, and your healing over time effects heal $s2% faster.", 0, 0 },
   { 426827, "Your critical strikes have a chance to summon a lava serpent to attack your target for 10 sec. The serpent spews a lava bolt every 2 sec, dealing $s1 Volcanic damage. Every third summoning, call forth three serpents instead.\r\n\r\nIf the target dies, the serpent enrages to deal $s2 Volcanic damage to up to 8 nearby enemies. ", 0, 0 },
+  { 426897, "$@spelldesc423611", "Haste decreased by $w1.", 0 },
+  { 426898, "$@spelldesc423611", "$pri increased by $w1.", 0 },
+  { 426906, "@$spelldesc423021", 0, 0 },
+  { 426911, "@$spelldesc423021", 0, 0 },
   { 427040, "$@spelldesc260643", "Bleeding out from Deep Wounds $s1% faster.", 0 },
   { 427072, "$@spelldesc422956", "Mastery increased by $w1.", 0 },
   { 427113, "Weave a web of dreams beneath your target  $s2 sec, dealing $427110s1 Nature damage split between all enemies caught within. Your target is immobilized for $427112d while additional enemies are slowed by $427110s2%.\r\n\r\nDamage increased per enemy struck, up to 5. ", 0, 0 },

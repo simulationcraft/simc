@@ -1438,6 +1438,7 @@ class SpellDataGenerator(DataGenerator):
          # 10.2
          425838, 426339, 426262, 426288, 426341, 426535, 426534, 426486, 426431, # Incandescent Essence Enchant
          422858, 426676, 426647, 426672, # Pip's Emerald Frendship Badge
+         423611, 426898, 426911, 426906, 423021, 426897, # Ashes of the Embersoul
         ),
 
         # Warrior:

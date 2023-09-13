@@ -5854,6 +5854,50 @@ void pips_emerald_friendship_badge( special_effect_t& e )
   new pips_cb_t( e, pips, pips_static, aerwynn, aerwynn_static, urctos, urctos_static, max_stacks );
 }
 
+// Ashes of the Embersoul
+// 423611 Use Driver/Main Buff
+// 423021 Values
+// 426911 Unknown
+// 426906 Unknown
+// 423021 Unknown
+// 426897 Haste Debuff
+void ashes_of_the_embersoul( special_effect_t& e )
+{
+  auto haste_debuff = make_buff<stat_buff_t>( e.player, "burnout", e.player->find_spell( 426897 ) );
+  haste_debuff->set_stat_from_effect( 1, e.player->find_spell( 423021 )->effectN( 2 ).average( e.item ) );
+
+  struct soul_ignition_buff_t : public stat_buff_t
+  {
+    buff_t* haste_debuff;
+    buff_t* decrease;
+    soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff, buff_t* decrease )
+      : stat_buff_t( e.player, "soul_ignition", e.driver() ), haste_debuff( haste_debuff ), decrease( decrease )
+    {
+      set_stat_from_effect( 1, e.player->find_spell( 423021 )->effectN( 1 ).average( e.item ) );
+      set_period( e.driver()->effectN( 3 ).period() );
+      set_tick_callback( [ decrease ]( buff_t* b, int, timespan_t )
+                         {
+                           decrease->trigger();
+                         } );
+
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      haste_debuff->trigger();
+    }
+  };
+
+  auto ticks = e.driver()->duration() / e.driver()->effectN( 3 ).period();
+  auto decreased_buff_value = make_buff<stat_buff_t>( e.player, "soul_ignition_decrease", e.driver() );
+  decreased_buff_value->set_stat_from_effect( 1, -e.player->find_spell( 423021 )->effectN( 1 ).average( e.item ) / ticks );
+  decreased_buff_value->set_period( e.driver()->effectN( 3 ).period() );
+  decreased_buff_value->set_max_stack( 6 );
+  decreased_buff_value->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  e.custom_buff = new soul_ignition_buff_t( e, haste_debuff, decreased_buff_value );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8206,6 +8250,7 @@ void register_special_effects()
   register_special_effect( 415130, items::paracausal_fragment_of_frostmourne );
   register_special_effect( 414936, items::paracausal_fragment_of_doomhammer );
   register_special_effect( 422858, items::pips_emerald_friendship_badge );
+  register_special_effect( 423611, items::ashes_of_the_embersoul );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
