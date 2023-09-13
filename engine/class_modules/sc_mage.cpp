@@ -4392,7 +4392,11 @@ struct glacial_spike_t final : public frost_mage_spell_t
       p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
     }
 
-    p()->trigger_brain_freeze( p()->sets->set( MAGE_FROST, T31, B4 )->effectN( 1 ).percent(), proc_brain_freeze );
+    // TODO 10.2: Brain Freeze from GS seems to be applied with a much smaller delay (<30ms).
+    // Unlike Brain Freeze from Frostbolt, the delay is also always present.
+    double chance = p()->sets->set( MAGE_FROST, T31, B4 )->effectN( 1 ).percent();
+    if ( chance > 0.0 )
+      make_event( *sim, 30_ms, [ this, chance ] { p()->trigger_brain_freeze( chance, proc_brain_freeze, 0_ms ); } );
   }
 
   void impact( action_state_t* s ) override
