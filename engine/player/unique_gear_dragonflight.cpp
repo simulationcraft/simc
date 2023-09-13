@@ -5869,33 +5869,56 @@ void ashes_of_the_embersoul( special_effect_t& e )
   struct soul_ignition_buff_t : public stat_buff_t
   {
     buff_t* haste_debuff;
-    buff_t* decrease;
-    soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff, buff_t* decrease )
-      : stat_buff_t( e.player, "soul_ignition", e.driver() ), haste_debuff( haste_debuff ), decrease( decrease )
-    {
-      set_stat_from_effect( 1, e.player->find_spell( 423021 )->effectN( 1 ).average( e.item ) );
-      set_period( e.driver()->effectN( 3 ).period() );
-      set_tick_callback( [ decrease ]( buff_t* b, int, timespan_t )
-                         {
-                           decrease->trigger();
-                         } );
+    int current_tick;
+    const special_effect_t& effect;
 
+    soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff )
+      : stat_buff_t( e.player, "soul_ignition", e.driver() ),
+        haste_debuff( haste_debuff ),
+        effect( e ),
+        current_tick( 0 )
+    {
+      tick_zero = true;
+      set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        set_stat_from_effect( 1, current_value() );
+        current_tick++;
+        effect.player->invalidate_cache( CACHE_AGILITY );
+        effect.player->invalidate_cache( CACHE_STRENGTH );
+        effect.player->invalidate_cache( CACHE_INTELLECT );
+      } );
+    }
+
+    timespan_t tick_time() const override
+    {
+      return effect.driver()->effectN( 3 ).period();
+    }
+
+    double current_value()
+    {
+      double base_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item );
+      double ticks = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
+      double decrease_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item ) / ticks;
+
+      double value = base_value - ( decrease_value * current_tick );
+
+      return value;
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
       haste_debuff->trigger();
+      current_tick = 0;
     }
   };
 
-  auto ticks = e.driver()->duration() / e.driver()->effectN( 3 ).period();
-  auto decreased_buff_value = make_buff<stat_buff_t>( e.player, "soul_ignition_decrease", e.driver() );
-  decreased_buff_value->set_stat_from_effect( 1, -e.player->find_spell( 423021 )->effectN( 1 ).average( e.item ) / ticks );
-  decreased_buff_value->set_period( e.driver()->effectN( 3 ).period() );
-  decreased_buff_value->set_max_stack( 6 );
-  decreased_buff_value->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-
-  e.custom_buff = new soul_ignition_buff_t( e, haste_debuff, decreased_buff_value );
+  
+  auto buff = buff_t::find( e.player, "soul_ignition" );
+  if (!buff)
+  {
+    buff = make_buff<soul_ignition_buff_t>( e, haste_debuff );
+  }
+  e.custom_buff = buff;
 }
 
 // Weapons
