@@ -5761,6 +5761,99 @@ void paracausal_fragment_of_doomhammer( special_effect_t& e )
   e.execute_action->add_child( equip_damage );
 }
 
+// Pips Emerald Friendship Badge
+// 422858 Driver and values
+// 426676 Crit Buff
+// 426647 Mastery Buff
+// 426672 Vers Buff
+void pips_emerald_friendship_badge( special_effect_t& e )
+{
+  // Buffs value is equal to drvier effect 1 value / duration in seconds
+  // Emulating in game behavior by creating 2 buffs for each, a static one that stays until the next procs
+  // and one with 11 stacks, that decrement every 1s as it does in game. 
+  auto pips = make_buff<stat_buff_t>( e.player, "best_friends_with_pip", e.player->find_spell( 426647 ) );
+  auto pips_static = make_buff<stat_buff_t>( e.player, "best_friends_with_pip_static", e.player->find_spell( 426647 ) );
+  auto aerwynn = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn", e.player->find_spell( 426676 ) );
+  auto aerwynn_static = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn_static", e.player->find_spell( 426676 ) );
+  auto urctos = make_buff<stat_buff_t>( e.player, "best_friends_with_urctos", e.player->find_spell( 426672 ) );
+  auto urctos_static = make_buff<stat_buff_t>( e.player, "best_friends_with_urctos_static", e.player->find_spell( 426672 ) );
+
+  auto max_stacks = 12;
+  auto buff_value = e.player->find_spell( 422858 )->effectN( 1 ).average( e.item ) / max_stacks;
+
+  pips->set_stat_from_effect( 1, buff_value );
+  pips->set_max_stack( max_stacks - 1 );
+  pips->set_period( pips->data().effectN( 2 ).period() );
+  pips->set_reverse( true );
+
+  pips_static->set_stat_from_effect( 1, buff_value );
+  pips_static->set_duration( 0_ms );
+
+  aerwynn->set_stat_from_effect( 1, buff_value );
+  aerwynn->set_max_stack( max_stacks - 1 );
+  aerwynn->set_period( aerwynn->data().effectN( 2 ).period() );
+  aerwynn->set_reverse( true );
+
+  aerwynn_static->set_stat_from_effect( 1, buff_value );
+  aerwynn_static->set_duration( 0_ms );
+
+  urctos->set_stat_from_effect( 1, buff_value );
+  urctos->set_max_stack( max_stacks - 1 );
+  urctos->set_period( urctos->data().effectN( 2 ).period() );
+  urctos->set_reverse( true );
+
+  urctos_static->set_stat_from_effect( 1, buff_value );
+  urctos_static->set_duration( 0_ms );
+
+  struct pips_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* pips;
+    buff_t* pips_static;
+    buff_t* aerwynn;
+    buff_t* aerwynn_static;
+    buff_t* urctos;
+    buff_t* urctos_static;
+    int max_stacks;
+
+    pips_cb_t( const special_effect_t& e, buff_t* pips, buff_t* pips_static, buff_t* aerwynn, buff_t* aerwynn_static, buff_t* urctos, buff_t* urctos_static, int i )
+      : dbc_proc_callback_t( e.player, e ),
+        pips( pips ), pips_static( pips_static ),
+        aerwynn( aerwynn ), aerwynn_static( aerwynn_static ), 
+        urctos( urctos ), urctos_static( urctos_static ),
+        max_stacks( i )
+    {}
+
+    void execute( action_t* /*a*/, action_state_t* /*s*/) override
+    {
+      double chance = rng().real();
+
+      if (chance < 0.3333 )
+      {
+        pips->trigger( max_stacks - 1 );
+        pips_static->trigger();
+        aerwynn_static->expire();
+        urctos_static->expire();
+      }
+      else if (chance < 0.6666 )
+      {
+        aerwynn->trigger( max_stacks - 1 );
+        aerwynn_static->trigger();
+        pips_static->expire();
+        urctos_static->expire();
+      }
+      else
+      {
+        urctos->trigger( max_stacks - 1 );
+        urctos_static->trigger();
+        aerwynn_static->expire();
+        pips_static->expire();
+      }
+    }
+  };
+
+  new pips_cb_t( e, pips, pips_static, aerwynn, aerwynn_static, urctos, urctos_static, max_stacks );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8076,6 +8169,7 @@ void register_special_effects()
   register_special_effect( 414968, items::paracausal_fragment_of_azzinoth );
   register_special_effect( 415130, items::paracausal_fragment_of_frostmourne );
   register_special_effect( 414936, items::paracausal_fragment_of_doomhammer );
+  register_special_effect( 422858, items::pips_emerald_friendship_badge );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
