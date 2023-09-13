@@ -656,9 +656,9 @@ void shadowflame_wreathe( special_effect_t& effect )
 
 // 425838 Main Driver & Values
 // 426339 Melee Driver
-// 426534 Melee ST damage
+// 426534 Melee ST damage - Unused
 // 426535 Melee AoE damage
-// 426527 Melee DoT (Unused?)
+// 426527 Melee ST DoT
 // 426341 Ranged Driver
 // 426486 Ranged AoE damage 1
 // 426431 Ranged AoE damage 2 -- Both of these proc in game as of 8/9/23. Recheck in the future. See log below.
@@ -687,15 +687,13 @@ void incandescent_essence( special_effect_t& e )
     action_t* st_damage;
     ingras_cruel_nightmare_t( const special_effect_t& e )
       : generic_proc_t( e, "igiras_cruel_nightmare", 426339 ),
-      aoe_damage( create_proc_action<generic_aoe_proc_t>( "igias_sharpened_iron", e, "igiras_sharpened_iron",
+      aoe_damage( create_proc_action<generic_aoe_proc_t>( "scorching_torment", e, "scorching_torment",
                   e.player->find_spell( 426535 ), true ) ),
-      st_damage( create_proc_action<generic_proc_t>( "igiras_poniard", e, "igiras_poniard",
-                 e.player->find_spell( 426534 ) ) )
+      st_damage( create_proc_action<generic_proc_t>( "flaying_torment", e, "flaying_torment",
+                 e.player->find_spell( 426527 ) ) )
     {
-      // In the tooltip, but currently unused
-      auto st_damage_mult = e.player->find_spell( 426527 )->duration() / e.player->find_spell( 426527 )->effectN( 1 ).period(); 
       aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 9 ).average( e.item );
-      st_damage->base_dd_min = st_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
+      st_damage->base_td = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
 
       add_child( aoe_damage );
       add_child( st_damage );
@@ -705,7 +703,7 @@ void incandescent_essence( special_effect_t& e )
     {
       if (sim->target_non_sleeping_list.size() == 1)
       {
-        st_damage->execute();
+        st_damage->execute_on_target( target );
       }
       else
       {
