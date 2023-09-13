@@ -6288,6 +6288,42 @@ void iridal_the_earths_master( special_effect_t& e )
   e.execute_action = damage;
 }
 
+
+// Hungering Shadowflame
+// 424320 Driver / Values
+// 424324 Damage
+void hungering_shadowflame( special_effect_t& e )
+{
+  struct hungering_shadowflame_t : public generic_proc_t
+  {
+    double damage_mult;
+    double hp_percent;
+    hungering_shadowflame_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "hungering_shadowflame", effect.player->find_spell( 424324 ) ),
+        damage_mult( effect.driver()->effectN( 2 ).percent() ),
+        hp_percent( effect.driver()->effectN( 3 ).base_value() )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      if ( state->target->health_percentage() > hp_percent)
+      {
+        m *= 1.0 + damage_mult;
+      }
+
+      return m;
+    }
+  };
+
+  e.execute_action = create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e );
+
+  new dbc_proc_callback_t( e.player , e);
+}
+
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
 {
@@ -8181,6 +8217,7 @@ void register_special_effects()
   register_special_effect( 408711, items::shadowed_razing_annihilator );        // Shadowed Razing Annihilator
   register_special_effect( 408821, items::djaruun_pillar_of_the_elder_flame, true );  // Djaruun, Pillar of the Elder Flame
   register_special_effect( 419278, items::iridal_the_earths_master );           // Iridal, the Earth's Master
+  register_special_effect( 424320, items::hungering_shadowflame );              // Hungering Shadowflame - Unnamed 1h axe
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
