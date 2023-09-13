@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51313 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
