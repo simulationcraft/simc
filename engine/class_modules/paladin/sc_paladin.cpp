@@ -380,6 +380,12 @@ struct consecration_t : public paladin_spell_t
                       .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
                         switch ( type )
                         {
+                          case ground_aoe_params_t::EVENT_STOPPED:
+                            if ( p()->buffs.sanctification_empower->up() )
+                            {
+                              p()->buffs.sanctification_empower->expire();
+                            }
+                            break;
                           case ground_aoe_params_t::EVENT_CREATED:
                             if ( source_type == HARDCAST )
                             {
@@ -421,6 +427,10 @@ struct consecration_t : public paladin_spell_t
     // If this is an active Cons, cancel the current consecration if it exists
     if ( source_type == HARDCAST && p()->active_consecration != nullptr )
     {
+      if ( p()->buffs.sanctification_empower->up() )
+      {
+        p()->buffs.sanctification_empower->expire();
+      }
       p()->all_active_consecrations.erase( p()->active_consecration );
       event_t::cancel( p()->active_consecration );
     }
@@ -435,6 +445,12 @@ struct consecration_t : public paladin_spell_t
     {
       p()->all_active_consecrations.erase( p()->active_searing_light_cons );
       event_t::cancel( p()->active_searing_light_cons );
+    }
+
+    if (p()->buffs.sanctification->at_max_stacks())
+    {
+      p()->buffs.sanctification->expire();
+      p()->buffs.sanctification_empower->execute();
     }
 
     paladin_spell_t::execute();
