@@ -6034,15 +6034,14 @@ void coiled_serpent_idol( special_effect_t& e )
     void execute( action_t* /*a*/, action_state_t* s ) override
     {
       counter++;
+      serpent->execute_on_target( s->target );
       auto debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt;
       if ( counter < 3 )
       {
-        serpent->execute_on_target( s->target );
         debuff->trigger();
       }
       else if ( counter == 3 )
       {
-        serpent->execute_on_target( s->target );
         debuff->trigger( 3 );
 
         counter = 0;
