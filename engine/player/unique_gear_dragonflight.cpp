@@ -5998,22 +5998,10 @@ void coiled_serpent_idol( special_effect_t& e )
     }
   };
 
-  struct single_serpent_t : public generic_proc_t
+  struct serpent_t : public generic_proc_t
   {
     action_t* damage;
-    single_serpent_t( const special_effect_t& e )
-      : generic_proc_t( e, "lava_bolt_single", e.player->find_spell( 426834 ) ),
-        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
-    {
-      tick_action = damage;
-      stats       = damage->stats;
-    }
-  };
-
-  struct triple_serpent_t : public generic_proc_t
-  {
-    action_t* damage;
-    triple_serpent_t( const special_effect_t& e )
+    serpent_t( const special_effect_t& e )
       : generic_proc_t( e, "lava_bolt_triple", e.player->find_spell( 427059 ) ),
         damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
     {
@@ -6023,24 +6011,23 @@ void coiled_serpent_idol( special_effect_t& e )
     void tick( dot_t* d ) override
     {
       generic_proc_t::tick( d );
-      damage->execute();
-      damage->execute();
-      damage->execute();
+      for (int stacks = 0; player->get_target_data( d->target )->debuff.lava_bolt->check() > stacks; ++stacks)
+      {
+        damage->execute();
+      }
     }
   };
 
   struct serpent_cb_t : public dbc_proc_callback_t
   {
     int counter;
-    action_t* single_serpent;
-    action_t* triple_serpent;
+    action_t* serpent;
     const special_effect_t& effect;
 
     serpent_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         counter( 0 ),
-        single_serpent( create_proc_action<single_serpent_t>( "lava_bolt_single", e ) ),
-        triple_serpent( create_proc_action<triple_serpent_t>( "lava_bolt_triple", e ) ),
+        serpent( create_proc_action<serpent_t>( "lava_bolt_single", e ) ),
         effect( e )
     {}
 
@@ -6050,12 +6037,12 @@ void coiled_serpent_idol( special_effect_t& e )
       auto debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt;
       if ( counter < 3 )
       {
-        single_serpent->execute_on_target( s->target );
+        serpent->execute_on_target( s->target );
         debuff->trigger();
       }
       else if ( counter == 3 )
       {
-        triple_serpent->execute_on_target( s->target );
+        serpent->execute_on_target( s->target );
         debuff->trigger( 3 );
 
         counter = 0;
