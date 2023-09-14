@@ -5872,13 +5872,17 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
     soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff )
       : stat_buff_t( e.player, "soul_ignition", e.driver() ),
-        haste_debuff( haste_debuff ), effect( e ), current_tick( 0 )
+        haste_debuff( haste_debuff ),
+        effect( e ),
+        current_tick( 0 )
     {
-      set_period( e.driver()->effectN( 3 ).period() );
-      set_tick_zero( true );
+      auto base_buff_value = e.player->find_spell( 423021 )->effectN( 1 ).average( e.item );
+      set_period( e.driver()->effectN( 3 ).period() - 1_ms );
+      set_stat_from_effect( 1, base_buff_value );
+      set_default_value( base_buff_value );
+
       set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
         recalculate();
-        current_tick++;
       } );
     }
 
@@ -5895,29 +5899,44 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
     void recalculate()
     {
-      for ( auto& buff_stat : stats )
+      current_tick++;
+      for (auto& buff_stat : stats)
       {
         double delta = buff_stat.current_value - current_value();
-        if ( delta > 0 )
+        double ticks = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
+        double decrease_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item ) / ticks;
+        if (delta > 0)
         {
-          effect.player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+          player->stat_loss( buff_stat.stat, decrease_value, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
         }
-        else if ( delta < 0 )
+        else if (delta < 0)
         {
-          effect.player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
-                                    buff_duration() > timespan_t::zero() );
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
         }
-        buff_stat.current_value -= delta;
       }
-      effect.player->invalidate_cache( CACHE_AGILITY );
-      effect.player->invalidate_cache( CACHE_STRENGTH );
-      effect.player->invalidate_cache( CACHE_INTELLECT );
+    }
+
+    void recalculate_expiry()
+    {
+      for (auto& buff_stat : stats)
+      {
+        double delta = current_value();
+        if (delta > 0)
+        {
+          player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if (delta < 0)
+        {
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        buff_stat.current_value = 0;
+      }
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
-      stat_buff_t::expire_override( expiration_stacks, remaining_duration );
       haste_debuff->trigger();
+      recalculate_expiry();
       current_tick = 0;
     }
 
@@ -5929,6 +5948,126 @@ void ashes_of_the_embersoul( special_effect_t& e )
   };
 
   e.custom_buff = make_buff<soul_ignition_buff_t>( e, haste_debuff );
+}
+
+// Coiled Serpent Idol
+// 426827 Driver
+// 427037 Damage
+// 426834 Hidden Periodic Debuff
+// 427059 Hidden Periodic Debuff Buff 2
+// 427047 AoE damage
+// 427057 AoE Range Check
+struct lava_bolt_initializer_t : public item_targetdata_initializer_t
+{
+  lava_bolt_initializer_t() : item_targetdata_initializer_t( 426827, 426834 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.lava_bolt = make_buff_fallback( active, *td, "lava_bolt", debuffs[ td->source ] );
+    td->debuff.lava_bolt->reset();
+    td->debuff.lava_bolt->set_quiet( true );
+    td->debuff.lava_bolt->set_period( timespan_t::max() );  // Ticking handled by the DoT in the main effect
+    td->debuff.lava_bolt->set_max_stack( 20 ); // Setting to an unreasonably high number to handle the number of explosion events
+  }
+};
+
+void coiled_serpent_idol( special_effect_t& e )
+{
+  struct lava_bolt_t : public generic_proc_t
+  {
+    lava_bolt_t( const special_effect_t& e, util::string_view n )
+      : generic_proc_t( e, n, e.player->find_spell( 427037 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+  };
+
+  struct molten_rain_t : public generic_proc_t
+  {
+    molten_rain_t( const special_effect_t& e ) : generic_proc_t( e, "molten_rain", e.player->find_spell( 427047 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      // Cant seem to find this value in spell data, manually inputing value from the tooltip.
+      aoe = 8;
+      // Main AoE damage spell doesnt have a practical range (100 yards) assuming one of these
+      // 12 yard area triggers handle range checking around the enemy who died to trigger molten rain.
+      // Will need to be further checked in the future.
+      radius = e.player->find_spell( 427057 )->effectN( 1 ).radius();
+    }
+  };
+
+  struct serpent_t : public generic_proc_t
+  {
+    action_t* damage;
+    serpent_t( const special_effect_t& e )
+      : generic_proc_t( e, "lava_bolt_dot", e.player->find_spell( 427059 ) ),
+        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
+    {
+      hasted_ticks = false;
+      stats = damage->stats;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+      for (int stacks = 0; player->get_target_data( d->target )->debuff.lava_bolt->check() > stacks; ++stacks)
+      {
+        damage->execute();
+      }
+    }
+  };
+
+  struct serpent_cb_t : public dbc_proc_callback_t
+  {
+    int counter;
+    action_t* serpent;
+    const special_effect_t& effect;
+
+    serpent_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        counter( 0 ),
+        serpent( create_proc_action<serpent_t>( "lava_bolt_single", e ) ),
+        effect( e )
+    {}
+
+    void execute( action_t* /*a*/, action_state_t* s ) override
+    {
+      counter++;
+      serpent->execute_on_target( s->target );
+      auto debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt;
+      if ( counter < 3 )
+      {
+        debuff->trigger();
+      }
+      else if ( counter == 3 )
+      {
+        debuff->trigger( 3 );
+
+        counter = 0;
+      }
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      counter = 0;
+    }
+  };
+
+  auto molten_rain = create_proc_action<molten_rain_t>( "molten_rain", e );
+
+  range::for_each( e.player->sim->actor_list, [ e, molten_rain ]( player_t* target ) {
+    target->register_on_demise_callback( e.player, [ e, molten_rain ]( player_t* t ) {
+      for (int stacks = 0; e.player->get_target_data( t )->debuff.lava_bolt->check() > stacks; ++stacks)
+      {
+        molten_rain->execute_on_target( t );
+      }
+    } );
+  } );
+
+  new serpent_cb_t( e );
 }
 
 // Weapons
@@ -8284,6 +8423,7 @@ void register_special_effects()
   register_special_effect( 414936, items::paracausal_fragment_of_doomhammer );
   register_special_effect( 422858, items::pips_emerald_friendship_badge );
   register_special_effect( 423611, items::ashes_of_the_embersoul );
+  register_special_effect( 426827, items::coiled_serpent_idol );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -8380,6 +8520,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
   sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
+  sim.register_target_data_initializer( items::lava_bolt_initializer_t() );
 }
 
 void register_hotfixes()
