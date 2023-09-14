@@ -580,6 +580,7 @@ public:
 
     // Feral
     buff_t* apex_predators_craving;
+    buff_t* ashamanes_guidance;  // buff to track incarnation ashamane's guidance buff 10.2 ptr
     buff_t* berserk_cat;
     buff_t* bloodtalons;
     buff_t* bt_rake;          // dummy buff
@@ -709,7 +710,7 @@ public:
     proc_t* pulsar;
 
     // Feral
-    proc_t* ashamanes_guidance;
+    proc_t* ashamanes_guidance; // remove in 10.2
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
     proc_t* predator;
@@ -833,7 +834,7 @@ public:
 
     // Feral
     player_talent_t apex_predators_craving;
-    player_talent_t ashamanes_guidance;
+    player_talent_t ashamanes_guidance;  //10.2 ashamane's guidance (incarnation cat)
     player_talent_t berserk;
     player_talent_t berserk_frenzy;
     player_talent_t berserk_heart_of_the_lion;
@@ -1631,12 +1632,11 @@ struct berserk_cat_buff_t : public druid_buff_t
     if ( inc )
       set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
 
-    auto cp = find_effect( find_trigger( s ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT );
+    auto cp   = find_effect( find_trigger( s ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT );
     auto gain = p->get_gain( n );
 
-    set_tick_callback( [ cp, gain, this ]( buff_t*, int, timespan_t ) {
-      player->resource_gain( RESOURCE_COMBO_POINT, cp, gain );
-    } );
+    set_tick_callback(
+        [ cp, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_COMBO_POINT, cp, gain ); } );
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -1651,11 +1651,14 @@ struct berserk_cat_buff_t : public druid_buff_t
   {
     base_t::expire_override( s, d );
 
-    p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
+    p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += p()->buff.overflowing_power->check();
     p()->buff.overflowing_power->expire();
 
     if ( inc )
       p()->uptime.incarnation_cat->update( false, sim->current_time() );
+
+    if ( inc && p()->is_ptr() && p()->talent.ashamanes_guidance.ok() )
+      p()->buff.ashamanes_guidance->trigger();
   }
 };
 
@@ -2076,6 +2079,7 @@ public:
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
+    parse_buff_effects( p()->buff.ashamanes_guidance );  //10.2 ashamanes guidance for incarn
     parse_buff_effects( p()->buff.apex_predators_craving );
     parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
@@ -3469,6 +3473,10 @@ struct incarnation_cat_t : public berserk_cat_base_t
     berserk_cat_base_t::execute();
 
     p()->buff.incarnation_cat_prowl->trigger();
+
+    if ( p()->talent.ashamanes_guidance.ok() && p()->is_ptr() )
+      p()->buff.ashamanes_guidance->trigger();
+       
   }
 };
 
@@ -9522,7 +9530,7 @@ void druid_t::init_spells()
   // Feral
   sim->print_debug( "Initializing feral talents..." );
   talent.apex_predators_craving         = ST( "Apex Predator's Craving" );
-  talent.ashamanes_guidance             = ST( "Ashamane's Guidance" );
+  talent.ashamanes_guidance             = ST( "Ashamane's Guidance" );  // may be unnecessary
   talent.berserk                        = ST( "Berserk" );
   talent.berserk_frenzy                 = ST( "Berserk: Frenzy" );
   talent.berserk_heart_of_the_lion      = ST( "Berserk: Heart of the Lion" );
@@ -9704,7 +9712,10 @@ void druid_t::init_spells()
 
   // Feral Abilities
   spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
-  spec.ashamanes_guidance       = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
+  if ( is_ptr() )
+    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421442 );
+  else
+    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
   spec.berserk_cat              = talent.berserk.find_override_spell();
 
   // Guardian Abilities
@@ -10140,6 +10151,9 @@ void druid_t::create_buffs()
                         ->set_reverse( true );
 
   // Feral buffs
+  buff.ashamanes_guidance = make_buff_fallback( is_ptr() && talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok(),
+      this, "ashamanes_guidance", find_spell( 421442 ));
+
   buff.apex_predators_craving = make_buff_fallback( talent.apex_predators_craving.ok(),
       this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() )
           ->set_chance( find_trigger( talent.apex_predators_craving ).percent() );
@@ -11190,7 +11204,7 @@ void druid_t::init_special_effects()
   }
 
   // Feral
-  if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() )
+  if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() && !is_ptr())
   {
     const auto driver = new special_effect_t( this );
     driver->name_str = "ashamanes_guidance_driver";
@@ -13051,7 +13065,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
   // Feral
-  action.apply_affecting_aura( spec.ashamanes_guidance );
+  if ( !is_ptr() )
+    action.apply_affecting_aura( spec.ashamanes_guidance );
   action.apply_affecting_aura( talent.dreadful_bleeding );
   action.apply_affecting_aura( talent.infected_wounds_cat );
   action.apply_affecting_aura( talent.lions_strength );
