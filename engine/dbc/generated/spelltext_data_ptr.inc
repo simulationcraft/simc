@@ -6523,7 +6523,7 @@ static const std::array<spelltext_data_t, 20407> __ptr_spelltext_data { {
   { 200749, "Switch to your Primary Talent Specialization.", "Switch to your Primary Talent Specialization.", 0 },
   { 200758, "Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.$?s319949[ Critical strikes apply Find Weakness for $319949s1 sec.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r", 0, 0 },
   { 200759, "You heal $s1% of your maximum health every $158188t2 sec while Stealth or Shadow Dance is active.", 0, 0 },
-  { 200806, "While above 100 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.", 0, 0 },
+  { 200806, "While above $s1 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.", 0, 0 },
   { 200818, "Moonfire deals $s2% increased damage and also hits another nearby enemy within $279620s1 yds of the target.", 0, 0 },
   { 200845, "Rampage and Execute have a chance to activate Berserking, increasing your attack speed and critical strike chance by $200953s1% every $200951t1 sec for $200951d.", 0, 0 },
   { 200851, "Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers.", "Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers.", 0 },
@@ -20410,7 +20410,8 @@ static const std::array<spelltext_data_t, 20407> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.51297
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
+  {  200806,  0, "While above 100 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.", "While above $s1 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt." },
   {  422891,  0, "Melee attacks have a chance to make your next Spinning Crane Kick free.\r\nFree Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%. ", "Melee attacks have a chance to make your next Spinning Crane Kick free.\r\nFree Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. " },
   {  422891,  1, "Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%.", "Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%." },
   {  422892,  0, "Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. ", "Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. " },
