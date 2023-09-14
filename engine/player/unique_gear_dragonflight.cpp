@@ -5872,13 +5872,17 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
     soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff )
       : stat_buff_t( e.player, "soul_ignition", e.driver() ),
-        haste_debuff( haste_debuff ), effect( e ), current_tick( 0 )
+        haste_debuff( haste_debuff ),
+        effect( e ),
+        current_tick( 0 )
     {
-      set_period( e.driver()->effectN( 3 ).period() );
-      set_tick_zero( true );
+      auto base_buff_value = e.player->find_spell( 423021 )->effectN( 1 ).average( e.item );
+      set_period( e.driver()->effectN( 3 ).period() - 1_ms );
+      set_stat_from_effect( 1, base_buff_value );
+      set_default_value( base_buff_value );
+
       set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
         recalculate();
-        current_tick++;
       } );
     }
 
@@ -5895,29 +5899,44 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
     void recalculate()
     {
-      for ( auto& buff_stat : stats )
+      current_tick++;
+      for (auto& buff_stat : stats)
       {
         double delta = buff_stat.current_value - current_value();
-        if ( delta > 0 )
+        double ticks = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
+        double decrease_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item ) / ticks;
+        if (delta > 0)
         {
-          effect.player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+          player->stat_loss( buff_stat.stat, decrease_value, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
         }
-        else if ( delta < 0 )
+        else if (delta < 0)
         {
-          effect.player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
-                                    buff_duration() > timespan_t::zero() );
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
         }
-        buff_stat.current_value -= delta;
       }
-      effect.player->invalidate_cache( CACHE_AGILITY );
-      effect.player->invalidate_cache( CACHE_STRENGTH );
-      effect.player->invalidate_cache( CACHE_INTELLECT );
+    }
+
+    void recalculate_expiry()
+    {
+      for (auto& buff_stat : stats)
+      {
+        double delta = current_value();
+        if (delta > 0)
+        {
+          player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if (delta < 0)
+        {
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        buff_stat.current_value = 0;
+      }
     }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
-      stat_buff_t::expire_override( expiration_stacks, remaining_duration );
       haste_debuff->trigger();
+      recalculate_expiry();
       current_tick = 0;
     }
 
