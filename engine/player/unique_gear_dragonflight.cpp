@@ -6043,7 +6043,6 @@ void coiled_serpent_idol( special_effect_t& e )
     int counter;
     action_t* single_serpent;
     action_t* triple_serpent;
-    action_t* molten_rain;
     const special_effect_t& effect;
 
     serpent_cb_t( const special_effect_t& e )
@@ -6051,7 +6050,6 @@ void coiled_serpent_idol( special_effect_t& e )
       counter( 0 ),
       single_serpent( create_proc_action<single_serpent_t>( "lava_bolt_single", e ) ),
       triple_serpent( create_proc_action<triple_serpent_t>( "lava_bolt_triple", e ) ),
-      molten_rain( create_proc_action<molten_rain_t>( "molten_rain", e ) ),
       effect( e )
     {}
 
@@ -6066,20 +6064,6 @@ void coiled_serpent_idol( special_effect_t& e )
         single_debuff->set_quiet( true );
         single_debuff->trigger();
 
-        /* This code currently seems to blow things up, commenting out for now
-        s->target->register_on_demise_callback( effect.player, [ this ]( player_t* t ) 
-        {
-          if ( !effect.player->find_target_data( t )->debuff.lava_bolt_single->check() )
-          {
-            return;
-          }
-          else
-          {
-            molten_rain->execute();
-          }
-        } );
-        */
-
       }
       else if( counter == 3 )
       {
@@ -6088,22 +6072,6 @@ void coiled_serpent_idol( special_effect_t& e )
         auto triple_debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt_triple;
         triple_debuff->set_quiet( true );
         triple_debuff->trigger();
-
-        /* This code currently seems to blow things up, commenting out for now
-        s->target->register_on_demise_callback( effect.player, [ this ]( player_t* t )
-        {
-          if ( !effect.player->find_target_data( t )->debuff.lava_bolt_triple->check() )
-          {
-            return;
-          }
-          else
-          {
-            molten_rain->execute();
-            molten_rain->execute();
-            molten_rain->execute();
-          }
-        } );
-        */
 
         counter = 0;
       }
@@ -6115,6 +6083,25 @@ void coiled_serpent_idol( special_effect_t& e )
       counter = 0;
     }
   };
+
+  auto molten_rain = create_proc_action<molten_rain_t>( "molten_rain", e );
+
+  range::for_each( e.player->sim->actor_list, [ e, molten_rain ]( player_t* target ) {
+    target->register_on_demise_callback( e.player, [ e, molten_rain ]( player_t* t ) {
+      if ( e.player->get_target_data( t )->debuff.lava_bolt_single->check() )
+      {
+        molten_rain->execute();
+      }
+    } );
+    target->register_on_demise_callback( e.player, [ e, molten_rain ]( player_t* t ) {
+      if ( e.player->get_target_data( t )->debuff.lava_bolt_triple->check() )
+      {
+        molten_rain->execute();
+        molten_rain->execute();
+        molten_rain->execute();
+      }
+    } );
+  } );
 
   new serpent_cb_t( e );
 }
