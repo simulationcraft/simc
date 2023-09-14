@@ -5967,6 +5967,8 @@ struct lava_bolt_single_initializer_t : public item_targetdata_initializer_t
 
     td->debuff.lava_bolt_single = make_buff_fallback( active, *td, "single_serpent", debuffs[ td->source ] );
     td->debuff.lava_bolt_single->reset();
+    td->debuff.lava_bolt_single->set_quiet( true );
+    td->debuff.lava_bolt_single->set_period( 0_ms );  // Ticking handled by the DoT in the main effect
   }
 };
 
@@ -5980,6 +5982,8 @@ struct lava_bolt_triple_initializer_t : public item_targetdata_initializer_t
 
     td->debuff.lava_bolt_triple = make_buff_fallback( active, *td, "triple_serpent", debuffs[ td->source ] );
     td->debuff.lava_bolt_triple->reset();
+    td->debuff.lava_bolt_triple->set_quiet( true );
+    td->debuff.lava_bolt_triple->set_period( 0_ms );  // Ticking handled by the DoT in the main effect
   }
 };
 
@@ -5987,7 +5991,8 @@ void coiled_serpent_idol( special_effect_t& e )
 {
   struct lava_bolt_t : public generic_proc_t
   {
-    lava_bolt_t( const special_effect_t& e, util::string_view n ) : generic_proc_t( e, n, e.player->find_spell( 427037 ) )
+    lava_bolt_t( const special_effect_t& e, util::string_view n )
+      : generic_proc_t( e, n, e.player->find_spell( 427037 ) )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
@@ -6015,7 +6020,7 @@ void coiled_serpent_idol( special_effect_t& e )
         damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
     {
       tick_action = damage;
-      stats = damage->stats;
+      stats       = damage->stats;
     }
   };
 
@@ -6047,30 +6052,27 @@ void coiled_serpent_idol( special_effect_t& e )
 
     serpent_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-      counter( 0 ),
-      single_serpent( create_proc_action<single_serpent_t>( "lava_bolt_single", e ) ),
-      triple_serpent( create_proc_action<triple_serpent_t>( "lava_bolt_triple", e ) ),
-      effect( e )
+        counter( 0 ),
+        single_serpent( create_proc_action<single_serpent_t>( "lava_bolt_single", e ) ),
+        triple_serpent( create_proc_action<triple_serpent_t>( "lava_bolt_triple", e ) ),
+        effect( e )
     {}
 
     void execute( action_t* /*a*/, action_state_t* s ) override
     {
       counter++;
-      if( counter < 3 )
+      if ( counter < 3 )
       {
         single_serpent->execute_on_target( s->target );
 
         auto single_debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt_single;
-        single_debuff->set_quiet( true );
         single_debuff->trigger();
-
       }
-      else if( counter == 3 )
+      else if ( counter == 3 )
       {
         triple_serpent->execute_on_target( s->target );
 
         auto triple_debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt_triple;
-        triple_debuff->set_quiet( true );
         triple_debuff->trigger();
 
         counter = 0;
