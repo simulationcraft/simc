@@ -834,7 +834,7 @@ public:
 
     // Feral
     player_talent_t apex_predators_craving;
-    player_talent_t ashamanes_guidance;  //10.2 ashamane's guidance (incarnation cat)
+    player_talent_t ashamanes_guidance;
     player_talent_t berserk;
     player_talent_t berserk_frenzy;
     player_talent_t berserk_heart_of_the_lion;
@@ -1632,11 +1632,12 @@ struct berserk_cat_buff_t : public druid_buff_t
     if ( inc )
       set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
 
-    auto cp   = find_effect( find_trigger( s ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT );
+    auto cp = find_effect( find_trigger( s ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT );
     auto gain = p->get_gain( n );
 
-    set_tick_callback(
-        [ cp, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_COMBO_POINT, cp, gain ); } );
+    set_tick_callback( [ cp, gain, this ]( buff_t*, int, timespan_t ) {
+      player->resource_gain( RESOURCE_COMBO_POINT, cp, gain ); 
+    } );
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -1651,7 +1652,7 @@ struct berserk_cat_buff_t : public druid_buff_t
   {
     base_t::expire_override( s, d );
 
-    p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ] += p()->buff.overflowing_power->check();
+    p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
     p()->buff.overflowing_power->expire();
 
     if ( inc )
@@ -9530,7 +9531,7 @@ void druid_t::init_spells()
   // Feral
   sim->print_debug( "Initializing feral talents..." );
   talent.apex_predators_craving         = ST( "Apex Predator's Craving" );
-  talent.ashamanes_guidance             = ST( "Ashamane's Guidance" );  // may be unnecessary
+  talent.ashamanes_guidance             = ST( "Ashamane's Guidance" );
   talent.berserk                        = ST( "Berserk" );
   talent.berserk_frenzy                 = ST( "Berserk: Frenzy" );
   talent.berserk_heart_of_the_lion      = ST( "Berserk: Heart of the Lion" );
