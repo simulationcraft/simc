@@ -6062,7 +6062,7 @@ void coiled_serpent_idol( special_effect_t& e )
     target->register_on_demise_callback( e.player, [ e, molten_rain ]( player_t* t ) {
       for (int stacks = 0; e.player->get_target_data( t )->debuff.lava_bolt->check() > stacks; ++stacks)
       {
-        molten_rain->execute();
+        molten_rain->execute_on_target( t );
       }
     } );
   } );
