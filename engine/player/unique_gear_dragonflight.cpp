@@ -5950,6 +5950,175 @@ void ashes_of_the_embersoul( special_effect_t& e )
   e.custom_buff = make_buff<soul_ignition_buff_t>( e, haste_debuff );
 }
 
+// Coiled Serpent Idol
+// 426827 Driver
+// 427037 Damage
+// 426834 Hidden Periodic Debuff
+// 427059 Hidden Periodic Debuff Buff 2
+// 427047 AoE damage
+// 427057 AoE Range Check
+struct lava_bolt_single_initializer_t : public item_targetdata_initializer_t
+{
+  lava_bolt_single_initializer_t() : item_targetdata_initializer_t( 426827, 426834 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.lava_bolt_single = make_buff_fallback( active, *td, "single_serpent", debuffs[ td->source ] );
+    td->debuff.lava_bolt_single->reset();
+  }
+};
+
+struct lava_bolt_triple_initializer_t : public item_targetdata_initializer_t
+{
+  lava_bolt_triple_initializer_t() : item_targetdata_initializer_t( 426827, 427059 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.lava_bolt_triple = make_buff_fallback( active, *td, "triple_serpent", debuffs[ td->source ] );
+    td->debuff.lava_bolt_triple->reset();
+  }
+};
+
+void coiled_serpent_idol( special_effect_t& e )
+{
+  struct lava_bolt_t : public generic_proc_t
+  {
+    lava_bolt_t( const special_effect_t& e, util::string_view n ) : generic_proc_t( e, n, e.player->find_spell( 427037 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+  };
+
+  struct molten_rain_t : public generic_proc_t
+  {
+    molten_rain_t( const special_effect_t& e ) : generic_proc_t( e, "molten_rain", e.player->find_spell( 427047 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      // Cant seem to find this value in spell data, manually inputing value from the tooltip.
+      aoe = 8;
+      // Main AoE damage spell doesnt have a practical range (100 yards) assuming one of these
+      // 12 yard area triggers handle range checking around the enemy who died to trigger molten rain.
+      // Will need to be further checked in the future.
+      radius = e.player->find_spell( 427057 )->effectN( 1 ).radius();
+    }
+  };
+
+  struct single_serpent_t : public generic_proc_t
+  {
+    action_t* damage;
+    single_serpent_t( const special_effect_t& e )
+      : generic_proc_t( e, "lava_bolt_single", e.player->find_spell( 426834 ) ),
+        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
+    {
+      tick_action = damage;
+      stats = damage->stats;
+    }
+  };
+
+  struct triple_serpent_t : public generic_proc_t
+  {
+    action_t* damage;
+    triple_serpent_t( const special_effect_t& e )
+      : generic_proc_t( e, "lava_bolt_triple", e.player->find_spell( 427059 ) ),
+        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
+    {
+      stats = damage->stats;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+      damage->execute();
+      damage->execute();
+      damage->execute();
+    }
+  };
+
+  struct serpent_cb_t : public dbc_proc_callback_t
+  {
+    int counter;
+    action_t* single_serpent;
+    action_t* triple_serpent;
+    action_t* molten_rain;
+    const special_effect_t& effect;
+
+    serpent_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+      counter( 0 ),
+      single_serpent( create_proc_action<single_serpent_t>( "lava_bolt_single", e ) ),
+      triple_serpent( create_proc_action<triple_serpent_t>( "lava_bolt_triple", e ) ),
+      molten_rain( create_proc_action<molten_rain_t>( "molten_rain", e ) ),
+      effect( e )
+    {}
+
+    void execute( action_t* /*a*/, action_state_t* s ) override
+    {
+      counter++;
+      if( counter < 3 )
+      {
+        single_serpent->execute_on_target( s->target );
+
+        auto single_debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt_single;
+        single_debuff->set_quiet( true );
+        single_debuff->trigger();
+
+        /* This code currently seems to blow things up, commenting out for now
+        s->target->register_on_demise_callback( effect.player, [ this ]( player_t* t ) 
+        {
+          if ( !effect.player->find_target_data( t )->debuff.lava_bolt_single->check() )
+          {
+            return;
+          }
+          else
+          {
+            molten_rain->execute();
+          }
+        } );
+        */
+
+      }
+      else if( counter == 3 )
+      {
+        triple_serpent->execute_on_target( s->target );
+
+        auto triple_debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt_triple;
+        triple_debuff->set_quiet( true );
+        triple_debuff->trigger();
+
+        /* This code currently seems to blow things up, commenting out for now
+        s->target->register_on_demise_callback( effect.player, [ this ]( player_t* t )
+        {
+          if ( !effect.player->find_target_data( t )->debuff.lava_bolt_triple->check() )
+          {
+            return;
+          }
+          else
+          {
+            molten_rain->execute();
+            molten_rain->execute();
+            molten_rain->execute();
+          }
+        } );
+        */
+
+        counter = 0;
+      }
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      counter = 0;
+    }
+  };
+
+  new serpent_cb_t( e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8303,6 +8472,7 @@ void register_special_effects()
   register_special_effect( 414936, items::paracausal_fragment_of_doomhammer );
   register_special_effect( 422858, items::pips_emerald_friendship_badge );
   register_special_effect( 423611, items::ashes_of_the_embersoul );
+  register_special_effect( 426827, items::coiled_serpent_idol );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -8399,6 +8569,8 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
   sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
+  sim.register_target_data_initializer( items::lava_bolt_single_initializer_t() );
+  sim.register_target_data_initializer( items::lava_bolt_triple_initializer_t() );
 }
 
 void register_hotfixes()

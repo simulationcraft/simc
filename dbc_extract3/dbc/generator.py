@@ -1439,7 +1439,7 @@ class SpellDataGenerator(DataGenerator):
          425838, 426339, 426262, 426288, 426341, 426535, 426534, 426486, 426431, # Incandescent Essence Enchant
          422858, 426676, 426647, 426672, # Pip's Emerald Frendship Badge
          423611, 426898, 426911, 426906, 423021, 426897, # Ashes of the Embersoul
-         426827, 427059, 426834, 427037, 427058, 427057, 427056, 426840, # Coiled Serpent Idol
+         426827, 427059, 426834, 427037, 427058, 427057, 427056, 426840, 427047, # Coiled Serpent Idol
          423124, 426564, 426553, # Augury of the Primal Flame
         ),
 
