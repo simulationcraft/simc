@@ -5957,33 +5957,19 @@ void ashes_of_the_embersoul( special_effect_t& e )
 // 427059 Hidden Periodic Debuff Buff 2
 // 427047 AoE damage
 // 427057 AoE Range Check
-struct lava_bolt_single_initializer_t : public item_targetdata_initializer_t
+struct lava_bolt_initializer_t : public item_targetdata_initializer_t
 {
-  lava_bolt_single_initializer_t() : item_targetdata_initializer_t( 426827, 426834 ) {}
+  lava_bolt_initializer_t() : item_targetdata_initializer_t( 426827, 426834 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
     bool active = init( td->source );
 
-    td->debuff.lava_bolt_single = make_buff_fallback( active, *td, "single_serpent", debuffs[ td->source ] );
-    td->debuff.lava_bolt_single->reset();
-    td->debuff.lava_bolt_single->set_quiet( true );
-    td->debuff.lava_bolt_single->set_period( 0_ms );  // Ticking handled by the DoT in the main effect
-  }
-};
-
-struct lava_bolt_triple_initializer_t : public item_targetdata_initializer_t
-{
-  lava_bolt_triple_initializer_t() : item_targetdata_initializer_t( 426827, 427059 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    bool active = init( td->source );
-
-    td->debuff.lava_bolt_triple = make_buff_fallback( active, *td, "triple_serpent", debuffs[ td->source ] );
-    td->debuff.lava_bolt_triple->reset();
-    td->debuff.lava_bolt_triple->set_quiet( true );
-    td->debuff.lava_bolt_triple->set_period( 0_ms );  // Ticking handled by the DoT in the main effect
+    td->debuff.lava_bolt = make_buff_fallback( active, *td, "lava_bolt", debuffs[ td->source ] );
+    td->debuff.lava_bolt->reset();
+    td->debuff.lava_bolt->set_quiet( true );
+    td->debuff.lava_bolt->set_period( timespan_t::max() );  // Ticking handled by the DoT in the main effect
+    td->debuff.lava_bolt->set_max_stack( 20 ); // Setting to an unreasonably high number to handle the number of explosion events
   }
 };
 
@@ -6061,19 +6047,16 @@ void coiled_serpent_idol( special_effect_t& e )
     void execute( action_t* /*a*/, action_state_t* s ) override
     {
       counter++;
+      auto debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt;
       if ( counter < 3 )
       {
         single_serpent->execute_on_target( s->target );
-
-        auto single_debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt_single;
-        single_debuff->trigger();
+        debuff->trigger();
       }
       else if ( counter == 3 )
       {
         triple_serpent->execute_on_target( s->target );
-
-        auto triple_debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt_triple;
-        triple_debuff->trigger();
+        debuff->trigger( 3 );
 
         counter = 0;
       }
@@ -6090,16 +6073,8 @@ void coiled_serpent_idol( special_effect_t& e )
 
   range::for_each( e.player->sim->actor_list, [ e, molten_rain ]( player_t* target ) {
     target->register_on_demise_callback( e.player, [ e, molten_rain ]( player_t* t ) {
-      if ( e.player->get_target_data( t )->debuff.lava_bolt_single->check() )
+      for (int stacks = 0; e.player->get_target_data( t )->debuff.lava_bolt->check() > stacks; ++stacks)
       {
-        molten_rain->execute();
-      }
-    } );
-    target->register_on_demise_callback( e.player, [ e, molten_rain ]( player_t* t ) {
-      if ( e.player->get_target_data( t )->debuff.lava_bolt_triple->check() )
-      {
-        molten_rain->execute();
-        molten_rain->execute();
         molten_rain->execute();
       }
     } );
@@ -8558,8 +8533,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
   sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
-  sim.register_target_data_initializer( items::lava_bolt_single_initializer_t() );
-  sim.register_target_data_initializer( items::lava_bolt_triple_initializer_t() );
+  sim.register_target_data_initializer( items::lava_bolt_initializer_t() );
 }
 
 void register_hotfixes()
