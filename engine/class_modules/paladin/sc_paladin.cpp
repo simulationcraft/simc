@@ -380,7 +380,7 @@ struct consecration_t : public paladin_spell_t
                       .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
                         switch ( type )
                         {
-                          case ground_aoe_params_t::EVENT_STARTED:
+                          case ground_aoe_params_t::EVENT_CREATED:
                             if ( source_type == HARDCAST )
                             {
                               p()->active_consecration = event;
@@ -394,17 +394,11 @@ struct consecration_t : public paladin_spell_t
                               p()->active_searing_light_cons = event;
                             }
                             p()->all_active_consecrations.insert( event );
-                            fmt::print( "{} All active consecration size (Event Started): {}\n\r", sim->current_time(),
-                                        p()->all_active_consecrations.size() );
                             break;
-                          case ground_aoe_params_t::EVENT_STOPPED:
-                            if ( source_type == HARDCAST && p()->active_consecration != nullptr)
+                          case ground_aoe_params_t::EVENT_DESTRUCTED:
+                            if ( source_type == HARDCAST && p()->active_consecration != nullptr )
                             {
-                              // This should only be called when Consecration naturally fades
-                              // Or should be directly called when old Consecration is cancelled
-                              p()->all_active_consecrations.erase( event );
                               p()->active_consecration = nullptr;
-                              
                             }
                             else if ( source_type == BLADE_OF_JUSTICE )
                             {
@@ -414,14 +408,7 @@ struct consecration_t : public paladin_spell_t
                             {
                               p()->active_searing_light_cons = nullptr;
                             }
-                            //p()->all_active_consecrations.erase( event );
-                            fmt::print( "{} All active consecration size (Event Stopped): {}\n\r", sim->current_time(),
-                                        p()->all_active_consecrations.size() );
-                            fmt::print( "foo" );
-                            break;
-                          case ground_aoe_params_t::EVENT_CREATED:
-                            break;
-                          case ground_aoe_params_t::EVENT_DESTRUCTED:
+                            p()->all_active_consecrations.erase( event );
                             break;
                           default:
                             break;
@@ -436,8 +423,6 @@ struct consecration_t : public paladin_spell_t
     {
       p()->all_active_consecrations.erase( p()->active_consecration );
       event_t::cancel( p()->active_consecration );
-      fmt::print( "{} All active consecration size (execute): {}\n\r", sim->current_time(),
-                  p()->all_active_consecrations.size() );
     }
     // or if it's a boj-triggered Cons, cancel the previous BoJ-triggered cons
     else if ( source_type == BLADE_OF_JUSTICE && p()->active_boj_cons != nullptr )
@@ -450,10 +435,6 @@ struct consecration_t : public paladin_spell_t
     {
       p()->all_active_consecrations.erase( p()->active_searing_light_cons );
       event_t::cancel( p()->active_searing_light_cons );
-    }
-    else
-    {
-      fmt::print( "{} else\n\r", sim->current_time() );
     }
 
     paladin_spell_t::execute();
