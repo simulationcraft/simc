@@ -6002,9 +6002,10 @@ void coiled_serpent_idol( special_effect_t& e )
   {
     action_t* damage;
     serpent_t( const special_effect_t& e )
-      : generic_proc_t( e, "lava_bolt_triple", e.player->find_spell( 427059 ) ),
+      : generic_proc_t( e, "lava_bolt_dot", e.player->find_spell( 427059 ) ),
         damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
     {
+      hasted_ticks = false;
       stats = damage->stats;
     }
 
