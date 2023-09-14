@@ -1513,6 +1513,8 @@ class SpellDataGenerator(DataGenerator):
             ( 384810, 0 ),          # Seal of Clarity buff
             ( 404140, 0 ),          # Blessed Hammers for Adjudication
             ( 387113, 0 ),          # ES
+            ( 425261, 0 ),          # Cleansing Flame (Damage - Prot T31 4pc)
+            ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
         ),
 
         # Hunter:
