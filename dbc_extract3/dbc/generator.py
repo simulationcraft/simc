@@ -1463,6 +1463,8 @@ class SpellDataGenerator(DataGenerator):
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
             ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
+            ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
+            ( 52437,  0 ),          # Sudden Death (Fury buff)
         ),
 
         # Paladin:

@@ -207,6 +207,7 @@ public:
     buff_t* crushing_advance;
     buff_t* merciless_assault;
     buff_t* earthen_tenacity;  // T30 Protection 4PC
+    buff_t* furious_bloodthirst;  // T31 Fury 2PC
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -219,6 +220,8 @@ public:
   {
     real_ppm_t* fatal_mark;
     real_ppm_t* revenge;
+    real_ppm_t* sudden_death;
+    real_ppm_t* t31_sudden_death;
   } rppm;
 
   // Cooldowns
@@ -256,6 +259,7 @@ public:
     cooldown_t* shockwave;
     cooldown_t* skullsplitter;
     cooldown_t* storm_bolt;
+    cooldown_t* sudden_death_icd;
     cooldown_t* tough_as_nails_icd;
     cooldown_t* thunder_clap;
     cooldown_t* warbreaker;
@@ -345,6 +349,8 @@ public:
     const spell_data_t* whirlwind_buff;
     const spell_data_t* aftershock_duration;
     const spell_data_t* shield_wall;
+    const spell_data_t* sudden_death_arms;
+    const spell_data_t* sudden_death_fury;
   } spell;
 
   // Mastery
@@ -682,6 +688,10 @@ public:
     const spell_data_t* t30_fury_4pc;
     const spell_data_t* t30_prot_2pc;
     const spell_data_t* t30_prot_4pc;
+    const spell_data_t* t31_arms_2pc;
+    const spell_data_t* t31_arms_4pc;
+    const spell_data_t* t31_fury_2pc;
+    const spell_data_t* t31_fury_4pc;
   } tier_set;
 
   struct legendary_t
@@ -1017,6 +1027,8 @@ struct warrior_action_t : public Base
     bool t30_arms_2pc;
     bool t30_arms_4pc;
     bool t30_fury_4pc;
+    bool t31_arms_2pc;
+    bool t31_fury_2pc;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
 
@@ -1164,6 +1176,10 @@ public:
     ab::apply_affecting_aura( p()->tier_set.t29_arms_2pc );  
     ab::apply_affecting_aura( p()->tier_set.t29_fury_2pc );  
     ab::apply_affecting_aura( p()->tier_set.t30_fury_2pc );
+    if ( p()->dbc->ptr )
+    ab::apply_affecting_aura( p()->tier_set.t31_arms_2pc );
+    if ( p()->dbc->ptr )
+    ab::apply_affecting_aura( p()->tier_set.t31_fury_2pc );
 
 
 
@@ -1283,7 +1299,6 @@ public:
 
     warrior_td_t* td = p()->get_target_data( target );
 
-    // needs adjusting - this is actually a TOTAL crit damage increase, not extra - current implementation does not support
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() &&
          affected_by.t30_arms_2pc )
     {
@@ -1706,8 +1721,11 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
-    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() || p()->talents.protection.sudden_death->ok() ) && p()->buff.sudden_death->trigger() )
+    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() || p()->talents.protection.sudden_death->ok() ) 
+           && p()->cooldown.sudden_death_icd->up() && p()->rppm.sudden_death->trigger() )
     {
+      p()->buff.sudden_death->trigger();
+      p()->cooldown.sudden_death_icd->start();
       p()->cooldown.execute->reset( true );
       p()->cooldown.condemn->reset( true );
     }
@@ -2208,6 +2226,11 @@ struct rend_dot_t : public warrior_attack_t
     if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
+    if ( p()->tier_set.t31_arms_2pc->ok() && p()->rppm.t31_sudden_death->trigger() )
+    {
+      p()->buff.sudden_death->trigger();
+      p()->cooldown.execute->reset( true );
     }
   }
 };
@@ -8076,6 +8099,7 @@ void warrior_t::init_spells()
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.executioners_precision_debuff = find_spell( 386633 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
+  spell.sudden_death_arms       = find_spell( 52437 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
@@ -8087,6 +8111,7 @@ void warrior_t::init_spells()
   spec.crushing_blow            = find_spell(335097);
   spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
   spell.siegebreaker_debuff     = find_spell( 280773 );
+  spell.sudden_death_fury       = find_spell( 280776 );
 
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
@@ -8442,6 +8467,10 @@ void warrior_t::init_spells()
   tier_set.t30_fury_4pc               = sets->set( WARRIOR_FURY, T30, B4 );
   tier_set.t30_prot_2pc               = sets->set( WARRIOR_PROTECTION, T30, B2 );
   tier_set.t30_prot_4pc               = sets->set( WARRIOR_PROTECTION, T30, B4 );
+  tier_set.t31_arms_2pc               = sets->set( WARRIOR_ARMS, T31, B2 );
+  tier_set.t31_arms_4pc               = sets->set( WARRIOR_ARMS, T31, B4 );
+  tier_set.t31_fury_2pc               = sets->set( WARRIOR_FURY, T31, B2 );
+  tier_set.t31_fury_4pc               = sets->set( WARRIOR_FURY, T31, B4 );
 
   // Active spells
   //active.ancient_aftershock_pulse = nullptr;
@@ -8635,6 +8664,12 @@ void warrior_t::init_spells()
   cooldown.skullsplitter                    = get_cooldown( "skullsplitter" );
   cooldown.shockwave                        = get_cooldown( "shockwave" );
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
+  cooldown.sudden_death_icd                 = get_cooldown( "sudden_death" );
+  cooldown.sudden_death_icd->duration =
+      specialization() == WARRIOR_FURY   ? talents.fury.sudden_death->internal_cooldown(): 
+      specialization() == WARRIOR_ARMS ? talents.arms.sudden_death->internal_cooldown() : 
+      talents.protection.sudden_death->internal_cooldown();
+  cooldown.sudden_death_icd->duration       = talents.arms.sudden_death->internal_cooldown();
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
   cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails->effectN( 1 ).trigger() -> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
@@ -9160,7 +9195,7 @@ void warrior_t::create_buffs()
 
   buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 396752 ) );
 
-  buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : talents.protection.sudden_death );
+  buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? spell.sudden_death_fury : specialization() == WARRIOR_ARMS ? spell.sudden_death_arms : spell.sudden_death_arms );
     if ( tier_set.t29_fury_4pc->ok() )
     buff.sudden_death->set_rppm( RPPM_NONE, -1, 2.5 ); // hardcode unsupported type 8 modifier
 
@@ -9359,13 +9394,22 @@ void warrior_t::create_buffs()
 
   buff.earthen_tenacity = make_buff( this, "earthen_tenacity", tier_set.t30_prot_4pc -> ok() ?
                                 find_spell( 410218 ) : spell_data_t::not_found() );
+
+  buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst",
+                                      tier_set.t30_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() )
+                               ->set_default_value( find_spell( 423211 )->effectN( 1 ).percent() );
+                               //->set_duration( find_spell( 423211 )->duration() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
 {
   player_t::init_rng();
   rppm.fatal_mark       = get_rppm( "fatal_mark", talents.arms.fatality );
-  rppm.revenge        = get_rppm( "revenge_trigger", spec.revenge_trigger );
+  rppm.revenge          = get_rppm( "revenge_trigger", spec.revenge_trigger );
+  rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : 
+                                                    specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : 
+                                                    talents.protection.sudden_death );
+  rppm.t31_sudden_death = get_rppm( "t31_sudden_death", find_spell( 422923 ) );
 }
 // warrior_t::init_scaling ==================================================
 

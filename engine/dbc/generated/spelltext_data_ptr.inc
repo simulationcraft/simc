@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51297
-static const std::array<spelltext_data_t, 20421> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20426> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -1699,6 +1699,7 @@ static const std::array<spelltext_data_t, 20421> __ptr_spelltext_data { {
   {  52420, "Melee attacks which reduce you below $s1% health cause you to gain $52419s1 parry for $52419d.  Cannot occur more than once every 30 sec.", 0, 0 },
   {  52423, "Chance on parrying an attack to gain $52424s Strength for $52424d.", 0, 0 },
   {  52424, "Increases Strength by $s1 for $d.", "Increases Strength by $s1.", 0 },
+  {  52437, "$@spelldesc29725", "$?a317320[Condemn][Execute] costs no Rage, can be used on any target, and deals damage as if you spent $29725s1 Rage.", 0 },
   {  52586, "Inflicts Shadow damage to an enemy and reduces its movement speed for $d.", "Shadow damage inflicted over $d.\r\nReduced movement speed.", 0 },
   {  52610, "Finishing move that increases damage by $62071s1% and energy regeneration rate by $62071s3% while in Cat Form. Lasts longer per combo point:\r\n\r\n   1 point  : 12 seconds\r\n   2 points: 18 seconds\r\n   3 points: 24 seconds\r\n   4 points: 30 seconds\r\n   5 points: 36 seconds", "Damage increased $62071s1% while in Cat Form.\r\nEnergy regeneration increased by $62071s3%.", 0 },
   {  52781, "Attempts to persuade the recipient of the strike to talk. Highly effective.", "Hunched over in pain.", 0 },
@@ -5582,6 +5583,7 @@ static const std::array<spelltext_data_t, 20421> __ptr_spelltext_data { {
   { 180755, "Restores $160598o1 health and ${$160599m2/5*$160599d} mana over $160598d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $s3 Stamina for $180750d.", 0, 0 },
   { 180756, "Restores $160598o1 health and ${$160599m2/5*$160599d} mana over $160598d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $s3 haste for $180750d.", 0, 0 },
   { 181068, "Drains the Blood Moon and becomes a Glowing Blood Crystal.", 0, 0 },
+  { 181098, "Summons Annihilon to your garrison (Recommended: 10-40 players).", 0, 0 },
   { 181405, "Open the bag.", 0, 0 },
   { 181625, "Transmutes Sorcerous Fire to Sorcerous Earth.", 0, 0 },
   { 181627, "Transmutes Sorcerous Fire to Sorcerous Air.", 0, 0 },
@@ -6523,7 +6525,7 @@ static const std::array<spelltext_data_t, 20421> __ptr_spelltext_data { {
   { 200749, "Switch to your Primary Talent Specialization.", "Switch to your Primary Talent Specialization.", 0 },
   { 200758, "Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.$?s319949[ Critical strikes apply Find Weakness for $319949s1 sec.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r", 0, 0 },
   { 200759, "You heal $s1% of your maximum health every $158188t2 sec while Stealth or Shadow Dance is active.", 0, 0 },
-  { 200806, "While above 100 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.", 0, 0 },
+  { 200806, "While above $s1 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.", 0, 0 },
   { 200818, "Moonfire deals $s2% increased damage and also hits another nearby enemy within $279620s1 yds of the target.", 0, 0 },
   { 200845, "Rampage and Execute have a chance to activate Berserking, increasing your attack speed and critical strike chance by $200953s1% every $200951t1 sec for $200951d.", 0, 0 },
   { 200851, "Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers.", "Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers.", 0 },
@@ -10970,6 +10972,7 @@ static const std::array<spelltext_data_t, 20421> __ptr_spelltext_data { {
   { 280752, "Your successful Dispel Magic, Mass Dispel, Purify Disease, and Power Word: Shield casts generate $s1 Insanity during combat.", 0, 0 },
   { 280772, "Break the enemy's defenses, dealing $s1 Physical damage, and increasing your damage done to the target by $280773s1% for $280773d.\r\n\r\n|cFFFFFFFFGenerates ${$m2/10} Rage.|r", 0, 0 },
   { 280773, "$@spelldesc280772", "Taking $w1% increased damage from $@auracaster.", 0 },
+  { 280776, "$@spelldesc280721", "$?a317320[Condemn][Execute] can be used on any target, regardless of their health.", 0 },
   { 280778, "$@spelldesc280577", 0, 0 },
   { 280780, "$@spelldesc270577", "Critical Strike increased by $w1. Haste increased by $w2.", 0 },
   { 280785, "$@spelldesc280579", 0, 0 },
@@ -20218,8 +20221,8 @@ static const std::array<spelltext_data_t, 20421> __ptr_spelltext_data { {
   { 422887, "Your attacks against targets afflicted by Breath of Fire have a chance to deal $s1% extra damage as Shadowflame, and each Celestial Brew also grants a Stagger absorb for $s2% of the Shadowflame damage you have dealt, causing damage delayed by Stagger to instead be prevented.", 0, 0 },
   { 422889, "Renewing Mist applies Chi Harmony to its initial target, increasing their healing taken from you by $423439s1% for $423439d.", 0, 0 },
   { 422890, "$s1% of all healing you do to targets with Chi Harmony is stored and then dispersed evenly among your allies with Renewing Mist when Chi Harmony fades or is refreshed.", 0, 0 },
-  { 422891, "Melee attacks have a chance to make your next Spinning Crane Kick free.\r\nFree Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%. ", "Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%.", 0 },
-  { 422892, "Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. ", "Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.", 0 },
+  { 422891, "Melee attacks have a chance to make your next Spinning Crane Kick free.\r\nFree Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. ", "Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%.", 0 },
+  { 422892, "Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. ", "Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.", 0 },
   { 422893, "When Glimmer of Light dissipates or is refreshed, it creates a Holy Reverberation on its target to heal an ally for $423377o1 or damage an enemy for $423379o2 over $423377d. Multiple Holy Reverberations may overlap, up to $423377u times. ", 0, 0 },
   { 422894, "The cooldown of Daybreak is reduced by ${$s1/-1000} sec.", 0, 0 },
   { 422895, "Judgment grants a stack of Sanctification, increasing your armor by ${$424616s1}.1% per stack. Upon reaching $424616U stacks, your next cast of Consecration is empowered, increasing its damage and healing by $424622s1% and its radius by $424622s2%. Sanctification's stacks are reset when your empowered Consecration ends.", 0, 0 },
@@ -20340,6 +20343,8 @@ static const std::array<spelltext_data_t, 20421> __ptr_spelltext_data { {
   { 424965, "$@spelldesc424406", "Suffering $w2 Nature damage every $t1 sec.", 0 },
   { 425153, "$@spelldesc422479", "The heat of the brand intensifies, increasing the damage dealt by $@spellname425154.", 0 },
   { 425154, "$@spelldesc422479", "Taking $w2 Fire damage per $t2 sec.", 0 },
+  { 425261, "$@spelldesc422896", 0, 0 },
+  { 425262, "$@spelldesc422896", 0, 0 },
   { 425298, "$@spelldesc422886", 0, 0 },
   { 425407, "$@spelldesc422864", "Absorbing up to $w1 damage.", 0 },
   { 425417, "$@spelldesc422146", "Scorched by the sun for $w1 Fire damage every $t sec.", 0 },
@@ -20424,7 +20429,12 @@ static const std::array<spelltext_data_t, 20421> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.51297
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
+  {  200806,  0, "While above 100 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.", "While above $s1 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt." },
+  {  422891,  0, "Melee attacks have a chance to make your next Spinning Crane Kick free.\r\nFree Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%. ", "Melee attacks have a chance to make your next Spinning Crane Kick free.\r\nFree Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. " },
+  {  422891,  1, "Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%.", "Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%." },
+  {  422892,  0, "Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. ", "Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. " },
+  {  422892,  1, "Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.", "Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec." },
 } };
 
 // Spell description variables, wow build 10.2.0.51297
