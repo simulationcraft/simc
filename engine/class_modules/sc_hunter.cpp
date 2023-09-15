@@ -2198,8 +2198,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     }
 
     auto pet = o() -> pets.main;
-    //09/09/2023 - Currently the debuff is applied even if the buff is not up
-    if ( o() -> is_ptr() && pet == p() && o() -> talents.wild_instincts.ok() && ( o() -> buffs.call_of_the_wild -> up() || o() -> bugs ) )
+    if ( o() -> is_ptr() && pet == p() && o() -> talents.wild_instincts.ok() && o() -> buffs.call_of_the_wild -> check() )
     {
       o() -> get_target_data( s -> target ) -> debuffs.wild_instincts -> trigger();
     }
