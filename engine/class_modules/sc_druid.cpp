@@ -10223,8 +10223,8 @@ void druid_t::create_buffs()
       make_buff_fallback( sets->has_set_bonus( DRUID_FERAL, T29, B4 ), this, "sharpened_claws", find_spell( 394465 ) );
 
   buff.smoldering_frenzy = 
-      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_FERAL, T31, B2 ), this, "smoldering_frenzy", find_trigger( buff.smoldering_frenzy ).trigger() )
-        ->apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ));
+      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_FERAL, T31, B2 ), this, "smoldering_frenzy", find_trigger( sets->set(DRUID_FERAL, T31, B2 ) ).trigger() )
+        ->apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ) );
 
   buff.sudden_ambush = make_buff_fallback( talent.sudden_ambush.ok(),
       this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() );
@@ -13073,7 +13073,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.veinripper );
   action.apply_affecting_aura( talent.wild_slashes );
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
-  action.apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ) );
 
   // Guardian
   action.apply_affecting_aura( talent.flashing_claws );
