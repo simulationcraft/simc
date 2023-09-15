@@ -274,7 +274,7 @@ struct consecration_tick_t : public paladin_spell_t
     }
     if (p()->buffs.sanctification_empower->up())
     {
-      m *= 1.0 + 2;
+      m *= 1.0 + p()->buffs.sanctification_empower->data().effectN( 1 ).percent();
     }
     return m;
   }
