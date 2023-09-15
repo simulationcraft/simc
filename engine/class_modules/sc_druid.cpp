@@ -601,6 +601,7 @@ public:
     buff_t* sabertooth;
     buff_t* shadows_of_the_predator;  // 2t30
     buff_t* sharpened_claws;  // 4t29
+    buff_t* smoldering_frenzy; //t31
     buff_t* sudden_ambush;
     buff_t* tigers_fury;
     buff_t* tigers_tenacity;
@@ -2087,6 +2088,7 @@ public:
     parse_buff_effects( p()->buff.predatory_swiftness );
     parse_buff_effects( p()->buff.sabertooth, USE_DEFAULT );
     parse_buff_effects( p()->buff.sharpened_claws );
+    parse_buff_effects( p()->buff.smoldering_frenzy );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -3548,6 +3550,8 @@ struct feral_frenzy_t : public cat_attack_t
       is_direct_damage = true;
       cat_attack_t::execute();
       is_direct_damage = false;
+
+      p()->buff.smoldering_frenzy->trigger();
     }
 
     void trigger_primal_fury() override {}
@@ -10227,6 +10231,10 @@ void druid_t::create_buffs()
   buff.sharpened_claws =
       make_buff_fallback( sets->has_set_bonus( DRUID_FERAL, T29, B4 ), this, "sharpened_claws", find_spell( 394465 ) );
 
+  buff.smoldering_frenzy = 
+      make_buff_fallback( sets->has_set_bonus( DRUID_FERAL, T31, B2 ), this, "smoldering_frenzy", find_trigger( buff.smoldering_frenzy ).trigger() )
+        ->apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ));
+
   buff.sudden_ambush = make_buff_fallback( talent.sudden_ambush.ok(),
       this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() );
 
@@ -13075,6 +13083,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.veinripper );
   action.apply_affecting_aura( talent.wild_slashes );
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
+  action.apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ) );
 
   // Guardian
   action.apply_affecting_aura( talent.flashing_claws );
