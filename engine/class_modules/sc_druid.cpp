@@ -13076,7 +13076,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.veinripper );
   action.apply_affecting_aura( talent.wild_slashes );
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
-  action.apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ) );
 
   // Guardian
   action.apply_affecting_aura( talent.flashing_claws );
