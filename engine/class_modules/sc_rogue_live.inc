@@ -1,13 +1,5 @@
-// ==========================================================================
-// Dedmonwakeen's DPS-DPM Simulator.
-// Send questions to natehieter@gmail.com
-// ==========================================================================
-
-#include "simulationcraft.hpp"
-#include "util/util.hpp"
-#include "class_modules/apl/apl_rogue.hpp"
-
-namespace { // UNNAMED NAMESPACE
+// Pre-10.2.0 Rogue Support File
+// To be removed when 10.2.0 goes live
 
 // Forward Declarations
 class rogue_t;
@@ -10678,48 +10670,3 @@ void rogue_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.subtlety_rogue );
 }
 
-namespace live_rogue
-{
-#include "class_modules/sc_rogue_live.inc"
-};
-
-// ROGUE MODULE INTERFACE ===================================================
-
-class rogue_module_t : public module_t
-{
-public:
-  rogue_module_t() : module_t( ROGUE ) {}
-
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
-  {
-    if ( sim->dbc->ptr )
-    {
-      return new live_rogue::rogue_t( sim, name, r );
-    }
-
-    return new rogue_t( sim, name, r );
-  }
-
-  bool valid() const override
-  { return true; }
-
-  void static_init() const override
-  {
-  }
-
-  void register_hotfixes() const override
-  {
-  }
-
-  void init( player_t* ) const override {}
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
-};
-
-} // UNNAMED NAMESPACE
-
-const module_t* module_t::rogue()
-{
-  static rogue_module_t m;
-  return &m;
-}
