@@ -620,6 +620,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     is_fallback(),
     requires_invalidation(),
     expire_at_max_stack(),
+    ignore_mod_time_modifier( false ),
     reverse_stack_reduction( 1 ),
     current_value(),
     current_stack(),
@@ -627,6 +628,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     buff_duration_multiplier( 1.0 ),
     default_chance( 1.0 ),
     manual_chance( -1.0 ),
+    time_modifier_multiplier( 1.0 ),
     constant_behavior( buff_constant_behavior::DEFAULT ),
     allow_precombat( true ),
     current_tick( 0 ),
@@ -723,6 +725,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   // These are initialized at -1 then set to their spell data values here (along with error checking)
   set_max_stack( _max_stack );
   set_initial_stack( _initial_stack );
+
+  if ( s_data->flags( spell_attribute::SX_IGNORE_FOR_MOD_TIME_RATE ) )
+    ignore_mod_time_modifier = true;
 
   update_trigger_calculations();
 }
@@ -824,6 +829,80 @@ buff_t* buff_t::set_duration_multiplier( double multiplier )
   if ( buff_duration_multiplier < 0.0 )
   {
     buff_duration_multiplier = 0.0;
+  }
+
+  return this;
+}
+
+// Applies a modifier from -99 to infinity that controls how fast the buff functions.
+// Values less than -99 will be rounded to -99, which seems to match in-game behavior where
+// auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
+// It's intended to modify real time duration and tickrate, without affecting the apparent duration
+// as used for things like pandemic refresh behavior.
+// Currently, this only modifies the duration of the buff, moving its expiration closer or
+// further out. The "apparent" duration is lost (but recoverable), since remains() returns the
+// real-time duration. The tickrate is un-adjusted, since it is currently based on the real-time duration.
+// None of these limitations particularly matter for current usecases, but if you're looking at using this, be
+// aware there may be more work required to support your usecase.
+buff_t* buff_t::apply_time_modifier( double modifier )
+{
+  if ( ignore_mod_time_modifier )
+    return this;
+  modifier = std::max( modifier, -99.0 ); // Limit slow down to 100x slower
+
+  auto mul = 100.0 / ( 100 + modifier );
+
+  set_time_modifier_multiplier( time_modifier_multiplier * mul );
+
+  return this;
+}
+
+buff_t* buff_t::set_time_modifier_multiplier( double new_multiplier )
+{
+
+  if ( new_multiplier == time_modifier_multiplier )
+    return this;
+
+  auto old_multiplier = time_modifier_multiplier;
+  time_modifier_multiplier = new_multiplier;
+
+  if ( current_stack <= 0 || expiration.empty() )
+  {
+    return this;
+  }
+
+  auto ratio = new_multiplier / old_multiplier;
+
+  // Slowing down the clock, expiry will be moved into the future
+  if ( ratio > 1.0 )
+  {
+    for ( auto exp : expiration )
+    {
+      auto new_remains = exp->remains() * ratio;
+      exp->reschedule( new_remains );
+
+      if ( player )
+        sim->print_log( "{} increases {} expiry by a factor of {}. New expiration: {}", *player, *this, ratio,
+                      exp->occurs() );
+    }
+  }
+  // Speeding up the clock, expiry moved closer
+  else
+  {
+    for ( auto i = 0; i < expiration.size(); i++ )
+    {
+      auto old_expiration = expiration[ i ];
+      auto new_remains = old_expiration->remains() * ratio;
+      event_t::cancel( old_expiration );
+
+      auto exp = make_event<expiration_t>( *sim, this, new_remains );
+      expiration[ i ] = exp;
+
+      if ( player )
+        sim->print_log( "{} decreases {} expiry by a factor of {}. New expiration: {}", *player, *this, ratio,
+                      exp->occurs() );
+    }
+
   }
 
   return this;
@@ -1532,6 +1611,10 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         apply_percent_modifier( effect );
         break;
 
+      case A_MOD_TIME_RATE_BY_SPELL_LABEL:
+        apply_time_modifier( effect.base_value() );
+        break;
+
       default:
         break;
     }
@@ -2068,6 +2151,8 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   assert( expiration.size() == 1 );
 
+  extra_seconds = extra_seconds * get_time_modifier_multiplier();
+
   if ( extra_seconds > timespan_t::zero() )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
@@ -2132,7 +2217,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 #endif
 
-  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration();
+  timespan_t d = (( duration >= timespan_t::zero() ) ? duration : buff_duration()) * get_time_modifier_multiplier();
 
   if ( sim->current_time() <= timespan_t::from_seconds( 0.01 ) )
   {
@@ -2244,6 +2329,8 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
   else
     d = refresh_duration( buff_duration() );
 
+  d = d * get_time_modifier_multiplier();
+
   if ( refresh_behavior == buff_refresh_behavior::DISABLED && duration != timespan_t::zero() )
     return;
 
@@ -2300,12 +2387,12 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} refreshes {} (value={}, duration={})", *player, buff_display_name, current_value, d );
+        sim->print_log( "{} refreshes {} (value={}, duration={}, time_modifier_multiplier={})", *player, buff_display_name, current_value, d, get_time_modifier_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid refreshes {} (value={}, duration={})", buff_display_name, current_value, d );
+      sim->print_log( "Raid refreshes {} (value={}, duration={}, time_modifier_multiplier={})", buff_display_name, current_value, d, get_time_modifier_multiplier() );
     }
   }
 }
@@ -2608,12 +2695,12 @@ void buff_t::aura_gain()
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} gains {} (value={})", *player, buff_display_name, current_value );
+        sim->print_log( "{} gains {} (value={}, time_modifier_multiplier={})", *player, buff_display_name, current_value, get_time_modifier_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid gains {} (value={})", buff_display_name, current_value );
+      sim->print_log( "Raid gains {} (value={}, time_modifier_multiplier={})", buff_display_name, current_value, get_time_modifier_multiplier() );
     }
   }
 }

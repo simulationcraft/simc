@@ -92,6 +92,7 @@ public:
   bool reverse, constant, quiet, overridden, can_cancel, is_fallback;
   bool requires_invalidation;
   bool expire_at_max_stack;
+  bool ignore_mod_time_modifier;
 
   int reverse_stack_reduction; /// Number of stacks reduced when reverse = true
 
@@ -102,6 +103,7 @@ public:
   double buff_duration_multiplier;
   double default_chance;
   double manual_chance; // user-specified "overridden" proc-chance
+  double time_modifier_multiplier;
   std::vector<timespan_t> stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
 
@@ -337,6 +339,7 @@ public:
   int max_stack() const { return _max_stack; }
   int initial_stack() const { return _initial_stack; }
   const spell_data_t* get_trigger_data() const { return trigger_data; }
+  double get_time_modifier_multiplier() const { return time_modifier_multiplier; };
 
   rng::rng_t& rng();
 
@@ -346,6 +349,8 @@ public:
   buff_t* set_duration( timespan_t duration );
   buff_t* modify_duration( timespan_t duration );
   buff_t* set_duration_multiplier( double );
+  buff_t* set_time_modifier_multiplier( double multiplier );
+  buff_t* apply_time_modifier( double modifier );
   buff_t* set_max_stack( int max_stack );
   buff_t* modify_max_stack( int max_stack );
   buff_t* set_initial_stack( int initial_stack );
