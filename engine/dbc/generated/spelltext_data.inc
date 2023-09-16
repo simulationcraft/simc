@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.7.51313
-static const std::array<spelltext_data_t, 20139> __spelltext_data { {
+static const std::array<spelltext_data_t, 20141> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -1699,6 +1699,7 @@ static const std::array<spelltext_data_t, 20139> __spelltext_data { {
   {  52420, "Melee attacks which reduce you below $s1% health cause you to gain $52419s1 parry for $52419d.  Cannot occur more than once every 30 sec.", 0, 0 },
   {  52423, "Chance on parrying an attack to gain $52424s Strength for $52424d.", 0, 0 },
   {  52424, "Increases Strength by $s1 for $d.", "Increases Strength by $s1.", 0 },
+  {  52437, "$@spelldesc29725", "$?a317320[Condemn][Execute] costs no Rage, can be used on any target, and deals damage as if you spent $29725s1 Rage.", 0 },
   {  52586, "Inflicts Shadow damage to an enemy and reduces its movement speed for $d.", "Shadow damage inflicted over $d.\r\nReduced movement speed.", 0 },
   {  52610, "Finishing move that increases damage by $62071s1% and energy regeneration rate by $62071s3% while in Cat Form. Lasts longer per combo point:\r\n\r\n   1 point  : 12 seconds\r\n   2 points: 18 seconds\r\n   3 points: 24 seconds\r\n   4 points: 30 seconds\r\n   5 points: 36 seconds", "Damage increased $62071s1% while in Cat Form.\r\nEnergy regeneration increased by $62071s3%.", 0 },
   {  52781, "Attempts to persuade the recipient of the strike to talk. Highly effective.", "Hunched over in pain.", 0 },
@@ -10966,6 +10967,7 @@ static const std::array<spelltext_data_t, 20139> __spelltext_data { {
   { 280752, "Your successful Dispel Magic, Mass Dispel, Purify Disease, and Power Word: Shield casts generate $s1 Insanity during combat.", 0, 0 },
   { 280772, "Break the enemy's defenses, dealing $s1 Physical damage, and increasing your damage done to the target by $280773s1% for $280773d.\r\n\r\n|cFFFFFFFFGenerates ${$m2/10} Rage.|r", 0, 0 },
   { 280773, "$@spelldesc280772", "Taking $w1% increased damage from $@auracaster.", 0 },
+  { 280776, "$@spelldesc280721", "$?a317320[Condemn][Execute] can be used on any target, regardless of their health.", 0 },
   { 280778, "$@spelldesc280577", 0, 0 },
   { 280780, "$@spelldesc270577", "Critical Strike increased by $w1. Haste increased by $w2.", 0 },
   { 280785, "$@spelldesc280579", 0, 0 },

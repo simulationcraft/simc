@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51313 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -18547,6 +18547,7 @@ Effects          :
 Description      : $s1% of all healing you do to targets with Chi Harmony is stored and then dispersed evenly among your allies with Renewing Mist when Chi Harmony fades or is refreshed.
 
 Name             : Monk Windwalker 10.2 Class Set 2pc (id=422891) [Passive, Hidden] 
+Hotfixed         : Description, Tooltip
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18566,10 +18567,11 @@ Effects          :
 #1 (id=1098489)  : Apply Aura (6) | Proc Trigger Spell (42): Windfoot
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Trigger Spell: 425578 | Target: Self (1)
 Description      : Melee attacks have a chance to make your next Spinning Crane Kick free.
-Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%. 
-Tooltip          : Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%.
+Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. 
+Tooltip          : Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%.
 
 Name             : Monk Windwalker 10.2 Class Set 4pc (id=422892) [Passive, Hidden] 
+Hotfixed         : Description, Tooltip
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18584,9 +18586,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098490)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. 
-Tooltip          : Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (1 -> 2)
+Description      : Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. 
+Tooltip          : Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.
 
 Name             : Chi Harmony (id=423439) [Spell Family (53)] 
 Class            : Monk
@@ -18634,6 +18637,10 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Triggered by     : Monk Windwalker 10.2 Class Set 2pc (422891)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
