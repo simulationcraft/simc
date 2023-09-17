@@ -9433,6 +9433,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
       return expr_t::create_constant( "amz_absorb_percent", options.amz_absorb_percent );
   }
 
+  // Expose AMS Absorb Percent to the APL to enable decisions based on anticipated resource generation
+  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "ams_absorb_percent" ) && splits.size() == 2 )
+      return expr_t::create_constant( "ams_absorb_percent", options.amz_absorb_percent );
+  }
+
   // Death Knight special expressions
   if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
   {

@@ -1441,6 +1441,7 @@ class SpellDataGenerator(DataGenerator):
          423611, 426898, 426911, 426906, 423021, 426897, # Ashes of the Embersoul
          426827, 427059, 426834, 427037, 427058, 427057, 427056, 426840, 427047, # Coiled Serpent Idol
          423124, 426564, 426553, # Augury of the Primal Flame
+         426114, # Bandolier of Twisted Blades
         ),
 
         # Warrior:
