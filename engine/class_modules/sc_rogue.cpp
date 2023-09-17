@@ -10692,7 +10692,7 @@ public:
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    if ( sim->dbc->ptr )
+    if ( !sim->dbc->ptr )
     {
       return new live_rogue::rogue_t( sim, name, r );
     }
