@@ -709,6 +709,7 @@ public:
     action_t* arctic_bola = nullptr;
     action_t* dire_command = nullptr; 
     action_t* windrunners_guidance_background = nullptr;
+    action_t* volley_t31 = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -726,7 +727,7 @@ public:
     unsigned dire_pack_counter = 0;
     unsigned bombardment_counter = 0;
     unsigned lotw_counter = 0;
-    unsigned windrunners_guidance_counter = 0; 
+    unsigned windrunners_guidance_counter = 0;
   } state;
 
   struct options_t {
@@ -4356,6 +4357,9 @@ struct rapid_fire_t: public hunter_spell_t
 
     p() -> buffs.streamline -> trigger();
     p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 1 ).percent() );
+
+    if ( p() -> actions.volley_t31 )
+      p() ->  actions.volley_t31 -> execute_on_target( execute_state -> target );
   }
 
   void tick( dot_t* d ) override
@@ -5881,6 +5885,11 @@ struct volley_t : public hunter_spell_t
   struct damage_t final : hunter_ranged_attack_t
   {
     attacks::explosive_shot_background_t* explosive = nullptr;
+    struct
+    {
+      double chance = 0;
+      attacks::wind_arrow_t* wind_arrow = nullptr;
+    } t31;
 
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
@@ -5892,11 +5901,20 @@ struct volley_t : public hunter_spell_t
         explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
         explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
       }
+
+      if ( p -> tier_set.t31_mm_4pc.ok() )
+      {
+        t31.chance = p -> tier_set.t31_mm_4pc -> proc_chance();
+        t31.wind_arrow = p -> get_background_action<attacks::wind_arrow_t>( "wind_arrow_t31" );
+      }
     }
 
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
+
+      if ( rng().roll( t31.chance ) )
+        t31.wind_arrow -> execute_on_target( s -> target );
     }
 
     void execute() override
@@ -5916,35 +5934,54 @@ struct volley_t : public hunter_spell_t
   };
 
   damage_t* damage;
+  timespan_t tick_duration;
 
   volley_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "volley", p, p -> talents.volley ),
+    hunter_spell_t( "volley", p, p -> find_spell( 260243 ) ),
     damage( p -> get_background_action<damage_t>( "volley_damage" ) )
   {
     parse_options( options_str );
+
+    if ( !p -> talents.volley.ok() )
+      background = true;
 
     // disable automatic generation of the dot from spell data
     dot_duration = 0_ms;
 
     may_hit = false;
     damage -> stats = stats;
+
+    if ( damage -> t31.wind_arrow )
+      add_child( damage -> t31.wind_arrow );
+
+    tick_duration = data().duration();
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.volley -> trigger();
+    p() -> buffs.volley -> trigger( tick_duration);
     p() -> buffs.trick_shots -> trigger( data().duration() );
 
+    // TODO cancel ongoing volley
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( execute_state -> target )
-        .duration( data().duration() )
+        .duration( tick_duration )
         .pulse_time( data().effectN( 2 ).period() )
         .action( damage )
       );
 
     p() -> player_t::reset_auto_attacks( data().duration(), player -> procs.reset_aa_channel );
+  }
+};
+
+struct volley_background_t : public volley_t
+{
+  volley_background_t( hunter_t* p ) : volley_t( p, "" )
+  {
+    background = dual = true;
+    tick_duration = p -> find_spell( 257044 ) -> duration();
   }
 };
 
@@ -6923,8 +6960,11 @@ void hunter_t::create_actions()
   if ( talents.dire_command.ok() )
     actions.dire_command = new spells::dire_command_summon_t( this );
   
-  if( talents.windrunners_guidance.ok() )
+  if ( talents.windrunners_guidance.ok() )
     actions.windrunners_guidance_background = new attacks::windrunners_guidance_background_t( this );
+
+  if ( tier_set.t31_mm_2pc.ok() )
+    actions.volley_t31 = new spells::volley_background_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -6959,10 +6999,10 @@ void hunter_t::create_buffs()
       -> set_max_stack( std::max( as<int>( talents.bullseye -> effectN( 2 ).base_value() ), 1 ) )
       -> set_chance( talents.bullseye.ok() );
 
-  buffs.volley =
-    make_buff( this, "volley", talents.volley )
+  buffs.volley = make_buff( this, "volley", find_spell( 260243 ) )
       -> set_cooldown( 0_ms )
-      -> set_period( 0_ms ); // disable ticks as an optimization
+      -> set_period( 0_ms ) // disable ticks as an optimization
+      -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.trick_shots =
     make_buff<buffs::trick_shots_t>( this, "trick_shots", find_spell( 257622 ) );
