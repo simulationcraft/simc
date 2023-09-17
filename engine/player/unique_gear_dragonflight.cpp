@@ -7373,6 +7373,32 @@ void demonsbane( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// TODO: implement heal/shield
+void undulating_sporecloak( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 410231 ) );
+  buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  if ( effect.player->is_ptr() )
+  {
+    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
+
+    // In case the player has two copies of this embellishment, set up the buff events only once.
+    if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
+    {
+      buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+        buff->trigger();
+        make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
+          if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
+            buff->trigger();
+          else
+            buff->expire();
+        } );
+      } );
+    }
+  }
+}
+
 }  // namespace items
 
 namespace sets
@@ -8533,6 +8559,7 @@ void register_special_effects()
   register_special_effect( 406254, items::roiling_shadowflame );
   register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
   register_special_effect( 406244, items::ever_decaying_spores );
+  register_special_effect( 410230, items::undulating_sporecloak );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );

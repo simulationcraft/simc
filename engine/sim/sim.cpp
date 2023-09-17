@@ -4063,6 +4063,8 @@ void sim_t::create_options()
   add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval", dragonflight_opts.blue_silken_lining_update_interval, 1_s, timespan_t::max() ) );
   add_option( opt_bool( "dragonflight.screaming_black_dragonscale_damage", dragonflight_opts.screaming_black_dragonscale_damage ) );
   add_option( opt_timespan( "dragonflight.adaptive_stonescales_period", dragonflight_opts.adaptive_stonescales_period, 0_s, timespan_t::max() ) );
+  add_option( opt_float( "dragonflight.undulating_sporecloak_uptime", dragonflight_opts.undulating_sporecloak_uptime, 0.0, 1.0 ) );
+  add_option( opt_timespan( "dragonflight.undulating_sporecloak_update_interval", dragonflight_opts.undulating_sporecloak_update_interval, 1_s, timespan_t::max() ) );
 }
 
 // sim_t::parse_option ======================================================
