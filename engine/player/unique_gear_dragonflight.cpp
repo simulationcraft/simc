@@ -6070,6 +6070,80 @@ void coiled_serpent_idol( special_effect_t& e )
   new serpent_cb_t( e );
 }
 
+// Bandolier of Twisted Blades
+// 422303 Driver (Embed Blade)
+// 422297 Damage
+// 426114 Return Slash Driver
+struct embed_blade_initializer_t : public item_targetdata_initializer_t
+{
+  embed_blade_initializer_t()  : item_targetdata_initializer_t( 422303 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    struct embed_blade_debuff_t : buff_t
+    {
+      action_t* debuff;
+
+      embed_blade_debuff_t( actor_target_data_t& td, const spell_data_t* s, action_t* a )
+        : buff_t( td, "embed_blade", s ), debuff( a )
+      {
+        base_buff_duration = player->find_spell( 422303 )->duration();
+      }
+
+      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+      {
+        buff_t::expire_override( expiration_stacks, remaining_duration );
+
+        if ( debuff )
+          debuff -> execute_on_target( player );
+      }
+    };
+
+    bool active = init( td->source );
+
+    td -> debuff.embed_blade = make_buff_fallback<embed_blade_debuff_t>( active, *td, "embed_blade", debuffs[ td -> source ], td -> source -> find_action( "return_slash" ) );
+    td -> debuff.embed_blade -> reset();
+  }
+};
+
+
+void bandolier_of_twisted_blades( special_effect_t& effect )
+{
+  struct return_slash_t : public generic_aoe_proc_t
+  {
+    return_slash_t( const special_effect_t& effect ) : generic_aoe_proc_t( effect, "return_slash", effect.player -> find_spell( 426114 ), true )
+    {
+      background = true;
+      base_dd_min = base_dd_max = effect.player -> find_spell( 422297 ) -> effectN( 2 ).average( effect.item );
+    }
+  };
+
+  struct bandolier_of_twisted_blades_t : public generic_proc_t
+  {
+    action_t* return_slash;
+    bandolier_of_twisted_blades_t( const special_effect_t& effect ) : generic_proc_t( effect, "embed_blade", effect.driver() ),
+      return_slash( create_proc_action<return_slash_t>( "return_slash", effect ) )
+    {
+      base_dd_min = base_dd_max = effect.player -> find_spell( 422297 ) -> effectN( 1 ).average( effect.item );
+      add_child( return_slash );
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_proc_t::impact( state );
+      
+      actor_target_data_t* td = player -> get_target_data( state -> target );
+
+      if ( td )
+      {
+        td -> debuff.embed_blade -> trigger();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<bandolier_of_twisted_blades_t>( "embed_blade", effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8424,6 +8498,7 @@ void register_special_effects()
   register_special_effect( 422858, items::pips_emerald_friendship_badge );
   register_special_effect( 423611, items::ashes_of_the_embersoul );
   register_special_effect( 426827, items::coiled_serpent_idol );
+  register_special_effect( 422303, items::bandolier_of_twisted_blades );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -8521,6 +8596,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
   sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
   sim.register_target_data_initializer( items::lava_bolt_initializer_t() );
+  sim.register_target_data_initializer( items::embed_blade_initializer_t() );
 }
 
 void register_hotfixes()
