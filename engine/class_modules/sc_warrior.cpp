@@ -2266,6 +2266,66 @@ struct rend_t : public warrior_attack_t
   }
 };
 
+// Prot Rend ==============================================================
+
+struct rend_dot_prot_t : public warrior_attack_t
+{
+  double bloodsurge_chance, rage_from_bloodsurge;
+  rend_dot_prot_t( warrior_t* p )
+    : warrior_attack_t( "rend", p, p->find_spell( 394063 ) ),
+      bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
+      rage_from_bloodsurge(
+          p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+  {
+    background = tick_may_crit = true;
+    hasted_ticks               = true;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
+  }
+};
+
+struct rend_prot_t : public warrior_attack_t
+{
+  warrior_attack_t* rend_dot;
+  rend_prot_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "rend", p, p->talents.protection.rend ), rend_dot( nullptr )
+  {
+    parse_options( options_str );
+    tick_may_crit = true;
+    hasted_ticks  = true;
+    // Arma: 2022 Nov 4th.  The trigger spell triggers the arms version of rend dot, even though the tooltip references
+    // the prot version.
+    if ( p->bugs )
+      rend_dot = new rend_dot_t( p );
+    else
+      rend_dot = new rend_dot_prot_t( p );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    rend_dot->set_target( s->target );
+    rend_dot->execute();
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
 // Mortal Strike ============================================================
 struct crushing_advance_t : warrior_attack_t
 {
@@ -3588,6 +3648,184 @@ struct thunderous_roar_t : public warrior_attack_t
   }
 };
 
+// Thunder Clap =============================================================
+
+struct thunder_clap_t : public warrior_attack_t
+{
+  bool from_t31;
+  double rage_gain;
+  double shield_slam_reset;
+  warrior_attack_t* blood_and_thunder;
+  double blood_and_thunder_target_cap;
+  double blood_and_thunder_targets_hit;
+  thunder_clap_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
+      from_t31( false ),
+      rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
+      shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
+      blood_and_thunder( nullptr ),
+      blood_and_thunder_target_cap( 0 ),
+      blood_and_thunder_targets_hit( 0 )
+  {
+    parse_options( options_str );
+    aoe       = -1;
+    may_dodge = may_parry = may_block = false;
+
+    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
+    energize_type = action_energize::NONE;
+
+    if ( p->specialization() == WARRIOR_ARMS || p->specialization() == WARRIOR_FURY )
+    {
+      base_costs[ RESOURCE_RAGE ] += p->talents.warrior.blood_and_thunder->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+    if ( p->spec.thunder_clap_prot_hidden )
+      rage_gain += p->spec.thunder_clap_prot_hidden->effectN( 1 ).resource( RESOURCE_RAGE );
+
+    if ( p->talents.warrior.blood_and_thunder.ok() )
+    {
+      blood_and_thunder_target_cap = p->talents.warrior.blood_and_thunder->effectN( 3 ).base_value();
+      if ( p->talents.arms.rend->ok() )
+        blood_and_thunder = new rend_dot_t( p );
+      if ( p->talents.protection.rend->ok() )
+      {
+        // Arma: 2022 Nov 4th.  Even if you are prot, the arms rend dot is being applied.
+        if ( p->bugs )
+          blood_and_thunder = new rend_dot_t( p );
+        else
+          blood_and_thunder = new rend_dot_prot_t( p );
+      }
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->buff.avatar->up() && p()->talents.warrior.unstoppable_force->ok() )
+    {
+      am *= 1.0 + p()->talents.warrior.unstoppable_force->effectN( 1 ).percent();
+    }
+
+    if ( p()->buff.show_of_force->check() )
+    {
+      am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
+    }
+
+    if ( p()->buff.violent_outburst->check() )
+    {
+      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
+    }
+
+    if ( p()->talents.warrior.blood_and_thunder.ok() )
+    {
+      am *= 1.0 + p()->talents.warrior.blood_and_thunder->effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double da = warrior_attack_t::bonus_da( s );
+
+    if ( p()->azerite.deafening_crash.enabled() )
+    {
+      da += p()->azerite.deafening_crash.value( 2 );
+    }
+
+    return da;
+  }
+
+  double cost() const override
+  {
+    if ( from_t31 )
+      return 0;
+    return warrior_attack_t::cost();
+  }
+
+  double tactician_cost() const override
+  {
+    if ( from_t31 )
+      return 0;
+    return warrior_attack_t::cost();
+  }
+
+  void execute() override
+  {
+    blood_and_thunder_targets_hit = 0;
+
+    warrior_attack_t::execute();
+
+    if ( p()->buff.show_of_force->up() )
+    {
+      p()->buff.show_of_force->expire();
+    }
+
+    if ( rng().roll( shield_slam_reset ) )
+    {
+      p()->cooldown.shield_slam->reset( true );
+    }
+
+    if ( p()->legendary.thunderlord->ok() )
+    {
+      p()->cooldown.demoralizing_shout->adjust(
+          -p()->legendary.thunderlord->effectN( 1 ).time_value() *
+          std::min( execute_state->n_targets,
+                    as<unsigned int>( p()->legendary.thunderlord->effectN( 2 ).base_value() ) ) );
+    }
+
+    if ( p()->talents.protection.thunderlord.ok() )
+    {
+      p()->cooldown.demoralizing_shout->adjust(
+          -p()->talents.protection.thunderlord->effectN( 1 ).time_value() *
+          std::min( execute_state->n_targets,
+                    as<unsigned int>( p()->talents.protection.thunderlord->effectN( 2 ).base_value() ) ) );
+    }
+
+    auto total_rage_gain = rage_gain;
+
+    if ( p()->buff.violent_outburst->check() )
+    {
+      p()->buff.ignore_pain->trigger();
+      p()->buff.violent_outburst->expire();
+      total_rage_gain *= 1.0 + p()->buff.violent_outburst->data().effectN( 4 ).percent();
+    }
+
+    p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_clap );
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = warrior_attack_t::recharge_multiplier( cd );
+    if ( p()->buff.avatar->up() && p()->talents.warrior.unstoppable_force->ok() )
+    {
+      rm *= 1.0 + ( p()->talents.warrior.unstoppable_force->effectN( 2 ).percent() );
+    }
+    return rm;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->azerite.deafening_crash.enabled() && td( state->target )->debuffs_demoralizing_shout->up() )
+    {
+      td( state->target )
+          ->debuffs_demoralizing_shout->extend_duration(
+              p(), timespan_t::from_millis( p()->azerite.deafening_crash.spell()->effectN( 1 ).base_value() ) );
+    }
+    if ( ( p()->talents.arms.rend->ok() || p()->talents.protection.rend->ok() ) &&
+         p()->talents.warrior.blood_and_thunder.ok() )
+    {
+      if ( blood_and_thunder_targets_hit < blood_and_thunder_target_cap )
+      {
+        blood_and_thunder->execute_on_target( state->target );
+        blood_and_thunder_targets_hit++;
+      }
+    }
+  }
+};
+
 // Arms Execute ==================================================================
 
 struct execute_damage_t : public warrior_attack_t
@@ -3620,9 +3858,11 @@ struct execute_arms_t : public warrior_attack_t
   double max_rage;
   double execute_pct;
   double shield_slam_reset;
+  thunder_clap_t* t31_thunder_clap;
   execute_arms_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "execute", p, p->spell.execute ), max_rage( 40 ), execute_pct( 20 ),
-    shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() )
+    shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() ),
+    t31_thunder_clap( nullptr )
   {
     parse_options( options_str );
     weapon        = &( p->main_hand_weapon );
@@ -3636,6 +3876,11 @@ struct execute_arms_t : public warrior_attack_t
     if ( p->talents.protection.massacre->ok() )
     {
       execute_pct = p->talents.protection.massacre->effectN( 2 ).base_value();
+    }
+    if ( p->tier_set.t31_arms_4pc->ok() )
+    {
+      t31_thunder_clap                           = new thunder_clap_t( p, options_str );
+      t31_thunder_clap->from_t31                 = true;
     }
   }
 
@@ -3694,8 +3939,12 @@ struct execute_arms_t : public warrior_attack_t
                           p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
     }
 
-    if (p()->buff.sudden_death->up())
+    if ( p()->buff.sudden_death->up() )
     {
+      if ( p()->tier_set.t31_arms_4pc->ok() )
+      {
+        t31_thunder_clap->execute();
+      }
       p()->buff.sudden_death->expire();
     }
     if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
@@ -5457,63 +5706,6 @@ struct enraged_regeneration_t : public warrior_heal_t
   }
 };
 
-// Prot Rend ==============================================================
-
-struct rend_dot_prot_t : public warrior_attack_t
-{
-  double bloodsurge_chance, rage_from_bloodsurge;
-  rend_dot_prot_t( warrior_t* p ) : warrior_attack_t( "rend", p, p->find_spell( 394063 ) ),
-    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
-  {
-    background = tick_may_crit = true;
-    hasted_ticks               = true;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
-    {
-      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
-    }
-  }
-};
-
-struct rend_prot_t : public warrior_attack_t
-{
-  warrior_attack_t* rend_dot;
-  rend_prot_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "rend", p, p->talents.protection.rend ),
-  rend_dot( nullptr )
-  {
-    parse_options( options_str );
-    tick_may_crit = true;
-    hasted_ticks  = true;
-    // Arma: 2022 Nov 4th.  The trigger spell triggers the arms version of rend dot, even though the tooltip references the prot version.
-    if ( p -> bugs )
-      rend_dot = new rend_dot_t( p );
-    else
-      rend_dot = new rend_dot_prot_t( p );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-      rend_dot->set_target( s->target );
-      rend_dot->execute();
-  }
-
-  bool ready() override
-  {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
-
 // Shield Charge ============================================================
 
 struct shield_charge_damage_t : public warrior_attack_t
@@ -5974,161 +6166,6 @@ struct tough_as_nails_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> cooldown.tough_as_nails_icd -> start();
-  }
-};
-
-// Thunder Clap =============================================================
-
-struct thunder_clap_t : public warrior_attack_t
-{
-  double rage_gain;
-  double shield_slam_reset;
-  warrior_attack_t* blood_and_thunder;
-  double blood_and_thunder_target_cap;
-  double blood_and_thunder_targets_hit;
-  thunder_clap_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
-      rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
-      shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
-      blood_and_thunder( nullptr ),
-      blood_and_thunder_target_cap( 0 ),
-      blood_and_thunder_targets_hit( 0 )
-  {
-    parse_options( options_str );
-    aoe       = -1;
-    may_dodge = may_parry = may_block = false;
-
-    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
-    energize_type = action_energize::NONE;
-
-    if ( p->specialization() == WARRIOR_ARMS || p->specialization() == WARRIOR_FURY )
-    {
-    base_costs[ RESOURCE_RAGE ] += p->talents.warrior.blood_and_thunder->effectN( 2 ).resource( RESOURCE_RAGE );
-    }
-    if ( p -> spec.thunder_clap_prot_hidden )
-      rage_gain += p -> spec.thunder_clap_prot_hidden -> effectN( 1 ).resource( RESOURCE_RAGE );
-
-    if ( p->talents.warrior.blood_and_thunder.ok() )
-    {
-      blood_and_thunder_target_cap = p->talents.warrior.blood_and_thunder->effectN( 3 ).base_value();
-      if ( p->talents.arms.rend->ok() )
-        blood_and_thunder = new rend_dot_t( p );
-      if ( p->talents.protection.rend->ok() )
-      {
-        // Arma: 2022 Nov 4th.  Even if you are prot, the arms rend dot is being applied.
-        if ( p -> bugs )
-          blood_and_thunder = new rend_dot_t( p );
-        else
-          blood_and_thunder = new rend_dot_prot_t( p );
-      }
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->buff.avatar->up() && p()->talents.warrior.unstoppable_force->ok() )
-    {
-      am *= 1.0 + p()->talents.warrior.unstoppable_force->effectN( 1 ).percent();
-    }
-
-    if ( p()->buff.show_of_force->check() )
-    {
-      am *= 1.0 + ( p()-> buff.show_of_force -> stack_value() );
-    }
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
-    }
-
-    if ( p()->talents.warrior.blood_and_thunder.ok() )
-    {
-      am *= 1.0 + p()->talents.warrior.blood_and_thunder->effectN( 1 ).percent();
-    }
-
-    return am;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double da = warrior_attack_t::bonus_da( s );
-
-    if ( p() -> azerite.deafening_crash.enabled() )
-    {
-      da += p() -> azerite.deafening_crash.value( 2 );
-    }
-
-    return da;
-  }
-
-  void execute() override
-  {
-    blood_and_thunder_targets_hit = 0;
-
-    warrior_attack_t::execute();
-
-    if ( p()->buff.show_of_force->up() )
-    {
-      p()->buff.show_of_force->expire();
-    }
-
-    if ( rng().roll( shield_slam_reset ) )
-    {
-      p()->cooldown.shield_slam->reset( true );
-    }
-
-    if ( p()->legendary.thunderlord->ok() )
-    {
-     p() -> cooldown.demoralizing_shout -> adjust( - p() -> legendary.thunderlord -> effectN( 1 ).time_value() *
-          std::min( execute_state->n_targets, as<unsigned int>( p()->legendary.thunderlord->effectN( 2 ).base_value() ) ) );
-    }
-
-    if ( p() -> talents.protection.thunderlord.ok() )
-    {
-      p() -> cooldown.demoralizing_shout -> adjust( - p() -> talents.protection.thunderlord -> effectN( 1 ).time_value() *
-          std::min( execute_state->n_targets, as<unsigned int>( p() -> talents.protection.thunderlord -> effectN ( 2 ).base_value() ) ) );
-    }
-
-    auto total_rage_gain = rage_gain;
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      p()->buff.ignore_pain->trigger();
-      p()->buff.violent_outburst->expire();
-      total_rage_gain *= 1.0 + p() -> buff.violent_outburst -> data().effectN( 4 ).percent();
-    }
-
-    p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.thunder_clap );
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = warrior_attack_t::recharge_multiplier( cd );
-    if ( p()->buff.avatar->up() && p()->talents.warrior.unstoppable_force->ok() )
-    {
-      rm *= 1.0 + ( p()->talents.warrior.unstoppable_force->effectN( 2 ).percent() );
-    }
-    return rm;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-
-    if ( p() -> azerite.deafening_crash.enabled() && td( state -> target ) -> debuffs_demoralizing_shout -> up() )
-    {
-      td( state -> target ) -> debuffs_demoralizing_shout -> extend_duration( p(), timespan_t::from_millis( p() -> azerite.deafening_crash.spell() -> effectN( 1 ).base_value() ) );
-    }
-    if ( ( p()->talents.arms.rend->ok() || p()->talents.protection.rend->ok() ) && p()->talents.warrior.blood_and_thunder.ok() )
-    {
-      if ( blood_and_thunder_targets_hit < blood_and_thunder_target_cap )
-      {
-        blood_and_thunder->execute_on_target( state->target );
-        blood_and_thunder_targets_hit++;
-      }
-    }
   }
 };
 
