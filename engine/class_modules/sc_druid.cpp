@@ -575,7 +575,8 @@ public:
     buff_t* rattled_stars;
     buff_t* umbral_embrace;
     buff_t* warrior_of_elune;
-    buff_t* balance_t31_4pc_buff; // buff to track t31 4pc value
+    buff_t* balance_t31_4pc_buff_solar; // buff to track t31 4pc value
+    buff_t* balance_t31_4pc_buff_lunar;  // buff to track t31 4pc value
     buff_t* dreamstate;  // 2t31
 
     // Feral
@@ -2628,10 +2629,12 @@ public:
     p()->buff.touch_the_cosmos->expire();
     p()->buff.gathering_starstuff->trigger();
 
-    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T31, B4 ) &&
-         ( p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check() ) )
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T31, B4 ) )
     {
-      p()->buff.balance_t31_4pc_buff->trigger();
+      if ( p()->buff.eclipse_lunar->check() )
+        p()->buff.balance_t31_4pc_buff_lunar->trigger();
+      if ( p()->buff.eclipse_solar->check() )
+        p()->buff.balance_t31_4pc_buff_solar->trigger();
     }
 
     if ( is_free_proc() )
@@ -9991,7 +9994,7 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( old_ && !new_ )
       {
-        buff.balance_t31_4pc_buff->expire();
+        buff.balance_t31_4pc_buff_lunar->expire();
         eclipse_handler.advance_eclipse();
       }
     } );
@@ -10001,7 +10004,7 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( old_ && !new_ )
       {
-        buff.balance_t31_4pc_buff->expire();
+        buff.balance_t31_4pc_buff_solar->expire();
         eclipse_handler.advance_eclipse();
       }
     } );
@@ -10122,8 +10125,21 @@ void druid_t::create_buffs()
   buff.warrior_of_elune =
       make_buff_fallback( talent.warrior_of_elune.ok(), this, "warrior_of_elune", talent.warrior_of_elune )
           ->set_reverse( true );
-  buff.balance_t31_4pc_buff =
-      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff",
+
+  buff.balance_t31_4pc_buff_solar =
+      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff_solar",
+                          sets->set( DRUID_BALANCE, T31, B4 ) )
+          ->set_default_value_from_effect( 1 )
+          ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
+                               ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
+                                          sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
+                               : 1 )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->check_stack_value();
+          } );
+
+  buff.balance_t31_4pc_buff_lunar =
+      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff_lunar",
                           sets->set( DRUID_BALANCE, T31, B4 ) )
           ->set_default_value_from_effect( 1 )
           ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
@@ -10132,7 +10148,6 @@ void druid_t::create_buffs()
                                : 1 )
           ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
             buff.eclipse_lunar->current_value = buff.eclipse_lunar->default_value + b->check_stack_value();
-            buff.eclipse_solar->current_value = buff.eclipse_solar->default_value + b->check_stack_value();
           } );
   
   buff.dreamstate = make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B2 ), this, "dreamstate",
