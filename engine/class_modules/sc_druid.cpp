@@ -2590,8 +2590,8 @@ public:
     if ( !p_buff->check() )
       p_buff->trigger();
 
-    // pulsar accumulate based on base_cost not last_resource_cost
-    p_buff->current_value += base_cost();
+    // pulsar accumulate based on the cost before any talents and effects
+    p_buff->current_value += data().cost( POWER_ASTRAL_POWER );
 
     if ( p_buff->check_value() >= p_cap )
     {
