@@ -9786,7 +9786,7 @@ void druid_t::init_finished()
   player_t::init_finished();
 
   spec_override.attack_power = find_effect( spec_spell, A_404 ).percent();
-  spec_override.spell_power = find_effect( spec_spell, A_366 ).percent();
+  spec_override.spell_power  = find_effect( spec_spell, A_366 ).percent();
 
   // PRECOMBAT WRATH SHENANIGANS
   // we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
@@ -9811,6 +9811,25 @@ void druid_t::init_finished()
       // then be accounted for in wrath_t::execute()
       if ( wr->harmful )
         wr->energize_type = action_energize::NONE;
+    }
+  }
+
+  if ( talent.lycaras_teachings.ok() )
+  {
+    register_combat_begin( [ this ]( player_t* ) {
+      buff.lycaras_teachings->trigger();
+    } );
+  }
+
+  if ( specialization() == DRUID_BALANCE )
+  {
+    if ( options.initial_pulsar_value > 0 )
+    {
+      register_combat_begin( [ this ]( player_t* ) {
+        // Stacks are a purely visual indicator for the sample sequence
+        buff.primordial_arcanic_pulsar->trigger( as<int>( options.initial_pulsar_value ) / 10 );
+        buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
+      } );
     }
   }
 }
@@ -11546,11 +11565,7 @@ void druid_t::arise()
   player_t::arise();
 
   if ( talent.lycaras_teachings.ok() )
-  {
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.lycaras_teachings ) );
-
-    register_combat_begin( [ this ]( player_t* ) { buff.lycaras_teachings->trigger(); } );
-  }
 
   if ( timeofday == timeofday_e::DAY_TIME )
     buff.rising_light_falling_night_day->trigger();
@@ -11580,19 +11595,6 @@ void druid_t::arise()
 
   if ( active.yseras_gift )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
-
-  if ( specialization() == DRUID_BALANCE )
-  {
-    if ( options.initial_pulsar_value > 0 )
-    {
-      register_combat_begin( [ this ]( player_t* ) {
-        buff.primordial_arcanic_pulsar->trigger();
-        buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
-        // Purely visual indicator for the sample sequence
-        buff.primordial_arcanic_pulsar->increment( as<int>(options.initial_pulsar_value) / 10 - 1 );
-      } );
-    }
-  }
 }
 
 void druid_t::combat_begin()
