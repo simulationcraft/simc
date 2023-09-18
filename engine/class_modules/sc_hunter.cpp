@@ -2120,102 +2120,6 @@ struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, m
   }
 };
 
-// Beast Cleave ==============================================================
-
-struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
-{
-  beast_cleave_attack_t( hunter_pet_t* p ) :
-    hunter_pet_action_t( "beast_cleave", p, p -> find_spell( 118459 ) )
-  {
-    background = true;
-    callbacks = false;
-    may_miss = false;
-    may_crit = false;
-    proc = false;
-    // The starting damage includes all the buffs
-    base_dd_min = base_dd_max = 0;
-    spell_power_mod.direct = attack_power_mod.direct = 0;
-    weapon_multiplier = 0;
-
-    aoe = -1;
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
-  }
-
-  void init() override
-  {
-    hunter_pet_action_t::init();
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    hunter_pet_action_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
-
-    return tl.size();
-  }
-};
-
-static void trigger_beast_cleave( const action_state_t* s )
-{
-  if ( !s -> action -> result_is_hit( s -> result ) )
-    return;
-
-  if ( s -> action -> sim -> active_enemies == 1 )
-    return;
-
-  auto p = debug_cast<hunter_pet_t*>( s -> action -> player );
-
-  if ( !p -> buffs.beast_cleave -> up() )
-    return;
-
-  // Target multipliers do not replicate to secondary targets
-  const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
-
-  const double amount = s -> result_total * p -> buffs.beast_cleave -> check_value() * target_da_multiplier;
-  p -> active.beast_cleave -> execute_on_target( s -> target, amount );
-}
-
-// Kill Cleave ==============================================================
-
-struct kill_cleave_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
-{
-  kill_cleave_t( hunter_pet_t* p ) :
-    hunter_pet_action_t( "kill_cleave", p, p -> find_spell( 389448 ) )
-  {
-    background = true;
-    callbacks = false;
-    may_miss = false;
-    may_crit = false;
-    proc = false;
-    // The starting damage includes all the buffs
-    base_dd_min = base_dd_max = 0;
-    spell_power_mod.direct = attack_power_mod.direct = 0;
-    weapon_multiplier = 0;
-
-    aoe = -1;
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
-  }
-
-  void init() override
-  {
-    hunter_pet_action_t::init();
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    hunter_pet_action_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
-
-    return tl.size();
-  }
-};
-
 struct kill_command_bm_mm_t: public kill_command_base_t
 {
   struct {
@@ -2319,6 +2223,102 @@ struct kill_command_sv_t: public kill_command_base_t
     am *= 1 + o() -> buffs.exposed_wound -> value(); 
 
     return am;
+  }
+};
+
+// Beast Cleave ==============================================================
+
+struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
+{
+  beast_cleave_attack_t( hunter_pet_t* p ) :
+    hunter_pet_action_t( "beast_cleave", p, p -> find_spell( 118459 ) )
+  {
+    background = true;
+    callbacks = false;
+    may_miss = false;
+    may_crit = false;
+    proc = false;
+    // The starting damage includes all the buffs
+    base_dd_min = base_dd_max = 0;
+    spell_power_mod.direct = attack_power_mod.direct = 0;
+    weapon_multiplier = 0;
+
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+  }
+
+  void init() override
+  {
+    hunter_pet_action_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    hunter_pet_action_t::available_targets( tl );
+
+    // Cannot hit the original target.
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
+static void trigger_beast_cleave( const action_state_t* s )
+{
+  if ( !s -> action -> result_is_hit( s -> result ) )
+    return;
+
+  if ( s -> action -> sim -> active_enemies == 1 )
+    return;
+
+  auto p = debug_cast<hunter_pet_t*>( s -> action -> player );
+
+  if ( !p -> buffs.beast_cleave -> up() )
+    return;
+
+  // Target multipliers do not replicate to secondary targets
+  const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
+
+  const double amount = s -> result_total * p -> buffs.beast_cleave -> check_value() * target_da_multiplier;
+  p -> active.beast_cleave -> execute_on_target( s -> target, amount );
+}
+
+// Kill Cleave ==============================================================
+
+struct kill_cleave_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
+{
+  kill_cleave_t( hunter_pet_t* p ) :
+    hunter_pet_action_t( "kill_cleave", p, p -> find_spell( 389448 ) )
+  {
+    background = true;
+    callbacks = false;
+    may_miss = false;
+    may_crit = false;
+    proc = false;
+    // The starting damage includes all the buffs
+    base_dd_min = base_dd_max = 0;
+    spell_power_mod.direct = attack_power_mod.direct = 0;
+    weapon_multiplier = 0;
+
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+  }
+
+  void init() override
+  {
+    hunter_pet_action_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    hunter_pet_action_t::available_targets( tl );
+
+    // Cannot hit the original target.
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
   }
 };
 
