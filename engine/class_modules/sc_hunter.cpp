@@ -1611,7 +1611,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     cc += buffs.thrill_of_the_hunt -> check_stack_value();
 
-    if ( o() -> buffs.fury_strikes -> check() )
+    if ( !bugs && o() -> buffs.fury_strikes -> check() )
     {
       cc += o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ).percent();
     }
@@ -1626,7 +1626,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
       m *= 1 + buffs.piercing_fangs -> check_value();
 
-    if ( o() -> buffs.fury_strikes -> check() && 
+    if ( !bugs && o() -> buffs.fury_strikes -> check() && 
         o() -> buffs.fury_strikes -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
     {
       m *= 1 + o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ).percent();
@@ -1951,6 +1951,8 @@ public:
   struct {
     damage_affected_by aspect_of_the_beast;
     damage_affected_by spirit_bond;
+    bool fury_strikes_crit_chance;
+    bool fury_strikes_crit_dmg;
   } affected_by;
 
   hunter_main_pet_action_t( util::string_view n, hunter_main_pet_t* p, const spell_data_t* s = spell_data_t::nil() ):
@@ -1958,6 +1960,8 @@ public:
   {
     affected_by.aspect_of_the_beast = parse_damage_affecting_aura( this, ab::o() -> talents.aspect_of_the_beast );
     affected_by.spirit_bond         = parse_damage_affecting_aura( this, ab::o() -> mastery.spirit_bond );
+    affected_by.fury_strikes_crit_chance = check_affected_by( this, ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ) );
+    affected_by.fury_strikes_crit_dmg    = check_affected_by( this, ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ) );
   }
 
   void init() override
@@ -1991,6 +1995,26 @@ public:
       am *= 1 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
 
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = ab::composite_crit_chance();
+
+    if ( ab::p() -> bugs && affected_by.fury_strikes_crit_chance && ab::o() -> buffs.fury_strikes -> check() )
+      cc += ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ).percent();
+
+    return cc;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( ab::p() -> bugs && affected_by.fury_strikes_crit_dmg && ab::o() -> buffs.fury_strikes -> check() )
+      cm *= 1.0 + ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ).percent();
+
+    return cm;
   }
 };
 
