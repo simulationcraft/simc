@@ -1453,11 +1453,6 @@ public:
 
 struct stable_pet_t : public hunter_pet_t
 {
-  struct buffs_t
-  {
-    buff_t* frenzy = nullptr;
-  } buffs;
-
   struct actives_t
   {
     action_t* stomp = nullptr; 
@@ -1474,33 +1469,12 @@ struct stable_pet_t : public hunter_pet_t
     main_hand_weapon.swing_time = owner -> options.pet_attack_speed;
   }
 
-  void create_buffs() override
-  {
-    hunter_pet_t::create_buffs();
-
-    buffs.frenzy =
-      make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
-      -> set_default_value_from_effect( 1 )
-      -> apply_affecting_aura( o() -> talents.savagery )
-      -> add_invalidate( CACHE_ATTACK_SPEED );
-  }
-
   void summon( timespan_t duration = 0_ms ) override
   {
     hunter_pet_t::summon( duration );
 
     if ( duration > 0_s && !o() -> is_ptr() )
       o() -> cooldowns.aspect_of_the_wild -> adjust( -o() -> talents.master_handler -> effectN( 1 ).time_value() );
-  }
-
-  double composite_melee_speed() const override
-  {
-    double ah = hunter_pet_t::composite_melee_speed();
-
-    if ( buffs.frenzy -> check() )
-      ah /= 1 + buffs.frenzy -> check_stack_value();
-
-    return ah;
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -1537,6 +1511,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
   struct buffs_t
   {
+    buff_t* frenzy = nullptr;
     buff_t* thrill_of_the_hunt = nullptr;
     buff_t* bestial_wrath = nullptr;
     buff_t* piercing_fangs = nullptr;
@@ -1559,6 +1534,12 @@ struct hunter_main_pet_base_t : public stable_pet_t
   void create_buffs() override
   {
     stable_pet_t::create_buffs();
+
+    buffs.frenzy =
+      make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
+      -> set_default_value_from_effect( 1 )
+      -> apply_affecting_aura( o() -> talents.savagery )
+      -> add_invalidate( CACHE_ATTACK_SPEED );
 
     buffs.thrill_of_the_hunt =
       make_buff( this, "thrill_of_the_hunt", find_spell( 312365 ) )
@@ -1600,6 +1581,9 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     if ( buffs.bloodseeker && buffs.bloodseeker -> check() )
       ah /= 1 + buffs.bloodseeker -> check_stack_value();
+
+    if ( buffs.frenzy -> check() )
+      ah /= 1 + buffs.frenzy -> check_stack_value();
 
     return ah;
   }
@@ -3986,13 +3970,13 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       if ( p() -> talents.stomp.ok() )
         pet -> active.stomp -> execute();
 
-      pet -> stable_pet_t::buffs.frenzy -> trigger();
+      pet -> buffs.frenzy -> trigger();
       pet -> buffs.thrill_of_the_hunt -> trigger();
       pet -> buffs.lethal_command -> trigger();
     }
 
     auto pet = p() -> pets.main;
-    if ( pet && pet -> stable_pet_t::buffs.frenzy -> check() == as<int>( p() -> talents.brutal_companion -> effectN( 1 ).base_value() ) )
+    if ( pet && pet -> buffs.frenzy -> check() == as<int>( p() -> talents.brutal_companion -> effectN( 1 ).base_value() ) )
     {
       pet -> active.brutal_companion_ba -> execute_on_target( target );
     }
