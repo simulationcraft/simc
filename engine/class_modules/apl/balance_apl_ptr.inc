@@ -33,6 +33,8 @@ st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variab
 st->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<2&(buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up&buff.starweavers_warp.up|buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up)" );
 st->add_action( "starfall,if=buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up&buff.starweavers_warp.up" );
 st->add_action( "starsurge,if=buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up" );
+st->add_action( "starfire,if=buff.dreamstate.up&variable.cd_condition_st&eclipse.in_lunar" );
+st->add_action( "wrath,if=buff.dreamstate.up&variable.cd_condition_st&buff.eclipse_solar.up" );
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
 st->add_action( "incarnation,if=variable.cd_condition_st" );
 st->add_action( "variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5&spell_targets.starfire<3|set_bonus.tier31_2pc" );
@@ -71,6 +73,7 @@ aoe->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remain
 aoe->add_action( "variable,name=starfall_condition1,value=variable.cd_condition_aoe&(talent.orbital_strike&astral_power.deficit<variable.passive_asp+8*spell_targets|buff.touch_the_cosmos.up)|astral_power.deficit<(variable.passive_asp+8+12*(buff.eclipse_lunar.remains<4|buff.eclipse_solar.remains<4))" );
 aoe->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starfall_condition1" );
 aoe->add_action( "starfall,if=variable.starfall_condition1" );
+aoe->add_action( "starfire,if=buff.dreamstate.up&variable.cd_condition_aoe&buff.eclipse_lunar.up" );
 aoe->add_action( "celestial_alignment,if=variable.cd_condition_aoe" );
 aoe->add_action( "incarnation,if=variable.cd_condition_aoe" );
 aoe->add_action( "warrior_of_elune" );
