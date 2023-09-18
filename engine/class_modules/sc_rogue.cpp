@@ -2101,7 +2101,7 @@ public:
     }
 
     // Nightstalker
-    if ( p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) && 
+    if ( p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) && 
          p()->buffs.nightstalker->is_affecting_direct( ab::s_data ) )
     {
       m *= p()->buffs.nightstalker->direct_mod.multiplier;
