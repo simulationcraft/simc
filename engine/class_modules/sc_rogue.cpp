@@ -177,7 +177,7 @@ public:
     buff_t* ghostly_strike;
     buff_t* marked_for_death;
     buff_t* numbing_poison;
-    buff_t* prey_on_the_weak;
+    buff_t* sting_like_a_bee;
     damage_buff_t* shiv;
     buff_t* wound_poison;
   } debuffs;
@@ -536,7 +536,7 @@ public:
     const spell_data_t* find_weakness_debuff;
     const spell_data_t* leeching_poison_buff;
     const spell_data_t* nightstalker_buff;
-    const spell_data_t* prey_on_the_weak_debuff;
+    const spell_data_t* sting_like_a_bee_debuff;
     const spell_data_t* sepsis_buff;
     const spell_data_t* sepsis_expire_damage;
     const spell_data_t* shadowstep_buff;
@@ -698,7 +698,6 @@ public:
       player_talent_t fleet_footed;
       player_talent_t iron_stomach;             // No implementation
       player_talent_t improved_sprint;
-      player_talent_t prey_on_the_weak;
       player_talent_t shadowstep;
       player_talent_t subterfuge;
 
@@ -2035,7 +2034,7 @@ public:
   void trigger_venom_rush( const action_state_t* );
   void trigger_blindside( const action_state_t* );
   void trigger_shadow_blades_attack( action_state_t* );
-  void trigger_prey_on_the_weak( const action_state_t* state );
+  void trigger_sting_like_a_bee( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_master_of_shadows();
   void trigger_dashing_scoundrel( const action_state_t* state );
@@ -5889,7 +5888,7 @@ struct kidney_shot_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    trigger_prey_on_the_weak( state );
+    trigger_sting_like_a_bee( state );
 
     if ( !state->target->is_boss() && internal_bleeding )
     {
@@ -5918,7 +5917,7 @@ struct cheap_shot_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-    trigger_prey_on_the_weak( state );
+    trigger_sting_like_a_bee( state );
     trigger_find_weakness( state );
   }
 };
@@ -7943,12 +7942,12 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_prey_on_the_weak( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_sting_like_a_bee( const action_state_t* state )
 {
-  if ( !state->target->is_boss() || !ab::result_is_hit(state->result) || !p()->talent.rogue.prey_on_the_weak->ok() )
+  if ( !state->target->is_boss() || !ab::result_is_hit(state->result) || !p()->talent.outlaw.sting_like_a_bee->ok() )
     return;
 
-  td( state->target )->debuffs.prey_on_the_weak->trigger();
+  td( state->target )->debuffs.sting_like_a_bee->trigger();
 }
 
 template <typename Base>
@@ -8181,7 +8180,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
     ->set_default_value( source->talent.rogue.find_weakness->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->spell.prey_on_the_weak_debuff )
+  debuffs.sting_like_a_bee = make_buff( *this, "sting_like_a_bee", source->spell.sting_like_a_bee_debuff )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   debuffs.flagellation = make_buff( *this, "flagellation", source->spec.flagellation_buff )
     ->set_initial_stack( 1 )
@@ -8455,7 +8454,7 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
 
   rogue_td_t* tdata = get_target_data( target );
 
-  m *= 1.0 + tdata->debuffs.prey_on_the_weak->stack_value();
+  m *= 1.0 + tdata->debuffs.sting_like_a_bee->stack_value();
 
   return m;
 }
@@ -9311,7 +9310,6 @@ void rogue_t::init_spells()
   talent.rogue.fleet_footed = find_talent_spell( talent_tree::CLASS, "Fleet Footed" );
   talent.rogue.iron_stomach = find_talent_spell( talent_tree::CLASS, "Iron Stomach" );
   talent.rogue.improved_sprint = find_talent_spell( talent_tree::CLASS, "Improved Sprint" );
-  talent.rogue.prey_on_the_weak = find_talent_spell( talent_tree::CLASS, "Prey on the Weak" );
   talent.rogue.shadowstep = find_talent_spell( talent_tree::CLASS, "Shadowstep" );
   talent.rogue.subterfuge = find_talent_spell( talent_tree::CLASS, "Subterfuge" );
 
@@ -9541,7 +9539,6 @@ void rogue_t::init_spells()
   spell.find_weakness_debuff = ( talent.rogue.find_weakness->ok() || specialization() == ROGUE_SUBTLETY ) ? find_spell( 316220 ) : spell_data_t::not_found();
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
-  spell.prey_on_the_weak_debuff = talent.rogue.prey_on_the_weak->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
   spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
   spell.sepsis_expire_damage = talent.shared.sepsis->ok() ? find_spell( 394026 ) : spell_data_t::not_found();
   spell.shadowstep_buff = talent.shared.shadowstep->ok() ? find_spell( 36554 ) : spell_data_t::not_found();
@@ -9598,6 +9595,7 @@ void rogue_t::init_spells()
   spec.take_em_by_surprise_buff = talent.outlaw.take_em_by_surprise->ok() ? find_spell( 385907 ) : spell_data_t::not_found();
   spec.triple_threat_attack = talent.outlaw.triple_threat->ok() ? find_spell( 341541 ) : spell_data_t::not_found();
   spec.ace_up_your_sleeve_energize = talent.outlaw.ace_up_your_sleeve->ok() ? find_spell( 394120 ) : spell_data_t::not_found();
+  spell.sting_like_a_bee_debuff = talent.outlaw.sting_like_a_bee->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
 
   spec.broadside = spec.roll_the_bones->ok() ? find_spell( 193356 ) : spell_data_t::not_found();
   spec.buried_treasure = spec.roll_the_bones->ok() ? find_spell( 199600 ) : spell_data_t::not_found();
