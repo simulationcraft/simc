@@ -42,12 +42,14 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> the_expendables;
     propagate_const<buff_t*> infernal_command;
     propagate_const<buff_t*> soul_glutton;
+    propagate_const<buff_t*> nerzhuls_volition; // Damage buff on Nether Portal demons
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     propagate_const<buff_t*> festering_hatred; // Dummy buff for Immutable Hatred increment tracking
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     propagate_const<buff_t*> fury_of_ruvaraad; // T30 Demo 4pc buff for Grimoire: Felguard
+    propagate_const<buff_t*> demonic_power; // Starting in 10.2, this buff is on the pets rather than the player
   } buffs;
 
   bool is_main_pet          = false;

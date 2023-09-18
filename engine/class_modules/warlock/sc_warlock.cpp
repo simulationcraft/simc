@@ -137,6 +137,17 @@ struct drain_life_t : public warlock_spell_t
     return m;
   }
 
+  void tick( dot_t* d ) override
+  {
+    warlock_spell_t::tick( d );
+
+    if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+    {
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
+      p()->procs.volatile_fiends->occur();
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
     p()->buffs.drain_life->expire();
@@ -175,16 +186,10 @@ struct corruption_t : public warlock_spell_t
 {
   struct corruption_dot_t : public warlock_spell_t
   {
-    doom_blossom_t* doom_blossom_proc;
-
-    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
-      doom_blossom_proc( new doom_blossom_t( p ) )
+    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
     {
       tick_zero = false;
       background = dual = true;
-
-      if ( !p->min_version_check( VERSION_10_1_5 ) )
-        add_child( doom_blossom_proc );
 
       if ( p->talents.absolute_corruption->ok() )
       {
@@ -228,13 +233,10 @@ struct corruption_t : public warlock_spell_t
           }
         }
 
-        if ( p()->talents.doom_blossom->ok() && !p()->min_version_check( VERSION_10_1_5 ) && td( d->state->target )->dots_unstable_affliction->is_ticking() )
+        if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
         {
-          if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
-          {
-            doom_blossom_proc->execute_on_target( d->state->target );
-            p()->procs.doom_blossom->occur();
-          }
+          p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
+          p()->procs.volatile_fiends->occur();
         }
       }
     }
@@ -329,8 +331,7 @@ struct seed_of_corruption_t : public warlock_spell_t
       corruption->dual = true;
       corruption->base_costs[ RESOURCE_MANA ] = 0;
 
-      if ( p->min_version_check( VERSION_10_1_5 ) )
-        add_child( doom_blossom );
+      add_child( doom_blossom );
     }
 
     void impact( action_state_t* s ) override
@@ -346,7 +347,7 @@ struct seed_of_corruption_t : public warlock_spell_t
           tdata->dots_seed_of_corruption->cancel();
         }
 
-        if ( p()->min_version_check( VERSION_10_1_5 ) && p()->talents.doom_blossom->ok() && tdata->dots_unstable_affliction->is_ticking() )
+        if ( p()->talents.doom_blossom->ok() && tdata->dots_unstable_affliction->is_ticking() )
         {
           doom_blossom->execute_on_target( s->target );
           p()->procs.doom_blossom->occur();
@@ -519,8 +520,11 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    if ( p()->talents.fel_covenant->ok() )
-      p()->buffs.fel_covenant->trigger();
+    if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+    {
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( target );
+      p()->procs.volatile_fiends->occur();
+    }
 
     p()->buffs.stolen_power_final->expire();
   }
@@ -579,6 +583,9 @@ struct soul_rot_t : public warlock_spell_t
   {
     parse_options( options_str );
     aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
+
+    if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B2 ) )
+      apply_affecting_aura( p->sets->set( WARLOCK_AFFLICTION, T31, B2 ) );
   }
 
   soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
@@ -594,6 +601,9 @@ struct soul_rot_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p()->buffs.soul_rot->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
+      p()->buffs.soulstealer->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -813,15 +823,15 @@ struct soulburn_t : public warlock_spell_t
       {
         if ( p()->buffs.nether_portal->up() )
         {
-          p()->proc_actions.summon_random_demon->execute();
+          p()->proc_actions.summon_nether_portal_demon->execute();
           p()->procs.portal_summon->occur();
 
-          if ( p()->talents.guldans_ambition->ok() )
+          if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
             p()->buffs.nether_portal_total->trigger();
 
-          if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+          if ( !p()->min_version_check( VERSION_10_2_0 ) && p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
           {
-            p()->proc_actions.summon_random_demon->execute();
+            p()->proc_actions.summon_nether_portal_demon->execute();
             p()->procs.nerzhuls_volition->occur();
 
             if ( p()->talents.guldans_ambition->ok() )
@@ -1136,6 +1146,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     corruption_accumulator( 0.0 ),
     cdf_accumulator( 0.0 ),
     incinerate_last_target_count( 0 ),
+    volatile_fiends_proc_chance( 0.0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -1147,8 +1158,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     procs(),
     initial_soul_shards( 3 ),
     disable_auto_felstorm( false ),
-    default_pet(),
-    use_pet_stat_update_delay( false )
+    default_pet()
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.darkglare = get_cooldown( "summon_darkglare" );
@@ -1249,7 +1259,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
 
-    if ( talents.summon_demonic_tyrant->ok() )
+    if ( talents.summon_demonic_tyrant->ok() && !min_version_check( VERSION_10_2_0 ) )
       m *= 1.0 + buffs.demonic_power->check_value();
 
     if ( buffs.rite_of_ruvaraad->check() )
@@ -1495,7 +1505,8 @@ void warlock_t::create_buffs()
   create_buffs_affliction();
 
   buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
-                       ->set_cooldown( 0_ms );
+                       ->set_cooldown( 0_ms )
+                       ->set_duration( talents.soul_rot->duration() + sets->set( WARLOCK_AFFLICTION, T31, B2 )->effectN( 2 ).time_value() );
 
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
                                ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
@@ -1523,7 +1534,7 @@ void warlock_t::init_spells()
 {
   player_t::init_spells();
 
-  version_10_1_5_data = find_spell( 417282 ); // For 10.1.5 version checking, New Crashing Chaos Buff
+  version_10_2_0_data = find_spell( 422054 ); // For 10.2 version checking, new Volatile Fiends talent
 
   // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
   // find_class_spell - active_spells.inc
@@ -1825,6 +1836,7 @@ void warlock_t::reset()
   corruption_accumulator             = rng().range( 0.0, 0.99 );
   cdf_accumulator                    = rng().range( 0.0, 0.99 );
   incinerate_last_target_count       = 0;
+  volatile_fiends_proc_chance        = 0.2;
   wild_imp_spawns.clear();
 }
 
@@ -1835,7 +1847,6 @@ void warlock_t::create_options()
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
   add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
-  add_option( opt_bool( "use_pet_stat_update_delay", use_pet_stat_update_delay ) );
 }
 
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
@@ -1979,8 +1990,9 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_2_0:
+      return !( version_10_2_0_data == spell_data_t::not_found() );
     case VERSION_10_1_5:
-      return !( version_10_1_5_data == spell_data_t::not_found() );
     case VERSION_10_1_0:
     case VERSION_10_0_7:
     case VERSION_10_0_5:
@@ -2279,7 +2291,6 @@ void warlock_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.dark_virtuosity );
   action.apply_affecting_aura( talents.kindled_malice );
   action.apply_affecting_aura( talents.xavius_gambit ); // TOCHECK: Should this just go in Unstable Affliction struct for clarity?
-
 }
 
 struct warlock_module_t : public module_t

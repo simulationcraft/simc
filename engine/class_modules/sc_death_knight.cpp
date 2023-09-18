@@ -431,6 +431,7 @@ struct death_knight_td_t : public actor_target_data_t {
     // Blood
     propagate_const<buff_t*> mark_of_blood;
     propagate_const<buff_t*> tightening_grasp;
+    propagate_const<buff_t*> ashen_decay; // T31 Blood
 	
     // Frost
     propagate_const<buff_t*> piercing_chill;
@@ -504,6 +505,7 @@ public:
     buff_t* vigorous_lifeblood_4pc;  // T29 4pc
     propagate_const<buff_t*> vampiric_strength; // T30 4pc str buff
     propagate_const<buff_t*> voracious;
+    propagate_const<buff_t*> ashen_decay_2pc;
 
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
@@ -521,7 +523,8 @@ public:
     propagate_const<buff_t*> enduring_strength_builder;
     propagate_const<buff_t*> enduring_strength;
     propagate_const<buff_t*> frostwhelps_aid;
-    buff_t* wrath_of_the_frostwyrm; // T30 4pc
+    propagate_const<buff_t*> wrath_of_the_frostwyrm; // T30 4pc
+    propagate_const<buff_t*> chilling_rage;
 
     // Unholy
     propagate_const<buff_t*> dark_transformation;
@@ -575,7 +578,9 @@ public:
     propagate_const<cooldown_t*> frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wield attack
     propagate_const<cooldown_t*> enduring_strength_icd; // internal cooldown that prevents several procs on the same dual-wield attacl
     propagate_const<cooldown_t*> pillar_of_frost;
-    cooldown_t* frostwyrms_fury;
+    propagate_const<cooldown_t*> frostwyrms_fury;
+    propagate_const<cooldown_t*> chill_streak;
+    propagate_const<cooldown_t*> empower_rune_weapon;
     
     // Unholy
     propagate_const<cooldown_t*> apocalypse;
@@ -638,6 +643,7 @@ public:
     propagate_const<gain_t*> rage_of_the_frozen_champion;
     propagate_const<gain_t*> runic_attenuation;
     propagate_const<gain_t*> runic_empowerment;
+    propagate_const<gain_t*> t31_4pc;
 
     // Unholy
     propagate_const<gain_t*> apocalypse;
@@ -986,6 +992,7 @@ public:
     const spell_data_t* frost_t30_4pc; // TODO rename when blizz gives it a name
     const spell_data_t* wrath_of_the_frostwyrm_damage;
     const spell_data_t* obliteration_gains;
+    const spell_data_t* chilling_rage; // T31 Frost 2 set
 
     // Unholy
     const spell_data_t* runic_corruption; // buff
@@ -1025,6 +1032,10 @@ public:
 
     // T30 Blood
     const spell_data_t* vampiric_strength; // Str buff
+
+    // T31 Blood
+    const spell_data_t* ashen_decay_buff; // Self buff for proc
+    const spell_data_t* ashen_decay_debuff; // Debuff on mob
 
     // T31 Unholy
     const spell_data_t* t31_unholy_value_container;
@@ -1196,6 +1207,8 @@ public:
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
     cooldown.mind_freeze              = get_cooldown( "mind_freeze" );
     cooldown.frostwyrms_fury          = get_cooldown( "frostwyrms_fury_driver" );
+    cooldown.chill_streak             = get_cooldown( "chill_streak" );
+    cooldown.empower_rune_weapon      = get_cooldown( "empower_rune_weapon" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -1351,6 +1364,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.tightening_grasp = make_buff( *this, "tightening_grasp", p -> spell.tightening_grasp_debuff )
                               -> set_default_value( p -> spell.tightening_grasp_debuff -> effectN( 1 ).percent() );
+
+  debuff.ashen_decay = make_buff( *this, "ashen_decay_debuff", p -> spell.ashen_decay_debuff )
+                            -> set_default_value_from_effect( 2 );
   // Frost
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
                             -> set_default_value_from_effect( 1 )
@@ -1853,12 +1869,12 @@ struct death_knight_pet_t : public pet_t
 
     if ( is_ptr() )
     {
-      if ( dk()->buffs.amplify_damage->check() )
+      if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.amplify_damage->check() )
       {
         m *= 1.0 + dk()->buffs.amplify_damage->check_value();
       }
 
-      if ( dk()->buffs.unholy_assault->check() )
+      if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.unholy_assault->check() )
       {
         m *= 1.0 + dk()->buffs.unholy_assault->check_value();
       }
@@ -2367,7 +2383,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     // Running a script ingame shows the correct values
     if (is_ptr())
     {
-      owner_coeff.ap_from_ap = 0.65;
+      owner_coeff.ap_from_ap = 0.6534;
     }
     else
     {
@@ -2514,12 +2530,12 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     {
       if ( name_str == "army_ghoul" )
       {
-        owner_coeff.ap_from_ap = 0.3525;
+        owner_coeff.ap_from_ap = 0.3498;
       }
 
       if ( name_str == "apoc_ghoul" )
       {
-        owner_coeff.ap_from_ap = 0.526;
+        owner_coeff.ap_from_ap = 0.522368;
       }
     }
   }
@@ -3185,7 +3201,7 @@ struct magus_pet_t : public death_knight_pet_t
 
       if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ))
       {
-        aoe = 1 + as<int>(dk()->find_spell( 422854 )->effectN(2).base_value());
+        aoe = as<int>(dk()->find_spell( 422854 )->effectN(2).base_value());
       }
     }
   };
@@ -3226,10 +3242,8 @@ struct magus_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 0.4;
-    // Looks like Magus' AP coefficient is the same as the pet ghouls'
-    // Including the +6% buff applied before magus was even a thing
-    owner_coeff.ap_from_ap *= 1.06;
+    // Magus of the Dead's AP% appears to have been decoupled from ghouls, and buffed 10% at some point.
+    owner_coeff.ap_from_ap = 0.4664;
   }
 
   void init_action_list() override
@@ -3292,7 +3306,9 @@ struct death_knight_action_t : public Base
     bool war;
     bool sanguine_ground, sanguine_ground_periodic;
     bool unholy_assault, unholy_assault_periodic;
+    bool ashen_decay; // T31 Blood
     bool amplify_damage, amplify_damage_periodic;
+    bool chilling_rage, chilling_rage_periodic;
     /*
     Pre-emptively writing these in, they are likely to be changed to whitelists too
     bool ghoulish_frenzy;
@@ -3357,9 +3373,12 @@ struct death_knight_action_t : public Base
     {
       this->affected_by.unholy_assault = this->data().affected_by( p->talent.unholy.unholy_assault->effectN( 4 ) );
       this->affected_by.unholy_assault_periodic = this->data().affected_by( p->talent.unholy.unholy_assault->effectN( 5 ) );
+      this->affected_by.ashen_decay = this->data().affected_by( p -> spell.ashen_decay_debuff -> effectN( 2 ) );
       this->affected_by.amplify_damage = this->data().affected_by( p->pet_spell.amplify_damage->effectN( 1 ) );
       this->affected_by.amplify_damage_periodic = this->data().affected_by( p->pet_spell.amplify_damage->effectN( 2 ) );
     }
+    this -> affected_by.chilling_rage = this -> data().affected_by( p -> spell.chilling_rage -> effectN( 1 ) );
+    this -> affected_by.chilling_rage_periodic = this -> data().affected_by( p -> spell.chilling_rage -> effectN( 2 ) );
     /*
     this -> affected_by.ghoulish_frenzy = this -> data().affected_by( p -> spell.ghoulish_frenzy_player -> effectN() );
     this -> affected_by.bonegrinder = this -> data().affected_by( p -> spell.bonegrinder_frost_buff -> effectN() );
@@ -3432,6 +3451,11 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> buffs.amplify_damage -> check_value();
     }
 
+    if( p() -> specialization() == DEATH_KNIGHT_FROST && this -> affected_by.chilling_rage && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && p() -> buffs.chilling_rage -> up() )
+    {
+      m *= 1.0 + p() -> buffs.chilling_rage -> check_stack_value();
+    }
+
     return m;
   }
 
@@ -3456,7 +3480,12 @@ struct death_knight_action_t : public Base
 
     if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground_periodic && p() -> buffs.sanguine_ground -> check() )
     {
-      m *= 1.0 + p() -> buffs.sanguine_ground -> check_value();
+      m *= 1.0 + p() -> buffs.sanguine_ground -> check_stack_value();
+    }
+
+    if( p() -> specialization() == DEATH_KNIGHT_FROST && this -> affected_by.chilling_rage_periodic && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && p() -> buffs.chilling_rage -> up() )
+    {
+      m *= 1.0 + p() -> buffs.chilling_rage -> check_stack_value();
     }
 
     if( p() -> is_ptr() && p() -> specialization() == DEATH_KNIGHT_UNHOLY && this -> affected_by.unholy_assault_periodic && p() -> buffs.unholy_assault -> check() ) 
@@ -3491,6 +3520,11 @@ struct death_knight_action_t : public Base
     if ( td && this -> affected_by.tightening_grasp )
     {
       m *= 1.0 + td -> debuff.tightening_grasp -> check_stack_value();
+    }
+    
+    if ( p() -> is_ptr() && p() -> specialization() == DEATH_KNIGHT_BLOOD && td && this -> affected_by.ashen_decay ) // T31 Blood
+    {
+      m *= 1.0 + td -> debuff.ashen_decay -> check_stack_value();
     }
 
     if ( td && this -> affected_by.death_rot )
@@ -4201,6 +4235,14 @@ struct abomination_limb_damage_t final : public death_knight_spell_t
       p() -> cooldown.abomination_limb -> start();
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+      get_td( s -> target ) -> debuff.ashen_decay -> trigger();
+  }
 };
 
 struct abomination_limb_buff_t final : public buff_t
@@ -4509,6 +4551,13 @@ struct blood_boil_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
 
     p() -> buffs.hemostasis -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+    {
+      auto td = get_td( state -> target );
+      if ( td -> debuff.ashen_decay -> check() )
+        td -> debuff.ashen_decay -> extend_duration( p(), p() -> sets ->set( DEATH_KNIGHT_BLOOD, T31, B4 ) -> effectN( 1 ).time_value() );
+    }
   }
 
 };
@@ -4885,27 +4934,42 @@ private:
 struct chill_streak_damage_t final : public death_knight_spell_t
 {
   int hit_count;
+  int max_hits;
 
   chill_streak_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "chill_streak_damage", p, p -> spell.chill_streak_damage )
   {
     background = proc = true;
+    max_hits = p -> talent.frost.chill_streak -> effectN( 1 ).base_value();
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) )
+    {
+      max_hits += p -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value();
+    }
   }
   
   double composite_target_multiplier( player_t* t ) const override
   {
-  double m = death_knight_spell_t::composite_target_multiplier( t );
+    double m = death_knight_spell_t::composite_target_multiplier( t );
 
-  if ( auto td = get_td( t ) )
-    m *= 1.0 + td -> debuff.piercing_chill -> check_value();
+    if ( auto td = get_td( t ) )
+      m *= 1.0 + td -> debuff.piercing_chill -> check_value();
 
-  return m;
+    return m;
   }
 
   void impact( action_state_t* state ) override
   {
+    if ( state -> target -> is_player() )
+    {
+      state->result_raw = state->result_amount = state->result_total = 0;
+    }
     death_knight_spell_t::impact( state );
     hit_count++;
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && state -> target -> is_enemy() ) 
+    {
+      p() -> buffs.chilling_rage->trigger();
+    }
 
     if ( p()->talent.frost.enduring_chill.ok() &&
          rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
@@ -4918,19 +4982,43 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       return;
     }
 
-    get_td( state -> target ) -> debuff.piercing_chill -> trigger();
-
-    for ( const auto target : sim -> target_non_sleeping_list )
+    if ( p() -> talent.frost.piercing_chill.ok() )
     {
-      if ( target != state -> target )
+      get_td( state -> target ) -> debuff.piercing_chill -> trigger();
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) && rng().roll( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 4 ).base_value() / 100 ) )
+    {
+      double roll = rng().real();
+      if ( roll < .3333 )
       {
-        if ( hit_count < p() -> talent.frost.chill_streak -> effectN( 1 ).base_value() )
-        {
-          this -> set_target( target );
-          this -> schedule_execute();
-          return;
-        }
+        p() -> cooldown.chill_streak -> adjust( -timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 2 ).base_value() ) );
       }
+      else if ( roll < .6666 )
+      {
+        p() -> cooldown.empower_rune_weapon -> adjust( -timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 3 ).base_value() ) );
+      }
+      else
+      {
+        p() -> replenish_rune( 1, p() -> gains.t31_4pc );
+      }
+    }
+
+    vector_with_callback<player_t*> target_list = sim -> target_non_sleeping_list;
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2 )
+    {
+      target_list.push_back( p() );      
+    }
+
+    for ( const auto target : target_list )
+    {
+      if ( target != state -> target && hit_count < max_hits )
+      {
+        this -> set_target( target );
+        this -> schedule_execute();
+        return;
+       }
     }
   }
 };
@@ -6629,6 +6717,9 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     {
       p() -> buffs.vampiric_strength -> extend_duration( p(), p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B4 )->effectN( 1 ).time_value() );
     }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2) && p() -> buffs.ashen_decay_2pc -> check() )  // T31 Blood, expire buff after debuff has been applied
+      p() -> buffs.ashen_decay_2pc -> expire();
   }
 
   void impact ( action_state_t* state ) override
@@ -6643,6 +6734,18 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     if ( p() -> talent.blood.leeching_strike.ok() && get_td( state -> target ) -> dot.blood_plague -> is_ticking() )
     {
       leeching_strike -> execute();
+    }
+
+    if ( p() -> buffs.ashen_decay_2pc -> up() )
+    {
+      get_td( state -> target ) -> debuff.ashen_decay -> trigger();
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+    {
+      auto td = get_td( state -> target );
+      if ( td -> debuff.ashen_decay -> check() )
+        td -> debuff.ashen_decay -> extend_duration( p(), p() -> sets ->set( DEATH_KNIGHT_BLOOD, T31, B4 ) -> effectN( 1 ).time_value() );
     }
   }
 private:
@@ -7715,6 +7818,14 @@ struct soul_reaper_execute_t : public death_knight_spell_t
 
     return m;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B4 ) )
+      get_td( s -> target ) -> debuff.ashen_decay -> trigger();
+  }
 };
 
 struct soul_reaper_t final : public death_knight_melee_attack_t
@@ -7857,6 +7968,13 @@ struct tombstone_t final : public death_knight_spell_t
           p() -> buffs.vigorous_lifeblood_4pc -> trigger();
         }
       }
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
+    {
+      double chance = 0.10 * charges; // Seems to be roughly a 10% chance per bone consumed.  Needs verification
+      if ( rng().roll( chance ) )
+        p() -> buffs.ashen_decay_2pc -> trigger();
     }
 
     if ( charges > 0 && p() -> talent.blood.shattering_bone.ok() )
@@ -9315,6 +9433,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
       return expr_t::create_constant( "amz_absorb_percent", options.amz_absorb_percent );
   }
 
+  // Expose AMS Absorb Percent to the APL to enable decisions based on anticipated resource generation
+  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "ams_absorb_percent" ) && splits.size() == 2 )
+      return expr_t::create_constant( "ams_absorb_percent", options.amz_absorb_percent );
+  }
+
   // Death Knight special expressions
   if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
   {
@@ -9836,8 +9961,9 @@ void death_knight_t::init_spells()
   spell.vigorous_lifeblood_energize          = find_spell( 394559 );
   // T30 Blood
   spell.vampiric_strength                    = find_spell( 408356 );
-  // T30 Unholy
-  spell.t31_unholy_value_container           = find_spell( 422855 );
+  // T31 Blood
+  spell.ashen_decay_buff                     = find_spell( 425721 );
+  spell.ashen_decay_debuff                   = find_spell( 425719 );
 
   // Frost
   spell.murderous_efficiency_gain     = find_spell( 207062 );
@@ -9870,6 +9996,8 @@ void death_knight_t::init_spells()
   spell.frost_t30_4pc                 = find_spell( 405502 );
   spell.lingering_chill               = find_spell( 410879 );
   spell.wrath_of_the_frostwyrm_damage = find_spell( 410790 );
+  // T31 Frost
+  spell.chilling_rage                 = find_spell( 424165 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -9902,6 +10030,8 @@ void death_knight_t::init_spells()
   spell.unholy_t30_4pc_mastery     = find_spell( 408377 );
   spell.unholy_t30_2pc_values      = find_spell( 405503 );
   spell.unholy_t30_4pc_values      = find_spell( 405504 );
+  // T30 Unholy
+  spell.t31_unholy_value_container = find_spell( 422855 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10071,6 +10201,7 @@ void death_knight_t::create_buffs()
   // Blood
   if ( this -> specialization() == DEATH_KNIGHT_BLOOD)
   {
+  buffs.ashen_decay_2pc = make_buff( this, "ashen_decay", spell.ashen_decay_buff ); // T31 Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
@@ -10278,6 +10409,10 @@ void death_knight_t::create_buffs()
   buffs.wrath_of_the_frostwyrm = make_buff( this, "wrath_of_the_frostwyrm", find_spell ( 408368 ) )
       -> set_default_value( find_spell ( 408368 ) -> effectN( 1 ).percent() );
 
+  buffs.chilling_rage = make_buff( this, "chilling_rage", spell.chilling_rage )
+      -> set_default_value_from_effect( 1 )
+      -> set_schools_from_effect( 1 );
+
   }
 
   // Unholy
@@ -10388,6 +10523,7 @@ void death_knight_t::init_gains()
   gains.runic_empowerment                = get_gain( "Runic Empowerment" );
   gains.koltiras_favor                   = get_gain( "Koltira's Favor" );
   gains.frigid_executioner               = get_gain( "Frigid Executioner" );
+  gains.t31_4pc                          = get_gain( "T31 4PC" );
 
   // Unholy
   gains.apocalypse                       = get_gain( "Apocalypse" );
@@ -10569,6 +10705,14 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
       buffs.vigorous_lifeblood_4pc -> trigger();
     }
   }
+
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
+  {
+    if( rng().roll( 0.10 ) ) // Very very rough testing, to be 10% proc chance
+    {
+      dk -> buffs.ashen_decay_2pc -> trigger();
+    }
+  }
 }
 
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
@@ -10663,6 +10807,9 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   const death_knight_td_t* td = get_target_data( state -> action -> player );
   if ( td && runeforge.rune_of_apocalypse )
     state -> result_amount *= 1.0 + td -> debuff.apocalypse_famine -> check_stack_value();
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD && td && td -> debuff.ashen_decay -> check() )
+    state -> result_amount *= 1.0 + spell.ashen_decay_debuff -> effectN( 1 ).base_value();
 
   if ( dbc::is_school( school, SCHOOL_MAGIC ) && runeforge.rune_of_spellwarding )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellwarding;

@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51313 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -411,7 +411,7 @@ Effects          :
                    Family Flags: 20, 37, 39, 55, 76, 77, 124
 #6 (id=737893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Charge (100), Slam (1464), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Avatar (107574), Dragon Roar (118000), Whirlwind (190411), Skullsplitter (260643), Siegebreaker (280772), Siegebreaker (280773), Bloodbath (335096), Crushing Blow (335097), Annihilator (383915), Avatar (401150)
+                   Affected Spells: Charge (100), Slam (1464), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Avatar (107574), Dragon Roar (118000), Whirlwind (190411), Skullsplitter (260643), Siegebreaker (280772), Siegebreaker (280773), Bloodbath (335096), Crushing Blow (335097), Annihilator (383915), Avatar (401150), Skullsplitter (427040)
                    Family Flags: 0, 21, 26, 32, 41, 42, 49, 53, 55, 69, 101, 106
 #7 (id=737894)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
@@ -606,7 +606,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
 Family Flags     : 8, 18, 29, 59, 78
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -1498,6 +1498,39 @@ Effects          :
 #1 (id=44600)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23500 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc6544
+
+Name             : Sudden Death (id=52437) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
+Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), No Immunities (29), No Threat (42), Can Proc From Procs (122), Floating Combat Text On Cast (198), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=44921)    : Apply Aura (6) | Unknown(262)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
+                   Family Flags: 29
+#2 (id=240564)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
+                   Family Flags: 29
+#3 (id=623417)   : Apply Aura (6) | Modify Max Cost (63)
+                   Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
+                   Family Flags: 29
+Description      : $@spelldesc29725
+Tooltip          : $?a317320[Condemn][Execute] costs no Rage, can be used on any target, and deals damage as if you spent $29725s1 Rage.
 
 Name             : Increase Versatility 15 (id=55564) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -3423,7 +3456,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
 Family Flags     : 8, 18, 29, 59, 78
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3452,7 +3485,7 @@ Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effects: #1, #2, #3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Sudden Death (280776 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Triggered by     : Execute (5308), Execute (280735)
 Family Flags     : 9, 29, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -5750,11 +5783,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=485945)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-#3 (id=1078846)  : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.65000 | Target: Self (1)
+#3 (id=1078846)  : Trigger Spell (64): Skullsplitter
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 427040 | Target: Enemy (6)
 Description      : Bash an enemy's skull, dealing $s1 Physical damage.
 
-Skullsplitter causes your Deep Wounds $?s386357[and Rend ][]to expire instantly$?a134735[, dealing $s3% of the remaining damage][.]
+Skullsplitter causes your Deep Wounds $?s386357[and Rend ][]on the target to bleed out $427040s1% faster for $427040d.
 
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
@@ -5795,7 +5828,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effects: #1, #2, #3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Sudden Death (280776 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Triggered by     : Execute (163201), Execute (281000)
 Family Flags     : 9, 29, 52, 116
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -8152,7 +8185,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
 Family Flags     : 8, 18, 29, 59, 82
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -8235,6 +8268,31 @@ Effects          :
 Description      : $@spelldesc280772
 Tooltip          : Taking $w1% increased damage from $@auracaster.
 
+Name             : Sudden Death (id=280776) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
+Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), No Immunities (29), No Threat (42), Can Proc From Procs (122), Floating Combat Text On Cast (198), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=738539)   : Apply Aura (6) | Unknown(262)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334)
+                   Family Flags: 29
+Description      : $@spelldesc280721
+Tooltip          : $?a317320[Condemn][Execute] can be used on any target, regardless of their health.
+
 Name             : Execute (id=280849) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -8242,7 +8300,7 @@ Spell Type       : Melee
 Spell Level      : 8
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Main Hand
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effects: #1, #2, #3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Sudden Death (280776 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Triggered by     : Execute (5308), Execute (280735)
 Family Flags     : 8, 9, 29, 116
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -8269,7 +8327,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
 Family Flags     : 8, 18, 29, 59, 82
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9376,7 +9434,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Labels           : 976
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
 Family Flags     : 8, 18, 29, 56, 59
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9407,7 +9465,7 @@ Spell Type       : Melee
 Spell Level      : 48
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effects: #1, #2, #3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Sudden Death (280776 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Triggered by     : Condemn (317349), Condemn (330334)
 Family Flags     : 9, 29, 52, 116
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -9435,7 +9493,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Labels           : 976
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
 Family Flags     : 8, 18, 29, 56, 59
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -9467,7 +9525,7 @@ School           : Shadow
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 5 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effects: #1, #2, #3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Sudden Death (280776 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Triggered by     : Condemn (317485), Condemn (330325)
 Family Flags     : 8, 9, 29, 116
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -9491,7 +9549,7 @@ Spell Type       : Melee
 Spell Level      : 48
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effects: #1, #2, #3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #17), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effects: #1, #2), Siegebreaker (280773 effect#1), Sudden Death (280776 effect#1), Ashen Juggernaut (335234 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Impale (383430 effect#1), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Warrior Fury Set 2pc (393708 effect#1), Juggernaut (393968 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
 Triggered by     : Condemn (317485), Condemn (330325)
 Family Flags     : 9, 29, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -9790,7 +9848,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
 Labels           : 976
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Bladestorm (222634 effect#3), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Bladestorm (222634 effect#3), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
 Family Flags     : 8, 18, 29, 56, 59, 84
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -9827,7 +9885,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Labels           : 976
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Bladestorm (222634 effect#3), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
+Affecting spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#17), Precise Strikes (209493 effects: #1, #2), Bladestorm (222634 effect#3), Stone Heart (225947 effects: #1, #2), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Unnerving Focus (384043 effect#4), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Juggernaut (393968 effect#1), Improved Execute (397708 effect#1)
 Family Flags     : 8, 18, 29, 56, 59, 84
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -10962,7 +11020,7 @@ Effects          :
                    Family Flags: 37, 39, 55, 76, 77
 #3 (id=834982)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Charge (100), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Dragon Roar (118000), Whirlwind (190411), Skullsplitter (260643), Siegebreaker (280772), Siegebreaker (280773), Onslaught (315720), Bloodbath (335096), Crushing Blow (335097), Onslaught (396718)
+                   Affected Spells: Charge (100), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Dragon Roar (118000), Whirlwind (190411), Skullsplitter (260643), Siegebreaker (280772), Siegebreaker (280773), Onslaught (315720), Bloodbath (335096), Crushing Blow (335097), Onslaught (396718), Skullsplitter (427040)
                    Family Flags: 0, 20, 26, 41, 42, 49, 53, 55, 69, 106
 #4 (id=834983)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
@@ -13778,7 +13836,7 @@ Effects          :
                    Family Flags: 7
 #3 (id=1018272)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Thunderclap $?!a137048[costs ${$s2/10} more Rage and ][]deals $s1% increased damage.$?!a137050[ If you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][]
+Description      : Thunder Clap $?!a137048[costs ${$s2/10} more Rage and ][]deals $s1% increased damage.$?!a137050[ If you have Rend, Thunder Clap affects $s3 nearby targets with Rend.][]
 
 Name             : Thunderous Roar (id=384318) [Spell Family (4)] 
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20]
@@ -13950,7 +14008,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 #3 (id=1029626)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
-Description      : When $?s262161[Warbreaker][Colossus Smash] expires, your Strength is increased by $s1% for every $s3 Rage you spent during $?s262161[Warbreaker][Colossus Smash]. Lasts $385013d.
+Description      : When $?s262161[Warbreaker][Colossus Smash] expires, your Strength is increased by $s1% for every $s3 Rage you spent on attacks during $?s262161[Warbreaker][Colossus Smash]. Lasts $385013d.
 
 Name             : Test of Might (id=385009) [Spell Family (4), Hidden] 
 Class            : Warrior
@@ -14903,14 +14961,12 @@ Effects          :
 Description      : Shield Charge deals $s3% increased damage, grants you Shield Block, Revenge!, and generates an additional ${$s2/10} Rage.
 
 Name             : Tide of Blood (id=386357) [Spell Family (4), Passive] 
-Talent Entry     : Arms [tree=spec, row=7, col=1, max_rank=1, req_points=8, replace="Skullsplitter" (id=400321)]
+Talent Entry     : Arms [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -14921,36 +14977,13 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not Shapeshifted (16), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1020368)  : Apply Aura (6) | Proc Trigger Spell (42): Tide of Blood
-                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Trigger Spell: 386378 | Target: Self (1)
+#1 (id=1020368)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1045988)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Skullsplitter (260643)
+                   Affected Spells: Skullsplitter (260643), Skullsplitter (427040)
                    Family Flags: 26
-#3 (id=1084936)  : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.65000
-Description      : Skullsplitter deals $s2% increased damage and also causes your Rend to expire instantly$?a134735[, dealing $s3% of the remaining damage][.]
-
-Name             : Tide of Blood (id=386378) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Type       : Melee
-Range            : 5 yards
-Triggered by     : Tide of Blood (386357)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1020398)  : Dummy (3)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : @spelldesc$386357
-
+Description      : Skullsplitter deals $s2% increased damage and also causes your Rend on the target to bleed out $427040s1% faster for $427040d.
 
 Name             : Battle-Scarred Veteran (id=386394) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Protection [tree=spec, row=10, col=3, max_rank=1, req_points=20]
@@ -17281,48 +17314,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Colossus Smash and Avatar's durations are increased by $s10% but their damage bonuses are reduced by $s9%.
 
-Name             : Skullsplitter (id=400321) [Spell Family (4), Passive] 
-Class            : Warrior
-School           : Physical
-Spell Type       : Melee
-Range            : 5 yards
-Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
-Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not Shapeshifted (16), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1045219)  : Apply Aura (6) | Proc Trigger Spell (42): Skullsplitter
-                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Trigger Spell: 400322 | Target: Self (1)
-Description      : $@spelldesc260643
-
-Name             : Skullsplitter (id=400322) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Spell Type       : Melee
-Range            : 5 yards
-Triggered by     : Skullsplitter (400321)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1045220)  : Dummy (3)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : $@spelldesc$260643
-
 Name             : Improved Overpower (id=400801) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
@@ -17864,11 +17855,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098521)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Rend (388539), Rend (394062), Rend (394063)
                    Family Flags: 5
 #2 (id=1099425)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rend (772), Rend (388539), Rend (394062), Rend (394063)
                    Family Flags: 5
 Description      : Rend damage increased by $s1% and has a chance to trigger Sudden Death.
@@ -17892,9 +17883,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098522)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1099429)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Sudden Death also makes your next Execute powerfully slam the ground, causing a Thunder Clap that deals $s2% additional damage. In addition, the Execute target bleeds for $s1% of Execute's damage over $426284d.
 
 Name             : Warrior Fury 10.2 Class Set 2pc (id=422925) [Spell Family (4), Passive, Hidden] 
@@ -17917,11 +17908,11 @@ Effects          :
 #1 (id=1098523)  : Apply Aura (6) | Proc Trigger Spell (42): Furious Bloodthirst
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 423211 | Target: Self (1)
 #2 (id=1102780)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062)
                    Family Flags: 104
 #3 (id=1102781)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062)
                    Family Flags: 104
 Description      : Odyn's Fury deals $s2% increased damage and causes your next $423211u Bloodthirsts to deal $423211s1% additional damage and have $423211s2% increased critical strike chance against its primary target.
@@ -17953,7 +17944,7 @@ Effects          :
                    Affected Spells: Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062)
                    Family Flags: 104
 #3 (id=1099400)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Bloodthirst critical strikes reduce the cooldown of Odyn's Fury by ${$s3/1000}.1 sec.
 
 Name             : Warrior Protection 10.2 Class Set 2pc (id=422927) [Spell Family (4), Passive, Hidden] 
@@ -17974,12 +17965,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098526)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103360)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=1103369)  : Apply Aura (6) | Proc Trigger Spell (42): Fervid
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 425517 | Target: Self (1)
-Description      : Spending Rage has a chance to cause your next Shield Slam to consume your bleeds on a target, instantly dealing $s1% of remaining damage and reducing the target's damage dealt to you by $s2% for 5 sec.
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 425517 | Target: Self (1)
+Description      : Spending Rage has a chance to cause your next Shield Slam to consume your bleeds on a target, instantly dealing $s1% of remaining damage and reducing the target's damage dealt to you by $s2% for $425534d sec.
 
 Name             : Warrior Protection 10.2 Class Set 4pc (id=422928) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -17996,9 +17987,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098527)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103436)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : For each bleed effect consumed from a target, their damage dealt to you is reduced by an additional $s1%. When Shield Slam consumes a bleed, the cooldown of Thunder Clap is reset and the cooldown of Thunderous Roar is reduced by ${$s2/1000}.1 sec.
 
 Name             : Furious Bloodthirst (id=423211) [Spell Family (4)] 
@@ -18023,9 +18014,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1099046)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1099047)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc422925
 Tooltip          : Bloodthirst damage increased by $w1% and critical strike chance increased by $w2% against its primary target.
 
@@ -18123,6 +18114,30 @@ Effects          :
 Description      : $@spelldesc422927
 Tooltip          : Your next Shield Slam will consume active bleeds on its target.
 
+Name             : Fervid Bite (id=425534) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1103422)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
+#2 (id=1103423)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Description      : $@spelldesc422927
+Tooltip          : Dealing $w1% reduced damage to $@auracaster.
+
 Name             : Finishing Wound (id=426284) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -18144,5 +18159,31 @@ Effects          :
                    Base Value: 0.0031 | Scaled Value: 0.0031 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc422924
 Tooltip          : Bleeding for $w1 every $t1 sec.
+
+Name             : Skullsplitter (id=427040) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Range            : 5 yards
+Duration         : 10 seconds
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Affecting spells : Recklessness (1719 effect#6), Unnerving Focus (337155 effect#3), Tide of Blood (386357 effect#2)
+Triggered by     : Skullsplitter (260643)
+Family Flags     : 26
+Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
+                 : ..x....x ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ .......x ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Aura Points On Client (268)
+Effects          :
+#1 (id=1106111)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Description      : $@spelldesc260643
+Tooltip          : Bleeding out from Deep Wounds $s1% faster.
 
 

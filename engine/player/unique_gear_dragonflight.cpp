@@ -654,6 +654,154 @@ void shadowflame_wreathe( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 425838 Main Driver & Values
+// 426339 Melee Driver
+// 426534 Melee ST damage - Unused
+// 426535 Melee AoE damage
+// 426527 Melee ST DoT
+// 426341 Ranged Driver
+// 426486 Ranged AoE damage 1
+// 426431 Ranged AoE damage 2 -- Both of these proc in game as of 8/9/23. Recheck in the future. See log below.
+// https://www.warcraftlogs.com/reports/RpDBKMy8TzN3Pw4n#fight=last&type=damage-done&source=12&ability=-426341
+// 426288 Tank Driver
+// 426289 Tank Buff
+// 426306 Tank Damage
+// 426262 Healer Driver
+// 426269 Healer Buff
+// 426297 Healer Damage
+// 426321 Healer HoT
+// 426322 Healer Stat Buff
+// 426382 Healer Unknown
+// TODO : Double check the right effects are mapped to the right spells
+// Implement Tank/Healer versions
+void incandescent_essence( special_effect_t& e )
+{
+  auto melee_driver = e.player->find_spell( 426339 );
+  auto ranged_driver = e.player->find_spell( 426341 );
+  auto tank_driver = e.player->find_spell( 426288 );
+  auto healer_driver = e.player->find_spell( 426262 );
+
+  struct ingras_cruel_nightmare_t : public generic_proc_t
+  {
+    action_t* aoe_damage;
+    action_t* st_damage;
+    ingras_cruel_nightmare_t( const special_effect_t& e )
+      : generic_proc_t( e, "igiras_cruel_nightmare", 426339 ),
+      aoe_damage( create_proc_action<generic_aoe_proc_t>( "scorching_torment", e, "scorching_torment",
+                  e.player->find_spell( 426535 ), true ) ),
+      st_damage( create_proc_action<generic_proc_t>( "flaying_torment", e, "flaying_torment",
+                 e.player->find_spell( 426527 ) ) )
+    {
+      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 9 ).average( e.item );
+      st_damage->base_td = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
+
+      add_child( aoe_damage );
+      add_child( st_damage );
+    }
+
+    void execute() override
+    {
+      if (sim->target_non_sleeping_list.size() == 1)
+      {
+        st_damage->execute_on_target( target );
+      }
+      else
+      {
+        aoe_damage->execute();
+      }
+      generic_proc_t::execute();
+    }
+  };
+
+  struct tindrals_fowl_fantasia_t : public generic_proc_t
+  {
+    action_t* main_damage;
+    buff_t* buff;
+    tindrals_fowl_fantasia_t( const special_effect_t& e )
+      : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
+      main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
+                   e.player->find_spell( 426486 ), true ) ),
+      buff( make_buff<buff_t>( e.player, "tindrals_fowl_fantasia", e.player->find_spell( 426431 ) ) )
+    {
+      auto secondary_damage = create_proc_action<generic_aoe_proc_t>(
+        "denizen_of_the_flame_secondary", e, "denizen_of_the_flame_secondary", e.player->find_spell( 426431 ), true );
+      secondary_damage->base_dd_min = secondary_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 6 ).average( e.item );
+      main_damage->base_dd_min = main_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
+
+      buff->set_quiet( true );
+      buff->set_duration( 2_s );
+      buff->set_period( 1_s );
+      buff->set_tick_callback( [ secondary_damage ]( buff_t* b, int, timespan_t ) { secondary_damage->execute(); } );
+
+      add_child( main_damage );
+      add_child( secondary_damage );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      main_damage->execute();
+      buff->trigger();
+    }
+  };
+
+  switch ( e.player->_spec )
+  {
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case PRIEST_SHADOW:
+    case SHAMAN_ELEMENTAL:
+    case MAGE_ARCANE:
+    case MAGE_FIRE:
+    case MAGE_FROST:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+    case DRUID_BALANCE:
+    case EVOKER_DEVASTATION:
+    case EVOKER_AUGMENTATION:
+      e.spell_id       = ranged_driver->id();
+      e.execute_action = create_proc_action<tindrals_fowl_fantasia_t>( "tindrals_fowl_fantasia", e );
+      break;
+    case WARRIOR_PROTECTION:
+    case PALADIN_PROTECTION:
+    case DEATH_KNIGHT_BLOOD:
+    case MONK_BREWMASTER:
+    case DRUID_GUARDIAN:
+    case DEMON_HUNTER_VENGEANCE:
+      e.spell_id = tank_driver->id();
+      break;
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+    case MONK_MISTWEAVER:
+    case DRUID_RESTORATION:
+    case EVOKER_PRESERVATION:
+      e.spell_id = healer_driver->id();
+      break;
+    case WARRIOR_ARMS:
+    case WARRIOR_FURY:
+    case PALADIN_RETRIBUTION:
+    case HUNTER_SURVIVAL:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_OUTLAW:
+    case ROGUE_SUBTLETY:
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+    case SHAMAN_ENHANCEMENT:
+    case MONK_WINDWALKER:
+    case DRUID_FERAL:
+    case DEMON_HUNTER_HAVOC:
+    default:
+      e.spell_id       = melee_driver->id();
+      e.execute_action = create_proc_action<ingras_cruel_nightmare_t>( "ingras_cruel_nightmare", e );
+      break;
+  }
+
+  new dbc_proc_callback_t( e.player, e );
+}
+
 }  // namespace enchants
 
 namespace items
@@ -5611,6 +5759,391 @@ void paracausal_fragment_of_doomhammer( special_effect_t& e )
   e.execute_action->add_child( equip_damage );
 }
 
+// Pips Emerald Friendship Badge
+// 422858 Driver and values
+// 426676 Crit Buff
+// 426647 Mastery Buff
+// 426672 Vers Buff
+void pips_emerald_friendship_badge( special_effect_t& e )
+{
+  // Buffs value is equal to drvier effect 1 value / duration in seconds
+  // Emulating in game behavior by creating 2 buffs for each, a static one that stays until the next procs
+  // and one with 11 stacks, that decrement every 1s as it does in game. 
+  auto pips = make_buff<stat_buff_t>( e.player, "best_friends_with_pip", e.player->find_spell( 426647 ) );
+  auto pips_static = make_buff<stat_buff_t>( e.player, "best_friends_with_pip_static", e.player->find_spell( 426647 ) );
+  auto aerwynn = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn", e.player->find_spell( 426676 ) );
+  auto aerwynn_static = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn_static", e.player->find_spell( 426676 ) );
+  auto urctos = make_buff<stat_buff_t>( e.player, "best_friends_with_urctos", e.player->find_spell( 426672 ) );
+  auto urctos_static = make_buff<stat_buff_t>( e.player, "best_friends_with_urctos_static", e.player->find_spell( 426672 ) );
+
+  auto max_stacks = 12;
+  auto buff_value = e.player->find_spell( 422858 )->effectN( 1 ).average( e.item ) / max_stacks;
+
+  pips->set_stat_from_effect( 1, buff_value );
+  pips->set_max_stack( max_stacks - 1 );
+  pips->set_period( pips->data().effectN( 2 ).period() );
+  pips->set_reverse( true );
+
+  pips_static->set_stat_from_effect( 1, buff_value );
+  pips_static->set_duration( 0_ms );
+
+  aerwynn->set_stat_from_effect( 1, buff_value );
+  aerwynn->set_max_stack( max_stacks - 1 );
+  aerwynn->set_period( aerwynn->data().effectN( 2 ).period() );
+  aerwynn->set_reverse( true );
+
+  aerwynn_static->set_stat_from_effect( 1, buff_value );
+  aerwynn_static->set_duration( 0_ms );
+
+  urctos->set_stat_from_effect( 1, buff_value );
+  urctos->set_max_stack( max_stacks - 1 );
+  urctos->set_period( urctos->data().effectN( 2 ).period() );
+  urctos->set_reverse( true );
+
+  urctos_static->set_stat_from_effect( 1, buff_value );
+  urctos_static->set_duration( 0_ms );
+
+  struct pips_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* pips;
+    buff_t* pips_static;
+    buff_t* aerwynn;
+    buff_t* aerwynn_static;
+    buff_t* urctos;
+    buff_t* urctos_static;
+    int max_stacks;
+
+    pips_cb_t( const special_effect_t& e, buff_t* pips, buff_t* pips_static, buff_t* aerwynn, buff_t* aerwynn_static, buff_t* urctos, buff_t* urctos_static, int i )
+      : dbc_proc_callback_t( e.player, e ),
+        pips( pips ), pips_static( pips_static ),
+        aerwynn( aerwynn ), aerwynn_static( aerwynn_static ), 
+        urctos( urctos ), urctos_static( urctos_static ),
+        max_stacks( i )
+    {}
+
+    void execute( action_t* /*a*/, action_state_t* /*s*/) override
+    {
+      double chance = rng().real();
+
+      if (chance < 0.3333 )
+      {
+        pips->trigger( max_stacks - 1 );
+        pips_static->trigger();
+        aerwynn_static->expire();
+        urctos_static->expire();
+      }
+      else if (chance < 0.6666 )
+      {
+        aerwynn->trigger( max_stacks - 1 );
+        aerwynn_static->trigger();
+        pips_static->expire();
+        urctos_static->expire();
+      }
+      else
+      {
+        urctos->trigger( max_stacks - 1 );
+        urctos_static->trigger();
+        aerwynn_static->expire();
+        pips_static->expire();
+      }
+    }
+  };
+
+  new pips_cb_t( e, pips, pips_static, aerwynn, aerwynn_static, urctos, urctos_static, max_stacks );
+}
+
+// Ashes of the Embersoul
+// 423611 Use Driver/Main Buff
+// 423021 Values
+// 426911 Unknown
+// 426906 Unknown
+// 423021 Unknown
+// 426897 Haste Debuff
+void ashes_of_the_embersoul( special_effect_t& e )
+{
+  auto haste_debuff = make_buff<stat_buff_t>( e.player, "burnout", e.player->find_spell( 426897 ) );
+  haste_debuff->set_stat_from_effect( 1, e.player->find_spell( 423021 )->effectN( 2 ).average( e.item ) );
+
+  struct soul_ignition_buff_t : public stat_buff_t
+  {
+    buff_t* haste_debuff;
+    int current_tick;
+    const special_effect_t& effect;
+
+    soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff )
+      : stat_buff_t( e.player, "soul_ignition", e.driver() ),
+        haste_debuff( haste_debuff ),
+        effect( e ),
+        current_tick( 0 )
+    {
+      auto base_buff_value = e.player->find_spell( 423021 )->effectN( 1 ).average( e.item );
+      set_period( e.driver()->effectN( 3 ).period() - 1_ms );
+      set_stat_from_effect( 1, base_buff_value );
+      set_default_value( base_buff_value );
+
+      set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        recalculate();
+      } );
+    }
+
+    double current_value()
+    {
+      double base_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item );
+      double ticks = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
+      double decrease_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item ) / ticks;
+
+      double value = base_value - ( decrease_value * current_tick );
+
+      return value;
+    }
+
+    void recalculate()
+    {
+      current_tick++;
+      for (auto& buff_stat : stats)
+      {
+        double delta = buff_stat.current_value - current_value();
+        double ticks = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
+        double decrease_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item ) / ticks;
+        if (delta > 0)
+        {
+          player->stat_loss( buff_stat.stat, decrease_value, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if (delta < 0)
+        {
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+      }
+    }
+
+    void recalculate_expiry()
+    {
+      for (auto& buff_stat : stats)
+      {
+        double delta = current_value();
+        if (delta > 0)
+        {
+          player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if (delta < 0)
+        {
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        buff_stat.current_value = 0;
+      }
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      haste_debuff->trigger();
+      recalculate_expiry();
+      current_tick = 0;
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
+      current_tick = 0;
+    }
+  };
+
+  e.custom_buff = make_buff<soul_ignition_buff_t>( e, haste_debuff );
+}
+
+// Coiled Serpent Idol
+// 426827 Driver
+// 427037 Damage
+// 426834 Hidden Periodic Debuff
+// 427059 Hidden Periodic Debuff Buff 2
+// 427047 AoE damage
+// 427057 AoE Range Check
+struct lava_bolt_initializer_t : public item_targetdata_initializer_t
+{
+  lava_bolt_initializer_t() : item_targetdata_initializer_t( 426827, 426834 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.lava_bolt = make_buff_fallback( active, *td, "lava_bolt", debuffs[ td->source ] );
+    td->debuff.lava_bolt->reset();
+    td->debuff.lava_bolt->set_quiet( true );
+    td->debuff.lava_bolt->set_period( timespan_t::max() );  // Ticking handled by the DoT in the main effect
+    td->debuff.lava_bolt->set_max_stack( 20 ); // Setting to an unreasonably high number to handle the number of explosion events
+  }
+};
+
+void coiled_serpent_idol( special_effect_t& e )
+{
+  struct lava_bolt_t : public generic_proc_t
+  {
+    lava_bolt_t( const special_effect_t& e, util::string_view n )
+      : generic_proc_t( e, n, e.player->find_spell( 427037 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+  };
+
+  struct molten_rain_t : public generic_proc_t
+  {
+    molten_rain_t( const special_effect_t& e ) : generic_proc_t( e, "molten_rain", e.player->find_spell( 427047 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      // Cant seem to find this value in spell data, manually inputing value from the tooltip.
+      aoe = 8;
+      // Main AoE damage spell doesnt have a practical range (100 yards) assuming one of these
+      // 12 yard area triggers handle range checking around the enemy who died to trigger molten rain.
+      // Will need to be further checked in the future.
+      radius = e.player->find_spell( 427057 )->effectN( 1 ).radius();
+    }
+  };
+
+  struct serpent_t : public generic_proc_t
+  {
+    action_t* damage;
+    serpent_t( const special_effect_t& e )
+      : generic_proc_t( e, "lava_bolt_dot", e.player->find_spell( 427059 ) ),
+        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
+    {
+      hasted_ticks = false;
+      stats = damage->stats;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+      for (int stacks = 0; player->get_target_data( d->target )->debuff.lava_bolt->check() > stacks; ++stacks)
+      {
+        damage->execute();
+      }
+    }
+  };
+
+  struct serpent_cb_t : public dbc_proc_callback_t
+  {
+    int counter;
+    action_t* serpent;
+    const special_effect_t& effect;
+
+    serpent_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        counter( 0 ),
+        serpent( create_proc_action<serpent_t>( "lava_bolt_single", e ) ),
+        effect( e )
+    {}
+
+    void execute( action_t* /*a*/, action_state_t* s ) override
+    {
+      counter++;
+      serpent->execute_on_target( s->target );
+      auto debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt;
+      if ( counter < 3 )
+      {
+        debuff->trigger();
+      }
+      else if ( counter == 3 )
+      {
+        debuff->trigger( 3 );
+
+        counter = 0;
+      }
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      counter = 0;
+    }
+  };
+
+  auto molten_rain = create_proc_action<molten_rain_t>( "molten_rain", e );
+
+  range::for_each( e.player->sim->actor_list, [ e, molten_rain ]( player_t* target ) {
+    target->register_on_demise_callback( e.player, [ e, molten_rain ]( player_t* t ) {
+      for (int stacks = 0; e.player->get_target_data( t )->debuff.lava_bolt->check() > stacks; ++stacks)
+      {
+        molten_rain->execute_on_target( t );
+      }
+    } );
+  } );
+
+  new serpent_cb_t( e );
+}
+
+// Bandolier of Twisted Blades
+// 422303 Driver (Embed Blade)
+// 422297 Damage
+// 426114 Return Slash Driver
+struct embed_blade_initializer_t : public item_targetdata_initializer_t
+{
+  embed_blade_initializer_t()  : item_targetdata_initializer_t( 422303 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    struct embed_blade_debuff_t : buff_t
+    {
+      action_t* debuff;
+
+      embed_blade_debuff_t( actor_target_data_t& td, const spell_data_t* s, action_t* a )
+        : buff_t( td, "embed_blade", s ), debuff( a )
+      {
+        base_buff_duration = player->find_spell( 422303 )->duration();
+      }
+
+      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+      {
+        buff_t::expire_override( expiration_stacks, remaining_duration );
+
+        if ( debuff )
+          debuff -> execute_on_target( player );
+      }
+    };
+
+    bool active = init( td->source );
+
+    td -> debuff.embed_blade = make_buff_fallback<embed_blade_debuff_t>( active, *td, "embed_blade", debuffs[ td -> source ], td -> source -> find_action( "return_slash" ) );
+    td -> debuff.embed_blade -> reset();
+  }
+};
+
+
+void bandolier_of_twisted_blades( special_effect_t& effect )
+{
+  struct return_slash_t : public generic_aoe_proc_t
+  {
+    return_slash_t( const special_effect_t& effect ) : generic_aoe_proc_t( effect, "return_slash", effect.player -> find_spell( 426114 ), true )
+    {
+      background = true;
+      base_dd_min = base_dd_max = effect.player -> find_spell( 422297 ) -> effectN( 2 ).average( effect.item );
+    }
+  };
+
+  struct bandolier_of_twisted_blades_t : public generic_proc_t
+  {
+    action_t* return_slash;
+    bandolier_of_twisted_blades_t( const special_effect_t& effect ) : generic_proc_t( effect, "embed_blade", effect.driver() ),
+      return_slash( create_proc_action<return_slash_t>( "return_slash", effect ) )
+    {
+      base_dd_min = base_dd_max = effect.player -> find_spell( 422297 ) -> effectN( 1 ).average( effect.item );
+      add_child( return_slash );
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_proc_t::impact( state );
+      
+      actor_target_data_t* td = player -> get_target_data( state -> target );
+
+      if ( td )
+      {
+        td -> debuff.embed_blade -> trigger();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<bandolier_of_twisted_blades_t>( "embed_blade", effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -6043,6 +6576,42 @@ void iridal_the_earths_master( special_effect_t& e )
       } );
 
   e.execute_action = damage;
+}
+
+
+// Hungering Shadowflame
+// 424320 Driver / Values
+// 424324 Damage
+void hungering_shadowflame( special_effect_t& e )
+{
+  struct hungering_shadowflame_t : public generic_proc_t
+  {
+    double damage_mult;
+    double hp_percent;
+    hungering_shadowflame_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "hungering_shadowflame", effect.player->find_spell( 424324 ) ),
+        damage_mult( effect.driver()->effectN( 2 ).percent() ),
+        hp_percent( effect.driver()->effectN( 3 ).base_value() )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      if ( state->target->health_percentage() > hp_percent)
+      {
+        m *= 1.0 + damage_mult;
+      }
+
+      return m;
+    }
+  };
+
+  e.execute_action = create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e );
+
+  new dbc_proc_callback_t( e.player , e);
 }
 
 // Armor
@@ -6802,6 +7371,32 @@ void demonsbane( special_effect_t& e )
 
   e.execute_action = dot;
   new dbc_proc_callback_t( e.player, e );
+}
+
+// TODO: implement heal/shield
+void undulating_sporecloak( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 410231 ) );
+  buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  if ( effect.player->is_ptr() )
+  {
+    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
+
+    // In case the player has two copies of this embellishment, set up the buff events only once.
+    if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
+    {
+      buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+        buff->trigger();
+        make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
+          if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
+            buff->trigger();
+          else
+            buff->expire();
+        } );
+      } );
+    }
+  }
 }
 
 }  // namespace items
@@ -7841,6 +8436,7 @@ void register_special_effects()
   register_special_effect( { 385939, 386127, 386136 }, enchants::projectile_propulsion_pinion );
   register_special_effect( { 387302, 387303, 387306 }, enchants::temporal_spellthread );
   register_special_effect( { 405764, 405765, 405766 }, enchants::shadowflame_wreathe );
+  register_special_effect( 425838, enchants::incandescent_essence );
 
   // Trinkets
   register_special_effect( 408671, items::dragonfire_bomb_dispenser );
@@ -7925,6 +8521,10 @@ void register_special_effects()
   register_special_effect( 414968, items::paracausal_fragment_of_azzinoth );
   register_special_effect( 415130, items::paracausal_fragment_of_frostmourne );
   register_special_effect( 414936, items::paracausal_fragment_of_doomhammer );
+  register_special_effect( 422858, items::pips_emerald_friendship_badge );
+  register_special_effect( 423611, items::ashes_of_the_embersoul );
+  register_special_effect( 426827, items::coiled_serpent_idol );
+  register_special_effect( 422303, items::bandolier_of_twisted_blades );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -7936,6 +8536,7 @@ void register_special_effects()
   register_special_effect( 408711, items::shadowed_razing_annihilator );        // Shadowed Razing Annihilator
   register_special_effect( 408821, items::djaruun_pillar_of_the_elder_flame, true );  // Djaruun, Pillar of the Elder Flame
   register_special_effect( 419278, items::iridal_the_earths_master );           // Iridal, the Earth's Master
+  register_special_effect( 424320, items::hungering_shadowflame );              // Hungering Shadowflame - Unnamed 1h axe
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
@@ -7958,6 +8559,7 @@ void register_special_effects()
   register_special_effect( 406254, items::roiling_shadowflame );
   register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
   register_special_effect( 406244, items::ever_decaying_spores );
+  register_special_effect( 410230, items::undulating_sporecloak );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
@@ -8020,6 +8622,8 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
   sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
+  sim.register_target_data_initializer( items::lava_bolt_initializer_t() );
+  sim.register_target_data_initializer( items::embed_blade_initializer_t() );
 }
 
 void register_hotfixes()

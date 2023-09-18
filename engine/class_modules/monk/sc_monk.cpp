@@ -155,7 +155,7 @@ namespace monk
         //    parse_buff_effects( p()->buff.purified_chi );
         // parse_buff_effects( p()->buff.press_the_advantage );
         // Mistweaver
-        parse_buff_effects( p()->buff.invoke_chiji_evm, true, true );
+        parse_buff_effects( p()->buff.invoke_chiji_evm, USE_DEFAULT );
         parse_buff_effects( p()->buff.lifecycles_enveloping_mist );
         parse_buff_effects( p()->buff.lifecycles_vivify );
         parse_buff_effects( p()->buff.mana_tea );

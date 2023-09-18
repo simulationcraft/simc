@@ -1435,6 +1435,13 @@ class SpellDataGenerator(DataGenerator):
          414928, 414936, 414951, 414950, 414935, # Paracausal Fragment of Doomhammer/Shalamayne
          419737, 420144, # Timestrike
          419262, 419261, # Demonsbane
+         # 10.2
+         425838, 426339, 426262, 426288, 426341, 426535, 426534, 426486, 426431, # Incandescent Essence Enchant
+         422858, 426676, 426647, 426672, # Pip's Emerald Frendship Badge
+         423611, 426898, 426911, 426906, 423021, 426897, # Ashes of the Embersoul
+         426827, 427059, 426834, 427037, 427058, 427057, 427056, 426840, 427047, # Coiled Serpent Idol
+         423124, 426564, 426553, # Augury of the Primal Flame
+         426114, # Bandolier of Twisted Blades
         ),
 
         # Warrior:
@@ -1457,6 +1464,8 @@ class SpellDataGenerator(DataGenerator):
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
             ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
+            ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
+            ( 52437,  0 ),          # Sudden Death (Fury buff)
         ),
 
         # Paladin:
@@ -1507,6 +1516,8 @@ class SpellDataGenerator(DataGenerator):
             ( 384810, 0 ),          # Seal of Clarity buff
             ( 404140, 0 ),          # Blessed Hammers for Adjudication
             ( 387113, 0 ),          # ES
+            ( 425261, 0 ),          # Cleansing Flame (Damage - Prot T31 4pc)
+            ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
         ),
 
         # Hunter:
@@ -1553,6 +1564,7 @@ class SpellDataGenerator(DataGenerator):
 
         # Rogue:
         (
+            ( 115192, 0 ),          # Subterfuge Buff
             ( 121474, 0 ),          # Shadow Blades off hand
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
@@ -1757,6 +1769,7 @@ class SpellDataGenerator(DataGenerator):
           ( 196782, 0 ), # Outbreak Intermediate AoE spell
           ( 281327, 0 ), # Obliteration Rune Generation Spell
           ( 47466, 0 ), # DK Pet Stun
+          ( 425721, 0 ), # T31 Blood 2pc buff
         ),
 
         # Shaman:
@@ -1864,6 +1877,7 @@ class SpellDataGenerator(DataGenerator):
           ( 414381, 0 ),                            # Concentrated Power AE
           ( 418735, 0 ),                            # Splintering Ray
           ( 419800, 0 ),                            # Intensifying Flame
+          ( 424120, 0 ),                            # Glacial Blast
         ),
 
         # Warlock:
@@ -1964,6 +1978,7 @@ class SpellDataGenerator(DataGenerator):
           ( 405681, 0 ),    # Immutable Hatred Damage Proc
           ( 409890, 0 ),    # T30 - Channel Demonfire
           ( 417282, 3 ),    # Crashing Chaos Buff 10.1.5
+          ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
         ),
 
         # Monk:
@@ -2181,6 +2196,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
           ( 393957, 1 ), # Waning Twilight
+          ( 424248, 1 ), # Balance T31 2pc buff
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage

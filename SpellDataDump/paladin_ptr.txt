@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51313 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -19156,7 +19156,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098492)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
-                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 2736 (Label) | Target: Self (1)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 0.50000 | Misc Value: 11 | Misc Value 2: 2736 (Label) | Target: Self (1)
                    Affected Spells (Label): Daybreak (414170)
 Description      : The cooldown of Daybreak is reduced by ${$s1/-1000} sec.
 
@@ -19180,7 +19180,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098493)  : Apply Aura (6) | Proc Trigger Spell (42): Sanctification
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 424616 | Target: Self (1)
-Description      : Judgment grants a stack of Sanctification, increasing your armor by $424616s1% per stack. Upon reaching $424616U stacks, your next cast of Consecration is empowered, increasing its damage and healing by $424622s1% and its radius by $424622s2%. Sanctification's stacks are reset when your empowered Consecration ends.
+Description      : Judgment grants a stack of Sanctification, increasing your armor by ${$424616s1}.1% per stack. Upon reaching $424616U stacks, your next cast of Consecration is empowered, increasing its damage and healing by $424622s1% and its radius by $424622s2%. Sanctification's stacks are reset when your empowered Consecration ends.
 
 Name             : Paladin Protection 10.2 Class Set 4pc (id=422896) [Passive, Hidden] 
 Class            : Paladin
@@ -19197,7 +19197,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098494)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : While you are within an empowered Consecration, your abilities have a chance to deal $s1% bonus damage or healing as Fire.
 
 Name             : Holy Reverberation (id=423377) [Spell Family (10)] 
@@ -19221,7 +19221,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : Allow While Sitting (27), Ignore Line of Sight (66), Aura Is Buff (140), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1099338)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 0.50000 | Target: Friend (21)
 Description      : $@spelldesc422893
 Tooltip          : Healing $s1 every $t.
 
@@ -19246,7 +19246,7 @@ Attributes       : ........ ........ ........ ..xx....   ........ ........ .....
                  : Aura Is Debuff (26), Allow While Sitting (27), Ignore Line of Sight (66), DoT Stacking Rule (103), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1099342)  : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | PvP Coefficient: 0.50000 | Target: Enemy (6)
 Description      : $@spelldesc422893
 Tooltip          : Receiving $w1 Holy damage every $t.
 
@@ -19254,7 +19254,6 @@ Name             : Paladin Retribution 10.2 Class Set 2pc (id=424513) [Spell Fam
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
@@ -19344,7 +19343,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1101738)  : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc422895
 Tooltip          : Armor increased by $s1%.
 
@@ -19354,7 +19353,7 @@ School           : Holy
 Spell Type       : None
 Duration         : 30 seconds
 Stacks           : 10 maximum
-Proc Chance      : 100%
+Proc Chance      : 50%
 Proc Flags       : ..x.x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19368,19 +19367,57 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1101749)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297)
                    Family Flags: 5
 #2 (id=1101750)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=1101757)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value 2: 2906 (Label) | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Misc Value 2: 2906 (Label) | Target: Self (1)
 #4 (id=1102994)  : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
 #5 (id=1105044)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value 2: 2939 (Label) | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Misc Value 2: 2939 (Label) | Target: Self (1)
                    Affected Spells (Label): Golden Path (377129)
 Description      : $@spelldesc422895
 Tooltip          : Consecration is empowered. Armor increased by $w4%.
+
+Name             : Cleansing Flame (id=425261) [Spell Family (10)] 
+Class            : Paladin
+School           : Fire
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Ignore Caster Damage Modifiers (221)
+Effects          :
+#1 (id=1102945)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc422896
+
+Name             : Cleansing Flame (id=425262) [Spell Family (10)] 
+Class            : Paladin
+School           : Fire
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Ignore Caster Healing Modifiers (312)
+Effects          :
+#1 (id=1102950)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Description      : $@spelldesc422896
 
 

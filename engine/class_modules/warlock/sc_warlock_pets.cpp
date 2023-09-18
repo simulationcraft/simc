@@ -13,7 +13,6 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
     summon_stats( nullptr ),
     buffs()
 {
-  use_delayed_pet_stat_updates = owner->use_pet_stat_update_delay;
   owner_coeff.ap_from_sp = 0.5;
   owner_coeff.sp_from_sp = 1.0;
 
@@ -73,6 +72,9 @@ void warlock_pet_t::create_buffs()
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_default_value( o()->talents.soul_glutton->effectN( 2 ).percent() );
 
+  buffs.nerzhuls_volition = make_buff( this, "nerzhuls_volition", o()->talents.nerzhuls_volition_buff )
+                                ->set_default_value( o()->talents.nerzhuls_volition->effectN( 1 ).percent() );
+
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
@@ -91,6 +93,9 @@ void warlock_pet_t::create_buffs()
                                         } );
                                       }
                                     } );
+
+  buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
+                            ->set_default_value( o()->talents.demonic_power_buff->effectN( 1 ).percent() );
 
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
@@ -132,6 +137,8 @@ void warlock_pet_t::create_buffs()
   buffs.infernal_command->quiet = true;
   buffs.embers->quiet = true;
   buffs.fury_of_ruvaraad->quiet = true;
+  buffs.nerzhuls_volition->quiet = true;
+  buffs.demonic_power->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -220,6 +227,12 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.infernal_command->check() )
     m *= 1.0 + buffs.infernal_command->check_value();
+
+  if ( buffs.nerzhuls_volition->check() )
+    m *= 1.0 + buffs.nerzhuls_volition->check_value();
+
+  if ( buffs.demonic_power->check() )
+    m *= 1.0 + buffs.demonic_power->check_value();
 
   if ( is_main_pet && o()->talents.wrathful_minion->ok() )
     m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
@@ -646,7 +659,7 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    if ( main_pet && p()->o()->talents.fel_and_steel->ok() && p()->o()->min_version_check( VERSION_10_1_5 ) )
+    if ( main_pet && p()->o()->talents.fel_and_steel->ok() )
       m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
 
     return m;
@@ -710,7 +723,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
       if ( fel_and_steel_bonus )
       {
-        m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( p()->o()->min_version_check( VERSION_10_1_5 ) ? 2 : 1 ).percent();
+        m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 2 ).percent();
       }
 
       if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
@@ -745,13 +758,10 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "Felstorm" )
     : felstorm_t( p, options_str, n )
   {
-    if ( main_pet && p->o()->talents.fel_might->ok() )
-      cooldown->duration += p->o()->talents.fel_might->effectN( 1 ).time_value();
-
     if ( main_pet && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
-    if ( ( main_pet || !p->o()->min_version_check( VERSION_10_1_5 ) ) && p->o()->talents.fel_and_steel->ok() )
+    if ( main_pet && p->o()->talents.fel_and_steel->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->fel_and_steel_bonus = true;
 
     if ( !main_pet )
@@ -1264,7 +1274,8 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
 
-    if ( p()->o()->buffs.demonic_power->check() )
+    // TODO: 10.2 moves this from owner to pet, remove owner code when 10.2 goes live
+    if ( p()->o()->buffs.demonic_power->check() || p()->buffs.demonic_power->check() )
     {
       // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
       c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
@@ -1373,10 +1384,13 @@ void wild_imp_pet_t::demise()
 
     if ( !power_siphon )
     {
-      double core_chance = o()->warlock_base.demonic_core->effectN( 1 ).percent();
+      double core_chance = o()->min_version_check( VERSION_10_2_0 ) ? o()->talents.demonic_core_spell->effectN( 1 ).percent() : o()->warlock_base.demonic_core->effectN( 1 ).percent();
 
       if ( o()->talents.bloodbound_imps.ok() )
         core_chance += o()->talents.bloodbound_imps->effectN( imploded ? 2 : 1 ).percent();
+
+      if ( !o()->talents.demoniac->ok() && o()->min_version_check( VERSION_10_2_0 ) )
+        core_chance = 0.0;
 
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
 
@@ -1455,11 +1469,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
       m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
     }
 
-    if ( p()->o()->talents.fel_and_steel->ok() && !p()->o()->min_version_check( VERSION_10_1_5 ) )
-    {
-      m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
-    }
-
     return m;
   }
 
@@ -1508,7 +1517,7 @@ void dreadstalker_t::init_base_stats()
   warlock_pet_t::init_base_stats();
   resources.base[ RESOURCE_ENERGY ] = 0;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-  melee_attack = new dreadstalker_melee_t( this, o()->min_version_check( VERSION_10_1_5 ) ? 0.96 : 0.83 ); // TOCHECK: This number may require tweaking if the AP coeff changes
+  melee_attack = new dreadstalker_melee_t( this, 0.96 ); // TOCHECK: This number may require tweaking if the AP coeff changes
 }
 
 void dreadstalker_t::arise()
@@ -1530,8 +1539,16 @@ void dreadstalker_t::demise()
   if ( !current.sleeping )
   {
     o()->buffs.dreadstalkers->decrement();
-    o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->warlock_base.demonic_core->effectN( 2 ).percent() );
-    
+
+    if ( o()->talents.demoniac->ok() && o()->min_version_check( VERSION_10_2_0 ) )
+    {
+      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+    }
+    else
+    {
+      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->warlock_base.demonic_core->effectN( 2 ).percent() );
+    }
+
     if ( o()->talents.shadows_bite->ok() )
       o()->buffs.shadows_bite->trigger();
   }
@@ -1564,7 +1581,15 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   action_list_str += "/travel";
   action_list_str += "/headbutt";
 
-  owner_coeff.ap_from_sp = 0.23;
+  owner_coeff.ap_from_sp = 0.39; // 2023-09-01 update: Live VF damage was found to be lower in sims than on Live
+  owner_coeff.sp_from_sp = 1.7;
+
+  if ( owner->min_version_check( VERSION_10_2_0 ) )
+  {
+    owner_coeff.ap_from_sp *= 1.15;
+    owner_coeff.sp_from_sp *= 1.15;
+  }
+
   owner_coeff.health     = 0.75;
 
   bile_spit_executes = 1; // Only one Bile Spit per summon
@@ -1607,7 +1632,6 @@ void vilefiend_t::init_base_stats()
   warlock_simple_pet_t::init_base_stats();
 
   melee_attack = new warlock_pet_melee_t( this, 2.0 );
-  melee_attack->base_dd_multiplier *= 1.3; // 2023-03-19 Last minute hotfix for 10.0.7
 
   special_ability = new headbutt_t( this );
 }
@@ -1663,7 +1687,7 @@ void demonic_tyrant_t::arise()
 
   if ( o()->talents.reign_of_tyranny->ok() )
   {
-    buffs.demonic_servitude->trigger( 1, ( o()->buffs.demonic_servitude->check() + 1 ) * o()->buffs.demonic_servitude->check_value() ); // Demonic Servitude has a permanent extra 1 stack on tracking (last checked 2023-03-17)
+    buffs.demonic_servitude->trigger( 1, ( ( o()->min_version_check( VERSION_10_2_0 ) ? 0 : 1 ) + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() ); // 2023-09-10: On 10.2 PTR, the stack cap is interfering with the previous 1 "permanent" stack value
   }
 }
 
@@ -1674,7 +1698,9 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
   if ( o()->talents.reign_of_tyranny->ok() )
   {
     m *= 1.0 + buffs.demonic_servitude->check_value();
-    m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
+
+    if ( !o()->min_version_check( VERSION_10_2_0 ) )
+      m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
   }
 
   return m;
@@ -1703,10 +1729,15 @@ void pit_lord_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->buffs.nether_portal_total->check() )
+  if ( o()->buffs.nether_portal_total->check() && !o()->min_version_check( VERSION_10_2_0 ) )
   {
     buffs.soul_glutton->trigger( o()->buffs.nether_portal_total->current_stack );
     o()->buffs.nether_portal_total->expire();
+  }
+
+  if ( o()->talents.nerzhuls_volition->ok() && o()->min_version_check( VERSION_10_2_0 ) )
+  {
+    buffs.nerzhuls_volition->trigger();
   }
 
   melee_attack->set_target( target );

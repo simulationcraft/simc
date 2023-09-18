@@ -21,6 +21,36 @@ namespace priestspace
  */
 struct priest_t;
 
+template <typename Data, typename Base = action_state_t>
+struct priest_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> );  // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> );        // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const priest_action_state_t*>( o ) );
+  }
+};
+
 namespace actions::spells
 {
 struct shadowy_apparition_spell_t;
@@ -28,6 +58,7 @@ struct psychic_link_t;
 struct shadow_weaving_t;
 struct echoing_void_t;
 struct echoing_void_demise_t;
+struct shadow_word_death_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
@@ -171,6 +202,7 @@ public:
     propagate_const<buff_t*> light_weaving;
     propagate_const<buff_t*> darkflame_embers;
     propagate_const<buff_t*> darkflame_shroud;
+    propagate_const<buff_t*> deaths_torment;
   } buffs;
 
   // Talents
@@ -547,6 +579,7 @@ public:
     propagate_const<actions::spells::shadow_weaving_t*> shadow_weaving;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
+    propagate_const<actions::spells::shadow_word_death_t*> shadow_word_death;
     propagate_const<actions::spells::echoing_void_demise_t*> echoing_void_demise;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
@@ -784,13 +817,19 @@ public:
     }
   }
 
-  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
-  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
-  //  use_stacks = optional, default true, whether to multiply value by stacks
-  //  use_default = optional, default false, whether to use buff's default value over effect's value
-  //  S = optional list of template parameter(s) to indicate spell(s) with redirect effects
-  //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
+  //  value_type = optional, default USE_DATA, where the value comes from.
+  //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
+  //  spell = optional list of spell with redirect effects that modify the effects on the buff
+  //
+  // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
+  //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
+  //
+  // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
+  //  parse_buff_effects( buff2, false, USE_DEFAULT );
   void apply_buff_effects()
   {
     // using S = const spell_data_t*;
@@ -806,41 +845,44 @@ public:
                           true );                      // Spell Direct amount for Mind Sear (NOT DP)
       parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
 
-      parse_buff_effects( p().buffs.voidform, 0x4U, false, false );  // Skip E3 for AM
+      parse_buff_effects( p().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
       parse_buff_effects( p().buffs.shadowform );
       parse_buff_effects( p().buffs.mind_devourer );
       parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
       // TODO: check why we cant use_default=true to get the value correct
-      parse_buff_effects( p().buffs.dark_ascension, 0b1000U, false, false );  // Buffs non-periodic spells - Skip E4
+      parse_buff_effects( p().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
       parse_buff_effects( p().buffs.gathering_shadows,
                           true );                      // Spell Direct amount for Mind Sear (NOT DP)
       parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
 
-      parse_buff_effects( p().buffs.deathspeaker );
-
       if ( p().talents.shadow.ancient_madness.enabled() )
       {
         // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
         if ( p().talents.shadow.dark_ascension.enabled() )
         {
-          parse_buff_effects( p().buffs.ancient_madness, 0b0001U, true, true );  // Skip E1
+          parse_buff_effects( p().buffs.ancient_madness, 0b0001U, true, USE_DEFAULT );  // Skip E1
         }
         else
         {
-          parse_buff_effects( p().buffs.ancient_madness, 0b0011U, true, true );  // Skip E1 and E2
+          parse_buff_effects( p().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
         }
+      }
+
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
+      {
+        parse_buff_effects( p().buffs.deaths_torment );
       }
     }
 
     // DISCIPLINE BUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_buff_effects( p().buffs.shadow_covenant, false, true );
+      parse_buff_effects( p().buffs.shadow_covenant, 0U, false, USE_DEFAULT );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_buff_effects( p().buffs.sins_of_the_many, false, true );
+      parse_buff_effects( p().buffs.sins_of_the_many, 0U, false, USE_DEFAULT );
       parse_buff_effects( p().buffs.twilight_equilibrium_shadow_amp );
       parse_buff_effects( p().buffs.twilight_equilibrium_holy_amp );
       parse_buff_effects( p().buffs.light_weaving );
