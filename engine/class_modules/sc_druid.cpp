@@ -6368,6 +6368,9 @@ struct celestial_alignment_base_t : public druid_spell_t
     // Check if this changes as it could be unintended
     p()->buff.dreamstate->trigger();
 
+    p()->buff.balance_t31_4pc_buff_lunar->expire();
+    p()->buff.balance_t31_4pc_buff_solar->expire();
+
     p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
   }
 };
