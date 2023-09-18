@@ -7709,7 +7709,21 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
 
   void execute() override
   {
+    // Piggy back the start combat cast onto the last precombat cast to work around the difference of when you enter
+    // real and raid combat. You gain this buff when you finish your first harmful cast onto an enemy from out of
+    // combat.
+    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER &&
+         p()->sets->has_set_bonus( DRUID_BALANCE, T31, B2 ) )
+    {
+      p()->buff.dreamstate->trigger();
+      dreamstate = true;
+    }
+
     base_t::execute();
+
+    if ( dreamstate )
+      p()->buff.dreamstate->decrement();
+    dreamstate = false;
 
     // for precombat we hack it to advance eclipse and manually energize 100ms later to get around the eclipse stack
     // reset & AP capping on combat start
@@ -7730,10 +7744,6 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
       p()->buff.warrior_of_elune->decrement();
 
     p()->buff.gathering_starstuff->expire();
-
-    if ( dreamstate )
-      p()->buff.dreamstate->decrement();
-    dreamstate = false;
 
     if ( is_free_proc() )
       return;
@@ -10174,7 +10184,8 @@ void druid_t::create_buffs()
   
   buff.dreamstate = make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_BALANCE, T31, B2 ), this, "dreamstate",
                                         find_spell( 424248 ) )
-                        ->set_reverse( true );
+                        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
 
   // Feral buffs
   buff.apex_predators_craving = make_buff_fallback( talent.apex_predators_craving.ok(),
@@ -11636,8 +11647,9 @@ void druid_t::combat_begin()
         sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
     }
 
-    if ( sets->has_set_bonus( DRUID_BALANCE, T31, B2 ) )
-      buff.dreamstate->trigger();
+    // Fallthrough if there wasn't any precombat Starfire cast to trigger Dreamstate
+    if ( !buff.dreamstate->check() )
+        buff.dreamstate->trigger();
   }
 /*
   if ( talent.adaptive_swarm.ok() && !prepull_swarm.empty() && find_action( "adaptive_swarm" ) )
