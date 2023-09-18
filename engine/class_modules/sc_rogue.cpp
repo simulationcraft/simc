@@ -524,6 +524,8 @@ public:
     const spell_data_t* stealth;
     const spell_data_t* vanish;
     const spell_data_t* wound_poison;
+    const spell_data_t* feint;
+    const spell_data_t* sap;
 
     // Class Passives
     const spell_data_t* all_rogue;
@@ -679,58 +681,59 @@ public:
     {
       player_talent_t shiv;
       player_talent_t blind;                    // No implementation
-      player_talent_t sap;                      // No implementation
-
-      player_talent_t evasion;                  // No implementation
-      player_talent_t feint;
       player_talent_t cloak_of_shadows;         // No implementation
 
-      player_talent_t master_poisoner;          // No implementation
+      player_talent_t evasion;                  // No implementation
+      player_talent_t gouge;
+      player_talent_t shadowstep;
+
       player_talent_t numbing_poison;
       player_talent_t atrophic_poison;
-      player_talent_t nimble_fingers;
-      player_talent_t gouge;
-      player_talent_t rushed_setup;
-      player_talent_t tricks_of_the_trade;      // No implementation
-      player_talent_t shadowrunner;
-
-      player_talent_t improved_wound_poison;
-      player_talent_t fleet_footed;
-      player_talent_t iron_stomach;             // No implementation
-      player_talent_t improved_sprint;
-      player_talent_t shadowstep;
-      player_talent_t subterfuge;
-
-      player_talent_t deadened_nerves;          // No implementation
       player_talent_t elusiveness;              // No implementation
       player_talent_t cheat_death;              // No implementation
       player_talent_t blackjack;                // No implementation
+      player_talent_t tricks_of_the_trade;      // No implementation
+
+      player_talent_t master_poisoner;          // No implementation
+      player_talent_t nimble_fingers;
+      player_talent_t improved_sprint;
+      player_talent_t shadowrunner;
+
+      player_talent_t improved_wound_poison;
+      player_talent_t fleet_footed;             // No implementation
+      player_talent_t iron_stomach;             // No implementation
+      player_talent_t unbreakable_stride;       // No implementation
+      player_talent_t featherfoot;              // No implementation
+      player_talent_t rushed_setup;
+      player_talent_t subterfuge;
+
+      player_talent_t superior_mixture;         // No implementation
+      player_talent_t deadened_nerves;          // No implementation
+      player_talent_t graceful_guile;           // No implementation
+      player_talent_t stillshroud;              // No implementation
 
       player_talent_t deadly_precision;
       player_talent_t virulent_poisons;
-      player_talent_t tight_spender;
-      player_talent_t nightstalker;
-      
-      player_talent_t vigor;
-      player_talent_t acrobatic_strikes;
+      player_talent_t recuperator;
       player_talent_t improved_ambush;
+      player_talent_t tight_spender;
 
       player_talent_t leeching_poison;
       player_talent_t lethality;
-      player_talent_t recuperator;
+      player_talent_t acrobatic_strikes;
       player_talent_t alacrity;
       player_talent_t soothing_darkness;        // No implementation
 
-      player_talent_t seal_fate;
-      player_talent_t cold_blood;
+      player_talent_t vigor;
       player_talent_t echoing_reprimand;
-      player_talent_t marked_for_death;
-      player_talent_t deeper_stratagem;
-      player_talent_t find_weakness;
+      player_talent_t nightstalker;
       
       player_talent_t thistle_tea;
+      player_talent_t cold_blood;
       player_talent_t resounding_clarity;
       player_talent_t reverberation;
+      player_talent_t marked_for_death;
+      player_talent_t deeper_stratagem;
       player_talent_t shadow_dance;
     } rogue;
 
@@ -753,6 +756,7 @@ public:
       player_talent_t fatal_concoction;
       player_talent_t improved_garrote;
       player_talent_t intent_to_kill;
+      player_talent_t seal_fate;
 
       player_talent_t crimson_tempest;
       player_talent_t venom_rush;
@@ -849,6 +853,8 @@ public:
 
     struct subtlety_talents_t
     {
+      player_talent_t find_weakness;
+
       player_talent_t improved_backstab;
       player_talent_t shadowstep;
       player_talent_t improved_shuriken_storm;
@@ -4112,7 +4118,7 @@ struct fan_of_knives_t: public rogue_attack_t
 struct feint_t : public rogue_attack_t
 {
   feint_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
-    rogue_attack_t( name, p, p->talent.rogue.feint, options_str )
+    rogue_attack_t( name, p, p->spell.feint, options_str )
   { }
 
   void execute() override
@@ -7443,7 +7449,7 @@ void actions::rogue_action_t<Base>::trigger_poisons( const action_state_t* state
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_seal_fate( const action_state_t* state )
 {
-  if ( !p()->talent.rogue.seal_fate->ok() )
+  if ( !p()->talent.assassination.seal_fate->ok() )
     return;
 
   if ( !procs_seal_fate() )
@@ -7452,10 +7458,10 @@ void actions::rogue_action_t<Base>::trigger_seal_fate( const action_state_t* sta
   if ( state->result != RESULT_CRIT )
     return;
 
-  if ( !p()->rng().roll( p()->talent.rogue.seal_fate->effectN( 1 ).percent() ) )
+  if ( !p()->rng().roll( p()->talent.assassination.seal_fate->effectN( 1 ).percent() ) )
     return;
 
-  trigger_combo_point_gain( as<int>( p()->talent.rogue.seal_fate->effectN( 2 ).trigger()->effectN( 1 ).base_value() ),
+  trigger_combo_point_gain( as<int>( p()->talent.assassination.seal_fate->effectN( 2 ).trigger()->effectN( 1 ).base_value() ),
                             p()->gains.seal_fate, true );
 }
 
@@ -7957,7 +7963,7 @@ void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t*
     return;
 
   // Subtlety duration-triggered Find Weakness applications do not require the talent
-  if ( !( p()->talent.rogue.find_weakness->ok() || duration > timespan_t::zero() ) )
+  if ( !( p()->talent.subtlety.find_weakness->ok() || duration > timespan_t::zero() ) )
     return;
 
   // If the new duration (e.g. from Backstab crits) is lower than the existing debuff duration, refresh without change.
@@ -8178,7 +8184,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->set_cooldown( timespan_t::zero() );
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
-    ->set_default_value( source->talent.rogue.find_weakness->effectN( 1 ).percent() )
+    ->set_default_value( source->talent.subtlety.find_weakness->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   debuffs.sting_like_a_bee = make_buff( *this, "sting_like_a_bee", source->spell.sting_like_a_bee_debuff )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
@@ -9243,6 +9249,8 @@ void rogue_t::init_spells()
   spell.stealth = find_class_spell( "Stealth" );
   spell.vanish = find_class_spell( "Vanish" );
   spell.wound_poison = find_class_spell( "Wound Poison" );
+  spell.feint = find_class_spell( "Feint" );
+  spell.sap = find_class_spell( "Sap" );
 
   // Class Passives
   spell.all_rogue = find_spell( 137034 );
@@ -9291,58 +9299,60 @@ void rogue_t::init_spells()
   // Class Talents
   talent.rogue.shiv = find_talent_spell( talent_tree::CLASS, "Shiv" );
   talent.rogue.blind = find_talent_spell( talent_tree::CLASS, "Blind" );
-  talent.rogue.sap = find_talent_spell( talent_tree::CLASS, "Sap" );
-
-  talent.rogue.evasion = find_talent_spell( talent_tree::CLASS, "Evasion" );
-  talent.rogue.feint = find_talent_spell( talent_tree::CLASS, "Feint" );
   talent.rogue.cloak_of_shadows = find_talent_spell( talent_tree::CLASS, "Cloak of Shadows" );
 
-  talent.rogue.master_poisoner = find_talent_spell( talent_tree::CLASS, "Master Poisoner" );
+  talent.rogue.evasion = find_talent_spell( talent_tree::CLASS, "Evasion" );
+  talent.rogue.gouge = find_talent_spell( talent_tree::CLASS, "Gouge" );
+  talent.rogue.shadowstep = find_talent_spell( talent_tree::CLASS, "Shadowstep" );
+
   talent.rogue.numbing_poison = find_talent_spell( talent_tree::CLASS, "Numbing Poison" );
   talent.rogue.atrophic_poison = find_talent_spell( talent_tree::CLASS, "Atrophic Poison" );
-  talent.rogue.nimble_fingers = find_talent_spell( talent_tree::CLASS, "Nimble Fingers" );
-  talent.rogue.gouge = find_talent_spell( talent_tree::CLASS, "Gouge" );
-  talent.rogue.rushed_setup = find_talent_spell( talent_tree::CLASS, "Rushed Setup" );
+  talent.rogue.cheat_death = find_talent_spell( talent_tree::CLASS, "Cheat Death" );
+  talent.rogue.elusiveness = find_talent_spell( talent_tree::CLASS, "Elusiveness" );
   talent.rogue.tricks_of_the_trade = find_talent_spell( talent_tree::CLASS, "Tricks of the Trade" );
+  talent.rogue.blackjack = find_talent_spell( talent_tree::CLASS, "Blackjack" );
+
+  talent.rogue.master_poisoner = find_talent_spell( talent_tree::CLASS, "Master Poisoner" );
+  talent.rogue.nimble_fingers = find_talent_spell( talent_tree::CLASS, "Nimble Fingers" );
+  talent.rogue.improved_sprint = find_talent_spell( talent_tree::CLASS, "Improved Sprint" );
   talent.rogue.shadowrunner = find_talent_spell( talent_tree::CLASS, "Shadowrunner" );
+
 
   talent.rogue.improved_wound_poison = find_talent_spell( talent_tree::CLASS, "Improved Wound Poison" );
   talent.rogue.fleet_footed = find_talent_spell( talent_tree::CLASS, "Fleet Footed" );
   talent.rogue.iron_stomach = find_talent_spell( talent_tree::CLASS, "Iron Stomach" );
-  talent.rogue.improved_sprint = find_talent_spell( talent_tree::CLASS, "Improved Sprint" );
-  talent.rogue.shadowstep = find_talent_spell( talent_tree::CLASS, "Shadowstep" );
+  talent.rogue.unbreakable_stride = find_talent_spell( talent_tree::CLASS, "Unbreakable Stride" );
+  talent.rogue.featherfoot = find_talent_spell( talent_tree::CLASS, "Featherfoot" );
+  talent.rogue.rushed_setup = find_talent_spell( talent_tree::CLASS, "Rushed Setup" );
   talent.rogue.subterfuge = find_talent_spell( talent_tree::CLASS, "Subterfuge" );
 
+  talent.rogue.superior_mixture = find_talent_spell( talent_tree::CLASS, "Superior Mixture" );
   talent.rogue.deadened_nerves = find_talent_spell( talent_tree::CLASS, "Deadened Nerves" );
-  talent.rogue.cheat_death = find_talent_spell( talent_tree::CLASS, "Cheat Death" );
-  talent.rogue.elusiveness = find_talent_spell( talent_tree::CLASS, "Elusiveness" );
-  talent.rogue.blackjack = find_talent_spell( talent_tree::CLASS, "Blackjack" );
+  talent.rogue.graceful_guile = find_talent_spell( talent_tree::CLASS, "Graceful Guile" );
+  talent.rogue.stillshroud = find_talent_spell( talent_tree::CLASS, "Stillshroud" );
 
   talent.rogue.deadly_precision = find_talent_spell( talent_tree::CLASS, "Deadly Precision" );
   talent.rogue.virulent_poisons = find_talent_spell( talent_tree::CLASS, "Virulent Poisons" );
-  talent.rogue.tight_spender = find_talent_spell( talent_tree::CLASS, "Tight Spender" );
-  talent.rogue.nightstalker = find_talent_spell( talent_tree::CLASS, "Nightstalker" );
-
-  talent.rogue.vigor = find_talent_spell( talent_tree::CLASS, "Vigor" );
-  talent.rogue.acrobatic_strikes = find_talent_spell( talent_tree::CLASS, "Acrobatic Strikes" );
+  talent.rogue.recuperator = find_talent_spell( talent_tree::CLASS, "Recuperator" );
   talent.rogue.improved_ambush = find_talent_spell( talent_tree::CLASS, "Improved Ambush" );
+  talent.rogue.tight_spender = find_talent_spell( talent_tree::CLASS, "Tight Spender" );
 
   talent.rogue.leeching_poison = find_talent_spell( talent_tree::CLASS, "Leeching Poison" );
   talent.rogue.lethality = find_talent_spell( talent_tree::CLASS, "Lethality" );
-  talent.rogue.recuperator = find_talent_spell( talent_tree::CLASS, "Recuperator" );
+  talent.rogue.acrobatic_strikes = find_talent_spell( talent_tree::CLASS, "Acrobatic Strikes" );
   talent.rogue.alacrity = find_talent_spell( talent_tree::CLASS, "Alacrity" );
   talent.rogue.soothing_darkness = find_talent_spell( talent_tree::CLASS, "Soothing Darkness" );
 
-  talent.rogue.seal_fate = find_talent_spell( talent_tree::CLASS, "Seal Fate" );
-  talent.rogue.cold_blood = find_talent_spell( talent_tree::CLASS, "Cold Blood" );
+  talent.rogue.vigor = find_talent_spell( talent_tree::CLASS, "Vigor" );
   talent.rogue.echoing_reprimand = find_talent_spell( talent_tree::CLASS, "Echoing Reprimand" );
-  talent.rogue.deeper_stratagem = find_talent_spell( talent_tree::CLASS, "Deeper Stratagem" );
-  talent.rogue.marked_for_death = find_talent_spell( talent_tree::CLASS, "Marked for Death" );
-  talent.rogue.find_weakness = find_talent_spell( talent_tree::CLASS, "Find Weakness" );
+  talent.rogue.nightstalker = find_talent_spell( talent_tree::CLASS, "Nightstalker" );
 
   talent.rogue.thistle_tea = find_talent_spell( talent_tree::CLASS, "Thistle Tea" );
+  talent.rogue.cold_blood = find_talent_spell( talent_tree::CLASS, "Cold Blood" );
   talent.rogue.resounding_clarity = find_talent_spell( talent_tree::CLASS, "Resounding Clarity" );
   talent.rogue.reverberation = find_talent_spell( talent_tree::CLASS, "Reverberation" );
+  talent.rogue.deeper_stratagem = find_talent_spell( talent_tree::CLASS, "Deeper Stratagem" );
+  talent.rogue.marked_for_death = find_talent_spell( talent_tree::CLASS, "Marked for Death" );
   talent.rogue.shadow_dance = find_talent_spell( talent_tree::CLASS, "Shadow Dance" );
 
   // Assassination Talents
@@ -9379,6 +9389,7 @@ void rogue_t::init_spells()
   talent.assassination.amplifying_poison = find_talent_spell( talent_tree::SPECIALIZATION, "Amplifying Poison" );
   talent.assassination.twist_the_knife = find_talent_spell( talent_tree::SPECIALIZATION, "Twist the Knife" );
   talent.assassination.doomblade = find_talent_spell( talent_tree::SPECIALIZATION, "Doomblade" );
+  talent.assassination.seal_fate = find_talent_spell( talent_tree::SPECIALIZATION, "Seal Fate" );
 
   talent.assassination.blindside = find_talent_spell( talent_tree::SPECIALIZATION, "Blindside" );
   talent.assassination.tiny_toxic_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Tiny Toxic Blade" );
@@ -9461,6 +9472,8 @@ void rogue_t::init_spells()
   talent.outlaw.greenskins_wickers = find_talent_spell( talent_tree::SPECIALIZATION, "Greenskin's Wickers" );
 
   // Subtlety Talents
+  talent.subtlety.find_weakness = find_talent_spell( talent_tree::SPECIALIZATION, "Find Weakness" );
+
   talent.subtlety.improved_backstab = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Backstab" );
   talent.subtlety.shadowstep = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowstep", ROGUE_SUBTLETY );
   talent.subtlety.improved_shuriken_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shuriken Storm" );
@@ -9536,7 +9549,7 @@ void rogue_t::init_spells()
   // Class Background Spells
   spell.alacrity_buff = talent.rogue.alacrity->ok() ? find_spell( 193538 ) : spell_data_t::not_found();
   spell.echoing_reprimand = talent.rogue.echoing_reprimand;
-  spell.find_weakness_debuff = ( talent.rogue.find_weakness->ok() || specialization() == ROGUE_SUBTLETY ) ? find_spell( 316220 ) : spell_data_t::not_found();
+  spell.find_weakness_debuff = talent.subtlety.find_weakness->ok() ? find_spell( 316220 ) : spell_data_t::not_found();
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
   spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
@@ -9920,9 +9933,9 @@ void rogue_t::create_buffs()
   // Baseline ===============================================================
   // Shared
 
-  buffs.feint = make_buff( this, "feint", talent.rogue.feint )
+  buffs.feint = make_buff( this, "feint", spell.feint )
     ->set_cooldown( timespan_t::zero() )
-    ->set_duration( talent.rogue.feint->duration() );
+    ->set_duration( spell.feint->duration() );
 
   buffs.shadowstep = make_buff( this, "shadowstep", spell.shadowstep_buff )
     ->set_cooldown( timespan_t::zero() )
