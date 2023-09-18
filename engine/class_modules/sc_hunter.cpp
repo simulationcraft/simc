@@ -7358,7 +7358,7 @@ void hunter_t::create_buffs()
 
   buffs.contained_explosion =
     make_buff( this, "contained_explosion", tier_set.t31_sv_4pc_buff )
-      -> set_default_value( talents.wildfire_bomb -> effectN( 3 ).percent() );
+      -> set_default_value( tier_set.t31_sv_4pc_buff -> effectN( 1 ).percent() );
 }
 
 // hunter_t::init_gains =====================================================
