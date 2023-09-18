@@ -2000,35 +2000,45 @@ using hunter_main_pet_attack_t = hunter_main_pet_action_t< melee_attack_t >;
 
 // Kill Command (pet) =======================================================
 
-struct kill_command_db_t: public hunter_pet_action_t<dire_critter_t, melee_attack_t>
+template <class Pet>
+struct kill_command_base_t : public hunter_pet_action_t<Pet, melee_attack_t>
 {
+private:
+  using ab = hunter_pet_action_t<Pet, melee_attack_t>;
+public:
+
   struct {
     double percent = 0;
     double multiplier = 1;
     benefit_t* benefit = nullptr;
   } killer_instinct;
 
-  kill_command_db_t( dire_critter_t* p ) :
-    hunter_pet_action_t( "kill_command", p, p -> find_spell( 83381 ) )
+  kill_command_base_t( Pet* p, const spell_data_t* s ) :
+    ab( "kill_command", p, s )
   {
-    attack_power_mod.direct = o() -> talents.kill_command -> effectN( 2 ).percent();
+    ab::background = true;
+    ab::proc = true;
+    
+    ab::attack_power_mod.direct = ab::o() -> talents.kill_command -> effectN( 2 ).percent();
+    ab::base_dd_multiplier *= 1 + ab::o() -> talents.alpha_predator -> effectN( 2 ).percent();
 
-    background = true;
-    proc = true;
-
-    base_dd_multiplier *= 1 + o() -> talents.alpha_predator -> effectN( 2 ).percent();
-
-    if ( o() -> talents.killer_instinct.ok() )
+    if ( ab::o() -> talents.killer_instinct.ok() )
     {
-      killer_instinct.percent = o() -> talents.killer_instinct -> effectN( 2 ).base_value();
-      killer_instinct.multiplier = 1 + o() -> talents.killer_instinct -> effectN( 1 ).percent();
-      killer_instinct.benefit = o() -> get_benefit( "killer_instinct" );
+      killer_instinct.percent = ab::o() -> talents.killer_instinct -> effectN( 2 ).base_value();
+      killer_instinct.multiplier = 1 + ab::o() -> talents.killer_instinct -> effectN( 1 ).percent();
+      killer_instinct.benefit = ab::o() -> get_benefit( "killer_instinct" );
     }
+  }
+
+  double composite_attack_power() const override
+  {
+    // Kill Command for both Survival & Beast Mastery uses player AP directly
+    return ab::o() -> cache.attack_power() * ab::o() -> composite_attack_power_multiplier();
   }
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double am = hunter_pet_action_t::composite_target_multiplier( t );
+    double am = ab::composite_target_multiplier( t );
 
     if ( killer_instinct.percent )
     {
@@ -2043,14 +2053,38 @@ struct kill_command_db_t: public hunter_pet_action_t<dire_critter_t, melee_attac
 
   void impact( action_state_t* s ) override
   {
-    hunter_pet_action_t::impact( s );
+    ab::impact( s );
 
-    if ( o() -> talents.master_marksman.ok() && s -> result == RESULT_CRIT )
+    if ( ab::o() -> talents.master_marksman.ok() && s -> result == RESULT_CRIT )
     {
-      double amount = s -> result_amount * o() -> talents.master_marksman -> effectN( 1 ).percent();
+      double amount = s -> result_amount * ab::o() -> talents.master_marksman -> effectN( 1 ).percent();
       if ( amount > 0 )
-        residual_action::trigger( o() -> actions.master_marksman, s -> target, amount );
+        residual_action::trigger( ab::o() -> actions.master_marksman, s -> target, amount );
     }
+  }
+};
+
+struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
+{
+  struct {
+    double percent = 0;
+    double multiplier = 1;
+    benefit_t* benefit = nullptr;
+  } killer_instinct;
+
+  kill_command_db_t( dire_critter_t* p ) :
+    kill_command_base_t( p, p -> find_spell( 83381 ) )
+  {
+  }
+
+  double composite_attack_power() const override
+  {
+    return hunter_pet_action_t::composite_attack_power();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    kill_command_base_t::impact( s );
 
     if ( o() -> talents.kill_cleave.ok() && s -> action -> result_is_hit( s -> result ) &&
       s -> action -> sim -> active_enemies > 1 && p() -> buffs.beast_cleave -> up() )
@@ -2062,65 +2096,7 @@ struct kill_command_db_t: public hunter_pet_action_t<dire_critter_t, melee_attac
   }
 };
 
-struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, melee_attack_t>
-{
-  struct {
-    double percent = 0;
-    double multiplier = 1;
-    benefit_t* benefit = nullptr;
-  } killer_instinct;
-
-  kill_command_base_t( hunter_main_pet_base_t* p, const spell_data_t* s ):
-    hunter_pet_action_t( "kill_command", p, s )
-  {
-    background = true;
-    proc = true;
-
-    base_dd_multiplier *= 1 + o() -> talents.alpha_predator -> effectN( 2 ).percent();
-
-    if ( o() -> talents.killer_instinct.ok() )
-    {
-      killer_instinct.percent = o() -> talents.killer_instinct -> effectN( 2 ).base_value();
-      killer_instinct.multiplier = 1 + o() -> talents.killer_instinct -> effectN( 1 ).percent();
-      killer_instinct.benefit = o() -> get_benefit( "killer_instinct" );
-    }
-  }
-
-  double composite_attack_power() const override
-  {
-    // Kill Command for both Survival & Beast Mastery uses player AP directly
-    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double am = hunter_pet_action_t::composite_target_multiplier( t );
-
-    if ( killer_instinct.percent )
-    {
-      const bool active = t -> health_percentage() < killer_instinct.percent;
-      killer_instinct.benefit -> update( active );
-      if ( active )
-        am *= killer_instinct.multiplier;
-    }
-
-    return am;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_pet_action_t::impact( s );
-
-    if ( o() -> talents.master_marksman.ok() && s -> result == RESULT_CRIT )
-    {
-      double amount = s -> result_amount * o() -> talents.master_marksman -> effectN( 1 ).percent();
-      if ( amount > 0 )
-        residual_action::trigger( o() -> actions.master_marksman, s -> target, amount );
-    }
-  }
-};
-
-struct kill_command_bm_mm_t: public kill_command_base_t
+struct kill_command_bm_mm_t: public kill_command_base_t<hunter_main_pet_base_t>
 {
   struct {
     double chance = 0;
@@ -2129,7 +2105,6 @@ struct kill_command_bm_mm_t: public kill_command_base_t
   kill_command_bm_mm_t( hunter_main_pet_base_t* p ) :
     kill_command_base_t( p, p -> find_spell( 83381 ) )
   {
-    attack_power_mod.direct = o() -> talents.kill_command -> effectN( 2 ).percent();
   }
 
   void execute() override
@@ -2174,9 +2149,9 @@ struct kill_command_bm_mm_t: public kill_command_base_t
   }
 };
 
-struct kill_command_sv_t: public kill_command_base_t
+struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
 {
-  kill_command_sv_t( hunter_main_pet_base_t* p ):
+  kill_command_sv_t( hunter_main_pet_base_t* p ) :
     kill_command_base_t( p, p -> find_spell( 259277 ) )
   {
     attack_power_mod.direct = o() -> talents.kill_command -> effectN( 1 ).percent();
