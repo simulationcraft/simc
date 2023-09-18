@@ -357,8 +357,8 @@ public:
     spell_data_ptr_t t31_mm_4pc;
     spell_data_ptr_t t31_sv_2pc;
     spell_data_ptr_t t31_sv_2pc_buff;
-    //TODO NYI
     spell_data_ptr_t t31_sv_4pc;
+    spell_data_ptr_t t31_sv_4pc_buff;
   } tier_set;
 
   // Buffs
@@ -422,7 +422,8 @@ public:
     //T30
     buff_t* exposed_wound;
     //T31
-    buff_t* fury_strikes; 
+    buff_t* fury_strikes;
+    buff_t* contained_explosion;
   } buffs;
 
   // Cooldowns
@@ -705,6 +706,7 @@ public:
     action_t* dire_command = nullptr; 
     action_t* windrunners_guidance_background = nullptr;
     action_t* volley_t31 = nullptr;
+    action_t* wildfire_bomb_t31 = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -1611,7 +1613,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     if ( o() -> buffs.fury_strikes -> check() )
     {
-      cc += o() -> tier_set.t31_sv_2pc -> effectN( 2 ).percent();
+      cc += o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ).percent();
     }
 
     return cc;
@@ -1627,7 +1629,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     if ( o() -> buffs.fury_strikes -> check() && 
         o() -> buffs.fury_strikes -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
     {
-      m *= 1 + o() -> tier_set.t31_sv_2pc -> effectN( 1 ).percent();
+      m *= 1 + o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ).percent();
     }
 
     return m;
@@ -3525,7 +3527,7 @@ struct arctic_bola_t final : hunter_spell_t
 // Windrunner's Guidance =====================================================
 struct windrunners_guidance_background_t : public hunter_spell_t
 {
-  windrunners_guidance_background_t( hunter_t* p):
+  windrunners_guidance_background_t( hunter_t* p ):
     hunter_spell_t( "windrunners_guidance", p, p -> talents.windrunners_guidance )
   {
     background = true;
@@ -5090,6 +5092,13 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     {
       p() -> buffs.fury_strikes -> trigger();
     }
+
+    if ( p() -> tier_set.t31_sv_4pc.ok() )
+    {
+      p() -> buffs.contained_explosion -> trigger();
+      p() -> cooldowns.wildfire_bomb -> reset( false );
+      p() -> actions.wildfire_bomb_t31 -> execute_on_target( execute_state -> target );
+    }
   }
 
   void tick( dot_t* dot ) override
@@ -6083,7 +6092,6 @@ struct steel_trap_t: public trap_base_t
 
 // Wildfire Bomb ==============================================================
 
-//TODO Add 40% increase damage to main target (effectN #3 on spell data) for 10.2
 struct wildfire_bomb_t: public hunter_spell_t
 {
   struct state_data_t {
@@ -6114,6 +6122,12 @@ struct wildfire_bomb_t: public hunter_spell_t
         if ( as<double>( s -> n_targets ) > reduced_aoe_targets )
         {
           am *= std::sqrt( reduced_aoe_targets / s -> n_targets );
+        }
+
+        if ( s -> chain_target == 0 && p() -> is_ptr() )
+        {
+          am *= 1.0 + p() -> talents.wildfire_bomb -> effectN( 3 ).percent();
+          am *= 1.0 + p() -> buffs.contained_explosion -> value();
         }
 
         return am;
@@ -6194,6 +6208,12 @@ struct wildfire_bomb_t: public hunter_spell_t
       if( td )
       {
         am *= 1.0 + td -> debuffs.shredded_armor -> value();
+      }
+
+      if ( s -> chain_target == 0 && p() -> is_ptr() )
+      {
+        am *= 1.0 + p() -> talents.wildfire_bomb -> effectN( 3 ).percent();
+        am *= 1.0 + p() -> buffs.contained_explosion -> value();
       }
 
       return am;
@@ -6366,6 +6386,15 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     hunter_spell_t::snapshot_state( s, type );
     debug_cast<state_t*>( s ) -> current_bomb = p() -> state.next_wi_bomb;
+  }
+};
+
+struct wildfire_bomb_background_t: public wildfire_bomb_t
+{
+  wildfire_bomb_background_t( hunter_t* p ):
+      wildfire_bomb_t( p, "" )
+  {
+    background = dual = true;
   }
 };
 
@@ -6939,6 +6968,7 @@ void hunter_t::init_spells()
   tier_set.t31_sv_2pc = sets -> set( HUNTER_SURVIVAL, T31, B2 );
   tier_set.t31_sv_2pc_buff = find_spell( 425830 );
   tier_set.t31_sv_4pc = sets -> set( HUNTER_SURVIVAL, T31, B4 );
+  tier_set.t31_sv_4pc_buff = find_spell( 426344 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
@@ -6997,6 +7027,9 @@ void hunter_t::create_actions()
 
   if ( tier_set.t31_mm_2pc.ok() )
     actions.volley_t31 = new spells::volley_background_t( this );
+
+  if ( tier_set.t31_sv_4pc.ok() )
+    actions.wildfire_bomb_t31 = new spells::wildfire_bomb_background_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -7322,6 +7355,10 @@ void hunter_t::create_buffs()
   buffs.fury_strikes = 
     make_buff( this, "fury_strikes", tier_set.t31_sv_2pc_buff ) 
       -> set_default_value_from_effect( 1 );
+
+  buffs.contained_explosion =
+    make_buff( this, "contained_explosion", tier_set.t31_sv_4pc_buff )
+      -> set_default_value( talents.wildfire_bomb -> effectN( 3 ).percent() );
 }
 
 // hunter_t::init_gains =====================================================
