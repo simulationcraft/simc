@@ -1101,18 +1101,23 @@ void paladin_t::t29_4p_prot()
 
 void paladin_t::t31_4p_prot( action_state_t* s )
 {
+  auto name = s->action->name_str;
+  if ( name == "cleansing_flame_damage" || name == "seal_of_the_crusader" )
+    return;
+
+  double damage = s->result_total * .2;
   // Proc chance seems to be hardcoded
-  if ( buffs.sanctification_empower->up() && rng().roll( 0.5 ) )
+  if ( buffs.sanctification_empower->up() && damage > 0 && rng().roll( 0.5 ) )
   {
     // How can I access paladin_action_t::can_proc_prot_t31 here?
     // s->action is an action_t, not a paladin_action_t, need to convert it or something?
 
     // ToDo: Check for can_prot_prot_t31 before doing stuff
 
-    active.cleansing_flame->base_dd_min = active.cleansing_flame->base_dd_max = s->result_total * .2;
+    active.cleansing_flame->base_dd_min = active.cleansing_flame->base_dd_max = damage;
     active.cleansing_flame->target = s->target;
     active.cleansing_flame->schedule_execute();
-    sim->print_debug( "{} procced Cleansing Flame for {} damage.", s->action->name(), s->result_total*.2 );
+    sim->print_debug( "{} procced Cleansing Flame for {} damage.", s->action->name(), damage );
   }
 }
 
