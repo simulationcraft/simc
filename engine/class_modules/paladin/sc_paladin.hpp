@@ -106,6 +106,9 @@ public:
     action_t* divine_arbiter;
     action_t* searing_light;
     action_t* searing_light_cons;
+
+    // Tier stuff
+    action_t* cleansing_flame; // Prot Tier 31 4pc
   } active;
 
   // Buffs
@@ -325,6 +328,8 @@ public:
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
+    const spell_data_t* cleansing_flame_damage;
+    const spell_data_t* cleansing_flame_heal;
   } spells;
 
   // Talents
@@ -618,7 +623,7 @@ public:
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    heartfire( action_state_t* s );
   void    t29_4p_prot();
-  void    sanctification();
+  void    t31_4p_prot(action_state_t* s);
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
   int     get_local_enemies( double distance ) const;
@@ -865,13 +870,16 @@ public:
   bool searing_light_disabled;
   bool clears_judgment;
 
+  bool can_proc_prot_t31;
+
   paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false ),
     searing_light_disabled( false ),
-    clears_judgment( false )
+    clears_judgment( false ),
+    can_proc_prot_t31( true )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
 
@@ -1027,6 +1035,10 @@ public:
         paladin_td_t* td = this->td( s->target );
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
+      }
+      if ( p()->sets->has_set_bonus(PALADIN_PROTECTION, T31, B4) )
+      {
+        p()->t31_4p_prot( s );
       }
     }
   }
