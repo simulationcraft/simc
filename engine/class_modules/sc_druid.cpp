@@ -78,6 +78,7 @@ struct druid_td_t : public actor_target_data_t
   {
     dot_t* adaptive_swarm_damage;
     dot_t* astral_smolder;
+    dot_t* burning_frenzy;
     dot_t* feral_frenzy;
     dot_t* frenzied_assault;
     dot_t* fungal_growth;
@@ -471,6 +472,7 @@ public:
     action_t* orbital_strike;
 
     // Feral
+    action_t* burning_frenzy; // 4t31
     action_t* ferocious_bite_apex;  // free bite from apex predator's crazing
     action_t* frenzied_assault;
     action_t* thrashing_claws;
@@ -3270,6 +3272,16 @@ public:
 
     residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
+
+  void trigger_burning_frenzy( player_t* t, const action_state_t* s )
+  {
+    if ( !special || !harmful || !s->result_amount )
+      return;
+
+    auto d = s->result_amount * p()->find_spell( 422751 )->effectN( 6 ).percent();
+
+    residual_action::trigger( p()->active.burning_frenzy, t, d );
+  }
 };  // end druid_cat_attack_t
 
 struct cat_finisher_data_t
@@ -3774,6 +3786,15 @@ struct ferocious_bite_t : public cat_finisher_t
 struct frenzied_assault_t : public residual_action::residual_periodic_action_t<cat_attack_t>
 {
   frenzied_assault_t( druid_t* p ) : residual_action_t( "frenzied_assault", p, p->find_spell( 391140 ) )
+  {
+    proc = true;
+  }
+};
+
+// t31 4p feral =============================================================
+struct burning_frenzy_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+{
+  burning_frenzy_t( druid_t* p ) : residual_action_t( "burning_frenzy", p, p->find_spell( 422779 ) )
   {
     proc = true;
   }
@@ -10518,6 +10539,9 @@ void druid_t::create_actions()
   if ( talent.berserk_frenzy.ok() )
     active.frenzied_assault = get_secondary_action<frenzied_assault_t>( "frenzied_assault" );
 
+  if ( sets->has_set_bonus( DRUID_FERAL, T31, B4 ) )
+    active.burning_frenzy = get_secondary_action<burning_frenzy_t>( "burning_frenzy " );
+
   if ( talent.thrashing_claws.ok() )
   {
     auto tc = get_secondary_action_n<thrash_cat_dot_t>( "thrashing_claws" );
@@ -12535,6 +12559,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   {
     dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
     dots.astral_smolder        = target.get_dot( "astral_smolder", &source );
+    dots.burning_frenzy        = target.get_dot( "burning_frenzy", &source );  // feral 4t31
     dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );  // damage dot is triggered by feral_frenzy_tick_t
     dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
     dots.fungal_growth         = target.get_dot( "fungal_growth", &source );
