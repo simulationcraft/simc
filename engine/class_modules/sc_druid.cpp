@@ -13066,9 +13066,8 @@ void druid_t::apply_affecting_auras( action_t& action )
     action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
-  // Feral
-  if ( !is_ptr() )
-    action.apply_affecting_aura( spec.ashamanes_guidance );
+  // Feral 
+  action.apply_affecting_aura( spec.ashamanes_guidance );
   action.apply_affecting_aura( talent.dreadful_bleeding );
   action.apply_affecting_aura( talent.infected_wounds_cat );
   action.apply_affecting_aura( talent.lions_strength );
