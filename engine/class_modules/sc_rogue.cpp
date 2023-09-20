@@ -9986,10 +9986,12 @@ void rogue_t::create_buffs()
 
   // Outlaw =================================================================
 
-  buffs.between_the_eyes = debug_cast<damage_buff_t*>(make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes )
+  buffs.between_the_eyes = debug_cast<damage_buff_t*>( make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes )
+    ->set_cooldown( timespan_t::zero() )
     ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE ));
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_refresh_behavior( buff_refresh_behavior::MAX ) );
   buffs.adrenaline_rush = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry = new buffs::blade_flurry_t( this );
 
