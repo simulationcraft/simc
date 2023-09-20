@@ -8353,11 +8353,6 @@ double rogue_t::composite_melee_crit_chance() const
     crit += talent.subtlety.planned_execution->effectN( 1 ).percent();
   }
 
-  if ( buffs.between_the_eyes->up() )
-  {
-    crit += buffs.between_the_eyes->stack_value();
-  }
-
   return crit;
 }
 
@@ -8373,11 +8368,6 @@ double rogue_t::composite_spell_crit_chance() const
   if ( talent.subtlety.planned_execution->ok() && buffs.symbols_of_death->up() )
   {
     crit += talent.subtlety.planned_execution->effectN( 1 ).percent();
-  }
-
-  if ( buffs.between_the_eyes->up() )
-  {
-    crit += buffs.between_the_eyes->stack_value();
   }
 
   return crit;
