@@ -6188,6 +6188,41 @@ void pinch_of_dream_magic( special_effect_t& effect )
       } );
 }
 
+// Dancing Dream Blossoms
+// Driver: 423905
+// Buff: 423906
+// TODO/VERIFY: Assumed "the way you like them" picks your highest secondary stat.
+void dancing_dream_blossoms( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "dancing_dream_blossoms_crit_rating", "dancing_dream_blossoms_mastery_rating",
+                     "dancing_dream_blossoms_haste_rating", "dancing_dream_blossoms_versatility_rating" } ) )
+  {
+    return;
+  }
+
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+
+  for ( auto stat : ratings )
+  {
+    auto name = std::string( "dancing_dream_blossoms_" ) + util::stat_type_string( stat );
+    auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 423906 ), effect.item )
+                    ->set_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
+                    ->set_name_reporting( util::stat_type_abbrev( stat ) );
+    ( *buffs )[ stat ] = buff;
+  }
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        stat_e max_stat = util::highest_stat( effect.player, ratings );
+        ( *buffs )[ max_stat ]->trigger();
+      } );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8571,6 +8606,7 @@ void register_special_effects()
   register_special_effect( 422303, items::bandolier_of_twisted_blades );
   register_special_effect( 423926, items::rune_of_the_umbramane );
   register_special_effect( 423927, items::pinch_of_dream_magic );
+  register_special_effect( 423905, items::dancing_dream_blossoms );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
