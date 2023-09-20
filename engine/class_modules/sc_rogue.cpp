@@ -280,6 +280,7 @@ public:
     actions::rogue_poison_t* nonlethal_poison = nullptr;
     actions::rogue_poison_t* nonlethal_poison_dtb = nullptr;
     
+    actions::rogue_attack_t* dreadblades = nullptr;
     actions::rogue_attack_t* blade_flurry = nullptr;
     actions::rogue_attack_t* blade_flurry_st = nullptr;
     actions::rogue_attack_t* fan_the_hammer = nullptr;
@@ -7862,6 +7863,12 @@ void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* s
     return;
 
   trigger_combo_point_gain( as<int>( p()->buffs.dreadblades->check_value() ), p()->gains.dreadblades );
+
+  if ( p()->record_healing() )
+  {
+    auto expenditure = p()->resources.current[ RESOURCE_HEALTH ] * 0.08; // 8% current hp, value not in spell data
+    p()->active.dreadblades->stats->consume_resource( RESOURCE_HEALTH, expenditure );
+  }
 }
 
 template <typename Base>
@@ -9744,6 +9751,11 @@ void rogue_t::init_spells()
   {
     active.blade_flurry = get_background_action<actions::blade_flurry_attack_t>( "blade_flurry_attack" );
     active.blade_flurry_st = get_background_action<actions::blade_flurry_attack_st_t>( "blade_flurry_attack_st" );
+  }
+
+  if ( talent.outlaw.dreadblades->ok() )
+  {
+    active.dreadblades = get_background_action<actions::dreadblades_t>( "dreadblades" );
   }
 
   if ( talent.outlaw.triple_threat->ok() )
