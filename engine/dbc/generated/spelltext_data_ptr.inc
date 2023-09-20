@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51297
-static const std::array<spelltext_data_t, 20426> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20431> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20310,7 +20310,12 @@ static const std::array<spelltext_data_t, 20426> __ptr_spelltext_data { {
   { 424173, "$@spelldesc423926", 0, 0 },
   { 424213, "$@spelldesc424214", 0, 0 },
   { 424214, "Throw the spear at an enemy, dealing $s1 Nature damage.", 0, 0 },
+  { 424228, "$@spelldesc423927", "Intellect increased by $w1 and shapeshifted!", 0 },
   { 424248, "$@spelldesc422862", "Wrath and Starfire damage increased by $s3% and cast time reduced by $s1%.", 0 },
+  { 424272, "$@spelldesc423927", "Intellect increased by $w1 and shapeshifted!", 0 },
+  { 424274, "$@spelldesc423927", "Intellect increased by $w1 and shapeshifted!", 0 },
+  { 424275, "$@spelldesc423927", "Intellect increased by $w1 and shapeshifted!", 0 },
+  { 424276, "$@spelldesc423927", "Intellect increased by $w1 and shapeshifted!", 0 },
   { 424285, "$@spelldesc422882", "Critical Strike damage increased by $w1%.", 0 },
   { 424289, "$@spelldesc422883", 0, 0 },
   { 424293, "$@spelldesc422880", "Spell damage increased by $w1%.", 0 },
