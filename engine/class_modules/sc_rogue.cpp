@@ -2137,7 +2137,7 @@ public:
 
     // Nightstalker
     // 2023-05-01 -- Unclear if this snapshots yet, needs to be verified
-    if ( p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) &&
+    if ( p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) &&
          p()->buffs.nightstalker->is_affecting_periodic( ab::s_data ) )
     {
       m *= p()->buffs.nightstalker->periodic_mod.multiplier;
@@ -2222,7 +2222,7 @@ public:
 
     // 2023-05-13 -- Nightstalker snapshots for specific DoT spells out of Stealth
     if ( p()->talent.rogue.nightstalker->ok() && snapshots_nightstalker() &&
-         p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
+         p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
     {
       m *= p()->buffs.nightstalker->periodic_mod.multiplier;
     }
