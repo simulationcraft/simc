@@ -17956,11 +17956,12 @@ Effects          :
 Description      : For each bleed effect consumed from a target, your damage taken is reduced by an additional $s1%. When Shield Slam consumes a bleed, the cooldown of Thunder Clap is reset and the cooldown of Thunderous Roar is reduced by ${$s2/1000}.1 sec.
 
 Name             : Furious Bloodthirst (id=423211) [Spell Family (4)] 
+Hotfixed         : Internal Cooldown (1000 -> 500)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Internal Cooldown: 1 seconds
+Internal Cooldown: 0.5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
