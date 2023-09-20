@@ -6157,6 +6157,37 @@ void rune_of_the_umbramane( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Pinch of Dream Magic
+// Driver: 423927
+// Buffs: 424228, 424276, 424274, 424272, 424275
+void pinch_of_dream_magic( special_effect_t& effect )
+{
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  std::vector<buff_t*> buffs;
+
+  auto add_buff = [ &effect, &buffs ]( std::string suf, unsigned id ) {
+    auto name = "pinch_of_dream_magic_" + suf;
+    auto buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( id ) )
+                 ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+    }
+    buffs.push_back( buff );
+  };
+
+  add_buff( "dreamstag", 424228 );
+  add_buff( "dreamtalon", 424276 );
+  add_buff( "ferntalon", 424274 );
+  add_buff( "runebear", 424272 );
+  add_buff( "dreamsaber", 424275 );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+      } );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8539,6 +8570,7 @@ void register_special_effects()
   register_special_effect( 426827, items::coiled_serpent_idol );
   register_special_effect( 422303, items::bandolier_of_twisted_blades );
   register_special_effect( 423926, items::rune_of_the_umbramane );
+  register_special_effect( 423927, items::pinch_of_dream_magic );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
