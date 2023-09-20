@@ -6223,6 +6223,18 @@ void dancing_dream_blossoms( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Belor'relos, the Sunstone
+// Driver: 422146
+// Damage values stored in 422141 (e1 is damage, e2 is DoT)
+// TODO: Self-Dot: 425417
+void belorrelos_the_sunstone( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "solar_maelstrom", effect, "solar_maelstrom", 422146, true );
+  damage->base_dd_min = damage->base_dd_max = effect.player->find_spell( 422141 )->effectN( 1 ).average( effect.item );
+
+  effect.execute_action = damage;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8607,6 +8619,7 @@ void register_special_effects()
   register_special_effect( 423926, items::rune_of_the_umbramane );
   register_special_effect( 423927, items::pinch_of_dream_magic );
   register_special_effect( 423905, items::dancing_dream_blossoms );
+  register_special_effect( 422146, items::belorrelos_the_sunstone );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
