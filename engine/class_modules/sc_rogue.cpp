@@ -1518,6 +1518,7 @@ public:
     bool shadow_blades_cp = false;
     bool the_rotten = false;            // Crit Bonus
     bool zoldyck_insignia = false;
+    bool marked_for_death = false;      // Finisher damage buff
 
     bool t29_assassination_2pc = false;
     bool t30_subtlety_4pc = false;
@@ -1631,6 +1632,11 @@ public:
     affected_by.improved_shiv =
       ( p->talent.assassination.improved_shiv->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) ) ) ||
       ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) );
+
+    if ( p->talent.rogue.marked_for_death->ok() )
+    {
+      affected_by.marked_for_death = ab::data().affected_by( p->talent.rogue.marked_for_death->effectN( 1 ) );
+    }
 
     if ( p->spell.sepsis_buff->ok() )
     {
@@ -2211,6 +2217,12 @@ public:
     if ( affected_by.ghostly_strike )
     {
       m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
+    }
+
+    // Marked for Death
+    if ( affected_by.marked_for_death && tdata->debuffs.marked_for_death->up() )
+    {
+      m *= 1.0 + tdata->debuffs.marked_for_death->data().effectN( 1 ).percent();
     }
 
     return m;
