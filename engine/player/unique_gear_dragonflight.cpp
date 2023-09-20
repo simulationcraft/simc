@@ -6144,6 +6144,19 @@ void bandolier_of_twisted_blades( special_effect_t& effect )
   effect.execute_action = create_proc_action<bandolier_of_twisted_blades_t>( "embed_blade", effect );
 }
 
+// Rune of the Umbramane
+// TODO: healing when targeting an ally
+// Early implementation based on spell data, needs verification
+void rune_of_the_umbramane( special_effect_t& effect )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "rune_of_the_umbramane", effect, "rune_of_the_umbramane", effect.trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8525,6 +8538,7 @@ void register_special_effects()
   register_special_effect( 423611, items::ashes_of_the_embersoul );
   register_special_effect( 426827, items::coiled_serpent_idol );
   register_special_effect( 422303, items::bandolier_of_twisted_blades );
+  register_special_effect( 423926, items::rune_of_the_umbramane );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
