@@ -1105,7 +1105,7 @@ void paladin_t::t31_4p_prot( action_state_t* s )
   if ( name == "cleansing_flame_damage" || name == "seal_of_the_crusader" )
     return;
 
-  double damage = s->result_total * .2;
+  double damage = s->result_total * .4;
   // Proc chance seems to be hardcoded
   if ( buffs.sanctification_empower->up() && damage > 0 && rng().roll( 0.5 ) )
   {
@@ -1242,7 +1242,7 @@ void paladin_t::create_buffs_protection()
 
   buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) )
     ->set_default_value_from_effect( 1 )
-    ->set_max_stack(10)
+    ->set_max_stack(5)
     ->add_invalidate( CACHE_BONUS_ARMOR );
 
     buffs.sanctification_empower =
