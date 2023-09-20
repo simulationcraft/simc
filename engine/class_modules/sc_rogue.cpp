@@ -3601,9 +3601,13 @@ struct blade_flurry_t : public rogue_attack_t
       rogue_attack_t( name, p, p->spec.blade_flurry_instant_attack )
     {
       range = -1.0;
-      energize_type = action_energize::PER_HIT;
-      energize_resource = RESOURCE_COMBO_POINT;
-      energize_amount = 1;
+
+      if ( p->talent.outlaw.deft_maneuvers->ok() )
+      {
+        energize_type = action_energize::PER_HIT;
+        energize_resource = RESOURCE_COMBO_POINT;
+        energize_amount = 1;
+      }
     }
 
     bool procs_main_gauche() const override
