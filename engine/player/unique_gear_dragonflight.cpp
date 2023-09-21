@@ -6226,12 +6226,89 @@ void dancing_dream_blossoms( special_effect_t& effect )
 // Belor'relos, the Sunstone
 // Driver: 422146
 // Damage values stored in 422141 (e1 is damage, e2 is DoT)
-// TODO: Self-Dot: 425417
+// Self-Dot: 425417
 void belorrelos_the_sunstone( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "solar_maelstrom", effect, "solar_maelstrom", 422146, true );
-  damage->base_dd_min = damage->base_dd_max = effect.player->find_spell( 422141 )->effectN( 1 ).average( effect.item );
+  struct belorrelos_damage_t : public generic_aoe_proc_t
+  {
+    belorrelos_damage_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "solar_maelstrom", effect.driver(), true )
+    {
+      base_dd_min = base_dd_max = effect.player->find_spell( 422141 )->effectN( 1 ).average( effect.item );
+      base_execute_time         = 0_ms;  // Overriding execute time, this is handled by the main action.
+      not_a_proc                = true;  // Due to cast time on the primary ability
+    }
+  };
 
+  struct belorrelos_channel_t : public proc_spell_t
+  {
+    action_t* damage;
+    action_t* self_damage;
+
+    belorrelos_channel_t( const special_effect_t& e, action_t* _self_damage )
+      : proc_spell_t( "belorrelos_channel", e.player, e.driver(), e.item ),
+        damage( create_proc_action<belorrelos_damage_t>( "solar_maelstrom", e ) )
+    {
+      channeled = hasted_ticks = true;
+      callbacks                = false;
+      dot_duration = base_tick_time = base_execute_time;
+      base_execute_time             = 0_s;
+      aoe                           = 0;
+      interrupt_auto_attack         = false;
+      effect                        = &e;
+      self_damage                   = _self_damage;
+      // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
+      ability_lag        = sim->queue_lag;
+      ability_lag_stddev = sim->queue_lag_stddev;
+      // Child action handles travel time
+      min_travel_time = travel_speed = travel_delay = 0; 
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
+
+      // Cancelled before the last tick completed, reset the cd
+      if ( d->end_event )
+      {
+        cooldown->reset( false );
+        cdgrp->reset( false );
+      }
+      else
+      {
+        cooldown->adjust( d->duration() );
+        cdgrp->adjust( d->duration() );
+      }
+
+      proc_spell_t::last_tick( d );
+      damage->execute();
+
+      self_damage->set_target( player );
+      self_damage->execute();
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( 0_ms );
+    }
+  };
+
+  // Create self-damage DoT
+  auto dot         = create_proc_action<generic_proc_t>( "solar_maelstrom_dot", effect, "solar_maelstrom_dot",
+                                                 effect.player->find_spell( 425417 ) );
+  auto num_ticks   = dot->dot_duration / dot->base_tick_time;
+  dot->base_td     = effect.player->find_spell( 422141 )->effectN( 2 ).average( effect.item ) / num_ticks;
+  dot->not_a_proc  = true;
+  dot->stats->type = stats_e::STATS_NEUTRAL;
+  dot->target      = effect.player;
+
+  auto damage           = create_proc_action<belorrelos_channel_t>( "belorrelos_channel", effect, dot );
   effect.execute_action = damage;
 }
 
