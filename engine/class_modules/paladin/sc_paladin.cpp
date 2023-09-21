@@ -2599,6 +2599,8 @@ void paladin_t::init_spells()
   tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
   tier_sets.heartfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
   tier_sets.heartfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
+  tier_sets.t31_2pc = sets->set( PALADIN_PROTECTION, T31, B2 );
+  tier_sets.t31_4pc = sets->set( PALADIN_PROTECTION, T31, B4 );
 }
 
 // paladin_t::primary_role ==================================================

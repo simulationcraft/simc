@@ -1105,9 +1105,8 @@ void paladin_t::t31_4p_prot( action_state_t* s )
   if ( name == "cleansing_flame_damage" || name == "seal_of_the_crusader" )
     return;
 
-  double damage = s->result_total * .4;
-  // Proc chance seems to be hardcoded
-  if ( buffs.sanctification_empower->up() && damage > 0 && rng().roll( 0.5 ) )
+  double damage = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
+  if ( buffs.sanctification_empower->up() && damage > 0 && rng().roll( buffs.sanctification_empower->default_chance ) )
   {
     // How can I access paladin_action_t::can_proc_prot_t31 here?
     // s->action is an action_t, not a paladin_action_t, need to convert it or something?
@@ -1242,7 +1241,7 @@ void paladin_t::create_buffs_protection()
 
   buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) )
     ->set_default_value_from_effect( 1 )
-    ->set_max_stack(5)
+    //->set_max_stack(5)
     ->add_invalidate( CACHE_BONUS_ARMOR );
 
     buffs.sanctification_empower =

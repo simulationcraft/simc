@@ -539,6 +539,8 @@ public:
     const spell_data_t* ally_of_the_light_4pc;
     const spell_data_t* heartfire_sentinels_authority_2pc;
     const spell_data_t* heartfire_sentinels_authority_4pc;
+    const spell_data_t* t31_2pc;
+    const spell_data_t* t31_4pc;
 
   } tier_sets;
 
