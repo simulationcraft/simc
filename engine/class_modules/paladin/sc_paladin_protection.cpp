@@ -871,6 +871,17 @@ struct cleansing_flame_damage_t : public paladin_spell_t
   }
 };
 
+struct cleansing_flame_heal_t : public paladin_heal_t
+{
+  bool can_proc_prot_t31;
+  cleansing_flame_heal_t( paladin_t* p )
+    : paladin_heal_t( "cleansing_flame_heal", p, p->spells.cleansing_flame_heal ), can_proc_prot_t31( false )
+  {
+    background = true;
+    may_crit   = false;
+    harmful    = false;
+  }
+};
 
 // paladin_t::target_mitigation ===============================================
 
@@ -1129,6 +1140,18 @@ void paladin_t::t31_4p_prot( action_state_t* s )
   }
 }
 
+void paladin_t::t31_4p_prot_heal(action_state_t* s)
+{
+  double healing = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
+  if ( buffs.sanctification_empower->up() && healing > 0 && rng().roll( buffs.sanctification_empower->default_chance ) )
+  {
+    active.cleansing_flame_heal->base_dd_min = active.cleansing_flame_heal->base_dd_max = healing;
+    active.cleansing_flame_heal->target                                                 = s->target;
+    active.cleansing_flame_heal->schedule_execute();
+    sim->print_debug( "{} procced Cleansing Flame for {} healing.", s->action->name(), healing );
+  }
+}
+
 
 void paladin_t::adjust_health_percent( )
 {
@@ -1152,6 +1175,7 @@ void paladin_t::create_prot_actions()
   if ( sets->has_set_bonus( PALADIN_PROTECTION, T31, B4 ) )
   {
     active.cleansing_flame = new cleansing_flame_damage_t( this );
+    active.cleansing_flame_heal = new cleansing_flame_heal_t( this );
   }
 }
 
