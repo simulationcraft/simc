@@ -17518,7 +17518,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Range            : 100 yards
-Duration         : Aura (infinite)
+Duration         : 20 seconds
 Triggered by     : Warlock Demonology 10.2 Class Set 4pc (422920)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
