@@ -1198,11 +1198,13 @@ void grimoire_felguard_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack = new warlock_pet_melee_t( this );
 
-  owner_coeff.ap_from_sp = 0.65;
-  owner_coeff.sp_from_sp = 1.3;
+  // 2023-09-20: Validated coefficients
+  owner_coeff.ap_from_sp = 0.741;
 
-  // TOCHECK Grimoire Felguard also has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2021-12-01
-  melee_attack->base_dd_multiplier *= 1.1;
+  melee_attack->base_dd_multiplier *= 1.42;
+
+  if ( !o()->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.57;
 }
 
 action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
