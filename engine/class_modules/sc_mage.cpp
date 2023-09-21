@@ -1998,8 +1998,6 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( m <= 0.0 )
       return;
 
-    double trigger_dmg = s->result_total;
-
     double amount = trigger_dmg / m * p()->cache.mastery_value();
     if ( amount <= 0.0 )
       return;
