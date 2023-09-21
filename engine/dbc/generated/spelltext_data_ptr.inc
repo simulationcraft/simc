@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51425
-static const std::array<spelltext_data_t, 20439> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20440> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20404,6 +20404,7 @@ static const std::array<spelltext_data_t, 20439> __ptr_spelltext_data { {
   { 426647, "$@spelldesc422858", "Mastery increased by $w1.", 0 },
   { 426672, "$@spelldesc422858", "Versatility increased by $w1.", 0 },
   { 426676, "$@spelldesc422858", "Critical Strike increased by $w1.", 0 },
+  { 426703, "$@spelldesc34026", 0, 0 },
   { 426827, "Your critical strikes have a chance to summon a lava serpent to attack your target for 10 sec. The serpent spews a lava bolt every 2 sec, dealing $s1 Volcanic damage. Every third summoning, call forth three serpents instead.\r\n\r\nIf the target dies, the serpent enrages to deal $s2 Volcanic damage to up to 8 nearby enemies. ", 0, 0 },
   { 426834, "$@spelldesc426827", 0, 0 },
   { 426840, "$@spelldesc426827", 0, 0 },
