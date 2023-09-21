@@ -1431,9 +1431,11 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
   action_list_str = "travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
-  // TOCHECK: This has been adjusted through various hotfixes over several years to the current value
-  // Last checked 2021-12-02
-  owner_coeff.ap_from_sp = 0.55;
+  // 2023-09-20: Coefficient updated
+  owner_coeff.ap_from_sp = 0.686;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.55;
 
   owner_coeff.health = 0.4;
 }
