@@ -1712,17 +1712,49 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 
 pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_PIT_LORD, name != "pit_lord" )
 {
-  owner_coeff.ap_from_sp = 1.21;
-  owner_coeff.sp_from_sp = 1.21;
+  owner_coeff.ap_from_sp = 1.215;
+  owner_coeff.sp_from_sp = 1.215;
 
   soul_glutton_damage_bonus = owner->talents.soul_glutton->effectN( 1 ).percent();
+
+  if ( owner->min_version_check( VERSION_10_2_0 ) )
+    action_list_str = "felseeker";
 }
+
+struct felseeker_t : warlock_pet_spell_t
+{
+  felseeker_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Felseeker", p, p->find_spell( 427688 ) )
+  {
+    tick_may_crit = false;
+    hasted_ticks = false;
+
+    channeled = true;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warlock_pet_spell_t::last_tick( d );
+
+    // Ensure the Pit Lord does not try to cast a second time
+    make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+  }
+};
+
+action_t* pit_lord_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "felseeker" )
+    return new felseeker_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
 
 void pit_lord_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  melee_attack = new warlock_pet_melee_t( this, 4.35 );
+  if ( !o()->min_version_check( VERSION_10_2_0 ) )
+    melee_attack = new warlock_pet_melee_t( this, 4.35 );
 }
 
 void pit_lord_t::arise()
@@ -1735,13 +1767,16 @@ void pit_lord_t::arise()
     o()->buffs.nether_portal_total->expire();
   }
 
-  if ( o()->talents.nerzhuls_volition->ok() && o()->min_version_check( VERSION_10_2_0 ) )
+  if ( o()->talents.nerzhuls_volition->ok() && o()->min_version_check( VERSION_10_2_0 ) && false )
   {
     buffs.nerzhuls_volition->trigger();
   }
 
-  melee_attack->set_target( target );
-  melee_attack->schedule_execute();
+  if ( !o()->min_version_check( VERSION_10_2_0 ) )
+  {
+    melee_attack->set_target( target );
+    melee_attack->schedule_execute();
+  }
 }
 
 double pit_lord_t::composite_player_multiplier( school_e school ) const
