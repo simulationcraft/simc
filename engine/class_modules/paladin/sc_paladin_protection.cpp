@@ -930,6 +930,15 @@ void paladin_t::target_mitigation( school_e school,
   if ( buffs.devotion_aura->up() )
     s->result_amount *= 1.0 + buffs.devotion_aura->value();
 
+  if ( buffs.sanctification->up() )
+  {
+    s->result_amount *= 1.0 + buffs.sanctification->data().effectN( 1 ).percent() * buffs.sanctification->stack();
+  }
+  if ( buffs.sanctification_empower->up() )
+  {
+    s->result_amount *= 1.0 + buffs.sanctification_empower->data().effectN( 4 ).percent();
+  }
+
   paladin_td_t* td = get_target_data( s->action->player );
 
   if ( td->debuff.eye_of_tyr->up() )
@@ -1239,14 +1248,9 @@ void paladin_t::create_buffs_protection()
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
 
-  buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) )
-    ->set_default_value_from_effect( 1 )
-    //->set_max_stack(5)
-    ->add_invalidate( CACHE_BONUS_ARMOR );
+  buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) );
 
-    buffs.sanctification_empower =
-      make_buff( this, "sanctification_empower", find_spell( 424622 ) )
-        ->add_invalidate( CACHE_BONUS_ARMOR );
+  buffs.sanctification_empower = make_buff( this, "sanctification_empower", find_spell( 424622 ) );
 }
 
 void paladin_t::init_spells_protection()
