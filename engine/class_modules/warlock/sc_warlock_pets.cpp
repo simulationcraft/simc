@@ -669,7 +669,10 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::composite_da_multiplier( s );
 
-    if ( main_pet && p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
+    if ( main_pet && !p()->o()->min_version_check( VERSION_10_2_0 ) && p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
+      m *= 1.0 + p()->o()->talents.immutable_hatred->effectN( 1 ).percent();
+
+    if ( main_pet && p()->o()->min_version_check( VERSION_10_2_0 ) && p()->o()->talents.immutable_hatred->ok() && s->chain_target == 0 )
       m *= 1.0 + p()->o()->talents.immutable_hatred->effectN( 1 ).percent();
 
     return m;
