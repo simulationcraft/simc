@@ -1869,7 +1869,10 @@ struct dire_critter_t final : public hunter_pet_t
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
     hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
-    owner_coeff.ap_from_ap = 0.15;
+    // 11-10-22 Dire Beast - Damage increased by 400%.
+    // 13-10-22 Dire Beast damage increased by 50%.
+    owner_coeff.ap_from_ap = 0.9;
+    
     resource_regeneration = regen_type::DISABLED;
 
     dire_pack_threshold = as<int>( o() -> talents.dire_pack -> effectN( 1 ).base_value() );
@@ -1905,10 +1908,6 @@ struct dire_critter_t final : public hunter_pet_t
     double m = hunter_pet_t::composite_player_multiplier( school );
 
     m *= 1 + o() -> talents.dire_frenzy -> effectN( 2 ).percent();
-
-    // 11-10-22 Dire Beast - Damage increased by 400%.
-    // 13-10-22 Dire Beast damage increased by 50%.
-    m *= 6;
 
     return m;
   }
@@ -2103,11 +2102,6 @@ struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
   {
     // Effect 1 dummy value seems to be a damage modifier.
     base_multiplier *= 1.0 - o() -> tier_set.t31_bm_4pc -> effectN( 1 ).percent();
-  }
-
-  double composite_attack_power() const override
-  {
-    return hunter_pet_action_t::composite_attack_power();
   }
 
   void impact( action_state_t* s ) override
