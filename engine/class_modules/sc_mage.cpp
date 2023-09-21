@@ -2000,14 +2000,6 @@ struct fire_mage_spell_t : public mage_spell_t
 
     double trigger_dmg = s->result_total;
 
-    // The extra crit damage from effects like Overflowing Energy does not contribute to Ignite, factor it out.
-    if ( p()->bugs && s->result == RESULT_CRIT )
-    {
-      double spell_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( s->target );
-      trigger_dmg /= 1.0 + s->result_crit_bonus;
-      trigger_dmg *= 1.0 + s->result_crit_bonus / spell_bonus;
-    }
-
     double amount = trigger_dmg / m * p()->cache.mastery_value();
     if ( amount <= 0.0 )
       return;
