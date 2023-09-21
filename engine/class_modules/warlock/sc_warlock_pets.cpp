@@ -1774,7 +1774,11 @@ namespace random_demons
 shivarra_t::shivarra_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "shivarra", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "travel/multi_slash";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
@@ -1841,7 +1845,11 @@ action_t* shivarra_t::create_action( util::string_view name, util::string_view o
 darkhound_t::darkhound_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "darkhound", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "travel/fel_bite";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
@@ -1885,7 +1893,11 @@ action_t* darkhound_t::create_action( util::string_view name, util::string_view 
 bilescourge_t::bilescourge_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "bilescourge", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "toxic_bile";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
@@ -1904,7 +1916,11 @@ action_t* bilescourge_t::create_action( util::string_view name, util::string_vie
 urzul_t::urzul_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "urzul", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "travel/many_faced_bite";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
@@ -1948,7 +1964,11 @@ action_t* urzul_t::create_action( util::string_view name, util::string_view opti
 void_terror_t::void_terror_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "void_terror", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "travel/double_breath";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
@@ -2010,7 +2030,11 @@ action_t* void_terror_t::create_action( util::string_view name, util::string_vie
 wrathguard_t::wrathguard_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "wrathguard", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "travel/overhead_assault";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
@@ -2056,7 +2080,11 @@ vicious_hellhound_t::vicious_hellhound_t( warlock_t* owner )
   : warlock_simple_pet_t( owner, "vicious_hellhound", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "travel/demon_fangs";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
@@ -2103,7 +2131,11 @@ illidari_satyr_t::illidari_satyr_t( warlock_t* owner )
   : warlock_simple_pet_t( owner, "illidari_satyr", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "travel/shadow_slash";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
@@ -2149,7 +2181,11 @@ eyes_of_guldan_t::eyes_of_guldan_t( warlock_t* owner )
   : warlock_simple_pet_t( owner, "eye_of_guldan", PET_WARLOCK_RANDOM )
 {
   action_list_str        = "eye_of_guldan";
-  owner_coeff.ap_from_sp = 0.12;
+  owner_coeff.ap_from_sp = 0.15;
+
+  if ( !owner->min_version_check( VERSION_10_2_0 ) )
+    owner_coeff.ap_from_sp = 0.115;
+
   owner_coeff.health     = 0.75;
 }
 
