@@ -1,5 +1,5 @@
-// Rank class spells, wow build 10.2.0.51297
-static const std::array<rank_class_spell_t, 53> __ptr_rank_spells_data { {
+// Rank class spells, wow build 10.2.0.51425
+static const std::array<rank_class_spell_t, 52> __ptr_rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
@@ -44,7 +44,6 @@ static const std::array<rank_class_spell_t, 53> __ptr_rank_spells_data { {
   {  9,  265, 231811,      0, "Soulstone"                         , "Rank 2" },
   {  9,  266, 231811,      0, "Soulstone"                         , "Rank 2" },
   {  9,  267, 231811,      0, "Soulstone"                         , "Rank 2" },
-  { 12,    0, 320379,      0, "Spectral Sight"                    , "Rank 2" },
   { 10,  269, 343730,      0, "Spinning Crane Kick"               , "Rank 2" },
   { 10,  268, 325095,      0, "Touch of Death"                    , "Rank 3" },
   { 10,  269, 325215,      0, "Touch of Death"                    , "Rank 3" },

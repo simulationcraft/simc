@@ -1442,6 +1442,7 @@ class SpellDataGenerator(DataGenerator):
          426827, 427059, 426834, 427037, 427058, 427057, 427056, 426840, 427047, # Coiled Serpent Idol
          423124, 426564, 426553, # Augury of the Primal Flame
          426114, # Bandolier of Twisted Blades
+         424228, 424276, 424274, 424272, 424275, # Pinch of Dream Magic: Shapeshift Buffs
         ),
 
         # Warrior:
@@ -1560,6 +1561,7 @@ class SpellDataGenerator(DataGenerator):
           ( 164273, 2 ), # Lone Wolf buff
           ( 361736, 5 ), # Coordinated Assault (pet buff)
           ( 219199, 1 ), # Dire Beast (summon)
+          ( 426703, 5), # Dire Beast Kill Command
         ),
 
         # Rogue:

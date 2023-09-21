@@ -348,7 +348,7 @@ public:
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     player_talent_t cavitation; // Increased critical strike damage for primary Felguard. TOCHECK: As of 2023-06-21 PTR, this is actually granting double the stated value
 
-    player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
+    player_talent_t nether_portal; // 2023-09-20: Last audit of NP demon damage values
     const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
     player_talent_t summon_demonic_tyrant; // TODO: 10.2 has reworked Tyrant, including Wild Imp caps and a smaller pet whitelist.
     const spell_data_t* demonic_power_buff; // TODO: 10.2 has changed this buff to not be universal, but only applicable to "extended" demons
@@ -365,7 +365,7 @@ public:
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active
 
-    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal. TODO: 10.2 has reworked Pit Lord behavior
+    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal. TODO: 10.2 has reworked Pit Lord behavior. 2023-09-20 PTR: Felseeker is not benefitting from guardian aura in-game. Sim IS applying it automatically, TOCHECK near release.
     const spell_data_t* guldans_ambition_summon; // Contains Pit Lord duration data
     const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned. TODO: This buff is REMOVED in 10.2
     player_talent_t reign_of_tyranny; // TODO: 10.2 has capped this at 15 stacks and may have changed other behavior

@@ -6144,6 +6144,174 @@ void bandolier_of_twisted_blades( special_effect_t& effect )
   effect.execute_action = create_proc_action<bandolier_of_twisted_blades_t>( "embed_blade", effect );
 }
 
+// Rune of the Umbramane
+// TODO: healing when targeting an ally
+// Early implementation based on spell data, needs verification
+void rune_of_the_umbramane( special_effect_t& effect )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "rune_of_the_umbramane", effect, "rune_of_the_umbramane", effect.trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Pinch of Dream Magic
+// Driver: 423927
+// Buffs: 424228, 424276, 424274, 424272, 424275
+void pinch_of_dream_magic( special_effect_t& effect )
+{
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  std::vector<buff_t*> buffs;
+
+  auto add_buff = [ &effect, &buffs ]( std::string suf, unsigned id ) {
+    auto name = "pinch_of_dream_magic_" + suf;
+    auto buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( id ) )
+                 ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+    }
+    buffs.push_back( buff );
+  };
+
+  add_buff( "dreamstag", 424228 );
+  add_buff( "dreamtalon", 424276 );
+  add_buff( "ferntalon", 424274 );
+  add_buff( "runebear", 424272 );
+  add_buff( "dreamsaber", 424275 );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+      } );
+}
+
+// Dancing Dream Blossoms
+// Driver: 423905
+// Buff: 423906
+// TODO/VERIFY: Assumed "the way you like them" picks your highest secondary stat.
+void dancing_dream_blossoms( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "dancing_dream_blossoms_crit_rating", "dancing_dream_blossoms_mastery_rating",
+                     "dancing_dream_blossoms_haste_rating", "dancing_dream_blossoms_versatility_rating" } ) )
+  {
+    return;
+  }
+
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+
+  for ( auto stat : ratings )
+  {
+    auto name = std::string( "dancing_dream_blossoms_" ) + util::stat_type_string( stat );
+    auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 423906 ), effect.item )
+                    ->set_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
+                    ->set_name_reporting( util::stat_type_abbrev( stat ) );
+    ( *buffs )[ stat ] = buff;
+  }
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        stat_e max_stat = util::highest_stat( effect.player, ratings );
+        ( *buffs )[ max_stat ]->trigger();
+      } );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Belor'relos, the Sunstone
+// Driver: 422146
+// Damage values stored in 422141 (e1 is damage, e2 is DoT)
+// Self-Dot: 425417
+void belorrelos_the_sunstone( special_effect_t& effect )
+{
+  struct belorrelos_damage_t : public generic_aoe_proc_t
+  {
+    belorrelos_damage_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "solar_maelstrom", effect.driver(), true )
+    {
+      base_dd_min = base_dd_max = effect.player->find_spell( 422141 )->effectN( 1 ).average( effect.item );
+      base_execute_time         = 0_ms;  // Overriding execute time, this is handled by the main action.
+      not_a_proc                = true;  // Due to cast time on the primary ability
+    }
+  };
+
+  struct belorrelos_channel_t : public proc_spell_t
+  {
+    action_t* damage;
+    action_t* self_damage;
+
+    belorrelos_channel_t( const special_effect_t& e, action_t* _self_damage )
+      : proc_spell_t( "belorrelos_channel", e.player, e.driver(), e.item ),
+        damage( create_proc_action<belorrelos_damage_t>( "solar_maelstrom", e ) )
+    {
+      channeled = hasted_ticks = true;
+      callbacks                = false;
+      dot_duration = base_tick_time = base_execute_time;
+      base_execute_time             = 0_s;
+      aoe                           = 0;
+      interrupt_auto_attack         = false;
+      effect                        = &e;
+      self_damage                   = _self_damage;
+      // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
+      ability_lag        = sim->queue_lag;
+      ability_lag_stddev = sim->queue_lag_stddev;
+      // Child action handles travel time
+      min_travel_time = travel_speed = travel_delay = 0; 
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
+
+      // Cancelled before the last tick completed, reset the cd
+      if ( d->end_event )
+      {
+        cooldown->reset( false );
+        cdgrp->reset( false );
+      }
+      else
+      {
+        cooldown->adjust( d->duration() );
+        cdgrp->adjust( d->duration() );
+      }
+
+      proc_spell_t::last_tick( d );
+      damage->execute();
+
+      self_damage->set_target( player );
+      self_damage->execute();
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( 0_ms );
+    }
+  };
+
+  // Create self-damage DoT
+  auto dot         = create_proc_action<generic_proc_t>( "solar_maelstrom_dot", effect, "solar_maelstrom_dot",
+                                                 effect.player->find_spell( 425417 ) );
+  auto num_ticks   = dot->dot_duration / dot->base_tick_time;
+  dot->base_td     = effect.player->find_spell( 422141 )->effectN( 2 ).average( effect.item ) / num_ticks;
+  dot->not_a_proc  = true;
+  dot->stats->type = stats_e::STATS_NEUTRAL;
+  dot->target      = effect.player;
+
+  auto damage           = create_proc_action<belorrelos_channel_t>( "belorrelos_channel", effect, dot );
+  effect.execute_action = damage;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8525,6 +8693,10 @@ void register_special_effects()
   register_special_effect( 423611, items::ashes_of_the_embersoul );
   register_special_effect( 426827, items::coiled_serpent_idol );
   register_special_effect( 422303, items::bandolier_of_twisted_blades );
+  register_special_effect( 423926, items::rune_of_the_umbramane );
+  register_special_effect( 423927, items::pinch_of_dream_magic );
+  register_special_effect( 423905, items::dancing_dream_blossoms );
+  register_special_effect( 422146, items::belorrelos_the_sunstone );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment

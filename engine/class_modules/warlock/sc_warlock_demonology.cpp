@@ -632,7 +632,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
           lock_pet->buffs.demonic_power->trigger();
           wild_imp_counter++;
         }
-        else if ( lock_pet->pet_type == PET_DREADSTALKER || lock_pet->pet_type == PET_VILEFIEND || lock_pet->pet_type == PET_SERVICE_FELGUARD )
+        else if ( lock_pet->pet_type == PET_DREADSTALKER || lock_pet->pet_type == PET_VILEFIEND || lock_pet->pet_type == PET_SERVICE_FELGUARD || lock_pet->pet_type == PET_FELGUARD )
         {
           if ( lock_pet->expiration )
             lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
