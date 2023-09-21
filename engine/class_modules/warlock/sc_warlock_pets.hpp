@@ -468,6 +468,7 @@ struct pit_lord_t : public warlock_pet_t
 {
   double soul_glutton_damage_bonus;
   pit_lord_t( warlock_t*, util::string_view = "pit_lord" );
+  action_t* create_action( util::string_view, util::string_view ) override;
   void init_base_stats() override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
