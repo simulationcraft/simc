@@ -994,13 +994,9 @@ void felguard_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack = new felguard_melee_t( this, 1.0, "melee" );
 
-  owner_coeff.ap_from_sp = 0.575;
-  owner_coeff.sp_from_sp = 1.15;
-
-  // TOCHECK Felguard has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2022-10-02
-  melee_attack->base_dd_multiplier *= 1.1;
-  // 2023-03-19 Last minute hotfix for 10.0.7
-  melee_attack->base_dd_multiplier *= 1.2;
+  // 2023-09-20: Validated coefficients
+  owner_coeff.ap_from_sp = 0.57;
+  melee_attack->base_dd_multiplier *= 1.42;
 
   special_action = new axe_toss_t( this, "" );
 
