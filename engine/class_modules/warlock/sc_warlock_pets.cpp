@@ -77,6 +77,10 @@ void warlock_pet_t::create_buffs()
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
+  buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny )
+                               ->set_default_value( o()->talents.reign_of_tyranny->effectN( 2 ).percent() )
+                               ->set_max_stack( 99 );
+
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
                              ->set_default_value_from_effect( 1 );
 
@@ -1398,7 +1402,7 @@ void wild_imp_pet_t::demise()
 
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
 
-      if ( imploded && buffs.imp_gang_boss->check() )
+      if ( imploded && buffs.imp_gang_boss->check() && !o()->min_version_check( VERSION_10_2_0 ) )
       {
         make_event( sim, 0_ms, [ this ] { this->o()->warlock_pet_list.wild_imps.spawn(); } );
       }
@@ -1691,7 +1695,7 @@ void demonic_tyrant_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->talents.reign_of_tyranny->ok() )
+  if ( o()->talents.reign_of_tyranny->ok() && !o()->min_version_check( VERSION_10_2_0 ) )
   {
     buffs.demonic_servitude->trigger( 1, ( ( o()->min_version_check( VERSION_10_2_0 ) ? 0 : 1 ) + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() ); // 2023-09-10: On 10.2 PTR, the stack cap is interfering with the previous 1 "permanent" stack value
   }
@@ -1707,6 +1711,8 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 
     if ( !o()->min_version_check( VERSION_10_2_0 ) )
       m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
+
+    m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
   }
 
   return m;
