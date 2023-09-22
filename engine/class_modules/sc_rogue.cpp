@@ -175,7 +175,6 @@ public:
     buff_t* find_weakness;
     buff_t* flagellation;
     buff_t* ghostly_strike;
-    buff_t* marked_for_death;
     buff_t* numbing_poison;
     buff_t* sting_like_a_bee;
     damage_buff_t* shiv;
@@ -279,8 +278,7 @@ public:
     actions::rogue_poison_t* lethal_poison_dtb = nullptr;
     actions::rogue_poison_t* nonlethal_poison = nullptr;
     actions::rogue_poison_t* nonlethal_poison_dtb = nullptr;
-    
-    actions::rogue_attack_t* dreadblades = nullptr;
+
     actions::rogue_attack_t* blade_flurry = nullptr;
     actions::rogue_attack_t* blade_flurry_st = nullptr;
     actions::rogue_attack_t* fan_the_hammer = nullptr;
@@ -384,7 +382,6 @@ public:
 
     // Outlaw
     buff_t* audacity;
-    buff_t* dreadblades;
     buff_t* greenskins_wickers;
     buff_t* killing_spree;
     buff_t* loaded_dice;
@@ -435,7 +432,6 @@ public:
     cooldown_t* cloak_of_shadows;
     cooldown_t* cold_blood;
     cooldown_t* deathmark;
-    cooldown_t* dreadblades;
     cooldown_t* echoing_reprimand;
     cooldown_t* evasion;
     cooldown_t* feint;
@@ -448,7 +444,6 @@ public:
     cooldown_t* keep_it_rolling;
     cooldown_t* killing_spree;
     cooldown_t* kingsbane;
-    cooldown_t* marked_for_death;
     cooldown_t* roll_the_bones;
     cooldown_t* secret_technique;
     cooldown_t* sepsis;
@@ -488,7 +483,6 @@ public:
     // CP Gains
     gain_t* ace_up_your_sleeve;
     gain_t* broadside;
-    gain_t* dreadblades;
     gain_t* improved_adrenaline_rush;
     gain_t* improved_adrenaline_rush_expiry;
     gain_t* improved_ambush;
@@ -733,7 +727,6 @@ public:
       player_talent_t cold_blood;
       player_talent_t resounding_clarity;
       player_talent_t reverberation;
-      player_talent_t marked_for_death;
       player_talent_t deeper_stratagem;
       player_talent_t shadow_dance;
     } rogue;
@@ -837,7 +830,6 @@ public:
       player_talent_t ghostly_strike;
       player_talent_t blade_rush;
       player_talent_t count_the_odds;
-      player_talent_t dreadblades;
       player_talent_t precise_cuts;
 
       player_talent_t take_em_by_surprise;
@@ -1038,7 +1030,6 @@ public:
     cooldowns.cloak_of_shadows          = get_cooldown( "cloak_of_shadows" );
     cooldowns.cold_blood                = get_cooldown( "cold_blood" );
     cooldowns.deathmark                 = get_cooldown( "deathmark" );
-    cooldowns.dreadblades               = get_cooldown( "dreadblades" );
     cooldowns.echoing_reprimand         = get_cooldown( "echoing_reprimand" );
     cooldowns.evasion                   = get_cooldown( "evasion" );
     cooldowns.feint                     = get_cooldown( "feint" );
@@ -1051,7 +1042,6 @@ public:
     cooldowns.keep_it_rolling           = get_cooldown( "keep_it_rolling" );
     cooldowns.killing_spree             = get_cooldown( "killing_spree" );
     cooldowns.kingsbane                 = get_cooldown( "kingsbane" );
-    cooldowns.marked_for_death          = get_cooldown( "marked_for_death" );
     cooldowns.roll_the_bones            = get_cooldown( "roll_the_bones" );
     cooldowns.secret_technique          = get_cooldown( "secret_technique" );
     cooldowns.sepsis                    = get_cooldown( "sepsis" );
@@ -1519,7 +1509,6 @@ public:
     bool shadow_blades_cp = false;
     bool the_rotten = false;            // Crit Bonus
     bool zoldyck_insignia = false;
-    bool marked_for_death = false;      // Finisher damage buff
 
     bool t29_assassination_2pc = false;
     bool t30_subtlety_4pc = false;
@@ -1633,11 +1622,6 @@ public:
     affected_by.improved_shiv =
       ( p->talent.assassination.improved_shiv->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) ) ) ||
       ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) );
-
-    if ( p->talent.rogue.marked_for_death->ok() )
-    {
-      affected_by.marked_for_death = ab::data().affected_by( p->talent.rogue.marked_for_death->effectN( 1 ) );
-    }
 
     if ( p->spell.sepsis_buff->ok() )
     {
@@ -2042,7 +2026,6 @@ public:
   void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action );
   void trigger_restless_blades( const action_state_t* );
-  void trigger_dreadblades( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_venom_rush( const action_state_t* );
   void trigger_blindside( const action_state_t* );
@@ -2220,12 +2203,6 @@ public:
       m *= 1.0 + tdata->debuffs.ghostly_strike->stack_value();
     }
 
-    // Marked for Death
-    if ( affected_by.marked_for_death && tdata->debuffs.marked_for_death->up() )
-    {
-      m *= 1.0 + tdata->debuffs.marked_for_death->data().effectN( 1 ).percent();
-    }
-
     return m;
   }
 
@@ -2364,7 +2341,6 @@ public:
       }
 
       trigger_danse_macabre( ab::execute_state );
-      trigger_dreadblades( ab::execute_state );
       trigger_relentless_strikes( ab::execute_state );
       trigger_elaborate_planning( ab::execute_state );
       trigger_alacrity( ab::execute_state );
@@ -3911,30 +3887,6 @@ struct detection_t : public rogue_spell_t
   }
 };
 
-// Dreadblades ==============================================================
-
-struct dreadblades_t : public rogue_attack_t
-{
-  dreadblades_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->talent.outlaw.dreadblades, options_str )
-  {}
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-    p()->buffs.dreadblades->trigger();
-  }
-
-  bool procs_main_gauche() const override
-  { return true; }
-
-  bool procs_blade_flurry() const override
-  { return true; }
-
-  bool procs_seal_fate() const override
-  { return false; }
-};
-
 // Envenom ==================================================================
 
 struct envenom_t : public rogue_attack_t
@@ -4661,40 +4613,6 @@ struct main_gauche_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
-};
-
-// Marked for Death =========================================================
-
-struct marked_for_death_t : public rogue_spell_t
-{
-  double precombat_seconds;
-
-  marked_for_death_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
-    rogue_spell_t( name, p, p->talent.rogue.marked_for_death ),
-    precombat_seconds( 0.0 )
-  {
-    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
-    parse_options( options_str );
-
-    harmful = false;
-    energize_type = action_energize::ON_CAST;
-  }
-
-  void execute() override
-  {
-    rogue_spell_t::execute();
-
-    if ( precombat_seconds && ! p() -> in_combat ) {
-      p()->cooldowns.marked_for_death->adjust( -timespan_t::from_seconds( precombat_seconds ), false );
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_spell_t::impact( state );
-
-    td( state->target )->debuffs.marked_for_death->trigger();
-  }
 };
 
 // Mutilate =================================================================
@@ -6891,7 +6809,7 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     if ( r->talent.subtlety.invigorating_shadowdust || r->options.prepull_shadowdust )
     {
       shadowdust_cooldowns = { r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.cold_blood, r->cooldowns.echoing_reprimand,
-        r->cooldowns.flagellation, r->cooldowns.gouge, r->cooldowns.marked_for_death, r->cooldowns.secret_technique, r->cooldowns.sepsis,
+        r->cooldowns.flagellation, r->cooldowns.gouge, r->cooldowns.secret_technique, r->cooldowns.sepsis,
         r->cooldowns.shadow_blades, r->cooldowns.shadow_dance, r->cooldowns.shadowstep, r->cooldowns.shiv, r->cooldowns.sprint,
         r->cooldowns.symbols_of_death, r->cooldowns.thistle_tea };
     }
@@ -7847,7 +7765,6 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.between_the_eyes->adjust( v, false );
   p()->cooldowns.blade_flurry->adjust( v, false );
   p()->cooldowns.blade_rush->adjust( v, false );
-  p()->cooldowns.dreadblades->adjust( v, false );
   p()->cooldowns.ghostly_strike->adjust( v, false );
   p()->cooldowns.grappling_hook->adjust( v, false );
   p()->cooldowns.keep_it_rolling->adjust( v, false );
@@ -7860,31 +7777,6 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   {
     p()->cooldowns.evasion->adjust( v, false );
     p()->cooldowns.feint->adjust( v, false );
-  }
-}
-
-template <typename Base>
-void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* state )
-{
-  if ( !p()->talent.outlaw.dreadblades->ok() || !ab::result_is_hit( state->result ) )
-    return;
-
-  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT || ab::energize_amount == 0 )
-    return;
-
-  // 2022-02-04 -- Due to not being cast triggers, this appears to not work
-  if ( is_secondary_action() )
-    return;
-
-  if ( !p()->buffs.dreadblades->up() )
-    return;
-
-  trigger_combo_point_gain( as<int>( p()->buffs.dreadblades->check_value() ), p()->gains.dreadblades );
-
-  if ( p()->record_healing() )
-  {
-    auto expenditure = p()->resources.current[ RESOURCE_HEALTH ] * 0.08; // 8% current hp, value not in spell data
-    p()->active.dreadblades->stats->consume_resource( RESOURCE_HEALTH, expenditure );
   }
 }
 
@@ -8214,9 +8106,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   
   debuffs.deathmark = make_buff<damage_buff_t>( *this, "deathmark", source->spec.deathmark_debuff );
   debuffs.deathmark->set_cooldown( timespan_t::zero() );
-  
-  debuffs.marked_for_death = make_buff( *this, "marked_for_death", source->talent.rogue.marked_for_death )
-    ->set_cooldown( timespan_t::zero() );
+
   debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.improved_shiv_debuff, false )
     ->set_direct_mod( source->spec.improved_shiv_debuff->effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
@@ -8243,15 +8133,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
                      debuffs.wound_poison, debuffs.amplifying_poison, debuffs.amplifying_poison_deathmark };
 
   // Callbacks ================================================================
-
-  // Marked for Death Reset
-  if ( source->talent.rogue.marked_for_death->ok() )
-  {
-    target->register_on_demise_callback( source, [ this, source ]( player_t* demise_target ) {
-      if ( debuffs.marked_for_death->up() && !demise_target->debuffs.invulnerable->check() )
-        source->cooldowns.marked_for_death->reset( true );
-    } );
-  }
 
   // Venomous Wounds Energy Refund
   if ( source->talent.assassination.venomous_wounds->ok() )
@@ -8619,7 +8500,6 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "deathmark"              ) return new deathmark_t              ( name, this, options_str );
   if ( name == "detection"              ) return new detection_t              ( name, this, options_str );
   if ( name == "dispatch"               ) return new dispatch_t               ( name, this, options_str );
-  if ( name == "dreadblades"            ) return new dreadblades_t            ( name, this, options_str );
   if ( name == "echoing_reprimand"      ) return new echoing_reprimand_t      ( name, this, options_str );
   if ( name == "envenom"                ) return new envenom_t                ( name, this, options_str );
   if ( name == "eviscerate"             ) return new eviscerate_t             ( name, this, options_str );
@@ -8637,7 +8517,6 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "kidney_shot"            ) return new kidney_shot_t            ( name, this, options_str );
   if ( name == "killing_spree"          ) return new killing_spree_t          ( name, this, options_str );
   if ( name == "kingsbane"              ) return new kingsbane_t              ( name, this, options_str );
-  if ( name == "marked_for_death"       ) return new marked_for_death_t       ( name, this, options_str );
   if ( name == "mutilate"               ) return new mutilate_t               ( name, this, options_str );
   if ( name == "pistol_shot"            ) return new pistol_shot_t            ( name, this, options_str );
   if ( name == "poisoned_knife"         ) return new poisoned_knife_t         ( name, this, options_str );
@@ -9389,7 +9268,6 @@ void rogue_t::init_spells()
   talent.rogue.resounding_clarity = find_talent_spell( talent_tree::CLASS, "Resounding Clarity" );
   talent.rogue.reverberation = find_talent_spell( talent_tree::CLASS, "Reverberation" );
   talent.rogue.deeper_stratagem = find_talent_spell( talent_tree::CLASS, "Deeper Stratagem" );
-  talent.rogue.marked_for_death = find_talent_spell( talent_tree::CLASS, "Marked for Death" );
   talent.rogue.shadow_dance = find_talent_spell( talent_tree::CLASS, "Shadow Dance" );
 
   // Assassination Talents
@@ -9487,15 +9365,6 @@ void rogue_t::init_spells()
   talent.outlaw.ghostly_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Ghostly Strike" );
   talent.outlaw.blade_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Blade Rush" );
   talent.outlaw.count_the_odds = find_talent_spell( talent_tree::SPECIALIZATION, "Count the Odds" );
-  // TODO: dreadblades is duplicated in `trait_data_ptr.inc`, making the talent unable to be loaded by name (since there are two `Dreadblades` talents!)
-  //  It looks like the old Killing Spree talent was renamed Dreadblades and left in by accident. :(
-  //  `find_talent_spell` normally uses the id of the first match, but in this case, it's broken, and it's the second match that works. So we do the data
-  //  load manually to prefer the second, functional, talent node.
-  uint32_t class_idx, spec_idx;
-  dbc->spec_idx( ROGUE_OUTLAW, class_idx, spec_idx );
-  auto traits = trait_data_t::find_by_spell( talent_tree::SPECIALIZATION, 343142, class_idx, ROGUE_OUTLAW, dbc->ptr );
-
-  talent.outlaw.dreadblades = find_talent_spell( (traits[ 1 ] != nullptr ? traits[ 1 ] : traits[ 0 ])->id_trait_node_entry, ROGUE_OUTLAW );
   talent.outlaw.precise_cuts = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Cuts" );
 
   talent.outlaw.take_em_by_surprise = find_talent_spell( talent_tree::SPECIALIZATION, "Take 'em by Surprise" );
@@ -9770,11 +9639,6 @@ void rogue_t::init_spells()
     active.blade_flurry_st = get_background_action<actions::blade_flurry_attack_st_t>( "blade_flurry_attack_st" );
   }
 
-  if ( talent.outlaw.dreadblades->ok() )
-  {
-    active.dreadblades = get_background_action<actions::dreadblades_t>( "dreadblades" );
-  }
-
   if ( talent.outlaw.triple_threat->ok() )
   {
     active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t::sinister_strike_extra_attack_t>(
@@ -9832,7 +9696,6 @@ void rogue_t::init_gains()
   gains.buried_treasure           = get_gain( "Buried Treasure" );
   gains.fatal_flourish            = get_gain( "Fatal Flourish" );
   gains.dashing_scoundrel         = get_gain( "Dashing Scoundrel" );
-  gains.dreadblades               = get_gain( "Dreadblades" );
   gains.energy_refund             = get_gain( "Energy Refund" );
   gains.master_of_shadows         = get_gain( "Master of Shadows" );
   gains.premeditation             = get_gain( "Premeditation" );
@@ -10201,10 +10064,6 @@ void rogue_t::create_buffs()
   // Outlaw
 
   buffs.audacity = make_buff( this, "audacity", spec.audacity_buff );
-
-  buffs.dreadblades = make_buff( this, "dreadblades", talent.outlaw.dreadblades )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_default_value( talent.outlaw.dreadblades->effectN( 2 ).trigger()->effectN( 1 ).resource() );
 
   buffs.killing_spree = make_buff( this, "killing_spree", talent.outlaw.killing_spree )
     ->set_cooldown( timespan_t::zero() )
