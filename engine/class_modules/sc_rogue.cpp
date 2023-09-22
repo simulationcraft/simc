@@ -3389,6 +3389,18 @@ struct dispatch_t: public rogue_attack_t
     return c;
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( secondary_trigger_type == secondary_trigger::CRACKSHOT )
+    {
+      m *= p()->talent.outlaw.crackshot->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -4550,6 +4562,11 @@ struct pistol_shot_t : public rogue_attack_t
 
     m *= 1.0 + p()->buffs.opportunity->value();
     m *= 1.0 + p()->buffs.greenskins_wickers->value();
+
+    if ( secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
+    {
+      m *= 1.0 - p()->talent.outlaw.fan_the_hammer->effectN( 4 ).percent();
+    }
 
     return m;
   }
