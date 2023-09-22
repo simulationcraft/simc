@@ -78,7 +78,6 @@ struct druid_td_t : public actor_target_data_t
   {
     dot_t* adaptive_swarm_damage;
     dot_t* astral_smolder;
-    dot_t* burning_frenzy;
     dot_t* feral_frenzy;
     dot_t* frenzied_assault;
     dot_t* fungal_growth;
@@ -3271,16 +3270,6 @@ public:
     auto d = s->result_amount * p()->talent.berserk_frenzy->effectN( 1 ).percent();
 
     residual_action::trigger( p()->active.frenzied_assault, t, d );
-  }
-
-  void trigger_burning_frenzy( player_t* t, const action_state_t* s )
-  {
-    if ( !special || !harmful || !s->result_amount )
-      return;
-
-    auto d = s->result_amount * p()->find_spell( 422751 )->effectN( 6 ).percent();
-
-    residual_action::trigger( p()->active.burning_frenzy, t, d );
   }
 };  // end druid_cat_attack_t
 
@@ -10243,9 +10232,9 @@ void druid_t::create_buffs()
   buff.sharpened_claws =
       make_buff_fallback( sets->has_set_bonus( DRUID_FERAL, T29, B4 ), this, "sharpened_claws", find_spell( 394465 ) );
 
-  buff.smoldering_frenzy = 
-      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_FERAL, T31, B2 ), this, "smoldering_frenzy", find_trigger( sets->set(DRUID_FERAL, T31, B2 ) ).trigger() )
-        ->apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ) );
+  buff.smoldering_frenzy =
+      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_FERAL, T31, B2 ), this, "smoldering_frenzy",
+                          find_trigger( sets->set( DRUID_FERAL, T31, B2 ) ).trigger() );
 
   buff.sudden_ambush = make_buff_fallback( talent.sudden_ambush.ok(),
       this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() );
@@ -11266,6 +11255,34 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     new dbc_proc_callback_t( this, *driver );
+  }
+
+  if ( sets->has_set_bonus( DRUID_FERAL, T30, B4 ) )
+  {
+    struct smoldering_frenzy_cb_t : public druid_cb_t
+    {
+      double mul;
+
+      smoldering_frenzy_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), mul( p->buff.smoldering_frenzy->data().effectN( 6 ).percent() )
+      {
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        auto d = s->result_amount * mul;
+
+        residual_action::trigger( p()->active.burning_frenzy, listener, d );
+      }
+    };
+
+    const auto driver    = new special_effect_t( this );
+    driver->name_str     = buff.smoldering_frenzy->data().name_cstr();
+    driver->spell_id     = buff.smoldering_frenzy->data().id();
+    driver->proc_flags2_ = PF2_ALL_HIT;
+    special_effects.push_back( driver );
+
+    new smoldering_frenzy_cb_t( this, *driver );
   }
 
   // Guardian
@@ -12559,7 +12576,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   {
     dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
     dots.astral_smolder        = target.get_dot( "astral_smolder", &source );
-    dots.burning_frenzy        = target.get_dot( "burning_frenzy", &source );  // feral 4t31
     dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );  // damage dot is triggered by feral_frenzy_tick_t
     dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
     dots.fungal_growth         = target.get_dot( "fungal_growth", &source );
@@ -13098,6 +13114,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.veinripper );
   action.apply_affecting_aura( talent.wild_slashes );
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
+  action.apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ) );
 
   // Guardian
   action.apply_affecting_aura( talent.flashing_claws );
