@@ -44,6 +44,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> soul_glutton;
     propagate_const<buff_t*> nerzhuls_volition; // Damage buff on Nether Portal demons
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
+    propagate_const<buff_t*> reign_of_tyranny; // 10.2 replaces the old buff behavior for this talent
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     propagate_const<buff_t*> festering_hatred; // Dummy buff for Immutable Hatred increment tracking
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
