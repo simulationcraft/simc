@@ -6317,6 +6317,8 @@ void belorrelos_the_sunstone( special_effect_t& effect )
 // Holds coeff: 422953
 // Buff: 427072
 // Trigger/DoT: 427161
+// TODO: support "Damage increased by 20% against immobilized targets."
+// Note that a Target Dummmy counts as an Immobilized Target in-game.
 void nymues_unraveling_spindle( special_effect_t& effect )
 {
   struct nymues_channel_t : public proc_spell_t
