@@ -682,14 +682,14 @@ public:
       player_talent_t airborne_irritant;        // No implementation
       player_talent_t shadowstep;
 
-      player_talent_t numbing_poison;
-      player_talent_t atrophic_poison;
+      player_talent_t master_poisoner;          // No implementation
       player_talent_t elusiveness;              // No implementation
       player_talent_t cheat_death;              // No implementation
       player_talent_t blackjack;                // No implementation
       player_talent_t tricks_of_the_trade;      // No implementation
 
-      player_talent_t master_poisoner;          // No implementation
+      player_talent_t numbing_poison;
+      player_talent_t atrophic_poison;
       player_talent_t nimble_fingers;
       player_talent_t improved_sprint;
       player_talent_t shadowrunner;
@@ -827,8 +827,8 @@ public:
       player_talent_t underhanded_upper_hand;
       player_talent_t sepsis;
       player_talent_t ghostly_strike;
-      player_talent_t blade_rush;
       player_talent_t count_the_odds;
+      player_talent_t blade_rush;
       player_talent_t precise_cuts;
 
       player_talent_t take_em_by_surprise;
@@ -9187,14 +9187,14 @@ void rogue_t::init_spells()
   talent.rogue.airborne_irritant = find_talent_spell( talent_tree::CLASS, "Airborne Irritant" );
   talent.rogue.shadowstep = find_talent_spell( talent_tree::CLASS, "Shadowstep" );
 
-  talent.rogue.numbing_poison = find_talent_spell( talent_tree::CLASS, "Numbing Poison" );
-  talent.rogue.atrophic_poison = find_talent_spell( talent_tree::CLASS, "Atrophic Poison" );
+  talent.rogue.master_poisoner = find_talent_spell( talent_tree::CLASS, "Master Poisoner" );
   talent.rogue.cheat_death = find_talent_spell( talent_tree::CLASS, "Cheat Death" );
   talent.rogue.elusiveness = find_talent_spell( talent_tree::CLASS, "Elusiveness" );
   talent.rogue.tricks_of_the_trade = find_talent_spell( talent_tree::CLASS, "Tricks of the Trade" );
   talent.rogue.blackjack = find_talent_spell( talent_tree::CLASS, "Blackjack" );
 
-  talent.rogue.master_poisoner = find_talent_spell( talent_tree::CLASS, "Master Poisoner" );
+  talent.rogue.numbing_poison = find_talent_spell( talent_tree::CLASS, "Numbing Poison" );
+  talent.rogue.atrophic_poison = find_talent_spell( talent_tree::CLASS, "Atrophic Poison" );
   talent.rogue.nimble_fingers = find_talent_spell( talent_tree::CLASS, "Nimble Fingers" );
   talent.rogue.improved_sprint = find_talent_spell( talent_tree::CLASS, "Improved Sprint" );
   talent.rogue.shadowrunner = find_talent_spell( talent_tree::CLASS, "Shadowrunner" );
@@ -9328,8 +9328,8 @@ void rogue_t::init_spells()
   talent.outlaw.underhanded_upper_hand = find_talent_spell( talent_tree::SPECIALIZATION, "Underhanded Upper Hand" );
   talent.outlaw.sepsis = find_talent_spell( talent_tree::SPECIALIZATION, "Sepsis", ROGUE_OUTLAW );
   talent.outlaw.ghostly_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Ghostly Strike" );
-  talent.outlaw.blade_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Blade Rush" );
   talent.outlaw.count_the_odds = find_talent_spell( talent_tree::SPECIALIZATION, "Count the Odds" );
+  talent.outlaw.blade_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Blade Rush" );
   talent.outlaw.precise_cuts = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Cuts" );
 
   talent.outlaw.take_em_by_surprise = find_talent_spell( talent_tree::SPECIALIZATION, "Take 'em by Surprise" );
