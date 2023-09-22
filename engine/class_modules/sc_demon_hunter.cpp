@@ -253,10 +253,10 @@ public:
       player_talent_t sigil_of_flame;
 
       player_talent_t unrestrained_fury;
-      player_talent_t imprison;                   // No Implementation
-      player_talent_t shattered_restoration;      // NYI Vengeance
+      player_talent_t imprison;               // No Implementation
+      player_talent_t shattered_restoration;  // NYI Vengeance
 
-      player_talent_t vengeful_bonds;             // No Implementation
+      player_talent_t vengeful_bonds;  // No Implementation
       player_talent_t improved_disrupt;
       player_talent_t bouncing_glaives;
       player_talent_t consume_magic;
@@ -267,38 +267,38 @@ public:
       player_talent_t aura_of_pain;
       player_talent_t felblade;
       player_talent_t swallowed_anger;
-      player_talent_t charred_warblades;          // NYI Vengeance
+      player_talent_t charred_warblades;  // NYI Vengeance
 
-      player_talent_t felfire_haste;              // NYI
+      player_talent_t felfire_haste;  // NYI
       player_talent_t master_of_the_glaive;
       player_talent_t rush_of_chaos;
       player_talent_t concentrated_sigils;
-      player_talent_t precise_sigils;             // Partial NYI (debuff Sigils)
-      player_talent_t lost_in_darkness;           // No Implementation
+      player_talent_t precise_sigils;    // Partial NYI (debuff Sigils)
+      player_talent_t lost_in_darkness;  // No Implementation
 
       player_talent_t chaos_nova;
       player_talent_t soul_rending;
       player_talent_t infernal_armor;
-      player_talent_t sigil_of_misery;            // NYI
+      player_talent_t sigil_of_misery;  // NYI
 
       player_talent_t chaos_fragments;
       player_talent_t unleashed_power;
       player_talent_t illidari_knowledge;
       player_talent_t demonic;
-      player_talent_t will_of_the_illidari;       // NYI Vengeance
+      player_talent_t will_of_the_illidari;  // NYI Vengeance
       player_talent_t improved_sigil_of_misery;
-      player_talent_t misery_in_defeat;           // NYI
+      player_talent_t misery_in_defeat;  // NYI
 
       player_talent_t internal_struggle;
-      player_talent_t darkness;                   // No Implementation
+      player_talent_t darkness;  // No Implementation
       player_talent_t soul_sigils;
       player_talent_t aldrachi_design;
 
       player_talent_t erratic_felheart;
-      player_talent_t long_night;                 // No Implementation
-      player_talent_t pitch_black;                // No Implementation
+      player_talent_t long_night;   // No Implementation
+      player_talent_t pitch_black;  // No Implementation
       player_talent_t the_hunt;
-      player_talent_t demon_muzzle;               // NYI Vengeance
+      player_talent_t demon_muzzle;  // NYI Vengeance
       player_talent_t extended_sigils;
 
       player_talent_t collective_anguish;
@@ -321,10 +321,10 @@ public:
       player_talent_t first_blood;
       player_talent_t dancing_with_fate;
 
-      player_talent_t desperate_instincts;        // No Implementation
-      player_talent_t netherwalk;                 // No Implementation
-      player_talent_t deflecting_dance;           // NYI
-      player_talent_t mortal_dance;               // No Implementation
+      player_talent_t desperate_instincts;  // No Implementation
+      player_talent_t netherwalk;           // No Implementation
+      player_talent_t deflecting_dance;     // NYI
+      player_talent_t mortal_dance;         // No Implementation
 
       player_talent_t initiative;
       player_talent_t improved_fel_rush;
@@ -335,7 +335,7 @@ public:
       player_talent_t unbound_chaos;
       player_talent_t blind_fury;
       player_talent_t looks_can_kill;
-      player_talent_t serrated_glaive;
+      player_talent_t serrated_glaive;  // Partially implemented
       player_talent_t growing_inferno;
 
       player_talent_t tactical_retreat;
@@ -345,7 +345,7 @@ public:
       player_talent_t burning_wound;
 
       player_talent_t momentum;
-      player_talent_t inertia; // NYI
+      player_talent_t inertia;  // NYI
       player_talent_t chaos_theory;
       player_talent_t restless_hunter;
       player_talent_t inner_demon;
@@ -355,15 +355,15 @@ public:
       player_talent_t know_your_enemy;
       player_talent_t glaive_tempest;
       player_talent_t cycle_of_hatred;
-      player_talent_t fodder_to_the_flame; // Partial implementation
+      player_talent_t fodder_to_the_flame;  // Partial implementation
       player_talent_t elysian_decree;
       player_talent_t soulrend;
 
       player_talent_t essence_break;
-      player_talent_t fel_barrage; // Old implementation
+      player_talent_t fel_barrage;  // Old implementation
       player_talent_t shattered_destiny;
       player_talent_t any_means_necessary;
-      player_talent_t a_fire_inside; // NYI
+      player_talent_t a_fire_inside;  // NYI
 
     } havoc;
 
@@ -380,26 +380,26 @@ public:
 
       player_talent_t shear_fury;
       player_talent_t fracture;
-      player_talent_t calcified_spikes;           // NYI
-      player_talent_t roaring_fire;               // NYI
-      player_talent_t sigil_of_silence;           // NYI
+      player_talent_t calcified_spikes;  // NYI
+      player_talent_t roaring_fire;      // NYI
+      player_talent_t sigil_of_silence;  // NYI
       player_talent_t retaliation;
-      player_talent_t fel_flame_fortification;    // NYI
+      player_talent_t fel_flame_fortification;  // NYI
 
       player_talent_t spirit_bomb;
-      player_talent_t feast_of_souls;             // NYI
+      player_talent_t feast_of_souls;  // NYI
       player_talent_t agonizing_flames;
       player_talent_t extended_spikes;
       player_talent_t burning_blood;
-      player_talent_t soul_barrier;               // NYI
-      player_talent_t bulk_extraction;            // NYI
-      player_talent_t sigil_of_chains;            // NYI
+      player_talent_t soul_barrier;     // NYI
+      player_talent_t bulk_extraction;  // NYI
+      player_talent_t sigil_of_chains;  // NYI
 
       player_talent_t void_reaver;
       player_talent_t fallout;
-      player_talent_t ruinous_bulwark;            // NYI
+      player_talent_t ruinous_bulwark;  // NYI
       player_talent_t volatile_flameblood;
-      player_talent_t revel_in_pain;              // NYI
+      player_talent_t revel_in_pain;  // NYI
 
       player_talent_t soul_furnace;
       player_talent_t painbringer;
@@ -408,7 +408,7 @@ public:
       player_talent_t chains_of_anger;
 
       player_talent_t focused_cleave;
-      player_talent_t soulmonger;                 // NYI
+      player_talent_t soulmonger;  // NYI
       player_talent_t stoke_the_flames;
       player_talent_t burning_alive;
       player_talent_t cycle_of_binding;
@@ -419,8 +419,8 @@ public:
 
       player_talent_t soulcrush;
       player_talent_t soul_carver;
-      player_talent_t last_resort;                // NYI
-      player_talent_t fodder_to_the_flame;        // Partial implementation
+      player_talent_t last_resort;          // NYI
+      player_talent_t fodder_to_the_flame;  // Partial implementation
       player_talent_t elysian_decree;
       player_talent_t down_in_flames;
 
