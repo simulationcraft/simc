@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51421 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2679,15 +2679,40 @@ Effects          :
 Description      : Reduces all damage you take by $m2% to $m3% for $d, with larger attacks being reduced by more.
 Tooltip          : Damage taken reduced by $m2% to $m3% for $d, with larger attacks being reduced by more.
 
-Name             : Healing Elixir (id=122281) [Spell Family (53)] 
+Name             : Healing Elixir (id=122280) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Mistweaver [tree=spec, row=5, col=5, max_rank=1, req_points=8]
-                 : Brewmaster [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Extra Initial Period (169), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=153852)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+#2 (id=1106587)  : Apply Aura (6) | Periodic Trigger Spell (23): Healing Elixir every 30 seconds
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 427296 | Target: Self (1)
+#3 (id=1106589)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : You consume a healing elixir when you drop below $s1% health and are not in a loss of control effect, instantly healing you for $122281s1% of your maximum health.
+
+You generate $s2 healing elixir every $t2 sec, stacking up to $s3 times.
+
+Name             : Healing Elixir (id=122281) [Spell Family (53)] 
+Talent Entry     : Brewmaster [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
-Charges          : 2 (30 seconds cooldown)
-Category         : 1646
 Family Flags     : 116
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -5391,7 +5416,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Require All Targets (58), Name in Channel Bar (61), Include In Advanced Combat Log (72), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=291816)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.27500 | PvP Coefficient: 1.00000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.38500 | PvP Coefficient: 1.00000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
 Description      : $@spelldesc115175
 Tooltip          : Healing for $w1 every $t1 sec.
 
@@ -6058,9 +6083,9 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Allow Class Ability Procs (416)
+                 : Is Ability (4), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=344191)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -14748,7 +14773,7 @@ Effects          :
 #1 (id=1024188)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=1024189)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 15 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : $@spelldesc388477
 
 Name             : Secret Infusion (id=388491) [Spell Family (53), Passive] 
@@ -18488,7 +18513,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103007)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Breath of Fire deals $s1% bonus damage as Shadowflame and causes you to heal for $s2% of all Fire damage dealt.
+Description      : Breath of Fire deals $s1% bonus damage as Shadowflame and causes you to heal for $s2% of your Fire damage dealt.
 
 Name             : Monk Brewmaster 10.2 Class Set 4pc (id=422887) [Passive, Hidden] 
 Class            : Monk
@@ -18550,9 +18575,10 @@ Name             : Monk Windwalker 10.2 Class Set 2pc (id=422891) [Passive, Hidd
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Proc Chance      : 5%
-Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
-                 : White Melee
+Proc Chance      : 100%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : ..x.x... ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee, Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -18564,10 +18590,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098489)  : Apply Aura (6) | Proc Trigger Spell (42): Windfoot
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Trigger Spell: 425578 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Trigger Spell: 425578 | Target: Self (1)
 Description      : Melee attacks have a chance to make your next Spinning Crane Kick free.
-Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%. 
-Tooltip          : Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Ebontoes, increasing the damage of your next Blackout Kick Damage by $s1%.
+Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. 
+Tooltip          : Melee attacks have a chance to make your next Spinning Crane Kick free. Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%.
 
 Name             : Monk Windwalker 10.2 Class Set 4pc (id=422892) [Passive, Hidden] 
 Class            : Monk
@@ -18584,9 +18610,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098490)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. 
-Tooltip          : Ebontoes empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. 
+Tooltip          : Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.
 
 Name             : Chi Harmony (id=423439) [Spell Family (53)] 
 Class            : Monk
@@ -18634,6 +18660,10 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Triggered by     : Monk Windwalker 10.2 Class Set 2pc (422891)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -18651,5 +18681,28 @@ Effects          :
                    Family Flags: 63
 Description      : $@spelldesc422891
 Tooltip          : Your next Spinning Crane Kick is free and generates Ebontoes.
+
+Name             : Healing Elixir (id=427296) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Triggered by     : Healing Elixir (122280)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1106588)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc122280
+Tooltip          : $w1 Healing Elixir stored, which will heal for $122281s1% of your maximum health if brought below $122280s1% heatlh.
 
 

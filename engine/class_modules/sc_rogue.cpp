@@ -10678,6 +10678,11 @@ void rogue_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.subtlety_rogue );
 }
 
+namespace live_rogue
+{
+#include "class_modules/sc_rogue_live.inc"
+};
+
 // ROGUE MODULE INTERFACE ===================================================
 
 class rogue_module_t : public module_t
@@ -10687,6 +10692,11 @@ public:
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
+    if ( !sim->dbc->ptr )
+    {
+      return new live_rogue::rogue_t( sim, name, r );
+    }
+
     return new rogue_t( sim, name, r );
   }
 

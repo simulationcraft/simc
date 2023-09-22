@@ -6070,6 +6070,329 @@ void coiled_serpent_idol( special_effect_t& e )
   new serpent_cb_t( e );
 }
 
+// Bandolier of Twisted Blades
+// 422303 Driver (Embed Blade)
+// 422297 Damage
+// 426114 Return Slash Driver
+struct embed_blade_initializer_t : public item_targetdata_initializer_t
+{
+  embed_blade_initializer_t()  : item_targetdata_initializer_t( 422303 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    struct embed_blade_debuff_t : buff_t
+    {
+      action_t* debuff;
+
+      embed_blade_debuff_t( actor_target_data_t& td, const spell_data_t* s, action_t* a )
+        : buff_t( td, "embed_blade", s ), debuff( a )
+      {
+        base_buff_duration = player->find_spell( 422303 )->duration();
+      }
+
+      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+      {
+        buff_t::expire_override( expiration_stacks, remaining_duration );
+
+        if ( debuff )
+          debuff -> execute_on_target( player );
+      }
+    };
+
+    bool active = init( td->source );
+
+    td -> debuff.embed_blade = make_buff_fallback<embed_blade_debuff_t>( active, *td, "embed_blade", debuffs[ td -> source ], td -> source -> find_action( "return_slash" ) );
+    td -> debuff.embed_blade -> reset();
+  }
+};
+
+
+void bandolier_of_twisted_blades( special_effect_t& effect )
+{
+  struct return_slash_t : public generic_aoe_proc_t
+  {
+    return_slash_t( const special_effect_t& effect ) : generic_aoe_proc_t( effect, "return_slash", effect.player -> find_spell( 426114 ), true )
+    {
+      background = true;
+      base_dd_min = base_dd_max = effect.player -> find_spell( 422297 ) -> effectN( 2 ).average( effect.item );
+    }
+  };
+
+  struct bandolier_of_twisted_blades_t : public generic_proc_t
+  {
+    action_t* return_slash;
+    bandolier_of_twisted_blades_t( const special_effect_t& effect ) : generic_proc_t( effect, "embed_blade", effect.driver() ),
+      return_slash( create_proc_action<return_slash_t>( "return_slash", effect ) )
+    {
+      base_dd_min = base_dd_max = effect.player -> find_spell( 422297 ) -> effectN( 1 ).average( effect.item );
+      add_child( return_slash );
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_proc_t::impact( state );
+      
+      actor_target_data_t* td = player -> get_target_data( state -> target );
+
+      if ( td )
+      {
+        td -> debuff.embed_blade -> trigger();
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<bandolier_of_twisted_blades_t>( "embed_blade", effect );
+}
+
+// Rune of the Umbramane
+// TODO: healing when targeting an ally
+// Early implementation based on spell data, needs verification
+void rune_of_the_umbramane( special_effect_t& effect )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "rune_of_the_umbramane", effect, "rune_of_the_umbramane", effect.trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Pinch of Dream Magic
+// Driver: 423927
+// Buffs: 424228, 424276, 424274, 424272, 424275
+void pinch_of_dream_magic( special_effect_t& effect )
+{
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  std::vector<buff_t*> buffs;
+
+  auto add_buff = [ &effect, &buffs ]( std::string suf, unsigned id ) {
+    auto name = "pinch_of_dream_magic_" + suf;
+    auto buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( id ) )
+                 ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+    }
+    buffs.push_back( buff );
+  };
+
+  add_buff( "dreamstag", 424228 );
+  add_buff( "dreamtalon", 424276 );
+  add_buff( "ferntalon", 424274 );
+  add_buff( "runebear", 424272 );
+  add_buff( "dreamsaber", 424275 );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+      } );
+}
+
+// Dancing Dream Blossoms
+// Driver: 423905
+// Buff: 423906
+// TODO/VERIFY: Assumed "the way you like them" picks your highest secondary stat.
+void dancing_dream_blossoms( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "dancing_dream_blossoms_crit_rating", "dancing_dream_blossoms_mastery_rating",
+                     "dancing_dream_blossoms_haste_rating", "dancing_dream_blossoms_versatility_rating" } ) )
+  {
+    return;
+  }
+
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+
+  for ( auto stat : ratings )
+  {
+    auto name = std::string( "dancing_dream_blossoms_" ) + util::stat_type_string( stat );
+    auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 423906 ), effect.item )
+                    ->set_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
+                    ->set_name_reporting( util::stat_type_abbrev( stat ) );
+    ( *buffs )[ stat ] = buff;
+  }
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        stat_e max_stat = util::highest_stat( effect.player, ratings );
+        ( *buffs )[ max_stat ]->trigger();
+      } );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Belor'relos, the Sunstone
+// Driver: 422146
+// Damage values stored in 422141 (e1 is damage, e2 is DoT)
+// Self-Dot: 425417
+void belorrelos_the_sunstone( special_effect_t& effect )
+{
+  struct belorrelos_damage_t : public generic_aoe_proc_t
+  {
+    belorrelos_damage_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "solar_maelstrom", effect.driver(), true )
+    {
+      base_dd_min = base_dd_max = effect.player->find_spell( 422141 )->effectN( 1 ).average( effect.item );
+      base_execute_time         = 0_ms;  // Overriding execute time, this is handled by the main action.
+      not_a_proc                = true;  // Due to cast time on the primary ability
+    }
+  };
+
+  struct belorrelos_channel_t : public proc_spell_t
+  {
+    action_t* damage;
+    action_t* self_damage;
+
+    belorrelos_channel_t( const special_effect_t& e, action_t* _self_damage )
+      : proc_spell_t( "belorrelos_channel", e.player, e.driver(), e.item ),
+        damage( create_proc_action<belorrelos_damage_t>( "solar_maelstrom", e ) )
+    {
+      channeled = hasted_ticks = true;
+      callbacks                = false;
+      dot_duration = base_tick_time = base_execute_time;
+      base_execute_time             = 0_s;
+      aoe                           = 0;
+      interrupt_auto_attack         = false;
+      effect                        = &e;
+      self_damage                   = _self_damage;
+      // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
+      ability_lag        = sim->queue_lag;
+      ability_lag_stddev = sim->queue_lag_stddev;
+      // Child action handles travel time
+      min_travel_time = travel_speed = travel_delay = 0; 
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
+
+      // Cancelled before the last tick completed, reset the cd
+      if ( d->end_event )
+      {
+        cooldown->reset( false );
+        cdgrp->reset( false );
+      }
+      else
+      {
+        cooldown->adjust( d->duration() );
+        cdgrp->adjust( d->duration() );
+      }
+
+      proc_spell_t::last_tick( d );
+      damage->execute();
+
+      self_damage->set_target( player );
+      self_damage->execute();
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( 0_ms );
+    }
+  };
+
+  // Create self-damage DoT
+  auto dot         = create_proc_action<generic_proc_t>( "solar_maelstrom_dot", effect, "solar_maelstrom_dot",
+                                                 effect.player->find_spell( 425417 ) );
+  auto num_ticks   = dot->dot_duration / dot->base_tick_time;
+  dot->base_td     = effect.player->find_spell( 422141 )->effectN( 2 ).average( effect.item ) / num_ticks;
+  dot->not_a_proc  = true;
+  dot->stats->type = stats_e::STATS_NEUTRAL;
+  dot->target      = effect.player;
+
+  auto damage           = create_proc_action<belorrelos_channel_t>( "belorrelos_channel", effect, dot );
+  effect.execute_action = damage;
+}
+
+// Nymue's Unraveling Spindle
+// Driver: 422956
+// Holds coeff: 422953
+// Buff: 427072
+// Trigger/DoT: 427161
+void nymues_unraveling_spindle( special_effect_t& effect )
+{
+  struct nymues_channel_t : public proc_spell_t
+  {
+    buff_t* buff;
+    double damage;
+
+    nymues_channel_t( const special_effect_t& e, buff_t* mastery )
+      : proc_spell_t( "essence_splice", e.player, e.driver(), e.item ),
+        damage( e.player->find_spell( 422953 )->effectN( 1 ).average( e.item ) )
+    {
+      channeled = tick_may_crit = true;
+      aoe                       = 0;
+      effect                    = &e;
+      buff                      = mastery;
+
+      // Stored as total damage dealt, need to be divided by number of ticks/stacks
+      dot_duration   = timespan_t::from_seconds( e.driver()->effectN( 2 ).base_value() );
+      base_tick_time = e.driver()->effectN( 1 ).period();
+      base_td        = damage / ( dot_duration.total_seconds() / base_tick_time.total_seconds() );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+      buff->trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
+
+      // Cancelled before the last tick completed, reset the cd
+      if ( d->end_event )
+      {
+        cooldown->reset( false );
+        cdgrp->reset( false );
+      }
+      else
+      {
+        cooldown->adjust( d->duration() );
+        cdgrp->adjust( d->duration() );
+      }
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( 0_ms );
+    }
+  };
+
+  // Stored as total Mastery gained, need to be divided by number of ticks/stacks
+  auto num_ticks =
+      timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) / effect.driver()->effectN( 1 ).period();
+  auto amount = effect.player->find_spell( 422953 )->effectN( 2 ).average( effect.item ) / num_ticks;
+
+  buff_t* buff = buff_t::find( effect.player, "nymues_vengeful_spindle" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "nymues_vengeful_spindle", effect.player->find_spell( 427072 ),
+                                   effect.item )
+               ->add_stat( STAT_MASTERY_RATING, amount );
+  }
+
+  effect.execute_action = create_proc_action<nymues_channel_t>( "essence_splice", effect, buff );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -7299,6 +7622,32 @@ void demonsbane( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// TODO: implement heal/shield
+void undulating_sporecloak( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 410231 ) );
+  buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  if ( effect.player->is_ptr() )
+  {
+    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
+
+    // In case the player has two copies of this embellishment, set up the buff events only once.
+    if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
+    {
+      buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+        buff->trigger();
+        make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
+          if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
+            buff->trigger();
+          else
+            buff->expire();
+        } );
+      } );
+    }
+  }
+}
+
 }  // namespace items
 
 namespace sets
@@ -8424,6 +8773,12 @@ void register_special_effects()
   register_special_effect( 422858, items::pips_emerald_friendship_badge );
   register_special_effect( 423611, items::ashes_of_the_embersoul );
   register_special_effect( 426827, items::coiled_serpent_idol );
+  register_special_effect( 422303, items::bandolier_of_twisted_blades );
+  register_special_effect( 423926, items::rune_of_the_umbramane );
+  register_special_effect( 423927, items::pinch_of_dream_magic );
+  register_special_effect( 423905, items::dancing_dream_blossoms );
+  register_special_effect( 422146, items::belorrelos_the_sunstone );
+  register_special_effect( 422956, items::nymues_unraveling_spindle );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -8458,6 +8813,7 @@ void register_special_effects()
   register_special_effect( 406254, items::roiling_shadowflame );
   register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
   register_special_effect( 406244, items::ever_decaying_spores );
+  register_special_effect( 410230, items::undulating_sporecloak );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
@@ -8521,6 +8877,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::timestrike_initializer_t() );
   sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
   sim.register_target_data_initializer( items::lava_bolt_initializer_t() );
+  sim.register_target_data_initializer( items::embed_blade_initializer_t() );
 }
 
 void register_hotfixes()

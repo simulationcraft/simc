@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51421 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -2832,7 +2832,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Chains of Devastation (336736 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Unrelenting Calamity (382685 effect#1), Fire and Ice (382886 effect#1), Stormkeeper (383009 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Molten Charge (426578 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Chains of Devastation (336736 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Unrelenting Calamity (382685 effect#1), Fire and Ice (382886 effect#1), Stormkeeper (383009 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2)
 Family Flags     : 34, 39, 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4360,7 +4360,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Initial Shaman (417374 effects: #1, #2), Molten Charge (426578 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Initial Shaman (417374 effects: #1, #2)
 Family Flags     : 0, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4425,7 +4425,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Molten Charge (426578 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2)
 Family Flags     : 1, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6066,14 +6066,14 @@ Range            : 100 yards
 Affecting spells : Elemental Fury (60188 effect#1)
 Family Flags     : 60
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
+                 : ........ ......x. ...x.... ........   ........ .x...... ..x..... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
+                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Always Hit (114), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301668)   : School Damage (2): firestorm
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
@@ -6579,7 +6579,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#16), Elemental Shaman (137040 effects: #12, #22), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Molten Charge (426578 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#16), Elemental Shaman (137040 effects: #12, #22), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15703,8 +15703,8 @@ Description      : $@spelldesc382215
 
 Name             : Ancestral Awakening (id=382309) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(15, 30)]
-                 : Effect#1 [op=set, values=(15, 30)]
+                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Shaman
 School           : Physical
@@ -17822,7 +17822,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1072793)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1, 34, 63, 96, 101
 #2 (id=1075581)  : Dummy (3)
@@ -17830,7 +17830,7 @@ Effects          :
 #3 (id=1075582)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1077908)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
 Description      : Increases the damage of Lightning Bolt and Chain Lightning by $s1% and the damage of Lava Burst by $s4%.
@@ -18148,9 +18148,6 @@ Name             : Shaman Elemental 10.2 Class Set 4pc (id=422912) [Spell Family
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x....... ........   ........ ........ ........ ........   
-                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -18161,9 +18158,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1098510)  : Apply Aura (6) | Proc Trigger Spell (42): Molten Charge
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 426577 | Target: Self (1)
-Description      : For $426577d after using Primordial Wave, whenever you consume Lava Surge, your next Lightning Bolt or Chain Lightning is instant cast and deals $426578s2% increased damage.
+#1 (id=1098510)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When consuming Primordial Wave and for $426577d afterwards, Lava Burst burns your target for $426577s1% additional damage over $427729d, and for $426577d each cast of Chain Lightning causes your next Lava Burst to hit up to $426578s1 additional targets affected by your Flame Shock for $426578s2% of normal damage.
 
 Name             : Shaman Enhancement 10.2 Class Set 2pc (id=422913) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -18251,7 +18248,7 @@ Effects          :
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 #3 (id=1101485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Riptide's healing is increased by $s1%. If Riptide is active on the same target as Tidal Reservoir, its heal over time effect has a $s3% chance to create a new Riptide on a nearby ally.
 
 Name             : Tidal Reservoir (id=424461) [Spell Family (11)] 
@@ -18259,7 +18256,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 15 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18271,30 +18268,33 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1101259)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Friend (21)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Friend (21)
 Description      : $@spelldesc422915
 Tooltip          : Receiving $422915s1% of all Riptide healing $@auracaster deals.
 
-Name             : Molten Charge (id=426577) 
+Name             : Molten Charge (id=426577) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Triggered by     : Shaman Elemental 10.2 Class Set 4pc (422912)
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+                 : Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1105164)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc422912
-Tooltip          : Consuming Lava Surge will cause your next Lightning Bolt or Chain Lightning to be instant cast and deal $426578s2% increased damage.
+Tooltip          : Lava Burst will burn your target for an additional $s1% of damage dealt over $d.
+Chain Lightning will cause your next Lava Burst to strike $422912s1 additional targets affected by Flame Shock for $422912s2% of normal damage.
 
 Name             : Molten Charge (id=426578) [Spell Family (11)] 
 Class            : Shaman
@@ -18311,15 +18311,32 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1105169)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Lava Beam (114074), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 1, 34
-#2 (id=1105170)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Lava Beam (114074), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 1, 34
+#1 (id=1105169)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1105170)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc422912
-Tooltip          : Your next Lightning Bolt or Chain Lightning is instant cast and deals $s2% increased damage.
+Tooltip          : Your next Lava Burst will hit up to $s1 additional targets affected by your Flame Shock for $s2% of normal damage.
+
+Name             : Molten Slag (id=427729) [Spell Family (11)] 
+Class            : Shaman
+School           : Fire
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 4 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ......x. 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Aura While Dead (116), Do Not Display Range (126), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Rolling Periodic (334)
+Effects          :
+#1 (id=1107428)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc422912
+Tooltip          : Burning for $w1 damage every $t1 sec.
 
 
