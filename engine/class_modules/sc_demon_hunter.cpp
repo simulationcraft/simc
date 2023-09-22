@@ -284,7 +284,6 @@ public:
       player_talent_t unleashed_power;
       player_talent_t illidari_knowledge;
       player_talent_t demonic;
-      player_talent_t first_of_the_illidari;
       player_talent_t will_of_the_illidari;       // NYI Vengeance
       player_talent_t improved_sigil_of_misery;
       player_talent_t misery_in_defeat;           // NYI
@@ -296,7 +295,7 @@ public:
 
       player_talent_t erratic_felheart;
       player_talent_t long_night;                 // No Implementation
-      player_talent_t pitch_black;
+      player_talent_t pitch_black;                // No Implementation
       player_talent_t the_hunt;
       player_talent_t demon_muzzle;               // NYI Vengeance
       player_talent_t extended_sigils;
@@ -312,26 +311,24 @@ public:
     {
       player_talent_t eye_beam;
 
-      player_talent_t improved_chaos_strike;
+      player_talent_t critical_chaos;
       player_talent_t insatiable_hunger;
       player_talent_t demon_blades;
-      player_talent_t felfire_heart;
-
-      player_talent_t demonic_appetite;
-      player_talent_t improved_fel_rush;
-      player_talent_t first_blood;
-      player_talent_t furious_throws;
       player_talent_t burning_hatred;
 
-      player_talent_t critical_chaos;
-      player_talent_t mortal_dance;               // No Implementation
+      player_talent_t improved_chaos_strike;
+      player_talent_t first_blood;
       player_talent_t dancing_with_fate;
 
-      player_talent_t initiative;
       player_talent_t desperate_instincts;        // No Implementation
       player_talent_t netherwalk;                 // No Implementation
+      player_talent_t deflecting_dance;           // NYI
+      player_talent_t mortal_dance;               // No Implementation
+
+      player_talent_t initiative;
+      player_talent_t improved_fel_rush;
       player_talent_t chaotic_transformation;
-      player_talent_t fel_eruption;
+      player_talent_t furious_throws;
       player_talent_t trail_of_ruin;
 
       player_talent_t unbound_chaos;
@@ -347,6 +344,7 @@ public:
       player_talent_t burning_wound;
 
       player_talent_t momentum;
+      player_talent_t inertia; // NYI
       player_talent_t chaos_theory;
       player_talent_t restless_hunter;
       player_talent_t inner_demon;
@@ -355,15 +353,16 @@ public:
 
       player_talent_t know_your_enemy;
       player_talent_t glaive_tempest;
-      player_talent_t fel_barrage;
       player_talent_t cycle_of_hatred;
-      player_talent_t fodder_to_the_flame;
+      player_talent_t fodder_to_the_flame; // Partial implementation
       player_talent_t elysian_decree;
       player_talent_t soulrend;
 
       player_talent_t essence_break;
+      player_talent_t fel_barrage; // Old implementation
       player_talent_t shattered_destiny;
       player_talent_t any_means_necessary;
+      player_talent_t a_fire_inside; // NYI
 
     } havoc;
 
@@ -420,7 +419,7 @@ public:
       player_talent_t soulcrush;
       player_talent_t soul_carver;
       player_talent_t last_resort;                // NYI
-      player_talent_t fodder_to_the_flame;        // NYI
+      player_talent_t fodder_to_the_flame;        // Partial implementation
       player_talent_t elysian_decree;
       player_talent_t down_in_flames;
 
@@ -485,6 +484,7 @@ public:
     const spell_data_t* death_sweep;
     const spell_data_t* demons_bite;
     const spell_data_t* fel_rush;
+    const spell_data_t* fel_eruption;
 
     const spell_data_t* blade_dance_2;
     const spell_data_t* burning_wound_debuff;
@@ -492,6 +492,7 @@ public:
     const spell_data_t* chaos_strike_refund;
     const spell_data_t* chaos_theory_buff;
     const spell_data_t* demon_blades_damage;
+    const spell_data_t* demonic_appetite;
     const spell_data_t* demonic_appetite_fury;
     const spell_data_t* essence_break_debuff;
     const spell_data_t* eye_beam_damage;
@@ -1430,7 +1431,6 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.rush_of_chaos );
     ab::apply_affecting_aura( p->talent.demon_hunter.precise_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.unleashed_power );
-    ab::apply_affecting_aura( p->talent.demon_hunter.first_of_the_illidari );
     ab::apply_affecting_aura( p->talent.demon_hunter.improved_sigil_of_misery );
     ab::apply_affecting_aura( p->talent.demon_hunter.erratic_felheart );
     ab::apply_affecting_aura( p->talent.demon_hunter.pitch_black );
@@ -1440,7 +1440,6 @@ public:
 
     ab::apply_affecting_aura( p->talent.havoc.improved_chaos_strike );
     ab::apply_affecting_aura( p->talent.havoc.insatiable_hunger );
-    ab::apply_affecting_aura( p->talent.havoc.felfire_heart );
     ab::apply_affecting_aura( p->talent.havoc.improved_fel_rush );
     ab::apply_affecting_aura( p->talent.havoc.blind_fury );
     ab::apply_affecting_aura( p->talent.havoc.looks_can_kill );
@@ -2093,7 +2092,7 @@ struct consume_soul_t : public demon_hunter_heal_t
     may_miss = false;
     background = true;
 
-    if ( p->talent.havoc.demonic_appetite->ok() )
+    if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
       execute_action = p->get_background_action<demonic_appetite_energize_t>( "demonic_appetite_fury" );
     }
@@ -2651,7 +2650,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
 struct fel_eruption_t : public demon_hunter_spell_t
 {
   fel_eruption_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "fel_eruption", p, p->talent.havoc.fel_eruption, options_str )
+    : demon_hunter_spell_t( "fel_eruption", p, p->spec.fel_eruption, options_str )
   {
   }
 };
@@ -4589,7 +4588,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     }
 
     // Demonic Appetite
-    if ( !from_onslaught && p()->talent.havoc.demonic_appetite->ok() && p()->rppm.demonic_appetite->trigger() )
+    if ( !from_onslaught && p()->rppm.demonic_appetite->trigger() )
     {
       p()->proc.demonic_appetite->occur();
       p()->spawn_soul_fragment( soul_fragment::LESSER );
@@ -5602,7 +5601,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
     set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
     apply_affecting_aura( p->spec.immolation_aura_3 );
-    apply_affecting_aura( p->talent.havoc.felfire_heart );
     apply_affecting_aura( p->talent.vengeance.agonizing_flames );
     set_partial_tick( true );
 
@@ -5701,11 +5699,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p->talent.demon_hunter.soul_rending->ok() )
     {
       add_invalidate( CACHE_LEECH );
-    }
-
-    if ( p->talent.demon_hunter.first_of_the_illidari->ok() )
-    {
-      add_invalidate( CACHE_VERSATILITY );
     }
   }
 
@@ -6621,7 +6614,7 @@ void demon_hunter_t::init_rng()
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     rppm.felblade = get_rppm( "felblade", spell.felblade_reset_havoc );
-    rppm.demonic_appetite = get_rppm( "demonic_appetite", talent.havoc.demonic_appetite );
+    rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
   }
   else // DEMON_HUNTER_VENGEANCE
   {
@@ -6695,18 +6688,21 @@ void demon_hunter_t::init_spells()
   // Havoc Spells
   spec.havoc_demon_hunter     = find_specialization_spell( "Havoc Demon Hunter" );
 
-  spec.annihilation           = find_spell( 201427, DEMON_HUNTER_HAVOC );
-  spec.blade_dance            = find_specialization_spell( "Blade Dance" );
-  spec.blade_dance_2          = find_rank_spell( "Blade Dance", "Rank 2" );
-  spec.blur                   = find_specialization_spell( "Blur" );
-  spec.chaos_strike           = find_specialization_spell( "Chaos Strike" );
-  spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
-  spec.chaos_strike_refund    = find_spell( 197125, DEMON_HUNTER_HAVOC );
-  spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
-  spec.demons_bite            = find_spell( 162243, DEMON_HUNTER_HAVOC );
-  spec.fel_rush               = find_specialization_spell( "Fel Rush" );
-  spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC );
-  spec.immolation_aura_3      = find_rank_spell( "Immolation Aura", "Rank 3" );
+  spec.annihilation          = find_spell( 201427, DEMON_HUNTER_HAVOC );
+  spec.blade_dance           = find_specialization_spell( "Blade Dance" );
+  spec.blade_dance_2         = find_rank_spell( "Blade Dance", "Rank 2" );
+  spec.blur                  = find_specialization_spell( "Blur" );
+  spec.chaos_strike          = find_specialization_spell( "Chaos Strike" );
+  spec.chaos_strike_fury     = find_spell( 193840, DEMON_HUNTER_HAVOC );
+  spec.chaos_strike_refund   = find_spell( 197125, DEMON_HUNTER_HAVOC );
+  spec.death_sweep           = find_spell( 210152, DEMON_HUNTER_HAVOC );
+  spec.demons_bite           = find_spell( 162243, DEMON_HUNTER_HAVOC );
+  spec.fel_rush              = find_specialization_spell( "Fel Rush" );
+  spec.fel_rush_damage       = find_spell( 192611, DEMON_HUNTER_HAVOC );
+  spec.immolation_aura_3     = find_rank_spell( "Immolation Aura", "Rank 3" );
+  spec.fel_eruption          = find_specialization_spell( "Fel Eruption" );
+  spec.demonic_appetite      = find_spell( 206478, DEMON_HUNTER_HAVOC );
+  spec.demonic_appetite_fury = find_spell( 210041, DEMON_HUNTER_HAVOC );
 
   // Vengeance Spells
   spec.vengeance_demon_hunter = find_specialization_spell( "Vengeance Demon Hunter" );
@@ -6763,7 +6759,6 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.unleashed_power = find_talent_spell( talent_tree::CLASS, "Unleashed Power" );
   talent.demon_hunter.illidari_knowledge = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
   talent.demon_hunter.demonic = find_talent_spell( talent_tree::CLASS, "Demonic" );
-  talent.demon_hunter.first_of_the_illidari = find_talent_spell( talent_tree::CLASS, "First of the Illidari" );
   talent.demon_hunter.will_of_the_illidari = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
   talent.demon_hunter.improved_sigil_of_misery = find_talent_spell( talent_tree::CLASS, "Improved Sigil of Misery" );
   talent.demon_hunter.misery_in_defeat = find_talent_spell( talent_tree::CLASS, "Misery in Defeat" );
@@ -6789,26 +6784,24 @@ void demon_hunter_t::init_spells()
 
   talent.havoc.eye_beam = find_talent_spell( talent_tree::SPECIALIZATION, "Eye Beam" );
 
-  talent.havoc.improved_chaos_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Strike" );
+  talent.havoc.critical_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Chaos" );
   talent.havoc.insatiable_hunger = find_talent_spell( talent_tree::SPECIALIZATION, "Insatiable Hunger" );
   talent.havoc.demon_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Demon Blades" );
-  talent.havoc.felfire_heart = find_talent_spell( talent_tree::SPECIALIZATION, "Felfire Heart" );
-
-  talent.havoc.demonic_appetite = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Appetite" );
-  talent.havoc.improved_fel_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Fel Rush" );
-  talent.havoc.first_blood = find_talent_spell( talent_tree::SPECIALIZATION, "First Blood" );
-  talent.havoc.furious_throws = find_talent_spell( talent_tree::SPECIALIZATION, "Furious Throws" );
   talent.havoc.burning_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Hatred" );
 
-  talent.havoc.critical_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Chaos" );
-  talent.havoc.mortal_dance = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Dance" );
+  talent.havoc.improved_chaos_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Strike" );
+  talent.havoc.first_blood = find_talent_spell( talent_tree::SPECIALIZATION, "First Blood" );
   talent.havoc.dancing_with_fate = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing with Fate" );
 
-  talent.havoc.initiative = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
   talent.havoc.desperate_instincts = find_talent_spell( talent_tree::SPECIALIZATION, "Desperate Instincts" );
   talent.havoc.netherwalk = find_talent_spell( talent_tree::SPECIALIZATION, "Netherwalk" );
+  talent.havoc.deflecting_dance = find_talent_spell( talent_tree::SPECIALIZATION, "Deflecting Dance" );
+  talent.havoc.mortal_dance = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Dance" );
+
+  talent.havoc.initiative = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
+  talent.havoc.improved_fel_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Fel Rush" );
   talent.havoc.chaotic_transformation = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Transformation" );
-  talent.havoc.fel_eruption = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Eruption" );
+  talent.havoc.furious_throws = find_talent_spell( talent_tree::SPECIALIZATION, "Furious Throws" );
   talent.havoc.trail_of_ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Trail of Ruin" );
 
   talent.havoc.unbound_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Unbound Chaos" );
@@ -6824,6 +6817,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.burning_wound = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Wound" );
 
   talent.havoc.momentum = find_talent_spell( talent_tree::SPECIALIZATION, "Momentum" );
+  talent.havoc.inertia = find_talent_spell( talent_tree::SPECIALIZATION, "Inertia" );
   talent.havoc.chaos_theory = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
   talent.havoc.restless_hunter = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
   talent.havoc.inner_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
@@ -6832,15 +6826,16 @@ void demon_hunter_t::init_spells()
 
   talent.havoc.know_your_enemy = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
   talent.havoc.glaive_tempest = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
-  talent.havoc.fel_barrage = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
   talent.havoc.cycle_of_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Hatred" );
   talent.havoc.fodder_to_the_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Fodder to the Flame" );
   talent.havoc.elysian_decree = find_talent_spell( talent_tree::SPECIALIZATION, "Elysian Decree" );
   talent.havoc.soulrend = find_talent_spell( talent_tree::SPECIALIZATION, "Soulrend" );
 
   talent.havoc.essence_break = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
+  talent.havoc.fel_barrage = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
   talent.havoc.shattered_destiny = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Destiny" );
   talent.havoc.any_means_necessary = find_talent_spell( talent_tree::SPECIALIZATION, "Any Means Necessary" );
+  talent.havoc.a_fire_inside = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
 
   // Vengeance Talents
 
@@ -6920,7 +6915,6 @@ void demon_hunter_t::init_spells()
   spec.demon_blades_damage = talent.havoc.demon_blades->effectN( 1 ).trigger();
   spec.essence_break_debuff = talent.havoc.essence_break->ok() ? find_spell( 320338 ) : spell_data_t::not_found();
   spec.eye_beam_damage = talent.havoc.eye_beam->ok() ? find_spell( 198030 ) : spell_data_t::not_found();
-  spec.demonic_appetite_fury = talent.havoc.demonic_appetite->ok() ? find_spell( 210041 ) : spell_data_t::not_found();
   spec.furious_gaze_buff = talent.havoc.furious_gaze->ok() ? find_spell( 343312 ) : spell_data_t::not_found();
   spec.first_blood_blade_dance_damage = talent.havoc.first_blood->ok() ? find_spell( 391374 ) : spell_data_t::not_found();
   spec.first_blood_blade_dance_2_damage = talent.havoc.first_blood->ok() ? find_spell( 391378 ) : spell_data_t::not_found();
@@ -7509,11 +7503,6 @@ double demon_hunter_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
-  if ( talent.demon_hunter.first_of_the_illidari->ok() && buff.metamorphosis->check() )
-  {
-    cdv += talent.demon_hunter.first_of_the_illidari->effectN( 2 ).percent();
-  }
-
   return cdv;
 }
 
@@ -7523,11 +7512,6 @@ double demon_hunter_t::composite_heal_versatility() const
 {
   double chv = player_t::composite_heal_versatility();
 
-  if ( talent.demon_hunter.first_of_the_illidari->ok() && buff.metamorphosis->check() )
-  {
-    chv += talent.demon_hunter.first_of_the_illidari->effectN( 2 ).percent();
-  }
-
   return chv;
 }
 
@@ -7536,11 +7520,6 @@ double demon_hunter_t::composite_heal_versatility() const
 double demon_hunter_t::composite_mitigation_versatility() const
 {
   double cmv = player_t::composite_mitigation_versatility();
-
-  if ( talent.demon_hunter.first_of_the_illidari->ok() && buff.metamorphosis->check() )
-  {
-    cmv += talent.demon_hunter.first_of_the_illidari->effectN( 2 ).percent() / 2;
-  }
 
   return cmv;
 }
