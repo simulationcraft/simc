@@ -218,6 +218,7 @@ public:
     damage_buff_t* restless_hunter;
     buff_t* tactical_retreat;
     buff_t* unbound_chaos;
+    damage_buff_t* inertia;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -509,6 +510,7 @@ public:
     const spell_data_t* inner_demon_damage;
     const spell_data_t* isolated_prey_fury;
     const spell_data_t* momentum_buff;
+    const spell_data_t* inertia_buff;
     const spell_data_t* ragefire_damage;
     const spell_data_t* serrated_glaive_debuff;
     const spell_data_t* soulrend_debuff;
@@ -1556,6 +1558,7 @@ public:
     register_damage_buff( p()->buff.demon_soul );
     register_damage_buff( p()->buff.empowered_demon_soul );
     register_damage_buff( p()->buff.momentum );
+    register_damage_buff( p()->buff.inertia );
     register_damage_buff( p()->buff.restless_hunter );
     register_damage_buff( p()->buff.t29_havoc_4pc );
     register_damage_buff( p()->buff.t31_vengeance_2pc );
@@ -4918,6 +4921,11 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     demon_hunter_attack_t::execute();
 
+    if ( p()->buff.unbound_chaos->up() && p()->talent.havoc.inertia->ok() )
+    {
+      p()->buff.inertia->trigger();
+    }
+
     p()->buff.unbound_chaos->expire();
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
@@ -6105,6 +6113,8 @@ void demon_hunter_t::create_buffs()
     return std::min( b->remains() + d, 10_s ); // Capped to 10 seconds
   } );
 
+  buff.inertia = make_buff<damage_buff_t>( this, "inertia", spec.inertia_buff );
+
   buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 
   buff.restless_hunter = make_buff<damage_buff_t>( this, "restless_hunter", spec.restless_hunter_buff );
@@ -6926,6 +6936,7 @@ void demon_hunter_t::init_spells()
   spec.inner_demon_damage = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
   spec.isolated_prey_fury = talent.havoc.isolated_prey->ok() ? find_spell( 357323 ) : spell_data_t::not_found();
   spec.momentum_buff = talent.havoc.momentum->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
+  spec.inertia_buff = talent.havoc.inertia->ok() ? find_spell( 427641 ) : spell_data_t::not_found();
   spec.ragefire_damage = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
   spec.restless_hunter_buff = talent.havoc.restless_hunter->ok() ? find_spell( 390212 ) : spell_data_t::not_found();
   spec.serrated_glaive_debuff = talent.havoc.serrated_glaive->effectN( 1 ).trigger();
