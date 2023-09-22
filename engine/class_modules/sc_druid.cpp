@@ -2141,10 +2141,10 @@ public:
     {
       parse_debuff_effects(
           []( druid_td_t* td ) { return td->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
-          p()->talent.rip, p()->buff.ashamanes_guidance );
+          p()->talent.rip, p()->find_spell( 421442 ));
       parse_debuff_effects(
           []( druid_td_t* td ) { return td->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
-          find_trigger( p()->talent.rake ).trigger(), p()->buff.ashamanes_guidance );
+          find_trigger( p()->talent.rake ).trigger(), p()->find_spell( 421442 ));
     }
   }
 
