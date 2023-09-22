@@ -673,7 +673,7 @@ public:
     proc_t* death_sweep_in_essence_break;
     proc_t* chaos_strike_in_serrated_glaive;
     proc_t* annihilation_in_serrated_glaive;
-    proc_t* eye_beam_tick_in_serrated_glaive;
+    proc_t* throw_glaive_in_serrated_glaive;
     proc_t* shattered_destiny;
     proc_t* eye_beam_canceled;
 
@@ -2465,10 +2465,6 @@ struct eye_beam_t : public demon_hunter_spell_t
   void tick( dot_t* d ) override
   {
     demon_hunter_spell_t::tick( d );
-
-    // Serrated glaive stats tracking
-    if ( td( target )->debuffs.serrated_glaive->up() )
-      p()->proc.eye_beam_tick_in_serrated_glaive->occur();
   }
 
   void last_tick( dot_t* d ) override
@@ -4566,6 +4562,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         if ( p()->rng().roll( chance ) )
           p()->buff.t29_havoc_4pc->trigger();
       }
+
+      // TOCHECK -- Does this proc from Relentless Onslaught?
+      // TOCHECK -- Does the applying Chaos Strike/Annihilation benefit from the debuff?
+      if ( p()->spec.serrated_glaive_debuff->ok() )
+      {
+        td( s->target )->debuffs.serrated_glaive->trigger();
+      }
     }
   };
 
@@ -5484,6 +5487,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
     {
       furious_throws->execute_on_target( target );
     }
+
+    if ( td( target )->debuffs.serrated_glaive->up() )
+      p()->proc.throw_glaive_in_serrated_glaive->occur();
   }
 };
 
@@ -6635,17 +6641,17 @@ void demon_hunter_t::init_procs()
   proc.felblade_reset                = get_proc( "felblade_reset" );
 
   // Havoc
-  proc.demonic_appetite                 = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta              = get_proc( "demons_bite_in_meta" );
-  proc.chaos_strike_in_essence_break    = get_proc( "chaos_strike_in_essence_break" );
-  proc.annihilation_in_essence_break    = get_proc( "annihilation_in_essence_break" );
-  proc.blade_dance_in_essence_break     = get_proc( "blade_dance_in_essence_break" );
-  proc.death_sweep_in_essence_break     = get_proc( "death_sweep_in_essence_break" );
-  proc.chaos_strike_in_serrated_glaive  = get_proc( "chaos_strike_in_serrated_glaive" );
-  proc.annihilation_in_serrated_glaive  = get_proc( "annihilation_in_serrated_glaive" );
-  proc.eye_beam_tick_in_serrated_glaive = get_proc( "eye_beam_tick_in_serrated_glaive" );
-  proc.shattered_destiny                = get_proc( "shattered_destiny" );
-  proc.eye_beam_canceled                = get_proc( "eye_beam_canceled" );
+  proc.demonic_appetite                = get_proc( "demonic_appetite" );
+  proc.demons_bite_in_meta             = get_proc( "demons_bite_in_meta" );
+  proc.chaos_strike_in_essence_break   = get_proc( "chaos_strike_in_essence_break" );
+  proc.annihilation_in_essence_break   = get_proc( "annihilation_in_essence_break" );
+  proc.blade_dance_in_essence_break    = get_proc( "blade_dance_in_essence_break" );
+  proc.death_sweep_in_essence_break    = get_proc( "death_sweep_in_essence_break" );
+  proc.chaos_strike_in_serrated_glaive = get_proc( "chaos_strike_in_serrated_glaive" );
+  proc.annihilation_in_serrated_glaive = get_proc( "annihilation_in_serrated_glaive" );
+  proc.throw_glaive_in_serrated_glaive = get_proc( "throw_glaive_in_serrated_glaive" );
+  proc.shattered_destiny               = get_proc( "shattered_destiny" );
+  proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
 
   // Vengeance
   proc.soul_fragment_expire        = get_proc( "soul_fragment_expire" );
