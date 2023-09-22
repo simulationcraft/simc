@@ -11257,7 +11257,7 @@ void druid_t::init_special_effects()
     new dbc_proc_callback_t( this, *driver );
   }
 
-  if ( sets->has_set_bonus( DRUID_FERAL, T30, B4 ) )
+  if ( sets->has_set_bonus( DRUID_FERAL, T31, B4 ) )
   {
     struct smoldering_frenzy_cb_t : public druid_cb_t
     {
