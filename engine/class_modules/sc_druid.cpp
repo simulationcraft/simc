@@ -1645,9 +1645,11 @@ struct berserk_cat_buff_t : public druid_buff_t
     base_t::start( s, v, d );
 
     if ( inc )
+    {
       p()->uptime.incarnation_cat->update( true, sim->current_time() );
-    if ( p()->talent.ashamanes_guidance.ok() && p()->is_ptr() )
-      p()->buff.ashamanes_guidance->trigger();
+      if ( p()->talent.ashamanes_guidance.ok() && p()->is_ptr() )
+        p()->buff.ashamanes_guidance->trigger();
+    }
   }
 
   void expire_override( int s, timespan_t d ) override
