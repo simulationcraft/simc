@@ -3563,7 +3563,6 @@ struct feral_frenzy_t : public cat_attack_t
       is_direct_damage = true;
       cat_attack_t::execute();
       is_direct_damage = false;
-
     }
 
     void trigger_primal_fury() override {}
