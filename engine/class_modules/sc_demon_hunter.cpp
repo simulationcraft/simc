@@ -3191,6 +3191,14 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
       am *= 1.0 + p()->buff.growing_inferno->stack_value();
 
+      if ( p()->talent.havoc.isolated_prey->ok() )
+      {
+        if ( targets_in_range_list( target_list() ).size() == 1 )
+        {
+          am *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 3 ).percent();
+        }
+      }
+
       return am;
     }
 
@@ -4919,12 +4927,6 @@ struct fel_rush_t : public demon_hunter_attack_t
     void execute() override
     {
       demon_hunter_spell_t::execute();
-
-      if ( p()->talent.havoc.isolated_prey->ok() && num_targets_hit == 1 )
-      {
-        p()->resource_gain( RESOURCE_FURY, p()->spec.isolated_prey_fury->effectN( 1 ).resource(),
-                            p()->spec.isolated_prey_fury->effectN( 1 ).m_delta(), p()->gain.isolated_prey );
-      }
     }
   };
 
