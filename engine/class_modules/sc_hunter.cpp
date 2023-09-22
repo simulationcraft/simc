@@ -328,12 +328,10 @@ public:
   {
     pets::hunter_main_pet_t* main = nullptr;
     pets::animal_companion_t* animal_companion = nullptr;
-    pets::dire_critter_t* dire_beast = nullptr;
-    spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dc_dire_beast;
-    spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> tier_dire_beast;
+    spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dire_beast;
     spawner::pet_spawner_t<pets::call_of_the_wild_pet_t, hunter_t> cotw_stable_pet;
 
-    pets_t( hunter_t* p ) : dc_dire_beast( "dire_beast_(dc)", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), tier_dire_beast( "dire_beast_(tier)", p ) { }
+    pets_t( hunter_t* p ) : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ) { }
   } pets;
 
   struct tier_sets_t {
@@ -354,16 +352,13 @@ public:
     spell_data_ptr_t t30_sv_4pc; 
     // T31 - Amirdrassil: The Dream's Hope
     spell_data_ptr_t t31_bm_2pc;
-    //TODO NYI
     spell_data_ptr_t t31_bm_4pc;
-     //TODO NYI
     spell_data_ptr_t t31_mm_2pc;
-     //TODO NYI
     spell_data_ptr_t t31_mm_4pc;
     spell_data_ptr_t t31_sv_2pc;
-    spell_data_ptr_t t31_sv_2pc_buff; 
-    //TODO NYI
+    spell_data_ptr_t t31_sv_2pc_buff;
     spell_data_ptr_t t31_sv_4pc;
+    spell_data_ptr_t t31_sv_4pc_buff;
   } tier_set;
 
   // Buffs
@@ -427,7 +422,8 @@ public:
     //T30
     buff_t* exposed_wound;
     //T31
-    buff_t* fury_strikes; 
+    buff_t* fury_strikes;
+    buff_t* contained_explosion;
   } buffs;
 
   // Cooldowns
@@ -709,6 +705,8 @@ public:
     action_t* arctic_bola = nullptr;
     action_t* dire_command = nullptr; 
     action_t* windrunners_guidance_background = nullptr;
+    action_t* volley_t31 = nullptr;
+    action_t* wildfire_bomb_t31 = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -726,7 +724,7 @@ public:
     unsigned dire_pack_counter = 0;
     unsigned bombardment_counter = 0;
     unsigned lotw_counter = 0;
-    unsigned windrunners_guidance_counter = 0; 
+    unsigned windrunners_guidance_counter = 0;
   } state;
 
   struct options_t {
@@ -1316,6 +1314,16 @@ namespace pets
 
 struct hunter_pet_t: public pet_t
 {
+  struct buffs_t
+  {
+    buff_t* beast_cleave = nullptr;
+  } buffs;
+
+  struct actives_t
+  {
+    action_t* beast_cleave = nullptr;
+  } active;
+
   hunter_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
     pet_t( owner -> sim, owner, pet_name, pt, guardian, dynamic )
   {
@@ -1352,8 +1360,21 @@ struct hunter_pet_t: public pet_t
     action.apply_affecting_aura( o() -> specs.survival_hunter );
   }
 
+  void create_buffs() override
+  {
+    pet_t::create_buffs();
+
+    buffs.beast_cleave =
+      make_buff( this, "beast_cleave", find_spell( 118455 ) )
+      // 3-24-23 Bloody Frenzy cleaves at 100% value when Beast Cleave is not talented.
+      -> set_default_value( o() -> talents.beast_cleave.ok() ? o() -> talents.beast_cleave -> effectN( 1 ).percent() : 1.0 )
+      -> apply_affecting_effect( o() -> talents.beast_cleave -> effectN( 2 ) );
+  }
+
   hunter_t* o()             { return static_cast<hunter_t*>( owner ); }
   const hunter_t* o() const { return static_cast<hunter_t*>( owner ); }
+
+  void init_spells() override;
 };
 
 // Template for common hunter pet action code.
@@ -1434,15 +1455,8 @@ public:
 
 struct stable_pet_t : public hunter_pet_t
 {
-  struct buffs_t
-  {
-    buff_t* frenzy = nullptr;
-    buff_t* beast_cleave = nullptr;
-  } buffs;
-
   struct actives_t
   {
-    action_t* beast_cleave = nullptr;
     action_t* stomp = nullptr; 
   } active;
 
@@ -1457,39 +1471,12 @@ struct stable_pet_t : public hunter_pet_t
     main_hand_weapon.swing_time = owner -> options.pet_attack_speed;
   }
 
-  void create_buffs() override
-  {
-    hunter_pet_t::create_buffs();
-
-    buffs.frenzy =
-      make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
-      -> set_default_value_from_effect( 1 )
-      -> apply_affecting_aura( o() -> talents.savagery )
-      -> add_invalidate( CACHE_ATTACK_SPEED );
-
-    buffs.beast_cleave =
-      make_buff( this, "beast_cleave", find_spell( 118455 ) )
-      // 3-24-23 Bloody Frenzy cleaves at 100% value when Beast Cleave is not talented.
-      -> set_default_value( o() -> talents.beast_cleave.ok() ? o() -> talents.beast_cleave -> effectN( 1 ).percent() : 1.0 )
-      -> apply_affecting_effect( o() -> talents.beast_cleave -> effectN( 2 ) );
-  }
-
   void summon( timespan_t duration = 0_ms ) override
   {
     hunter_pet_t::summon( duration );
 
     if ( duration > 0_s && !o() -> is_ptr() )
       o() -> cooldowns.aspect_of_the_wild -> adjust( -o() -> talents.master_handler -> effectN( 1 ).time_value() );
-  }
-
-  double composite_melee_speed() const override
-  {
-    double ah = hunter_pet_t::composite_melee_speed();
-
-    if ( buffs.frenzy -> check() )
-      ah /= 1 + buffs.frenzy -> check_stack_value();
-
-    return ah;
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -1526,6 +1513,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
   struct buffs_t
   {
+    buff_t* frenzy = nullptr;
     buff_t* thrill_of_the_hunt = nullptr;
     buff_t* bestial_wrath = nullptr;
     buff_t* piercing_fangs = nullptr;
@@ -1548,6 +1536,12 @@ struct hunter_main_pet_base_t : public stable_pet_t
   void create_buffs() override
   {
     stable_pet_t::create_buffs();
+
+    buffs.frenzy =
+      make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
+      -> set_default_value_from_effect( 1 )
+      -> apply_affecting_aura( o() -> talents.savagery )
+      -> add_invalidate( CACHE_ATTACK_SPEED );
 
     buffs.thrill_of_the_hunt =
       make_buff( this, "thrill_of_the_hunt", find_spell( 312365 ) )
@@ -1590,6 +1584,9 @@ struct hunter_main_pet_base_t : public stable_pet_t
     if ( buffs.bloodseeker && buffs.bloodseeker -> check() )
       ah /= 1 + buffs.bloodseeker -> check_stack_value();
 
+    if ( buffs.frenzy -> check() )
+      ah /= 1 + buffs.frenzy -> check_stack_value();
+
     return ah;
   }
 
@@ -1614,9 +1611,9 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     cc += buffs.thrill_of_the_hunt -> check_stack_value();
 
-    if ( o() -> buffs.fury_strikes -> check() )
+    if ( !bugs && o() -> buffs.fury_strikes -> check() )
     {
-      cc += o() -> tier_set.t31_sv_2pc -> effectN( 2 ).percent();
+      cc += o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ).percent();
     }
 
     return cc;
@@ -1629,10 +1626,10 @@ struct hunter_main_pet_base_t : public stable_pet_t
     if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
       m *= 1 + buffs.piercing_fangs -> check_value();
 
-    if ( o() -> buffs.fury_strikes -> check() && 
+    if ( !bugs && o() -> buffs.fury_strikes -> check() && 
         o() -> buffs.fury_strikes -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
     {
-      m *= 1 + o() -> tier_set.t31_sv_2pc -> effectN( 1 ).percent();
+      m *= 1 + o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ).percent();
     }
 
     return m;
@@ -1861,19 +1858,21 @@ double hunter_main_pet_base_t::composite_player_target_multiplier( player_t* tar
 
 struct dire_critter_t final : public hunter_pet_t
 {
-  unsigned dire_pack_threshold;
-
-  struct dire_beast_melee_t: public hunter_pet_melee_t<dire_critter_t>
+  struct actives_t
   {
-    dire_beast_melee_t( dire_critter_t* p ):
-      hunter_pet_melee_t( "dire_beast_melee", p )
-    { }
-  };
+    action_t* kill_command = nullptr;
+    action_t* kill_cleave = nullptr;
+  } active;
+
+  unsigned dire_pack_threshold;
 
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
     hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
-    owner_coeff.ap_from_ap = 0.15;
+    // 11-10-22 Dire Beast - Damage increased by 400%.
+    // 13-10-22 Dire Beast damage increased by 50%.
+    owner_coeff.ap_from_ap = 0.9;
+    
     resource_regeneration = regen_type::DISABLED;
 
     dire_pack_threshold = as<int>( o() -> talents.dire_pack -> effectN( 1 ).base_value() );
@@ -1909,10 +1908,6 @@ struct dire_critter_t final : public hunter_pet_t
     double m = hunter_pet_t::composite_player_multiplier( school );
 
     m *= 1 + o() -> talents.dire_frenzy -> effectN( 2 ).percent();
-
-    // 11-10-22 Dire Beast - Damage increased by 400%.
-    // 13-10-22 Dire Beast damage increased by 50%.
-    m *= 6;
 
     return m;
   }
@@ -1955,6 +1950,8 @@ public:
   struct {
     damage_affected_by aspect_of_the_beast;
     damage_affected_by spirit_bond;
+    bool fury_strikes_crit_chance;
+    bool fury_strikes_crit_dmg;
   } affected_by;
 
   hunter_main_pet_action_t( util::string_view n, hunter_main_pet_t* p, const spell_data_t* s = spell_data_t::nil() ):
@@ -1962,6 +1959,8 @@ public:
   {
     affected_by.aspect_of_the_beast = parse_damage_affecting_aura( this, ab::o() -> talents.aspect_of_the_beast );
     affected_by.spirit_bond         = parse_damage_affecting_aura( this, ab::o() -> mastery.spirit_bond );
+    affected_by.fury_strikes_crit_chance = check_affected_by( this, ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ) );
+    affected_by.fury_strikes_crit_dmg    = check_affected_by( this, ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ) );
   }
 
   void init() override
@@ -1996,6 +1995,26 @@ public:
 
     return am;
   }
+
+  double composite_crit_chance() const override
+  {
+    double cc = ab::composite_crit_chance();
+
+    if ( ab::p() -> bugs && affected_by.fury_strikes_crit_chance && ab::o() -> buffs.fury_strikes -> check() )
+      cc += ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ).percent();
+
+    return cc;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( ab::p() -> bugs && affected_by.fury_strikes_crit_dmg && ab::o() -> buffs.fury_strikes -> check() )
+      cm *= 1.0 + ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ).percent();
+
+    return cm;
+  }
 };
 
 using hunter_main_pet_attack_t = hunter_main_pet_action_t< melee_attack_t >;
@@ -2006,39 +2025,45 @@ using hunter_main_pet_attack_t = hunter_main_pet_action_t< melee_attack_t >;
 
 // Kill Command (pet) =======================================================
 
-struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, melee_attack_t>
+template <class Pet>
+struct kill_command_base_t : public hunter_pet_action_t<Pet, melee_attack_t>
 {
+private:
+  using ab = hunter_pet_action_t<Pet, melee_attack_t>;
+public:
+
   struct {
     double percent = 0;
     double multiplier = 1;
     benefit_t* benefit = nullptr;
   } killer_instinct;
 
-  kill_command_base_t( hunter_main_pet_base_t* p, const spell_data_t* s ):
-    hunter_pet_action_t( "kill_command", p, s )
+  kill_command_base_t( Pet* p, const spell_data_t* s ) :
+    ab( "kill_command", p, s )
   {
-    background = true;
-    proc = true;
+    ab::background = true;
+    ab::proc = true;
+    
+    ab::attack_power_mod.direct = ab::o() -> talents.kill_command -> effectN( 2 ).percent();
+    ab::base_dd_multiplier *= 1 + ab::o() -> talents.alpha_predator -> effectN( 2 ).percent();
 
-    base_dd_multiplier *= 1 + o() -> talents.alpha_predator -> effectN( 2 ).percent();
-
-    if ( o() -> talents.killer_instinct.ok() )
+    if ( ab::o() -> talents.killer_instinct.ok() )
     {
-      killer_instinct.percent = o() -> talents.killer_instinct -> effectN( 2 ).base_value();
-      killer_instinct.multiplier = 1 + o() -> talents.killer_instinct -> effectN( 1 ).percent();
-      killer_instinct.benefit = o() -> get_benefit( "killer_instinct" );
+      killer_instinct.percent = ab::o() -> talents.killer_instinct -> effectN( 2 ).base_value();
+      killer_instinct.multiplier = 1 + ab::o() -> talents.killer_instinct -> effectN( 1 ).percent();
+      killer_instinct.benefit = ab::o() -> get_benefit( "killer_instinct" );
     }
   }
 
   double composite_attack_power() const override
   {
     // Kill Command for both Survival & Beast Mastery uses player AP directly
-    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
+    return ab::o() -> cache.attack_power() * ab::o() -> composite_attack_power_multiplier();
   }
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double am = hunter_pet_action_t::composite_target_multiplier( t );
+    double am = ab::composite_target_multiplier( t );
 
     if ( killer_instinct.percent )
     {
@@ -2053,114 +2078,47 @@ struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, m
 
   void impact( action_state_t* s ) override
   {
-    hunter_pet_action_t::impact( s );
+    ab::impact( s );
 
-    if ( o() -> talents.master_marksman.ok() && s -> result == RESULT_CRIT )
+    if ( ab::o() -> talents.master_marksman.ok() && s -> result == RESULT_CRIT )
     {
-      double amount = s -> result_amount * o() -> talents.master_marksman -> effectN( 1 ).percent();
+      double amount = s -> result_amount * ab::o() -> talents.master_marksman -> effectN( 1 ).percent();
       if ( amount > 0 )
-        residual_action::trigger( o() -> actions.master_marksman, s -> target, amount );
+        residual_action::trigger( ab::o() -> actions.master_marksman, s -> target, amount );
     }
   }
 };
 
-// Beast Cleave ==============================================================
-
-struct beast_cleave_attack_t: public hunter_pet_action_t<stable_pet_t, melee_attack_t>
+struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
 {
-  beast_cleave_attack_t( stable_pet_t* p ):
-    hunter_pet_action_t( "beast_cleave", p, p -> find_spell( 118459 ) )
-  {
-    background = true;
-    callbacks = false;
-    may_miss = false;
-    may_crit = false;
-    proc = false;
-    // The starting damage includes all the buffs
-    base_dd_min = base_dd_max = 0;
-    spell_power_mod.direct = attack_power_mod.direct = 0;
-    weapon_multiplier = 0;
+  struct {
+    double percent = 0;
+    double multiplier = 1;
+    benefit_t* benefit = nullptr;
+  } killer_instinct;
 
-    aoe = -1;
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
+  kill_command_db_t( dire_critter_t* p ) :
+    kill_command_base_t( p, p -> find_spell( 83381 ) )
+  {
+    // Effect 1 dummy value seems to be a damage modifier.
+    base_multiplier *= 1.0 - o() -> tier_set.t31_bm_4pc -> effectN( 1 ).percent();
   }
 
-  void init() override
+  void impact( action_state_t* s ) override
   {
-    hunter_pet_action_t::init();
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
+    kill_command_base_t::impact( s );
 
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    hunter_pet_action_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
-
-    return tl.size();
+    if ( o() -> talents.kill_cleave.ok() && s -> action -> result_is_hit( s -> result ) &&
+      s -> action -> sim -> active_enemies > 1 && p() -> buffs.beast_cleave -> up() )
+    {
+      const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
+      const double amount = s -> result_total * o() -> talents.kill_cleave -> effectN( 1 ).percent() * target_da_multiplier;
+      p() -> active.kill_cleave -> execute_on_target( s -> target, amount );
+    }
   }
 };
 
-static void trigger_beast_cleave( const action_state_t* s )
-{
-  if ( !s -> action -> result_is_hit( s -> result ) )
-    return;
-
-  if ( s -> action -> sim -> active_enemies == 1 )
-    return;
-
-  auto p = debug_cast<stable_pet_t*>( s -> action -> player );
-
-  if ( !p -> buffs.beast_cleave -> up() )
-    return;
-
-  // Target multipliers do not replicate to secondary targets
-  const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
-
-  const double amount = s -> result_total * p -> buffs.beast_cleave -> check_value() * target_da_multiplier;
-  p -> active.beast_cleave -> execute_on_target( s -> target, amount );
-}
-
-// Kill Cleave ==============================================================
-
-struct kill_cleave_t: public hunter_pet_action_t<hunter_main_pet_base_t, melee_attack_t>
-{
-  kill_cleave_t( hunter_main_pet_base_t* p ):
-    hunter_pet_action_t( "kill_cleave", p, p -> find_spell( 389448 ) )
-  {
-    background = true;
-    callbacks = false;
-    may_miss = false;
-    may_crit = false;
-    proc = false;
-    // The starting damage includes all the buffs
-    base_dd_min = base_dd_max = 0;
-    spell_power_mod.direct = attack_power_mod.direct = 0;
-    weapon_multiplier = 0;
-
-    aoe = -1;
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
-  }
-
-  void init() override
-  {
-    hunter_pet_action_t::init();
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    hunter_pet_action_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
-
-    return tl.size();
-  }
-};
-
-struct kill_command_bm_mm_t: public kill_command_base_t
+struct kill_command_bm_mm_t: public kill_command_base_t<hunter_main_pet_base_t>
 {
   struct {
     double chance = 0;
@@ -2169,7 +2127,6 @@ struct kill_command_bm_mm_t: public kill_command_base_t
   kill_command_bm_mm_t( hunter_main_pet_base_t* p ) :
     kill_command_base_t( p, p -> find_spell( 83381 ) )
   {
-    attack_power_mod.direct = o() -> talents.kill_command -> effectN( 2 ).percent();
   }
 
   void execute() override
@@ -2190,7 +2147,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     kill_command_base_t::impact( s );
 
     if ( o() -> talents.kill_cleave.ok() && s -> action -> result_is_hit( s -> result ) &&
-      s -> action -> sim -> active_enemies > 1 && p() -> stable_pet_t::buffs.beast_cleave -> up() )
+      s -> action -> sim -> active_enemies > 1 && p() -> hunter_pet_t::buffs.beast_cleave -> up() )
     {
       const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
       const double amount = s -> result_total * o() -> talents.kill_cleave -> effectN( 1 ).percent() * target_da_multiplier;
@@ -2198,8 +2155,7 @@ struct kill_command_bm_mm_t: public kill_command_base_t
     }
 
     auto pet = o() -> pets.main;
-    //09/09/2023 - Currently the debuff is applied even if the buff is not up
-    if ( o() -> is_ptr() && pet == p() && o() -> talents.wild_instincts.ok() && ( o() -> buffs.call_of_the_wild -> up() || o() -> bugs ) )
+    if ( o() -> is_ptr() && pet == p() && o() -> talents.wild_instincts.ok() && o() -> buffs.call_of_the_wild -> check() )
     {
       o() -> get_target_data( s -> target ) -> debuffs.wild_instincts -> trigger();
     }
@@ -2215,9 +2171,9 @@ struct kill_command_bm_mm_t: public kill_command_base_t
   }
 };
 
-struct kill_command_sv_t: public kill_command_base_t
+struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
 {
-  kill_command_sv_t( hunter_main_pet_base_t* p ):
+  kill_command_sv_t( hunter_main_pet_base_t* p ) :
     kill_command_base_t( p, p -> find_spell( 259277 ) )
   {
     attack_power_mod.direct = o() -> talents.kill_command -> effectN( 1 ).percent();
@@ -2267,11 +2223,107 @@ struct kill_command_sv_t: public kill_command_base_t
   }
 };
 
+// Beast Cleave ==============================================================
+
+struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
+{
+  beast_cleave_attack_t( hunter_pet_t* p ) :
+    hunter_pet_action_t( "beast_cleave", p, p -> find_spell( 118459 ) )
+  {
+    background = true;
+    callbacks = false;
+    may_miss = false;
+    may_crit = false;
+    proc = false;
+    // The starting damage includes all the buffs
+    base_dd_min = base_dd_max = 0;
+    spell_power_mod.direct = attack_power_mod.direct = 0;
+    weapon_multiplier = 0;
+
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+  }
+
+  void init() override
+  {
+    hunter_pet_action_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    hunter_pet_action_t::available_targets( tl );
+
+    // Cannot hit the original target.
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
+static void trigger_beast_cleave( const action_state_t* s )
+{
+  if ( !s -> action -> result_is_hit( s -> result ) )
+    return;
+
+  if ( s -> action -> sim -> active_enemies == 1 )
+    return;
+
+  auto p = debug_cast<hunter_pet_t*>( s -> action -> player );
+
+  if ( !p -> buffs.beast_cleave -> up() )
+    return;
+
+  // Target multipliers do not replicate to secondary targets
+  const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
+
+  const double amount = s -> result_total * p -> buffs.beast_cleave -> check_value() * target_da_multiplier;
+  p -> active.beast_cleave -> execute_on_target( s -> target, amount );
+}
+
+// Kill Cleave ==============================================================
+
+struct kill_cleave_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
+{
+  kill_cleave_t( hunter_pet_t* p ) :
+    hunter_pet_action_t( "kill_cleave", p, p -> find_spell( 389448 ) )
+  {
+    background = true;
+    callbacks = false;
+    may_miss = false;
+    may_crit = false;
+    proc = false;
+    // The starting damage includes all the buffs
+    base_dd_min = base_dd_max = 0;
+    spell_power_mod.direct = attack_power_mod.direct = 0;
+    weapon_multiplier = 0;
+
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+  }
+
+  void init() override
+  {
+    hunter_pet_action_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    hunter_pet_action_t::available_targets( tl );
+
+    // Cannot hit the original target.
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
 // Pet Melee ================================================================
 
-struct pet_melee_t : public hunter_pet_melee_t<stable_pet_t>
+struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
 {
-  pet_melee_t( util::string_view n, stable_pet_t* p ):
+  pet_melee_t( util::string_view n, hunter_pet_t* p ) :
     hunter_pet_melee_t( n, p )
   {
   }
@@ -2495,15 +2547,19 @@ action_t* hunter_main_pet_t::create_action( util::string_view name,
 
 // hunter_pet_t::init_spells ====================================================
 
+void hunter_pet_t::init_spells()
+{
+  pet_t::init_spells();
+
+  main_hand_attack = new actions::pet_melee_t( "melee", this );
+  
+  active.beast_cleave = new actions::beast_cleave_attack_t( this );
+}
+
 void stable_pet_t::init_spells()
 {
   hunter_pet_t::init_spells();
 
-  main_hand_attack = new actions::pet_melee_t( "melee", this );
-
-  if ( o() -> talents.beast_cleave.ok() || o() -> talents.bloody_frenzy.ok() )
-    active.beast_cleave = new actions::beast_cleave_attack_t( this );
-  
   if( o() -> talents.bloody_frenzy.ok() && o() -> is_ptr() )
     active.stomp = new actions::stomp_t( this );
 }
@@ -2553,7 +2609,13 @@ void dire_critter_t::init_spells()
 {
   hunter_pet_t::init_spells();
 
-  main_hand_attack = new dire_beast_melee_t( this );
+  if ( o() -> tier_set.t31_bm_4pc.ok() )
+  {
+    active.kill_command = new actions::kill_command_db_t( this );
+
+    if ( o() -> talents.kill_cleave.ok() )
+      active.kill_cleave = new actions::kill_cleave_t( this );
+  }
 }
 
 template <typename Pet, size_t N>
@@ -2728,11 +2790,11 @@ void hunter_t::trigger_bloody_frenzy()
     return;
 
   timespan_t duration = buffs.call_of_the_wild -> remains();
-  for ( auto pet : pets::active<pets::stable_pet_t>( pets.main, pets.animal_companion ) )
+  for ( auto pet : pets::active<pets::hunter_pet_t>( pets.main, pets.animal_companion ) )
     pet -> buffs.beast_cleave -> trigger( duration );
 
   for ( auto pet : pets.cotw_stable_pet.active_pets() )
-    pet -> buffs.beast_cleave -> trigger( duration );
+    pet -> hunter_pet_t::buffs.beast_cleave -> trigger( duration );
 }
 
 namespace attacks
@@ -3485,7 +3547,7 @@ struct arctic_bola_t final : hunter_spell_t
 // Windrunner's Guidance =====================================================
 struct windrunners_guidance_background_t : public hunter_spell_t
 {
-  windrunners_guidance_background_t( hunter_t* p):
+  windrunners_guidance_background_t( hunter_t* p ):
     hunter_spell_t( "windrunners_guidance", p, p -> talents.windrunners_guidance )
   {
     background = true;
@@ -3751,9 +3813,15 @@ struct multishot_bm_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> talents.beast_cleave -> ok() )
-      for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-        pet -> stable_pet_t::buffs.beast_cleave -> trigger();
+    if ( p() -> talents.beast_cleave -> ok() ) {
+      for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+        pet -> buffs.beast_cleave -> trigger();
+
+      if ( p() -> tier_set.t31_bm_4pc.ok() ) {
+        for ( auto pet : p() -> pets.dire_beast.active_pets() )
+          pet -> buffs.beast_cleave -> trigger();
+      }
+    }
 
     if ( p() -> tier_set.t30_bm_4pc.ok() )
     {
@@ -3899,13 +3967,13 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       if ( p() -> talents.stomp.ok() )
         pet -> active.stomp -> execute();
 
-      pet -> stable_pet_t::buffs.frenzy -> trigger();
+      pet -> buffs.frenzy -> trigger();
       pet -> buffs.thrill_of_the_hunt -> trigger();
       pet -> buffs.lethal_command -> trigger();
     }
 
     auto pet = p() -> pets.main;
-    if ( pet && pet -> stable_pet_t::buffs.frenzy -> check() == as<int>( p() -> talents.brutal_companion -> effectN( 1 ).base_value() ) )
+    if ( pet && pet -> buffs.frenzy -> check() == as<int>( p() -> talents.brutal_companion -> effectN( 1 ).base_value() ) )
     {
       pet -> active.brutal_companion_ba -> execute_on_target( target );
     }
@@ -4357,6 +4425,9 @@ struct rapid_fire_t: public hunter_spell_t
 
     p() -> buffs.streamline -> trigger();
     p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 1 ).percent() );
+
+    if ( p() -> actions.volley_t31 )
+      p() ->  actions.volley_t31 -> execute_on_target( execute_state -> target );
   }
 
   void tick( dot_t* d ) override
@@ -5041,6 +5112,13 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     {
       p() -> buffs.fury_strikes -> trigger();
     }
+
+    if ( p() -> tier_set.t31_sv_4pc.ok() )
+    {
+      p() -> buffs.contained_explosion -> trigger();
+      p() -> cooldowns.wildfire_bomb -> reset( false );
+      p() -> actions.wildfire_bomb_t31 -> execute_on_target( execute_state -> target );
+    }
   }
 
   void tick( dot_t* dot ) override
@@ -5450,6 +5528,10 @@ struct kill_command_t: public hunter_spell_t
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
       pet -> active.kill_command -> execute_on_target( target );
 
+    if ( p() -> tier_set.t31_bm_4pc.ok() )
+      for ( auto pet : p() -> pets.dire_beast.active_pets() )
+        pet -> active.kill_command -> execute_on_target( target );
+
     p() -> buffs.tip_of_the_spear -> trigger();
 
     if ( reset.chance != 0 )
@@ -5585,13 +5667,6 @@ struct dire_beast_t: public hunter_spell_t
     harmful = false;
   }
 
-  void init_finished() override
-  {
-    add_pet_stats( p() -> pets.dire_beast, { "dire_beast_melee", "stomp" } );
-
-    hunter_spell_t::init_finished();
-  }
-
   void execute() override
   {
     hunter_spell_t::execute();
@@ -5602,7 +5677,7 @@ struct dire_beast_t: public hunter_spell_t
 
     sim -> print_debug( "Dire Beast summoned with {} autoattacks", base_attacks_per_summon );
 
-    p() -> pets.dire_beast -> summon( summon_duration );
+    p() -> pets.dire_beast.spawn( summon_duration );
   }
 };
 
@@ -5622,7 +5697,7 @@ struct dire_command_summon_t final : hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
+    p() -> pets.dire_beast.spawn( pets::dire_beast_duration( p() ).first );
   }
 };
 
@@ -5677,7 +5752,7 @@ struct bestial_wrath_t: public hunter_spell_t
     //(2) Set Bonus: Bestial Wrath summons a Dire Beast for 15 seconds.
     if ( p() -> tier_set.t31_bm_2pc.ok() )
     {
-      p() -> pets.tier_dire_beast.spawn( timespan_t::from_seconds( p() -> tier_set.t31_bm_2pc -> effectN( 1 ).base_value() ) );
+      p() -> pets.dire_beast.spawn( timespan_t::from_seconds( p() -> tier_set.t31_bm_2pc -> effectN( 1 ).base_value() ) );
     }
   }
 
@@ -5882,6 +5957,11 @@ struct volley_t : public hunter_spell_t
   struct damage_t final : hunter_ranged_attack_t
   {
     attacks::explosive_shot_background_t* explosive = nullptr;
+    struct
+    {
+      double chance = 0;
+      attacks::wind_arrow_t* wind_arrow = nullptr;
+    } t31;
 
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
@@ -5893,11 +5973,20 @@ struct volley_t : public hunter_spell_t
         explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
         explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
       }
+
+      if ( p -> tier_set.t31_mm_4pc.ok() )
+      {
+        t31.chance = p -> tier_set.t31_mm_4pc -> proc_chance();
+        t31.wind_arrow = p -> get_background_action<attacks::wind_arrow_t>( "wind_arrow_t31" );
+      }
     }
 
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
+
+      if ( rng().roll( t31.chance ) )
+        t31.wind_arrow -> execute_on_target( s -> target );
     }
 
     void execute() override
@@ -5917,35 +6006,54 @@ struct volley_t : public hunter_spell_t
   };
 
   damage_t* damage;
+  timespan_t tick_duration;
 
   volley_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "volley", p, p -> talents.volley ),
+    hunter_spell_t( "volley", p, p -> find_spell( 260243 ) ),
     damage( p -> get_background_action<damage_t>( "volley_damage" ) )
   {
     parse_options( options_str );
+
+    if ( !p -> talents.volley.ok() )
+      background = true;
 
     // disable automatic generation of the dot from spell data
     dot_duration = 0_ms;
 
     may_hit = false;
     damage -> stats = stats;
+
+    if ( damage -> t31.wind_arrow )
+      add_child( damage -> t31.wind_arrow );
+
+    tick_duration = data().duration();
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.volley -> trigger();
+    p() -> buffs.volley -> trigger( tick_duration);
     p() -> buffs.trick_shots -> trigger( data().duration() );
 
+    // TODO cancel ongoing volley
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( execute_state -> target )
-        .duration( data().duration() )
+        .duration( tick_duration )
         .pulse_time( data().effectN( 2 ).period() )
         .action( damage )
       );
 
-    p() -> player_t::reset_auto_attacks( data().duration(), player -> procs.reset_aa_channel );
+    p() -> player_t::reset_auto_attacks( tick_duration, player -> procs.reset_aa_channel );
+  }
+};
+
+struct volley_background_t : public volley_t
+{
+  volley_background_t( hunter_t* p ) : volley_t( p, "" )
+  {
+    background = dual = true;
+    tick_duration = p -> find_spell( 257044 ) -> duration();
   }
 };
 
@@ -6004,7 +6112,6 @@ struct steel_trap_t: public trap_base_t
 
 // Wildfire Bomb ==============================================================
 
-//TODO Add 40% increase damage to main target (effectN #3 on spell data) for 10.2
 struct wildfire_bomb_t: public hunter_spell_t
 {
   struct state_data_t {
@@ -6035,6 +6142,12 @@ struct wildfire_bomb_t: public hunter_spell_t
         if ( as<double>( s -> n_targets ) > reduced_aoe_targets )
         {
           am *= std::sqrt( reduced_aoe_targets / s -> n_targets );
+        }
+
+        if ( s -> chain_target == 0 && p() -> is_ptr() )
+        {
+          am *= 1.0 + p() -> talents.wildfire_bomb -> effectN( 3 ).percent();
+          am *= 1.0 + p() -> buffs.contained_explosion -> value();
         }
 
         return am;
@@ -6115,6 +6228,12 @@ struct wildfire_bomb_t: public hunter_spell_t
       if( td )
       {
         am *= 1.0 + td -> debuffs.shredded_armor -> value();
+      }
+
+      if ( s -> chain_target == 0 && p() -> is_ptr() )
+      {
+        am *= 1.0 + p() -> talents.wildfire_bomb -> effectN( 3 ).percent();
+        am *= 1.0 + p() -> buffs.contained_explosion -> value();
       }
 
       return am;
@@ -6287,6 +6406,15 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     hunter_spell_t::snapshot_state( s, type );
     debug_cast<state_t*>( s ) -> current_bomb = p() -> state.next_wi_bomb;
+  }
+};
+
+struct wildfire_bomb_background_t: public wildfire_bomb_t
+{
+  wildfire_bomb_background_t( hunter_t* p ):
+      wildfire_bomb_t( p, "" )
+  {
+    background = dual = true;
   }
 };
 
@@ -6595,17 +6723,6 @@ void hunter_t::create_pets()
 
   if ( talents.animal_companion.ok() )
     pets.animal_companion = new pets::animal_companion_t( this );
-
-  if ( talents.dire_beast.ok() )
-    pets.dire_beast = new pets::dire_critter_t( this );
-
-  if ( talents.dire_command.ok() )
-    pets.dc_dire_beast.set_creation_callback(
-      []( hunter_t* p ) { return new pets::dire_critter_t( p, "dire_beast_(dc)" ); });
-
-  if ( tier_set.t31_bm_2pc.ok() )
-    pets.tier_dire_beast.set_creation_callback(
-      []( hunter_t* p ) { return new pets::dire_critter_t( p, "dire_beast_(tier)" ); });
 }
 
 void hunter_t::init()
@@ -6871,6 +6988,7 @@ void hunter_t::init_spells()
   tier_set.t31_sv_2pc = sets -> set( HUNTER_SURVIVAL, T31, B2 );
   tier_set.t31_sv_2pc_buff = find_spell( 425830 );
   tier_set.t31_sv_4pc = sets -> set( HUNTER_SURVIVAL, T31, B4 );
+  tier_set.t31_sv_4pc_buff = find_spell( 426344 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
@@ -6924,8 +7042,14 @@ void hunter_t::create_actions()
   if ( talents.dire_command.ok() )
     actions.dire_command = new spells::dire_command_summon_t( this );
   
-  if( talents.windrunners_guidance.ok() )
+  if ( talents.windrunners_guidance.ok() )
     actions.windrunners_guidance_background = new attacks::windrunners_guidance_background_t( this );
+
+  if ( tier_set.t31_mm_2pc.ok() )
+    actions.volley_t31 = new spells::volley_background_t( this );
+
+  if ( tier_set.t31_sv_4pc.ok() )
+    actions.wildfire_bomb_t31 = new spells::wildfire_bomb_background_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -6960,10 +7084,10 @@ void hunter_t::create_buffs()
       -> set_max_stack( std::max( as<int>( talents.bullseye -> effectN( 2 ).base_value() ), 1 ) )
       -> set_chance( talents.bullseye.ok() );
 
-  buffs.volley =
-    make_buff( this, "volley", talents.volley )
+  buffs.volley = make_buff( this, "volley", find_spell( 260243 ) )
       -> set_cooldown( 0_ms )
-      -> set_period( 0_ms ); // disable ticks as an optimization
+      -> set_period( 0_ms ) // disable ticks as an optimization
+      -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.trick_shots =
     make_buff<buffs::trick_shots_t>( this, "trick_shots", find_spell( 257622 ) );
@@ -7251,6 +7375,10 @@ void hunter_t::create_buffs()
   buffs.fury_strikes = 
     make_buff( this, "fury_strikes", tier_set.t31_sv_2pc_buff ) 
       -> set_default_value_from_effect( 1 );
+
+  buffs.contained_explosion =
+    make_buff( this, "contained_explosion", tier_set.t31_sv_4pc_buff )
+      -> set_default_value( tier_set.t31_sv_4pc_buff -> effectN( 1 ).percent() );
 }
 
 // hunter_t::init_gains =====================================================

@@ -1435,7 +1435,14 @@ class SpellDataGenerator(DataGenerator):
          414928, 414936, 414951, 414950, 414935, # Paracausal Fragment of Doomhammer/Shalamayne
          419737, 420144, # Timestrike
          419262, 419261, # Demonsbane
+         # 10.2
          425838, 426339, 426262, 426288, 426341, 426535, 426534, 426486, 426431, # Incandescent Essence Enchant
+         422858, 426676, 426647, 426672, # Pip's Emerald Frendship Badge
+         423611, 426898, 426911, 426906, 423021, 426897, # Ashes of the Embersoul
+         426827, 427059, 426834, 427037, 427058, 427057, 427056, 426840, 427047, # Coiled Serpent Idol
+         423124, 426564, 426553, # Augury of the Primal Flame
+         426114, # Bandolier of Twisted Blades
+         424228, 424276, 424274, 424272, 424275, # Pinch of Dream Magic: Shapeshift Buffs
         ),
 
         # Warrior:
@@ -1458,6 +1465,8 @@ class SpellDataGenerator(DataGenerator):
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
             ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
+            ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
+            ( 52437,  0 ),          # Sudden Death (Fury buff)
         ),
 
         # Paladin:
@@ -1508,6 +1517,8 @@ class SpellDataGenerator(DataGenerator):
             ( 384810, 0 ),          # Seal of Clarity buff
             ( 404140, 0 ),          # Blessed Hammers for Adjudication
             ( 387113, 0 ),          # ES
+            ( 425261, 0 ),          # Cleansing Flame (Damage - Prot T31 4pc)
+            ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
         ),
 
         # Hunter:
@@ -1550,6 +1561,7 @@ class SpellDataGenerator(DataGenerator):
           ( 164273, 2 ), # Lone Wolf buff
           ( 361736, 5 ), # Coordinated Assault (pet buff)
           ( 219199, 1 ), # Dire Beast (summon)
+          ( 426703, 5), # Dire Beast Kill Command
         ),
 
         # Rogue:

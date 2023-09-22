@@ -2087,7 +2087,7 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
     Aberrus, the Shadowed Crucible Normal: 16,284.14333792718 (ExpectedStatModID: 215; ArmorConstMod: 1.38399994373)
     Aberrus, the Shadowed Crucible Heroic: 17,625.4683029745 (ExpectedStatModID: 227; ArmorConstMod: 1.49800002575)
     Aberrus, the Shadowed Crucible Mythic: 19,155.04824685068 (ExpectedStatModID: 228; ArmorConstMod: 1.62800002098)
-    Level 70 Season 3 M0/M+: 17,201.8921458984 (ExpectedStatModID: 244; ArmorConstMod: 1.4620000124)
+    Level 70 Season 3 M0/M+: 18,672.64201458984 (ExpectedStatModID: 249; ArmorConstMod: 1.5870000124)
     Amirdrassil, the Dream's Hope LFR: 19,155.04824685068 (ExpectedStatModID: 228; ArmorConstMod: 1.62800002098)
     Amirdrassil, the Dream's Hope Normal: 20,872.88457229824 (ExpectedStatModID: 229; ArmorConstMod: 1.77400004864)
     Amirdrassil, the Dream's Hope Heroic: 22,814.27412342534 (ExpectedStatModID: 230; ArmorConstMod: 1.93900001049)
@@ -2098,7 +2098,7 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * (is_ptr() ? 1.4620000124 : 1.25300002098);  // M0/M+
+      return k * ( is_ptr() ? 1.5870000124 : 1.25300002098 );  // M0/M+
       break;
     case tank_dummy_e::RAID:
       return k * (is_ptr() ? 1.77400004864 : 1.28199994564);  // Normal Raid

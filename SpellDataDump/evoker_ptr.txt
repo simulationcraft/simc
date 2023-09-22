@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51187 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51421 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -900,7 +900,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=891202)   : Apply Aura (6) | Periodic Damage (3): spellfrost every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87400 | PvP Coefficient: 1.20000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87400 | PvP Coefficient: 1.33000 | Target: Enemy (6)
 Description      : Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 
@@ -1122,8 +1122,8 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Extended Flight (375517 effect#1), Mastery: Timewalker (406380 effect#2)
-Family Flags     : 13, 67
+Affecting spells : Extended Flight (375517 effect#1)
+Family Flags     : 13
 Attributes       : ........ ........ x....... ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1156,7 +1156,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 #11 (id=1030729)  : Apply Aura (6) | Unknown(527)
                    Base Value: 56 | Scaled Value: 56 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Launch yourself and gain $s2% increased movement speed for $d.
+Description      : Launch yourself and gain $s2% increased movement speed for $<dura> sec.
 
 Allows Evoker spells to be cast while moving. Does not affect empowered spells.
 Tooltip          : Movement speed increased by $w2%.
@@ -1164,6 +1164,8 @@ Tooltip          : Movement speed increased by $w2%.
 Evoker spells may be cast while moving. Does not affect empowered spells.$?e9[
 
 Immune to movement speed reduction effects.][]
+Variables        : $flight=$?a375517[${$375517s1/1000}][0]
+$dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]
 
 Name             : Hover (id=358268) [Spell Family (224), Hidden] 
 Class            : Evoker
@@ -1931,7 +1933,7 @@ Effects          :
 #2 (id=902964)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=1012965)  : Dummy (3)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
+                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000
 #4 (id=1013052)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : Rewind $?s376210[${$s3/2}%][$s3%] of damage taken in the last $s2 seconds by all allies within $a1 yds. Always heals for at least $<min>.
@@ -2284,7 +2286,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=910753)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 6.35000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 5.08500 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=915159)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #3 (id=982930)   : Dummy (3)
@@ -7983,7 +7985,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1082679)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Hover (358267), Blistering Scales (360827), Obsidian Scales (363916), Source of Magic (369459), Twin Guardian (370889), Leaping Flames (370901), Zephyr (374227), Renewing Blaze (374348), Time Spiral (375234), Essence Burst (392268), Ebon Might (395152), Ebon Might (395296), Nourishing Sands (406043), Spatial Paradox (406732), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Momentum Shift (408005), Prescience (409311), Temporal Wound (409560), Prescience (410089), Reactive Hide (410256), Inferno's Blessing (410263), Molten Blood (410651), Symbiotic Bloom (410686), Timelessness (412710), Shifting Sands (413984)
+                   Affected Spells: Blistering Scales (360827), Obsidian Scales (363916), Source of Magic (369459), Twin Guardian (370889), Leaping Flames (370901), Zephyr (374227), Renewing Blaze (374348), Time Spiral (375234), Essence Burst (392268), Ebon Might (395152), Ebon Might (395296), Nourishing Sands (406043), Spatial Paradox (406732), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Momentum Shift (408005), Prescience (409311), Temporal Wound (409560), Prescience (410089), Reactive Hide (410256), Inferno's Blessing (410263), Molten Blood (410651), Symbiotic Bloom (410686), Timelessness (412710), Shifting Sands (413984)
                    Family Flags: 67
 #3 (id=1083344)  : Apply Aura (6) | Proc Trigger Spell (42): Shifting Sands
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 413984 | Target: Self (1)
@@ -9700,7 +9702,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098466)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Every third Prescience lasts $s1% longer.
 
 Name             : Evoker Augmentation 10.2 Class Set 4pc (id=422869) [Passive, Hidden] 
@@ -9719,7 +9721,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098467)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Casting Prescience enhances your next Eruption with smaller fissures for each Prescience you have active, each dealing $424428s1 damage and extending Ebon Might by ${$s1/10}.1 sec.
 
 Name             : Evoker Devastation 10.2 Class Set 2pc (id=422870) [Spell Family (224), Passive, Hidden] 
@@ -9761,7 +9763,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1098469)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : When Dragonrage ends, Emerald Trance persists for $s1 sec per stack and grants you Essence Burst every $424402t3 sec.
 
 Name             : Evoker Preservation 10.2 Class Set 2pc (id=422872) [Spell Family (224), Passive, Hidden] 
@@ -9783,7 +9785,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098470)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1104181)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Empower spells cast up to $s2 Living Flames at enemies or allies struck at $s1% effectiveness.
@@ -9807,7 +9809,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098471)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Living Flame has a chance to apply Echo at $s1% effectiveness on allies healed, or a nearby ally who doesn't already have Echo.
 
 Name             : Emerald Trance (id=424155) [Spell Family (224)] 
@@ -9829,11 +9831,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100655)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428)
                    Family Flags: 0
 #2 (id=1101155)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428)
                    Family Flags: 0
 #3 (id=1101157)  : Apply Aura (6) | Periodic Dummy (226): every 6 seconds
@@ -9860,11 +9862,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1101165)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428)
                    Family Flags: 0
 #2 (id=1101166)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428)
                    Family Flags: 0
 #3 (id=1101167)  : Apply Aura (6) | Periodic Trigger Spell (23): Essence Burst every 5 seconds
@@ -9893,7 +9895,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1101203)  : School Damage (2): firestorm
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | PvP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc422869
 
 

@@ -473,6 +473,16 @@ struct implosion_t : public demonology_spell_t
         base_dd_multiplier *= 1.0 + p->talents.volatile_fiends->effectN( 1 ).percent();
     }
 
+    double action_multiplier() const override
+    {
+      double m = demonology_spell_t::action_multiplier();
+
+      if ( p()->min_version_check( VERSION_10_2_0 ) && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
+        m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
+
+      return m;
+    }
+
     double composite_target_multiplier( player_t* t ) const override
     {
       double m = demonology_spell_t::composite_target_multiplier( t );
@@ -598,7 +608,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     // Ingame there is a chance for tyrant to get an extra cast off before reaching the required haste breakpoint. In-game testing
     // found the tyrant sometimes stayed longer than the specified duration and can be modelled fairly closely using a normal distribution.
     timespan_t extraTyrantTime = timespan_t::from_millis( rng().gauss( 380.0, 220.0, true ) );
-    p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
+    auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
     if ( !p()->min_version_check( VERSION_10_2_0 ) )
       p()->buffs.demonic_power->trigger();
@@ -609,6 +619,12 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
 
     int wild_imp_counter = 0;
+    int demon_counter = 0;
+    int imp_cap = 0;
+
+    if ( p()->min_version_check( VERSION_10_2_0 ) )
+      imp_cap = as<int>( p()->talents.summon_demonic_tyrant->effectN( 3 ).base_value() + p()->talents.reign_of_tyranny->effectN( 1 ).base_value() );
+    
     for ( auto& pet : p()->pet_list )
     {
       auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
@@ -624,20 +640,22 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       if ( p()->min_version_check( VERSION_10_2_0 ) )
       {
         // Note: Wild Imp cap appears to be hardcoded
-        if ( lock_pet->pet_type == PET_WILD_IMP && wild_imp_counter < 10 )
+        if ( lock_pet->pet_type == PET_WILD_IMP && wild_imp_counter < imp_cap )
         {
           if ( lock_pet->expiration )
             lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
 
           lock_pet->buffs.demonic_power->trigger();
           wild_imp_counter++;
+          demon_counter++;
         }
-        else if ( lock_pet->pet_type == PET_DREADSTALKER || lock_pet->pet_type == PET_VILEFIEND || lock_pet->pet_type == PET_SERVICE_FELGUARD )
+        else if ( lock_pet->pet_type == PET_DREADSTALKER || lock_pet->pet_type == PET_VILEFIEND || lock_pet->pet_type == PET_SERVICE_FELGUARD || lock_pet->pet_type == PET_FELGUARD )
         {
           if ( lock_pet->expiration )
             lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
 
           lock_pet->buffs.demonic_power->trigger();
+          demon_counter++;
         }
       }
       else
@@ -670,6 +688,16 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     {
       p()->buffs.vilefiend->extend_duration( p(), extension_time );
     }
+
+    if ( p()->min_version_check( VERSION_10_2_0 ) && p()->talents.reign_of_tyranny->ok() )
+    {
+      for ( auto t : tyrants )
+      {
+        if ( t->is_active() )
+          t->buffs.reign_of_tyranny->trigger( demon_counter );
+      }
+    }
+
   }
 };
 

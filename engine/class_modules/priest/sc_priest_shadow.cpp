@@ -633,6 +633,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
+        priest().procs.deathspeaker->occur();
         priest().buffs.deathspeaker->trigger();
       }
 
@@ -697,6 +698,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
+        priest().procs.deathspeaker->occur();
         priest().buffs.deathspeaker->trigger();
       }
     }
@@ -2214,17 +2216,7 @@ void priest_t::create_buffs_shadow()
 
   buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() )
                            ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-                             procs.deathspeaker->occur();
-                             // Deathspeaker is not adjusting max charges on PTR
-                             // https://github.com/SimCMinMax/WoW-BugTracker/issues/1125
-                             if ( !bugs || !is_ptr() )
-                             {
-                               cooldowns.shadow_word_death->adjust_max_charges( cur - old );
-                             }
-                             else if ( cur > old )
-                             {
-                               cooldowns.shadow_word_death->reset( false );
-                             }
+                             cooldowns.shadow_word_death->adjust_max_charges( cur - old );
                            } );
 
   buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )

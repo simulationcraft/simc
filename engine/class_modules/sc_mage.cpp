@@ -1812,10 +1812,9 @@ struct arcane_mage_spell_t : public mage_spell_t
         {
           p()->buffs.nether_precision->trigger();
           p()->buffs.forethought->trigger();
-          // Technically, the buff disappears immediately when it reaches 6 stacks
+          // Technically, the buff disappears immediately when it reaches 3 stacks
           // and the Artillery buff is applied with a delay. Here, we just use
-          // 6 stacks of the buff to track the delay.
-          // TODO: the 4pc says something about consuming Forethought?
+          // 3 stacks of the buff to track the delay.
           p()->buffs.arcane_battery->trigger();
         }
         break;
@@ -3006,6 +3005,9 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     background = true;
     affected_by.savant = triggers.radiant_spark = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.improved_arcane_missiles->effectN( 1 ).percent();
+
+    const auto& aa = p->buffs.arcane_artillery->data();
+    base_aoe_multiplier *= ( 1.0 + aa.effectN( 4 ).percent() ) / ( 1.0 + aa.effectN( 1 ).percent() );
   }
 
   action_state_t* new_state() override
@@ -4392,7 +4394,11 @@ struct glacial_spike_t final : public frost_mage_spell_t
       p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
     }
 
-    p()->trigger_brain_freeze( p()->sets->set( MAGE_FROST, T31, B4 )->effectN( 1 ).percent(), proc_brain_freeze );
+    // TODO 10.2: Brain Freeze from GS seems to be applied with a much smaller delay (<30ms).
+    // Unlike Brain Freeze from Frostbolt, the delay is also always present.
+    double chance = p()->sets->set( MAGE_FROST, T31, B4 )->effectN( 1 ).percent();
+    if ( chance > 0.0 )
+      make_event( *sim, 30_ms, [ this, chance ] { p()->trigger_brain_freeze( chance, proc_brain_freeze, 0_ms ); } );
   }
 
   void impact( action_state_t* s ) override

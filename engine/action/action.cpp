@@ -5171,8 +5171,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_TARGET_BONUS:
-        chain_bonus_damage += effect.percent();
-        sim->print_debug( "{} chain target bonus modified by {} to {}", *this, effect.percent(), chain_bonus_damage );
+        chain_multiplier += effect.percent();
+        sim->print_debug( "{} chain target multiplier modified by {} to {}", *this, effect.percent(), chain_multiplier );
         break;
 
       case P_GCD:
@@ -5258,9 +5258,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       }
 
       case P_TARGET_BONUS:
-        // Chain Bonus Damage is base 0.0 and applied as 1.0 + chain_bonus_damage in action_t::calculate_direct_amount
-        chain_bonus_damage = ( ( 1.0 + chain_bonus_damage ) * ( 1.0 + effect.percent() ) ) - 1.0;
-        sim->print_debug( "{} chain target bonus modified by {}% to {}", *this, effect.base_value(), chain_bonus_damage );
+        chain_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} chain target multiplier modified by {}% to {}", *this, effect.base_value(), chain_multiplier );
         break;
 
       case P_TICK_TIME:
