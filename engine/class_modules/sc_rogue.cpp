@@ -679,6 +679,7 @@ public:
 
       player_talent_t evasion;                  // No implementation
       player_talent_t gouge;
+      player_talent_t airborne_irritant;        // No implementation
       player_talent_t shadowstep;
 
       player_talent_t numbing_poison;
@@ -799,9 +800,8 @@ public:
 
       player_talent_t blinding_powder;          // No implementation
       player_talent_t float_like_a_butterfly;
-      player_talent_t sting_like_a_bee;         // No implementation
+      player_talent_t sting_like_a_bee;
       player_talent_t riposte;                  // No implementation
-      player_talent_t airborne_irritant;        // No implementation
 
       player_talent_t heavy_hitter;
       player_talent_t devious_stratagem;
@@ -9184,6 +9184,7 @@ void rogue_t::init_spells()
 
   talent.rogue.evasion = find_talent_spell( talent_tree::CLASS, "Evasion" );
   talent.rogue.gouge = find_talent_spell( talent_tree::CLASS, "Gouge" );
+  talent.rogue.airborne_irritant = find_talent_spell( talent_tree::CLASS, "Airborne Irritant" );
   talent.rogue.shadowstep = find_talent_spell( talent_tree::CLASS, "Shadowstep" );
 
   talent.rogue.numbing_poison = find_talent_spell( talent_tree::CLASS, "Numbing Poison" );
@@ -9302,7 +9303,6 @@ void rogue_t::init_spells()
   talent.outlaw.float_like_a_butterfly = find_talent_spell( talent_tree::SPECIALIZATION, "Float Like a Butterfly" );
   talent.outlaw.sting_like_a_bee = find_talent_spell( talent_tree::SPECIALIZATION, "Sting Like A Bee" );
   talent.outlaw.riposte = find_talent_spell( talent_tree::SPECIALIZATION, "Riposte" );
-  talent.outlaw.airborne_irritant = find_talent_spell( talent_tree::SPECIALIZATION, "Airborne Irritant" );
 
   talent.outlaw.heavy_hitter = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Hitter" );
   talent.outlaw.devious_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Devious Stratagem" );
