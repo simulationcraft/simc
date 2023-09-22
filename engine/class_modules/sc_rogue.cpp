@@ -280,7 +280,6 @@ public:
     actions::rogue_poison_t* nonlethal_poison_dtb = nullptr;
 
     actions::rogue_attack_t* blade_flurry = nullptr;
-    actions::rogue_attack_t* blade_flurry_st = nullptr;
     actions::rogue_attack_t* fan_the_hammer = nullptr;
     actions::flagellation_damage_t* flagellation = nullptr;
     actions::rogue_attack_t* lingering_shadow = nullptr;
@@ -348,7 +347,7 @@ public:
     // Roll the bones buffs
     damage_buff_t* broadside;
     buff_t* buried_treasure;
-    buff_t* grand_melee;
+    damage_buff_t* grand_melee;
     buff_t* skull_and_crossbones;
     damage_buff_t* ruthless_precision;
     buff_t* true_bearing;
@@ -1721,6 +1720,7 @@ public:
     crit_chance_buffs.clear();
 
     register_damage_buff( p()->buffs.broadside );
+    register_damage_buff( p()->buffs.grand_melee );
     register_damage_buff( p()->buffs.cold_blood );
     register_damage_buff( p()->buffs.danse_macabre );
     register_damage_buff( p()->buffs.elaborate_planning );
@@ -3564,24 +3564,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
   { return true; }
 };
 
-struct blade_flurry_attack_st_t : public rogue_attack_t
-{
-  blade_flurry_attack_st_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->spec.blade_flurry_attack )
-  {
-    aoe = 0; // AoE spell is recycled for the ST attack
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  bool procs_poison() const override
-  { return true; }
-};
-
 struct blade_flurry_t : public rogue_attack_t
 {
   struct blade_flurry_instant_attack_t : public rogue_attack_t
@@ -3619,7 +3601,6 @@ struct blade_flurry_t : public rogue_attack_t
     if ( p->spec.blade_flurry_attack->ok() )
     {
       add_child( p->active.blade_flurry );
-      add_child( p->active.blade_flurry_st );
     }
 
     if ( p->spec.blade_flurry_instant_attack->ok() )
@@ -7533,7 +7514,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   if ( !ab::result_is_hit( state->result ) )
     return;
 
-  if ( p()->sim->active_enemies == 1 && !p()->buffs.grand_melee->check() )
+  if ( p()->sim->active_enemies == 1 )
     return;
 
   // Compute Blade Flurry modifier
@@ -7542,7 +7523,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   // Grand Melee buff is additive with Killing Spree 100% base value
   if ( p()->buffs.grand_melee->up() )
   {
-    multiplier += p()->spec.grand_melee->effectN( 1 ).percent();
+    multiplier += p()->spec.grand_melee->effectN( 2 ).percent();
   }
 
   if ( p()->talent.outlaw.precise_cuts->ok() )
@@ -7563,30 +7544,14 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   double damage = state->result_total * multiplier * target_da_multiplier;
   player_t* primary_target = state->target;
 
-  // For the ST component of Grand Melee, the resultant value is applied at the ratio of 0.1 / (0.5 + 0.1)
-  // This allows it to affect the additive Precise Cuts modifier retroactively
-  // However, the value for Killing Spree with Precise Cuts ends up being off due to the higher base value
-  double damage_primary = 0;
-  if ( p()->buffs.grand_melee->check() )
-  {
-    damage_primary = damage * ( 0.1 / 0.6 );
-  }
-
-  if ( damage_primary > 0 )
-    p()->sim->print_debug( "{} flurries {} for {:.2f} damage ({:.2f} * {} * {:.3f}) and {:.2f} damage to primary target", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier, damage_primary );
-  else
-    p()->sim->print_debug( "{} flurries {} for {:.2f} damage ({:.2f} * {} * {:.3f})", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier );
+  p()->sim->print_debug( "{} flurries {} for {:.2f} damage ({:.2f} * {} * {:.3f})", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier );
 
   // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
   // Can't use schedule_execute() since multiple flurries can trigger at the same time due to Main Gauche
-  make_event( *p()->sim, 0_ms, [ this, damage, damage_primary, primary_target ]() {
+  make_event( *p()->sim, 0_ms, [ this, damage, primary_target ]() {
     if ( p()->sim->active_enemies > 1 )
     {
       p()->active.blade_flurry->execute_on_target( primary_target, damage );
-    }
-    if ( damage_primary > 0 )
-    {
-      p()->active.blade_flurry_st->execute_on_target( primary_target, damage_primary );
     }
   } );
 }
@@ -9636,7 +9601,6 @@ void rogue_t::init_spells()
   if ( spec.blade_flurry_attack->ok() )
   {
     active.blade_flurry = get_background_action<actions::blade_flurry_attack_t>( "blade_flurry_attack" );
-    active.blade_flurry_st = get_background_action<actions::blade_flurry_attack_st_t>( "blade_flurry_attack_st" );
   }
 
   if ( talent.outlaw.triple_threat->ok() )
@@ -9915,7 +9879,8 @@ void rogue_t::create_buffs()
     ->set_default_value_from_effect_type( A_RESTORE_POWER )
     ->set_affects_regen( true );
 
-  buffs.grand_melee = make_buff( this, "grand_melee", spec.grand_melee );
+  buffs.grand_melee = make_buff<damage_buff_t>( this, "grand_melee", spec.grand_melee );
+  buffs.grand_melee->set_default_value_from_effect( 1, 0.05 ); // Damage% Modifier
 
   buffs.skull_and_crossbones = make_buff( this, "skull_and_crossbones", spec.skull_and_crossbones )
     ->set_default_value_from_effect( 1, 0.01 ); // Flat Modifier to Proc%
