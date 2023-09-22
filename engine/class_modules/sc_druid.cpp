@@ -11327,8 +11327,7 @@ void druid_t::init_special_effects()
       {
         auto d = s->result_amount * mul;
 
-        if ( p()->buff.smoldering_frenzy->check() )
-          residual_action::trigger( p()->active.burning_frenzy, listener, d );
+        residual_action::trigger( p()->active.burning_frenzy, listener, d );
       }
     };
 
@@ -11338,7 +11337,16 @@ void druid_t::init_special_effects()
     driver->proc_flags2_ = PF2_ALL_HIT;
     special_effects.push_back( driver );
 
-    new smoldering_frenzy_cb_t( this, *driver );
+    auto cb = new smoldering_frenzy_cb_t( this, *driver );
+    cb->initialize();
+    cb->deactivate();
+
+    buff.smoldering_frenzy->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->activate();
+      else
+        cb->deactivate();
+    } );
   }
 
   // Guardian
