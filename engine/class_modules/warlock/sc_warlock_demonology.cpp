@@ -473,6 +473,16 @@ struct implosion_t : public demonology_spell_t
         base_dd_multiplier *= 1.0 + p->talents.volatile_fiends->effectN( 1 ).percent();
     }
 
+    double action_multiplier() const override
+    {
+      double m = demonology_spell_t::action_multiplier();
+
+      if ( p()->min_version_check( VERSION_10_2_0 ) && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
+        m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
+
+      return m;
+    }
+
     double composite_target_multiplier( player_t* t ) const override
     {
       double m = demonology_spell_t::composite_target_multiplier( t );

@@ -1398,7 +1398,7 @@ void wild_imp_pet_t::demise()
 
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
 
-      if ( imploded && buffs.imp_gang_boss->check() )
+      if ( imploded && buffs.imp_gang_boss->check() && !o()->min_version_check( VERSION_10_2_0 ) )
       {
         make_event( sim, 0_ms, [ this ] { this->o()->warlock_pet_list.wild_imps.spawn(); } );
       }
