@@ -863,6 +863,7 @@ public:
     player_talent_t rampant_ferocity;
     player_talent_t relentless_predator;
     player_talent_t rip_and_tear;
+    player_talent_t saber_jaws;
     player_talent_t sabertooth;
     player_talent_t soul_of_the_forest_cat;
     player_talent_t sudden_ambush;
@@ -3747,7 +3748,9 @@ struct ferocious_bite_t : public cat_finisher_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto dam = cat_finisher_t::composite_da_multiplier( s );
-    auto energy_mul = is_free() ? 2.0 : 1.0 + excess_energy / max_excess_energy;
+    auto energy_mul = is_free() ? 2.0
+                                : 1.0 + ( excess_energy / max_excess_energy ) *
+                                            ( 1 + p()->talent.saber_jaws->effectN( 1 ).percent() );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     auto combo_mul = cast_state( s )->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
@@ -9570,6 +9573,7 @@ void druid_t::init_spells()
   talent.raging_fury                    = ST( "Raging Fury" );
   talent.rampant_ferocity               = ST( "Rampant Ferocity" );
   talent.rip_and_tear                   = ST( "Rip and Tear" );
+  talent.saber_jaws                     = ST( "Saber Jaws" );
   talent.sabertooth                     = ST( "Sabertooth" );
   talent.soul_of_the_forest_cat         = STS( "Soul of the Forest", DRUID_FERAL );
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
