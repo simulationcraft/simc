@@ -117,6 +117,7 @@ struct druid_td_t : public actor_target_data_t
   struct buffs_t
   {
     buff_t* ironbark;
+    buff_t* ashamanes_guidance;
   } buff;
 
   druid_td_t( player_t& target, druid_t& source );
@@ -1659,7 +1660,13 @@ struct berserk_cat_buff_t : public druid_buff_t
       p()->uptime.incarnation_cat->update( false, sim->current_time() );
 
     if ( inc && p()->is_ptr() && p()->talent.ashamanes_guidance.ok() )
+    {
       p()->buff.ashamanes_guidance->trigger();
+      // ashamanes guidance buff in spell-data is infinite, so we manually expire after 30 seconds here
+      // unfortunately, if incarn procs or is casted during this 30 seconds
+      // so check back if this becomes relevant
+      make_event( *sim, 30_s, [ this ]() { p()->buff.ashamanes_guidance->expire(); } );
+    }
   }
 };
 
@@ -2129,6 +2136,16 @@ public:
                           find_trigger( p()->talent.dire_fixation ).trigger() );
     parse_debuff_effects( []( druid_td_t* td ) { return td->debuff.waning_twilight->check(); },
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
+
+    if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
+    {
+      parse_debuff_effects(
+          []( druid_td_t* td ) { return td->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
+          p()->talent.rip, p()->buff.ashamanes_guidance );
+      parse_debuff_effects(
+          []( druid_td_t* td ) { return td->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
+          find_trigger( p()->talent.rake ).trigger(), p()->buff.ashamanes_guidance );
+    }
   }
 
   template <typename DOT, typename... Ts>
@@ -9715,7 +9732,7 @@ void druid_t::init_spells()
   // Feral Abilities
   spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
   if ( is_ptr() )
-    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421442 );
+    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421440 );
   else
     spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
   spec.berserk_cat              = talent.berserk.find_override_spell();
