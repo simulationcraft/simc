@@ -5486,9 +5486,10 @@ struct throw_glaive_t : public demon_hunter_attack_t
     execute_action        = damage;
     execute_action->stats = stats; 
 
-    if ( damage->soulrend )
+    if ( !from_t31 && damage->soulrend )
     {
       add_child( damage->soulrend );
+      add_child( p->active.throw_glaive_t31 );
     }
 
     if ( p->talent.havoc.furious_throws->ok() )
@@ -7195,8 +7196,9 @@ void demon_hunter_t::init_spells()
 
   if ( set_bonuses.t31_havoc_2pc->ok() )
   {
-    throw_glaive_t* throw_glaive_t31 = get_background_action<throw_glaive_t>( "throw_glaive_t31", "", true );
-    active.throw_glaive_t31          = throw_glaive_t31;
+    throw_glaive_t* throw_glaive_t31    = get_background_action<throw_glaive_t>( "throw_glaive_t31", "", true );
+    throw_glaive_t31->cooldown->charges = 0;
+    active.throw_glaive_t31             = throw_glaive_t31;
   }
 }
 
