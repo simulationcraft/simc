@@ -6312,6 +6312,89 @@ void belorrelos_the_sunstone( special_effect_t& effect )
   effect.execute_action = damage;
 }
 
+// Nymue's Unraveling Spindle
+// Driver: 422956
+// Holds coeff: 422953
+// Buff: 427072
+// Trigger/DoT: 427161
+// TODO: support "Damage increased by 20% against immobilized targets."
+// Note that a Target Dummmy counts as an Immobilized Target in-game.
+void nymues_unraveling_spindle( special_effect_t& effect )
+{
+  struct nymues_channel_t : public proc_spell_t
+  {
+    buff_t* buff;
+    double damage;
+
+    nymues_channel_t( const special_effect_t& e, buff_t* mastery )
+      : proc_spell_t( "essence_splice", e.player, e.driver(), e.item ),
+        damage( e.player->find_spell( 422953 )->effectN( 1 ).average( e.item ) )
+    {
+      channeled = tick_may_crit = true;
+      aoe                       = 0;
+      effect                    = &e;
+      buff                      = mastery;
+
+      // Stored as total damage dealt, need to be divided by number of ticks/stacks
+      dot_duration   = timespan_t::from_seconds( e.driver()->effectN( 2 ).base_value() );
+      base_tick_time = e.driver()->effectN( 1 ).period();
+      base_td        = damage / ( dot_duration.total_seconds() / base_tick_time.total_seconds() );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+      buff->trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
+
+      // Cancelled before the last tick completed, reset the cd
+      if ( d->end_event )
+      {
+        cooldown->reset( false );
+        cdgrp->reset( false );
+      }
+      else
+      {
+        cooldown->adjust( d->duration() );
+        cdgrp->adjust( d->duration() );
+      }
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( 0_ms );
+    }
+  };
+
+  // Stored as total Mastery gained, need to be divided by number of ticks/stacks
+  auto num_ticks =
+      timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) / effect.driver()->effectN( 1 ).period();
+  auto amount = effect.player->find_spell( 422953 )->effectN( 2 ).average( effect.item ) / num_ticks;
+
+  buff_t* buff = buff_t::find( effect.player, "nymues_vengeful_spindle" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "nymues_vengeful_spindle", effect.player->find_spell( 427072 ),
+                                   effect.item )
+               ->add_stat( STAT_MASTERY_RATING, amount );
+  }
+
+  effect.execute_action = create_proc_action<nymues_channel_t>( "essence_splice", effect, buff );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8697,6 +8780,7 @@ void register_special_effects()
   register_special_effect( 423927, items::pinch_of_dream_magic );
   register_special_effect( 423905, items::dancing_dream_blossoms );
   register_special_effect( 422146, items::belorrelos_the_sunstone );
+  register_special_effect( 422956, items::nymues_unraveling_spindle );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
