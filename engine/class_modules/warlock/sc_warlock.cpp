@@ -1182,6 +1182,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
     cdf_accumulator( 0.0 ),
+    dimensional_accumulator( 0.0 ),
     incinerate_last_target_count( 0 ),
     volatile_fiends_proc_chance( 0.0 ),
     active_pets( 0 ),
@@ -1203,6 +1204,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
+  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
@@ -1873,6 +1875,7 @@ void warlock_t::reset()
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   corruption_accumulator             = rng().range( 0.0, 0.99 );
   cdf_accumulator                    = rng().range( 0.0, 0.99 );
+  dimensional_accumulator            = rng().range( 0.0, 0.99 );
   incinerate_last_target_count       = 0;
   volatile_fiends_proc_chance        = 0.2;
   wild_imp_spawns.clear();

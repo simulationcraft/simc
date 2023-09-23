@@ -306,6 +306,30 @@ struct immolate_t : public destruction_spell_t
           p()->cdf_accumulator -= 1.0;
         }
       }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        double increment_max = 0.16;
+
+        increment_max *= std::pow( p()->get_active_dots( d ), -4.0 / 9.0 );
+
+        p()->dimensional_accumulator += rng().range( 0.0, increment_max );
+
+        if ( p()->dimensional_accumulator >= 1.0 )
+        {
+          p()->cooldowns.dimensional_rift->reset( true, 1 );
+          p()->procs.dimensional_refund->occur();
+          p()->dimensional_accumulator -= 1.0;
+        }
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      if ( p()->get_active_dots( d ) == 1 )
+        p()->dimensional_accumulator = rng().range( 0.0, 0.99 );
+
+      destruction_spell_t::last_tick( d );
     }
   };
 

@@ -119,6 +119,7 @@ public:
   double agony_accumulator;
   double corruption_accumulator;
   double cdf_accumulator; // For T30 Destruction tier set
+  double dimensional_accumulator; // For T31 Destruction tier set
   int incinerate_last_target_count; // For use with T30 Destruction tier set
   double volatile_fiends_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Volatile Fiends
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
@@ -524,6 +525,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
+    propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> soul_rot;
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
