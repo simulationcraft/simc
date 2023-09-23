@@ -6415,11 +6415,16 @@ void augury_of_the_primal_flame( special_effect_t& effect )
     buff_t* buff;
 
     augury_damage_t( const special_effect_t& effect, buff_t* b )
-      : generic_aoe_proc_t( effect, "annihilating_flame", effect.driver(), true ), buff( b )
+      : generic_aoe_proc_t( effect, "annihilating_flame", effect.player->find_spell( 426564 ), true ), buff( b )
     {
       may_crit         = true;
       split_aoe_damage = true;
+      background       = true;
       aoe              = -1;
+
+      // Make sure SimC knows to apply modifiers
+      // Augury double dips with things like Vers
+      base_dd_min = base_dd_max = 1;
     }
 
     void impact( action_state_t* state ) override
@@ -6432,11 +6437,9 @@ void augury_of_the_primal_flame( special_effect_t& effect )
         if ( buff->current_value > state->result_amount )
         {
           buff->current_value -= state->result_amount;
-          if ( sim->debug )
-          {
-            sim->out_debug.printf( "%s annihilating_flame accumulates %.0f damage. %.0f remains", name(),
-                                   state->result_amount, buff->current_value );
-          }
+
+          sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains", name(), state->result_amount,
+                            buff->current_value );
         }
         else
         {
@@ -6448,27 +6451,53 @@ void augury_of_the_primal_flame( special_effect_t& effect )
     }
   };
 
-  auto mod    = effect.driver()->effectN( 2 ).percent();
   auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect, buff );
 
   // Damage events trigger additional damage based off the original amount
   // Trigger this after the original damage goes out
   // Does NOT work with Pet damage or Pet spells
-  effect.player->assessor_out_damage.add(
-      assessor::TARGET_DAMAGE + 1, [ buff, mod, action ]( result_amount_type, action_state_t* state ) {
-        if ( !buff->up() || !state->target->is_enemy() || state->result != RESULT_CRIT )
-        {
-          return assessor::CONTINUE;
-        }
+  struct augury_cb_t : public dbc_proc_callback_t
+  {
+    augury_damage_t* damage;
+    double mod;
 
-        double amount = state->result_amount * mod;
+    augury_cb_t( const special_effect_t& effect, action_t* d )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( debug_cast<augury_damage_t*>( d ) ),
+        mod( effect.player->find_spell( 423124 )->effectN( 2 ).percent() )
+    {
+    }
 
-        auto damage         = static_cast<augury_damage_t*>( action );
-        damage->base_dd_min = damage->base_dd_max = amount;
-        damage->execute_on_target( state->target );
+    void execute( action_t*, action_state_t* state ) override
+    {
+      double amount       = state->result_amount * mod;
+      damage->base_dd_min = damage->base_dd_max = amount;
+      damage->execute_on_target( state->target );
+    }
+  };
 
-        return assessor::CONTINUE;
-      } );
+  // Create the callback but only activate it while the buff is active
+  const auto driver = new special_effect_t( effect.player );
+  driver->cooldown_ = 0_ms;
+  driver->spell_id  = effect.trigger()->id();
+  // driver->proc_flags_ = PF_ALL_DAMAGE;
+  driver->proc_flags2_ = PF2_CRIT;
+  effect.player->special_effects.push_back( driver );
+
+  auto cb = new augury_cb_t( *driver, action );
+  cb->initialize();
+  cb->deactivate();
+
+  buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      cb->activate();
+    }
+    else
+    {
+      cb->deactivate();
+    }
+  } );
 
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
