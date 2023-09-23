@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51425
-static const std::array<spelltext_data_t, 20439> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20442> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20274,6 +20274,7 @@ static const std::array<spelltext_data_t, 20439> __ptr_spelltext_data { {
   { 423734, "Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.", 0, 0 },
   { 423765, "$@spelldesc422918", "Malefic Rapture deals $w1% increased damage and extends the duration of your damage over time effects by ${$422918s1/1000} sec.\r\n\r\nSeed of Corruption deals $s2% increased damage.", 0 },
   { 423862, "Spells and abilities used against lesser creatures below 20% health have a chance for Nature to reclaim them.", 0, 0 },
+  { 423874, "Summons a Flame Rift.", 0, 0 },
   { 423875, "Transforms Winter's Stand into Spring's Keeper.", 0, 0 },
   { 423876, "Transforms Spring's Keeper into Winter's Stand.", 0, 0 },
   { 423880, "Autoattacks have a chance to heal a nearby ally for $s1.", 0, 0 },
@@ -20404,6 +20405,7 @@ static const std::array<spelltext_data_t, 20439> __ptr_spelltext_data { {
   { 426647, "$@spelldesc422858", "Mastery increased by $w1.", 0 },
   { 426672, "$@spelldesc422858", "Versatility increased by $w1.", 0 },
   { 426676, "$@spelldesc422858", "Critical Strike increased by $w1.", 0 },
+  { 426703, "$@spelldesc34026", 0, 0 },
   { 426827, "Your critical strikes have a chance to summon a lava serpent to attack your target for 10 sec. The serpent spews a lava bolt every 2 sec, dealing $s1 Volcanic damage. Every third summoning, call forth three serpents instead.\r\n\r\nIf the target dies, the serpent enrages to deal $s2 Volcanic damage to up to 8 nearby enemies. ", 0, 0 },
   { 426834, "$@spelldesc426827", 0, 0 },
   { 426840, "$@spelldesc426827", 0, 0 },
@@ -20426,6 +20428,7 @@ static const std::array<spelltext_data_t, 20439> __ptr_spelltext_data { {
   { 427161, "$@spelldesc422956", 0, 0 },
   { 427215, "$@spelldesc427113", "Rooted.", 0 },
   { 427267, "Dealing Fire damage grants you a shield absorbing $s1 Nature damage. Dealing Nature damage grants you a shield absorbing $s1 Fire damage. This effect may only occur every 1 min.", 0, 0 },
+  { 427285, "$@spelldesc422921", 0, 0 },
   { 427288, "When you need sleep no matter where.", 0, 0 },
   { 427296, "$@spelldesc122280", "$w1 Healing Elixir stored, which will heal for $122281s1% of your maximum health if brought below $122280s1% heatlh.", 0 },
   { 427413, "$@spelldesc422927", "Damage taken reduced by $w1%.", 0 },
