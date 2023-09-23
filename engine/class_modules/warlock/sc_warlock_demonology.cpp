@@ -248,6 +248,19 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     if ( p()->talents.dread_calling->ok() )
       p()->buffs.dread_calling->trigger( shards_used );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
+    {
+      for ( const auto target : p()->sim->target_non_sleeping_list )
+      {
+        warlock_td_t* td = p()->get_target_data( target );
+        if ( !td )
+          continue;
+
+        if ( td->debuffs_doom_brand->check() )
+          td->debuffs_doom_brand->extend_duration( p(), -p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 1 ).time_value() * shards_used );
+      }
+    }
   }
 
   void consume_resource() override
