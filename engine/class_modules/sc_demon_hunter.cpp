@@ -724,6 +724,7 @@ public:
     spell_t* ragefire                           = nullptr;
     attack_t* relentless_onslaught              = nullptr;
     attack_t* relentless_onslaught_annihilation = nullptr;
+    attack_t* throw_glaive_t31                  = nullptr;
 
     // Vengeance
     spell_t* infernal_armor     = nullptr;
@@ -1468,6 +1469,7 @@ public:
 
       // Set Bonus Passives
       ab::apply_affecting_aura( p->set_bonuses.t29_havoc_2pc );
+      ab::apply_affecting_aura( p->set_bonuses.t31_havoc_4pc );
 
       // Affect Flags
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
@@ -4319,6 +4321,18 @@ struct blade_dance_base_t : public demon_hunter_attack_t
         p()->proc.blade_dance_in_essence_break->occur();
     }
 
+    if ( p()->set_bonuses.t31_havoc_2pc->ok() )
+    {
+      for ( auto& attack : ( p()->talent.havoc.first_blood->ok() ? first_blood_attacks : attacks ) )
+      {
+        double chance = p()->set_bonuses.t31_havoc_2pc->effectN( 2 ).percent();
+        if ( p()->rng().roll( chance ) )
+        {
+          make_event<delayed_execute_event_t>( *sim, p(), p()->active.throw_glaive_t31, target, attack->delay );
+        }
+      }
+    }
+
     // Create Strike Events
     if ( !p()->talent.havoc.first_blood->ok() || p()->sim->target_non_sleeping_list.size() > 1 )
     {
@@ -5391,9 +5405,12 @@ struct throw_glaive_t : public demon_hunter_attack_t
     };
 
     soulrend_t* soulrend;
+    bool from_t31;
 
-    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ), soulrend( nullptr )
+    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, bool from_t31 = false )
+      : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
+        soulrend( nullptr ),
+        from_t31( from_t31 )
     {
       background = dual = true;
       radius            = 10.0;
@@ -5401,6 +5418,11 @@ struct throw_glaive_t : public demon_hunter_attack_t
       if ( p->talent.havoc.soulrend->ok() )
       {
         soulrend = p->get_background_action<soulrend_t>( "soulrend" );
+      }
+
+      if ( from_t31 )
+      {
+        base_multiplier *= p->set_bonuses.t31_havoc_2pc->effectN( 1 ).percent();
       }
     }
 
@@ -5430,24 +5452,33 @@ struct throw_glaive_t : public demon_hunter_attack_t
   };
 
   throw_glaive_damage_t* furious_throws;
+  bool from_t31;
 
-  throw_glaive_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "throw_glaive", p, p->spell.throw_glaive, options_str ), furious_throws( nullptr )
+  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str, bool from_t31 = false )
+    : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ),
+      furious_throws( nullptr ),
+      from_t31( from_t31 )
   {
-    throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage" );
-    execute_action                = damage;
-    execute_action->stats         = stats;
+    throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>(
+        from_t31 ? "throw_glaive_damage_t31" : "throw_glaive_damage", from_t31 );
+    execute_action        = damage;
+    execute_action->stats = stats; 
 
-    if ( damage->soulrend )
+    if ( !from_t31 && damage->soulrend )
     {
       add_child( damage->soulrend );
+      add_child( p->active.throw_glaive_t31 );
     }
 
     if ( p->talent.havoc.furious_throws->ok() )
     {
-      resource_current            = RESOURCE_FURY;
-      base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
-      furious_throws              = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws" );
+      if ( !from_t31 )
+      {
+        resource_current            = RESOURCE_FURY;
+        base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
+      }
+      furious_throws = p->get_background_action<throw_glaive_damage_t>(
+          from_t31 ? "throw_glaive_furious_throws_t31" : "throw_glaive_furious_throws", from_t31 );
       add_child( furious_throws );
     }
   }
@@ -5455,6 +5486,12 @@ struct throw_glaive_t : public demon_hunter_attack_t
   void execute() override
   {
     demon_hunter_attack_t::execute();
+
+    if ( p()->set_bonuses.t31_havoc_4pc )
+    {
+      timespan_t adjust_seconds = timespan_t::from_millis( p()->set_bonuses.t31_havoc_4pc->effectN( 1 ).base_value() );
+      p()->cooldown.the_hunt->adjust( -adjust_seconds );
+    }
 
     if ( hit_any_target && furious_throws )
     {
@@ -6089,7 +6126,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "soul_cleave" )
     return new soul_cleave_t( this, options_str );
   if ( name == "throw_glaive" )
-    return new throw_glaive_t( this, options_str );
+    return new throw_glaive_t( "throw_glaive", this, options_str );
   if ( name == "vengeful_retreat" )
     return new vengeful_retreat_t( this, options_str );
   if ( name == "soul_carver" )
@@ -7127,6 +7164,13 @@ void demon_hunter_t::init_spells()
   if ( set_bonuses.t31_vengeance_4pc_proc->ok() )
   {
     active.sigil_of_flame_t31 = get_background_action<sigil_of_flame_t31_t>( "sigil_of_flame_t31" );
+  }
+
+  if ( set_bonuses.t31_havoc_2pc->ok() )
+  {
+    throw_glaive_t* throw_glaive_t31    = get_background_action<throw_glaive_t>( "throw_glaive_t31", "", true );
+    throw_glaive_t31->cooldown->charges = 0;
+    active.throw_glaive_t31             = throw_glaive_t31;
   }
 }
 
