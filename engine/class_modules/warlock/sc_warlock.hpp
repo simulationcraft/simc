@@ -54,6 +54,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_dread_touch;
   propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
+  propagate_const<buff_t*> debuffs_umbrafire_kindling; // T31 4pc dummy debuff to track empowered Seeds of Corruption
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
