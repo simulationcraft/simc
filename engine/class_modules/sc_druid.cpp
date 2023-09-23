@@ -582,6 +582,7 @@ public:
 
     // Feral
     buff_t* apex_predators_craving;
+    buff_t* ashamanes_guidance;  // buff to track incarnation ashamane's guidance buff 10.2 ptr
     buff_t* berserk_cat;
     buff_t* bloodtalons;
     buff_t* bt_rake;          // dummy buff
@@ -712,7 +713,7 @@ public:
     proc_t* pulsar;
 
     // Feral
-    proc_t* ashamanes_guidance;
+    proc_t* ashamanes_guidance; // remove in 10.2
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
     proc_t* predator;
@@ -1020,6 +1021,7 @@ public:
     // Feral
     const spell_data_t* feral_overrides;
     const spell_data_t* ashamanes_guidance;
+    const spell_data_t* ashamanes_guidance_buff;  // buff spell for ashamanes guidance 421442
     const spell_data_t* berserk_cat;  // berserk cast/buff spell
 
     // Guardian
@@ -1638,9 +1640,8 @@ struct berserk_cat_buff_t : public druid_buff_t
     auto cp = find_effect( find_trigger( s ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT );
     auto gain = p->get_gain( n );
 
-    set_tick_callback( [ cp, gain, this ]( buff_t*, int, timespan_t ) {
-      player->resource_gain( RESOURCE_COMBO_POINT, cp, gain );
-    } );
+    set_tick_callback(
+        [ cp, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_COMBO_POINT, cp, gain ); } );
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -1648,7 +1649,11 @@ struct berserk_cat_buff_t : public druid_buff_t
     base_t::start( s, v, d );
 
     if ( inc )
+    {
       p()->uptime.incarnation_cat->update( true, sim->current_time() );
+      if ( p()->talent.ashamanes_guidance.ok() && p()->is_ptr() )
+        p()->buff.ashamanes_guidance->trigger();
+    }
   }
 
   void expire_override( int s, timespan_t d ) override
@@ -1660,6 +1665,14 @@ struct berserk_cat_buff_t : public druid_buff_t
 
     if ( inc )
       p()->uptime.incarnation_cat->update( false, sim->current_time() );
+
+    if ( inc && p()->is_ptr() && p()->talent.ashamanes_guidance.ok() )
+    {
+      // ashamanes guidance buff in spell-data is infinite, so we manually expire after 30 seconds here
+      // unfortunately, if incarn procs or is casted during this 30 seconds
+      // so check back if this becomes relevant
+      make_event( *sim, 30_s, [ this ]() { p()->buff.ashamanes_guidance->expire(); } );
+    }
   }
 };
 
@@ -2080,6 +2093,7 @@ public:
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
+    parse_buff_effects( p()->buff.ashamanes_guidance );  //10.2 ashamanes guidance for incarn
     parse_buff_effects( p()->buff.apex_predators_craving );
     parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
@@ -2132,6 +2146,16 @@ public:
                           find_trigger( p()->talent.dire_fixation ).trigger() );
     parse_debuff_effects( []( druid_td_t* td ) { return td->debuff.waning_twilight->check(); },
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
+
+    if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
+    {
+      parse_debuff_effects(
+          [ p = p() ]( druid_td_t* td ) { return p->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
+          p()->talent.rip, p()->spec.ashamanes_guidance_buff );
+      parse_debuff_effects(
+          [ p = p() ]( druid_td_t* td ) { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
+          find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
+    }
   }
 
   template <typename DOT, typename... Ts>
@@ -9746,9 +9770,13 @@ void druid_t::init_spells()
   spec.starfall                 = check( talent.starfall, 191034 );
 
   // Feral Abilities
-  spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
-  spec.ashamanes_guidance       = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
-  spec.berserk_cat              = talent.berserk.find_override_spell();
+  spec.feral_overrides = find_specialization_spell( "Feral Overrides Passive" );
+  if ( is_ptr() )
+    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421440 );
+  else
+    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
+  spec.ashamanes_guidance_buff = check( talent.ashamanes_guidance, 421442 );
+  spec.berserk_cat             = talent.berserk.find_override_spell();
 
   // Guardian Abilities
   spec.bear_form_2              = find_rank_spell( "Bear Form", "Rank 2" );
@@ -10215,6 +10243,10 @@ void druid_t::create_buffs()
   buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
 
   // Feral buffs
+  buff.ashamanes_guidance =
+      make_buff_fallback( is_ptr() && talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok(), this,
+                          "ashamanes_guidance", spec.ashamanes_guidance_buff );
+
   buff.apex_predators_craving = make_buff_fallback( talent.apex_predators_craving.ok(),
       this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() )
           ->set_chance( find_trigger( talent.apex_predators_craving ).percent() );
@@ -11272,7 +11304,7 @@ void druid_t::init_special_effects()
   }
 
   // Feral
-  if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() )
+  if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() && !is_ptr())
   {
     const auto driver = new special_effect_t( this );
     driver->name_str = "ashamanes_guidance_driver";
@@ -11337,7 +11369,16 @@ void druid_t::init_special_effects()
     driver->proc_flags2_ = PF2_ALL_HIT;
     special_effects.push_back( driver );
 
-    new smoldering_frenzy_cb_t( this, *driver );
+    auto cb = new smoldering_frenzy_cb_t( this, *driver );
+    cb->initialize();
+    cb->deactivate();
+
+    buff.smoldering_frenzy->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->activate();
+      else
+        cb->deactivate();
+    } );
   }
 
   // Guardian
@@ -13142,7 +13183,7 @@ void druid_t::apply_affecting_auras( action_t& action )
     action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
-  // Feral
+  // Feral 
   action.apply_affecting_aura( spec.ashamanes_guidance );
   action.apply_affecting_aura( talent.dreadful_bleeding );
   action.apply_affecting_aura( talent.infected_wounds_cat );
