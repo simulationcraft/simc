@@ -341,6 +341,7 @@ public:
     action_t* lava_burst_pw;
     action_t* flame_shock;
     action_t* elemental_blast;
+    action_t* molten_slag;
 
     action_t* lightning_rod;
 
@@ -1354,12 +1355,6 @@ public:
       affected_by_enh_t30_4pc_da = ab::data().affected_by( player->find_spell( 409833 )->effectN( 1 ) );
       affected_by_enh_t30_4pc_ta = ab::data().affected_by( player->find_spell( 409833 )->effectN( 2 ) );
     }
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
-    {
-      affected_by_ele_t31_4pc = ab::data().affected_by( player->spell.t31_4pc_ele->effectN( 1 ) ) ||
-                                ab::data().affected_by( player->spell.t31_4pc_ele->effectN( 2 ) );
-    }
   }
 
   std::string full_name() const
@@ -2113,12 +2108,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       m *= 1.0 + p()->buff.stormkeeper->value();
     }
 
-    // similar logic as Stormkeeper until buff actually expires on PTR and we can test it
-    if ( affected_by_ele_t31_4pc && p()->buff.t31_4pc_ele->up() && !p()->sk_during_cast )
-    {
-      m *= 1.0 + p()->spell.t31_4pc_ele->effectN( 2 ).percent();
-    }
-
     return m;
   }
 
@@ -2130,11 +2119,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
       // stormkeeper has a -100% value as effect 1
       t *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
-    }
-    else if ( affected_by_ele_t31_4pc && p()->buff.t31_4pc_ele->up() && !p()->sk_during_cast )
-    {
-      // t31 4pc has a -100% value as effect 1
-      t *= 1.0 + p()->spell.t31_4pc_ele->effectN( 1 ).percent();
     }
 
     return t;
@@ -4703,7 +4687,6 @@ struct chained_base_t : public shaman_spell_t
       if ( !p()->sk_during_cast )
       {
         p()->buff.stormkeeper->decrement();
-        p()->buff.t31_4pc_ele->decrement();
       }
       p()->sk_during_cast = false;
     }
@@ -5122,6 +5105,13 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     s->result_amount = elemental_overload_spell_t::calculate_direct_amount( s );
 
     elemental_overload_spell_t::impact( s );
+
+    if ( p()->buff.t31_4pc_ele->up() )
+    {
+      double amount = s->result_amount * p()->spell.t31_4pc_ele_can_proc->effectN( 1 ).percent();
+      if ( amount > 0 )
+        residual_action::trigger( p()->action.molten_slag, s->target, amount );
+    }
   }
 
   double action_multiplier() const override
@@ -5524,6 +5514,13 @@ struct lava_burst_t : public shaman_spell_t
 
     shaman_spell_t::impact( s );
 
+    if ( p()->buff.t31_4pc_ele->up() )
+    {
+      double amount = s->result_amount * p()->spell.t31_4pc_ele_can_proc->effectN( 1 ).percent();
+      if ( amount > 0 )
+        residual_action::trigger( p()->action.molten_slag, s->target, amount );
+    }
+
     if ( s->chain_target == 0 && result_is_hit( s->result ) )
     {
       if ( p()->buff.windspeakers_lava_resurgence->up() ) {
@@ -5627,6 +5624,7 @@ struct lava_burst_t : public shaman_spell_t
       if ( p()->buff.t31_4pc_ele_can_proc->up() )
       {
         p()->buff.t31_4pc_ele->trigger();
+        p()->buff.t31_4pc_ele_can_proc->decrement();
       }
     }
 
@@ -5889,7 +5887,6 @@ struct lightning_bolt_t : public shaman_spell_t
           p()->buff.t30_4pc_ele->trigger();
         }
         p()->buff.stormkeeper->decrement();
-        p()->buff.t31_4pc_ele->decrement();
       }
       p()->sk_during_cast = false;
     }
@@ -8291,6 +8288,18 @@ struct primordial_wave_t : public shaman_spell_t
   }
 };
 
+struct molten_slag_t : public residual_action::residual_periodic_action_t<spell_t>
+{
+  molten_slag_t( shaman_t* p ) : base_t( "molten_slag", p, p->find_spell( 427729 ) )
+  {
+  }
+
+  double composite_versatility( const action_state_t* ) const override
+  {
+    return 1.0;
+  }
+};
+
 // ==========================================================================
 // Shaman Custom Buff implementation
 // ==========================================================================
@@ -8891,6 +8900,11 @@ void shaman_t::create_actions()
     action.elemental_blast->background = true;
     action.elemental_blast->base_costs[ RESOURCE_MANA ] = 0;
     action.elemental_blast->base_costs[ RESOURCE_MAELSTROM ] = 0;
+  }
+
+  if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
+  {
+    action.molten_slag = new molten_slag_t( this );
   }
 }
 
