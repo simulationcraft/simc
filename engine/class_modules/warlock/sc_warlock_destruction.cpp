@@ -1407,11 +1407,73 @@ struct chaos_tear_t : public destruction_spell_t
   }
 };
 
+struct flame_rift_t : public destruction_spell_t
+{
+  struct searing_bolt_t : public destruction_spell_t
+  {
+    dimensional_cinder_t* cinder;
+
+    searing_bolt_t( warlock_t* p ) : destruction_spell_t( "Searing Bolt", p, p->tier.searing_bolt )
+    {
+      destro_mastery = false;
+      background = true;
+      dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+
+      // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
+    }
+  };
+
+  searing_bolt_t* bolt;
+
+  flame_rift_t( warlock_t* p ) : destruction_spell_t( "Flame Rift", p, p->tier.flame_rift )
+  {
+    background = true;
+    may_miss = false;
+
+    bolt = new searing_bolt_t( p );
+    add_child( bolt );
+  }
+
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    // Flame Rift fires 20 Searing Bolts erratically
+    timespan_t min_delay = 0_ms;
+    timespan_t max_delay = timespan_t::from_seconds( p()->sets->set( WARLOCK_DESTRUCTION, T31, B4 )->effectN( 1 ).base_value() );
+    player_t* tar = target;
+
+    for ( int i = 0; i < p()->sets->set( WARLOCK_DESTRUCTION, T31, B4 )->effectN( 1 ).base_value(); i++ )
+    {
+      timespan_t delay = rng().gauss( i * 500_ms, 500_ms );
+      delay = std::min( std::max( delay, min_delay ), max_delay );
+      make_event( *sim, delay, [ this, tar ] { this->bolt->execute_on_target( tar ); } );
+    }
+  }
+};
+
 struct dimensional_rift_t : public destruction_spell_t
 {
   shadowy_tear_t* shadowy_tear;
   unstable_tear_t* unstable_tear;
   chaos_tear_t* chaos_tear;
+  flame_rift_t* flame_rift;
 
   dimensional_rift_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
@@ -1426,18 +1488,19 @@ struct dimensional_rift_t : public destruction_spell_t
     shadowy_tear = new shadowy_tear_t( p );
     unstable_tear = new unstable_tear_t( p );
     chaos_tear = new chaos_tear_t( p );
+    flame_rift = new flame_rift_t( p );
 
     add_child( shadowy_tear );
     add_child( unstable_tear );
     add_child( chaos_tear );
+    add_child( flame_rift );
   }
 
   void execute() override
   {
     destruction_spell_t::execute();
 
-    // TOCHECK: Are all rift types equally likely?
-    int rift = rng().range( 3 );
+    int rift = rng().range( 4 );
 
     switch ( rift )
     {
@@ -1449,6 +1512,9 @@ struct dimensional_rift_t : public destruction_spell_t
       break;
     case 2:
       chaos_tear->execute_on_target( target );
+      break;
+    case 3:
+      flame_rift->execute_on_target( target );
       break;
     default:
       break;
