@@ -998,6 +998,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
 
+  dots_searing_bolt = target->get_dot( "searing_bolt", &p );
+
   debuffs_eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
                             ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
 
