@@ -6395,6 +6395,79 @@ void nymues_unraveling_spindle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Augury of the Primal Flame
+// Driver: 423124
+// Buff: 426553
+void augury_of_the_primal_flame( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "annihilating_flame" );
+  if ( !buff )
+  {
+    // Use the cap as the default value to be decremented as you trigger
+    buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
+               ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  struct augury_damage_t : public generic_aoe_proc_t
+  {
+    augury_damage_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "annihilating_flame", effect.driver(), true )
+    {
+      may_crit          = true;
+      split_aoe_damage  = true;
+    }
+
+    void trigger( player_t* target, double original_amount )
+    {
+      base_dd_min = base_dd_max = original_amount;
+
+      set_target( target );
+      execute();
+    }
+  };
+
+  auto mod    = effect.driver()->effectN( 2 ).percent();
+  auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect );
+
+  // Damage events trigger additional damage based off the original amount
+  // Trigger this after the original damage goes out
+  // Does NOT work with Pet damage or Pet spells
+  effect.player->assessor_out_damage.add(
+      assessor::TARGET_DAMAGE + 1, [ buff, mod, action ]( result_amount_type, action_state_t* state ) {
+        player_t* p = state->action->player;
+        if ( !buff->up() || !state->target->is_enemy() || state->result != RESULT_CRIT )
+        {
+          return assessor::CONTINUE;
+        }
+
+        double amount = state->result_amount * mod;
+
+        if ( p->sim->debug )
+        {
+          p->sim->out_debug.printf( "%s annihilating_flame accumulates %.0f damage. %.0f remains", p->name(), amount,
+                                    buff->current_value );
+        }
+
+        // Store this to make sure we don't go over the cap
+        // TODO: refactor this to remove the amount AFTER it hits the target
+        //       if the event crits the target that will deduct more from the cap
+        if ( buff->current_value > amount )
+        {
+          buff->current_value -= amount;
+        }
+        else
+        {
+          // if you hit enough to cap, expire the buff and let the last damage event still trigger
+          buff->expire();
+        }
+
+        static_cast<augury_damage_t*>( action )->trigger( state->target, amount );
+      } );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8781,6 +8854,7 @@ void register_special_effects()
   register_special_effect( 423905, items::dancing_dream_blossoms );
   register_special_effect( 422146, items::belorrelos_the_sunstone );
   register_special_effect( 422956, items::nymues_unraveling_spindle );
+  register_special_effect( 423124, items::augury_of_the_primal_flame );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
