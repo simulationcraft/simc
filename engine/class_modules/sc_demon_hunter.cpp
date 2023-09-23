@@ -5924,6 +5924,8 @@ void immolation_aura_t::immolation_aura_damage_t::accumulate_ragefire( immolatio
   if ( !p()->talent.havoc.ragefire->ok() )
     return;
 
+  assert( s->immolation_aura && "Immolation Aura state should contain the parent buff while executing damage." );
+
   if ( !( s->result_amount > 0 && s->result == RESULT_CRIT ) )
     return;
 
