@@ -213,8 +213,10 @@ public:
     buff_t* blur;
     damage_buff_t* chaos_theory;
     buff_t* death_sweep;
+    buff_t* fel_barrage;
     buff_t* furious_gaze;
     buff_t* growing_inferno;
+    damage_buff_t* inertia;
     buff_t* initiative;
     buff_t* inner_demon;
     damage_buff_t* momentum;
@@ -222,8 +224,6 @@ public:
     damage_buff_t* restless_hunter;
     buff_t* tactical_retreat;
     buff_t* unbound_chaos;
-    damage_buff_t* inertia;
-    buff_t* fel_barrage;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -721,12 +721,12 @@ public:
     // Havoc
     spell_t* burning_wound                      = nullptr;
     attack_t* demon_blades                      = nullptr;
+    spell_t* fel_barrage                        = nullptr;
     spell_t* inner_demon                        = nullptr;
     spell_t* ragefire                           = nullptr;
     attack_t* relentless_onslaught              = nullptr;
     attack_t* relentless_onslaught_annihilation = nullptr;
     attack_t* throw_glaive_t31                  = nullptr;
-    spell_t* fel_barrage                        = nullptr;
 
     // Vengeance
     spell_t* infernal_armor     = nullptr;
