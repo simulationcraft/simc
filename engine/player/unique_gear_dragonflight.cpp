@@ -6395,6 +6395,114 @@ void nymues_unraveling_spindle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Augury of the Primal Flame
+// Driver: 423124
+// Buff: 426553
+void augury_of_the_primal_flame( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "annihilating_flame" );
+  if ( !buff )
+  {
+    // Use the cap as the default value to be decremented as you trigger
+    // NOTE: Tooltip says total limit increased per enemy struck, up to 5.
+    //       Testing on a training dummy can't find any evidence to support that.
+    buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
+               ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  struct augury_damage_t : public generic_aoe_proc_t
+  {
+    buff_t* buff;
+
+    augury_damage_t( const special_effect_t& effect, buff_t* b )
+      : generic_aoe_proc_t( effect, "annihilating_flame", effect.player->find_spell( 426564 ), true ), buff( b )
+    {
+      may_crit         = true;
+      split_aoe_damage = true;
+      background       = true;
+      aoe              = -1;
+
+      // Make sure SimC knows to apply modifiers
+      // Augury double dips with things like Vers
+      base_dd_min = base_dd_max = 1;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_aoe_proc_t::impact( state );
+
+      if ( buff->check() )
+      {
+        // After the hit occurs calculate how much is left or expire if needed
+        if ( buff->current_value > state->result_amount )
+        {
+          buff->current_value -= state->result_amount;
+
+          sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains", name(), state->result_amount,
+                            buff->current_value );
+        }
+        else
+        {
+          // If you hit enough to cap, expire the buff
+          // Any in-progress damage events are uninterrupted allowing you to go over the cap
+          buff->expire();
+        }
+      }
+    }
+  };
+
+  auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect, buff );
+
+  // Damage events trigger additional damage based off the original amount
+  // Trigger this after the original damage goes out
+  // Does NOT work with Pet damage or Pet spells
+  struct augury_cb_t : public dbc_proc_callback_t
+  {
+    augury_damage_t* damage;
+    double mod;
+
+    augury_cb_t( const special_effect_t& effect, action_t* d )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( debug_cast<augury_damage_t*>( d ) ),
+        mod( effect.player->find_spell( 423124 )->effectN( 2 ).percent() )
+    {
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      double amount       = state->result_amount * mod;
+      damage->base_dd_min = damage->base_dd_max = amount;
+      damage->execute_on_target( state->target );
+    }
+  };
+
+  // Create the callback but only activate it while the buff is active
+  const auto driver = new special_effect_t( effect.player );
+  driver->cooldown_ = 0_ms;
+  driver->spell_id  = effect.trigger()->id();
+  // driver->proc_flags_ = PF_ALL_DAMAGE;
+  driver->proc_flags2_ = PF2_CRIT;
+  effect.player->special_effects.push_back( driver );
+
+  auto cb = new augury_cb_t( *driver, action );
+  cb->initialize();
+  cb->deactivate();
+
+  buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      cb->activate();
+    }
+    else
+    {
+      cb->deactivate();
+    }
+  } );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8781,6 +8889,7 @@ void register_special_effects()
   register_special_effect( 423905, items::dancing_dream_blossoms );
   register_special_effect( 422146, items::belorrelos_the_sunstone );
   register_special_effect( 422956, items::nymues_unraveling_spindle );
+  register_special_effect( 423124, items::augury_of_the_primal_flame );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
