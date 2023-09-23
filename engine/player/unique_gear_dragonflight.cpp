@@ -6404,37 +6404,58 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   if ( !buff )
   {
     // Use the cap as the default value to be decremented as you trigger
+    // NOTE: Tooltip says total limit increased per enemy struck, up to 5.
+    //       Testing on a training dummy can't find any evidence to support that.
     buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
                ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
   struct augury_damage_t : public generic_aoe_proc_t
   {
-    augury_damage_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "annihilating_flame", effect.driver(), true )
+    buff_t* buff;
+
+    augury_damage_t( const special_effect_t& effect, buff_t* b )
+      : generic_aoe_proc_t( effect, "annihilating_flame", effect.driver(), true ), buff( b )
     {
-      may_crit          = true;
-      split_aoe_damage  = true;
+      may_crit         = true;
+      split_aoe_damage = true;
+      aoe              = -1;
     }
 
-    void trigger( player_t* target, double original_amount )
+    void impact( action_state_t* state ) override
     {
-      base_dd_min = base_dd_max = original_amount;
+      generic_aoe_proc_t::impact( state );
 
-      set_target( target );
-      execute();
+      if ( buff->check() )
+      {
+        // After the hit occurs calculate how much is left or expire if needed
+        if ( buff->current_value > state->result_amount )
+        {
+          buff->current_value -= state->result_amount;
+          if ( sim->debug )
+          {
+            sim->out_debug.printf( "%s annihilating_flame accumulates %.0f damage. %.0f remains", name(),
+                                   state->result_amount, buff->current_value );
+          }
+        }
+        else
+        {
+          // If you hit enough to cap, expire the buff
+          // Any in-progress damage events are uninterrupted allowing you to go over the cap
+          buff->expire();
+        }
+      }
     }
   };
 
   auto mod    = effect.driver()->effectN( 2 ).percent();
-  auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect );
+  auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect, buff );
 
   // Damage events trigger additional damage based off the original amount
   // Trigger this after the original damage goes out
   // Does NOT work with Pet damage or Pet spells
   effect.player->assessor_out_damage.add(
       assessor::TARGET_DAMAGE + 1, [ buff, mod, action ]( result_amount_type, action_state_t* state ) {
-        player_t* p = state->action->player;
         if ( !buff->up() || !state->target->is_enemy() || state->result != RESULT_CRIT )
         {
           return assessor::CONTINUE;
@@ -6442,26 +6463,11 @@ void augury_of_the_primal_flame( special_effect_t& effect )
 
         double amount = state->result_amount * mod;
 
-        if ( p->sim->debug )
-        {
-          p->sim->out_debug.printf( "%s annihilating_flame accumulates %.0f damage. %.0f remains", p->name(), amount,
-                                    buff->current_value );
-        }
+        auto damage         = static_cast<augury_damage_t*>( action );
+        damage->base_dd_min = damage->base_dd_max = amount;
+        damage->execute_on_target( state->target );
 
-        // Store this to make sure we don't go over the cap
-        // TODO: refactor this to remove the amount AFTER it hits the target
-        //       if the event crits the target that will deduct more from the cap
-        if ( buff->current_value > amount )
-        {
-          buff->current_value -= amount;
-        }
-        else
-        {
-          // if you hit enough to cap, expire the buff and let the last damage event still trigger
-          buff->expire();
-        }
-
-        static_cast<augury_damage_t*>( action )->trigger( state->target, amount );
+        return assessor::CONTINUE;
       } );
 
   effect.custom_buff = buff;
