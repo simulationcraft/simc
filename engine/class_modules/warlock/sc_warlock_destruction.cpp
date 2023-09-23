@@ -1500,7 +1500,7 @@ struct dimensional_rift_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    int rift = rng().range( 4 );
+    int rift = rng().range( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B4 ) ? 4 : 3 );
 
     switch ( rift )
     {
