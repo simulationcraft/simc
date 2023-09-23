@@ -1814,6 +1814,48 @@ double pit_lord_t::composite_melee_speed() const
 
 /// Pit Lord End
 
+/// Doomfiend Begin
+
+doomfiend_t::doomfiend_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_DOOMFIEND, name != "doomfiend" )
+{
+  action_list_str = "doom_bolt_volley";
+
+  resource_regeneration = regen_type::DISABLED;
+}
+
+struct doom_bolt_volley_t : public warlock_pet_spell_t
+{
+  doom_bolt_volley_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Doom Bolt Volley", p, p->o()->tier.doom_bolt_volley )
+  {  }
+
+  void consume_resource() override
+  {
+    warlock_pet_spell_t::consume_resource();
+
+    if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
+    {
+      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+    }
+  }
+};
+
+action_t* doomfiend_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "doom_bolt_volley" )
+    return new doom_bolt_volley_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+void doomfiend_t::init_base_stats()
+{
+  warlock_pet_t::init_base_stats();
+
+  resources.base[ RESOURCE_ENERGY ] = 100;
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
+}
+
+/// Doomfiend End
 namespace random_demons
 {
 /// Shivarra Begin

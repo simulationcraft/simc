@@ -248,6 +248,19 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     if ( p()->talents.dread_calling->ok() )
       p()->buffs.dread_calling->trigger( shards_used );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
+    {
+      for ( const auto target : p()->sim->target_non_sleeping_list )
+      {
+        warlock_td_t* td = p()->get_target_data( target );
+        if ( !td )
+          continue;
+
+        if ( td->debuffs_doom_brand->check() )
+          td->debuffs_doom_brand->extend_duration( p(), -p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 1 ).time_value() * shards_used );
+      }
+    }
   }
 
   void consume_resource() override
@@ -273,6 +286,27 @@ struct hand_of_guldan_t : public demonology_spell_t
       // Event seems near-instant, without separate travel time
       make_event( *sim, 0_ms, [this, t = target ] { impact_spell->execute_on_target( t ); } );
       p()->procs.pact_of_the_imp_mother->occur();
+    }
+  }
+};
+
+struct doom_brand_t : public demonology_spell_t
+{
+  doom_brand_t( warlock_t* p ) : demonology_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
+  {
+    aoe = -1;
+    background = dual = true;
+    callbacks = false;
+  }
+
+  void execute() override
+  {
+    demonology_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) && p()->doomfiend_rppm->trigger() )
+    {
+      p()->warlock_pet_list.doomfiends.spawn();
+      p()->procs.doomfiend->occur();
     }
   }
 };
@@ -336,6 +370,14 @@ struct demonbolt_t : public demonology_spell_t
       p()->buffs.blazing_meteor->trigger();
       p()->procs.blazing_meteor->occur();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demonology_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
+      td( s->target )->debuffs_doom_brand->trigger();
   }
 
   double action_multiplier() const override
@@ -1500,9 +1542,16 @@ void warlock_t::init_spells_demonology()
   // T30 (Aberrus, the Shadowed Crucible)
   tier.rite_of_ruvaraad = find_spell( 409725 );
 
+  // T31 (Amirdrassil, the Dream's Hope)
+  tier.doom_brand = find_spell( 423585 );
+  tier.doom_brand_debuff = find_spell( 423583 );
+  tier.doom_brand_aoe = find_spell( 423584 );
+  tier.doom_bolt_volley = find_spell( 423734 );
+
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
   proc_actions.summon_nether_portal_demon = new actions_demonology::summon_random_demon_t( this, true );
   proc_actions.bilescourge_bombers_proc = new actions_demonology::bilescourge_bombers_proc_t( this );
+  proc_actions.doom_brand_explosion = new actions_demonology::doom_brand_t( this );
 
   // Initialize some default values for pet spawners
   warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
@@ -1518,6 +1567,7 @@ void warlock_t::init_gains_demonology()
 
 void warlock_t::init_rng_demonology()
 {
+  doomfiend_rppm = get_rppm( "doomfiend", sets->set( WARLOCK_DEMONOLOGY, T31, B4 )->real_ppm() );
 }
 
 void warlock_t::init_procs_demonology()
@@ -1530,6 +1580,7 @@ void warlock_t::init_procs_demonology()
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
   procs.blazing_meteor = get_proc( "blazing_meteor" );
+  procs.doomfiend = get_proc( "doomfiend" );
 }
 
 }  // namespace warlock
