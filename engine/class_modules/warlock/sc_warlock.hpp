@@ -188,6 +188,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
 
     spawner::pet_spawner_t<pets::demonology::pit_lord_t, warlock_t> pit_lords;
+    spawner::pet_spawner_t<pets::demonology::doomfiend_t, warlock_t> doomfiends;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -503,6 +504,7 @@ public:
     const spell_data_t* doom_brand; // T31 2pc debuff which does AoE damage on expiration. Hand of Gul'dan reduces remaining duration on all Brands
     const spell_data_t* doom_brand_debuff; // Doom Brand primary data isn't really useful to SimC, actual debuff is a separate spell. (Misc Value 1 for primary does hold the NPC ID for Doomfiend, though)
     const spell_data_t* doom_brand_aoe;
+    const spell_data_t* doom_bolt_volley; // T31 4pc spell used by Doomfiend pet
 
     // Destruction 
     const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
@@ -656,6 +658,7 @@ public:
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
     proc_t* blazing_meteor; // T29 4pc
+    proc_t* doomfiend; // T31 4pc
 
     // Destruction
     proc_t* reverse_entropy;
@@ -673,6 +676,7 @@ public:
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
+  real_ppm_t* doomfiend_rppm; // Demonology T31 4pc
   const spell_data_t* version_10_2_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );

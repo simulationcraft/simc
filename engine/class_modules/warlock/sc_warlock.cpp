@@ -1193,6 +1193,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     procs(),
     initial_soul_shards( 3 ),
     disable_auto_felstorm( false ),
+    doomfiend_rppm( nullptr ),
     default_pet()
 {
   cooldowns.haunt = get_cooldown( "haunt" );
@@ -2383,7 +2384,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     illidari_satyrs( "illidari_satyr", w ),
     eyes_of_guldan( "eye_of_guldan", w ),
     prince_malchezaar( "prince_malchezaar", w ),
-    pit_lords( "pit_lord", w )
+    pit_lords( "pit_lord", w ),
+    doomfiends( "doomfiend", w )
 {
 }
 }  // namespace warlock

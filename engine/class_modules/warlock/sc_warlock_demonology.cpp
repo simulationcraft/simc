@@ -298,6 +298,17 @@ struct doom_brand_t : public demonology_spell_t
     background = dual = true;
     callbacks = false;
   }
+
+  void execute() override
+  {
+    demonology_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) && p()->doomfiend_rppm->trigger() )
+    {
+      p()->warlock_pet_list.doomfiends.spawn();
+      p()->procs.doomfiend->occur();
+    }
+  }
 };
 
 struct demonbolt_t : public demonology_spell_t
@@ -1535,6 +1546,7 @@ void warlock_t::init_spells_demonology()
   tier.doom_brand = find_spell( 423585 );
   tier.doom_brand_debuff = find_spell( 423583 );
   tier.doom_brand_aoe = find_spell( 423584 );
+  tier.doom_bolt_volley = find_spell( 423734 );
 
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
   proc_actions.summon_nether_portal_demon = new actions_demonology::summon_random_demon_t( this, true );
@@ -1555,6 +1567,7 @@ void warlock_t::init_gains_demonology()
 
 void warlock_t::init_rng_demonology()
 {
+  doomfiend_rppm = get_rppm( "doomfiend", sets->set( WARLOCK_DEMONOLOGY, T31, B4 )->real_ppm() );
 }
 
 void warlock_t::init_procs_demonology()
@@ -1567,6 +1580,7 @@ void warlock_t::init_procs_demonology()
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
   procs.blazing_meteor = get_proc( "blazing_meteor" );
+  procs.doomfiend = get_proc( "doomfiend" );
 }
 
 }  // namespace warlock
