@@ -267,8 +267,9 @@ struct malefic_rapture_t : public affliction_spell_t
 
       if ( p()->talents.focused_malignancy->ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
         m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
-      
-      m *= 1.0 + p()->buffs.soulstealer->check_value();
+
+      if ( p()->buffs.umbrafire_kindling->check() )
+        m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 1 ).percent();
 
       return m;
     }
@@ -285,7 +286,7 @@ struct malefic_rapture_t : public affliction_spell_t
           target_data->debuffs_dread_touch->trigger();
       }
 
-      if ( p()->buffs.soulstealer->check() )
+      if ( p()->buffs.umbrafire_kindling->check() )
       {
         if ( target_data->dots_agony->is_ticking() )
           target_data->dots_agony->adjust_duration( t31_soulstealer_extend );
@@ -369,7 +370,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
     p()->buffs.tormented_crescendo->decrement();
     p()->buffs.cruel_epiphany->decrement();
-    p()->buffs.soulstealer->decrement(); // 2023-09-11: On PTR spell-queuing with an instant MR can cause this to decrement without giving the extensions. NOT CURRENTLY IMPLEMENTED
+    p()->buffs.umbrafire_kindling->decrement(); // 2023-09-11: On PTR spell-queuing with an instant MR can cause this to decrement without giving the extensions. NOT CURRENTLY IMPLEMENTED
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -937,9 +938,8 @@ void warlock_t::create_buffs_affliction()
   buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
                              ->set_default_value_from_effect( 1 );
 
-  buffs.soulstealer = make_buff( this, "soulstealer", tier.soulstealer )
-                          ->set_default_value_from_effect( 1 )
-                          ->set_reverse( true );
+  buffs.umbrafire_kindling = make_buff( this, "umbrafire_kindling", tier.umbrafire_kindling )
+                                 ->set_reverse( true );
 }
 
 void warlock_t::init_spells_affliction()
@@ -1049,7 +1049,7 @@ void warlock_t::init_spells_affliction()
   tier.infirmity = find_spell( 409765 );
 
   // T31 (Amirdrassil, the Dream's Hope)
-  tier.soulstealer = sets->set( WARLOCK_AFFLICTION, T31, B4 )->effectN( 2 ).trigger(); // Should be ID 423765
+  tier.umbrafire_kindling = find_spell( 423765 );
 }
 
 void warlock_t::create_soul_swap_actions()
