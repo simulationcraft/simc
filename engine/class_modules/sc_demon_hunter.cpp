@@ -206,6 +206,7 @@ public:
     damage_buff_t* empowered_demon_soul;
     buff_t* immolation_aura;
     buff_t* metamorphosis;
+    buff_t* fodder_to_the_flame;
 
     // Havoc
     buff_t* blind_fury;
@@ -439,6 +440,7 @@ public:
     const spell_data_t* disrupt;
     const spell_data_t* immolation_aura;
     const spell_data_t* throw_glaive;
+    const spell_data_t* spectral_sight;
 
     // Class Passives
     const spell_data_t* all_demon_hunter;
@@ -595,6 +597,7 @@ public:
     cooldown_t* fel_eruption;
     cooldown_t* immolation_aura;
     cooldown_t* the_hunt;
+    cooldown_t* spectral_sight;
 
     // Havoc
     cooldown_t* blade_dance;
@@ -3829,86 +3832,6 @@ struct elysian_decree_t : public demon_hunter_spell_t
   }
 };
 
-// Fodder to the Flame ======================================================
-
-struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
-{
-  struct fodder_to_the_flame_damage_t : public demon_hunter_spell_t
-  {
-    fodder_to_the_flame_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spell.fodder_to_the_flame_damage )
-    {
-      background          = true;
-      aoe                 = -1;
-      reduced_aoe_targets = p->spell.fodder_to_the_flame->effectN( 1 ).base_value();
-    }
-
-    void execute() override
-    {
-      demon_hunter_spell_t::execute();
-
-      // Simulate triggering initiative from hitting the demon
-      if ( p()->talent.havoc.initiative->ok() && p()->rng().roll( p()->options.fodder_to_the_flame_initiative_chance ) )
-      {
-        p()->buff.initiative->trigger();
-      }
-
-      p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
-    }
-  };
-
-  // Dummy trigger spell in order to trigger cast callbacks
-  struct fodder_to_the_flame_spawn_trigger_t : public demon_hunter_spell_t
-  {
-    struct fodder_to_the_flame_state_t : public action_state_t
-    {
-      fodder_to_the_flame_state_t( action_t* a, player_t* target ) : action_state_t( a, target )
-      {
-      }
-
-      proc_types2 cast_proc_type2() const override
-      {
-        return PROC2_CAST;
-      }
-    };
-
-    fodder_to_the_flame_spawn_trigger_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spell.fodder_to_the_flame )
-    {
-      quiet = true;
-    }
-
-    proc_types proc_type() const override
-    {
-      return PROC1_NONE_SPELL;
-    }
-
-    action_state_t* new_state() override
-    {
-      return new fodder_to_the_flame_state_t( this, target );
-    }
-  };
-
-  fodder_to_the_flame_damage_t* damage;
-  fodder_to_the_flame_spawn_trigger_t* spawn_trigger;
-  timespan_t trigger_delay;
-  demon_hunter_t* dh;
-
-  fodder_to_the_flame_cb_t( demon_hunter_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ), dh( p )
-  {
-    damage        = dh->get_background_action<fodder_to_the_flame_damage_t>( "fodder_to_the_flame" );
-    spawn_trigger = dh->get_background_action<fodder_to_the_flame_spawn_trigger_t>( "fodder_to_the_flame_spawn" );
-    trigger_delay = timespan_t::from_seconds( p->options.fodder_to_the_flame_kill_seconds );
-  }
-
-  void execute( action_t* a, action_state_t* s ) override
-  {
-    dbc_proc_callback_t::execute( a, s );
-    make_event<delayed_execute_event_t>( *dh->sim, dh, damage, s->target, trigger_delay );
-    spawn_trigger->execute();
-  }
-};
-
 // The Hunt =================================================================
 
 struct the_hunt_t : public demon_hunter_spell_t
@@ -3969,6 +3892,56 @@ struct the_hunt_t : public demon_hunter_spell_t
       return false;
 
     return spell_t::ready();
+  }
+};
+
+// Spectral Sight ===========================================================
+
+struct spectral_sight_t : public demon_hunter_spell_t
+{
+  struct fodder_to_the_flame_damage_t : public demon_hunter_spell_t
+  {
+    fodder_to_the_flame_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->spell.fodder_to_the_flame_damage )
+    {
+      background          = true;
+      aoe                 = -1;
+      reduced_aoe_targets = p->spell.fodder_to_the_flame->effectN( 1 ).base_value();
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+
+      // Simulate triggering initiative from hitting the demon
+      if ( p()->talent.havoc.initiative->ok() && p()->rng().roll( p()->options.fodder_to_the_flame_initiative_chance ) )
+      {
+        p()->buff.initiative->trigger();
+      }
+
+      p()->buff.empowered_demon_soul->trigger();
+    }
+  };
+
+  fodder_to_the_flame_damage_t* damage;
+  timespan_t fodder_to_the_flame_trigger_delay;
+  demon_hunter_t* dh;
+
+  spectral_sight_t( demon_hunter_t* p, util::string_view options_str )
+    : demon_hunter_spell_t( "spectral_sight", p, p->spell.spectral_sight, options_str ), dh( p )
+  {
+    damage = dh->get_background_action<fodder_to_the_flame_damage_t>( "fodder_to_the_flame" );
+    fodder_to_the_flame_trigger_delay = timespan_t::from_seconds( p->options.fodder_to_the_flame_kill_seconds );
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    if ( p()->talent.havoc.fodder_to_the_flame->ok() || p()->talent.vengeance.fodder_to_the_flame->ok() )
+    {
+      make_event<delayed_execute_event_t>( *dh->sim, dh, damage, target, fodder_to_the_flame_trigger_delay );
+    }
   }
 };
 
@@ -6082,11 +6055,12 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new sigil_of_flame_t( this, options_str );
   if ( name == "spirit_bomb" )
     return new spirit_bomb_t( this, options_str );
-
   if ( name == "elysian_decree" )
     return new elysian_decree_t( this, options_str );
   if ( name == "the_hunt" )
     return new the_hunt_t( this, options_str );
+  if ( name == "spectral_sight" )
+    return new spectral_sight_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -6681,17 +6655,6 @@ void demon_hunter_t::init_resources( bool force )
 void demon_hunter_t::init_special_effects()
 {
   base_t::init_special_effects();
-
-  if ( talent.havoc.fodder_to_the_flame->ok() )
-  {
-    auto const fodder_to_the_flame_driver = new special_effect_t( this );
-    fodder_to_the_flame_driver->name_str  = "fodder_to_the_flame_driver";
-    fodder_to_the_flame_driver->spell_id  = spell.fodder_to_the_flame->id();
-    special_effects.push_back( fodder_to_the_flame_driver );
-
-    auto cb = new actions::spells::fodder_to_the_flame_cb_t( this, *fodder_to_the_flame_driver );
-    cb->initialize();
-  }
 }
 
 // demon_hunter_t::init_rng =================================================
@@ -6750,6 +6713,7 @@ void demon_hunter_t::init_spells()
   spell.disrupt           = find_class_spell( "Disrupt" );
   spell.immolation_aura   = find_class_spell( "Immolation Aura" );
   spell.immolation_aura_2 = find_rank_spell( "Immolation Aura", "Rank 2" );
+  spell.spectral_sight    = find_class_spell( "Spectral Sight" );
 
   // Spec-Overriden Passives
   spec.demonic_wards       = find_specialization_spell( "Demonic Wards" );
@@ -7292,6 +7256,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.fel_eruption    = get_cooldown( "fel_eruption" );
   cooldown.immolation_aura = get_cooldown( "immolation_aura" );
   cooldown.the_hunt        = get_cooldown( "the_hunt" );
+  cooldown.spectral_sight  = get_cooldown( "spectral_sight" );
 
   // Havoc
   cooldown.blade_dance              = get_cooldown( "blade_dance" );
