@@ -2026,8 +2026,11 @@ public:
   {
     if ( !check_form_restriction() && !( ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM ) || autoshift ) )
     {
-      ab::sim->print_debug( "{} ready() failed due to wrong form. form={:#010x} form_mask={:#010x}", ab::name(),
-                            static_cast<unsigned int>( p()->get_form() ), form_mask );
+      if ( ab::sim->debug )
+      {
+        ab::sim->print_debug( "{} ready() failed due to wrong form. form={:#010x} form_mask={:#010x}", ab::name(),
+                              static_cast<unsigned int>( p()->get_form() ), form_mask );
+      }
 
       return false;
     }
@@ -3416,8 +3419,11 @@ public:
     {
       p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
-      sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                      util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+      if ( sim->log )
+      {
+        sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
+                        util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+      }
 
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
     }
@@ -5368,7 +5374,10 @@ struct lifebloom_t : public druid_heal_t
         continue;
 
       auto d = get_dot( t );
-      sim->print_debug( "{} fades from {}", *d, *t );
+
+      if ( sim->debug )
+        sim->print_debug( "{} fades from {}", *d, *t );
+
       d->reset();  // we don't want last_tick() because there is no bloom on target swap
     }
 
@@ -6051,8 +6060,11 @@ struct adaptive_swarm_t : public druid_spell_t
       new_state->stacks = d->current_stack() - 1;
       new_state->jump = true;
 
-      BASE::sim->print_log( "ADAPTIVE_SWARM: jumping {} {} stacks to {} ({} yd)", new_state->stacks,
-                            heal ? "heal" : "damage", new_state->target->name(), new_state->range );
+      if ( BASE::sim->log )
+      {
+        BASE::sim->print_log( "ADAPTIVE_SWARM: jumping {} {} stacks to {} ({} yd)", new_state->stacks,
+                              heal ? "heal" : "damage", new_state->target->name(), new_state->range );
+      }
 
       BASE::schedule_execute( new_state );
     }
@@ -6081,12 +6093,16 @@ struct adaptive_swarm_t : public druid_spell_t
           if ( !second_target )
             return;
 
-          BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
+          if ( BASE::sim->log )
+            BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
+
           send_swarm( second_target, d );
         }
         else
         {
-          BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
+          if ( BASE::sim->log )
+            BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
+
           other->send_swarm( second_target, d );
         }
       }
@@ -6102,8 +6118,11 @@ struct adaptive_swarm_t : public druid_spell_t
       auto d = BASE::get_dot( s->target );
       d->increment( incoming + existing - 1 );
 
-      BASE::sim->print_log( "ADAPTIVE_SWARM: {} incoming:{} existing:{} final:{}", heal ? "heal" : "damage", incoming,
-                            existing, d->current_stack() );
+      if ( BASE::sim->log )
+      {
+        BASE::sim->print_log( "ADAPTIVE_SWARM: {} incoming:{} existing:{} final:{}", heal ? "heal" : "damage", incoming,
+                              existing, d->current_stack() );
+      }
     }
 
     void last_tick( dot_t* d ) override
@@ -6121,7 +6140,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
       if ( d->current_stack() > 1 )
         jump_swarm( d );
-      else
+      else if ( BASE::sim->log )
         BASE::sim->print_log( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
     }
 
@@ -7253,7 +7272,8 @@ struct prowl_t : public druid_spell_t
 
   void execute() override
   {
-    sim->print_log( "{} performs {}", player->name(), name() );
+    if ( sim->log )
+      sim->print_log( "{} performs {}", player->name(), name() );
 
     // since prowl can be used off gcd, it can bypass schedule_execute() so we check for autoshift again here
     check_autoshift();
@@ -11797,8 +11817,11 @@ void druid_t::recalculate_resource_max( resource_e rt, gain_t* source )
     // Maintain current health pct.
     resources.current[ rt ] = resources.max[ rt ] * pct_health;
 
-    sim->print_log( "{} recalculates maximum health. old_current={:.0f} new_current={:.0f} net_health={:.0f}", name(),
-                    current_health, resources.current[ rt ], resources.current[ rt ] - current_health );
+    if ( sim->log )
+    {
+        sim->print_log( "{} recalculates maximum health. old_current={:.0f} new_current={:.0f} net_health={:.0f}",
+                        name(), current_health, resources.current[ rt ], resources.current[ rt ] - current_health );
+    }
   }
 }
 
