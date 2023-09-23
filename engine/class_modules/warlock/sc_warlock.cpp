@@ -1044,6 +1044,15 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_kazaaks_final_curse = make_buff( *this, "kazaaks_final_curse", p.talents.kazaaks_final_curse )
                                     ->set_default_value( 0 );
 
+  debuffs_doom_brand = make_buff( *this, "doom_brand", p.tier.doom_brand_debuff )
+                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                           ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
+                               if ( cur == 0 )
+                               {
+                                 p.proc_actions.doom_brand_explosion->execute_on_target( b->player );
+                               }
+                             } );
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 

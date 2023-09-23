@@ -277,6 +277,16 @@ struct hand_of_guldan_t : public demonology_spell_t
   }
 };
 
+struct doom_brand_t : public demonology_spell_t
+{
+  doom_brand_t( warlock_t* p ) : demonology_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
+  {
+    aoe = -1;
+    background = dual = true;
+    callbacks = false;
+  }
+};
+
 struct demonbolt_t : public demonology_spell_t
 {
   demonbolt_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Demonbolt", p, ( p->min_version_check( VERSION_10_2_0 ) && p->talents.demoniac->ok() ) ? p->talents.demonbolt_spell : p->talents.demonbolt )
@@ -336,6 +346,14 @@ struct demonbolt_t : public demonology_spell_t
       p()->buffs.blazing_meteor->trigger();
       p()->procs.blazing_meteor->occur();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demonology_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
+      td( s->target )->debuffs_doom_brand->trigger();
   }
 
   double action_multiplier() const override
@@ -1500,9 +1518,15 @@ void warlock_t::init_spells_demonology()
   // T30 (Aberrus, the Shadowed Crucible)
   tier.rite_of_ruvaraad = find_spell( 409725 );
 
+  // T31 (Amirdrassil, the Dream's Hope)
+  tier.doom_brand = find_spell( 423585 );
+  tier.doom_brand_debuff = find_spell( 423583 );
+  tier.doom_brand_aoe = find_spell( 423584 );
+
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
   proc_actions.summon_nether_portal_demon = new actions_demonology::summon_random_demon_t( this, true );
   proc_actions.bilescourge_bombers_proc = new actions_demonology::bilescourge_bombers_proc_t( this );
+  proc_actions.doom_brand_explosion = new actions_demonology::doom_brand_t( this );
 
   // Initialize some default values for pet spawners
   warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
