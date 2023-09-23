@@ -5489,7 +5489,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
     if ( !from_t31 && damage->soulrend )
     {
       add_child( damage->soulrend );
-      add_child( p->active.throw_glaive_t31 );
+      if ( p->set_bonuses.t31_havoc_2pc->ok() ) 
+        add_child( p->active.throw_glaive_t31 );
     }
 
     if ( p->talent.havoc.furious_throws->ok() )
