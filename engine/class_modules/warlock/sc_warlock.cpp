@@ -603,7 +603,7 @@ struct soul_rot_t : public warlock_spell_t
     p()->buffs.soul_rot->trigger();
 
     if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
-      p()->buffs.soulstealer->trigger();
+      p()->buffs.umbrafire_kindling->trigger();
   }
 
   void impact( action_state_t* s ) override
