@@ -82,7 +82,7 @@ jobs:
         cc: [clang++-7, clang++-14]
         include:
           - cc: clang++-7
-            packages: clang-7
+            packages: clang-7 lld-7
             os: ubuntu-20.04
           - cc: clang++-14
             os: ubuntu-22.04
