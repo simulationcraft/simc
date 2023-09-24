@@ -12640,6 +12640,7 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type ) );
   add_option( opt_float( "dragonflight.igneous_flowstone_double_lava_wave_chance", dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) );
   add_option( opt_bool( "dragonflight.voice_of_the_silent_star_enable", dragonflight_opts.voice_of_the_silent_star_enable ) );
+  add_option( opt_bool( "dragonflight.nymue_forced_immobilized", dragonflight_opts.nymue_forced_immobilized ) );
 
   // Obsolete options
 

@@ -6317,18 +6317,18 @@ void belorrelos_the_sunstone( special_effect_t& effect )
 // Holds coeff: 422953
 // Buff: 427072
 // Trigger/DoT: 427161
-// TODO: support "Damage increased by 20% against immobilized targets."
-// Note that a Target Dummmy counts as an Immobilized Target in-game.
 void nymues_unraveling_spindle( special_effect_t& effect )
 {
   struct nymues_channel_t : public proc_spell_t
   {
     buff_t* buff;
     double damage;
+    double immobilized_mod;
 
     nymues_channel_t( const special_effect_t& e, buff_t* mastery )
       : proc_spell_t( "essence_splice", e.player, e.driver(), e.item ),
-        damage( e.player->find_spell( 422953 )->effectN( 1 ).average( e.item ) )
+        damage( e.player->find_spell( 422953 )->effectN( 1 ).average( e.item ) ),
+        immobilized_mod( e.player->find_spell( 422953 )->effectN( 3 ).percent() )
     {
       channeled = tick_may_crit = true;
       aoe                       = 0;
@@ -6346,6 +6346,19 @@ void nymues_unraveling_spindle( special_effect_t& effect )
       proc_spell_t::execute();
       event_t::cancel( player->readying );
       player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    // Note that a Target Dummmy counts as an Immobilized Target in-game.
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto tm = proc_spell_t::composite_target_multiplier( t );
+
+      if ( t->buffs.stunned->check() || player->dragonflight_opts.nymue_forced_immobilized )
+      {
+        tm *= 1.0 + immobilized_mod;
+      }
+
+      return tm;
     }
 
     void tick( dot_t* d ) override
