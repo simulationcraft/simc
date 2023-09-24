@@ -6410,36 +6410,24 @@ void augury_of_the_primal_flame( special_effect_t& effect )
                ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
-  struct augury_damage_t : public generic_aoe_proc_t
-  {
-    augury_damage_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "annihilating_flame", effect.player->find_spell( 426564 ), true )
-    {
-      may_crit         = true;
-      split_aoe_damage = true;
-      background       = true;
-      aoe              = -1;
-
-      // Make sure SimC knows to apply modifiers
-      // Augury double dips with things like Vers
-      base_dd_min = base_dd_max = 1;
-    }
-  };
-
-  auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect );
+  auto damage              = create_proc_action<generic_aoe_proc_t>( "annihilating_flame", effect, "annihilating_flame",
+                                                        effect.player->find_spell( 426564 ), true );
+  damage->may_crit         = true;
+  damage->split_aoe_damage = true;
+  damage->base_dd_min = damage->base_dd_max = 1;
 
   // Damage events trigger additional damage based off the original amount
   // Trigger this after the original damage goes out
   // Does NOT work with Pet damage or Pet spells
   struct augury_cb_t : public dbc_proc_callback_t
   {
-    augury_damage_t* damage;
+    action_t* damage;
     double mod;
     buff_t* buff;
 
     augury_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
       : dbc_proc_callback_t( effect.player, effect ),
-        damage( debug_cast<augury_damage_t*>( d ) ),
+        damage( d ),
         mod( effect.player->find_spell( 423124 )->effectN( 2 ).percent() ),
         buff( b )
     {
@@ -6482,7 +6470,7 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   driver->proc_flags2_ = PF2_CRIT;
   effect.player->special_effects.push_back( driver );
 
-  auto cb = new augury_cb_t( *driver, action, buff );
+  auto cb = new augury_cb_t( *driver, damage, buff );
   cb->initialize();
   cb->deactivate();
 
