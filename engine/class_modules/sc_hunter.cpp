@@ -470,7 +470,8 @@ public:
     proc_t* wild_instincts;
     proc_t* dire_command; 
 
-    proc_t* t30_sv_4p; 
+    proc_t* t30_sv_4p;
+    proc_t* clipped_volley;
   } procs;
 
   // RPPM
@@ -725,6 +726,7 @@ public:
     unsigned bombardment_counter = 0;
     unsigned lotw_counter = 0;
     unsigned windrunners_guidance_counter = 0;
+    event_t* current_volley = nullptr;
   } state;
 
   struct options_t {
@@ -6036,12 +6038,30 @@ struct volley_t : public hunter_spell_t
     p() -> buffs.volley -> trigger( tick_duration);
     p() -> buffs.trick_shots -> trigger( data().duration() );
 
-    // TODO cancel ongoing volley
-    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+    if ( p() -> state.current_volley )
+    {
+      p() -> procs.clipped_volley -> occur();
+      event_t::cancel( p() -> state.current_volley );
+    }
+
+    p() -> state.current_volley = make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( execute_state -> target )
         .duration( tick_duration )
         .pulse_time( data().effectN( 2 ).period() )
         .action( damage )
+        .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+          switch ( type )
+            {
+              case ground_aoe_params_t::EVENT_CREATED:
+                p() -> state.current_volley = event;
+                break;
+              case ground_aoe_params_t::EVENT_STOPPED:
+                p() -> state.current_volley = nullptr;
+                break;
+              default:
+                break;
+            }
+        } )
       );
 
     p() -> player_t::reset_auto_attacks( tick_duration, player -> procs.reset_aa_channel );
@@ -7447,6 +7467,9 @@ void hunter_t::init_procs()
 
   if ( tier_set.t30_sv_4pc.ok() )
     procs.t30_sv_4p          = get_proc( "Wildfire Bomb Reduction T304P" );
+
+  if ( tier_set.t31_mm_2pc.ok() )
+    procs.clipped_volley = get_proc( "Clipped Volley" );
 }
 
 // hunter_t::init_rng =======================================================
