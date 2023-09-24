@@ -60,12 +60,16 @@
 // ==========================================================================
 
 
-// Last updated 2021-06: Support gcc7 / clang 5 / MSVS 19.14 which have (~full) C++17 support
+// Last updated 2023-09: Support gcc7 / clang 5 / MSVS 19.14 which have (~full) C++17 support
 // Ubuntu LTS EOL is +5 years, Debian has ~+3year EOL, +5 years with separate LTS support
-// Ubuntu 18.04: gcc 7.3 clang 6.0
 // Debian 10 (Buster) (Release 2019-07): gcc 8.3 clang 7
 // Ubuntu 20.04: gcc 9.3 clang 10
-// Debian 11 (Bullseye) (Planned Release 2021): gcc 10.2 clang 11
+// Debian 11 (Bullseye) (Release 2021-08): gcc 10.2 clang 11
+// Ubuntu 22.04: gcc 11.2 clang 14
+// Debian 12 (Bookworm) (Release 2023-06): gcc 12.2 clang 14
+//
+// CI setup currently only supports Ubuntu 20.04+, which has clang 7 as the lowest installable version
+// GCC-7 is available on ubuntu 20.04 (but currently only gcc-9 is used as the lowest compiler in CI)
 #if defined( SC_CLANG ) && SC_CLANG < 50000
 #  error "clang++ below version 5 not supported"
 #endif
