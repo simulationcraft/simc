@@ -6410,11 +6410,10 @@ void augury_of_the_primal_flame( special_effect_t& effect )
                ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
-  auto damage              = create_proc_action<generic_aoe_proc_t>( "annihilating_flame", effect, "annihilating_flame",
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "annihilating_flame", effect, "annihilating_flame",
                                                         effect.player->find_spell( 426564 ), true );
-  damage->may_crit         = true;
-  damage->split_aoe_damage = true;
-  damage->base_dd_min = damage->base_dd_max = 1;
+  damage->may_crit    = true;
+  damage->base_dd_min = damage->base_dd_max = 1;  // allow the action to scale with modifiers like vers
 
   // Damage events trigger additional damage based off the original amount
   // Trigger this after the original damage goes out
@@ -6425,11 +6424,8 @@ void augury_of_the_primal_flame( special_effect_t& effect )
     double mod;
     buff_t* buff;
 
-    augury_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
-      : dbc_proc_callback_t( effect.player, effect ),
-        damage( d ),
-        mod( effect.player->find_spell( 423124 )->effectN( 2 ).percent() ),
-        buff( b )
+    augury_cb_t( const special_effect_t& effect, action_t* d, buff_t* b, double m )
+      : dbc_proc_callback_t( effect.player, effect ), damage( d ), mod( m ), buff( b )
     {
     }
 
@@ -6463,14 +6459,14 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   };
 
   // Create the callback but only activate it while the buff is active
-  const auto driver = new special_effect_t( effect.player );
-  driver->cooldown_ = 0_ms;
-  driver->spell_id  = effect.trigger()->id();
-  // driver->proc_flags_ = PF_ALL_DAMAGE;
+  const auto driver    = new special_effect_t( effect.player );
+  driver->cooldown_    = 0_ms;
+  driver->spell_id     = effect.trigger()->id();
   driver->proc_flags2_ = PF2_CRIT;
   effect.player->special_effects.push_back( driver );
+  double mod = effect.driver()->effectN( 2 ).percent();
 
-  auto cb = new augury_cb_t( *driver, damage, buff );
+  auto cb = new augury_cb_t( *driver, damage, buff, mod );
   cb->initialize();
   cb->deactivate();
 
