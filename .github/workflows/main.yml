@@ -79,13 +79,14 @@ jobs:
     strategy:
       matrix:
         cppVersion: [17, 20]
-        cc: [clang++-7, clang++-14]
+        cc: [clang++-7, clang++-15]
         include:
           - cc: clang++-7
-            packages: clang-7 lld-7
             os: ubuntu-20.04
-          - cc: clang++-14
+            packages: clang-7 lld-7
+          - cc: clang++-15
             os: ubuntu-22.04
+            packages: clang-15 lld-15
             enable_file_prefix_map: true
         exclude:
           - cc: clang++-7
@@ -146,7 +147,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang++-7, clang++-14, gcc-9, gcc-12]
+        compiler: [clang++-7, clang++-15, gcc-9, gcc-12]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -159,7 +160,7 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
           - compiler: clang++-7
             os: ubuntu-20.04
-          - compiler: clang++-14
+          - compiler: clang++-15
             os: ubuntu-22.04
           - compiler: gcc-12
             os: ubuntu-22.04
@@ -190,7 +191,7 @@ jobs:
       matrix:
         cppVersion: [17]
         tier: [ Tier29, Tier30 ]
-        compiler: [clang++-14]
+        compiler: [clang++-15]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
@@ -207,7 +208,7 @@ jobs:
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
         include:
-          - compiler: clang++-14
+          - compiler: clang++-15
             os: ubuntu-22.04
 
     steps:
