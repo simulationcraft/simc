@@ -4456,7 +4456,7 @@ struct rapid_fire_t: public hunter_spell_t
     return ( base_num_ticks - 1 ) * tick_time( s );
   }
 
-  double energize_cast_regen( const action_state_t* s ) const override
+  double energize_cast_regen( const action_state_t* ) const override
   {
     // XXX: Not exactly true for Nesingwary's / Trueshot because the buff can fall off mid-channel. Meh
     return base_num_ticks * damage -> composite_energize_amount( nullptr );

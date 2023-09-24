@@ -1766,9 +1766,9 @@ namespace monk
         bool face_palm;
         bool blackout_combo;
         bool counterstrike;
+        bool is_base_rsk;
         heal_t *eye_of_the_tiger_heal;
         spell_t *eye_of_the_tiger_damage;
-        bool is_base_rsk;
 
         rising_sun_kick_press_the_advantage_dmg_t( monk_t *p, util::string_view name )
           : rising_sun_kick_dmg_t( p, name ),
@@ -5918,6 +5918,7 @@ namespace monk
           damage( new zen_pulse_dmg_t( player ) ),
           echo( new zen_pulse_echo_dmg_t( player ) )
         {
+          parse_options( options_str );
           may_miss = may_dodge = may_parry = false;
 
           add_child( damage );
@@ -8596,9 +8597,13 @@ namespace monk
             { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
           };
 
-          for ( auto t = translation_map.begin(); t != translation_map.end(); ++t )
-            if ( effect->proc_flags_ & t->first )
-              effect->proc_flags_ = effect->proc_flags_ & ~t->first | t->second;
+          for ( auto t : translation_map )
+          {
+            if ( effect->proc_flags_ & t.first )
+            {
+              effect->proc_flags_ = ( effect->proc_flags_ & ~t.first ) | t.second;
+            }
+          }
         }
       }
 
@@ -10114,7 +10119,7 @@ namespace monk
       392959, // Glory of the Dawn
     };
 
-    for ( auto id : etl_blacklist_always )
+    for ( unsigned int id : etl_blacklist_always )
       if ( s->action->id == id )
         return;
 
@@ -10141,7 +10146,7 @@ namespace monk
         auto blacklist = ( mode == 2 && buff.fury_of_xuen_haste->remains() > buff.fury_of_xuen_haste->tick_time() )
           ? etl_blacklist_fox : etl_blacklist_fox_2;
 
-        for ( auto id : blacklist )
+        for ( unsigned int id : blacklist )
         {
           if ( s->action->id == id )
           {

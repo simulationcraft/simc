@@ -73,8 +73,6 @@ struct mind_flay_base_t final : public priest_spell_t
 
 struct mind_flay_t final : public priest_spell_t
 {
-  timespan_t manipulation_cdr;
-
   mind_flay_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
       _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
@@ -118,6 +116,7 @@ struct mind_flay_t final : public priest_spell_t
 private:
   propagate_const<action_t*> _base_spell;
   propagate_const<action_t*> _insanity_spell;
+  timespan_t manipulation_cdr;
 };
 
 // ==========================================================================
