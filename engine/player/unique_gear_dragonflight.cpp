@@ -6412,10 +6412,8 @@ void augury_of_the_primal_flame( special_effect_t& effect )
 
   struct augury_damage_t : public generic_aoe_proc_t
   {
-    buff_t* buff;
-
-    augury_damage_t( const special_effect_t& effect, buff_t* b )
-      : generic_aoe_proc_t( effect, "annihilating_flame", effect.player->find_spell( 426564 ), true ), buff( b )
+    augury_damage_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "annihilating_flame", effect.player->find_spell( 426564 ), true )
     {
       may_crit         = true;
       split_aoe_damage = true;
@@ -6426,32 +6424,9 @@ void augury_of_the_primal_flame( special_effect_t& effect )
       // Augury double dips with things like Vers
       base_dd_min = base_dd_max = 1;
     }
-
-    void impact( action_state_t* state ) override
-    {
-      generic_aoe_proc_t::impact( state );
-
-      if ( buff->check() )
-      {
-        // After the hit occurs calculate how much is left or expire if needed
-        if ( buff->current_value > state->result_amount )
-        {
-          buff->current_value -= state->result_amount;
-
-          sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains", name(), state->result_amount,
-                            buff->current_value );
-        }
-        else
-        {
-          // If you hit enough to cap, expire the buff
-          // Any in-progress damage events are uninterrupted allowing you to go over the cap
-          buff->expire();
-        }
-      }
-    }
   };
 
-  auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect, buff );
+  auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect );
 
   // Damage events trigger additional damage based off the original amount
   // Trigger this after the original damage goes out
@@ -6460,11 +6435,13 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   {
     augury_damage_t* damage;
     double mod;
+    buff_t* buff;
 
-    augury_cb_t( const special_effect_t& effect, action_t* d )
+    augury_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
       : dbc_proc_callback_t( effect.player, effect ),
         damage( debug_cast<augury_damage_t*>( d ) ),
-        mod( effect.player->find_spell( 423124 )->effectN( 2 ).percent() )
+        mod( effect.player->find_spell( 423124 )->effectN( 2 ).percent() ),
+        buff( b )
     {
     }
 
@@ -6472,6 +6449,27 @@ void augury_of_the_primal_flame( special_effect_t& effect )
     {
       double amount       = state->result_amount * mod;
       damage->base_dd_min = damage->base_dd_max = amount;
+
+      // Remove from the cap before modifiers are added (crit/vers/targets)
+      if ( buff->check() )
+      {
+        // After the hit occurs calculate how much is left or expire if needed
+        if ( buff->current_value > amount )
+        {
+          buff->current_value -= amount;
+
+          effect.player->sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains",
+                                           effect.player->name(), amount, buff->current_value );
+        }
+        else
+        {
+          // If you hit enough to cap, expire the buff
+          // Any in-progress damage events are uninterrupted allowing you to go over the cap
+          buff->expire();
+        }
+      }
+
+      // Always trigger the damage event if you have gotten to this point, even if buff was expired
       damage->execute_on_target( state->target );
     }
   };
@@ -6484,7 +6482,7 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   driver->proc_flags2_ = PF2_CRIT;
   effect.player->special_effects.push_back( driver );
 
-  auto cb = new augury_cb_t( *driver, action );
+  auto cb = new augury_cb_t( *driver, action, buff );
   cb->initialize();
   cb->deactivate();
 
