@@ -479,7 +479,7 @@ double pet_t::composite_melee_attack_power() const
   return ap;
 }
 
-double pet_t::composite_spell_power( school_e school ) const
+double pet_t::composite_spell_power( school_e ) const
 {
   double sp = 0;
 

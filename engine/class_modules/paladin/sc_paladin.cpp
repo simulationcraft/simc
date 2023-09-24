@@ -3565,7 +3565,7 @@ public:
   }
 
 private:
-  paladin_t& p;
+  [[maybe_unused]] paladin_t& p;
 };
 
 // PALADIN MODULE INTERFACE =================================================

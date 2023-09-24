@@ -5396,7 +5396,7 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
   add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
 
-  auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
+  auto add_timed_blessing_triggers = [ add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
     add_timed_buff_triggers( times, buff, duration );
   };

@@ -1112,7 +1112,7 @@ struct soul_fragment_t
   timespan_t get_travel_time( bool activation = false ) const
   {
     double velocity = dh->spec.consume_soul_greater->missile_speed();
-    if ( activation && consume_on_activation || velocity == 0 )
+    if ( ( activation && consume_on_activation ) || velocity == 0 )
       return timespan_t::zero();
 
     // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc

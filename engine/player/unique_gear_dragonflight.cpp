@@ -731,7 +731,7 @@ void incandescent_essence( special_effect_t& e )
       buff->set_quiet( true );
       buff->set_duration( 2_s );
       buff->set_period( 1_s );
-      buff->set_tick_callback( [ secondary_damage ]( buff_t* b, int, timespan_t ) { secondary_damage->execute(); } );
+      buff->set_tick_callback( [ secondary_damage ]( buff_t*, int, timespan_t ) { secondary_damage->execute(); } );
 
       add_child( main_damage );
       add_child( secondary_damage );
@@ -4236,11 +4236,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   {
     case SHAMAN_ELEMENTAL:
       driver_id = 408259;
-      proc_spell_id = { { 198067, 192249 } }; // Fire Elemental and Storm Elemental
+      proc_spell_id = { 198067, 192249 }; // Fire Elemental and Storm Elemental
       break;
     case SHAMAN_ENHANCEMENT:
       driver_id = 408259;
-      proc_spell_id = { { 51533 } }; // Feral Spirit
+      proc_spell_id = {  51533  }; // Feral Spirit
       break;
     case SHAMAN_RESTORATION:
       driver_id = 408259;
@@ -4248,39 +4248,39 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case MONK_BREWMASTER:
       driver_id = 408260;
-      proc_spell_id = { { 132578 /*, 395267*/ } };  // Invoke Niuzao, Weapons of Order's Call to Arms
+      proc_spell_id = {  132578 /*, 395267*/  };  // Invoke Niuzao, Weapons of Order's Call to Arms
       break;
     case MONK_WINDWALKER:
       driver_id = 408260;
-      proc_spell_id = { { 123904 } }; // Invoke Xuen
+      proc_spell_id = {  123904  }; // Invoke Xuen
       break;
     case MONK_MISTWEAVER:
       driver_id = 408260;
-      proc_spell_id = { { 322118, 325197 } }; // Invoke Yu'lon or Chi-Ji
+      proc_spell_id = { 322118, 325197 }; // Invoke Yu'lon or Chi-Ji
       break;
     case WARLOCK_DESTRUCTION:
       driver_id = 408256;
-      proc_spell_id = { { 1122 /*, 387160 */ } }; // Summon Infernal. 2023-04-30 PTR: Summon Blasphemy no longer procs trinket. May be intentional.
+      proc_spell_id = {  1122 /*, 387160 */  }; // Summon Infernal. 2023-04-30 PTR: Summon Blasphemy no longer procs trinket. May be intentional.
       break;
     case WARLOCK_DEMONOLOGY:
       driver_id = 408256;
-      proc_spell_id = { { 265187 } }; // Summon Demonic Tyrant
+      proc_spell_id = {  265187  }; // Summon Demonic Tyrant
       break;
     case WARLOCK_AFFLICTION:
       driver_id = 408256;
-      proc_spell_id = { { 205180 } }; // Summon Darkglare
+      proc_spell_id = {  205180  }; // Summon Darkglare
       break;
     case HUNTER_SURVIVAL:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 360969 } }; // Stampede and Coordinated Assault
+      proc_spell_id = { 201430, 360969 }; // Stampede and Coordinated Assault
       break;
     case HUNTER_MARKSMANSHIP:
       driver_id = 408262;
-      proc_spell_id = { { 288613, 378905 } }; // Trueshot & Windrunner's Guidance procs
+      proc_spell_id = { 288613, 378905 }; // Trueshot & Windrunner's Guidance procs
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 19574 } }; // Bestial Wrath
+      proc_spell_id = { 19574 }; // Bestial Wrath
       break;
     default:
       return;
@@ -4439,8 +4439,8 @@ void elementium_pocket_anvil( special_effect_t& e )
       break;
     case MONK:
       driver_id     = 408536;
-      proc_spell_id = { { // Tiger Palm
-                          100780 } };
+      proc_spell_id = { // Tiger Palm
+                          100780 };
       break;
     case PALADIN:
       driver_id     = 408535;
@@ -5473,7 +5473,7 @@ void accelerating_sandglass( special_effect_t& e )
 
   auto cb = new dbc_proc_callback_t( e.player, e );
   cb->initialize();
-  e.player->register_combat_begin( [ cb ]( player_t* p ) {
+  e.player->register_combat_begin( [ cb ]( player_t* ) {
     cb->activate();
   } );
 
@@ -5701,7 +5701,7 @@ void paracausal_fragment_of_frostmourne( special_effect_t& e )
 
   auto lich_buff_spell = e.player->find_spell( 415033 );
   auto buff            = create_buff<buff_t>( e.player, "lich_form", lich_buff_spell );
-  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) { damage->execute(); } );
+  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
   buff->set_stack_change_callback( [ lich_shield_buff ]( buff_t*, int, int new_ ) {
     if ( new_ )
     {
@@ -5873,15 +5873,15 @@ void ashes_of_the_embersoul( special_effect_t& e )
     soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff )
       : stat_buff_t( e.player, "soul_ignition", e.driver() ),
         haste_debuff( haste_debuff ),
-        effect( e ),
-        current_tick( 0 )
+        current_tick( 0 ),
+        effect( e )
     {
       auto base_buff_value = e.player->find_spell( 423021 )->effectN( 1 ).average( e.item );
       set_period( e.driver()->effectN( 3 ).period() - 1_ms );
       set_stat_from_effect( 1, base_buff_value );
       set_default_value( base_buff_value );
 
-      set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         recalculate();
       } );
     }
@@ -5933,7 +5933,7 @@ void ashes_of_the_embersoul( special_effect_t& e )
       }
     }
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    void expire_override( int /*expiration_stacks*/, timespan_t /*remaining_duration*/ ) override
     {
       haste_debuff->trigger();
       recalculate_expiry();
@@ -6162,7 +6162,7 @@ void rune_of_the_umbramane( special_effect_t& effect )
 // Buffs: 424228, 424276, 424274, 424272, 424275
 void pinch_of_dream_magic( special_effect_t& effect )
 {
-  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  [[maybe_unused]] auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
   auto add_buff = [ &effect, &buffs ]( std::string suf, unsigned id ) {
@@ -6572,7 +6572,7 @@ void spore_keepers_baton( special_effect_t& effect )
                   ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
         if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME )
         {
           buff->trigger();

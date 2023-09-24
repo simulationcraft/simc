@@ -172,9 +172,9 @@ namespace monk_apl
         break;
     }
   }
+  
   void brewmaster( player_t *p )
   {
-    auto monk = debug_cast< monk::monk_t * >( p );
     const static std::unordered_map<std::string, std::string> trinkets {
       // trinket_name_slot_name -> trailing fragment
       // slot_names util/util.cpp @ slot_type_string: head, neck, shoulders, shirt, chest, waist, legs, feet, wrists, hands, finger1, finger2, trinket1, trinket2, back, main_hand, off_hand, tabard
@@ -194,7 +194,7 @@ namespace monk_apl
       { "DEFAULT", "" },
     };
 
-    auto _BRM_ON_USE = [ monk ] ( const item_t &item )
+    auto _BRM_ON_USE = [] ( const item_t &item )
     {
       std::string concat = "";
       try
@@ -232,7 +232,7 @@ namespace monk_apl
       return concat;
     };
 
-    auto _BRM_RACIALS = [ monk ] ( const std::string &racial_action )
+    auto _BRM_RACIALS = [] ( const std::string &racial_action )
     {
       std::string concat = "";
       try
