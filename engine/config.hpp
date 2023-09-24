@@ -68,8 +68,8 @@
 // Ubuntu 22.04: gcc 11.2 clang 14
 // Debian 12 (Bookworm) (Release 2023-06): gcc 12.2 clang 14
 //
-// CI setup currently only supports Ubuntu 20.04+, which has clang 7 as the lowest installable version
-// GCC-7 is available on ubuntu 20.04 (but currently only gcc-9 is used as the lowest compiler in CI)
+// CI setup currently only supports Ubuntu 20.04+, which has clang 7 as the lowest installable version -
+// so clang 5/6 builds are not actually tested in CI.
 #if defined( SC_CLANG ) && SC_CLANG < 50000
 #  error "clang++ below version 5 not supported"
 #endif
