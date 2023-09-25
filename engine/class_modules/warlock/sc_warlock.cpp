@@ -1195,9 +1195,9 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     procs(),
     initial_soul_shards( 3 ),
+    default_pet(),
     disable_auto_felstorm( false ),
-    doomfiend_rppm( nullptr ),
-    default_pet()
+    doomfiend_rppm( nullptr )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.darkglare = get_cooldown( "summon_darkglare" );
@@ -2179,9 +2179,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 {
   if ( name_str == "time_to_shard" )
   {
-    auto agony_id = find_action_id( "agony" );
-
-    return make_fn_expr( name_str, [ this, agony_id ]() {
+    return make_fn_expr( name_str, [ this]() {
       auto td               = get_target_data( target );
       dot_t* agony          = td->dots_agony;
       double active_agonies = get_active_dots( agony );

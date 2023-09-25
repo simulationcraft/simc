@@ -2506,7 +2506,7 @@ struct eye_beam_t : public warlock_pet_spell_t
     grim_reach = new grim_reach_t( p );
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
 

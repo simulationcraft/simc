@@ -731,7 +731,7 @@ void incandescent_essence( special_effect_t& e )
       buff->set_quiet( true );
       buff->set_duration( 2_s );
       buff->set_period( 1_s );
-      buff->set_tick_callback( [ secondary_damage ]( buff_t* b, int, timespan_t ) { secondary_damage->execute(); } );
+      buff->set_tick_callback( [ secondary_damage ]( buff_t*, int, timespan_t ) { secondary_damage->execute(); } );
 
       add_child( main_damage );
       add_child( secondary_damage );
@@ -4236,11 +4236,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   {
     case SHAMAN_ELEMENTAL:
       driver_id = 408259;
-      proc_spell_id = { { 198067, 192249 } }; // Fire Elemental and Storm Elemental
+      proc_spell_id = { 198067, 192249 }; // Fire Elemental and Storm Elemental
       break;
     case SHAMAN_ENHANCEMENT:
       driver_id = 408259;
-      proc_spell_id = { { 51533 } }; // Feral Spirit
+      proc_spell_id = {  51533  }; // Feral Spirit
       break;
     case SHAMAN_RESTORATION:
       driver_id = 408259;
@@ -4248,39 +4248,39 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case MONK_BREWMASTER:
       driver_id = 408260;
-      proc_spell_id = { { 132578 /*, 395267*/ } };  // Invoke Niuzao, Weapons of Order's Call to Arms
+      proc_spell_id = {  132578 /*, 395267*/  };  // Invoke Niuzao, Weapons of Order's Call to Arms
       break;
     case MONK_WINDWALKER:
       driver_id = 408260;
-      proc_spell_id = { { 123904 } }; // Invoke Xuen
+      proc_spell_id = {  123904  }; // Invoke Xuen
       break;
     case MONK_MISTWEAVER:
       driver_id = 408260;
-      proc_spell_id = { { 322118, 325197 } }; // Invoke Yu'lon or Chi-Ji
+      proc_spell_id = { 322118, 325197 }; // Invoke Yu'lon or Chi-Ji
       break;
     case WARLOCK_DESTRUCTION:
       driver_id = 408256;
-      proc_spell_id = { { 1122 /*, 387160 */ } }; // Summon Infernal. 2023-04-30 PTR: Summon Blasphemy no longer procs trinket. May be intentional.
+      proc_spell_id = {  1122 /*, 387160 */  }; // Summon Infernal. 2023-04-30 PTR: Summon Blasphemy no longer procs trinket. May be intentional.
       break;
     case WARLOCK_DEMONOLOGY:
       driver_id = 408256;
-      proc_spell_id = { { 265187 } }; // Summon Demonic Tyrant
+      proc_spell_id = {  265187  }; // Summon Demonic Tyrant
       break;
     case WARLOCK_AFFLICTION:
       driver_id = 408256;
-      proc_spell_id = { { 205180 } }; // Summon Darkglare
+      proc_spell_id = {  205180  }; // Summon Darkglare
       break;
     case HUNTER_SURVIVAL:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 360969 } }; // Stampede and Coordinated Assault
+      proc_spell_id = { 201430, 360969 }; // Stampede and Coordinated Assault
       break;
     case HUNTER_MARKSMANSHIP:
       driver_id = 408262;
-      proc_spell_id = { { 288613, 378905 } }; // Trueshot & Windrunner's Guidance procs
+      proc_spell_id = { 288613, 378905 }; // Trueshot & Windrunner's Guidance procs
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 19574 } }; // Bestial Wrath
+      proc_spell_id = { 19574 }; // Bestial Wrath
       break;
     default:
       return;
@@ -4439,8 +4439,8 @@ void elementium_pocket_anvil( special_effect_t& e )
       break;
     case MONK:
       driver_id     = 408536;
-      proc_spell_id = { { // Tiger Palm
-                          100780 } };
+      proc_spell_id = { // Tiger Palm
+                          100780 };
       break;
     case PALADIN:
       driver_id     = 408535;
@@ -5473,7 +5473,7 @@ void accelerating_sandglass( special_effect_t& e )
 
   auto cb = new dbc_proc_callback_t( e.player, e );
   cb->initialize();
-  e.player->register_combat_begin( [ cb ]( player_t* p ) {
+  e.player->register_combat_begin( [ cb ]( player_t* ) {
     cb->activate();
   } );
 
@@ -5701,7 +5701,7 @@ void paracausal_fragment_of_frostmourne( special_effect_t& e )
 
   auto lich_buff_spell = e.player->find_spell( 415033 );
   auto buff            = create_buff<buff_t>( e.player, "lich_form", lich_buff_spell );
-  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) { damage->execute(); } );
+  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
   buff->set_stack_change_callback( [ lich_shield_buff ]( buff_t*, int, int new_ ) {
     if ( new_ )
     {
@@ -5873,15 +5873,15 @@ void ashes_of_the_embersoul( special_effect_t& e )
     soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff )
       : stat_buff_t( e.player, "soul_ignition", e.driver() ),
         haste_debuff( haste_debuff ),
-        effect( e ),
-        current_tick( 0 )
+        current_tick( 0 ),
+        effect( e )
     {
       auto base_buff_value = e.player->find_spell( 423021 )->effectN( 1 ).average( e.item );
       set_period( e.driver()->effectN( 3 ).period() - 1_ms );
       set_stat_from_effect( 1, base_buff_value );
       set_default_value( base_buff_value );
 
-      set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         recalculate();
       } );
     }
@@ -5933,7 +5933,7 @@ void ashes_of_the_embersoul( special_effect_t& e )
       }
     }
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    void expire_override( int /*expiration_stacks*/, timespan_t /*remaining_duration*/ ) override
     {
       haste_debuff->trigger();
       recalculate_expiry();
@@ -6162,7 +6162,7 @@ void rune_of_the_umbramane( special_effect_t& effect )
 // Buffs: 424228, 424276, 424274, 424272, 424275
 void pinch_of_dream_magic( special_effect_t& effect )
 {
-  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  [[maybe_unused]] auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
   auto add_buff = [ &effect, &buffs ]( std::string suf, unsigned id ) {
@@ -6317,18 +6317,18 @@ void belorrelos_the_sunstone( special_effect_t& effect )
 // Holds coeff: 422953
 // Buff: 427072
 // Trigger/DoT: 427161
-// TODO: support "Damage increased by 20% against immobilized targets."
-// Note that a Target Dummmy counts as an Immobilized Target in-game.
 void nymues_unraveling_spindle( special_effect_t& effect )
 {
   struct nymues_channel_t : public proc_spell_t
   {
     buff_t* buff;
     double damage;
+    double immobilized_mod;
 
     nymues_channel_t( const special_effect_t& e, buff_t* mastery )
       : proc_spell_t( "essence_splice", e.player, e.driver(), e.item ),
-        damage( e.player->find_spell( 422953 )->effectN( 1 ).average( e.item ) )
+        damage( e.player->find_spell( 422953 )->effectN( 1 ).average( e.item ) ),
+        immobilized_mod( e.player->find_spell( 422953 )->effectN( 3 ).percent() )
     {
       channeled = tick_may_crit = true;
       aoe                       = 0;
@@ -6346,6 +6346,19 @@ void nymues_unraveling_spindle( special_effect_t& effect )
       proc_spell_t::execute();
       event_t::cancel( player->readying );
       player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    // Note that a Target Dummmy counts as an Immobilized Target in-game.
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto tm = proc_spell_t::composite_target_multiplier( t );
+
+      if ( t->buffs.stunned->check() || player->dragonflight_opts.nymue_forced_immobilized )
+      {
+        tm *= 1.0 + immobilized_mod;
+      }
+
+      return tm;
     }
 
     void tick( dot_t* d ) override
@@ -6410,36 +6423,40 @@ void augury_of_the_primal_flame( special_effect_t& effect )
                ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
-  struct augury_damage_t : public generic_aoe_proc_t
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "annihilating_flame", effect, "annihilating_flame",
+                                                        effect.player->find_spell( 426564 ), true );
+  damage->may_crit    = true;
+  damage->base_dd_min = damage->base_dd_max = 1;  // allow the action to scale with modifiers like vers
+
+  // Damage events trigger additional damage based off the original amount
+  // Trigger this after the original damage goes out
+  // Does NOT work with Pet damage or Pet spells
+  struct augury_cb_t : public dbc_proc_callback_t
   {
+    action_t* damage;
+    double mod;
     buff_t* buff;
 
-    augury_damage_t( const special_effect_t& effect, buff_t* b )
-      : generic_aoe_proc_t( effect, "annihilating_flame", effect.player->find_spell( 426564 ), true ), buff( b )
+    augury_cb_t( const special_effect_t& effect, action_t* d, buff_t* b, double m )
+      : dbc_proc_callback_t( effect.player, effect ), damage( d ), mod( m ), buff( b )
     {
-      may_crit         = true;
-      split_aoe_damage = true;
-      background       = true;
-      aoe              = -1;
-
-      // Make sure SimC knows to apply modifiers
-      // Augury double dips with things like Vers
-      base_dd_min = base_dd_max = 1;
     }
 
-    void impact( action_state_t* state ) override
+    void execute( action_t*, action_state_t* state ) override
     {
-      generic_aoe_proc_t::impact( state );
+      double amount       = state->result_amount * mod;
+      damage->base_dd_min = damage->base_dd_max = amount;
 
+      // Remove from the cap before modifiers are added (crit/vers/targets)
       if ( buff->check() )
       {
         // After the hit occurs calculate how much is left or expire if needed
-        if ( buff->current_value > state->result_amount )
+        if ( buff->current_value > amount )
         {
-          buff->current_value -= state->result_amount;
+          buff->current_value -= amount;
 
-          sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains", name(), state->result_amount,
-                            buff->current_value );
+          effect.player->sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains",
+                                           effect.player->name(), amount, buff->current_value );
         }
         else
         {
@@ -6448,43 +6465,21 @@ void augury_of_the_primal_flame( special_effect_t& effect )
           buff->expire();
         }
       }
-    }
-  };
 
-  auto action = create_proc_action<augury_damage_t>( "annihilating_flame", effect, buff );
-
-  // Damage events trigger additional damage based off the original amount
-  // Trigger this after the original damage goes out
-  // Does NOT work with Pet damage or Pet spells
-  struct augury_cb_t : public dbc_proc_callback_t
-  {
-    augury_damage_t* damage;
-    double mod;
-
-    augury_cb_t( const special_effect_t& effect, action_t* d )
-      : dbc_proc_callback_t( effect.player, effect ),
-        damage( debug_cast<augury_damage_t*>( d ) ),
-        mod( effect.player->find_spell( 423124 )->effectN( 2 ).percent() )
-    {
-    }
-
-    void execute( action_t*, action_state_t* state ) override
-    {
-      double amount       = state->result_amount * mod;
-      damage->base_dd_min = damage->base_dd_max = amount;
+      // Always trigger the damage event if you have gotten to this point, even if buff was expired
       damage->execute_on_target( state->target );
     }
   };
 
   // Create the callback but only activate it while the buff is active
-  const auto driver = new special_effect_t( effect.player );
-  driver->cooldown_ = 0_ms;
-  driver->spell_id  = effect.trigger()->id();
-  // driver->proc_flags_ = PF_ALL_DAMAGE;
+  const auto driver    = new special_effect_t( effect.player );
+  driver->cooldown_    = 0_ms;
+  driver->spell_id     = effect.trigger()->id();
   driver->proc_flags2_ = PF2_CRIT;
   effect.player->special_effects.push_back( driver );
+  double mod = effect.driver()->effectN( 2 ).percent();
 
-  auto cb = new augury_cb_t( *driver, action );
+  auto cb = new augury_cb_t( *driver, damage, buff, mod );
   cb->initialize();
   cb->deactivate();
 
@@ -6572,7 +6567,7 @@ void spore_keepers_baton( special_effect_t& effect )
                   ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
         if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME )
         {
           buff->trigger();

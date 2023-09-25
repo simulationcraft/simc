@@ -1875,13 +1875,13 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
   {
     melee_t( util::string_view n, spirit_of_forged_vermillion_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
     {
-      background        = repeating = may_crit = may_glance = true;
-      weapon            = weapon;
-      school            = SCHOOL_PHYSICAL;
-      weapon_multiplier = 1.0;
-      base_execute_time = weapon->swing_time;
-      trigger_gcd       = timespan_t::zero();
-      special           = false;
+      background = repeating = may_crit = may_glance = true;
+      this->weapon                                   = weapon;
+      school                                         = SCHOOL_PHYSICAL;
+      weapon_multiplier                              = 1.0;
+      base_execute_time                              = weapon->swing_time;
+      trigger_gcd                                    = timespan_t::zero();
+      special                                        = false;
     }
   };
 
@@ -2030,7 +2030,7 @@ void monk_t::create_pets()
 
 void monk_t::trigger_spirit_of_forged_vermillion( action_state_t *s )
 {
-  for ( int i = 0; i <= pets.spirit_of_forged_vermillion.max_pets(); i++ )
+  for ( size_t i = 0; i <= pets.spirit_of_forged_vermillion.max_pets(); i++ )
   {
     auto spirit_of_forged_vermillion = ( pets::spirit_of_forged_vermillion_t * )pets.spirit_of_forged_vermillion.active_pet( i );
 
