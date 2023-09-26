@@ -6938,10 +6938,13 @@ void iridal_the_earths_master( special_effect_t& e )
   e.execute_action = damage;
 }
 
-
+// [PH] Fyrakk Cantrip 1H Axe STR
+// [PH] Fyrakk Cantrip 1H Mace INT
+// TODO: Check both weapons after they are no longer placeholder
 // Hungering Shadowflame
 // 424320 Driver / Values
 // 424324 Damage
+// TODO: implement self-damage
 void hungering_shadowflame( special_effect_t& e )
 {
   struct hungering_shadowflame_t : public generic_proc_t
@@ -6960,7 +6963,7 @@ void hungering_shadowflame( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      if ( state->target->health_percentage() > hp_percent)
+      if ( state->target->health_percentage() > hp_percent )
       {
         m *= 1.0 + damage_mult;
       }
@@ -6971,7 +6974,7 @@ void hungering_shadowflame( special_effect_t& e )
 
   e.execute_action = create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e );
 
-  new dbc_proc_callback_t( e.player , e);
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Dreambinder, Loom of the Great Cycle
