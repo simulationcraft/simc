@@ -5798,6 +5798,8 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
         p()->active.immolation_aura_initial->snapshot_state( s, p()->active.immolation_aura_initial->amount_type( s ) );
         p()->active.immolation_aura_initial->schedule_execute( s );
       }
+      
+      growing_inferno_ticks++;
 
       if ( p()->talent.havoc.unbound_chaos->ok() )
       {
