@@ -6504,6 +6504,100 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Time-Thief's Gambit
+// OnUse Driver/Buff: 417534
+// Paradox Debuff: 417543
+// Frozen in Time Debuff: 417587
+void time_thiefs_gambit( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "time_thiefs_gambit", "paradox", "frozen_in_time" } ) )
+  {
+    return;
+  }
+
+  auto frozen_in_time = buff_t::find( effect.player, "frozen_in_time" );
+  if ( !frozen_in_time )
+  {
+    frozen_in_time = create_buff<buff_t>( effect.player, effect.player->find_spell( 417587 ) )
+                         ->set_duration( 4_s )
+                         ->set_stack_change_callback( [ effect ]( buff_t*, int, int new_ ) {
+                           if ( new_ )
+                           {
+                             if ( !effect.player->is_sleeping() )
+                             {
+                               effect.player->buffs.stunned->trigger();
+                               effect.player->stun();
+                             }
+                           }
+                           else
+                           {
+                             effect.player->buffs.stunned->expire();
+                           }
+                         } );
+  }
+
+  struct paradox_t : public buff_t
+  {
+    buff_t* frozen_buff;
+
+    paradox_t( const special_effect_t& e, buff_t* frozen_in_time ) : buff_t( e.player, "paradox", e.trigger(), e.item )
+    {
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      frozen_buff = frozen_in_time;
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      // Make sure it expired naturally so that boss kill expires don't trigger Frozen in Time
+      if ( remaining_duration == timespan_t::zero() )
+      {
+        sim->print_debug( "Paradox expired naturally. Triggering Frozen in Time." );
+        frozen_buff->trigger();
+      }
+    }
+  };
+
+  auto paradox = make_buff<paradox_t>( effect, frozen_in_time );
+
+  // Haste Buff
+  auto buff = buff_t::find( effect.player, "time_thiefs_gambit" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, effect.driver() )
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
+               ->set_stack_change_callback( [ paradox ]( buff_t*, int old_, int ) {
+                 if ( !old_ )
+                 {
+                   paradox->trigger();
+                 }
+               } );
+  }
+
+  effect.player->register_on_kill_callback( [ paradox, effect ]( player_t* t ) {
+    if ( paradox->check() )
+    {
+      if ( t->is_boss() )
+      {
+        effect.player->sim->print_debug( "{} kills a boss enemy, expiring active Paradox ({}).", effect.player->name(),
+                                         paradox->remains().total_seconds() );
+        paradox->current_value = paradox->remains().total_seconds();
+        paradox->expire();
+      }
+      else
+      {
+        effect.player->sim->print_debug( "{} kills an enemy, extending Paradox by {} seconds.", effect.player->name(),
+                                         effect.driver()->effectN( 3 ).base_value() );
+        paradox->extend_duration( effect.player,
+                                  timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() ) );
+      }
+    }
+  } );
+
+  effect.custom_buff = buff;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8962,10 +9056,11 @@ void register_special_effects()
   register_special_effect( 422303, items::bandolier_of_twisted_blades );
   register_special_effect( 423926, items::rune_of_the_umbramane );
   register_special_effect( 423927, items::pinch_of_dream_magic );
-  register_special_effect( 423905, items::dancing_dream_blossoms );
+  register_special_effect( 423905, items::dancing_dream_blossoms, true );
   register_special_effect( 422146, items::belorrelos_the_sunstone );
   register_special_effect( 422956, items::nymues_unraveling_spindle );
   register_special_effect( 423124, items::augury_of_the_primal_flame );
+  register_special_effect( 417534, items::time_thiefs_gambit, true );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -9052,6 +9147,7 @@ void register_special_effects()
   register_special_effect( 410530, DISABLED_EFFECT );  // Infurious Boots of Reprieve - Mettle (NYI)
   register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
   register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
+  register_special_effect( 417545, DISABLED_EFFECT );  // Time-Thief's Gambit unused effect
 }
 
 void register_target_data_initializers( sim_t& sim )
