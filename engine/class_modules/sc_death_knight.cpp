@@ -8003,8 +8003,8 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 
   void execute() override
   {
-    death_knight_melee_attack_t::execute();
     p() -> buffs.unholy_assault -> trigger();
+    death_knight_melee_attack_t::execute();
   }
 
   void impact( action_state_t* s) override
