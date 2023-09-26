@@ -751,7 +751,7 @@ public:
     // Relative directionality for movement events, 1.0 being directly away and 2.0 being perpendicular
     double movement_direction_factor = 1.8;
     // Chance every second to get hit by the fodder demon
-    double fodder_to_the_flame_initiative_chance = 0.10;
+    double fodder_to_the_flame_initiative_chance = 0.20;
     // How many seconds of CDR from Darkglare Boon is considered a high roll
     double darkglare_boon_cdr_high_roll_seconds = 18;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
@@ -3215,7 +3215,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
       if ( p()->talent.havoc.isolated_prey->ok() )
       {
-        if ( targets_in_range_list( target_list() ).size() == 1 && !p()->buff.fodder_to_the_flame->check() ))
+        if ( targets_in_range_list( target_list() ).size() == 1 && !p()->buff.fodder_to_the_flame->check() )
         {
           am *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 3 ).percent();
         }
@@ -5514,7 +5514,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    hit_fodder( true );
+    // Hit the fodder 250ms after the action is used to fake the travel time.
+    make_event( sim, 250_ms, ( [ this ] { hit_fodder( true ); } ) );
 
     if ( p()->set_bonuses.t31_havoc_4pc )
     {
@@ -6177,7 +6178,7 @@ void demon_hunter_t::create_buffs()
 
   buff.demon_soul           = make_buff<damage_buff_t>( this, "demon_soul", spell.demon_soul );
   buff.empowered_demon_soul = make_buff<damage_buff_t>( this, "empowered_demon_soul", spell.demon_soul_empowered );
-  buff.fodder_to_the_flame  = make_buff( this, "fodder_to_the_flame", spell.fodder_to_the_flame )
+  buff.fodder_to_the_flame = make_buff( this, "fodder_to_the_flame", spell.fodder_to_the_flame->effectN( 1 ).trigger() )
                                  ->set_stack_change_callback( [ this ]( buff_t*, int o, int n ) {
                                    if ( n < o )
                                    {
@@ -6188,9 +6189,12 @@ void demon_hunter_t::create_buffs()
                                      fodder_initiative = true;
                                    }
                                  } )
-                                 ->set_period( 1_s )
-                                 ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                                   if ( rng().roll( options.fodder_to_the_flame_initiative_chance ) )
+                                 ->set_period( 0.5_s )
+                                 ->set_tick_callback( [ this ]( buff_t*, int t, timespan_t ) {
+                                   if ( t < 3 )
+                                     return;
+
+                                   if ( rng().roll( options.fodder_to_the_flame_initiative_chance * ( t - 3 ) ) )
                                      fodder_initiative = false;
                                  } );
   buff.immolation_aura      = new buffs::immolation_aura_buff_t( this );
@@ -7102,7 +7106,11 @@ void demon_hunter_t::init_spells()
 
   if ( talent.havoc.fodder_to_the_flame->ok() || talent.vengeance.fodder_to_the_flame->ok() )
   {
-    spell.fodder_to_the_flame        = talent.havoc.fodder_to_the_flame;
+    if ( specialization() == DEMON_HUNTER_HAVOC )
+      spell.fodder_to_the_flame = talent.havoc.fodder_to_the_flame;
+    else
+      spell.fodder_to_the_flame = talent.vengeance.fodder_to_the_flame;
+
     spell.fodder_to_the_flame_damage = find_spell( 350631 );  // Reused
   }
   else
