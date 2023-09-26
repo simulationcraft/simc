@@ -7940,7 +7940,7 @@ void dreamtenders_charm( special_effect_t& effect )
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buff->set_duration( 0_s );
   bool first = !buff->manual_stats_added;
-  buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
   buff->set_period( 1_s );
 
   // 30s lockout debuff
