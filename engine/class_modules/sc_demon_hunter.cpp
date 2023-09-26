@@ -5697,103 +5697,168 @@ private:
 // Immolation Aura ==========================================================
 struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 {
-private:
-      using state_t = actions::spells::immolation_aura_state_t;
-public:
-  double ragefire_accumulator;
-  unsigned int ragefire_crit_accumulator;
-  unsigned int growing_inferno_ticks;
-  unsigned int growing_inferno_max_ticks;
-  double growing_inferno_multiplier;
+  struct immolation_aura_functional_buff_t : public demon_hunter_buff_t<buff_t>
+  {
+  private:
+    using state_t = actions::spells::immolation_aura_state_t;
 
-  immolation_aura_buff_t( demon_hunter_t* p )
-    : base_t( *p, "immolation_aura", p->spell.immolation_aura ),
-      ragefire_accumulator( 0.0 ),
-      ragefire_crit_accumulator( 0 ),
-      growing_inferno_ticks( 0 ),
-      growing_inferno_max_ticks( 0 ),
-      growing_inferno_multiplier( p->talent.havoc.growing_inferno->effectN( 1 ).percent() )
+  public:
+    double ragefire_accumulator;
+    unsigned int ragefire_crit_accumulator;
+    unsigned int growing_inferno_ticks;
+    unsigned int growing_inferno_max_ticks;
+    double growing_inferno_multiplier;
+
+    immolation_aura_functional_buff_t( demon_hunter_t* p, std::string_view name )
+      : base_t( *p, name, p->spell.immolation_aura ),
+        ragefire_accumulator( 0.0 ),
+        ragefire_crit_accumulator( 0 ),
+        growing_inferno_ticks( 0 ),
+        growing_inferno_max_ticks( 0 ),
+        growing_inferno_multiplier( p->talent.havoc.growing_inferno->effectN( 1 ).percent() )
+    {
+      set_cooldown( timespan_t::zero() );
+      set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
+      apply_affecting_aura( p->spec.immolation_aura_3 );
+      apply_affecting_aura( p->talent.vengeance.agonizing_flames );
+      set_partial_tick( true );
+      set_quiet( true );
+
+      if ( p->talent.havoc.growing_inferno->ok() )
+        growing_inferno_max_ticks = (int)( 10 / p->talent.havoc.growing_inferno->effectN( 1 ).percent() );
+
+      set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
+        ragefire_crit_accumulator = 0;
+
+        state_t* s = static_cast<state_t*>( p->active.immolation_aura->get_state() );
+
+        s->target                     = p->target;
+        s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
+        s->immolation_aura            = this;
+
+        p->active.immolation_aura->snapshot_state( s, p->active.immolation_aura->amount_type( s ) );
+        p->active.immolation_aura->schedule_execute( s );
+
+        if ( growing_inferno_ticks < growing_inferno_max_ticks )
+          growing_inferno_ticks++;
+      } );
+
+      if ( p->talent.vengeance.agonizing_flames->ok() )
+      {
+        add_invalidate( CACHE_RUN_SPEED );
+      }
+
+      if ( p->talent.demon_hunter.infernal_armor->ok() )
+      {
+        add_invalidate( CACHE_ARMOR );
+      }
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
+
+      ragefire_accumulator      = 0.0;
+      ragefire_crit_accumulator = 0;
+      growing_inferno_ticks     = 0;
+
+      if ( p()->active.immolation_aura_initial && p()->sim->current_time() > 0_s )
+      {
+        state_t* s = static_cast<state_t*>( p()->active.immolation_aura_initial->get_state() );
+
+        s->target                     = p()->target;
+        s->growing_inferno_multiplier = 1;
+        s->immolation_aura            = this;
+
+        p()->active.immolation_aura_initial->snapshot_state( s, p()->active.immolation_aura_initial->amount_type( s ) );
+        p()->active.immolation_aura_initial->schedule_execute( s );
+      }
+
+      if ( p()->talent.havoc.unbound_chaos->ok() )
+      {
+        p()->buff.unbound_chaos->trigger();
+      }
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+      if ( p()->talent.havoc.ragefire->ok() )
+      {
+        p()->active.ragefire->execute_on_target( p()->target, ragefire_accumulator );
+        ragefire_accumulator      = 0;
+        ragefire_crit_accumulator = 0;
+      }
+    }
+
+    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+    {
+      // IA triggering multiple times fully resets the buff and triggers the instant damage again
+      this->expire();
+      return demon_hunter_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+    }
+  };
+
+  std::vector<immolation_aura_functional_buff_t*> immos;
+  immolation_aura_buff_t( demon_hunter_t* p ) : base_t( *p, "immolation_aura", p->spell.immolation_aura ), immos()
   {
     set_cooldown( timespan_t::zero() );
-    set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
     apply_affecting_aura( p->spec.immolation_aura_3 );
     apply_affecting_aura( p->talent.vengeance.agonizing_flames );
-    set_partial_tick( true );
-
-    if ( p->talent.havoc.growing_inferno->ok() )
-      growing_inferno_max_ticks = (int)( 10 / p->talent.havoc.growing_inferno->effectN( 1 ).percent() );
-
-    set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
-      ragefire_crit_accumulator = 0;
-
-      state_t* s                    = static_cast<state_t*>( p->active.immolation_aura->get_state() );
-
-      s->target                     = p->target;
-      s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
-      s->immolation_aura            = this;
-
-      p->active.immolation_aura->snapshot_state( s, p->active.immolation_aura->amount_type( s ) );
-      p->active.immolation_aura->schedule_execute( s );
-
-      if ( growing_inferno_ticks < growing_inferno_max_ticks )
-        growing_inferno_ticks++;
-
-    } );
-
-    if ( p->talent.vengeance.agonizing_flames->ok() )
-    {
-      add_invalidate( CACHE_RUN_SPEED );
+    set_tick_behavior( buff_tick_behavior::NONE );
+    buff_period = 0_ms;
+    
+    if ( p->talent.havoc.a_fire_inside )    {
+      set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+      set_max_stack( 5 );
+    }
+    else {
+      set_max_stack( 1 );
     }
 
-    if ( p->talent.demon_hunter.infernal_armor->ok() )
+    for ( int i = 0; i < max_stack(); i++ )
     {
-      add_invalidate( CACHE_ARMOR );
-    }
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
-
-    ragefire_accumulator      = 0.0;
-    ragefire_crit_accumulator = 0;
-    growing_inferno_ticks     = 0;
-
-    if ( p()->active.immolation_aura_initial && p()->sim->current_time() > 0_s )
-    {
-      state_t* s                    = static_cast<state_t*>( p()->active.immolation_aura_initial->get_state() );
-
-      s->target                     = p()->target;
-      s->growing_inferno_multiplier = 1;
-      s->immolation_aura            = this;
-
-      p()->active.immolation_aura_initial->snapshot_state( s, p()->active.immolation_aura_initial->amount_type( s ) );
-      p()->active.immolation_aura_initial->schedule_execute( s );
-    }
-
-    if ( p()->talent.havoc.unbound_chaos->ok() )
-    {
-      p()->buff.unbound_chaos->trigger();
-    }
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    if ( p()->talent.havoc.ragefire->ok() )
-    {
-      p()->active.ragefire->execute_on_target( p()->target, ragefire_accumulator );
-      ragefire_accumulator      = 0;
-      ragefire_crit_accumulator = 0;
+      immos.push_back( new immolation_aura_functional_buff_t( p, fmt::format( "immolation_aura{}", i+1 ) ) );
     }
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    // IA triggering multiple times fully resets the buff and triggers the instant damage again
-    this->expire();
-    return demon_hunter_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+    bool b = base_t::trigger( stacks, value, chance, duration );
+
+    if ( b )
+    {
+      if ( max_stack() == 1 )
+      {
+        return immos[ 0 ]->trigger( stacks, value, 1, duration );
+      }
+      else
+      {
+        timespan_t min_remains                      = timespan_t::max();
+        immolation_aura_functional_buff_t* min_immo = nullptr;
+
+        for ( auto* immo : immos )
+        {
+          if ( immo->check() )
+          {
+            if ( immo->remains() < min_remains )
+            {
+              min_remains = immo->remains();
+              min_immo    = immo;
+            }
+          }
+          else
+          {
+            return immo->trigger( stacks, value, 1, duration );
+          }
+        }
+
+        return min_immo->trigger( stacks, value, 1, duration );
+      }
+    }
+
+    return false;
   }
 };
 
@@ -5937,7 +6002,8 @@ void immolation_aura_t::immolation_aura_damage_t::accumulate_ragefire( immolatio
   if ( !( s->result_amount > 0 && s->result == RESULT_CRIT ) )
     return;
 
-  buffs::immolation_aura_buff_t* immo = static_cast<buffs::immolation_aura_buff_t*>( s->immolation_aura );
+  buffs::immolation_aura_buff_t::immolation_aura_functional_buff_t* immo =
+      static_cast<buffs::immolation_aura_buff_t::immolation_aura_functional_buff_t*>( s->immolation_aura );
 
   if ( immo->ragefire_crit_accumulator >= p()->talent.havoc.ragefire->effectN( 2 ).base_value() )
     return;
