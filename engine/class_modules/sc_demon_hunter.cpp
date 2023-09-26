@@ -5009,8 +5009,16 @@ struct fel_rush_t : public demon_hunter_attack_t
   void schedule_execute( action_state_t* s ) override
   {
     // Fel Rush's loss of control causes a GCD lag after the loss ends.
+    // You get roughly 100ms in which to queue the next spell up correctly.
     // Calculate this once on schedule_execute since gcd() is called multiple times
-    gcd_lag = rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
+    if ( sim->gcd_lag > 100_ms )
+      gcd_lag = rng().gauss( sim->gcd_lag - 100_ms, sim->gcd_lag_stddev );
+    else
+      gcd_lag = 0_ms;
+
+    if ( gcd_lag < 0_ms )
+      gcd_lag = 0_ms;
+
     demon_hunter_attack_t::schedule_execute( s );
   }
 
@@ -6348,7 +6356,7 @@ void demon_hunter_t::create_buffs()
 
   buff.momentum = make_buff<damage_buff_t>( this, "momentum", spec.momentum_buff );
   buff.momentum->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
-    return std::min( b->remains() + d, 30_s );  // Capped to 10 seconds
+    return std::min( b->remains() + d, 30_s );  // Capped to 30 seconds
   } );
 
   buff.inertia = make_buff<damage_buff_t>( this, "inertia", spec.inertia_buff );
