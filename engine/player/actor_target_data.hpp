@@ -74,6 +74,8 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* lightning_conduit; // Paracausal Fragment of Tidefin
     buff_t* lava_bolt;  // Coiled Serpent Idol
     buff_t* embed_blade; // Bandolier of Twisted Blades
+    buff_t* web_of_dreams; // Dreambinder, Loom of the Great Cycle ST Root
+    buff_t* dream_shackles; // Dreambinder, Loom of the Great Cycle AoE Slow
   } debuff;
 
   struct atd_dot_t

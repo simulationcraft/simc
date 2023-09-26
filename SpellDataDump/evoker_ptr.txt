@@ -7034,7 +7034,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ ...x.
                  : Exclude Caster (51), Ignore Line of Sight (66), Only On Player (104), Limit N (165), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.80000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : Base Value (10 -> 8), PvP Coefficient (0.8 -> 1)
 #2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.
@@ -8183,7 +8184,7 @@ Tooltip          : The duration of incoming crowd control effects are increased 
 
 Name             : Aspects' Favor (id=407243) [Spell Family (224), Passive] 
 Talent Entry     : Augmentation [tree=spec, row=7, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(3, 6)]
+                 : Effect#1 [op=set, values=(2, 4)]
                  : Effect#2 [op=set, values=(15, 30)]
 Class            : Evoker
 School           : Physical
@@ -9096,8 +9097,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1076514)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (0.5 -> 1)
 Description      : $@spelldesc410643
 Tooltip          : Absorbing $w1 damage.
 

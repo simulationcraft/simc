@@ -7608,7 +7608,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707444)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 453.6016 (coefficient=1) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Kill Command has a chance to deal $s1 to ${$s1*5} additional damage and grants you 6 Focus over 3 sec.
 Tooltip          : Kill Command has a chance to deal $w1 to ${$w1*5} additional damage and grants you 6 Focus over 3 sec.
@@ -8620,7 +8620,7 @@ Effects          :
                    Affected Spells (Category): Kill Command (34026)
 #4 (id=1025597)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Kill Command now has ${$s1+1} charges, and deals $s2% increased damage.
 
@@ -12106,7 +12106,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=834483)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : $@spelldesc336822
 Tooltip          : Your next Kill Command will consume $s1% less Focus.
@@ -14326,7 +14326,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1006233)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (259277)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (259277), Kill Command (426703)
                    Family Flags: 37, 43
 Description      : Kill Command damage increased by $s1%.
 
@@ -14574,7 +14574,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1007162)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Kill Command damage increased by $s1%.
 
@@ -14637,7 +14637,7 @@ Effects          :
                    Affected Spells (Category): Kill Command (34026)
 #2 (id=1019323)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : $@spelldesc378745
 Tooltip          : Kill Command's cooldown reduced by $s1%. 
@@ -16324,7 +16324,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=1030395)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : $@spelldesc378750
 Tooltip          : Your next Kill Command will consume $s1% less Focus.
@@ -16456,7 +16456,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1032731)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Kill Command damage increased by $s1% and it has a $h% chance to reset the cooldown on Barbed Shot.
 
@@ -16688,7 +16688,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1033805)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : $@spelldesc393647
 Tooltip          : Damage of Kill Command increased by $s1%.
@@ -16897,7 +16897,7 @@ Effects          :
                    Family Flags: 86
 #2 (id=1075473)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Cobra Shot and Kill Command damage increased by $s1%.
 
@@ -17389,7 +17389,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1101619)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 #2 (id=1101620)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -17517,5 +17517,27 @@ Effects          :
                    Family Flags: 26
 Description      : $@spelldesc422879
 Tooltip          : Damage dealt to the primary target of your Wildfire Bombs increased by $s1%.
+
+Name             : Kill Command (id=426703) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Roar of the Seven Lions (207318 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2), Savagery (424557 effect#1)
+Family Flags     : 43
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1105419)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+Description      : $@spelldesc34026
 
 
