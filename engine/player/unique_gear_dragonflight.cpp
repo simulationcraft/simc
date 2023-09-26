@@ -7928,6 +7928,88 @@ void undulating_sporecloak( special_effect_t& effect )
   }
 }
 
+// Dreamtender's Charm
+// Driver: 419368
+// Buff: 420834
+// Recharge Buff: 420812
+// Movement Speed Debuff: 420762
+void dreamtenders_charm( special_effect_t& effect )
+{
+  // Main Crit Buff - dreaming_trance
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 420834 ) );
+  buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buff->set_duration( 0_s );
+  bool first = !buff->manual_stats_added;
+  buff->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+  buff->set_period( 1_s );
+
+  // 30s lockout debuff
+  auto regaining_power = buff_t::find( effect.player, "regaining_power" );
+  if ( !regaining_power )
+  {
+    regaining_power = create_buff<buff_t>( effect.player, effect.player->find_spell( 420812 ) )
+                          ->set_stack_change_callback( [ buff ]( buff_t*, int, int new_ ) {
+                            // Making an assumption that if you loose the buff by the time
+                            // the lockout expires you will be healthy again
+                            if ( new_ == 0 )
+                            {
+                              buff->trigger( 0_s );
+                            }
+                          } );
+  }
+
+  // Find all Ysemerald Gems
+  unsigned gem_count = 0;
+  for ( const auto& item : effect.player->items )
+  {
+    for ( auto gem_id : item.parsed.gem_id )
+    {
+      if ( gem_id )
+      {
+        auto n  = std::string( effect.player->dbc->item( gem_id ).name );
+        auto it = n.find( "Ysemerald" );
+        if ( it != std::string::npos )
+        {
+          gem_count++;
+        }
+      }
+    }
+  }
+
+  if ( first && buff->sim->dragonflight_opts.dreamtenders_charm_uptime > 0.0 )
+  {
+    buff->player->register_combat_begin( [ buff, regaining_power, gem_count ]( player_t* p ) {
+      buff->trigger( 0_s );
+      make_repeating_event( *p->sim, p->sim->dragonflight_opts.dreamtenders_charm_update_interval,
+                            [ buff, p, regaining_power, gem_count ] {
+                              if ( p->rng().roll( p->sim->dragonflight_opts.dreamtenders_charm_uptime ) )
+                              {
+                                // Safety net in case something goes haywire
+                                // buff should re-trigger from regaining_power expiration
+                                if ( !regaining_power->check() && !buff->check() )
+                                {
+                                  buff->trigger( 0_s );
+                                }
+                              }
+                              else
+                              {
+                                auto stacks = buff->check();
+                                buff->expire();
+                                regaining_power->trigger();
+                                // Re-trigger the buff with a shorter duration based on the number of Ysemerald's you
+                                // have equipped
+                                if ( gem_count > 0 )
+                                {
+                                  p->sim->print_debug( "{} re-triggers dreaming_trance for {} seconds.", p->name(),
+                                                       gem_count );
+                                  buff->trigger( stacks, timespan_t::from_seconds( gem_count ) );
+                                }
+                              }
+                            } );
+    } );
+  }
+}
+
 }  // namespace items
 
 namespace sets
@@ -9097,6 +9179,7 @@ void register_special_effects()
   register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
   register_special_effect( 406244, items::ever_decaying_spores );
   register_special_effect( 410230, items::undulating_sporecloak );
+  register_special_effect( 419368, items::dreamtenders_charm );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
