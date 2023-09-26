@@ -6179,6 +6179,8 @@ void demon_hunter_t::create_buffs()
   buff.demon_soul           = make_buff<damage_buff_t>( this, "demon_soul", spell.demon_soul );
   buff.empowered_demon_soul = make_buff<damage_buff_t>( this, "empowered_demon_soul", spell.demon_soul_empowered );
   buff.fodder_to_the_flame = make_buff( this, "fodder_to_the_flame", spell.fodder_to_the_flame->effectN( 1 ).trigger() )
+                                 ->set_cooldown( 0_s )
+                                 ->set_chance( 1.0 )
                                  ->set_stack_change_callback( [ this ]( buff_t*, int o, int n ) {
                                    if ( n < o )
                                    {
