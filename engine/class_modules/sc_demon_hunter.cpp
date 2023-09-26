@@ -1109,7 +1109,7 @@ struct soul_fragment_t
   timespan_t get_travel_time( bool activation = false ) const
   {
     double velocity = dh->spec.consume_soul_greater->missile_speed();
-    if ( activation && consume_on_activation || velocity == 0 )
+    if ( ( activation && consume_on_activation ) || velocity == 0 )
       return timespan_t::zero();
 
     // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
@@ -5511,7 +5511,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
     if ( !from_t31 && damage->soulrend )
     {
       add_child( damage->soulrend );
-      add_child( p->active.throw_glaive_t31 );
+      if ( p->set_bonuses.t31_havoc_2pc->ok() ) 
+        add_child( p->active.throw_glaive_t31 );
     }
 
     if ( p->talent.havoc.furious_throws->ok() )

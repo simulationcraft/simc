@@ -2645,21 +2645,6 @@ struct bladestorm_tick_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_ARMS;
     }
   }
-    static const spell_data_t* get_correct_spell_data( warrior_t* p )
-    {
-      if (p->specialization() == WARRIOR_FURY)
-      {
-          if (p->legendary.signet_of_tormented_kings.enabled())
-          {
-            return p->find_spell( 46924 ) -> effectN( 1 ).trigger();
-          }
-      }
-      else
-      {
-        return p->talents.arms.bladestorm->effectN( 1 ).trigger();
-      }
-    }
-
 };
 
 struct bladestorm_t : public warrior_attack_t
@@ -2827,8 +2812,7 @@ struct torment_bladestorm_t : public warrior_attack_t
   attack_t *bladestorm_mh, *bladestorm_oh;
   mortal_strike_unhinged_t* mortal_strike;
 
-  torment_bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell,
-                bool torment_triggered = false )
+  torment_bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
     : warrior_attack_t( n, p, spell ),
       bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
       bladestorm_oh( nullptr ),
@@ -4996,7 +4980,7 @@ struct torment_odyns_fury_t : warrior_attack_t
   odyns_fury_main_hand_t* mh_attack2;
   odyns_fury_off_hand_t* oh_attack;
   odyns_fury_off_hand_t* oh_attack2;
-  torment_odyns_fury_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
+  torment_odyns_fury_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
     : warrior_attack_t( n, p, spell ),
       mh_attack( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
       mh_attack2( new odyns_fury_main_hand_t( p, fmt::format( "{}_mh", n ), spell->effectN( 3 ).trigger() ) ),
@@ -7236,8 +7220,8 @@ struct avatar_t : public warrior_spell_t
 
 struct torment_avatar_t : public warrior_spell_t
 {
-  torment_avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell,
-  bool torment_triggered = false ) : warrior_spell_t( n, p, spell )
+  torment_avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
+    : warrior_spell_t( n, p, spell )
   {
     parse_options( options_str );
     callbacks = false;
@@ -7698,8 +7682,8 @@ struct recklessness_t : public warrior_spell_t
 struct torment_recklessness_t : public warrior_spell_t
 {
   double bonus_crit;
-  torment_recklessness_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell,
-    bool torment_triggered = false ) : warrior_spell_t( n, p, spell ), bonus_crit( 0.0 )
+  torment_recklessness_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
+    : warrior_spell_t( n, p, spell ), bonus_crit( 0.0 )
   {
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
@@ -8635,8 +8619,8 @@ void warrior_t::init_spells()
   }
   if ( talents.warrior.berserkers_torment->ok() )
   {
-    active.torment_recklessness = new torment_recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ), true );
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
+    active.torment_recklessness = new torment_recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ) );
+    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
     for ( action_t* action : { active.torment_recklessness, active.torment_avatar } )
     {
       action->background  = true;
@@ -8645,8 +8629,8 @@ void warrior_t::init_spells()
   }
   if ( talents.warrior.blademasters_torment->ok() )
   {
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
-    active.torment_bladestorm   = new torment_bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ), true );
+    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
+    active.torment_bladestorm   = new torment_bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ));
     for ( action_t* action : { active.torment_avatar, active.torment_bladestorm } )
     {
       action->background  = true;
@@ -8655,8 +8639,8 @@ void warrior_t::init_spells()
   }
   if ( talents.warrior.titans_torment->ok() )
   {
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
-    active.torment_odyns_fury   = new torment_odyns_fury_t( this, "", "odyns_fury_torment", find_spell( 385059 ), true );
+    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
+    active.torment_odyns_fury   = new torment_odyns_fury_t( this, "", "odyns_fury_torment", find_spell( 385059 ) );
     for ( action_t* action : { active.torment_avatar, active.torment_odyns_fury } )
     {
       action->background  = true;

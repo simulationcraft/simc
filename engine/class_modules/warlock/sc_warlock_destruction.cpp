@@ -306,6 +306,30 @@ struct immolate_t : public destruction_spell_t
           p()->cdf_accumulator -= 1.0;
         }
       }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        double increment_max = 0.16;
+
+        increment_max *= std::pow( p()->get_active_dots( d ), -4.0 / 9.0 );
+
+        p()->dimensional_accumulator += rng().range( 0.0, increment_max );
+
+        if ( p()->dimensional_accumulator >= 1.0 )
+        {
+          p()->cooldowns.dimensional_rift->reset( true, 1 );
+          p()->procs.dimensional_refund->occur();
+          p()->dimensional_accumulator -= 1.0;
+        }
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      if ( p()->get_active_dots( d ) == 1 )
+        p()->dimensional_accumulator = rng().range( 0.0, 0.99 );
+
+      destruction_spell_t::last_tick( d );
     }
   };
 
@@ -1211,6 +1235,17 @@ struct cataclysm_t : public destruction_spell_t
   }
 };
 
+struct dimensional_cinder_t : public destruction_spell_t
+{
+  dimensional_cinder_t( warlock_t* p ) : destruction_spell_t( "Dimensional Cinder", p, p->tier.dimensional_cinder )
+  {
+    destro_mastery = may_crit = false;
+    background = dual = true;
+    aoe = -1;
+    base_dd_min = base_dd_max = 0.0;
+  }
+};
+
 // Dimensional Rift's portals are "pet damage" according to combat log behavior, but appear to be benefitting from
 // buffs to the *Warlock's* damage specifically (i.e. Grimoire of Synergy). For now, we will model them as Warlock spells
 
@@ -1218,13 +1253,30 @@ struct shadowy_tear_t : public destruction_spell_t
 {
   struct rift_shadow_bolt_t : public destruction_spell_t
   {
+    dimensional_cinder_t* cinder;
+
     rift_shadow_bolt_t( warlock_t* p ) : destruction_spell_t( "Rift Shadow Bolt", p, p->talents.rift_shadow_bolt )
     {
       destro_mastery = false;
       background = dual = true;
 
       // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
-      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
     }
   };
 
@@ -1257,13 +1309,30 @@ struct unstable_tear_t : public destruction_spell_t
   // TOCHECK: Partial ticks are not matching up in game!
   struct chaos_barrage_tick_t : public destruction_spell_t
   {
+    dimensional_cinder_t* cinder;
+
     chaos_barrage_tick_t( warlock_t* p ) : destruction_spell_t( "Chaos Barrage (tick)", p, p->talents.chaos_barrage_tick )
     {
       destro_mastery = false;
       background = dual = true;
 
       // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
-      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
     }
   };
 
@@ -1289,13 +1358,17 @@ struct chaos_tear_t : public destruction_spell_t
 {
   struct rift_chaos_bolt_t : public destruction_spell_t
   {
+    dimensional_cinder_t* cinder;
+
     rift_chaos_bolt_t( warlock_t* p ) : destruction_spell_t( "Rift Chaos Bolt", p, p->talents.rift_chaos_bolt )
     {
       destro_mastery = false;
       background = true;
 
       // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
-      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
     }
 
     double composite_crit_chance() const override
@@ -1311,6 +1384,19 @@ struct chaos_tear_t : public destruction_spell_t
 
       return state->result_total;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
+    }
   };
 
   chaos_tear_t( warlock_t* p ) : destruction_spell_t( "Chaos Tear", p, p->talents.chaos_tear_summon )
@@ -1321,11 +1407,73 @@ struct chaos_tear_t : public destruction_spell_t
   }
 };
 
+struct flame_rift_t : public destruction_spell_t
+{
+  struct searing_bolt_t : public destruction_spell_t
+  {
+    dimensional_cinder_t* cinder;
+
+    searing_bolt_t( warlock_t* p ) : destruction_spell_t( "Searing Bolt", p, p->tier.searing_bolt )
+    {
+      destro_mastery = false;
+      background = true;
+      dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+
+      // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
+    }
+  };
+
+  searing_bolt_t* bolt;
+
+  flame_rift_t( warlock_t* p ) : destruction_spell_t( "Flame Rift", p, p->tier.flame_rift )
+  {
+    background = true;
+    may_miss = false;
+
+    bolt = new searing_bolt_t( p );
+    add_child( bolt );
+  }
+
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    // Flame Rift fires 20 Searing Bolts erratically
+    timespan_t min_delay = 0_ms;
+    timespan_t max_delay = timespan_t::from_seconds( p()->sets->set( WARLOCK_DESTRUCTION, T31, B4 )->effectN( 1 ).base_value() );
+    player_t* tar = target;
+
+    for ( int i = 0; i < p()->sets->set( WARLOCK_DESTRUCTION, T31, B4 )->effectN( 1 ).base_value(); i++ )
+    {
+      timespan_t delay = rng().gauss( i * 500_ms, 500_ms );
+      delay = std::min( std::max( delay, min_delay ), max_delay );
+      make_event( *sim, delay, [ this, tar ] { this->bolt->execute_on_target( tar ); } );
+    }
+  }
+};
+
 struct dimensional_rift_t : public destruction_spell_t
 {
   shadowy_tear_t* shadowy_tear;
   unstable_tear_t* unstable_tear;
   chaos_tear_t* chaos_tear;
+  flame_rift_t* flame_rift;
 
   dimensional_rift_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
@@ -1340,18 +1488,19 @@ struct dimensional_rift_t : public destruction_spell_t
     shadowy_tear = new shadowy_tear_t( p );
     unstable_tear = new unstable_tear_t( p );
     chaos_tear = new chaos_tear_t( p );
+    flame_rift = new flame_rift_t( p );
 
     add_child( shadowy_tear );
     add_child( unstable_tear );
     add_child( chaos_tear );
+    add_child( flame_rift );
   }
 
   void execute() override
   {
     destruction_spell_t::execute();
 
-    // TOCHECK: Are all rift types equally likely?
-    int rift = rng().range( 3 );
+    int rift = rng().range( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B4 ) ? 4 : 3 );
 
     switch ( rift )
     {
@@ -1363,6 +1512,9 @@ struct dimensional_rift_t : public destruction_spell_t
       break;
     case 2:
       chaos_tear->execute_on_target( target );
+      break;
+    case 3:
+      flame_rift->execute_on_target( target );
       break;
     default:
       break;
@@ -1684,6 +1836,11 @@ void warlock_t::init_spells_destruction()
   tier.channel_demonfire = find_spell( 409890 );
   tier.umbrafire_embers = find_spell( 409652 );
 
+  // T31 (Amirdrassil, the Dream's Hope)
+  tier.dimensional_cinder = find_spell( 427285 );
+  tier.flame_rift = find_spell( 423874 );
+  tier.searing_bolt = find_spell( 423886 );
+
   // Proc action initialization
   proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
   proc_actions.channel_demonfire = new channel_demonfire_tier_t( this );
@@ -1713,6 +1870,7 @@ void warlock_t::init_procs_destruction()
   procs.rain_of_chaos = get_proc( "rain_of_chaos" );
   procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
   procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
+  procs.dimensional_refund = get_proc( "dimensional_refund" );
 }
 
 }  // namespace warlock

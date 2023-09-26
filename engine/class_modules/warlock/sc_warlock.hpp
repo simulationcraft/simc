@@ -58,6 +58,7 @@ struct warlock_td_t : public actor_target_data_t
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
+  propagate_const<dot_t*> dots_searing_bolt;
 
   propagate_const<buff_t*> debuffs_shadowburn;
   propagate_const<buff_t*> debuffs_eradication;
@@ -118,6 +119,7 @@ public:
   double agony_accumulator;
   double corruption_accumulator;
   double cdf_accumulator; // For T30 Destruction tier set
+  double dimensional_accumulator; // For T31 Destruction tier set
   int incinerate_last_target_count; // For use with T30 Destruction tier set
   double volatile_fiends_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Volatile Fiends
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
@@ -510,6 +512,9 @@ public:
     const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
     const spell_data_t* channel_demonfire; // T30 2pc damage proc is separate from talent version
     const spell_data_t* umbrafire_embers; // T30 4pc enables stacking buff on 2pc procs
+    const spell_data_t* dimensional_cinder; // T31 2pc AoE proc
+    const spell_data_t* flame_rift; // T31 4pc - Additional Dimensional Rift type
+    const spell_data_t* searing_bolt; // Projectile + DoT from Flame Rift
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -520,6 +525,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
+    propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> soul_rot;
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
@@ -670,6 +676,7 @@ public:
     proc_t* conflagration_of_chaos_sb;
     proc_t* chaos_maelstrom; // T29 2pc
     proc_t* channel_demonfire; // T30 2pc
+    proc_t* dimensional_refund; // T31 2pc charge refund on Dimensional Rift
   } procs;
 
   int initial_soul_shards;

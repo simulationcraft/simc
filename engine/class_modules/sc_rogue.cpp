@@ -7422,7 +7422,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   if ( p()->talent.outlaw.precise_cuts->ok() )
   {
     // Already ignores the main target due to the target_list() being filtered
-    const auto num_targets = p()->active.blade_flurry->targets_in_range_list( p()->active.blade_flurry->target_list() ).size();
+    const auto num_targets = as<int>( p()->active.blade_flurry->targets_in_range_list( p()->active.blade_flurry->target_list() ).size() );
     const auto max_targets = p()->active.blade_flurry->aoe;
     if ( num_targets < max_targets )
     {
@@ -9611,11 +9611,11 @@ void rogue_t::init_procs()
 
   // Roll the Bones Procs, two loops for display purposes in the HTML report
   auto roll_the_bones = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
-  for ( int i = 0; i < roll_the_bones->buffs.size(); i++ )
+  for ( size_t i = 0; i < roll_the_bones->buffs.size(); i++ )
   {
     roll_the_bones->procs[ i ] = get_proc( fmt::format( "Roll the Bones Buffs: {}", i + 1 ) );
   }
-  for ( int i = 0; i < roll_the_bones->buffs.size(); i++ )
+  for ( size_t i = 0; i < roll_the_bones->buffs.size(); i++ )
   {
     roll_the_bones->loss_procs[ i ] = get_proc( "Roll the Bones Buff Lost: " + roll_the_bones->buffs[ i ]->name_str );
   }

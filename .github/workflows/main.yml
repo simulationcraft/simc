@@ -17,27 +17,30 @@ env:
 
 jobs:
   ubuntu-gcc-build:
-    name: ubuntu-${{ matrix.cc }}-cpp${{ matrix.cppVersion }}-build
+    name: ubuntu-${{ matrix.compiler }}-cpp${{ matrix.cppVersion }}-build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        cc: [gcc-12, gcc-9]
+        compiler: [gcc-12, gcc-7]
         cppVersion: [17, 20]
         include:
-          - cc: gcc-9
-            cxx: g++-9
-            packages: gcc-9 g++-9
+          - compiler: gcc-7
+            cxx: g++-7
+            packages: gcc-7 g++-7
             os: ubuntu-20.04
-          - cc: gcc-12
+          - compiler: gcc-12
             cxx: g++-12
             packages: gcc-12 g++-12
             os: ubuntu-22.04
+        exclude:
+          - compiler: gcc-7
+            cppVersion: 20
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/cache@v3
-        env: { ccache-prefix: 'ubuntu-${{ matrix.cc }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
+        env: { ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -51,7 +54,7 @@ jobs:
       - name: Configure
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }}
+              -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.compiler }}
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
               -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }} 
 
@@ -71,26 +74,32 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-${{ matrix.cc }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
-    name: ubuntu-clang-build
+    name: ubuntu-build-${{ matrix.compiler }}-C++${{ matrix.cppVersion }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         cppVersion: [17, 20]
-        cc: [clang++-12, clang++-14]
+        compiler: [clang++-7, clang++-15]
         include:
-          - cc: clang++-12
+          - compiler: clang++-7
             os: ubuntu-20.04
-          - cc: clang++-14
+            packages: clang-7 lld-7
+          - compiler: clang++-15
             os: ubuntu-22.04
+            packages: clang-15 lld-15
+            enable_file_prefix_map: true
+        exclude:
+          - compiler: clang++-7
+            cppVersion: 20
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/cache@v3
-        env: { ccache-prefix: 'ubuntu-${{ matrix.cc }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
+        env: { ccache-prefix: 'ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -99,15 +108,15 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
 
       - name: Configure
         env:
           UBSAN_STRIP_COUNT: "`echo \"${{ runner.workspace }}//\" | grep -o '/' - | wc -l`"
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=${{ matrix.cc }}
-              -DCMAKE_CXX_FLAGS="-Og -ffile-prefix-map=${{ runner.workspace }}/=/
+              -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+              -DCMAKE_CXX_FLAGS="-Og ${{ matrix.enable_file_prefix_map && format('-ffile-prefix-map={0}/=/', runner.workspace) || ''}}
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
@@ -130,7 +139,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-${{ matrix.cc }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
@@ -141,7 +150,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang++-12, clang++-14, gcc-9, gcc-12]
+        compiler: [clang++-7, clang++-15, gcc-7, gcc-12]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -152,14 +161,19 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
           - type: dungeon_slice
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
-          - compiler: clang++-12
+          - compiler: clang++-7
             os: ubuntu-20.04
-          - compiler: clang++-14
+          - compiler: clang++-15
             os: ubuntu-22.04
           - compiler: gcc-12
             os: ubuntu-22.04
-          - compiler: gcc-9
+          - compiler: gcc-7
             os: ubuntu-20.04
+        exclude:
+          - compiler: clang++-7
+            cppVersion: 20
+          - compiler: gcc-7
+            cppVersion: 20
 
     steps:
       - uses: actions/cache@v3
@@ -185,7 +199,7 @@ jobs:
       matrix:
         cppVersion: [17]
         tier: [ Tier29, Tier30 ]
-        compiler: [clang++-14]
+        compiler: [clang++-15]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
@@ -202,7 +216,7 @@ jobs:
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
         include:
-          - compiler: clang++-14
+          - compiler: clang++-15
             os: ubuntu-22.04
 
     steps:

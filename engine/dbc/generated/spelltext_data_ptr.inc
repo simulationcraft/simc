@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51425
-static const std::array<spelltext_data_t, 20442> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20444> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20426,6 +20426,8 @@ static const std::array<spelltext_data_t, 20442> __ptr_spelltext_data { {
   { 427130, "Toss the Moonfish back into the waters of Amirdrassil. Applying a stack of Moonfish Essence.", "The essence of the Dream fades fast. Applying more Moonfish Essence might strengthen its resolve.", 0 },
   { 427134, "Toss the Sunfish back into the waters of Amirdrassil. Applying a stack of Sunfish Essence.", "The essence of the Dream fades fast. Applying more Moonfish Essence might strengthen its resolve.", 0 },
   { 427161, "$@spelldesc422956", 0, 0 },
+  { 427209, "$@spelldesc427113", 0, 0 },
+  { 427212, "$@spelldesc427113", "Slowed by $w1%.", 0 },
   { 427215, "$@spelldesc427113", "Rooted.", 0 },
   { 427267, "Dealing Fire damage grants you a shield absorbing $s1 Nature damage. Dealing Nature damage grants you a shield absorbing $s1 Fire damage. This effect may only occur every 1 min.", 0, 0 },
   { 427285, "$@spelldesc422921", 0, 0 },
