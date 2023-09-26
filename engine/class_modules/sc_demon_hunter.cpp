@@ -5541,6 +5541,11 @@ struct throw_glaive_t : public demon_hunter_attack_t
     execute_action        = damage;
     execute_action->stats = stats; 
 
+    if ( from_t31 )
+    {
+      cooldown->duration = 0_ms;
+    }
+
     if ( !from_t31 && damage->soulrend )
     {
       add_child( damage->soulrend );
@@ -6017,7 +6022,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
     {
       duration = buff_duration();
     }
-
+    
     if ( remains() + buff_duration() > max_duration )
     {
       duration = max_duration - remains();
