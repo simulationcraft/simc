@@ -3282,8 +3282,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
+  double afi_chance;
+
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str )
+    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str ),
+      afi_chance( p->talent.havoc.a_fire_inside->effectN( 3 ).percent() )
   {
     may_miss     = false;
     dot_duration = timespan_t::zero();
@@ -3292,6 +3295,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     affected_by.t31_vengeance_2pc = false;
 
     apply_affecting_aura( p->spec.immolation_aura_cdr );
+    apply_affecting_aura( p->talent.havoc.a_fire_inside );
 
     if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
     {
@@ -3339,6 +3343,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     p()->buff.immolation_aura->trigger();
     demon_hunter_spell_t::execute();
+
+    if ( p()->talent.havoc.a_fire_inside->ok() && rng().roll( afi_chance ) )
+      cooldown->reset( true, 1 );
   }
 };
 
