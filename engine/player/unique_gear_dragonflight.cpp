@@ -8007,6 +8007,16 @@ void dreamtenders_charm( special_effect_t& effect )
                               }
                             } );
     } );
+
+    // If you drop combat you loose all stacks immedietly but do not trigger regaining power
+    // Does not trigger the extra buff with a shorter duration from Ysemeralds
+    buff->player->register_on_combat_state_callback( [ buff ]( player_t* p, bool c ) {
+      if ( !c && buff->check() )
+      {
+        buff->sim->print_debug( "{} leaves combat, expiring dreaming_trance {}", p->name(), c );
+        buff->expire();
+      }
+    } );
   }
 }
 
