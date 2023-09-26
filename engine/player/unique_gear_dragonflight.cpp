@@ -6532,20 +6532,31 @@ void time_thiefs_gambit( special_effect_t& effect )
                          } );
   }
 
-  auto paradox = buff_t::find( effect.player, "paradox" );
-  if ( !paradox )
+  struct paradox_t : public buff_t
   {
-    paradox = create_buff<buff_t>( effect.player, effect.player->find_spell( 417543 ) )
-                  ->set_stack_change_callback( [ frozen_in_time ]( buff_t* b, int, int new_ ) {
-                    if ( new_ == 0 && b->current_value <= 0 )
-                    {
-                      b->sim->print_debug( "Paradox expired naturally. Triggering Frozen in Time." );
-                      frozen_in_time->trigger();
-                    }
-                  } )
-                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-                  ->set_default_value( -1 );
-  }
+    buff_t* frozen_buff;
+
+    paradox_t( const special_effect_t& e, buff_t* frozen_in_time )
+      : buff_t( e.player, "paradox", e.player->find_spell( 417543 ), e.item )
+    {
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      frozen_buff = frozen_in_time;
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      // Make sure it expired naturally so that boss kill expires don't trigger Frozen in Time
+      if ( remaining_duration == timespan_t::zero() )
+      {
+        sim->print_debug( "Paradox expired naturally. Triggering Frozen in Time." );
+        frozen_buff->trigger();
+      }
+    }
+  };
+
+  auto paradox = make_buff<paradox_t>( effect, frozen_in_time );
 
   // Haste Buff
   auto buff = buff_t::find( effect.player, "time_thiefs_gambit" );
@@ -6566,7 +6577,8 @@ void time_thiefs_gambit( special_effect_t& effect )
     {
       if ( t->is_boss() )
       {
-        effect.player->sim->print_debug( "{} kills a boss enemy, expiring active Paradox.", effect.player->name() );
+        effect.player->sim->print_debug( "{} kills a boss enemy, expiring active Paradox ({}).", effect.player->name(),
+                                         paradox->remains().total_seconds() );
         paradox->current_value = paradox->remains().total_seconds();
         paradox->expire();
       }
