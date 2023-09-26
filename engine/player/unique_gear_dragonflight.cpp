@@ -6506,11 +6506,15 @@ void augury_of_the_primal_flame( special_effect_t& effect )
 
 // Time-Thief's Gambit
 // OnUse Driver/Buff: 417534
-// OnEquip Driver: 417545
 // Paradox Debuff: 417543
 // Frozen in Time Debuff: 417587
 void time_thiefs_gambit( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "time_thiefs_gambit", "paradox", "frozen_in_time" } ) )
+  {
+    return;
+  }
+
   auto frozen_in_time = buff_t::find( effect.player, "frozen_in_time" );
   if ( !frozen_in_time )
   {
@@ -6536,8 +6540,7 @@ void time_thiefs_gambit( special_effect_t& effect )
   {
     buff_t* frozen_buff;
 
-    paradox_t( const special_effect_t& e, buff_t* frozen_in_time )
-      : buff_t( e.player, "paradox", e.player->find_spell( 417543 ), e.item )
+    paradox_t( const special_effect_t& e, buff_t* frozen_in_time ) : buff_t( e.player, "paradox", e.trigger(), e.item )
     {
       set_refresh_behavior( buff_refresh_behavior::DISABLED );
       frozen_buff = frozen_in_time;
@@ -9053,11 +9056,11 @@ void register_special_effects()
   register_special_effect( 422303, items::bandolier_of_twisted_blades );
   register_special_effect( 423926, items::rune_of_the_umbramane );
   register_special_effect( 423927, items::pinch_of_dream_magic );
-  register_special_effect( 423905, items::dancing_dream_blossoms );
+  register_special_effect( 423905, items::dancing_dream_blossoms, true );
   register_special_effect( 422146, items::belorrelos_the_sunstone );
   register_special_effect( 422956, items::nymues_unraveling_spindle );
   register_special_effect( 423124, items::augury_of_the_primal_flame );
-  register_special_effect( 417534, items::time_thiefs_gambit );
+  register_special_effect( 417534, items::time_thiefs_gambit, true );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -9144,6 +9147,7 @@ void register_special_effects()
   register_special_effect( 410530, DISABLED_EFFECT );  // Infurious Boots of Reprieve - Mettle (NYI)
   register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
   register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
+  register_special_effect( 417545, DISABLED_EFFECT );  // Time-Thief's Gambit unused effect
 }
 
 void register_target_data_initializers( sim_t& sim )
