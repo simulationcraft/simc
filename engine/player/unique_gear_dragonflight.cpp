@@ -6504,6 +6504,85 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Time-Thief's Gambit
+// OnUse Driver/Buff: 417534
+// OnEquip Driver: 417545
+// Paradox Debuff: 417543
+// Frozen in Time Debuff: 417587
+void time_thiefs_gambit( special_effect_t& effect )
+{
+  auto frozen_in_time = buff_t::find( effect.player, "frozen_in_time" );
+  if ( !frozen_in_time )
+  {
+    frozen_in_time = create_buff<buff_t>( effect.player, effect.player->find_spell( 417587 ) )
+                         ->set_duration( 4_s )
+                         ->set_stack_change_callback( [ effect ]( buff_t*, int, int new_ ) {
+                           if ( new_ )
+                           {
+                             if ( !effect.player->is_sleeping() )
+                             {
+                               effect.player->buffs.stunned->trigger();
+                               effect.player->stun();
+                             }
+                           }
+                           else
+                           {
+                             effect.player->buffs.stunned->expire();
+                           }
+                         } );
+  }
+
+  auto paradox = buff_t::find( effect.player, "paradox" );
+  if ( !paradox )
+  {
+    paradox = create_buff<buff_t>( effect.player, effect.player->find_spell( 417543 ) )
+                  ->set_stack_change_callback( [ frozen_in_time ]( buff_t* b, int, int new_ ) {
+                    if ( new_ == 0 && b->current_value <= 0 )
+                    {
+                      b->sim->print_debug( "Paradox expired naturally. Triggering Frozen in Time." );
+                      frozen_in_time->trigger();
+                    }
+                  } )
+                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                  ->set_default_value( -1 );
+  }
+
+  // Haste Buff
+  auto buff = buff_t::find( effect.player, "time_thiefs_gambit" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, effect.driver() )
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
+               ->set_stack_change_callback( [ paradox ]( buff_t*, int old_, int ) {
+                 if ( !old_ )
+                 {
+                   paradox->trigger();
+                 }
+               } );
+  }
+
+  effect.player->register_on_kill_callback( [ paradox, effect ]( player_t* t ) {
+    if ( paradox->check() )
+    {
+      if ( t->is_boss() )
+      {
+        effect.player->sim->print_debug( "{} kills a boss enemy, expiring active Paradox.", effect.player->name() );
+        paradox->current_value = paradox->remains().total_seconds();
+        paradox->expire();
+      }
+      else
+      {
+        effect.player->sim->print_debug( "{} kills an enemy, extending Paradox by {} seconds.", effect.player->name(),
+                                         effect.driver()->effectN( 3 ).base_value() );
+        paradox->extend_duration( effect.player,
+                                  timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() ) );
+      }
+    }
+  } );
+
+  effect.custom_buff = buff;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -8966,6 +9045,7 @@ void register_special_effects()
   register_special_effect( 422146, items::belorrelos_the_sunstone );
   register_special_effect( 422956, items::nymues_unraveling_spindle );
   register_special_effect( 423124, items::augury_of_the_primal_flame );
+  register_special_effect( 417534, items::time_thiefs_gambit );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
