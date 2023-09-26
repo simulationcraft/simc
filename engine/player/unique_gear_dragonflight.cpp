@@ -6348,12 +6348,18 @@ void nymues_unraveling_spindle( special_effect_t& effect )
       player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
-    // Note that a Target Dummmy counts as an Immobilized Target in-game.
+    // Note that a Target Dummmy counts as an Immobilized target in-game.
     double composite_target_multiplier( player_t* t ) const override
     {
       auto tm = proc_spell_t::composite_target_multiplier( t );
 
-      if ( t->buffs.stunned->check() || player->dragonflight_opts.nymue_forced_immobilized )
+      actor_target_data_t* td = player->get_target_data( t );
+
+      // Affected By: Roots or Stuns
+      // Not Affected By: Slows
+      bool immobilized = td ? td->debuff.dream_shackles->check() : false;
+
+      if ( t->buffs.stunned->check() || immobilized || player->dragonflight_opts.nymue_forced_immobilized )
       {
         tm *= 1.0 + immobilized_mod;
       }
@@ -6932,10 +6938,13 @@ void iridal_the_earths_master( special_effect_t& e )
   e.execute_action = damage;
 }
 
-
+// [PH] Fyrakk Cantrip 1H Axe STR
+// [PH] Fyrakk Cantrip 1H Mace INT
+// TODO: Check both weapons after they are no longer placeholder
 // Hungering Shadowflame
 // 424320 Driver / Values
 // 424324 Damage
+// TODO: implement self-damage
 void hungering_shadowflame( special_effect_t& e )
 {
   struct hungering_shadowflame_t : public generic_proc_t
@@ -6954,7 +6963,7 @@ void hungering_shadowflame( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      if ( state->target->health_percentage() > hp_percent)
+      if ( state->target->health_percentage() > hp_percent )
       {
         m *= 1.0 + damage_mult;
       }
@@ -6965,7 +6974,79 @@ void hungering_shadowflame( special_effect_t& e )
 
   e.execute_action = create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e );
 
-  new dbc_proc_callback_t( e.player , e);
+  new dbc_proc_callback_t( e.player, e );
+}
+
+// Dreambinder, Loom of the Great Cycle
+// Driver: 427113
+// Damage: 427209
+// Debuffs: 427215 (Root - Main Target) & 427212 (Slow - AoE)
+struct web_of_dreams_initializer_t : public item_targetdata_initializer_t
+{
+  web_of_dreams_initializer_t() : item_targetdata_initializer_t( 427113, 427212 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.web_of_dreams = make_buff_fallback( active, *td, "web_of_dreams", debuffs[ td->source ] );
+    td->debuff.web_of_dreams->reset();
+  }
+};
+
+struct dream_shackles_initializer_t : public item_targetdata_initializer_t
+{
+  dream_shackles_initializer_t() : item_targetdata_initializer_t( 427113, 427215 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.dream_shackles = make_buff_fallback( active, *td, "dream_shackles", debuffs[ td->source ] );
+    td->debuff.dream_shackles->reset();
+  }
+};
+
+void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
+{
+  struct dreambinder_loom_of_the_great_cycle_t : public generic_aoe_proc_t
+  {
+    dreambinder_loom_of_the_great_cycle_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "web_of_dreams", effect.player->find_spell( 427209 ), true )
+    {
+      base_dd_min = base_dd_max = data().effectN( 2 ).trigger()->effectN( 1 ).average( effect.item );
+
+      // Mimics the spawn of the ground delay before the damage comes in
+      travel_delay = effect.driver()->duration().total_seconds();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_aoe_proc_t::impact( state );
+
+      if ( !state->target->is_boss() )
+      {
+        actor_target_data_t* td = player->get_target_data( state->target );
+
+        if ( td )
+        {
+          td->debuff.web_of_dreams->trigger();
+
+          // Apply the root if the target is the main target
+          if ( state->chain_target == 0 )
+          {
+            td->debuff.dream_shackles->trigger();
+          }
+        }
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<dreambinder_loom_of_the_great_cycle_t>( "web_of_dreams", effect );
 }
 
 // Armor
@@ -8897,6 +8978,7 @@ void register_special_effects()
   register_special_effect( 408821, items::djaruun_pillar_of_the_elder_flame, true );  // Djaruun, Pillar of the Elder Flame
   register_special_effect( 419278, items::iridal_the_earths_master );           // Iridal, the Earth's Master
   register_special_effect( 424320, items::hungering_shadowflame );              // Hungering Shadowflame - Unnamed 1h axe
+  register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
@@ -8969,6 +9051,7 @@ void register_special_effects()
   register_special_effect( 382132, DISABLED_EFFECT );  // Iceblood Deathsnare damage data
   register_special_effect( 410530, DISABLED_EFFECT );  // Infurious Boots of Reprieve - Mettle (NYI)
   register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
+  register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -8984,6 +9067,8 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
   sim.register_target_data_initializer( items::lava_bolt_initializer_t() );
   sim.register_target_data_initializer( items::embed_blade_initializer_t() );
+  sim.register_target_data_initializer( items::web_of_dreams_initializer_t() );
+  sim.register_target_data_initializer( items::dream_shackles_initializer_t() );
 }
 
 void register_hotfixes()
