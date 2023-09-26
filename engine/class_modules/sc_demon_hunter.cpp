@@ -5726,7 +5726,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
         growing_inferno_multiplier( p->talent.havoc.growing_inferno->effectN( 1 ).percent() )
     {
       set_cooldown( timespan_t::zero() );
-      set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
       apply_affecting_aura( p->spec.immolation_aura_3 );
       apply_affecting_aura( p->talent.vengeance.agonizing_flames );
       set_partial_tick( true );
@@ -5750,16 +5749,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
         if ( growing_inferno_ticks < growing_inferno_max_ticks )
           growing_inferno_ticks++;
       } );
-
-      if ( p->talent.vengeance.agonizing_flames->ok() )
-      {
-        add_invalidate( CACHE_RUN_SPEED );
-      }
-
-      if ( p->talent.demon_hunter.infernal_armor->ok() )
-      {
-        add_invalidate( CACHE_ARMOR );
-      }
     }
 
     void start( int stacks, double value, timespan_t duration ) override
@@ -5816,57 +5805,98 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     apply_affecting_aura( p->talent.vengeance.agonizing_flames );
     set_tick_behavior( buff_tick_behavior::NONE );
     buff_period = 0_ms;
-    
-    if ( p->talent.havoc.a_fire_inside )    {
+
+    set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
+
+    if ( p->talent.vengeance.agonizing_flames->ok() )
+    {
+      add_invalidate( CACHE_RUN_SPEED );
+    }
+
+    if ( p->talent.demon_hunter.infernal_armor->ok() )
+    {
+      add_invalidate( CACHE_ARMOR );
+    }
+
+    if ( p->talent.havoc.a_fire_inside )
+    {
       set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
       set_max_stack( 5 );
     }
-    else {
+    else
+    {
       set_max_stack( 1 );
     }
 
     for ( int i = 0; i < max_stack(); i++ )
     {
-      immos.push_back( new immolation_aura_functional_buff_t( p, fmt::format( "immolation_aura{}", i+1 ) ) );
+      immos.push_back( new immolation_aura_functional_buff_t( p, fmt::format( "immolation_aura{}", i + 1 ) ) );
     }
   }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  void execute( int stacks, double value, timespan_t duration ) override
   {
-    bool b = base_t::trigger( stacks, value, chance, duration );
-
-    if ( b )
+    // bool b = base_t::execute( stacks, value, chance, duration );
+    int s = 0;
+    if ( max_stack() == 1 )
     {
-      if ( max_stack() == 1 )
-      {
-        return immos[ 0 ]->trigger( stacks, value, 1, duration );
-      }
-      else
-      {
-        timespan_t min_remains                      = timespan_t::max();
-        immolation_aura_functional_buff_t* min_immo = nullptr;
+      immos[ 0 ]->trigger( 1, value, 1.0, duration );
+      s++;
+    }
+    else
+    {
+      timespan_t min_remains                      = timespan_t::max();
+      immolation_aura_functional_buff_t* min_immo = nullptr;
 
-        for ( auto* immo : immos )
+      for ( auto* immo : immos )
+      {
+        if ( immo->check() )
         {
-          if ( immo->check() )
+          if ( immo->remains() < min_remains )
           {
-            if ( immo->remains() < min_remains )
-            {
-              min_remains = immo->remains();
-              min_immo    = immo;
-            }
-          }
-          else
-          {
-            return immo->trigger( stacks, value, 1, duration );
+            min_remains = immo->remains();
+            min_immo    = immo;
           }
         }
+        else
+        {
+          immo->trigger( 1, value, 1.0, duration );
+          s++;
+          if ( s >= stacks )
+            break;
+        }
+      }
 
-        return min_immo->trigger( stacks, value, 1, duration );
+      if ( s < stacks )
+      {
+        min_immo->trigger( 1, value, 1.0, duration );
+        s++;
+
+        while ( s < stacks )
+        {
+          // Incredibly inefficient code to handle the absolute extreme of edge cases where soem
+          min_remains = timespan_t::max();
+          min_immo    = nullptr;
+
+          for ( auto* immo : immos )
+          {
+            if ( immo->check() )
+            {
+              if ( immo->remains() < min_remains )
+              {
+                min_remains = immo->remains();
+                min_immo    = immo;
+              }
+            }
+          }
+          min_immo->trigger( 1, value, 1.0, duration );
+          s++;
+        }
       }
     }
 
-    return false;
+    if ( s > 0 )
+      base_t::execute( s, value, duration );
   }
 };
 
