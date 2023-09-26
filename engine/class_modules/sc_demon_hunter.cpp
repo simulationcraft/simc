@@ -7013,7 +7013,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.fel_barrage         = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
   talent.havoc.shattered_destiny   = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Destiny" );
   talent.havoc.any_means_necessary = find_talent_spell( talent_tree::SPECIALIZATION, "Any Means Necessary" );
-  talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
+  talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside [WIP]" );
 
   // Vengeance Talents
 
