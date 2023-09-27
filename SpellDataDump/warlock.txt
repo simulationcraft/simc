@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51421 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -10089,7 +10089,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=800325)   : Dummy (3)
                    Base Value: 2323 | Scaled Value: 2323 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : Base Value (1721 -> 2323)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25300 | PvP Coefficient: 1.25000 | Target: Enemy (6)
 #3 (id=800327)   : Dummy (3)
