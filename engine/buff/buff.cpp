@@ -628,7 +628,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     buff_duration_multiplier( 1.0 ),
     default_chance( 1.0 ),
     manual_chance( -1.0 ),
-    time_modifier_duration_multiplier( 1.0 ),
+    base_time_modifier_duration_multiplier( 1.0 ),
+    dynamic_time_modifier_duration_multiplier( 1.0 ),
     constant_behavior( buff_constant_behavior::DEFAULT ),
     allow_precombat( true ),
     current_tick( 0 ),
@@ -852,19 +853,19 @@ buff_t* buff_t::apply_time_modifier_duration( double modifier )
 
   auto mul = 100.0 / ( 100 + modifier );
 
-  set_time_modifier_duration_multiplier( time_modifier_duration_multiplier * mul );
+  base_time_modifier_duration_multiplier = base_time_modifier_duration_multiplier * mul;
 
   return this;
 }
 
-buff_t* buff_t::set_time_modifier_duration_multiplier( double new_multiplier )
+buff_t* buff_t::set_dynamic_time_modifier_duration_multiplier( double new_multiplier )
 {
 
-  if ( new_multiplier == time_modifier_duration_multiplier )
+  if ( new_multiplier == dynamic_time_modifier_duration_multiplier )
     return this;
 
-  auto old_multiplier = time_modifier_duration_multiplier;
-  time_modifier_duration_multiplier = new_multiplier;
+  auto old_multiplier = dynamic_time_modifier_duration_multiplier;
+  dynamic_time_modifier_duration_multiplier = new_multiplier;
 
   if ( current_stack <= 0 || expiration.empty() )
   {
@@ -2731,6 +2732,7 @@ void buff_t::reset()
   last_trigger      = timespan_t::min();
   last_expire       = timespan_t::min();
   last_stack_change = timespan_t::min();
+  dynamic_time_modifier_duration_multiplier = 1.0;
 }
 
 void buff_t::merge( const buff_t& other )
