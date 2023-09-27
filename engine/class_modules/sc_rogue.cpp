@@ -4493,7 +4493,8 @@ struct pistol_shot_t : public rogue_attack_t
     m *= 1.0 + p()->buffs.opportunity->value();
     m *= 1.0 + p()->buffs.greenskins_wickers->value();
 
-    if ( secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
+    // 2023-09-26 Pistol shot says it does 20% less damage on followup fan the hammer hits, but currently does not
+    if ( !p()->bugs && secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
     {
       m *= 1.0 - p()->talent.outlaw.fan_the_hammer->effectN( 4 ).percent();
     }
