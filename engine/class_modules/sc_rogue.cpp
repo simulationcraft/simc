@@ -122,13 +122,13 @@ namespace buffs {
     // Used by underhanded upper hand, it's not a *real* pause, but rather an application of a 100x slowdown via time mod
     rogue_buff_t* pause()
     {
-      set_time_modifier_duration_multiplier( 100.0 );
+      set_dynamic_time_duration_multiplier( 100.0 );
       return this;
     }
 
     rogue_buff_t* unpause()
     {
-      set_time_modifier_duration_multiplier( 1.0 );
+      set_dynamic_time_duration_multiplier( 1.0 );
       return this;
     }
   };
