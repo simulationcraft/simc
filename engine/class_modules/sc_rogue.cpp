@@ -954,7 +954,6 @@ public:
     proc_t* roll_the_bones_wasted;
     proc_t* t31_buff_extended;
     proc_t* t31_buff_not_extended;
-    proc_t* t31_buff_prepull;
 
     // Subtlety
     proc_t* deepening_shadows;
@@ -7014,6 +7013,7 @@ struct roll_the_bones_t : public buff_t
       rogue->buffs.true_bearing
     };
     t31_last_extended = nullptr;
+    apply_prepull_t31_buff();
   }
 
   void extend_secondary_buffs( timespan_t duration )
@@ -7214,26 +7214,6 @@ struct roll_the_bones_t : public buff_t
           active_buffs.push_back( buff );
       }
 
-      if ( rogue->sim->current_time() == 0_s )
-      {
-        auto value = rogue->options.prepull_t31_buff;
-
-        if ( value == "" ) {
-          t31_last_extended = nullptr;
-        }
-        else
-        {
-          auto it = range::find_if( buffs, [value]( const buff_t* buff ) {
-            return util::str_compare_ci( buff->name_str, value ); } );
-
-          if ( it == buffs.end() )
-            throw std::invalid_argument( fmt::format( "Invalid prepull_t31_buff buff name given '{}'.", value ) );
-
-          t31_last_extended = ( *it );
-          rogue->procs.t31_buff_prepull->occur();
-        }
-      }
-
       if ( active_buffs.empty() && t31_last_extended == nullptr )
       {
         expire_secondary_buffs();
@@ -7270,6 +7250,31 @@ struct roll_the_bones_t : public buff_t
     rogue->buffs.loaded_dice->expire();
 
     overflow_restore();
+  }
+
+  void apply_prepull_t31_buff()
+  {
+    auto value = rogue->options.prepull_t31_buff;
+
+    if ( value == "" ) {
+      t31_last_extended = nullptr;
+    }
+    else
+    {
+      auto it = range::find_if( buffs, [value]( const buff_t* buff ) {
+        return util::str_compare_ci( buff->name_str, value ); } );
+
+      if ( it == buffs.end() )
+        throw std::invalid_argument( fmt::format( "Invalid prepull_t31_buff buff name given '{}'.", value ) );
+
+      t31_last_extended = ( *it );
+    }
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+    apply_prepull_t31_buff();
   }
 };
 
@@ -9744,7 +9749,6 @@ void rogue_t::init_procs()
   procs.roll_the_bones_wasted   = get_proc( "Roll the Bones Wasted" );
   procs.t31_buff_extended       = get_proc( "(T31) Roll the Bones Buff Extended" );
   procs.t31_buff_not_extended   = get_proc( "(T31) Roll the Bones Buff Not Extended" );
-  procs.t31_buff_prepull        = get_proc( "(T31) Roll the Bones Buff Selected Prepull" );
 
   procs.amplifying_poison_consumed           = get_proc( "Amplifying Poison Consumed" );
   procs.amplifying_poison_deathmark_consumed = get_proc( "Amplifying Poison (Deathmark) Consumed" );
