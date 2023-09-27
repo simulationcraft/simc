@@ -442,11 +442,6 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
-    // Empirically tested to match 3/10/2023, actual value not available in spell data
-    if ( owner->specialization() == PRIEST_DISCIPLINE )
-    {
-      direct_power_mod = 0.445;
-    }
     npc_id = 19668;
 
     main_hand_weapon.min_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
@@ -487,7 +482,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
     // Empirically tested to match 3/10/2023, actual value not available in spell data
     if ( owner->specialization() == PRIEST_DISCIPLINE )
     {
-      direct_power_mod = 0.326;
+      direct_power_mod = 0.3;
     }
     npc_id = 62982;
 
