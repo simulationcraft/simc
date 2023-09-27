@@ -860,7 +860,7 @@ buff_t* buff_t::apply_time_modifier_duration( double modifier )
 
 buff_t* buff_t::set_dynamic_time_modifier_duration_multiplier( double new_multiplier )
 {
-
+  assert( new_multiplier > 0.0 );
   if ( new_multiplier == dynamic_time_modifier_duration_multiplier )
     return this;
 
