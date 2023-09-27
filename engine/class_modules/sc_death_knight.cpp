@@ -4972,7 +4972,7 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
     hit_count++;
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && state -> target -> is_enemy() ) 
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) ) 
     {
       p() -> buffs.chilling_rage->trigger();
     }
