@@ -1126,8 +1126,6 @@ public:
   void trigger_venomous_wounds_death( player_t* ); // On-death trigger for Venomous Wounds energy replenish
   void trigger_exsanguinate( player_t* );
 
-  void apply_prepull_t31_buff();
-
   double consume_cp_max() const
   {
     return COMBO_POINT_MAX + as<double>( talent.rogue.deeper_stratagem->effectN( 2 ).base_value() +
@@ -7218,7 +7216,22 @@ struct roll_the_bones_t : public buff_t
 
       if ( rogue->sim->current_time() == 0_s )
       {
-        rogue->apply_prepull_t31_buff();
+        auto value = rogue->options.prepull_t31_buff;
+
+        if ( value == "" ) {
+          t31_last_extended = nullptr;
+        }
+        else
+        {
+          auto it = range::find_if( buffs, [value]( const buff_t* buff ) {
+            return util::str_compare_ci( buff->name_str, value ); } );
+
+          if ( it == buffs.end() )
+            throw std::invalid_argument( fmt::format( "Invalid prepull_t31_buff buff name given '{}'.", value ) );
+
+          t31_last_extended = ( *it );
+          rogue->procs.t31_buff_prepull->occur();
+        }
       }
 
       if ( active_buffs.empty() && t31_last_extended == nullptr )
@@ -10785,26 +10798,6 @@ stat_e rogue_t::convert_hybrid_stat( stat_e s ) const
       return STAT_NONE;
   default: return s;
   }
-}
-
-// rogue_t::apply_prepull_t31_buff ==============================================
-
-void rogue_t::apply_prepull_t31_buff()
-{
-  auto rogue = debug_cast<rogue_t*>( sim->active_player );
-  auto value = rogue->options.prepull_t31_buff;
-  if ( value == "" )
-    return;
-
-  auto primary = debug_cast<buffs::roll_the_bones_t*>( rogue->buffs.roll_the_bones );
-  auto it = range::find_if( primary->buffs, [value]( const buff_t* buff ) {
-    return util::str_compare_ci( buff->name_str, value ); } );
-
-  if ( it == primary->buffs.end() )
-    throw std::invalid_argument( fmt::format( "Invalid prepull_t31_buff buff name given '{}'.", value ) );
-
-  primary->t31_last_extended = ( *it );
-  procs.t31_buff_prepull->occur();
 }
 
 void rogue_t::apply_affecting_auras( action_t& action )
