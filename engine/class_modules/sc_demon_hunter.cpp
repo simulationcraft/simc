@@ -3254,6 +3254,14 @@ struct immolation_aura_state_t : public action_state_t
   {
     return action_state_t::composite_ta_multiplier() * growing_inferno_multiplier;
   }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+    s << " growing_inferno_multiplier=" << growing_inferno_multiplier;
+    return s;
+  }
+
 };
 
 struct immolation_aura_t : public demon_hunter_spell_t
