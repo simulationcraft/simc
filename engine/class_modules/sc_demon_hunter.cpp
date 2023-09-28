@@ -5662,6 +5662,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( t31 == 2 )
     {
+      cooldown->duration = 0_ms;
+      cooldown->charges = 0;
+
       cooldown = p->cooldown.throw_glaive;
     }
 
