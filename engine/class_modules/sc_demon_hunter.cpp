@@ -318,9 +318,12 @@ public:
       player_talent_t demon_blades;
       player_talent_t burning_hatred;
 
+      player_talent_t improved_fel_rush;
+      player_talent_t dash_of_chaos;
       player_talent_t improved_chaos_strike;
       player_talent_t first_blood;
-      player_talent_t dancing_with_fate;
+      player_talent_t accelerated_blade;
+      player_talent_t demon_hide;
 
       player_talent_t desperate_instincts;  // No Implementation
       player_talent_t netherwalk;           // No Implementation
@@ -328,17 +331,15 @@ public:
       player_talent_t mortal_dance;         // No Implementation
 
       player_talent_t initiative;
-      player_talent_t improved_fel_rush;
-      player_talent_t dash_of_chaos;
+      player_talent_t scars_of_suffering;
       player_talent_t chaotic_transformation;
       player_talent_t furious_throws;
       player_talent_t trail_of_ruin;
-      player_talent_t demon_hide;
 
       player_talent_t unbound_chaos;
       player_talent_t blind_fury;
       player_talent_t looks_can_kill;
-      player_talent_t serrated_glaive;  // Partially implemented
+      player_talent_t dancing_with_fate;
       player_talent_t growing_inferno;
 
       player_talent_t tactical_retreat;
@@ -352,15 +353,16 @@ public:
       player_talent_t chaos_theory;
       player_talent_t restless_hunter;
       player_talent_t inner_demon;
-      player_talent_t accelerated_blade;
+      player_talent_t serrated_glaive;  // Partially implemented
       player_talent_t ragefire;
 
       player_talent_t know_your_enemy;
       player_talent_t glaive_tempest;
       player_talent_t cycle_of_hatred;
       player_talent_t fodder_to_the_flame;  // Partial implementation
-      player_talent_t elysian_decree;
       player_talent_t soulrend;
+      player_talent_t chaotic_disposition;
+      player_talent_t elysian_decree;
 
       player_talent_t essence_break;
       player_talent_t fel_barrage;  // Old implementation
@@ -7081,14 +7083,13 @@ void demon_hunter_t::init_spells()
 
   talent.demon_hunter.pursuit           = find_talent_spell( talent_tree::CLASS, "Pursuit" );
   talent.demon_hunter.disrupting_fury   = find_talent_spell( talent_tree::CLASS, "Disrupting Fury" );
-  talent.demon_hunter.aura_of_pain      = find_talent_spell( talent_tree::CLASS, "Aura of Pain" );
   talent.demon_hunter.felblade          = find_talent_spell( talent_tree::CLASS, "Felblade" );
   talent.demon_hunter.swallowed_anger   = find_talent_spell( talent_tree::CLASS, "Swallowed Anger" );
   talent.demon_hunter.charred_warblades = find_talent_spell( talent_tree::CLASS, "Charred Warblades" );
 
   talent.demon_hunter.felfire_haste        = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
   talent.demon_hunter.master_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
-  talent.demon_hunter.rush_of_chaos        = find_talent_spell( talent_tree::CLASS, "Rush of Chaos" );
+  talent.demon_hunter.aura_of_pain         = find_talent_spell( talent_tree::CLASS, "Aura of Pain" );
   talent.demon_hunter.concentrated_sigils  = find_talent_spell( talent_tree::CLASS, "Concentrated Sigils" );
   talent.demon_hunter.precise_sigils       = find_talent_spell( talent_tree::CLASS, "Precise Sigils" );
   talent.demon_hunter.lost_in_darkness     = find_talent_spell( talent_tree::CLASS, "Lost in Darkness" );
@@ -7112,13 +7113,13 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.erratic_felheart = find_talent_spell( talent_tree::CLASS, "Erratic Felheart" );
   talent.demon_hunter.long_night       = find_talent_spell( talent_tree::CLASS, "Long Night" );
   talent.demon_hunter.pitch_black      = find_talent_spell( talent_tree::CLASS, "Pitch Black" );
-  talent.demon_hunter.the_hunt         = find_talent_spell( talent_tree::CLASS, "The Hunt" );
+  talent.demon_hunter.rush_of_chaos    = find_talent_spell( talent_tree::CLASS, "Rush of Chaos" );
   talent.demon_hunter.demon_muzzle     = find_talent_spell( talent_tree::CLASS, "Demon Muzzle" );
   talent.demon_hunter.extended_sigils  = find_talent_spell( talent_tree::CLASS, "Extended Sigils" );
   talent.demon_hunter.flames_of_fury   = find_talent_spell( talent_tree::CLASS, "Flames of Fury" );
 
   talent.demon_hunter.collective_anguish = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
-  talent.demon_hunter.unnatural_malice   = find_talent_spell( talent_tree::CLASS, "Unnatural Malice" );
+  talent.demon_hunter.the_hunt           = find_talent_spell( talent_tree::CLASS, "The Hunt" );
   talent.demon_hunter.relentless_pursuit = find_talent_spell( talent_tree::CLASS, "Relentless Pursuit" );
   talent.demon_hunter.quickened_sigils   = find_talent_spell( talent_tree::CLASS, "Quickened Sigils" );
 
@@ -7145,6 +7146,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.mortal_dance        = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Dance" );
 
   talent.havoc.initiative             = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
+  talent.havoc.scars_of_suffering     = find_talent_spell( talent_tree::SPECIALIZATION, "Scars of Suffering" );
   talent.havoc.chaotic_transformation = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Transformation" );
   talent.havoc.furious_throws         = find_talent_spell( talent_tree::SPECIALIZATION, "Furious Throws" );
   talent.havoc.trail_of_ruin          = find_talent_spell( talent_tree::SPECIALIZATION, "Trail of Ruin" );
@@ -7878,6 +7880,8 @@ double demon_hunter_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
+  cdv += talent.havoc.scars_of_suffering->effectN( 1 ).percent();
+
   return cdv;
 }
 
@@ -7886,6 +7890,8 @@ double demon_hunter_t::composite_damage_versatility() const
 double demon_hunter_t::composite_heal_versatility() const
 {
   double chv = player_t::composite_heal_versatility();
+  
+  chv += talent.havoc.scars_of_suffering->effectN( 1 ).percent();
 
   return chv;
 }
@@ -7895,6 +7901,8 @@ double demon_hunter_t::composite_heal_versatility() const
 double demon_hunter_t::composite_mitigation_versatility() const
 {
   double cmv = player_t::composite_mitigation_versatility();
+
+  cmv += talent.havoc.scars_of_suffering->effectN( 1 ).percent();
 
   return cmv;
 }
