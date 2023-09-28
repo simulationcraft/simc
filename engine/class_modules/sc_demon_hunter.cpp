@@ -1436,6 +1436,7 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.improved_sigil_of_misery );
     ab::apply_affecting_aura( p->talent.demon_hunter.erratic_felheart );
     ab::apply_affecting_aura( p->talent.demon_hunter.pitch_black );
+    ab::apply_affecting_aura( p->talent.demon_hunter.flames_of_fury );
     ab::apply_affecting_aura( p->talent.demon_hunter.extended_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.quickened_sigils );
 
