@@ -4080,10 +4080,6 @@ struct spectral_sight_t : public demon_hunter_spell_t
   spectral_sight_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "spectral_sight", p, p->spell.spectral_sight, options_str ), dh( p )
   {
-    // 26/09/2023 -- Spectral Sight is not currently hasted.
-    if ( p->bugs )
-      gcd_type = gcd_haste_type::NONE;
-
     if ( p->talent.demon_hunter.fodder_to_the_flame->ok() )
       add_child( p->active.fodder_to_the_flame_damage );
   }
