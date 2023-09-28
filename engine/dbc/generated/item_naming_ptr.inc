@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.2.0.51425
-static const std::array<item_name_description_t, 812> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.2.0.51521
+static const std::array<item_name_description_t, 813> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -757,7 +757,7 @@ static const std::array<item_name_description_t, 812> __ptr_item_name_descriptio
   { 14030, "Soridormi"                                   },
   { 14031, "Dragonflight Season 3"                       },
   { 14034, "Emerald Bounty"                              },
-  { 14035, "Shadowflame Suffused"                        },
+  { 14035, "|nShadowflame Suffused"                      },
   { 14037, "Unique Creatures"                            },
   { 14041, "Superbloom"                                  },
   { 14043, "Dragonflight Season 2"                       },
@@ -812,5 +812,6 @@ static const std::array<item_name_description_t, 812> __ptr_item_name_descriptio
   { 14092, "|nUpgrade Level: Myth 2/4"                   },
   { 14093, "|nUpgrade Level: Myth 3/4"                   },
   { 14094, "|nUpgrade Level: Myth 4/4"                   },
+  { 14095, "Mythic+"                                     },
 } };
 
