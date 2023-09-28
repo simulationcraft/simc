@@ -7841,6 +7841,7 @@ namespace monk
     spec.expel_harm_2_mw = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
     spec.leather_specialization_mw = find_spell( 120224 );
     spec.mistweaver_monk = find_specialization_spell( "Mistweaver Monk" );
+    spec.mistweaver_monk_2 = find_spell( 428200 );
     spec.reawaken = find_specialization_spell( "Reawaken" );
     spec.touch_of_death_3_mw = find_rank_spell( "Touch of Death", "Rank 3", MONK_MISTWEAVER );
 
@@ -10301,8 +10302,11 @@ namespace monk
         action.apply_affecting_aura( spec.windwalker_monk );
         break;
       case MONK_MISTWEAVER:
+      {
         action.apply_affecting_aura( spec.mistweaver_monk );
+        action.apply_affecting_aura( spec.mistweaver_monk_2 );
         break;
+      }
       default:
         assert( 0 );
         break;

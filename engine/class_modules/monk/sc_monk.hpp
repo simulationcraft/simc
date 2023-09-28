@@ -776,6 +776,7 @@ public:
     const spell_data_t* expel_harm_3_mw;
     const spell_data_t* leather_specialization_mw;
     const spell_data_t* mistweaver_monk;
+    const spell_data_t* mistweaver_monk_2;
     const spell_data_t* reawaken;
     const spell_data_t* touch_of_death_3_mw;
 
