@@ -281,6 +281,7 @@ public:
       player_talent_t chaos_nova;
       player_talent_t soul_rending;
       player_talent_t infernal_armor;
+      player_talent_t aldrachi_design;
 
       player_talent_t chaos_fragments;
       player_talent_t unleashed_power;
@@ -293,19 +294,18 @@ public:
       player_talent_t internal_struggle;
       player_talent_t darkness;  // No Implementation
       player_talent_t soul_sigils;
-      player_talent_t aldrachi_design;
+      player_talent_t quickened_sigils;
 
       player_talent_t erratic_felheart;
       player_talent_t long_night;   // No Implementation
       player_talent_t pitch_black;  // No Implementation
-      player_talent_t the_hunt;
       player_talent_t demon_muzzle;  // NYI Vengeance
       player_talent_t extended_sigils;
 
       player_talent_t collective_anguish;
-      player_talent_t unnatural_malice;
-      player_talent_t relentless_pursuit;
-      player_talent_t quickened_sigils;
+      player_talent_t fodder_to_the_flame;
+      player_talent_t the_hunt;
+      player_talent_t elysian_decree;
 
     } demon_hunter;
 
@@ -362,7 +362,6 @@ public:
       player_talent_t fodder_to_the_flame;  // Partial implementation
       player_talent_t soulrend;
       player_talent_t chaotic_disposition;
-      player_talent_t elysian_decree;
 
       player_talent_t essence_break;
       player_talent_t fel_barrage;  // Old implementation
@@ -426,7 +425,6 @@ public:
       player_talent_t soul_carver;
       player_talent_t last_resort;          // NYI
       player_talent_t fodder_to_the_flame;  // Partial implementation
-      player_talent_t elysian_decree;
       player_talent_t down_in_flames;
 
     } vengeance;
@@ -662,7 +660,6 @@ public:
     // General
     proc_t* delayed_aa_range;
     proc_t* delayed_aa_channel;
-    proc_t* relentless_pursuit;
     proc_t* soul_fragment_greater;
     proc_t* soul_fragment_greater_demon;
     proc_t* soul_fragment_empowered_demon;
@@ -1443,7 +1440,6 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.pitch_black );
     ab::apply_affecting_aura( p->talent.demon_hunter.extended_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.quickened_sigils );
-    ab::apply_affecting_aura( p->talent.demon_hunter.unnatural_malice );
 
     ab::apply_affecting_aura( p->talent.havoc.insatiable_hunger );
     ab::apply_affecting_aura( p->talent.havoc.improved_fel_rush );
@@ -6186,29 +6182,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
-
-  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
-}
-
-void demon_hunter_td_t::target_demise()
-{
-  // Don't pollute results at the end-of-iteration deaths of everyone
-  if ( source->sim->event_mgr.canceled )
-    return;
-
-  demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
-
-  if ( p->talent.demon_hunter.relentless_pursuit->ok() && dots.the_hunt->is_ticking() )
-  {
-    timespan_t adjust_seconds =
-        timespan_t::from_seconds( p->talent.demon_hunter.relentless_pursuit->effectN( 1 ).base_value() );
-    p->cooldown.the_hunt->adjust( -adjust_seconds );
-    p->proc.relentless_pursuit->occur();
-  }
-
-  // TODO: Make an option to register this for testing M+/dungeon scenarios
-  // demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
-  // p->spawn_soul_fragment( soul_fragment::GREATER );
 }
 
 // ==========================================================================
@@ -6897,7 +6870,6 @@ void demon_hunter_t::init_procs()
 
   // General
   proc.delayed_aa_range              = get_proc( "delayed_aa_out_of_range" );
-  proc.relentless_pursuit            = get_proc( "relentless_pursuit" );
   proc.soul_fragment_greater         = get_proc( "soul_fragment_greater" );
   proc.soul_fragment_greater_demon   = get_proc( "soul_fragment_greater_demon" );
   proc.soul_fragment_empowered_demon = get_proc( "soul_fragment_empowered_demon" );
@@ -7097,6 +7069,7 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.chaos_nova      = find_talent_spell( talent_tree::CLASS, "Chaos Nova" );
   talent.demon_hunter.soul_rending    = find_talent_spell( talent_tree::CLASS, "Soul Rending" );
   talent.demon_hunter.infernal_armor  = find_talent_spell( talent_tree::CLASS, "Infernal Armor" );
+  talent.demon_hunter.aldrachi_design = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
 
   talent.demon_hunter.chaos_fragments          = find_talent_spell( talent_tree::CLASS, "Chaos Fragments" );
   talent.demon_hunter.unleashed_power          = find_talent_spell( talent_tree::CLASS, "Unleashed Power" );
@@ -7108,7 +7081,7 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.internal_struggle = find_talent_spell( talent_tree::CLASS, "Internal Struggle" );
   talent.demon_hunter.darkness          = find_talent_spell( talent_tree::CLASS, "Darkness" );
   talent.demon_hunter.soul_sigils       = find_talent_spell( talent_tree::CLASS, "Soul Sigils" );
-  talent.demon_hunter.aldrachi_design   = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
+  talent.demon_hunter.quickened_sigils  = find_talent_spell( talent_tree::CLASS, "Quickened Sigils" );
 
   talent.demon_hunter.erratic_felheart = find_talent_spell( talent_tree::CLASS, "Erratic Felheart" );
   talent.demon_hunter.long_night       = find_talent_spell( talent_tree::CLASS, "Long Night" );
@@ -7120,8 +7093,7 @@ void demon_hunter_t::init_spells()
 
   talent.demon_hunter.collective_anguish = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
   talent.demon_hunter.the_hunt           = find_talent_spell( talent_tree::CLASS, "The Hunt" );
-  talent.demon_hunter.relentless_pursuit = find_talent_spell( talent_tree::CLASS, "Relentless Pursuit" );
-  talent.demon_hunter.quickened_sigils   = find_talent_spell( talent_tree::CLASS, "Quickened Sigils" );
+  talent.demon_hunter.elysian_decree     = find_talent_spell( talent_tree::CLASS, "Elysian Decree" );
 
   // Havoc Talents
 
@@ -7175,7 +7147,6 @@ void demon_hunter_t::init_spells()
   talent.havoc.glaive_tempest      = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
   talent.havoc.cycle_of_hatred     = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Hatred" );
   talent.havoc.fodder_to_the_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Fodder to the Flame" );
-  talent.havoc.elysian_decree      = find_talent_spell( talent_tree::SPECIALIZATION, "Elysian Decree" );
   talent.havoc.soulrend            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulrend" );
 
   talent.havoc.essence_break       = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
@@ -7240,7 +7211,6 @@ void demon_hunter_t::init_spells()
   talent.vengeance.soul_carver         = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
   talent.vengeance.last_resort         = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
   talent.vengeance.fodder_to_the_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Fodder to the Flame" );
-  talent.vengeance.elysian_decree      = find_talent_spell( talent_tree::SPECIALIZATION, "Elysian Decree" );
   talent.vengeance.down_in_flames      = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
 
   // Class Background Spells
@@ -7298,9 +7268,9 @@ void demon_hunter_t::init_spells()
   spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
   spec.retaliation_damage      = talent.vengeance.retaliation->ok() ? find_spell( 391159 ) : spell_data_t::not_found();
 
-  if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
+  if ( talent.demon_hunter.elysian_decree->ok() )
   {
-    spell.elysian_decree        = talent.havoc.elysian_decree;
+    spell.elysian_decree        = talent.demon_hunter.elysian_decree;
     spell.elysian_decree_damage = find_spell( 389860 );
   }
   else
