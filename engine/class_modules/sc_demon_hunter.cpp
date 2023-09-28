@@ -192,9 +192,6 @@ public:
   event_t* frailty_driver;
 
   bool fodder_initiative;
-
-  double ragefire_accumulator;
-  unsigned ragefire_crit_accumulator;
   double shattered_destiny_accumulator;
   double darkglare_boon_cdr_roll;
 
@@ -216,7 +213,6 @@ public:
     damage_buff_t* chaos_theory;
     buff_t* death_sweep;
     buff_t* furious_gaze;
-    buff_t* growing_inferno;
     buff_t* initiative;
     buff_t* inner_demon;
     damage_buff_t* momentum;
@@ -1878,22 +1874,6 @@ public:
     p()->frailty_accumulator += s->result_amount * multiplier;
   }
 
-  void accumulate_ragefire( action_state_t* s )
-  {
-    if ( !p()->talent.havoc.ragefire->ok() )
-      return;
-
-    if ( !( s->result_amount > 0 && s->result == RESULT_CRIT ) )
-      return;
-
-    if ( p()->ragefire_crit_accumulator >= p()->talent.havoc.ragefire->effectN( 2 ).base_value() )
-      return;
-
-    const double multiplier = p()->talent.havoc.ragefire->effectN( 1 ).percent();
-    p()->ragefire_accumulator += s->result_amount * multiplier;
-    p()->ragefire_crit_accumulator++;
-  }
-
   void trigger_felblade( action_state_t* s )
   {
     if ( ab::result_is_miss( s->result ) )
@@ -3168,6 +3148,43 @@ struct infernal_strike_t : public demon_hunter_spell_t
 
 // Immolation Aura ==========================================================
 
+struct immolation_aura_state_t : public action_state_t
+{
+  double growing_inferno_multiplier;
+  buff_t* immolation_aura;
+
+  immolation_aura_state_t( action_t* action, player_t* target )
+    : action_state_t( action, target ), growing_inferno_multiplier( 1.0 ), immolation_aura( nullptr )
+  {
+  }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    growing_inferno_multiplier = 1.0;
+    immolation_aura            = nullptr;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+
+    auto ias                   = debug_cast<const immolation_aura_state_t*>( s );
+    growing_inferno_multiplier = ias->growing_inferno_multiplier;
+    immolation_aura            = ias->immolation_aura;
+  }
+
+  double composite_da_multiplier() const override
+  {
+    return action_state_t::composite_da_multiplier() * growing_inferno_multiplier;
+  }
+
+  double composite_ta_multiplier() const override
+  {
+    return action_state_t::composite_ta_multiplier() * growing_inferno_multiplier;
+  }
+};
+
 struct immolation_aura_t : public demon_hunter_spell_t
 {
   struct infernal_armor_damage_t : public demon_hunter_spell_t
@@ -3180,6 +3197,10 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
   struct immolation_aura_damage_t : public demon_hunter_spell_t
   {
+  private:
+    using state_t = immolation_aura_state_t;
+
+  public:
     bool initial;
 
     immolation_aura_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, bool initial )
@@ -3207,11 +3228,24 @@ struct immolation_aura_t : public demon_hunter_spell_t
       }
     }
 
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    state_t* cast_state( action_state_t* s )
+    {
+      return static_cast<state_t*>( s );
+    }
+
+    const state_t* cast_state( const action_state_t* s ) const
+    {
+      return static_cast<const state_t*>( s );
+    }
+
     double action_multiplier() const override
     {
       double am = demon_hunter_spell_t::action_multiplier();
-
-      am *= 1.0 + p()->buff.growing_inferno->stack_value();
 
       if ( p()->talent.havoc.isolated_prey->ok() )
       {
@@ -3223,6 +3257,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
       return am;
     }
+
+    void accumulate_ragefire( immolation_aura_state_t* s );
 
     void impact( action_state_t* s ) override
     {
@@ -3256,7 +3292,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
               p()->talent.vengeance.volatile_flameblood->internal_cooldown() );
         }
 
-        accumulate_ragefire( s );
+        accumulate_ragefire( cast_state( s ) );
       }
     }
 
@@ -3272,8 +3308,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
+  double afi_chance;
+
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str )
+    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str ),
+      afi_chance( p->talent.havoc.a_fire_inside->effectN( 3 ).percent() )
   {
     may_miss     = false;
     dot_duration = timespan_t::zero();
@@ -3282,6 +3321,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     affected_by.t31_vengeance_2pc = false;
 
     apply_affecting_aura( p->spec.immolation_aura_cdr );
+    apply_affecting_aura( p->talent.havoc.a_fire_inside );
 
     if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
     {
@@ -3329,6 +3369,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     p()->buff.immolation_aura->trigger();
     demon_hunter_spell_t::execute();
+
+    if ( p()->talent.havoc.a_fire_inside->ok() && rng().roll( afi_chance ) )
+      cooldown->reset( true, 1 );
   }
 };
 
@@ -4991,8 +5034,16 @@ struct fel_rush_t : public demon_hunter_attack_t
   void schedule_execute( action_state_t* s ) override
   {
     // Fel Rush's loss of control causes a GCD lag after the loss ends.
+    // You get roughly 100ms in which to queue the next spell up correctly.
     // Calculate this once on schedule_execute since gcd() is called multiple times
-    gcd_lag = rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
+    if ( sim->gcd_lag > 100_ms )
+      gcd_lag = rng().gauss( sim->gcd_lag - 100_ms, sim->gcd_lag_stddev );
+    else
+      gcd_lag = 0_ms;
+
+    if ( gcd_lag < 0_ms )
+      gcd_lag = 0_ms;
+
     demon_hunter_attack_t::schedule_execute( s );
   }
 
@@ -5433,10 +5484,13 @@ struct throw_glaive_t : public demon_hunter_attack_t
     soulrend_t* soulrend;
     bool from_t31;
 
+    timespan_t t31_4pc_adjust_seconds;
+
     throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, bool from_t31 = false )
       : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
         soulrend( nullptr ),
-        from_t31( from_t31 )
+        from_t31( from_t31 ),
+        t31_4pc_adjust_seconds( -timespan_t::from_millis( p->set_bonuses.t31_havoc_4pc->effectN( 1 ).base_value() ) )
     {
       background = dual = true;
       radius            = 10.0;
@@ -5449,6 +5503,16 @@ struct throw_glaive_t : public demon_hunter_attack_t
       if ( from_t31 )
       {
         base_multiplier *= p->set_bonuses.t31_havoc_2pc->effectN( 1 ).percent();
+      }
+    }
+
+    void execute() override
+    {
+      demon_hunter_attack_t::execute();
+
+      if ( p()->set_bonuses.t31_havoc_4pc )
+      {
+        p()->cooldown.the_hunt->adjust( t31_4pc_adjust_seconds );
       }
     }
 
@@ -5490,6 +5554,11 @@ struct throw_glaive_t : public demon_hunter_attack_t
     execute_action        = damage;
     execute_action->stats = stats; 
 
+    if ( from_t31 )
+    {
+      cooldown->duration = 0_ms;
+    }
+
     if ( !from_t31 && damage->soulrend )
     {
       add_child( damage->soulrend );
@@ -5516,12 +5585,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     // Hit the fodder 250ms after the action is used to fake the travel time.
     make_event( sim, 250_ms, ( [ this ] { hit_fodder( true ); } ) );
-
-    if ( p()->set_bonuses.t31_havoc_4pc )
-    {
-      timespan_t adjust_seconds = timespan_t::from_millis( p()->set_bonuses.t31_havoc_4pc->effectN( 1 ).base_value() );
-      p()->cooldown.the_hunt->adjust( -adjust_seconds );
-    }
 
     if ( hit_any_target && furious_throws )
     {
@@ -5679,32 +5742,113 @@ protected:
 private:
   using bb = BuffBase;
 };
-
 // Immolation Aura ==========================================================
-
 struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 {
-  immolation_aura_buff_t( demon_hunter_t* p ) : base_t( *p, "immolation_aura", p->spell.immolation_aura )
+  struct immolation_aura_functional_buff_t : public demon_hunter_buff_t<buff_t>
+  {
+  private:
+    using state_t = actions::spells::immolation_aura_state_t;
+
+  public:
+    double ragefire_accumulator;
+    unsigned int ragefire_crit_accumulator;
+    unsigned int growing_inferno_ticks;
+    unsigned int growing_inferno_max_ticks;
+    double growing_inferno_multiplier;
+
+    immolation_aura_functional_buff_t( demon_hunter_t* p, std::string_view name )
+      : base_t( *p, name, p->spell.immolation_aura ),
+        ragefire_accumulator( 0.0 ),
+        ragefire_crit_accumulator( 0 ),
+        growing_inferno_ticks( 0 ),
+        growing_inferno_max_ticks( 0 ),
+        growing_inferno_multiplier( p->talent.havoc.growing_inferno->effectN( 1 ).percent() )
+    {
+      set_cooldown( timespan_t::zero() );
+      apply_affecting_aura( p->spec.immolation_aura_3 );
+      apply_affecting_aura( p->talent.vengeance.agonizing_flames );
+      set_partial_tick( true );
+      set_quiet( true );
+
+      if ( p->talent.havoc.growing_inferno->ok() )
+        growing_inferno_max_ticks = (int)( 10 / p->talent.havoc.growing_inferno->effectN( 1 ).percent() );
+
+      set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
+        ragefire_crit_accumulator = 0;
+
+        state_t* s = static_cast<state_t*>( p->active.immolation_aura->get_state() );
+
+        s->target                     = p->target;
+        s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
+        s->immolation_aura            = this;
+
+        p->active.immolation_aura->snapshot_state( s, p->active.immolation_aura->amount_type( s ) );
+        p->active.immolation_aura->schedule_execute( s );
+
+        if ( growing_inferno_ticks < growing_inferno_max_ticks )
+          growing_inferno_ticks++;
+      } );
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
+
+      ragefire_accumulator      = 0.0;
+      ragefire_crit_accumulator = 0;
+      growing_inferno_ticks     = 0;
+
+      if ( p()->active.immolation_aura_initial && p()->sim->current_time() > 0_s )
+      {
+        state_t* s = static_cast<state_t*>( p()->active.immolation_aura_initial->get_state() );
+
+        s->target                     = p()->target;
+        s->growing_inferno_multiplier = 1;
+        s->immolation_aura            = this;
+
+        p()->active.immolation_aura_initial->snapshot_state( s, p()->active.immolation_aura_initial->amount_type( s ) );
+        p()->active.immolation_aura_initial->schedule_execute( s );
+      }
+      
+      growing_inferno_ticks++;
+
+      if ( p()->talent.havoc.unbound_chaos->ok() )
+      {
+        p()->buff.unbound_chaos->trigger();
+      }
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+      if ( p()->talent.havoc.ragefire->ok() )
+      {
+        p()->active.ragefire->execute_on_target( p()->target, ragefire_accumulator );
+        ragefire_accumulator      = 0;
+        ragefire_crit_accumulator = 0;
+      }
+    }
+
+    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+    {
+      // IA triggering multiple times fully resets the buff and triggers the instant damage again
+      this->expire();
+      return demon_hunter_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+    }
+  };
+
+  std::vector<immolation_aura_functional_buff_t*> immos;
+  immolation_aura_buff_t( demon_hunter_t* p ) : base_t( *p, "immolation_aura", p->spell.immolation_aura ), immos()
   {
     set_cooldown( timespan_t::zero() );
-    set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
     apply_affecting_aura( p->spec.immolation_aura_3 );
     apply_affecting_aura( p->talent.vengeance.agonizing_flames );
-    set_partial_tick( true );
+    set_tick_behavior( buff_tick_behavior::NONE );
+    buff_period = 0_ms;
 
-    set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
-      if ( p->talent.havoc.ragefire->ok() )
-      {
-        p->ragefire_crit_accumulator = 0;
-      }
-      p->active.immolation_aura->execute_on_target( p->target );
-      p->buff.growing_inferno->trigger();
-    } );
-
-    if ( p->talent.havoc.growing_inferno->ok() )
-    {
-      set_stack_change_callback( [ p ]( buff_t*, int, int ) { p->buff.growing_inferno->expire(); } );
-    }
+    set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
 
     if ( p->talent.vengeance.agonizing_flames->ok() )
     {
@@ -5715,47 +5859,86 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     {
       add_invalidate( CACHE_ARMOR );
     }
-  }
 
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
-
-    if ( p()->talent.havoc.ragefire->ok() )
+    if ( p->talent.havoc.a_fire_inside )
     {
-      p()->ragefire_accumulator      = 0.0;
-      p()->ragefire_crit_accumulator = 0;
+      set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+      set_max_stack( 5 );
+    }
+    else
+    {
+      set_max_stack( 1 );
     }
 
-    if ( p()->active.immolation_aura_initial && p()->sim->current_time() > 0_s )
+    for ( int i = 0; i < max_stack(); i++ )
     {
-      p()->active.immolation_aura_initial->set_target( p()->target );
-      p()->active.immolation_aura_initial->execute();
-    }
-
-    if ( p()->talent.havoc.unbound_chaos->ok() )
-    {
-      p()->buff.unbound_chaos->trigger();
+      immos.push_back( new immolation_aura_functional_buff_t( p, fmt::format( "immolation_aura{}", i + 1 ) ) );
     }
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void execute( int stacks, double value, timespan_t duration ) override
   {
-    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    if ( p()->talent.havoc.ragefire->ok() )
+    // bool b = base_t::execute( stacks, value, chance, duration );
+    int s = 0;
+    if ( max_stack() == 1 )
     {
-      p()->active.ragefire->execute_on_target( p()->target, p()->ragefire_accumulator );
-      p()->ragefire_accumulator      = 0.0;
-      p()->ragefire_crit_accumulator = 0;
+      immos[ 0 ]->trigger( 1, value, 1.0, duration );
+      s++;
     }
-  }
+    else
+    {
+      timespan_t min_remains                      = timespan_t::max();
+      immolation_aura_functional_buff_t* min_immo = nullptr;
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    // IA triggering multiple times fully resets the buff and triggers the instant damage again
-    this->expire();
-    return demon_hunter_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+      for ( auto* immo : immos )
+      {
+        if ( immo->check() )
+        {
+          if ( immo->remains() < min_remains )
+          {
+            min_remains = immo->remains();
+            min_immo    = immo;
+          }
+        }
+        else
+        {
+          immo->trigger( 1, value, 1.0, duration );
+          s++;
+          if ( s >= stacks )
+            break;
+        }
+      }
+
+      if ( s < stacks )
+      {
+        min_immo->trigger( 1, value, 1.0, duration );
+        s++;
+
+        while ( s < stacks )
+        {
+          // Incredibly inefficient code to handle the absolute extreme of edge cases where soem
+          min_remains = timespan_t::max();
+          min_immo    = nullptr;
+
+          for ( auto* immo : immos )
+          {
+            if ( immo->check() )
+            {
+              if ( immo->remains() < min_remains )
+              {
+                min_remains = immo->remains();
+                min_immo    = immo;
+              }
+            }
+          }
+          min_immo->trigger( 1, value, 1.0, duration );
+          s++;
+        }
+      }
+    }
+
+    if ( s > 0 )
+      base_t::execute( s, value, duration );
   }
 };
 
@@ -5846,7 +6029,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
     {
       duration = buff_duration();
     }
-
+    
     if ( remains() + buff_duration() > max_duration )
     {
       duration = max_duration - remains();
@@ -5883,6 +6066,34 @@ struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
 };
 
 }  // end namespace buffs
+
+// Namespace Actions post buffs
+namespace actions
+{
+namespace spells
+{
+void immolation_aura_t::immolation_aura_damage_t::accumulate_ragefire( immolation_aura_state_t* s )
+{
+  if ( !p()->talent.havoc.ragefire->ok() )
+    return;
+
+  assert( s->immolation_aura && "Immolation Aura state should contain the parent buff while executing damage." );
+
+  if ( !( s->result_amount > 0 && s->result == RESULT_CRIT ) )
+    return;
+
+  buffs::immolation_aura_buff_t::immolation_aura_functional_buff_t* immo =
+      static_cast<buffs::immolation_aura_buff_t::immolation_aura_functional_buff_t*>( s->immolation_aura );
+
+  if ( immo->ragefire_crit_accumulator >= p()->talent.havoc.ragefire->effectN( 2 ).base_value() )
+    return;
+
+  const double multiplier = p()->talent.havoc.ragefire->effectN( 1 ).percent();
+  immo->ragefire_accumulator += s->result_amount * multiplier;
+  immo->ragefire_crit_accumulator++;
+}
+}  // namespace spells
+}  // namespace actions
 
 // ==========================================================================
 // Misc. Events and Structs
@@ -6014,8 +6225,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     frailty_accumulator( 0.0 ),
     frailty_driver( nullptr ),
     fodder_initiative ( false ),
-    ragefire_accumulator( 0.0 ),
-    ragefire_crit_accumulator( 0 ),
     shattered_destiny_accumulator( 0.0 ),
     darkglare_boon_cdr_roll( 0.0 ),
     exit_melee_event( nullptr ),
@@ -6241,7 +6450,7 @@ void demon_hunter_t::create_buffs()
 
   buff.momentum = make_buff<damage_buff_t>( this, "momentum", spec.momentum_buff );
   buff.momentum->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
-    return std::min( b->remains() + d, 30_s );  // Capped to 10 seconds
+    return std::min( b->remains() + d, 30_s );  // Capped to 30 seconds
   } );
 
   buff.inertia = make_buff<damage_buff_t>( this, "inertia", spec.inertia_buff );
@@ -6260,12 +6469,6 @@ void demon_hunter_t::create_buffs()
                            ->set_default_value( talent.havoc.unbound_chaos->effectN( 2 ).percent() );
 
   buff.chaos_theory = make_buff<damage_buff_t>( this, "chaos_theory", spec.chaos_theory_buff );
-
-  buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", talent.havoc.growing_inferno )
-                             ->set_default_value( talent.havoc.growing_inferno->effectN( 1 ).percent() )
-                             ->set_duration( 20_s );
-  if ( talent.havoc.growing_inferno->ok() )
-    buff.growing_inferno->set_max_stack( (int)( 10 / talent.havoc.growing_inferno->effectN( 1 ).percent() ) );
 
   // Vengeance ==============================================================
 
@@ -6977,7 +7180,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.fel_barrage         = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
   talent.havoc.shattered_destiny   = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Destiny" );
   talent.havoc.any_means_necessary = find_talent_spell( talent_tree::SPECIALIZATION, "Any Means Necessary" );
-  talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
+  talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside [WIP]" );
 
   // Vengeance Talents
 
@@ -7957,8 +8160,6 @@ void demon_hunter_t::reset()
   next_fragment_spawn                                  = 0;
   metamorphosis_health                                 = 0;
   frailty_accumulator                                  = 0.0;
-  ragefire_accumulator                                 = 0.0;
-  ragefire_crit_accumulator                            = 0;
   shattered_destiny_accumulator                        = 0.0;
   darkglare_boon_cdr_roll                              = 0.0;
   set_bonuses.t30_havoc_2pc_fury_tracker               = 0.0;
