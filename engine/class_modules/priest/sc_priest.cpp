@@ -1215,7 +1215,12 @@ public:
 
     if ( priest().talents.shadow.inescapable_torment.enabled() )
     {
-      priest().trigger_inescapable_torment( s->target );
+      auto mod = 1.0;
+      if ( cast_state( s )->chain_number > 0 )
+      {
+        mod *= priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent();
+      }
+      priest().trigger_inescapable_torment( s->target, cast_state( s )->chain_number > 0, mod );
     }
 
     if ( result_is_hit( s->result ) )

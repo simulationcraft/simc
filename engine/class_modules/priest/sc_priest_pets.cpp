@@ -236,8 +236,8 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
   // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
-  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
-  //  value_type = optional, default USE_DATA, where the value comes from.
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore
+  //  parameters value_type = optional, default USE_DATA, where the value comes from.
   //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
   //  spell = optional list of spell with redirect effects that modify the effects on the buff
   //
@@ -254,7 +254,8 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
     parse_buff_effects( p().o().buffs.devoured_pride );
-    parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
+    parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false,
+                        USE_DATA );  // Buffs non-periodic spells - Skip E4
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
     {
@@ -661,11 +662,25 @@ struct inescapable_torment_t final : public priest_pet_spell_t
   {
     background = true;
 
+    // NOTE: the IST damage triggered by echo SW:D still deal full damage
     impact_action = new inescapable_torment_damage_t( p );
     add_child( impact_action );
 
     // Base spell also has damage values
     base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
+  }
+
+  void trigger( player_t* target, bool echo, double mod )
+  {
+    duration = data().effectN( 2 ).time_value();
+
+    if ( echo )
+    {
+      duration *= mod;
+    }
+
+    set_target( target );
+    execute();
   }
 
   void execute() override
@@ -996,14 +1011,14 @@ spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest 
 
 namespace priestspace
 {
-void priest_t::trigger_inescapable_torment( player_t* target )
+void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double mod )
 {
   if ( !talents.shadow.inescapable_torment.enabled() || !talents.discipline.inescapable_torment.enabled() )
     return;
 
   if ( get_current_main_pet( *this ).n_active_pets() > 0 )
   {
-    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
+    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value() * mod;
     buffs.devoured_pride->extend_duration( this, extend );
     buffs.devoured_despair->extend_duration( this, extend );
 
@@ -1011,8 +1026,7 @@ void priest_t::trigger_inescapable_torment( player_t* target )
     {
       auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
       assert( pet->inescapable_torment );
-      pet->inescapable_torment->set_target( target );
-      pet->inescapable_torment->execute();
+      pet->inescapable_torment->trigger( target, echo, mod );
     }
   }
 }
