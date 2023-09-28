@@ -424,7 +424,7 @@ public:
       player_talent_t last_resort;      // NYI
       player_talent_t sigil_of_chains;  // NYI
       player_talent_t down_in_flames;
-      player_talent_t illuminated_sigils;  // NYI
+      player_talent_t illuminated_sigils;  // Partial Implementation
 
     } vengeance;
 
@@ -1462,6 +1462,7 @@ public:
     ab::apply_affecting_aura( p->talent.vengeance.chains_of_anger );
     ab::apply_affecting_aura( p->talent.vengeance.stoke_the_flames );
     ab::apply_affecting_aura( p->talent.vengeance.down_in_flames );
+    ab::apply_affecting_aura( p->talent.vengeance.illuminated_sigils );
 
     // Rank Passives
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
