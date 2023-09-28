@@ -5478,13 +5478,10 @@ struct throw_glaive_t : public demon_hunter_attack_t
     soulrend_t* soulrend;
     bool from_t31;
 
-    timespan_t t31_4pc_adjust_seconds;
-
     throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, bool from_t31 = false )
       : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
         soulrend( nullptr ),
-        from_t31( from_t31 ),
-        t31_4pc_adjust_seconds( -timespan_t::from_millis( p->set_bonuses.t31_havoc_4pc->effectN( 1 ).base_value() ) )
+        from_t31( from_t31 )
     {
       background = dual = true;
       radius            = 10.0;
@@ -5499,17 +5496,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
         base_multiplier *= p->set_bonuses.t31_havoc_2pc->effectN( 1 ).percent();
       }
     }
-
-    void execute() override
-    {
-      demon_hunter_attack_t::execute();
-
-      if ( p()->set_bonuses.t31_havoc_4pc )
-      {
-        p()->cooldown.the_hunt->adjust( t31_4pc_adjust_seconds );
-      }
-    }
-
+    
     void impact( action_state_t* state ) override
     {
       demon_hunter_attack_t::impact( state );
@@ -5537,11 +5524,13 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
   throw_glaive_damage_t* furious_throws;
   bool from_t31;
+  timespan_t t31_4pc_adjust_seconds;
 
   throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str, bool from_t31 = false )
     : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ),
       furious_throws( nullptr ),
-      from_t31( from_t31 )
+      from_t31( from_t31 ),
+      t31_4pc_adjust_seconds( -timespan_t::from_millis( p->set_bonuses.t31_havoc_4pc->effectN( 1 ).base_value() ) )
   {
     throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>(
         from_t31 ? "throw_glaive_damage_t31" : "throw_glaive_damage", from_t31 );
@@ -5579,6 +5568,16 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     // Hit the fodder 250ms after the action is used to fake the travel time.
     make_event( sim, 250_ms, ( [ this ] { hit_fodder( true ); } ) );
+
+    if ( !from_t31 )
+    {
+      trigger_cycle_of_hatred();
+    }
+
+    if ( p()->set_bonuses.t31_havoc_4pc )
+    {
+      p()->cooldown.the_hunt->adjust( t31_4pc_adjust_seconds );
+    }
 
     if ( hit_any_target && furious_throws )
     {
