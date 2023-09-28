@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.2.0.51425
-static const std::array<specialization_spell_entry_t, 389> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.2.0.51521
+static const std::array<specialization_spell_entry_t, 390> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -55,6 +55,7 @@ static const std::array<specialization_spell_entry_t, 389> __ptr_specialization_
   {  2,   65, 289941,      0, "Holy Shock"                        , 0 },
   {  2,   65, 315867,      0, "Judgment"                          , "Rank 3" },
   {  2,   65, 415091,  53600, "Shield of the Righteous"           , 0 },
+  {  2,   65, 428076,      0, "Holy Paladin"                      , 0 },
   {  2,   66,  25780,      0, "Righteous Fury"                    , 0 },
   {  2,   66,  76671,      0, "Mastery: Divine Bulwark"           , 0 },
   {  2,   66,  86102,      0, "Plate Specialization"              , 0 },
@@ -270,7 +271,7 @@ static const std::array<specialization_spell_entry_t, 389> __ptr_specialization_
   { 10,  270, 162701,      0, "Stat Negation Aura - Intellect Healer", 0 },
   { 10,  270, 212051,      0, "Reawaken"                          , 0 },
   { 10,  270, 322104,      0, "Expel Harm"                        , "Rank 2" },
-  { 10,  270, 325214,      0, "Expel Harm"                        , "Rank 3" },
+  { 10,  270, 428200,      0, "Mistweaver Monk"                   , 0 },
   { 10,  269, 115636,      0, "Mastery: Combo Strikes"            , 0 },
   { 10,  269, 116092,      0, "Afterlife"                         , 0 },
   { 10,  269, 120227,      0, "Leather Specialization"            , 0 },

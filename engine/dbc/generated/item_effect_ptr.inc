@@ -1,5 +1,5 @@
-// Item effects, wow build 10.2.0.51425
-static const std::array<item_effect_t, 8652> __ptr_item_effect_data { {
+// Item effects, wow build 10.2.0.51521
+static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8485,8 +8485,8 @@ static const std::array<item_effect_t, 8652> __ptr_item_effect_data { {
   { 180169, 422858, 207168,   0,   1,    0,      -1,      -1 }, // Pip's Emerald Friendship Badge
   { 180060, 422440, 207169,   0,   1,    0,      -1,      -1 }, // Branch of the Tormented Ancient
   { 180061, 422441, 207169,   1,   0,    0,      -1,      -1 }, // Roots of the Tormented Ancient
-  { 180045, 422081, 207170,   0,   1,    0,      -1,      -1 }, // Smoldering Treant Seedling
-  { 180046, 422083, 207170,   1,   0,    0,      -1,      -1 }, // Smoldering Treant Seedling
+  { 180045, 422081, 207170,   0,   1,    0,      -1,      -1 }, // Smoldering Seedling
+  { 180046, 422083, 207170,   1,   0,    0,      -1,      -1 }, // Smoldering Seedling
   { 180306, 423418, 207171,   0,   1,    0,      -1,      -1 }, // Blossom of Amirdrassil
   { 180049, 422141, 207172,   0,   1,    0,      -1,      -1 }, // Belor'relos, the Sunstone
   { 180050, 422146, 207172,   1,   0,    0,      -1,      -1 }, // Solar Maelstrom
@@ -8646,15 +8646,17 @@ static const std::array<item_effect_t, 8652> __ptr_item_effect_data { {
   { 180753, 426473, 210739,   1,   0,    0,      -1,      -1 }, // Mark of the Snowy Umbraclaw
   { 180758, 426483, 210751,   1,   0,    0,      -1,      -1 }, // Mark of the Hibernating Runebear
   { 180759, 426459, 210753,   1,   0,    0,      -1,      -1 }, // Scale of the Prismatic Whiskerfish
-  { 180761, 426478, 210754,   1,   0,    0,      -1,      -1 }, // Feather of the Blazing Somnowl
   { 180763, 426871, 210755,   1,   0,    0,      -1,      -1 }, // Dream Attunement
   { 180767, 426931, 210764,   1,   0,    0,      -1,      -1 }, // Dream Attunement
   { 180768, 426932, 210766,   1,   0,    0,      -1,      -1 }, // Dream Attunement
   { 180769, 426933, 210767,   1,   0,    0,      -1,      -1 }, // Dream Attunement
   { 180871, 427676, 210961,   0,   1,    0,      -1,      -1 }, // Alara'shinu
+  { 180914, 428045, 211080,   1,   0,    0,      -1,      -1 }, // Mark of the Boreal Dreamtalon
+  { 180915, 428050, 211081,   1,   0,    0,      -1,      -1 }, // Mark of the Auroral Dreamtalon
+  { 180945, 428181, 211132,   0,   0,    0,      -1,      -1 }, // Omni Storm
 } };
 
-static const std::array<uint16_t, 8652> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 8654> __ptr_item_effect_id_index { {
     418,   419,   420,   421,   422,   423,   424,   427,
     428,   429,   430,   431,   432,   433,   434,   435,
     436,   437,   438,   439,   442,   443,   444,   445,
@@ -9735,7 +9737,7 @@ static const std::array<uint16_t, 8652> __ptr_item_effect_id_index { {
    8514,  8510,  8508,  8511,  8626,  8627,  8628,  8629,
    8630,  8631,  8632,  8633,  8634,  8635,   344,  8636,
    8637,  8638,  8639,  8640,  8641,  8642,  8643,  8644,
-   8645,  8646,  8493,  8647,  8648,  8649,  8650,  8566,
-   8567,  8509,  8625,  8651,
+   8645,  8493,  8646,  8647,  8648,  8649,  8566,  8567,
+   8509,  8625,  8650,  8651,  8652,  8653,
 } };
 
