@@ -395,7 +395,7 @@ public:
       player_talent_t burning_blood;
       player_talent_t soul_barrier;     // NYI
       player_talent_t bulk_extraction;  // NYI
-      player_talent_t sigil_of_chains;  // NYI
+      player_talent_t ascending_flame;  // NYI
 
       player_talent_t void_reaver;
       player_talent_t fallout;
@@ -422,7 +422,9 @@ public:
       player_talent_t soulcrush;
       player_talent_t soul_carver;
       player_talent_t last_resort;          // NYI
+      player_talent_t sigil_of_chains;      // NYI
       player_talent_t down_in_flames;
+      player_talent_t illuminated_sigils; // NYI
 
     } vengeance;
 
@@ -3327,11 +3329,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
     {
       return static_cast<const state_t*>( s );
     }
-    
+
     double composite_crit_chance() const override
     {
       double ccc = demon_hunter_spell_t::composite_crit_chance();
-      
+
       if ( p()->talent.havoc.isolated_prey->ok() )
       {
         if ( targets_in_range_list( target_list() ).size() == 1 && !p()->buff.fodder_to_the_flame->check() )
@@ -5592,7 +5594,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
         base_multiplier *= p->set_bonuses.t31_havoc_2pc->effectN( 1 ).percent();
       }
     }
-    
+
     void impact( action_state_t* state ) override
     {
       demon_hunter_attack_t::impact( state );
@@ -5643,7 +5645,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     }
 
     execute_action        = damage;
-    execute_action->stats = stats; 
+    execute_action->stats = stats;
 
     if ( !t31 )
     {
@@ -5934,7 +5936,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
         p()->active.immolation_aura_initial->snapshot_state( s, p()->active.immolation_aura_initial->amount_type( s ) );
         p()->active.immolation_aura_initial->schedule_execute( s );
       }
-      
+
       growing_inferno_ticks++;
 
       if ( p()->talent.havoc.unbound_chaos->ok() )
@@ -6153,7 +6155,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
     {
       duration = buff_duration();
     }
-    
+
     if ( remains() + buff_duration() > max_duration )
     {
       duration = max_duration - remains();
@@ -7234,7 +7236,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.demon_blades      = find_talent_spell( talent_tree::SPECIALIZATION, "Demon Blades" );
   talent.havoc.burning_hatred    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Hatred" );
 
-  
+
   talent.havoc.improved_fel_rush     = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Fel Rush" );
   talent.havoc.dash_of_chaos         = find_talent_spell( talent_tree::SPECIALIZATION, "Dash of Chaos" );
   talent.havoc.improved_chaos_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Strike" );
@@ -7313,7 +7315,7 @@ void demon_hunter_t::init_spells()
   talent.vengeance.burning_blood    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Blood" );
   talent.vengeance.soul_barrier     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Barrier" );
   talent.vengeance.bulk_extraction  = find_talent_spell( talent_tree::SPECIALIZATION, "Bulk Extraction" );
-  talent.vengeance.sigil_of_chains  = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
+  talent.vengeance.ascending_flame  = find_talent_spell( talent_tree::SPECIALIZATION, "Ascending Flame" );
 
   talent.vengeance.void_reaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Reaver" );
   talent.vengeance.fallout             = find_talent_spell( talent_tree::SPECIALIZATION, "Fallout" );
@@ -7337,10 +7339,12 @@ void demon_hunter_t::init_spells()
   talent.vengeance.feed_the_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Feed the Demon" );
   talent.vengeance.charred_flesh  = find_talent_spell( talent_tree::SPECIALIZATION, "Charred Flesh" );
 
-  talent.vengeance.soulcrush           = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
-  talent.vengeance.soul_carver         = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
-  talent.vengeance.last_resort         = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
-  talent.vengeance.down_in_flames      = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
+  talent.vengeance.soulcrush       = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
+  talent.vengeance.soul_carver     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
+  talent.vengeance.last_resort     = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
+  talent.vengeance.sigil_of_chains = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
+  talent.vengeance.down_in_flames  = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
+  talent.vengeance.illuminated_sigils = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Sigils" );
 
   // Class Background Spells
   spell.felblade_damage      = talent.demon_hunter.felblade->ok() ? find_spell( 213243 ) : spell_data_t::not_found();
@@ -8003,7 +8007,7 @@ double demon_hunter_t::composite_damage_versatility() const
 double demon_hunter_t::composite_heal_versatility() const
 {
   double chv = player_t::composite_heal_versatility();
-  
+
   chv += talent.havoc.scars_of_suffering->effectN( 1 ).percent();
 
   return chv;
@@ -8242,7 +8246,7 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       s->result_amount *=
           1.0 + spec.demonic_wards->effectN( 1 ).percent() + spec.demonic_wards_2->effectN( 1 ).percent();
     }
-        
+
     if ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL )
     {
       s->result_amount *= 1.0 + talent.havoc.demon_hide->effectN( 2 ).percent();
