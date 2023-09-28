@@ -4947,6 +4947,9 @@ struct chill_streak_damage_t final : public death_knight_spell_t
   {
     background = proc = true;
     max_hits = p -> talent.frost.chill_streak -> effectN( 1 ).base_value();
+    // Contained in this spells duration, cant convert from timespan_t to double
+    // Manually setting for now to accurately scale the duration of the T31 2pc. 
+    travel_delay = 0.3; 
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) )
     {
       max_hits += p -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value();
