@@ -262,18 +262,17 @@ public:
       player_talent_t improved_disrupt;
       player_talent_t bouncing_glaives;
       player_talent_t consume_magic;
-      player_talent_t flames_of_fury;
+      player_talent_t improved_sigil_of_misery;
 
       player_talent_t pursuit;
       player_talent_t disrupting_fury;
-      player_talent_t aura_of_pain;
       player_talent_t felblade;
       player_talent_t swallowed_anger;
       player_talent_t charred_warblades;  // NYI Vengeance
 
       player_talent_t felfire_haste;  // NYI
       player_talent_t master_of_the_glaive;
-      player_talent_t rush_of_chaos;
+      player_talent_t aura_of_pain;
       player_talent_t concentrated_sigils;
       player_talent_t precise_sigils;    // Partial NYI (debuff Sigils)
       player_talent_t lost_in_darkness;  // No Implementation
@@ -288,7 +287,6 @@ public:
       player_talent_t illidari_knowledge;
       player_talent_t demonic;
       player_talent_t will_of_the_illidari;  // NYI Vengeance
-      player_talent_t improved_sigil_of_misery;
       player_talent_t live_by_the_glaive;  // NYI
 
       player_talent_t internal_struggle;
@@ -299,8 +297,9 @@ public:
       player_talent_t erratic_felheart;
       player_talent_t long_night;   // No Implementation
       player_talent_t pitch_black;  // No Implementation
+      player_talent_t rush_of_chaos;
       player_talent_t demon_muzzle;  // NYI Vengeance
-      player_talent_t extended_sigils;
+      player_talent_t flames_of_fury;
 
       player_talent_t collective_anguish;
       player_talent_t fodder_to_the_flame;
@@ -1439,7 +1438,6 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.erratic_felheart );
     ab::apply_affecting_aura( p->talent.demon_hunter.pitch_black );
     ab::apply_affecting_aura( p->talent.demon_hunter.flames_of_fury );
-    ab::apply_affecting_aura( p->talent.demon_hunter.extended_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.quickened_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.fodder_to_the_flame );
 
@@ -7220,7 +7218,6 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.pitch_black      = find_talent_spell( talent_tree::CLASS, "Pitch Black" );
   talent.demon_hunter.rush_of_chaos    = find_talent_spell( talent_tree::CLASS, "Rush of Chaos" );
   talent.demon_hunter.demon_muzzle     = find_talent_spell( talent_tree::CLASS, "Demon Muzzle" );
-  talent.demon_hunter.extended_sigils  = find_talent_spell( talent_tree::CLASS, "Extended Sigils" );
   talent.demon_hunter.flames_of_fury   = find_talent_spell( talent_tree::CLASS, "Flames of Fury" );
 
   talent.demon_hunter.collective_anguish  = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
