@@ -2252,6 +2252,7 @@ class SpellDataGenerator(DataGenerator):
           ( 228532, 1 ), # Consume Lesser Soul heal
           ( 328953, 1 ), # Consume Demon Soul heal
           ( 328951, 1 ), # New Shattered Souls area trigger
+          ( 428493, 1 ), # Chaotic Disposition Damage
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate

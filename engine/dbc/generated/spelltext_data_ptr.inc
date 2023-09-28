@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51521
-static const std::array<spelltext_data_t, 20467> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20468> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20462,6 +20462,7 @@ static const std::array<spelltext_data_t, 20467> __ptr_spelltext_data { {
   { 428464, "$@spelldesc422879", "Your next Wildfire Bomb will not incur a cooldown.", 0 },
   { 428486, "Your finishing moves heal you for $s1% of damage dealt. At full health gain shielding instead, absorbing up to $s2% of your maximum health.", 0, 0 },
   { 428492, "Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. ", 0, 0 },
+  { 428493, "$@spelldesc428492", 0, 0 },
   { 428557, "Sigil skills have $s2 additional $lcharge:charges;. You have $428595s1% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.", 0, 0 },
   { 428595, "$@spelldesc428557", 0, 0 },
   { 428603, "Sigil of Flame's initial damage is increased by $s2%.\r\n\r\nMultiple applications of Sigil of Flame may overlap.", 0, 0 },
