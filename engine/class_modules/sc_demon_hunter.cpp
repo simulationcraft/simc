@@ -289,7 +289,7 @@ public:
       player_talent_t demonic;
       player_talent_t will_of_the_illidari;  // NYI Vengeance
       player_talent_t improved_sigil_of_misery;
-      player_talent_t misery_in_defeat;  // NYI
+      player_talent_t live_by_the_glaive;  // NYI
 
       player_talent_t internal_struggle;
       player_talent_t darkness;  // No Implementation
@@ -319,7 +319,7 @@ public:
       player_talent_t burning_hatred;
 
       player_talent_t improved_fel_rush;
-      player_talent_t dash_of_chaos;
+      player_talent_t dash_of_chaos;  // NYI
       player_talent_t improved_chaos_strike;
       player_talent_t first_blood;
       player_talent_t accelerated_blade;
@@ -513,7 +513,6 @@ public:
     const spell_data_t* initiative_buff;
     const spell_data_t* inner_demon_buff;
     const spell_data_t* inner_demon_damage;
-    const spell_data_t* isolated_prey_fury;
     const spell_data_t* momentum_buff;
     const spell_data_t* inertia_buff;
     const spell_data_t* ragefire_damage;
@@ -637,7 +636,6 @@ public:
     // Havoc
     gain_t* blind_fury;
     gain_t* demonic_appetite;
-    gain_t* isolated_prey;
     gain_t* tactical_retreat;
 
     // Vengeance
@@ -3237,20 +3235,20 @@ struct immolation_aura_t : public demon_hunter_spell_t
     {
       return static_cast<const state_t*>( s );
     }
-
-    double action_multiplier() const override
+    
+    double composite_crit_chance() const override
     {
-      double am = demon_hunter_spell_t::action_multiplier();
-
+      double ccc = demon_hunter_spell_t::composite_crit_chance();
+      
       if ( p()->talent.havoc.isolated_prey->ok() )
       {
         if ( targets_in_range_list( target_list() ).size() == 1 && !p()->buff.fodder_to_the_flame->check() )
         {
-          am *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 3 ).percent();
+          return 1.0;
         }
       }
 
-      return am;
+      return ccc;
     }
 
     void accumulate_ragefire( immolation_aura_state_t* s );
@@ -7076,7 +7074,7 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.illidari_knowledge       = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
   talent.demon_hunter.demonic                  = find_talent_spell( talent_tree::CLASS, "Demonic" );
   talent.demon_hunter.will_of_the_illidari     = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
-  talent.demon_hunter.misery_in_defeat         = find_talent_spell( talent_tree::CLASS, "Misery in Defeat" );
+  talent.demon_hunter.live_by_the_glaive       = find_talent_spell( talent_tree::CLASS, "Live by the Glaive" );
 
   talent.demon_hunter.internal_struggle = find_talent_spell( talent_tree::CLASS, "Internal Struggle" );
   talent.demon_hunter.darkness          = find_talent_spell( talent_tree::CLASS, "Darkness" );
@@ -7248,7 +7246,6 @@ void demon_hunter_t::init_spells()
   spec.initiative_buff        = talent.havoc.initiative->ok() ? find_spell( 391215 ) : spell_data_t::not_found();
   spec.inner_demon_buff       = talent.havoc.inner_demon->ok() ? find_spell( 390145 ) : spell_data_t::not_found();
   spec.inner_demon_damage     = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
-  spec.isolated_prey_fury     = talent.havoc.isolated_prey->ok() ? find_spell( 357323 ) : spell_data_t::not_found();
   spec.momentum_buff          = talent.havoc.momentum->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
   spec.inertia_buff           = talent.havoc.inertia->ok() ? find_spell( 427641 ) : spell_data_t::not_found();
   spec.ragefire_damage        = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
@@ -7572,7 +7569,6 @@ void demon_hunter_t::create_gains()
 
   // Havoc
   gain.blind_fury       = get_gain( "blind_fury" );
-  gain.isolated_prey    = get_gain( "isolated_prey" );
   gain.tactical_retreat = get_gain( "tactical_retreat" );
 
   // Vengeance
@@ -7635,7 +7631,7 @@ double demon_hunter_t::composite_armor_multiplier() const
 
   if ( buff.immolation_aura->check() )
   {
-    am *= 1.0 + talent.demon_hunter.infernal_armor->effectN( 1 ).percent();
+    am *= pow( 1.0 + talent.demon_hunter.infernal_armor->effectN( 1 ).percent(), buff.immolation_aura->check() );
   }
 
   return am;
@@ -7975,8 +7971,11 @@ void demon_hunter_t::assess_damage( school_e school, result_amount_type dt, acti
        dbc::is_school( school, SCHOOL_PHYSICAL ) && dt == result_amount_type::DMG_DIRECT &&
        s->action->result_is_hit( s->result ) )
   {
-    active.infernal_armor->set_target( s->action->player );
-    active.infernal_armor->execute();
+    for ( int i = 0; i < buff.immolation_aura->check(); i++ )
+    {
+      active.infernal_armor->set_target( s->action->player );
+      active.infernal_armor->execute();
+    }
   }
 
   if ( active.retaliation && buff.demon_spikes->check() && s->action->player->is_enemy() &&
