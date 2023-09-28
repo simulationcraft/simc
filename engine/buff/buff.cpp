@@ -620,7 +620,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     is_fallback(),
     requires_invalidation(),
     expire_at_max_stack(),
-    ignore_mod_time_modifier( false ),
+    ignore_time_modifier( false ),
     reverse_stack_reduction( 1 ),
     current_value(),
     current_stack(),
@@ -628,8 +628,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     buff_duration_multiplier( 1.0 ),
     default_chance( 1.0 ),
     manual_chance( -1.0 ),
-    base_time_modifier_duration_multiplier( 1.0 ),
-    dynamic_time_modifier_duration_multiplier( 1.0 ),
+    base_time_duration_multiplier( 1.0 ),
+    dynamic_time_duration_multiplier( 1.0 ),
     constant_behavior( buff_constant_behavior::DEFAULT ),
     allow_precombat( true ),
     current_tick( 0 ),
@@ -728,7 +728,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   set_initial_stack( _initial_stack );
 
   if ( s_data->flags( spell_attribute::SX_IGNORE_FOR_MOD_TIME_RATE ) )
-    ignore_mod_time_modifier = true;
+    ignore_time_modifier = true;
 
   update_trigger_calculations();
 }
@@ -847,25 +847,25 @@ buff_t* buff_t::set_duration_multiplier( double multiplier )
 // aware there may be more work required to support your usecase.
 buff_t* buff_t::apply_time_modifier_duration( double modifier )
 {
-  if ( ignore_mod_time_modifier )
+  if ( ignore_time_modifier )
     return this;
   modifier = std::max( modifier, -99.0 ); // Limit slow down to 100x slower
 
   auto mul = 100.0 / ( 100 + modifier );
 
-  base_time_modifier_duration_multiplier = base_time_modifier_duration_multiplier * mul;
+  base_time_duration_multiplier = base_time_duration_multiplier * mul;
 
   return this;
 }
 
-buff_t* buff_t::set_dynamic_time_modifier_duration_multiplier( double new_multiplier )
+buff_t* buff_t::set_dynamic_time_duration_multiplier( double new_multiplier )
 {
   assert( new_multiplier > 0.0 );
-  if ( new_multiplier == dynamic_time_modifier_duration_multiplier )
+  if ( new_multiplier == dynamic_time_duration_multiplier )
     return this;
 
-  auto old_multiplier = dynamic_time_modifier_duration_multiplier;
-  dynamic_time_modifier_duration_multiplier = new_multiplier;
+  auto old_multiplier = dynamic_time_duration_multiplier;
+  dynamic_time_duration_multiplier = new_multiplier;
 
   if ( current_stack <= 0 || expiration.empty() )
   {
@@ -2152,7 +2152,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   assert( expiration.size() == 1 );
 
-  extra_seconds = extra_seconds * get_time_modifier_duration_multiplier();
+  extra_seconds = extra_seconds * get_time_duration_multiplier();
 
   if ( extra_seconds > timespan_t::zero() )
   {
@@ -2218,7 +2218,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 #endif
 
-  timespan_t d = (( duration >= timespan_t::zero() ) ? duration : buff_duration()) * get_time_modifier_duration_multiplier();
+  timespan_t d = (( duration >= timespan_t::zero() ) ? duration : buff_duration()) * get_time_duration_multiplier();
 
   if ( sim->current_time() <= timespan_t::from_seconds( 0.01 ) )
   {
@@ -2330,7 +2330,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
   else
     d = refresh_duration( buff_duration() );
 
-  d = d * get_time_modifier_duration_multiplier();
+  d = d * get_time_duration_multiplier();
 
   if ( refresh_behavior == buff_refresh_behavior::DISABLED && duration != timespan_t::zero() )
     return;
@@ -2388,12 +2388,12 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} refreshes {} (value={}, duration={}, time_modifier_multiplier={})", *player, buff_display_name, current_value, d, get_time_modifier_duration_multiplier() );
+        sim->print_log( "{} refreshes {} (value={}, duration={}, time_duration_multiplier={})", *player, buff_display_name, current_value, d, get_time_duration_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid refreshes {} (value={}, duration={}, time_modifier_multiplier={})", buff_display_name, current_value, d, get_time_modifier_duration_multiplier() );
+      sim->print_log( "Raid refreshes {} (value={}, duration={}, time_duration_multiplier={})", buff_display_name, current_value, d, get_time_duration_multiplier() );
     }
   }
 }
@@ -2696,12 +2696,12 @@ void buff_t::aura_gain()
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} gains {} (value={}, time_modifier_multiplier={})", *player, buff_display_name, current_value, get_time_modifier_duration_multiplier() );
+        sim->print_log( "{} gains {} (value={}, time_duration_multiplier={})", *player, buff_display_name, current_value, get_time_duration_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid gains {} (value={}, time_modifier_multiplier={})", buff_display_name, current_value, get_time_modifier_duration_multiplier() );
+      sim->print_log( "Raid gains {} (value={}, time_duration_multiplier={})", buff_display_name, current_value, get_time_duration_multiplier() );
     }
   }
 }
@@ -2732,7 +2732,7 @@ void buff_t::reset()
   last_trigger      = timespan_t::min();
   last_expire       = timespan_t::min();
   last_stack_change = timespan_t::min();
-  dynamic_time_modifier_duration_multiplier = 1.0;
+  dynamic_time_duration_multiplier = 1.0;
 }
 
 void buff_t::merge( const buff_t& other )
