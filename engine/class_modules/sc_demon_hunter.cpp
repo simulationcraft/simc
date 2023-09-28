@@ -2308,9 +2308,9 @@ struct chaos_nova_t : public demon_hunter_spell_t
 // Chaotic Disposition ============================================================
 struct chaotic_disposition_cb_t : public dbc_proc_callback_t
 {
-  struct chaotic_dispoision_t : public demon_hunter_spell_t
+  struct chaotic_disposition_t : public demon_hunter_spell_t
   {
-    chaotic_dispoision_t( util::string_view name, demon_hunter_t* p )
+    chaotic_disposition_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->spec.chaotic_disposition_damage )
     {
       min_travel_time = 0.1;
@@ -2328,7 +2328,7 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
 
   uint32_t mask;
 
-  chaotic_dispoision_t* damage;
+  chaotic_disposition_t* damage;
   double chance;
   size_t rolls;
   double damage_percent;
@@ -2343,7 +2343,7 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
     deactivate();
     initialize();
 
-    damage = p->get_background_action<chaotic_dispoision_t>( "chaotic_disposition" );
+    damage = p->get_background_action<chaotic_disposition_t>( "chaotic_disposition" );
   }
 
   void activate() override
