@@ -792,16 +792,17 @@ public:
 
       player_talent_t adrenaline_rush;
 
-      player_talent_t retractable_hook;         // No implementation
+      player_talent_t retractable_hook;
       player_talent_t dirty_tricks;
       player_talent_t combat_potency;
       player_talent_t combat_stamina;
       player_talent_t hit_and_run;
 
-      player_talent_t blinding_powder;          // No implementation
+      player_talent_t blinding_powder;
       player_talent_t float_like_a_butterfly;
       player_talent_t sting_like_a_bee;
       player_talent_t riposte;                  // No implementation
+      player_talent_t precision_shot;
 
       player_talent_t heavy_hitter;
       player_talent_t devious_stratagem;
@@ -1579,6 +1580,7 @@ public:
     ab::apply_affecting_aura( p->talent.assassination.shrouded_suffocation );
     ab::apply_affecting_aura( p->talent.assassination.arterial_precision );
 
+    ab::apply_affecting_aura( p->talent.outlaw.retractable_hook );
     ab::apply_affecting_aura( p->talent.outlaw.blinding_powder );
     ab::apply_affecting_aura( p->talent.outlaw.improved_between_the_eyes );
     ab::apply_affecting_aura( p->talent.outlaw.dirty_tricks );
@@ -1586,6 +1588,7 @@ public:
     ab::apply_affecting_aura( p->talent.outlaw.devious_stratagem );
     ab::apply_affecting_aura( p->talent.outlaw.deft_maneuvers );
     ab::apply_affecting_aura( p->talent.outlaw.underhanded_upper_hand );
+    ab::apply_affecting_aura( p->talent.outlaw.precision_shot );
 
     ab::apply_affecting_aura( p->talent.subtlety.improved_backstab );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shuriken_storm );
@@ -9322,6 +9325,7 @@ void rogue_t::init_spells()
   talent.outlaw.float_like_a_butterfly = find_talent_spell( talent_tree::SPECIALIZATION, "Float Like a Butterfly" );
   talent.outlaw.sting_like_a_bee = find_talent_spell( talent_tree::SPECIALIZATION, "Sting Like A Bee" );
   talent.outlaw.riposte = find_talent_spell( talent_tree::SPECIALIZATION, "Riposte" );
+  talent.outlaw.precision_shot = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Shot" );
 
   talent.outlaw.heavy_hitter = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Hitter" );
   talent.outlaw.devious_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "Devious Stratagem" );
