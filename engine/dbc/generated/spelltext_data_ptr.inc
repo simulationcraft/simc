@@ -7397,7 +7397,7 @@ static const std::array<spelltext_data_t, 20468> __ptr_spelltext_data { {
   { 215248, "$@spelldesc215247", "Absorbs $w1 damage. Healing for $w2 health every $t2 sec.", 0 },
   { 215263, "$@spelldesc215264", 0, 0 },
   { 215264, "Your healing spells have a chance to launch a Pulse at your target, healing them for $215263s1 and bouncing to up to ${$215263x1-1} additional targets.", 0, 0 },
-  { 215266, "Your $?a137012[Rejuvenation and Regrowth]?a137024[Vivify and Enveloping Mist]?a137031[Heal and Flash Heal]?a137032[Shadow Mend and Power Word: Shield]?a137029[Holy Light and Flash of Light]?a137039[Healing Wave and Healing Surge][direct healing spells] apply and refresh Fragile Echo for $215267d. When Fragile Echo expires, it restores $s1 mana to you.", 0, 0 },
+  { 215266, "Your $?a137012[Rejuvenation and Regrowth]?a137024[Vivify and Enveloping Mist]?a137031[Heal and Flash Heal]?a137032[Flash Heal and Power Word: Shield]?a137029[Holy Light and Flash of Light]?a137039[Healing Wave and Healing Surge]?a353167[Living Flame and Echo][direct healing spells] apply and refresh Fragile Echo for $215267d. When Fragile Echo expires, it restores $s1 mana to you.", 0, 0 },
   { 215267, "$@spelldesc215266", "Restores $215266w1 mana to the caster when it expires.", 0 },
   { 215276, "Summon a Chaos Tear.", 0, 0 },
   { 215279, "Unleashes a devastating blast of chaos, causing $s1 Chaos damage. Chaos Bolt always critically strikes and your critical strike chance increases its damage.", 0, 0 },
@@ -20471,7 +20471,8 @@ static const std::array<spelltext_data_t, 20468> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.51521
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  215266,  0, "Your $?a137012[Rejuvenation and Regrowth]?a137024[Vivify and Enveloping Mist]?a137031[Heal and Flash Heal]?a137032[Shadow Mend and Power Word: Shield]?a137029[Holy Light and Flash of Light]?a137039[Healing Wave and Healing Surge][direct healing spells] apply and refresh Fragile Echo for $215267d. When Fragile Echo expires, it restores $s1 mana to you.", "Your $?a137012[Rejuvenation and Regrowth]?a137024[Vivify and Enveloping Mist]?a137031[Heal and Flash Heal]?a137032[Flash Heal and Power Word: Shield]?a137029[Holy Light and Flash of Light]?a137039[Healing Wave and Healing Surge]?a353167[Living Flame and Echo][direct healing spells] apply and refresh Fragile Echo for $215267d. When Fragile Echo expires, it restores $s1 mana to you." },
 } };
 
 // Spell description variables, wow build 10.2.0.51521
