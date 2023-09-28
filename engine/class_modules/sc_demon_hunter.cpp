@@ -395,7 +395,7 @@ public:
       player_talent_t burning_blood;
       player_talent_t soul_barrier;     // NYI
       player_talent_t bulk_extraction;  // NYI
-      player_talent_t ascending_flame;  // NYI
+      player_talent_t ascending_flame;
 
       player_talent_t void_reaver;
       player_talent_t fallout;
@@ -1457,6 +1457,7 @@ public:
     ab::apply_affecting_aura( p->talent.vengeance.perfectly_balanced_glaive );
     ab::apply_affecting_aura( p->talent.vengeance.meteoric_strikes );
     ab::apply_affecting_aura( p->talent.vengeance.burning_blood );
+    ab::apply_affecting_aura( p->talent.vengeance.ascending_flame );
     ab::apply_affecting_aura( p->talent.vengeance.ruinous_bulwark );
     ab::apply_affecting_aura( p->talent.vengeance.chains_of_anger );
     ab::apply_affecting_aura( p->talent.vengeance.stoke_the_flames );
