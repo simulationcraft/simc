@@ -2313,6 +2313,7 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
     chaotic_dispoision_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->spec.chaotic_disposition_damage )
     {
+      min_travel_time = 0.1;
     }
 
     void init() override
@@ -2365,7 +2366,7 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t::trigger( a, state );
   }
 
-  void execute( action_t*, action_state_t* s ) override
+  void execute( action_t* a, action_state_t* s ) override
   {
     if ( s->target->is_sleeping() )
       return;
@@ -2375,18 +2376,13 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
     {
       da *= damage_percent;
 
-      make_event( listener->sim, 100_ms, [ this, s, da ] {
-        if ( !s->target->is_sleeping() )
+      for ( size_t i = 0; i < rolls; i++ )
+      {
+        if ( rng().roll( chance ) )
         {
-          for ( size_t i = 0; i < rolls; i++ )
-          {
-            if ( rng().roll( chance ) )
-            {
-              damage->execute_on_target( s->target, da );
-            }
-          }
+          damage->execute_on_target( s->target, da );
         }
-      } );
+      }
     }
   }
 };
@@ -7497,6 +7493,7 @@ void demon_hunter_t::init_spells()
     chaotic_disposition_effect->name_str = "chaotic_disposition";
     chaotic_disposition_effect->type     = SPECIAL_EFFECT_EQUIP;
     chaotic_disposition_effect->spell_id = talent.havoc.chaotic_disposition->id();
+    chaotic_disposition_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
     special_effects.push_back( chaotic_disposition_effect );
 
     auto chaotic_disposition_cb = new chaotic_disposition_cb_t( this, *chaotic_disposition_effect );
