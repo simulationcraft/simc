@@ -2314,6 +2314,15 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
       : demon_hunter_spell_t( name, p, p->spec.chaotic_disposition_damage )
     {
     }
+
+    void init() override
+    {
+      demon_hunter_spell_t::init();
+
+      // As of 28/09/2023 Chaotic Disposition double dips target vulnerabilities
+      if ( p()->bugs )
+        snapshot_flags |= STATE_TGT_MUL_DA;
+    }
   };
 
   uint32_t mask;
@@ -2325,7 +2334,7 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
 
   chaotic_disposition_cb_t( demon_hunter_t* p, const special_effect_t& e )
     : dbc_proc_callback_t( p, e ),
-      mask( dbc::get_school_mask( SCHOOL_CHAOS ) ),
+      mask( dbc::get_school_mask( SCHOOL_CHROMATIC ) ),
       chance( p->talent.havoc.chaotic_disposition->effectN( 2 ).percent() / 100 ),
       rolls( as<size_t>( p->talent.havoc.chaotic_disposition->effectN( 1 ).base_value() ) ),
       damage_percent( p->talent.havoc.chaotic_disposition->effectN( 3 ).percent() )
@@ -2344,13 +2353,13 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
 
   void trigger( action_t* a, action_state_t* state ) override
   {
-    if ( ( dbc::get_school_mask( a->school ) & mask ) != mask )
+    if ( ( dbc::get_school_mask( state->action->school ) & mask ) != mask )
       return;
 
     if ( !damage )
       return;
 
-    if ( a->id == damage->id )
+    if ( state->action->id == damage->id )
       return;
 
     dbc_proc_callback_t::trigger( a, state );
