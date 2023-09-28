@@ -628,6 +628,10 @@ public:
     // Option whether or not to start with higher than 0 Insanity based on talents
     // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
     bool init_insanity = true;
+
+    // Whether or not the echo SW:D casts from the T31 2-set triggered
+    // nerfed versions of Inescapable Torment.
+    bool t31_ist_echo_nerf = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
