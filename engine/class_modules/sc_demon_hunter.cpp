@@ -519,6 +519,7 @@ public:
     const spell_data_t* restless_hunter_buff;
     const spell_data_t* tactical_retreat_buff;
     const spell_data_t* unbound_chaos_buff;
+    const spell_data_t* chaotic_disposition_damage;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -2297,6 +2298,83 @@ struct chaos_nova_t : public demon_hunter_spell_t
       {
         p()->spawn_soul_fragment( soul_fragment::LESSER );
       }
+    }
+  }
+};
+
+// Chaotic Disposition ============================================================
+struct chaotic_disposition_cb_t : public dbc_proc_callback_t
+{
+  struct chaotic_dispoision_t : public demon_hunter_spell_t
+  {
+    chaotic_dispoision_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->spec.chaotic_disposition_damage )
+    {
+    }
+  };
+
+  uint32_t mask;
+
+  chaotic_dispoision_t* damage;
+  double chance;
+  size_t rolls;
+  double damage_percent;
+
+  chaotic_disposition_cb_t( demon_hunter_t* p, const special_effect_t& e )
+    : dbc_proc_callback_t( p, e ),
+      mask( dbc::get_school_mask( SCHOOL_CHAOS ) ),
+      chance( p->talent.havoc.chaotic_disposition->effectN( 2 ).percent() / 100 ),
+      rolls( as<size_t>( p->talent.havoc.chaotic_disposition->effectN( 1 ).base_value() ) ),
+      damage_percent( p->talent.havoc.chaotic_disposition->effectN( 3 ).percent() )
+  {
+    deactivate();
+    initialize();
+
+    damage = p->get_background_action<chaotic_dispoision_t>( "chaotic_disposition" );
+  }
+
+  void activate() override
+  {
+    if ( damage )
+      dbc_proc_callback_t::activate();
+  }
+
+  void trigger( action_t* a, action_state_t* state ) override
+  {
+    if ( ( dbc::get_school_mask( a->school ) & mask ) != mask )
+      return;
+
+    if ( !damage )
+      return;
+
+    if ( a->id == damage->id )
+      return;
+
+    dbc_proc_callback_t::trigger( a, state );
+  }
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    if ( s->target->is_sleeping() )
+      return;
+
+    double da = s->result_amount;
+    if ( da > 0 )
+    {
+      da *= damage_percent;
+
+      make_event( listener->sim, 100_ms, [ this, s, da ] {
+        if ( !s->target->is_sleeping() )
+        {
+          for ( size_t i = 0; i < rolls; i++ )
+          {
+            if ( rng().roll( chance ) )
+            {
+              damage->execute_on_target( s->target, da );
+            }
+          }
+        }
+      } );
     }
   }
 };
@@ -7145,6 +7223,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.glaive_tempest      = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
   talent.havoc.cycle_of_hatred     = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Hatred" );
   talent.havoc.soulrend            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulrend" );
+  talent.havoc.chaotic_disposition = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Disposition" );
 
   talent.havoc.essence_break       = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
   talent.havoc.fel_barrage         = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
@@ -7252,6 +7331,8 @@ void demon_hunter_t::init_spells()
   spec.soulrend_debuff        = talent.havoc.soulrend->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff  = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff     = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
+  spec.chaotic_disposition_damage =
+      talent.havoc.chaotic_disposition->ok() ? find_spell( 428493 ) : spell_data_t::not_found();
 
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
   spec.frailty_debuff     = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
@@ -7343,6 +7424,19 @@ void demon_hunter_t::init_spells()
   {
     active.fodder_to_the_flame_damage =
         new spectral_sight_t::fodder_to_the_flame_damage_t( "fodder_to_the_flame", this );
+  }
+
+  if ( talent.havoc.chaotic_disposition->ok() )
+  {
+    auto chaotic_disposition_effect = new special_effect_t( this );
+    chaotic_disposition_effect->name_str = "chaotic_disposition";
+    chaotic_disposition_effect->type     = SPECIAL_EFFECT_EQUIP;
+    chaotic_disposition_effect->spell_id = talent.havoc.chaotic_disposition->id();
+    special_effects.push_back( chaotic_disposition_effect );
+
+    auto chaotic_disposition_cb = new chaotic_disposition_cb_t( this, *chaotic_disposition_effect );
+
+    chaotic_disposition_cb->activate();
   }
 
   if ( talent.havoc.demon_blades->ok() )
