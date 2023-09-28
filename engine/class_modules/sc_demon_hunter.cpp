@@ -252,7 +252,7 @@ public:
     {
       player_talent_t vengeful_retreat;
       player_talent_t blazing_path;
-      player_talent_t sigil_of_flame;
+      player_talent_t sigil_of_misery;  // NYI
 
       player_talent_t unrestrained_fury;
       player_talent_t imprison;               // No Implementation
@@ -281,7 +281,6 @@ public:
       player_talent_t chaos_nova;
       player_talent_t soul_rending;
       player_talent_t infernal_armor;
-      player_talent_t sigil_of_misery;  // NYI
 
       player_talent_t chaos_fragments;
       player_talent_t unleashed_power;
@@ -438,6 +437,7 @@ public:
     const spell_data_t* disrupt;
     const spell_data_t* immolation_aura;
     const spell_data_t* throw_glaive;
+    const spell_data_t* sigil_of_flame;
     const spell_data_t* spectral_sight;
 
     // Class Passives
@@ -2979,7 +2979,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   sigil_of_flame_damage_t* sigil;
 
   sigil_of_flame_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_flame", p, p->talent.demon_hunter.sigil_of_flame, options_str ), sigil( nullptr )
+    : demon_hunter_spell_t( "sigil_of_flame", p, p->spell.sigil_of_flame, options_str ), sigil( nullptr )
   {
     may_miss = false;
 
@@ -3034,12 +3034,6 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       return e;
 
     return demon_hunter_spell_t::create_expression( name );
-  }
-
-  bool verify_actor_spec() const override
-  {
-    // Spell data still has a Vengeance Demon Hunter class association
-    return p()->talent.demon_hunter.sigil_of_flame->ok();
   }
 };
 
@@ -7004,6 +6998,7 @@ void demon_hunter_t::init_spells()
   spell.disrupt           = find_class_spell( "Disrupt" );
   spell.immolation_aura   = find_class_spell( "Immolation Aura" );
   spell.immolation_aura_2 = find_rank_spell( "Immolation Aura", "Rank 2" );
+  spell.sigil_of_flame    = find_spell( 389810 );
   spell.spectral_sight    = find_class_spell( "Spectral Sight" );
 
   // Spec-Overriden Passives
@@ -7069,7 +7064,7 @@ void demon_hunter_t::init_spells()
 
   talent.demon_hunter.vengeful_retreat = find_talent_spell( talent_tree::CLASS, "Vengeful Retreat" );
   talent.demon_hunter.blazing_path     = find_talent_spell( talent_tree::CLASS, "Blazing Path" );
-  talent.demon_hunter.sigil_of_flame   = find_talent_spell( talent_tree::CLASS, "Sigil of Flame" );
+  talent.demon_hunter.sigil_of_misery  = find_talent_spell( talent_tree::CLASS, "Sigil of Misery" );
 
   talent.demon_hunter.unrestrained_fury     = find_talent_spell( talent_tree::CLASS, "Unrestrained Fury" );
   talent.demon_hunter.imprison              = find_talent_spell( talent_tree::CLASS, "Imprison" );
@@ -7098,7 +7093,6 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.chaos_nova      = find_talent_spell( talent_tree::CLASS, "Chaos Nova" );
   talent.demon_hunter.soul_rending    = find_talent_spell( talent_tree::CLASS, "Soul Rending" );
   talent.demon_hunter.infernal_armor  = find_talent_spell( talent_tree::CLASS, "Infernal Armor" );
-  talent.demon_hunter.sigil_of_misery = find_talent_spell( talent_tree::CLASS, "Sigil of Misery" );
 
   talent.demon_hunter.chaos_fragments          = find_talent_spell( talent_tree::CLASS, "Chaos Fragments" );
   talent.demon_hunter.unleashed_power          = find_talent_spell( talent_tree::CLASS, "Unleashed Power" );
@@ -7249,10 +7243,8 @@ void demon_hunter_t::init_spells()
   spell.infernal_armor_damage =
       talent.demon_hunter.infernal_armor->ok() ? find_spell( 320334 ) : spell_data_t::not_found();
   spell.immolation_aura_damage = spell.immolation_aura_2->ok() ? find_spell( 258921 ) : spell_data_t::not_found();
-  spell.sigil_of_flame_damage =
-      talent.demon_hunter.sigil_of_flame->ok() ? find_spell( 204598 ) : spell_data_t::not_found();
-  spell.sigil_of_flame_fury =
-      talent.demon_hunter.sigil_of_flame->ok() ? find_spell( 389787 ) : spell_data_t::not_found();
+  spell.sigil_of_flame_damage = find_spell( 204598 );
+  spell.sigil_of_flame_fury = find_spell( 389787 );
   spell.the_hunt = talent.demon_hunter.the_hunt;
 
   // Spec Background Spells
