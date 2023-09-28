@@ -721,7 +721,8 @@ public:
     spell_t* ragefire                           = nullptr;
     attack_t* relentless_onslaught              = nullptr;
     attack_t* relentless_onslaught_annihilation = nullptr;
-    attack_t* throw_glaive_t31                  = nullptr;
+    attack_t* throw_glaive_t31_proc             = nullptr;
+    attack_t* throw_glaive_t31_throw            = nullptr;
 
     // Vengeance
     spell_t* infernal_armor     = nullptr;
@@ -750,6 +751,8 @@ public:
     double darkglare_boon_cdr_high_roll_seconds = 18;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
+    // Use the new 2pc from Realz Forum Post
+    bool use_new_2pc_design = false;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -4474,7 +4477,16 @@ struct blade_dance_base_t : public demon_hunter_attack_t
         double chance = p()->set_bonuses.t31_havoc_2pc->effectN( 2 ).percent();
         if ( p()->rng().roll( chance ) )
         {
-          make_event<delayed_execute_event_t>( *sim, p(), p()->active.throw_glaive_t31, target, attack->delay );
+          make_event<delayed_execute_event_t>( *sim, p(), p()->active.throw_glaive_t31_proc, target, attack->delay );
+        }
+      }
+
+      if ( p()->options.use_new_2pc_design )
+      {
+        if ( p()->cooldown.throw_glaive->up() )
+        {
+          p()->active.throw_glaive_t31_throw->set_target( target );
+          p()->active.throw_glaive_t31_throw->execute();
         }
       }
     }
@@ -5608,41 +5620,73 @@ struct throw_glaive_t : public demon_hunter_attack_t
   };
 
   throw_glaive_damage_t* furious_throws;
-  bool from_t31;
+  size_t t31;
   timespan_t t31_4pc_adjust_seconds;
 
-  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str, bool from_t31 = false )
+  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str, size_t t31 = 0 )
     : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ),
       furious_throws( nullptr ),
-      from_t31( from_t31 ),
+      t31( t31 ),
       t31_4pc_adjust_seconds( -timespan_t::from_millis( p->set_bonuses.t31_havoc_4pc->effectN( 1 ).base_value() ) )
   {
-    throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>(
-        from_t31 ? "throw_glaive_damage_t31" : "throw_glaive_damage", from_t31 );
+    throw_glaive_damage_t* damage;
+
+    switch ( t31 )
+    {
+      case 2:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_t31_throw", false );
+        break;
+      case 1:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_t31_proc", true );
+        break;
+      default:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage", false );
+    }
+
     execute_action        = damage;
     execute_action->stats = stats; 
 
-    if ( from_t31 )
+    if ( !t31 )
     {
-      cooldown->duration = 0_ms;
+      if ( damage->soulrend )
+      {
+        add_child( damage->soulrend );
+      }
+
+      if ( p->set_bonuses.t31_havoc_2pc->ok() )
+      {
+        /*add_child( p->active.throw_glaive_t31_proc );
+        add_child( p->active.throw_glaive_t31_throw );*/
+      }
     }
 
-    if ( !from_t31 && damage->soulrend )
+    if ( t31 == 2 )
     {
-      add_child( damage->soulrend );
-      if ( p->set_bonuses.t31_havoc_2pc->ok() ) 
-        add_child( p->active.throw_glaive_t31 );
+      cooldown = p->cooldown.throw_glaive;
     }
 
     if ( p->talent.havoc.furious_throws->ok() )
     {
-      if ( !from_t31 )
+      if ( !t31 )
       {
         resource_current            = RESOURCE_FURY;
         base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
       }
-      furious_throws = p->get_background_action<throw_glaive_damage_t>(
-          from_t31 ? "throw_glaive_furious_throws_t31" : "throw_glaive_furious_throws", from_t31 );
+
+      switch ( t31 )
+      {
+        case 2:
+          furious_throws =
+              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_t31_proc_throw", false );
+          break;
+        case 1:
+          furious_throws =
+              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_t31_proc", true );
+          break;
+        default:
+          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws", false );
+      }
+
       add_child( furious_throws );
     }
   }
@@ -5654,7 +5698,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     // Hit the fodder 250ms after the action is used to fake the travel time.
     make_event( sim, 250_ms, ( [ this ] { hit_fodder( true ); } ) );
 
-    if ( !from_t31 )
+    if ( t31 != 1 && p()->talent.havoc.furious_throws->ok() )
     {
       trigger_cycle_of_hatred();
     }
@@ -6850,6 +6894,7 @@ void demon_hunter_t::create_options()
       opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
   add_option(
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
+  add_option( opt_bool( "use_new_2pc_design", options.use_new_2pc_design ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -7495,9 +7540,13 @@ void demon_hunter_t::init_spells()
 
   if ( set_bonuses.t31_havoc_2pc->ok() )
   {
-    throw_glaive_t* throw_glaive_t31    = get_background_action<throw_glaive_t>( "throw_glaive_t31", "", true );
-    throw_glaive_t31->cooldown->charges = 0;
-    active.throw_glaive_t31             = throw_glaive_t31;
+    throw_glaive_t* throw_glaive_t31_proc     = get_background_action<throw_glaive_t>( "throw_glaive_t31_proc", "", 1 );
+    throw_glaive_t31_proc->cooldown->charges = 0;
+    throw_glaive_t31_proc->cooldown->duration = 0_ms;
+    active.throw_glaive_t31_proc              = throw_glaive_t31_proc;
+
+    throw_glaive_t* throw_glaive_t31_throw     = get_background_action<throw_glaive_t>( "throw_glaive_t31_throw", "", 2 );
+    active.throw_glaive_t31_throw              = throw_glaive_t31_throw;
   }
 }
 
