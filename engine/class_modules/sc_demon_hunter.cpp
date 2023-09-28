@@ -329,9 +329,11 @@ public:
 
       player_talent_t initiative;
       player_talent_t improved_fel_rush;
+      player_talent_t dash_of_chaos;
       player_talent_t chaotic_transformation;
       player_talent_t furious_throws;
       player_talent_t trail_of_ruin;
+      player_talent_t demon_hide;
 
       player_talent_t unbound_chaos;
       player_talent_t blind_fury;
@@ -1441,9 +1443,10 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.quickened_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.unnatural_malice );
 
-    ab::apply_affecting_aura( p->talent.havoc.improved_chaos_strike );
     ab::apply_affecting_aura( p->talent.havoc.insatiable_hunger );
     ab::apply_affecting_aura( p->talent.havoc.improved_fel_rush );
+    ab::apply_affecting_aura( p->talent.havoc.improved_chaos_strike );
+    ab::apply_affecting_aura( p->talent.havoc.demon_hide );
     ab::apply_affecting_aura( p->talent.havoc.blind_fury );
     ab::apply_affecting_aura( p->talent.havoc.looks_can_kill );
     ab::apply_affecting_aura( p->talent.havoc.tactical_retreat );
@@ -7074,7 +7077,7 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.improved_disrupt = find_talent_spell( talent_tree::CLASS, "Improved Disrupt" );
   talent.demon_hunter.bouncing_glaives = find_talent_spell( talent_tree::CLASS, "Bouncing Glaives" );
   talent.demon_hunter.consume_magic    = find_talent_spell( talent_tree::CLASS, "Consume Magic" );
-  talent.demon_hunter.flames_of_fury   = find_talent_spell( talent_tree::CLASS, "Flames of Fury" );
+  talent.demon_hunter.improved_sigil_of_misery = find_talent_spell( talent_tree::CLASS, "Improved Sigil of Misery" );
 
   talent.demon_hunter.pursuit           = find_talent_spell( talent_tree::CLASS, "Pursuit" );
   talent.demon_hunter.disrupting_fury   = find_talent_spell( talent_tree::CLASS, "Disrupting Fury" );
@@ -7099,7 +7102,6 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.illidari_knowledge       = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
   talent.demon_hunter.demonic                  = find_talent_spell( talent_tree::CLASS, "Demonic" );
   talent.demon_hunter.will_of_the_illidari     = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
-  talent.demon_hunter.improved_sigil_of_misery = find_talent_spell( talent_tree::CLASS, "Improved Sigil of Misery" );
   talent.demon_hunter.misery_in_defeat         = find_talent_spell( talent_tree::CLASS, "Misery in Defeat" );
 
   talent.demon_hunter.internal_struggle = find_talent_spell( talent_tree::CLASS, "Internal Struggle" );
@@ -7113,6 +7115,7 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.the_hunt         = find_talent_spell( talent_tree::CLASS, "The Hunt" );
   talent.demon_hunter.demon_muzzle     = find_talent_spell( talent_tree::CLASS, "Demon Muzzle" );
   talent.demon_hunter.extended_sigils  = find_talent_spell( talent_tree::CLASS, "Extended Sigils" );
+  talent.demon_hunter.flames_of_fury   = find_talent_spell( talent_tree::CLASS, "Flames of Fury" );
 
   talent.demon_hunter.collective_anguish = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
   talent.demon_hunter.unnatural_malice   = find_talent_spell( talent_tree::CLASS, "Unnatural Malice" );
@@ -7128,9 +7131,13 @@ void demon_hunter_t::init_spells()
   talent.havoc.demon_blades      = find_talent_spell( talent_tree::SPECIALIZATION, "Demon Blades" );
   talent.havoc.burning_hatred    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Hatred" );
 
+  
+  talent.havoc.improved_fel_rush     = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Fel Rush" );
+  talent.havoc.dash_of_chaos         = find_talent_spell( talent_tree::SPECIALIZATION, "Dash of Chaos" );
   talent.havoc.improved_chaos_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Strike" );
   talent.havoc.first_blood           = find_talent_spell( talent_tree::SPECIALIZATION, "First Blood" );
-  talent.havoc.dancing_with_fate     = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing with Fate" );
+  talent.havoc.accelerated_blade     = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerated Blade" );
+  talent.havoc.demon_hide            = find_talent_spell( talent_tree::SPECIALIZATION, "Demon Hide" );
 
   talent.havoc.desperate_instincts = find_talent_spell( talent_tree::SPECIALIZATION, "Desperate Instincts" );
   talent.havoc.netherwalk          = find_talent_spell( talent_tree::SPECIALIZATION, "Netherwalk" );
@@ -7138,16 +7145,15 @@ void demon_hunter_t::init_spells()
   talent.havoc.mortal_dance        = find_talent_spell( talent_tree::SPECIALIZATION, "Mortal Dance" );
 
   talent.havoc.initiative             = find_talent_spell( talent_tree::SPECIALIZATION, "Initiative" );
-  talent.havoc.improved_fel_rush      = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Fel Rush" );
   talent.havoc.chaotic_transformation = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Transformation" );
   talent.havoc.furious_throws         = find_talent_spell( talent_tree::SPECIALIZATION, "Furious Throws" );
   talent.havoc.trail_of_ruin          = find_talent_spell( talent_tree::SPECIALIZATION, "Trail of Ruin" );
 
-  talent.havoc.unbound_chaos   = find_talent_spell( talent_tree::SPECIALIZATION, "Unbound Chaos" );
-  talent.havoc.blind_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Blind Fury" );
-  talent.havoc.looks_can_kill  = find_talent_spell( talent_tree::SPECIALIZATION, "Looks Can Kill" );
-  talent.havoc.serrated_glaive = find_talent_spell( talent_tree::SPECIALIZATION, "Serrated Glaive" );
-  talent.havoc.growing_inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Growing Inferno" );
+  talent.havoc.unbound_chaos     = find_talent_spell( talent_tree::SPECIALIZATION, "Unbound Chaos" );
+  talent.havoc.blind_fury        = find_talent_spell( talent_tree::SPECIALIZATION, "Blind Fury" );
+  talent.havoc.looks_can_kill    = find_talent_spell( talent_tree::SPECIALIZATION, "Looks Can Kill" );
+  talent.havoc.dancing_with_fate = find_talent_spell( talent_tree::SPECIALIZATION, "Dancing with Fate" );
+  talent.havoc.growing_inferno   = find_talent_spell( talent_tree::SPECIALIZATION, "Growing Inferno" );
 
   talent.havoc.tactical_retreat     = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Retreat" );
   talent.havoc.isolated_prey        = find_talent_spell( talent_tree::SPECIALIZATION, "Isolated Prey" );
@@ -7160,7 +7166,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.chaos_theory      = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
   talent.havoc.restless_hunter   = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
   talent.havoc.inner_demon       = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
-  talent.havoc.accelerated_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerated Blade" );
+  talent.havoc.serrated_glaive   = find_talent_spell( talent_tree::SPECIALIZATION, "Serrated Glaive" );
   talent.havoc.ragefire          = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
 
   talent.havoc.know_your_enemy     = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
@@ -7174,7 +7180,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.fel_barrage         = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
   talent.havoc.shattered_destiny   = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Destiny" );
   talent.havoc.any_means_necessary = find_talent_spell( talent_tree::SPECIALIZATION, "Any Means Necessary" );
-  talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside [WIP]" );
+  talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
 
   // Vengeance Talents
 
@@ -8112,6 +8118,12 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
       s->result_amount *=
           1.0 + spec.demonic_wards->effectN( 1 ).percent() + spec.demonic_wards_2->effectN( 1 ).percent();
     }
+        
+    if ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL )
+    {
+      s->result_amount *= 1.0 + talent.havoc.demon_hide->effectN( 2 ).percent();
+    }
+
   }
   else  // DEMON_HUNTER_VENGEANCE
   {
