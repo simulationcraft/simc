@@ -13885,8 +13885,29 @@ Effects          :
 #2 (id=1109362)  : Apply Aura (6) | Dummy (4)
                    Base Value: 777 | Scaled Value: 777 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1109363)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (33 -> 21)
 Description      : Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. 
+
+Name             : Chaotic Disposition (id=428493) [Spell Family (8)] 
+Hotfixed         : Attributes
+Class            : Demon Hunter
+School           : Chromatic
+Spell Type       : Melee
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... x....... ........ .....x..   ........ ........ ........ ........ 
+                 : .......x x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Can't Crit (93), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1109364)  : School Damage (2): chromatic
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc428492
 
 Name             : Illuminated Sigils (id=428557) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=10, col=5, max_rank=1, req_points=20, select_idx=300]
