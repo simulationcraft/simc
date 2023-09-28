@@ -359,7 +359,6 @@ public:
       player_talent_t know_your_enemy;
       player_talent_t glaive_tempest;
       player_talent_t cycle_of_hatred;
-      player_talent_t fodder_to_the_flame;  // Partial implementation
       player_talent_t soulrend;
       player_talent_t chaotic_disposition;
 
@@ -424,7 +423,6 @@ public:
       player_talent_t soulcrush;
       player_talent_t soul_carver;
       player_talent_t last_resort;          // NYI
-      player_talent_t fodder_to_the_flame;  // Partial implementation
       player_talent_t down_in_flames;
 
     } vengeance;
@@ -1439,6 +1437,7 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.flames_of_fury );
     ab::apply_affecting_aura( p->talent.demon_hunter.extended_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.quickened_sigils );
+    ab::apply_affecting_aura( p->talent.demon_hunter.fodder_to_the_flame );
 
     ab::apply_affecting_aura( p->talent.havoc.insatiable_hunger );
     ab::apply_affecting_aura( p->talent.havoc.improved_fel_rush );
@@ -3991,7 +3990,7 @@ struct spectral_sight_t : public demon_hunter_spell_t
     if ( p->bugs )
       gcd_type = gcd_haste_type::NONE;
 
-    if ( p->talent.havoc.fodder_to_the_flame->ok() )
+    if ( p->talent.demon_hunter.fodder_to_the_flame->ok() )
       add_child( p->active.fodder_to_the_flame_damage );
   }
 
@@ -3999,7 +3998,7 @@ struct spectral_sight_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    if ( p()->talent.havoc.fodder_to_the_flame->ok() || p()->talent.vengeance.fodder_to_the_flame->ok() )
+    if ( p()->talent.demon_hunter.fodder_to_the_flame->ok() )
     {
       p()->buff.fodder_to_the_flame->trigger();
     }
@@ -7089,9 +7088,10 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.extended_sigils  = find_talent_spell( talent_tree::CLASS, "Extended Sigils" );
   talent.demon_hunter.flames_of_fury   = find_talent_spell( talent_tree::CLASS, "Flames of Fury" );
 
-  talent.demon_hunter.collective_anguish = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
-  talent.demon_hunter.the_hunt           = find_talent_spell( talent_tree::CLASS, "The Hunt" );
-  talent.demon_hunter.elysian_decree     = find_talent_spell( talent_tree::CLASS, "Elysian Decree" );
+  talent.demon_hunter.collective_anguish  = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
+  talent.demon_hunter.fodder_to_the_flame = find_talent_spell( talent_tree::CLASS, "Fodder to the Flame" );
+  talent.demon_hunter.the_hunt            = find_talent_spell( talent_tree::CLASS, "The Hunt" );
+  talent.demon_hunter.elysian_decree      = find_talent_spell( talent_tree::CLASS, "Elysian Decree" );
 
   // Havoc Talents
 
@@ -7144,7 +7144,6 @@ void demon_hunter_t::init_spells()
   talent.havoc.know_your_enemy     = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
   talent.havoc.glaive_tempest      = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
   talent.havoc.cycle_of_hatred     = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Hatred" );
-  talent.havoc.fodder_to_the_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Fodder to the Flame" );
   talent.havoc.soulrend            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulrend" );
 
   talent.havoc.essence_break       = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
@@ -7208,7 +7207,6 @@ void demon_hunter_t::init_spells()
   talent.vengeance.soulcrush           = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
   talent.vengeance.soul_carver         = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
   talent.vengeance.last_resort         = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
-  talent.vengeance.fodder_to_the_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Fodder to the Flame" );
   talent.vengeance.down_in_flames      = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
 
   // Class Background Spells
@@ -7276,13 +7274,9 @@ void demon_hunter_t::init_spells()
     spell.elysian_decree_damage = spell_data_t::not_found();
   }
 
-  if ( talent.havoc.fodder_to_the_flame->ok() || talent.vengeance.fodder_to_the_flame->ok() )
+  if ( talent.demon_hunter.fodder_to_the_flame->ok() )
   {
-    if ( specialization() == DEMON_HUNTER_HAVOC )
-      spell.fodder_to_the_flame = talent.havoc.fodder_to_the_flame;
-    else
-      spell.fodder_to_the_flame = talent.vengeance.fodder_to_the_flame;
-
+    spell.fodder_to_the_flame        = talent.demon_hunter.fodder_to_the_flame;
     spell.fodder_to_the_flame_damage = find_spell( 350631 );  // Reused
   }
   else
@@ -7345,7 +7339,7 @@ void demon_hunter_t::init_spells()
 
   active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
 
-  if ( talent.havoc.fodder_to_the_flame->ok() || talent.vengeance.fodder_to_the_flame->ok() )
+  if ( talent.demon_hunter.fodder_to_the_flame->ok() )
   {
     active.fodder_to_the_flame_damage =
         new spectral_sight_t::fodder_to_the_flame_damage_t( "fodder_to_the_flame", this );
