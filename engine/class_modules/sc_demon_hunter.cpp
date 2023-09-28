@@ -287,7 +287,7 @@ public:
       player_talent_t illidari_knowledge;
       player_talent_t demonic;
       player_talent_t will_of_the_illidari;  // NYI Vengeance
-      player_talent_t live_by_the_glaive;  // NYI
+      player_talent_t live_by_the_glaive;    // NYI
 
       player_talent_t internal_struggle;
       player_talent_t darkness;  // No Implementation
@@ -421,10 +421,10 @@ public:
 
       player_talent_t soulcrush;
       player_talent_t soul_carver;
-      player_talent_t last_resort;          // NYI
-      player_talent_t sigil_of_chains;      // NYI
+      player_talent_t last_resort;      // NYI
+      player_talent_t sigil_of_chains;  // NYI
       player_talent_t down_in_flames;
-      player_talent_t illuminated_sigils; // NYI
+      player_talent_t illuminated_sigils;  // NYI
 
     } vengeance;
 
@@ -2732,7 +2732,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
     {
       heal->execute();  // Heal happens before damage
     }
-    else {
+    else
+    {
       hit_fodder( true );
     }
 
@@ -3269,7 +3270,6 @@ struct immolation_aura_state_t : public action_state_t
     s << " growing_inferno_multiplier=" << growing_inferno_multiplier;
     return s;
   }
-
 };
 
 struct immolation_aura_t : public demon_hunter_spell_t
@@ -5664,7 +5664,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     if ( t31 == 2 )
     {
       cooldown->duration = 0_ms;
-      cooldown->charges = 0;
+      cooldown->charges  = 0;
 
       cooldown = p->cooldown.throw_glaive;
     }
@@ -6327,7 +6327,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     soul_fragments(),
     frailty_accumulator( 0.0 ),
     frailty_driver( nullptr ),
-    fodder_initiative ( false ),
+    fodder_initiative( false ),
     shattered_destiny_accumulator( 0.0 ),
     darkglare_boon_cdr_roll( 0.0 ),
     exit_melee_event( nullptr ),
@@ -6511,8 +6511,8 @@ void demon_hunter_t::create_buffs()
                                    if ( rng().roll( options.fodder_to_the_flame_initiative_chance * ( t - 3 ) ) )
                                      fodder_initiative = false;
                                  } );
-  buff.immolation_aura      = new buffs::immolation_aura_buff_t( this );
-  buff.metamorphosis        = new buffs::metamorphosis_buff_t( this );
+  buff.immolation_aura = new buffs::immolation_aura_buff_t( this );
+  buff.metamorphosis   = new buffs::metamorphosis_buff_t( this );
 
   // Havoc ==================================================================
 
@@ -7179,10 +7179,10 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.imprison              = find_talent_spell( talent_tree::CLASS, "Imprison" );
   talent.demon_hunter.shattered_restoration = find_talent_spell( talent_tree::CLASS, "Shattered Restoration" );
 
-  talent.demon_hunter.vengeful_bonds   = find_talent_spell( talent_tree::CLASS, "Vengeful Bonds" );
-  talent.demon_hunter.improved_disrupt = find_talent_spell( talent_tree::CLASS, "Improved Disrupt" );
-  talent.demon_hunter.bouncing_glaives = find_talent_spell( talent_tree::CLASS, "Bouncing Glaives" );
-  talent.demon_hunter.consume_magic    = find_talent_spell( talent_tree::CLASS, "Consume Magic" );
+  talent.demon_hunter.vengeful_bonds           = find_talent_spell( talent_tree::CLASS, "Vengeful Bonds" );
+  talent.demon_hunter.improved_disrupt         = find_talent_spell( talent_tree::CLASS, "Improved Disrupt" );
+  talent.demon_hunter.bouncing_glaives         = find_talent_spell( talent_tree::CLASS, "Bouncing Glaives" );
+  talent.demon_hunter.consume_magic            = find_talent_spell( talent_tree::CLASS, "Consume Magic" );
   talent.demon_hunter.improved_sigil_of_misery = find_talent_spell( talent_tree::CLASS, "Improved Sigil of Misery" );
 
   talent.demon_hunter.pursuit           = find_talent_spell( talent_tree::CLASS, "Pursuit" );
@@ -7203,12 +7203,12 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.infernal_armor  = find_talent_spell( talent_tree::CLASS, "Infernal Armor" );
   talent.demon_hunter.aldrachi_design = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
 
-  talent.demon_hunter.chaos_fragments          = find_talent_spell( talent_tree::CLASS, "Chaos Fragments" );
-  talent.demon_hunter.unleashed_power          = find_talent_spell( talent_tree::CLASS, "Unleashed Power" );
-  talent.demon_hunter.illidari_knowledge       = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
-  talent.demon_hunter.demonic                  = find_talent_spell( talent_tree::CLASS, "Demonic" );
-  talent.demon_hunter.will_of_the_illidari     = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
-  talent.demon_hunter.live_by_the_glaive       = find_talent_spell( talent_tree::CLASS, "Live by the Glaive" );
+  talent.demon_hunter.chaos_fragments      = find_talent_spell( talent_tree::CLASS, "Chaos Fragments" );
+  talent.demon_hunter.unleashed_power      = find_talent_spell( talent_tree::CLASS, "Unleashed Power" );
+  talent.demon_hunter.illidari_knowledge   = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
+  talent.demon_hunter.demonic              = find_talent_spell( talent_tree::CLASS, "Demonic" );
+  talent.demon_hunter.will_of_the_illidari = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
+  talent.demon_hunter.live_by_the_glaive   = find_talent_spell( talent_tree::CLASS, "Live by the Glaive" );
 
   talent.demon_hunter.internal_struggle = find_talent_spell( talent_tree::CLASS, "Internal Struggle" );
   talent.demon_hunter.darkness          = find_talent_spell( talent_tree::CLASS, "Darkness" );
@@ -7235,7 +7235,6 @@ void demon_hunter_t::init_spells()
   talent.havoc.insatiable_hunger = find_talent_spell( talent_tree::SPECIALIZATION, "Insatiable Hunger" );
   talent.havoc.demon_blades      = find_talent_spell( talent_tree::SPECIALIZATION, "Demon Blades" );
   talent.havoc.burning_hatred    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Hatred" );
-
 
   talent.havoc.improved_fel_rush     = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Fel Rush" );
   talent.havoc.dash_of_chaos         = find_talent_spell( talent_tree::SPECIALIZATION, "Dash of Chaos" );
@@ -7267,13 +7266,13 @@ void demon_hunter_t::init_spells()
   talent.havoc.relentless_onslaught = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Onslaught" );
   talent.havoc.burning_wound        = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Wound" );
 
-  talent.havoc.momentum          = find_talent_spell( talent_tree::SPECIALIZATION, "Momentum" );
-  talent.havoc.inertia           = find_talent_spell( talent_tree::SPECIALIZATION, "Inertia" );
-  talent.havoc.chaos_theory      = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
-  talent.havoc.restless_hunter   = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
-  talent.havoc.inner_demon       = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
-  talent.havoc.serrated_glaive   = find_talent_spell( talent_tree::SPECIALIZATION, "Serrated Glaive" );
-  talent.havoc.ragefire          = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
+  talent.havoc.momentum        = find_talent_spell( talent_tree::SPECIALIZATION, "Momentum" );
+  talent.havoc.inertia         = find_talent_spell( talent_tree::SPECIALIZATION, "Inertia" );
+  talent.havoc.chaos_theory    = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
+  talent.havoc.restless_hunter = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
+  talent.havoc.inner_demon     = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
+  talent.havoc.serrated_glaive = find_talent_spell( talent_tree::SPECIALIZATION, "Serrated Glaive" );
+  talent.havoc.ragefire        = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
 
   talent.havoc.know_your_enemy     = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
   talent.havoc.glaive_tempest      = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
@@ -7339,11 +7338,11 @@ void demon_hunter_t::init_spells()
   talent.vengeance.feed_the_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Feed the Demon" );
   talent.vengeance.charred_flesh  = find_talent_spell( talent_tree::SPECIALIZATION, "Charred Flesh" );
 
-  talent.vengeance.soulcrush       = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
-  talent.vengeance.soul_carver     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
-  talent.vengeance.last_resort     = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
-  talent.vengeance.sigil_of_chains = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
-  talent.vengeance.down_in_flames  = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
+  talent.vengeance.soulcrush          = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
+  talent.vengeance.soul_carver        = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
+  talent.vengeance.last_resort        = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
+  talent.vengeance.sigil_of_chains    = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
+  talent.vengeance.down_in_flames     = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
   talent.vengeance.illuminated_sigils = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Sigils" );
 
   // Class Background Spells
@@ -7354,9 +7353,9 @@ void demon_hunter_t::init_spells()
   spell.infernal_armor_damage =
       talent.demon_hunter.infernal_armor->ok() ? find_spell( 320334 ) : spell_data_t::not_found();
   spell.immolation_aura_damage = spell.immolation_aura_2->ok() ? find_spell( 258921 ) : spell_data_t::not_found();
-  spell.sigil_of_flame_damage = find_spell( 204598 );
-  spell.sigil_of_flame_fury = find_spell( 389787 );
-  spell.the_hunt = talent.demon_hunter.the_hunt;
+  spell.sigil_of_flame_damage  = find_spell( 204598 );
+  spell.sigil_of_flame_fury    = find_spell( 389787 );
+  spell.the_hunt               = talent.demon_hunter.the_hunt;
 
   // Spec Background Spells
   mastery.any_means_necessary = talent.havoc.any_means_necessary;
@@ -7486,10 +7485,10 @@ void demon_hunter_t::init_spells()
 
   if ( talent.havoc.chaotic_disposition->ok() )
   {
-    auto chaotic_disposition_effect = new special_effect_t( this );
-    chaotic_disposition_effect->name_str = "chaotic_disposition";
-    chaotic_disposition_effect->type     = SPECIAL_EFFECT_EQUIP;
-    chaotic_disposition_effect->spell_id = talent.havoc.chaotic_disposition->id();
+    auto chaotic_disposition_effect          = new special_effect_t( this );
+    chaotic_disposition_effect->name_str     = "chaotic_disposition";
+    chaotic_disposition_effect->type         = SPECIAL_EFFECT_EQUIP;
+    chaotic_disposition_effect->spell_id     = talent.havoc.chaotic_disposition->id();
     chaotic_disposition_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
     special_effects.push_back( chaotic_disposition_effect );
 
@@ -7547,12 +7546,12 @@ void demon_hunter_t::init_spells()
   if ( set_bonuses.t31_havoc_2pc->ok() )
   {
     throw_glaive_t* throw_glaive_t31_proc     = get_background_action<throw_glaive_t>( "throw_glaive_t31_proc", "", 1 );
-    throw_glaive_t31_proc->cooldown->charges = 0;
+    throw_glaive_t31_proc->cooldown->charges  = 0;
     throw_glaive_t31_proc->cooldown->duration = 0_ms;
     active.throw_glaive_t31_proc              = throw_glaive_t31_proc;
 
-    throw_glaive_t* throw_glaive_t31_throw     = get_background_action<throw_glaive_t>( "throw_glaive_t31_throw", "", 2 );
-    active.throw_glaive_t31_throw              = throw_glaive_t31_throw;
+    throw_glaive_t* throw_glaive_t31_throw = get_background_action<throw_glaive_t>( "throw_glaive_t31_throw", "", 2 );
+    active.throw_glaive_t31_throw          = throw_glaive_t31_throw;
   }
 }
 
@@ -8251,7 +8250,6 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
     {
       s->result_amount *= 1.0 + talent.havoc.demon_hide->effectN( 2 ).percent();
     }
-
   }
   else  // DEMON_HUNTER_VENGEANCE
   {
