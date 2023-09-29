@@ -6598,6 +6598,59 @@ void time_thiefs_gambit( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+// Branch of the Tormented Ancient
+// 422441 Driver/Buff
+// 422440 Damage Value
+// 425509 Damage
+// TODO: Implement Slow? 
+void branch_of_the_tormented_ancient( special_effect_t& e )
+{
+  struct branch_of_the_tormented_ancient_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    buff_t* buff;
+
+    branch_of_the_tormented_ancient_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
+      : dbc_proc_callback_t( effect.player, effect ), damage( d ), buff( b )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+      damage->execute_on_target( s->target );
+      buff->decrement();
+    }
+  };
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "severed_embers", e, "severed_embers",
+                                                        e.player->find_spell( 425509 ), true );
+  damage->base_dd_min = damage->base_dd_max = e.player->find_spell( 422440 )->effectN( 1 ).average( e.item );
+
+  auto buff = create_buff<buff_t>( e.player, e.driver() );
+
+  const auto driver = new special_effect_t( e.player );
+  driver->cooldown_ = 0_ms;
+  driver->spell_id = e.driver()->id();
+  e.player->special_effects.push_back( driver );
+
+  auto cb = new branch_of_the_tormented_ancient_cb_t( *driver, damage, buff );
+
+  buff->set_initial_stack( e.driver()->effectN( 7 ).base_value() );
+  buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      cb->activate();
+    }
+    else if ( new_ == 0 )
+    {
+      cb->deactivate();
+    }
+  } );
+
+  e.custom_buff = buff;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -9184,6 +9237,7 @@ void register_special_effects()
   register_special_effect( 422956, items::nymues_unraveling_spindle );
   register_special_effect( 423124, items::augury_of_the_primal_flame );
   register_special_effect( 417534, items::time_thiefs_gambit, true );
+  register_special_effect( 422441, items::branch_of_the_tormented_ancient );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
