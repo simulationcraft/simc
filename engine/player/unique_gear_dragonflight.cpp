@@ -6671,7 +6671,7 @@ void infernal_signet_brand( special_effect_t& e )
       // driver effect 6 as a percent
       double buff_mod = pow( 1 + effect.driver()->effectN( 3 ).percent(), effect.driver()->effectN( 2 ).base_value() );
       double aoe_mod  = effect.driver()->effectN( 6 ).percent();
-      base_dd_min  = base_dd_max = base_damage * buff_mod * aoe_mod;
+      base_dd_min = base_dd_max = base_damage * buff_mod * aoe_mod;
     }
   };
 
@@ -6681,18 +6681,17 @@ void infernal_signet_brand( special_effect_t& e )
     buff_t* buff;
 
     vicious_brand_self_t( const special_effect_t& effect, buff_t* b, double base_damage )
-      : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ),
-      e( effect ), buff( b )
+      : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ), e( effect ), buff( b )
     {
       double player_mod = e.driver()->effectN( 4 ).percent();
-      base_td     = base_damage * player_mod;
-      target      = player;
-      stats->type = stats_e::STATS_NEUTRAL;
+      base_td           = base_damage * player_mod;
+      target            = player;
+      stats->type       = stats_e::STATS_NEUTRAL;
     }
 
     double composite_ta_multiplier( const action_state_t* state ) const override
     {
-      double m = generic_proc_t::composite_ta_multiplier( state );
+      double m        = generic_proc_t::composite_ta_multiplier( state );
       double base_mod = 1.0 + e.driver()->effectN( 3 ).percent();
 
       // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
@@ -6719,7 +6718,6 @@ void infernal_signet_brand( special_effect_t& e )
     {
       auto spell = effect.player->find_spell( 425154 );
       auto ticks = spell->duration() / spell->effectN( 2 ).period();
-
 
       base_td = base_damage;
 
@@ -6801,9 +6799,9 @@ void infernal_signet_brand( special_effect_t& e )
 
   // Has an insane damage formula, appears to be
   // ( driver effect 1 / ticks ) * [ ( 1 + driver effect 3 percent ) ^ ( 1 - driver effect 5 ) ]
-  auto tick_spell = e.player->find_spell( 425154 );
-  auto ticks = tick_spell->duration() / tick_spell->effectN( 2 ).period();
-  double base_mod = pow( 1 + e.driver()->effectN( 3 ).percent(), 1 - e.driver()->effectN( 5 ).base_value() );
+  auto tick_spell    = e.player->find_spell( 425154 );
+  auto ticks         = tick_spell->duration() / tick_spell->effectN( 2 ).period();
+  double base_mod    = pow( 1 + e.driver()->effectN( 3 ).percent(), 1 - e.driver()->effectN( 5 ).base_value() );
   double base_damage = ( e.driver()->effectN( 1 ).average( e.item ) / ticks ) * base_mod;
 
   new infernal_signet_brand_cb_t( e, buff, base_damage );
