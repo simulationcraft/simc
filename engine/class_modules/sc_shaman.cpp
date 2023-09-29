@@ -329,6 +329,11 @@ public:
   extended_sample_data_t dre_uptime_samples;
   unsigned dre_attempts;
 
+  // Elemental Shamans can extend Ascendance by x sec via Further Beyond (talent)
+  // what if there was an overall cap on Ascendance duration extension per Ascendance proc?
+  timespan_t accumulated_ascendance_extension_time;
+  timespan_t ascendance_extension_cap;
+
   // Cached actions
   struct actions_t
   {
@@ -433,8 +438,7 @@ public:
     buff_t* t30_2pc_ele_driver;
     buff_t* t30_4pc_ele;
 
-    buff_t* t31_4pc_ele_can_proc;
-    buff_t* t31_4pc_ele;   
+    // buff_t* t31_4pc_ele;
 
     // Enhancement
     buff_t* maelstrom_weapon;
@@ -534,6 +538,7 @@ public:
     proc_t* lava_surge;
     proc_t* wasted_lava_surge;
     proc_t* surge_during_lvb;
+    proc_t* deeply_rooted_elements;
 
     // Elemental
     proc_t* lava_surge_primordial_surge;
@@ -792,7 +797,7 @@ public:
     const spell_data_t* t30_2pc_ele;
     const spell_data_t* t30_4pc_ele;
     const spell_data_t* t31_2pc_ele;
-    const spell_data_t* t31_4pc_ele_can_proc;
+    const spell_data_t* t31_4pc_ele_molten_slag;
     const spell_data_t* t31_4pc_ele;
     const spell_data_t* inundate;
   } spell;
@@ -817,6 +822,8 @@ public:
       dre_samples( "dre_tracker", false ),
       dre_uptime_samples( "dre_uptime_tracker", false ),
       dre_attempts( 0U ),
+      accumulated_ascendance_extension_time( timespan_t::from_seconds( 0 ) ),
+      ascendance_extension_cap( timespan_t::from_seconds( 0 ) ),
       action(),
       pet( this ),
       constant(),
@@ -5106,11 +5113,12 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     elemental_overload_spell_t::impact( s );
 
-    if ( p()->buff.t31_4pc_ele->up() )
-    {
-      double amount = s->result_amount * p()->spell.t31_4pc_ele_can_proc->effectN( 1 ).percent();
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) ) {
+      double amount = s->result_amount * p()->spell.t31_4pc_ele_molten_slag->effectN( 1 ).percent();
       if ( amount > 0 )
+      {
         residual_action::trigger( p()->action.molten_slag, s->target, amount );
+      }
     }
   }
 
@@ -5514,11 +5522,12 @@ struct lava_burst_t : public shaman_spell_t
 
     shaman_spell_t::impact( s );
 
-    if ( p()->buff.t31_4pc_ele->up() )
-    {
-      double amount = s->result_amount * p()->spell.t31_4pc_ele_can_proc->effectN( 1 ).percent();
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) ) {
+      double amount = s->result_amount * p()->spell.t31_4pc_ele_molten_slag->effectN( 1 ).percent();
       if ( amount > 0 )
+      {
         residual_action::trigger( p()->action.molten_slag, s->target, amount );
+      }
     }
 
     if ( s->chain_target == 0 && result_is_hit( s->result ) )
@@ -5621,11 +5630,6 @@ struct lava_burst_t : public shaman_spell_t
     if ( !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
     {
       p()->buff.lava_surge->decrement();
-      if ( p()->buff.t31_4pc_ele_can_proc->up() )
-      {
-        p()->buff.t31_4pc_ele->trigger();
-        p()->buff.t31_4pc_ele_can_proc->decrement();
-      }
     }
 
     p()->lava_surge_during_lvb = false;
@@ -6133,8 +6137,22 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
-      p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
-      p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
+      timespan_t duration = p()->talent.further_beyond->effectN( 2 ).time_value();
+      // probably intended behavior:
+      // if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap ) {
+      //   duration = timespan_t::from_seconds( 0 );
+      // }
+      // else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+      //   duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
+      // }
+      // bugged behavior:
+      if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+        duration = timespan_t::from_seconds( 0 );
+      }
+
+      p()->accumulated_ascendance_extension_time += duration;
+      p()->buff.ascendance->extend_duration( p(), duration );
+      p()->buff.oath_of_the_far_seer->extend_duration( p(), duration );
       p()->proc.further_beyond->occur();
     }
 
@@ -6527,8 +6545,22 @@ struct earthquake_t : public earthquake_base_t
 
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
-      p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
-      p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
+      timespan_t duration = p()->talent.further_beyond->effectN( 1 ).time_value();
+      // probably intended behavior:
+      // if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap ) {
+      //   duration = timespan_t::from_seconds( 0 );
+      // }
+      // else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+      //   duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
+      // }
+      // bugged behavior:
+      if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+        duration = timespan_t::from_seconds( 0 );
+      }
+
+      p()->accumulated_ascendance_extension_time += duration;
+      p()->buff.ascendance->extend_duration( p(), duration );
+      p()->buff.oath_of_the_far_seer->extend_duration( p(), duration );
       p()->proc.further_beyond->occur();
     }
 
@@ -6755,8 +6787,22 @@ struct earth_shock_t : public shaman_spell_t
 
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
-      p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
-      p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
+      timespan_t duration = p()->talent.further_beyond->effectN( 1 ).time_value();
+      // probably intended behavior:
+      // if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap ) {
+      //   duration = timespan_t::from_seconds( 0 );
+      // }
+      // else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+      //   duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
+      // }
+      // bugged behavior:
+      if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+        duration = timespan_t::from_seconds( 0 );
+      }
+
+      p()->accumulated_ascendance_extension_time += duration;
+      p()->buff.ascendance->extend_duration( p(), duration );
+      p()->buff.oath_of_the_far_seer->extend_duration( p(), duration );
       p()->proc.further_beyond->occur();
     }
 
@@ -7267,10 +7313,12 @@ struct ascendance_t : public shaman_spell_t
     if ( background )
     {
       p()->buff.ascendance->extend_duration_or_trigger( dre_duration, player );
+      p()->ascendance_extension_cap = dre_duration * p()->talent.further_beyond->effectN( 3 ).percent();
     }
     else
     {
       p()->buff.ascendance->trigger();
+      p()->ascendance_extension_cap = p()->buff.ascendance->base_buff_duration * p()->talent.further_beyond->effectN( 3 ).percent();
     }
 
     if ( lvb )
@@ -7331,6 +7379,8 @@ struct ascendance_t : public shaman_spell_t
         p()->buff.static_accumulation->trigger();
       }
     }
+
+    p()->accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
   }
 
   bool ready() override
@@ -8273,11 +8323,6 @@ struct primordial_wave_t : public shaman_spell_t
     if ( p()->talent.primordial_surge.ok() )
     {
       p()->buff.primordial_surge->trigger();
-    }
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
-    {
-      p()->buff.t31_4pc_ele_can_proc->trigger();
     }
 
     if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
@@ -9337,10 +9382,12 @@ void shaman_t::init_spells()
   spell.t30_2pc_ele        = find_spell( 405565 );
   spell.t30_4pc_ele        = find_spell( 410018 ); // 405566 otherwise empty T30 base spell
 
-  spell.t31_2pc_ele          = find_spell( 422911 ); 
+  spell.t31_2pc_ele          = find_spell( 422911 );
+  spell.t31_4pc_ele_molten_slag = find_spell( 422912 );
   // 4pc bonus: 422912, but that's currently empty. values are in:
-  spell.t31_4pc_ele_can_proc = find_spell( 426577 );
-  spell.t31_4pc_ele          = find_spell( 426578 );
+  // spell.t31_4pc_ele_can_proc = find_spell( 426577 );
+  // TODO: add cleave/aoe component of 4p
+  // spell.t31_4pc_ele          = find_spell( 426578 );
 
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
@@ -9840,6 +9887,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
 
   action.dre_ascendance->set_target( state->target );
   action.dre_ascendance->execute();
+  proc.deeply_rooted_elements->occur();
 }
 
 void shaman_t::trigger_secondary_flame_shock( player_t* target ) const
@@ -10258,8 +10306,7 @@ void shaman_t::create_buffs()
       ->set_tick_zero(true);
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
 
-  buff.t31_4pc_ele_can_proc = make_buff( this, "molten_charge_can_proc", spell.t31_4pc_ele_can_proc );
-  buff.t31_4pc_ele = make_buff( this, "molten_charge", spell.t31_4pc_ele );
+  // buff.t31_4pc_ele = make_buff( this, "molten_charge", spell.t31_4pc_ele );
 
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
@@ -10476,6 +10523,8 @@ void shaman_t::init_procs()
   proc.wasted_lava_surge                        = get_proc( "Lava Surge: Wasted" );
   proc.wasted_lava_surge_primordial_surge       = get_proc( "Lava Surge: Primordial Surge" );
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );
+
+  proc.deeply_rooted_elements                   = get_proc( "Deeply Rooted Elements" );
 
   proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );
   proc.surge_of_power_sk_lightning_bolt = get_proc( "Surge of Power: SK Lightning Bolt" );
@@ -11467,7 +11516,10 @@ void shaman_t::reset()
   player_t::reset();
 
   lava_surge_during_lvb = false;
-  sk_during_cast          = false;
+  sk_during_cast        = false;
+
+  accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
+  ascendance_extension_cap = timespan_t::from_seconds( 0.0 );
 
   lotfw_counter = 0U;
   dre_attempts = 0U;
