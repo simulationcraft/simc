@@ -6651,6 +6651,134 @@ void branch_of_the_tormented_ancient( special_effect_t& e )
   e.custom_buff = buff;
 }
 
+// Cataclysmic Signet Brand
+// 422479 Driver
+// 425180 Player DoT
+// 425153 Stack Buff
+// 425154 Enemy DoT
+// 425156 AoE Damage
+void infernal_signet_brand( special_effect_t& e )
+{
+  struct radiating_brand_t : public generic_aoe_proc_t
+  {
+    radiating_brand_t( const special_effect_t& effect, double base_damage )
+      : generic_aoe_proc_t( effect, "radiating_brand", effect.player->find_spell( 425156 ) )
+    {
+      // This is cursed, but appears to take the base damage of vicious brand's ticks
+      // Then applies the damage modifier for max stacks of the buff, then multiplies it by
+      // driver effect 6 as a percent
+      double buff_mod = pow( 1 + effect.driver()->effectN( 3 ).percent(), effect.driver()->effectN( 2 ).base_value() );
+      double aoe_mod  = effect.driver()->effectN( 6 ).percent();
+      base_dd_min = base_dd_max = base_damage * buff_mod * aoe_mod;
+    }
+  };
+
+  struct vicious_brand_self_t : public generic_proc_t
+  {
+    const special_effect_t& e;
+    buff_t* buff;
+
+    vicious_brand_self_t( const special_effect_t& effect, buff_t* b, double base_damage )
+      : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ), e( effect ), buff( b )
+    {
+      double player_mod = e.driver()->effectN( 4 ).percent();
+      base_td           = base_damage * player_mod;
+      target            = effect.player;
+      stats->type       = stats_e::STATS_NEUTRAL;
+    }
+
+    double composite_ta_multiplier( const action_state_t* state ) const override
+    {
+      double m        = generic_proc_t::composite_ta_multiplier( state );
+      double base_mod = 1.0 + e.driver()->effectN( 3 ).percent();
+
+      // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
+      // Doesnt appear to have any sort of cap
+      m *= pow( base_mod, buff->check() );
+
+      return m;
+    }
+  };
+
+  struct vicious_brand_t : public generic_proc_t
+  {
+    action_t* self_damage;
+    action_t* aoe_damage;
+    buff_t* buff;
+    const special_effect_t& e;
+
+    vicious_brand_t( const special_effect_t& effect, buff_t* b, double base_damage )
+      : generic_proc_t( effect, "vicious_brand", effect.player->find_spell( 425154 ) ),
+        self_damage( create_proc_action<vicious_brand_self_t>( "vicious_brand_self", effect, b, base_damage ) ),
+        aoe_damage( create_proc_action<radiating_brand_t>( "radiating_brand", effect, base_damage ) ),
+        buff( b ),
+        e( effect )
+    {
+      base_td = base_damage;
+
+      add_child( aoe_damage );
+    }
+
+    double composite_ta_multiplier( const action_state_t* state ) const override
+    {
+      double m        = generic_proc_t::composite_ta_multiplier( state );
+      double base_mod = 1.0 + e.driver()->effectN( 3 ).percent();
+
+      // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
+      // Doesnt appear to have any sort of cap
+      m *= pow( base_mod, buff->check() );
+
+      return m;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+
+      if ( buff->at_max_stacks() )
+      {
+        aoe_damage->execute();
+      }
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buff->trigger();
+      if ( buff->check() > ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
+      {
+        self_damage->execute();
+      }
+    }
+  };
+
+  auto buff = create_buff<buff_t>( e.player, e.player->find_spell( 425153 ) );
+
+  buff->player->register_on_combat_state_callback( [ buff ]( player_t* p, bool c ) {
+    if ( !c && buff->check() )
+    {
+      buff->sim->print_debug( "{} leaves combat, starting Firestarter decay", p->name(), c );
+      buff->set_reverse( true );
+    }
+    if ( c )
+    {
+      buff->sim->print_debug( "{} enters combat, stopping Firestarter decay", p->name(), c );
+      buff->set_reverse( false );
+    }
+  } );
+
+  // Has an insane damage formula, appears to be
+  // ( driver effect 1 / ticks ) * [ ( 1 + driver effect 3 percent ) ^ ( 1 - driver effect 5 ) ]
+  auto tick_spell    = e.player->find_spell( 425154 );
+  auto ticks         = tick_spell->duration() / tick_spell->effectN( 2 ).period();
+  double base_mod    = pow( 1 + e.driver()->effectN( 3 ).percent(), 1 - e.driver()->effectN( 5 ).base_value() );
+  double base_damage = ( e.driver()->effectN( 1 ).average( e.item ) / ticks ) * base_mod;
+
+  e.execute_action = create_proc_action<vicious_brand_t>( "vicious_brand", e, buff, base_damage );
+
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -9238,6 +9366,7 @@ void register_special_effects()
   register_special_effect( 423124, items::augury_of_the_primal_flame );
   register_special_effect( 417534, items::time_thiefs_gambit, true );
   register_special_effect( 422441, items::branch_of_the_tormented_ancient );
+  register_special_effect( 422479, items::infernal_signet_brand );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment

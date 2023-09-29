@@ -1445,6 +1445,7 @@ class SpellDataGenerator(DataGenerator):
          424228, 424276, 424274, 424272, 424275, # Pinch of Dream Magic: Shapeshift Buffs
          427209, 427212, # Dreambinder, Loom of the Great Cycle Damage Spell and Slowed Debuff
          425509, # Branch of the Tormented Ancient
+         425180, 425156, # Infernal Signet Brand
         ),
 
         # Warrior:
