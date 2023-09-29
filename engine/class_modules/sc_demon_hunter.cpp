@@ -7109,7 +7109,7 @@ void demon_hunter_t::init_spells()
   spell.disrupt           = find_class_spell( "Disrupt" );
   spell.immolation_aura   = find_class_spell( "Immolation Aura" );
   spell.immolation_aura_2 = find_rank_spell( "Immolation Aura", "Rank 2" );
-  spell.sigil_of_flame    = find_spell( 389810 );
+  spell.sigil_of_flame    = find_spell( 204596 );
   spell.spectral_sight    = find_class_spell( "Spectral Sight" );
 
   // Spec-Overriden Passives
