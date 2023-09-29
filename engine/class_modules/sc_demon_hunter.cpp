@@ -212,7 +212,9 @@ public:
     buff_t* blur;
     damage_buff_t* chaos_theory;
     buff_t* death_sweep;
+    buff_t* fel_barrage;
     buff_t* furious_gaze;
+    damage_buff_t* inertia;
     buff_t* initiative;
     buff_t* inner_demon;
     damage_buff_t* momentum;
@@ -220,7 +222,6 @@ public:
     damage_buff_t* restless_hunter;
     buff_t* tactical_retreat;
     buff_t* unbound_chaos;
-    damage_buff_t* inertia;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -717,6 +718,7 @@ public:
     // Havoc
     spell_t* burning_wound                      = nullptr;
     attack_t* demon_blades                      = nullptr;
+    spell_t* fel_barrage                        = nullptr;
     spell_t* fodder_to_the_flame_damage         = nullptr;
     spell_t* inner_demon                        = nullptr;
     spell_t* ragefire                           = nullptr;
@@ -2616,8 +2618,8 @@ struct fel_barrage_t : public demon_hunter_spell_t
 {
   struct fel_barrage_tick_t : public demon_hunter_spell_t
   {
-    fel_barrage_tick_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->talent.havoc.fel_barrage->effectN( 1 ).trigger() )
+    fel_barrage_tick_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+      : demon_hunter_spell_t( name, p, s )
     {
       background = dual   = true;
       aoe                 = -1;
@@ -2628,21 +2630,23 @@ struct fel_barrage_t : public demon_hunter_spell_t
   fel_barrage_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "fel_barrage", p, p->talent.havoc.fel_barrage, options_str )
   {
-    may_miss    = false;
-    channeled   = true;
-    tick_action = p->get_background_action<fel_barrage_tick_t>( "fel_barrage_tick" );
+    may_miss     = false;
+    dot_duration = timespan_t::zero();
+    range        = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
+    set_target( p );  // Does not require a hostile target
+
+    if ( !p->active.fel_barrage )
+    {
+      p->active.fel_barrage =
+          p->get_background_action<fel_barrage_tick_t>( "fel_barrage_tick", data().effectN( 1 ).trigger() );
+      p->active.fel_barrage->stats = stats;
+    }
   }
 
-  timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
+  void execute() override
   {
-    // 6/20/2018 -- Channel duration is currently not affected by Haste, although tick rate is
-    // DFALPHA TOCHECK -- Is this still true?
-    return dot_duration;
-  }
-
-  bool usable_moving() const override
-  {
-    return true;
+    p()->buff.fel_barrage->trigger();
+    demon_hunter_spell_t::execute();
   }
 };
 
@@ -6199,6 +6203,25 @@ struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
+struct fel_barrage_buff_t : public demon_hunter_buff_t<buff_t>
+{
+  fel_barrage_buff_t( demon_hunter_t* p ) : base_t( *p, "fel_barrage", p->talent.havoc.fel_barrage )
+  {
+    set_cooldown( timespan_t::zero() );
+
+    set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
+      auto cost = p->active.fel_barrage->cost();
+      if ( !p->resource_available( RESOURCE_FURY, cost ) )
+      {
+        // Separate the expiration event to happen immediately after tick processing
+        make_event( *sim, 0_ms, [ this ]() { this->expire(); } );
+        return;
+      }
+      p->active.fel_barrage->execute_on_target( p->target );
+    } );
+  }
+};
+
 }  // end namespace buffs
 
 // Namespace Actions post buffs
@@ -6580,6 +6603,8 @@ void demon_hunter_t::create_buffs()
                            ->set_default_value( talent.havoc.unbound_chaos->effectN( 2 ).percent() );
 
   buff.chaos_theory = make_buff<damage_buff_t>( this, "chaos_theory", spec.chaos_theory_buff );
+
+  buff.fel_barrage = new buffs::fel_barrage_buff_t( this );
 
   // Vengeance ==============================================================
 
@@ -7289,7 +7314,9 @@ void demon_hunter_t::init_spells()
   talent.havoc.chaotic_disposition = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Disposition" );
 
   talent.havoc.essence_break       = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
-  talent.havoc.fel_barrage         = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
+  // The Fel Barrage talent info isn't correct in spell data, for now we pass in the talent entry ID
+  // TODO 10.2 : Change back to stringy form when this is fixed :)
+  talent.havoc.fel_barrage         = find_talent_spell( 117742 );
   talent.havoc.shattered_destiny   = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Destiny" );
   talent.havoc.any_means_necessary = find_talent_spell( talent_tree::SPECIALIZATION, "Any Means Necessary" );
   talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
