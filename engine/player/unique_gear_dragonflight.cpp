@@ -6714,9 +6714,6 @@ void infernal_signet_brand( special_effect_t& e )
         buff( b ),
         e( effect )
     {
-      auto spell = effect.player->find_spell( 425154 );
-      auto ticks = spell->duration() / spell->effectN( 2 ).period();
-
       base_td = base_damage;
 
       buff->set_period( effect.player->find_spell( 425153 )->effectN( 2 ).period() );
