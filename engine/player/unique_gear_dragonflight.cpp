@@ -6745,15 +6745,6 @@ void infernal_signet_brand( special_effect_t& e )
       return m;
     }
 
-    void impact( action_state_t* state ) override
-    {
-      generic_proc_t::impact( state );
-      if ( buff->check() > 5 )
-      {
-        self_damage->execute();
-      }
-    }
-
     void tick( dot_t* d ) override
     {
       generic_proc_t::tick( d );
@@ -6768,25 +6759,10 @@ void infernal_signet_brand( special_effect_t& e )
     {
       generic_proc_t::execute();
       buff->trigger();
-    }
-  };
-
-  struct infernal_signet_brand_cb_t : public dbc_proc_callback_t
-  {
-    action_t* damage;
-    double base_damage;
-
-    infernal_signet_brand_cb_t( const special_effect_t& effect, buff_t* b, double base_damage )
-      : dbc_proc_callback_t( effect.player, effect ),
-        base_damage( base_damage ),
-        damage( create_proc_action<vicious_brand_t>( "vicious_brand", effect, b, base_damage ) )
-    {
-    }
-
-    void execute( action_t* a, action_state_t* s ) override
-    {
-      dbc_proc_callback_t::execute( a, s );
-      damage->execute();
+      if ( buff->check() > 5 )
+      {
+        self_damage->execute();
+      }
     }
   };
 
@@ -6799,7 +6775,9 @@ void infernal_signet_brand( special_effect_t& e )
   double base_mod    = pow( 1 + e.driver()->effectN( 3 ).percent(), 1 - e.driver()->effectN( 5 ).base_value() );
   double base_damage = ( e.driver()->effectN( 1 ).average( e.item ) / ticks ) * base_mod;
 
-  new infernal_signet_brand_cb_t( e, buff, base_damage );
+  e.execute_action = create_proc_action<vicious_brand_t>( "vicious_brand", e, buff, base_damage );
+
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Weapons
