@@ -752,6 +752,8 @@ struct player_t : public actor_t
     player_option_t<double> igneous_flowstone_double_lava_wave_chance;
     /// Enable Voice of the Silent Star's proc
     player_option_t<bool> voice_of_the_silent_star_enable = true;
+    // Force the extra damage from Nymue's Unraveling Spindle against Immobilized targets
+    player_option_t<bool> nymue_forced_immobilized = false;
   } dragonflight_opts;
 
 private:

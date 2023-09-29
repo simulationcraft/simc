@@ -58,6 +58,7 @@ struct warlock_td_t : public actor_target_data_t
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
+  propagate_const<dot_t*> dots_searing_bolt;
 
   propagate_const<buff_t*> debuffs_shadowburn;
   propagate_const<buff_t*> debuffs_eradication;
@@ -71,6 +72,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
   propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
+  propagate_const<buff_t*> debuffs_doom_brand; // T31 2pc
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
@@ -117,6 +119,7 @@ public:
   double agony_accumulator;
   double corruption_accumulator;
   double cdf_accumulator; // For T30 Destruction tier set
+  double dimensional_accumulator; // For T31 Destruction tier set
   int incinerate_last_target_count; // For use with T30 Destruction tier set
   double volatile_fiends_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Volatile Fiends
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
@@ -187,6 +190,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
 
     spawner::pet_spawner_t<pets::demonology::pit_lord_t, warlock_t> pit_lords;
+    spawner::pet_spawner_t<pets::demonology::doomfiend_t, warlock_t> doomfiends;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -480,6 +484,7 @@ public:
     action_t* bilescourge_bombers_proc; // From Volatile Fiends talent
     action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
     action_t* summon_nether_portal_demon; // Separate version for Nether Portal based summons due to Ner'zhul's Volition
+    action_t* doom_brand_explosion; // Demonology T31 2pc
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
@@ -498,11 +503,18 @@ public:
     // Demonology
     const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
     const spell_data_t* rite_of_ruvaraad; // T30 4pc buff which increases pet damage while Grimoire: Felguard is active
+    const spell_data_t* doom_brand; // T31 2pc debuff which does AoE damage on expiration. Hand of Gul'dan reduces remaining duration on all Brands
+    const spell_data_t* doom_brand_debuff; // Doom Brand primary data isn't really useful to SimC, actual debuff is a separate spell. (Misc Value 1 for primary does hold the NPC ID for Doomfiend, though)
+    const spell_data_t* doom_brand_aoe;
+    const spell_data_t* doom_bolt_volley; // T31 4pc spell used by Doomfiend pet
 
     // Destruction 
     const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
     const spell_data_t* channel_demonfire; // T30 2pc damage proc is separate from talent version
     const spell_data_t* umbrafire_embers; // T30 4pc enables stacking buff on 2pc procs
+    const spell_data_t* dimensional_cinder; // T31 2pc AoE proc
+    const spell_data_t* flame_rift; // T31 4pc - Additional Dimensional Rift type
+    const spell_data_t* searing_bolt; // Projectile + DoT from Flame Rift
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -513,6 +525,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
+    propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> soul_rot;
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
@@ -651,6 +664,7 @@ public:
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
     proc_t* blazing_meteor; // T29 4pc
+    proc_t* doomfiend; // T31 4pc
 
     // Destruction
     proc_t* reverse_entropy;
@@ -662,12 +676,14 @@ public:
     proc_t* conflagration_of_chaos_sb;
     proc_t* chaos_maelstrom; // T29 2pc
     proc_t* channel_demonfire; // T30 2pc
+    proc_t* dimensional_refund; // T31 2pc charge refund on Dimensional Rift
   } procs;
 
   int initial_soul_shards;
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
+  real_ppm_t* doomfiend_rppm; // Demonology T31 4pc
   const spell_data_t* version_10_2_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );

@@ -998,6 +998,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
 
+  dots_searing_bolt = target->get_dot( "searing_bolt", &p );
+
   debuffs_eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
                             ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
 
@@ -1043,6 +1045,15 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_kazaaks_final_curse = make_buff( *this, "kazaaks_final_curse", p.talents.kazaaks_final_curse )
                                     ->set_default_value( 0 );
+
+  debuffs_doom_brand = make_buff( *this, "doom_brand", p.tier.doom_brand_debuff )
+                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                           ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
+                               if ( cur == 0 )
+                               {
+                                 p.proc_actions.doom_brand_explosion->execute_on_target( b->player );
+                               }
+                             } );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -1171,6 +1182,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
     cdf_accumulator( 0.0 ),
+    dimensional_accumulator( 0.0 ),
     incinerate_last_target_count( 0 ),
     volatile_fiends_proc_chance( 0.0 ),
     active_pets( 0 ),
@@ -1183,14 +1195,16 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     procs(),
     initial_soul_shards( 3 ),
+    default_pet(),
     disable_auto_felstorm( false ),
-    default_pet()
+    doomfiend_rppm( nullptr )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.darkglare = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
+  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
@@ -1861,6 +1875,7 @@ void warlock_t::reset()
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   corruption_accumulator             = rng().range( 0.0, 0.99 );
   cdf_accumulator                    = rng().range( 0.0, 0.99 );
+  dimensional_accumulator            = rng().range( 0.0, 0.99 );
   incinerate_last_target_count       = 0;
   volatile_fiends_proc_chance        = 0.2;
   wild_imp_spawns.clear();
@@ -2164,9 +2179,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 {
   if ( name_str == "time_to_shard" )
   {
-    auto agony_id = find_action_id( "agony" );
-
-    return make_fn_expr( name_str, [ this, agony_id ]() {
+    return make_fn_expr( name_str, [ this]() {
       auto td               = get_target_data( target );
       dot_t* agony          = td->dots_agony;
       double active_agonies = get_active_dots( agony );
@@ -2374,7 +2387,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     illidari_satyrs( "illidari_satyr", w ),
     eyes_of_guldan( "eye_of_guldan", w ),
     prince_malchezaar( "prince_malchezaar", w ),
-    pit_lords( "pit_lord", w )
+    pit_lords( "pit_lord", w ),
+    doomfiends( "doomfiend", w )
 {
 }
 }  // namespace warlock

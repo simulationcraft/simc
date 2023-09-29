@@ -2909,7 +2909,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Hunter's Mark (428402)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1628 | Target: Self (1)
@@ -5879,18 +5879,24 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Limit N (165), No Caster Aura Icon (187), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=480367)   : Apply Aura (6) | Dummy (4)
+#1 (id=480367)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=743704)   : Apply Aura (6) | Stalked (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#3 (id=819194)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
+#3 (id=819194)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#4 (id=819195)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#4 (id=819195)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#5 (id=1109121)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20000 | Scaled Value: 20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Apply Hunter's Mark to the target, causing the target to always be seen and tracked by the Hunter.
 
-Only one Hunter's Mark can be applied at a time.
-Tooltip          : Can always be seen and tracked by the Hunter.
+Hunter's Mark increases all damage dealt to targets above $s3% health by $428402s1%. Only one Hunter's Mark damage increase can be applied to a target at a time.
+
+Hunter's Mark can only be applied to one target at a time. When applying Hunter's Mark in combat, the ability goes on cooldown for ${$s5/1000} sec.
+Tooltip          : Can always be seen and tracked by the Hunter.
+
+Damage taken increased by $428402s4% while above $s3% health.
 
 Name             : Multi-Shot (id=257620) [Spell Family (9)] 
 Talent Entry     : Marksmanship [tree=spec, row=6, col=1, max_rank=1, req_points=8]
@@ -7608,7 +7614,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707444)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 453.6016 (coefficient=1) | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Kill Command has a chance to deal $s1 to ${$s1*5} additional damage and grants you 6 Focus over 3 sec.
 Tooltip          : Kill Command has a chance to deal $w1 to ${$w1*5} additional damage and grants you 6 Focus over 3 sec.
@@ -8620,7 +8626,7 @@ Effects          :
                    Affected Spells (Category): Kill Command (34026)
 #4 (id=1025597)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Kill Command now has ${$s1+1} charges, and deals $s2% increased damage.
 
@@ -12106,7 +12112,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=834483)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : $@spelldesc336822
 Tooltip          : Your next Kill Command will consume $s1% less Focus.
@@ -13433,7 +13439,7 @@ Duration         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3)
+Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
 Triggered by     : The Hunt (323639)
 Family Flags     : 82
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -14326,7 +14332,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1006233)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (259277)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (259277), Kill Command (426703)
                    Family Flags: 37, 43
 Description      : Kill Command damage increased by $s1%.
 
@@ -14574,7 +14580,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1007162)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Kill Command damage increased by $s1%.
 
@@ -14637,7 +14643,7 @@ Effects          :
                    Affected Spells (Category): Kill Command (34026)
 #2 (id=1019323)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : $@spelldesc378745
 Tooltip          : Kill Command's cooldown reduced by $s1%. 
@@ -16324,7 +16330,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=1030395)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : $@spelldesc378750
 Tooltip          : Your next Kill Command will consume $s1% less Focus.
@@ -16456,7 +16462,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1032731)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Kill Command damage increased by $s1% and it has a $h% chance to reset the cooldown on Barbed Shot.
 
@@ -16688,7 +16694,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1033805)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : $@spelldesc393647
 Tooltip          : Damage of Kill Command increased by $s1%.
@@ -16897,7 +16903,7 @@ Effects          :
                    Family Flags: 86
 #2 (id=1075473)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 Description      : Cobra Shot and Kill Command damage increased by $s1%.
 
@@ -17288,7 +17294,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098473)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 50)
 Description      : Dire Beasts now obey your Kill Command and can gain Beast Cleave.
 
 Name             : Hunter Marksmanship 10.2 Class Set 2pc (id=422876) [Passive, Hidden] 
@@ -17351,10 +17356,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 425830 | Target: Self (1)
 Description      : Fury of the Eagle increases you and your pet's critical strike chance by $425830s2% and critical damage dealt by $425830s1% for $425830d.
 
-Name             : Hunter Survival 10.2 Class Set 4pc (id=422879) [Passive, Hidden] 
+Name             : Hunter Survival 10.2 Class Set 4pc (id=422879) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -17365,11 +17373,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1098477)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1098477)  : Apply Aura (6) | Proc Trigger Spell (42): Light the Fuse
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 428464 | Target: Self (1)
 #2 (id=1104947)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Fury of the Eagle throws a free Wildfire Bomb at your current target at $s2% effectiveness, generates $s1 $lcharge:charges; of Wildfire Bomb, and increases the damage Wildfire Bomb deals to your primary target by $426344s1% for $426344d.
+Description      : Fury of the Eagle throws a free Wildfire Bomb at your current target at $s2% effectiveness, causes your next Wildfire Bomb to not incur a cooldown, and increases the damage Wildfire Bomb deals to your primary target by $426344s1% for $426344d.
 
 Name             : Savagery (id=424557) [Spell Family (9), Passive] 
 Talent Entry     : Beast Mastery [tree=spec, row=7, col=5, max_rank=1, req_points=8]
@@ -17389,7 +17397,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1101619)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (426703)
                    Family Flags: 43
 #2 (id=1101620)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -17469,20 +17477,21 @@ Name             : Fury Strikes (id=425830) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Range            : 100 yards
 Duration         : 12 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Triggered by     : Hunter Survival 10.2 Class Set 2pc (422878)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+                 : Ignore Line of Sight (66), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Do Not Fail if No Target (431)
 Effects          :
 #1 (id=1103935)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
@@ -17492,6 +17501,11 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
+#3 (id=1109305)  : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Active Pet (5)
+#4 (id=1109306)  : Apply Aura (6) | Modify Crit Damage Done% (163)
+                   Base Value: 7.5 | Scaled Value: 7.5 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Active Pet (5)
+                   Affected School(s): All
 Description      : $@spelldesc422878
 Tooltip          : Critical strike chance for you and your pet increased by $s2%.
 Critical damage dealt for you and your pet increased by $s1%.
@@ -17516,6 +17530,74 @@ Effects          :
                    Affected Spells: Wildfire Bomb (259495), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045)
                    Family Flags: 26
 Description      : $@spelldesc422879
-Tooltip          : Damage dealt to the primary target of your Wildfire Bombs increased by $s1%.
+Tooltip          : Wildfire Bomb deals $s1% increased damage to the primary target.
+
+Name             : Kill Command (id=426703) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Roar of the Seven Lions (207318 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Dire Pack (378747 effect#2), Cobra Sting (392296 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2), Savagery (424557 effect#1)
+Family Flags     : 43
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1105419)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+Description      : $@spelldesc34026
+
+Name             : Hunter's Mark (id=428402) [Spell Family (9), Hidden] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Spell Level      : 7
+Range            : 100 yards
+GCD              : 1 seconds
+Duration         : Aura (infinite)
+Affecting spells : Hunter (137014 effect#3)
+Family Flags     : 1, 28
+Attributes       : .......x ........ x....... x.xx....   .....x.. ..x..... ........ ........ 
+                 : ........ x.....x. ........ ....x...   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Include In Advanced Combat Log (72), Allow While Invisible (78), Not an Action (92), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1109124)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
+Description      : $@spelldesc257284
+
+Name             : Light the Fuse (id=428464) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Triggered by     : Hunter Survival 10.2 Class Set 4pc (422879)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Aura While Dead (116), Allow Entering Arena (149)
+Effects          :
+#1 (id=1109314)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : $@spelldesc422879
+Tooltip          : Your next Wildfire Bomb will not incur a cooldown.
 
 

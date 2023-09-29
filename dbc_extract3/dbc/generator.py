@@ -1443,6 +1443,7 @@ class SpellDataGenerator(DataGenerator):
          423124, 426564, 426553, # Augury of the Primal Flame
          426114, # Bandolier of Twisted Blades
          424228, 424276, 424274, 424272, 424275, # Pinch of Dream Magic: Shapeshift Buffs
+         427209, 427212, # Dreambinder, Loom of the Great Cycle Damage Spell and Slowed Debuff
         ),
 
         # Warrior:
@@ -1981,6 +1982,8 @@ class SpellDataGenerator(DataGenerator):
           ( 409890, 0 ),    # T30 - Channel Demonfire
           ( 417282, 3 ),    # Crashing Chaos Buff 10.1.5
           ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
+          ( 423874, 0 ),    # T31 - Flame Rift
+          ( 427285, 0 ),    # T31 - Dimensional Cinder
         ),
 
         # Monk:
@@ -2249,6 +2252,7 @@ class SpellDataGenerator(DataGenerator):
           ( 228532, 1 ), # Consume Lesser Soul heal
           ( 328953, 1 ), # Consume Demon Soul heal
           ( 328951, 1 ), # New Shattered Souls area trigger
+          ( 428493, 1 ), # Chaotic Disposition Damage
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate

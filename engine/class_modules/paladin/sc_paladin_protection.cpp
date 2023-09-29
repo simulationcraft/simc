@@ -594,16 +594,16 @@ struct judgment_prot_t : public judgment_t
 {
   heartfire_t* heartfire;
   int judge_holy_power, sw_holy_power;
-  judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
-    judgment_t( p, name ),
-    judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
-      sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) ),
-      heartfire(nullptr)
+  judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str )
+    : judgment_t( p, name ),
+      heartfire( nullptr ),
+      judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
+      sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
     if ( p->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) )
     {
-        heartfire = new heartfire_t( p );
+      heartfire = new heartfire_t( p );
     }
     cooldown->charges += as<int>( p->talents.crusaders_judgment->effectN( 1 ).base_value() );
   }

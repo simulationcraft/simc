@@ -476,6 +476,13 @@ struct pit_lord_t : public warlock_pet_t
   double composite_melee_speed() const override;
 };
 
+struct doomfiend_t : public warlock_pet_t
+{
+  doomfiend_t( warlock_t*, util::string_view = "doomfiend" );
+  action_t* create_action( util::string_view, util::string_view ) override;
+  void init_base_stats() override;
+};
+
 namespace random_demons
 {
 struct shivarra_t : public warlock_simple_pet_t

@@ -1215,7 +1215,12 @@ public:
 
     if ( priest().talents.shadow.inescapable_torment.enabled() )
     {
-      priest().trigger_inescapable_torment( s->target );
+      auto mod = 1.0;
+      if ( cast_state( s )->chain_number > 0 )
+      {
+        mod *= priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent();
+      }
+      priest().trigger_inescapable_torment( s->target, cast_state( s )->chain_number > 0, mod );
     }
 
     if ( result_is_hit( s->result ) )
@@ -1254,7 +1259,7 @@ public:
 
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
-          make_event( sim, 200_ms, [ this, state, child_death ] { child_death->schedule_execute( state ); } );
+          make_event( sim, 200_ms, [ state, child_death ] { child_death->schedule_execute( state ); } );
         }
       }
 
@@ -2710,6 +2715,7 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
+  add_option( opt_bool( "priest.t31_ist_echo_nerf", options.t31_ist_echo_nerf ) );
 }
 
 std::string priest_t::create_profile( save_e type )
