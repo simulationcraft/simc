@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51521
-static const std::array<spelltext_data_t, 20469> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20471> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20339,6 +20339,8 @@ static const std::array<spelltext_data_t, 20469> __ptr_spelltext_data { {
   { 424965, "$@spelldesc424406", "Suffering $w2 Nature damage every $t2 sec.", 0 },
   { 425153, "$@spelldesc422479", "The heat of the brand intensifies, increasing the damage dealt by $@spellname425154.", 0 },
   { 425154, "$@spelldesc422479", "Taking $w2 Fire damage per $t2 sec.", 0 },
+  { 425156, "$@spelldesc422479", 0, 0 },
+  { 425180, "$@spelldesc422479", "Taking $w2 Fire damage per $t2 sec.", 0 },
   { 425181, "$@spelldesc424406", 0, 0 },
   { 425261, "$@spelldesc422896", 0, 0 },
   { 425262, "$@spelldesc422896", 0, 0 },
