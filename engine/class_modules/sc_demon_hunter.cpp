@@ -3123,6 +3123,12 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
 
     return demon_hunter_spell_t::create_expression( name );
   }
+
+  bool verify_actor_spec() const override
+  {
+    // Spell data still has a Vengeance Demon Hunter class association but it's baseline
+    return true;
+  }
 };
 
 // Collective Anguish =======================================================
