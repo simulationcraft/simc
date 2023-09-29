@@ -835,29 +835,6 @@ buff_t* buff_t::set_duration_multiplier( double multiplier )
   return this;
 }
 
-// Applies a modifier from -99 to infinity that controls how fast the buff functions.
-// Values less than -99 will be rounded to -99, which seems to match in-game behavior where
-// auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
-// It's intended to modify real time duration and tickrate, without affecting the apparent duration
-// as used for things like pandemic refresh behavior.
-// Currently, this only modifies the duration of the buff, moving its expiration closer or
-// further out. The "apparent" duration is lost (but recoverable), since remains() returns the
-// real-time duration. The tickrate is un-adjusted, since it is currently based on the real-time duration.
-// None of these limitations particularly matter for current usecases, but if you're looking at using this, be
-// aware there may be more work required to support your usecase.
-buff_t* buff_t::apply_time_modifier_duration( double modifier )
-{
-  if ( ignore_time_modifier )
-    return this;
-  modifier = std::max( modifier, -99.0 ); // Limit slow down to 100x slower
-
-  auto mul = 100.0 / ( 100 + modifier );
-
-  base_time_duration_multiplier = base_time_duration_multiplier * mul;
-
-  return this;
-}
-
 buff_t* buff_t::set_dynamic_time_duration_multiplier( double new_multiplier )
 {
   assert( new_multiplier > 0.0 );
@@ -1533,6 +1510,28 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
                       *this, effect.percent(), default_value, prev );
   };
 
+  // Applies a modifier from -99 to infinity that controls how fast the buff functions.
+  // Values less than -99 will be rounded to -99, which seems to match in-game behavior where
+  // auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
+  // It's intended to modify real time duration and tickrate, without affecting the apparent duration
+  // as used for things like pandemic refresh behavior.
+  // Currently, this only modifies the duration of the buff, moving its expiration closer or
+  // further out. The "apparent" duration is lost (but recoverable), since remains() returns the
+  // real-time duration. The tickrate is un-adjusted, since it is currently based on the real-time duration.
+  // None of these limitations particularly matter for current usecases, but if you're looking at using this, be
+  // aware there may be more work required to support your usecase.
+  auto apply_time_modifier_duration = [ this ]( const spelleffect_data_t& effect )
+  {
+    if ( ignore_time_modifier )
+      return this;
+
+    auto mul = 1.0 / ( 1.0 + std::max( effect.percent(), -0.99 ) ); // Limit slow down to 100x slower
+
+    base_time_duration_multiplier = base_time_duration_multiplier * mul;
+
+    return this;
+  };
+
   auto apply_percent_modifier = [ this, apply_percent_effect_modifier ]( const spelleffect_data_t& effect ) {
     switch ( effect.misc_value1() )
     {
@@ -1613,7 +1612,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_MOD_TIME_RATE_BY_SPELL_LABEL:
-        apply_time_modifier_duration( effect.base_value() );
+        apply_time_modifier_duration( effect );
         break;
 
       default:

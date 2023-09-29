@@ -352,7 +352,6 @@ public:
   buff_t* modify_duration( timespan_t duration );
   buff_t* set_duration_multiplier( double );
   buff_t* set_dynamic_time_duration_multiplier( double multiplier );
-  buff_t* apply_time_modifier_duration( double modifier );
   buff_t* set_max_stack( int max_stack );
   buff_t* modify_max_stack( int max_stack );
   buff_t* set_initial_stack( int initial_stack );
