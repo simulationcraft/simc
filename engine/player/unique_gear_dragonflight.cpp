@@ -6716,19 +6716,6 @@ void infernal_signet_brand( special_effect_t& e )
     {
       base_td = base_damage;
 
-      buff->player->register_on_combat_state_callback( [ b ]( player_t* p, bool c ) {
-        if ( !c && b->check() )
-        {
-          b->sim->print_debug( "{} leaves combat, starting Firestarter decay", p->name(), c );
-          b->set_reverse( true );
-        }
-        if ( c )
-        {
-          b->sim->print_debug( "{} enters combat, stopping Firestarter decay", p->name(), c );
-          b->set_reverse( false );
-        }
-      } );
-
       add_child( aoe_damage );
     }
 
@@ -6766,6 +6753,19 @@ void infernal_signet_brand( special_effect_t& e )
   };
 
   auto buff = create_buff<buff_t>( e.player, e.player->find_spell( 425153 ) );
+
+  buff->player->register_on_combat_state_callback( [ buff ]( player_t* p, bool c ) {
+    if ( !c && buff->check() )
+    {
+      buff->sim->print_debug( "{} leaves combat, starting Firestarter decay", p->name(), c );
+      buff->set_reverse( true );
+    }
+    if ( c )
+    {
+      buff->sim->print_debug( "{} enters combat, stopping Firestarter decay", p->name(), c );
+      buff->set_reverse( false );
+    }
+  } );
 
   // Has an insane damage formula, appears to be
   // ( driver effect 1 / ticks ) * [ ( 1 + driver effect 3 percent ) ^ ( 1 - driver effect 5 ) ]
