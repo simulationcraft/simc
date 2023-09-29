@@ -6716,7 +6716,6 @@ void infernal_signet_brand( special_effect_t& e )
     {
       base_td = base_damage;
 
-      buff->set_period( effect.player->find_spell( 425153 )->effectN( 2 ).period() );
       buff->player->register_on_combat_state_callback( [ b ]( player_t* p, bool c ) {
         if ( !c && b->check() )
         {
@@ -6759,7 +6758,7 @@ void infernal_signet_brand( special_effect_t& e )
     {
       generic_proc_t::execute();
       buff->trigger();
-      if ( buff->check() > 5 )
+      if ( buff->check() > ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
       {
         self_damage->execute();
       }
