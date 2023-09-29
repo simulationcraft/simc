@@ -6597,12 +6597,6 @@ void demon_hunter_t::create_buffs()
 
   buff.chaos_theory = make_buff<damage_buff_t>( this, "chaos_theory", spec.chaos_theory_buff );
 
-  buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", talent.havoc.growing_inferno )
-                             ->set_default_value( talent.havoc.growing_inferno->effectN( 1 ).percent() )
-                             ->set_duration( 20_s );
-  if ( talent.havoc.growing_inferno->ok() )
-    buff.growing_inferno->set_max_stack( (int)( 10 / talent.havoc.growing_inferno->effectN( 1 ).percent() ) );
-
   buff.fel_barrage = new buffs::fel_barrage_buff_t( this );
 
   // Vengeance ==============================================================
