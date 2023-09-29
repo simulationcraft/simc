@@ -6664,8 +6664,6 @@ void infernal_signet_brand( special_effect_t& e )
     radiating_brand_t( const special_effect_t& effect, double base_damage )
       : generic_aoe_proc_t( effect, "radiating_brand", effect.player->find_spell( 425156 ) )
     {
-      auto spell = effect.player->find_spell( 425154 );
-      auto ticks = spell->duration() / spell->effectN( 2 ).period();
       // This is cursed, but appears to take the base damage of vicious brand's ticks
       // Then applies the damage modifier for max stacks of the buff, then multiplies it by
       // driver effect 6 as a percent
@@ -6685,7 +6683,7 @@ void infernal_signet_brand( special_effect_t& e )
     {
       double player_mod = e.driver()->effectN( 4 ).percent();
       base_td           = base_damage * player_mod;
-      target            = player;
+      target            = effect.player;
       stats->type       = stats_e::STATS_NEUTRAL;
     }
 
