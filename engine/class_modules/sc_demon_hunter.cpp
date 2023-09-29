@@ -214,7 +214,6 @@ public:
     buff_t* death_sweep;
     buff_t* fel_barrage;
     buff_t* furious_gaze;
-    buff_t* growing_inferno;
     damage_buff_t* inertia;
     buff_t* initiative;
     buff_t* inner_demon;
