@@ -1,0 +1,122 @@
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=apply_poison
+actions.precombat+=/flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand
+actions.precombat+=/adrenaline_rush,precombat_seconds=2,if=talent.improved_adrenaline_rush
+actions.precombat+=/roll_the_bones,precombat_seconds=2
+actions.precombat+=/slice_and_dice,precombat_seconds=1
+actions.precombat+=/stealth
+
+# Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
+# Interrupt on cooldown to allow simming interactions with that
+actions+=/kick
+# Default Roll the Bones reroll rule: reroll for any buffs that aren't Buried Treasure, excluding Grand Melee in single target
+actions+=/variable,name=rtb_reroll,value=rtb_buffs.will_lose=(rtb_buffs.will_lose.buried_treasure+rtb_buffs.will_lose.grand_melee&spell_targets.blade_flurry<2&raid_event.adds.in>10)
+# Crackshot builds without T31 should reroll for TB (or BS without HO) if we won't lose over 1 buff
+actions+=/variable,name=rtb_reroll,if=talent.crackshot&talent.hidden_opportunity&!set_bonus.tier31_4pc,value=(!rtb_buffs.will_lose.true_bearing&talent.hidden_opportunity|!rtb_buffs.will_lose.broadside&!talent.hidden_opportunity)&rtb_buffs.will_lose<=1
+# Crackshot builds with T31 should attempt to get or preserve TB (or BS without HO) if we won't lose over 2 buffs
+actions+=/variable,name=rtb_reroll,if=talent.crackshot&set_bonus.tier31_4pc,value=buff.true_bearing.up&rtb_buffs.total=1|(buff.true_bearing.remains<=3&talent.hidden_opportunity|buff.broadside.remains<=3&!talent.hidden_opportunity)&rtb_buffs.will_lose<=2
+# With HO and no Crackshot, reroll for SnC or any 2 buffs excluding GM in single target
+actions+=/variable,name=rtb_reroll,if=!talent.crackshot&talent.hidden_opportunity,value=!rtb_buffs.will_lose.skull_and_crossbones&(rtb_buffs.will_lose<2+rtb_buffs.will_lose.grand_melee&spell_targets.blade_flurry<2&raid_event.adds.in>10)
+# Additional reroll conditions in the event all active buffs will not be rolled away
+actions+=/variable,name=rtb_reroll,if=!talent.hidden_opportunity,value=variable.rtb_reroll|(rtb_buffs.normal=0&rtb_buffs.longer>=1)&!(buff.broadside.up&buff.true_bearing.up&buff.skull_and_crossbones.up)&!(buff.broadside.remains>39|buff.true_bearing.remains>39|buff.ruthless_precision.remains>39|buff.skull_and_crossbones.remains>39)
+# Avoid rerolls when we will not have time remaining on the fight or add wave to recoup the opportunity cost of the global
+actions+=/variable,name=rtb_reroll,op=reset,if=!(raid_event.adds.remains>12|raid_event.adds.up&(raid_event.adds.in-raid_event.adds.remains)<6|target.time_to_die>12)|fight_remains<12
+actions+=/variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up)&energy>=50
+# Use finishers if at -1 from max combo points, or -2 in Stealth with Crackshot
+actions+=/variable,name=finish_condition,value=effective_combo_points>=cp_max_spend-1-(stealthed.all&talent.crackshot)
+# With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
+actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>gcd
+actions+=/call_action_list,name=cds
+# High priority stealth list, will fall through if no conditions are met
+actions+=/call_action_list,name=stealth,if=stealthed.all
+actions+=/run_action_list,name=finish,if=variable.finish_condition
+actions+=/call_action_list,name=build
+actions+=/arcane_torrent,if=energy.base_deficit>=15+energy.regen
+actions+=/arcane_pulse
+actions+=/lights_judgment
+actions+=/bag_of_tricks
+
+# Builders
+actions.build=sepsis,if=target.time_to_die>11&buff.between_the_eyes.up|fight_remains<11
+actions.build+=/echoing_reprimand
+# High priority Ambush for HO builds
+actions.build+=/ambush,if=talent.hidden_opportunity&(buff.audacity.up|buff.sepsis_buff.up)
+# With Audacity + HO + FTH, consume Opportunity to proc Audacity any time Ambush is not available
+actions.build+=/pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up
+# Use Greenskins Wickers buff immediately with Opportunity unless running Fan the Hammer
+actions.build+=/pistol_shot,if=buff.greenskins_wickers.up&(!talent.fan_the_hammer&buff.opportunity.up|buff.greenskins_wickers.remains<1.5)
+# With Fan the Hammer, consume Opportunity at max stacks or if it will expire
+actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)
+# With Fan the Hammer, consume Opportunity based on CP deficit, and 2 FTH Crackshot builds can briefly hold stacks for an upcoming stealth cooldown
+actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&combo_points.deficit>((1+talent.quick_draw)*talent.fan_the_hammer.rank)&(cooldown.vanish.remains>10&cooldown.shadow_dance.remains>5|!talent.crackshot|talent.fan_the_hammer.rank<=1)
+# If not using Fan the Hammer, then consume Opportunity based on energy, when it will exactly cap CP, or when using Quick Draw
+actions.build+=/pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)
+actions.build+=/sinister_strike
+
+# Cooldowns
+actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)
+# Maintain Blade Flurry on 2+ targets, and on single target with Underhanded, or on cooldown at 5+ targets with Deft Maneuvers
+actions.cds+=/blade_flurry,if=(spell_targets>=2-talent.underhanded_upper_hand&!stealthed.rogue)&buff.blade_flurry.remains<gcd|talent.deft_maneuvers&spell_targets>=5&!variable.finish_condition
+actions.cds+=/roll_the_bones,if=rtb_buffs=0|variable.rtb_reroll
+# Use KIR if we have 3 or more buffs that are not Buried Treasure
+actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+buff.buried_treasure.up&(buff.shadow_dance.down|rtb_buffs>=6)
+# Sync Ghostly Strike with Killing Spree, otherwise use on cooldown
+actions.cds+=/ghostly_strike,if=talent.killing_spree&cooldown.killing_spree.ready|!talent.killing_spree|fight_remains<13
+# Use Blade Rush at ~50% energy, and more regularly with increasing target count
+actions.cds+=/blade_rush,if=variable.blade_flurry_sync&(energy.base_time_to_max>4-spell_targets%3)&!stealthed.all
+actions.cds+=/call_action_list,name=stealth_cds,if=!stealthed.all
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=100|fight_remains<charges*6)
+actions.cds+=/shadowmeld,if=!stealthed.all&(talent.count_the_odds&variable.finish_condition|variable.ambush_condition)
+actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up
+actions.cds+=/blood_fury
+actions.cds+=/berserking
+actions.cds+=/fireblood
+actions.cds+=/ancestral_call
+# Default conditions for usable items.
+actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up|spell_targets.blade_flurry>2)|fight_remains<=5
+actions.cds+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=(!trinket.1.is.dragonfire_bomb_dispenser&trinket.1.cooldown.remains>10|trinket.2.cooldown.remains>10)|cooldown.dragonfire_bomb_dispenser.charges>2|fight_remains<20|!trinket.2.has_cooldown|!trinket.1.has_cooldown
+actions.cds+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up|spell_targets.blade_flurry>2)|fight_remains<=5
+actions.cds+=/use_item,name=stormeaters_boon,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<10
+actions.cds+=/use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7
+actions.cds+=/use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
+actions.cds+=/use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20
+
+# Finishers
+# Use BtE to keep the crit buff up, but on cooldown if Improved or for Greenskins, and avoid overriding Greenskins
+actions.finish=between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.remains<4|talent.greenskins_wickers&!buff.greenskins_wickers.up|!talent.greenskins_wickers&talent.improved_between_the_eyes|!talent.greenskins_wickers&set_bonus.tier30_4pc)
+# Crackshot builds use BtE outside of Stealth if Vanish or Dance will not come off cooldown within the next cast
+actions.finish+=/between_the_eyes,if=talent.crackshot&(cooldown.vanish.remains>45&cooldown.shadow_dance.remains>15)
+actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable
+actions.finish+=/killing_spree
+actions.finish+=/cold_blood
+actions.finish+=/dispatch
+
+# Stealth
+actions.stealth=blade_flurry,if=talent.subterfuge&talent.hidden_opportunity&spell_targets>=2&buff.blade_flurry.remains<gcd
+actions.stealth+=/cold_blood,if=variable.finish_condition
+actions.stealth+=/between_the_eyes,if=variable.finish_condition&talent.crackshot
+actions.stealth+=/dispatch,if=variable.finish_condition
+# 2 FTH Crackshot builds can consume FTH in stealth during Broadside and low CP, or at max stacks with GSW
+actions.stealth+=/pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.up&(buff.broadside.up&combo_points<=1|buff.opportunity.stack>=6&buff.greenskins_wickers.up)
+actions.stealth+=/ambush,if=!buff.subterfuge.up|talent.hidden_opportunity
+
+# Stealth Cooldowns
+actions.stealth_cds=variable,name=vanish_opportunity_condition,value=!talent.shadow_dance&talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling
+# HO builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks
+actions.stealth_cds+=/vanish,if=talent.hidden_opportunity&!talent.crackshot&!buff.audacity.up&(variable.vanish_opportunity_condition|buff.opportunity.stack<buff.opportunity.max_stack)&variable.ambush_condition
+# Crackshot builds or builds without HO use Vanish at finish condition
+actions.stealth_cds+=/vanish,if=(!talent.hidden_opportunity|talent.crackshot)&variable.finish_condition
+# Crackshot builds use Dance at finish condition
+actions.stealth_cds+=/shadow_dance,if=talent.crackshot&variable.finish_condition
+# HO builds without Crackshot use Dance if Audacity and Opportunity are not active
+actions.stealth_cds+=/variable,name=shadow_dance_condition,value=buff.between_the_eyes.up&(!talent.hidden_opportunity|!buff.audacity.up&(talent.fan_the_hammer.rank<2|!buff.opportunity.up))&!talent.crackshot
+actions.stealth_cds+=/shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)&(!talent.hidden_opportunity|!cooldown.vanish.ready)
+# KIR builds without Crackshot use Dance at finish condition but hold it for an upcoming KIR
+actions.stealth_cds+=/shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))

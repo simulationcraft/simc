@@ -8450,15 +8450,15 @@ void rogue_t::init_action_list()
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    rogue_apl::assassination_df( this );
+    rogue_apl::assassination_ptr( this );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    rogue_apl::outlaw_df( this );
+    rogue_apl::outlaw_ptr( this );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    rogue_apl::subtlety_df( this );
+    rogue_apl::subtlety_ptr( this );
   }
 
   use_default_action_list = true;
