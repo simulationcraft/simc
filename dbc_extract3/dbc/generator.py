@@ -1642,6 +1642,7 @@ class SpellDataGenerator(DataGenerator):
             ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
             ( 409483, 0 ),          # T30 Assassination Set Bonus Spells
             ( 413890, 0 ),          # Nightstalker background spell
+            ( 424081, 0 ), ( 424066, 0 ), ( 424080, 0 ), # Underhanded Upper Hand background spells
         ),
 
         # Priest:
