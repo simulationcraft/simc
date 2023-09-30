@@ -8197,7 +8197,7 @@ double rogue_t::composite_melee_speed() const
 
   if ( buffs.slice_and_dice->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.slice_and_dice->check_value() + (talent.outlaw.swift_slasher->ok() ? composite_melee_haste() : 0.0) );
+    h *= 1.0 / ( 1.0 + buffs.slice_and_dice->check_value() + (talent.outlaw.swift_slasher->ok() ? ( ( 1.0 / composite_melee_haste() ) - 1.0 ) : 0.0) );
   }
 
   if ( buffs.adrenaline_rush->check() )
