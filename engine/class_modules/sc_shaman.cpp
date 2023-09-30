@@ -941,6 +941,7 @@ public:
   void trigger_lightning_rod_damage( const action_state_t* state );
   void trigger_swirling_maelstrom( const action_state_t* state );
   void trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks );
+  void trigger_elemental_assault( const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
@@ -3721,6 +3722,11 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
+    if ( p()->dbc->ptr )
+    {
+      p()->trigger_elemental_assault( execute_state );
+    }
+
     p()->buff.ashen_catalyst->expire();
   }
 
@@ -3982,13 +3988,9 @@ struct stormstrike_base_t : public shaman_attack_t
 
     p()->buff.converging_storms->expire();
 
-    if ( p()->talent.elemental_assault.ok() && !stormflurry &&
-        p()->rng().roll( p()->talent.elemental_assault->effectN( 3 ).percent() ) )
+    if ( !stormflurry )
     {
-      make_event( sim, 0_s, [ this ]() {
-        p()->generate_maelstrom_weapon( execute_state,
-                                        as<int>( p()->talent.elemental_assault->effectN( 2 ).base_value() ) );
-      } );
+      p()->trigger_elemental_assault( execute_state );
     }
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
@@ -4130,6 +4132,11 @@ struct ice_strike_t : public shaman_attack_t
     {
       p()->action.crash_lightning_aoe->set_target( execute_state->target );
       p()->action.crash_lightning_aoe->schedule_execute();
+    }
+
+    if ( p()->dbc->ptr )
+    {
+      p()->trigger_elemental_assault( execute_state );
     }
   }
 };
@@ -10276,6 +10283,26 @@ void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, 
   }
 
   generate_maelstrom_weapon( state, mw_stacks );
+}
+
+void shaman_t::trigger_elemental_assault( const action_state_t* state )
+{
+  if ( !talent.elemental_assault.ok() )
+  {
+    return;
+  }
+
+  if ( !rng().roll( talent.elemental_assault->effectN( 3 ).percent() )  )
+  {
+    return;
+  }
+
+  //assert( 0 );
+
+  make_event( sim, 0_s, [ this, state ]() {
+    generate_maelstrom_weapon( state,
+                               as<int>( talent.elemental_assault->effectN( 2 ).base_value() ) );
+    } );
 }
 
 // shaman_t::init_buffs =====================================================
