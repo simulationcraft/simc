@@ -4128,6 +4128,11 @@ struct spectral_sight_t : public demon_hunter_spell_t
       add_child( p->active.fodder_to_the_flame_damage );
   }
 
+  bool usable_precombat() const override
+  {
+    return true;  // just applies a buff and then summons a demon
+  }
+
   void execute() override
   {
     demon_hunter_spell_t::execute();
