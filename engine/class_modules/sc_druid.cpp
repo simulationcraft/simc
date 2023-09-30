@@ -1964,7 +1964,9 @@ public:
     if ( ab::data().ok() )
     {
       apply_buff_effects();
-      apply_debuffs_effects();
+
+      if ( ab::type == action_e::ACTION_SPELL || ab::type == action_e::ACTION_ATTACK )
+        apply_debuffs_effects();
 
       if ( ab::data().flags( spell_attribute::SX_ABILITY ) || ab::trigger_gcd > 0_ms )
         ab::not_a_proc = true;
