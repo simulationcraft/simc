@@ -274,9 +274,9 @@ public:
       player_talent_t felfire_haste;  // NYI
       player_talent_t master_of_the_glaive;
       player_talent_t aura_of_pain;
-      player_talent_t concentrated_sigils;
-      player_talent_t precise_sigils;    // Partial NYI (debuff Sigils)
-      player_talent_t lost_in_darkness;  // No Implementation
+      player_talent_t concentrated_sigils;  // Partial NYI (debuff Sigils)
+      player_talent_t precise_sigils;       // Partial NYI (debuff Sigils)
+      player_talent_t lost_in_darkness;     // No Implementation
 
       player_talent_t chaos_nova;
       player_talent_t soul_rending;
@@ -480,6 +480,7 @@ public:
     const spell_data_t* demonic_wards;
     const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
+    const spell_data_t* sigil_of_misery;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -544,6 +545,8 @@ public:
     const spell_data_t* immolation_aura_cdr;
     const spell_data_t* soul_fragments_buff;
     const spell_data_t* retaliation_damage;
+    const spell_data_t* sigil_of_silence;
+    const spell_data_t* sigil_of_chains;
   } spec;
 
   // Set Bonus effects
@@ -840,6 +843,12 @@ public:
   void apply_affecting_auras( action_t& action ) override;
 
   // custom demon_hunter_t functions
+  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype = A_MAX,
+                                              int misc_value               = P_GENERIC,
+                                              const spell_data_t* affected = spell_data_t::nil(),
+                                              effect_type_t type           = E_APPLY_AURA );
+  const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
+  const spell_data_t* find_spell_override( const spell_data_t* base, std::vector<const spell_data_t*> passives );
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
@@ -1436,6 +1445,7 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.aura_of_pain );
     ab::apply_affecting_aura( p->talent.demon_hunter.master_of_the_glaive );
     ab::apply_affecting_aura( p->talent.demon_hunter.rush_of_chaos );
+    ab::apply_affecting_aura( p->talent.demon_hunter.concentrated_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.precise_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.unleashed_power );
     ab::apply_affecting_aura( p->talent.demon_hunter.improved_sigil_of_misery );
@@ -3097,6 +3107,17 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     {
       add_child( p->active.sigil_of_flame_t31 );
     }
+
+    // 2023-09-29 -- Precise/Concentrated Sigils change the spell ID and their versions do not have charges
+    //               attached correctly, which causes Illuminated Sigils to not work as intended.
+    if ( p->talent.vengeance.illuminated_sigils->ok() &&
+         ( p->talent.demon_hunter.precise_sigils->ok() || p->talent.demon_hunter.concentrated_sigils->ok() ) &&
+         !p->bugs )
+    {
+      cooldown->charges += as<int>( p->talent.vengeance.illuminated_sigils->effectN( 1 ).base_value() );
+      sim->print_debug( "{} cooldown charges modified by {}", *this,
+                        as<int>( p->talent.vengeance.illuminated_sigils->effectN( 1 ).base_value() ) );
+    }
   }
 
   void init_finished() override
@@ -3980,6 +4001,17 @@ struct elysian_decree_t : public demon_hunter_spell_t
       sigil = p->get_background_action<elysian_decree_sigil_t>( "elysian_decree_sigil", p->spell.elysian_decree_damage,
                                                                 ground_aoe_duration );
       sigil->stats = stats;
+
+      // 2023-09-29 -- Precise/Concentrated Sigils change the spell ID and their versions do not have charges
+      //               attached correctly, which causes Illuminated Sigils to not work as intended.
+      if ( p->talent.vengeance.illuminated_sigils->ok() &&
+           ( p->talent.demon_hunter.precise_sigils->ok() || p->talent.demon_hunter.concentrated_sigils->ok() ) &&
+           !p->bugs )
+      {
+        cooldown->charges += as<int>( p->talent.vengeance.illuminated_sigils->effectN( 5 ).base_value() );
+        sim->print_debug( "{} cooldown charges modified by {}", *this,
+                          as<int>( p->talent.vengeance.illuminated_sigils->effectN( 5 ).base_value() ) );
+      }
     }
   }
 
@@ -7313,7 +7345,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.soulrend            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulrend" );
   talent.havoc.chaotic_disposition = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Disposition" );
 
-  talent.havoc.essence_break       = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
+  talent.havoc.essence_break = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
   // The Fel Barrage talent info isn't correct in spell data, for now we pass in the talent entry ID
   // TODO 10.2 : Change back to stringy form when this is fixed :)
   talent.havoc.fel_barrage         = find_talent_spell( 117742 );
@@ -7436,27 +7468,20 @@ void demon_hunter_t::init_spells()
   spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
   spec.retaliation_damage      = talent.vengeance.retaliation->ok() ? find_spell( 391159 ) : spell_data_t::not_found();
 
-  if ( talent.demon_hunter.elysian_decree->ok() )
-  {
-    spell.elysian_decree        = talent.demon_hunter.elysian_decree;
-    spell.elysian_decree_damage = find_spell( 389860 );
-  }
-  else
-  {
-    spell.elysian_decree        = spell_data_t::not_found();
-    spell.elysian_decree_damage = spell_data_t::not_found();
-  }
+  // Sigil overrides for Precise/Concentrated Sigils
+  std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils,
+                                                       talent.demon_hunter.concentrated_sigils };
+  spell.sigil_of_flame                             = find_spell_override( find_spell( 204596 ), sigil_overrides );
+  spell.elysian_decree = find_spell_override( talent.demon_hunter.elysian_decree, sigil_overrides );
+  spell.elysian_decree_damage =
+      talent.demon_hunter.elysian_decree->ok() ? find_spell( 389860 ) : spell_data_t::not_found();
+  spec.sigil_of_misery  = find_spell_override( talent.demon_hunter.sigil_of_misery, sigil_overrides );
+  spec.sigil_of_silence = find_spell_override( talent.vengeance.sigil_of_silence, sigil_overrides );
+  spec.sigil_of_chains  = find_spell_override( talent.vengeance.sigil_of_chains, sigil_overrides );
 
-  if ( talent.demon_hunter.fodder_to_the_flame->ok() )
-  {
-    spell.fodder_to_the_flame        = talent.demon_hunter.fodder_to_the_flame;
-    spell.fodder_to_the_flame_damage = find_spell( 350631 );  // Reused
-  }
-  else
-  {
-    spell.fodder_to_the_flame        = spell_data_t::not_found();
-    spell.fodder_to_the_flame_damage = spell_data_t::not_found();
-  }
+  spell.fodder_to_the_flame = talent.demon_hunter.fodder_to_the_flame;
+  spell.fodder_to_the_flame_damage =
+      talent.demon_hunter.fodder_to_the_flame->ok() ? find_spell( 350631 ) : spell_data_t::not_found();
 
   if ( talent.demon_hunter.collective_anguish->ok() )
   {
@@ -8686,6 +8711,63 @@ void demon_hunter_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spell.all_demon_hunter );
   action.apply_affecting_aura( spec.havoc_demon_hunter );
   action.apply_affecting_aura( spec.vengeance_demon_hunter );
+}
+
+// Utility functions ========================================================
+
+// Utility function to search spell data for matching effect.
+// NOTE: This will return the FIRST effect that matches parameters.
+const spelleffect_data_t* demon_hunter_t::find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype,
+                                                            int misc_value, const spell_data_t* affected,
+                                                            effect_type_t type )
+{
+  for ( size_t i = 1; i <= spell->effect_count(); i++ )
+  {
+    const auto& eff = spell->effectN( i );
+
+    if ( affected->ok() && !affected->affected_by_all( eff ) )
+      continue;
+
+    if ( eff.type() == type && ( eff.subtype() == subtype || subtype == A_MAX ) &&
+         ( eff.misc_value1() == misc_value || misc_value == 0 ) )
+    {
+      return &eff;
+    }
+  }
+
+  return &spelleffect_data_t::nil();
+}
+
+// Return the appropriate spell when `base` is overriden to another spell by `passive`
+const spell_data_t* demon_hunter_t::find_spell_override( const spell_data_t* base, const spell_data_t* passive )
+{
+  if ( !passive->ok() || !base->ok() )
+    return base;
+
+  auto id = as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base->id() )->base_value() );
+  if ( !id )
+    return base;
+
+  return find_spell( id );
+}
+
+const spell_data_t* demon_hunter_t::find_spell_override( const spell_data_t* base,
+                                                         std::vector<const spell_data_t*> passives )
+{
+  if ( !base->ok() )
+    return base;
+
+  for ( auto passive : passives )
+  {
+    if ( !passive->ok() )
+      continue;
+
+    auto id = as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base->id() )->base_value() );
+    if ( id )
+      return find_spell( id );
+  }
+
+  return base;
 }
 
 /* Report Extension Class
