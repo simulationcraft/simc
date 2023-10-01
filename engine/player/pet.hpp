@@ -45,13 +45,21 @@ struct pet_t : public player_t
     double attack_power_from_sp = 0.0;
     double spell_power_from_ap = 0.0;
     double spell_power_from_sp = 0.0;
-    double composite_melee_haste = 0.0;
-    double composite_melee_speed = 0.0;
-    double composite_spell_haste = 0.0;
-    double composite_spell_speed = 0.0;
+    double composite_melee_haste = 1.0;
+    double composite_melee_speed = 1.0;
+    double composite_spell_haste = 1.0;
+    double composite_spell_speed = 1.0;
     double composite_melee_crit = 0.0;
     double composite_spell_crit = 0.0;
   } current_pet_stats;
+
+  struct pet_scaling_t
+  {
+    bool haste_scaling = true;
+    bool crit_scaling = true;
+    bool ap_scaling = true;
+    bool sp_scaling = true;
+  } pet_scaling;
 
 
 public:

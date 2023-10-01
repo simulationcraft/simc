@@ -5201,6 +5201,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
           break;
       }
 
+      pet_scaling.haste_scaling = false;
       npc_id = pet_id;
     }
 
