@@ -9033,6 +9033,48 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 120000 )
         .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence cooldown with Concentrated Sigils", 207682 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence category cooldown with Concentrated Sigils", 207682 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence charges with Concentrated Sigils", 207682 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence charge cooldown with Concentrated Sigils", 207682 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence cooldown with Precise Sigils", 389809 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence category cooldown with Precise Sigils", 389809 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence charges with Precise Sigils", 389809 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence charge cooldown with Precise Sigils", 389809 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60000 )
+        .verification_value( 0 );
   }
 
   void combat_begin( sim_t* ) const override
