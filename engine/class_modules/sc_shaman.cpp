@@ -353,6 +353,7 @@ public:
     action_t* molten_slag;
 
     action_t* lightning_rod;
+    action_t* tempest_strikes;
 
     /// Totemic Recall last used totem (action)
     action_t* totemic_recall_totem;
@@ -516,6 +517,7 @@ public:
     cooldown_t* stormkeeper;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
     cooldown_t* totemic_recall;
+    cooldown_t* tempest_strikes;
   } cooldown;
 
   // Expansion-specific Legendaries
@@ -651,6 +653,7 @@ public:
     // Row 5
     player_talent_t graceful_spirit; // TODO: Movement Speed
     player_talent_t natures_fury;
+    player_talent_t tempest_strikes;
     // Row 6
     player_talent_t totemic_surge;
     player_talent_t winds_of_alakir; // TODO: NYI
@@ -861,6 +864,7 @@ public:
     cooldown.stormkeeper        = get_cooldown( "stormkeeper" );
     cooldown.strike             = get_cooldown( "strike" );
     cooldown.totemic_recall     = get_cooldown( "totemic_recall" );
+    cooldown.tempest_strikes    = get_cooldown( "tempest_strikes" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -942,6 +946,7 @@ public:
   void trigger_swirling_maelstrom( const action_state_t* state );
   void trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks );
   void trigger_elemental_assault( const action_state_t* state );
+  void trigger_tempest_strikes( const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
@@ -3080,6 +3085,15 @@ struct lightning_rod_damage_t : public shaman_spell_t
   { return 1.0; }
 };
 
+struct tempest_strikes_damage_t : public shaman_spell_t
+{
+  tempest_strikes_damage_t( shaman_t* p ) :
+    shaman_spell_t( "tempest_strikes", p, p->find_spell( 428078 ) )
+  {
+    background = true;
+  }
+};
+
 struct flametongue_weapon_spell_t : public shaman_spell_t  // flametongue_attack
 {
   flametongue_weapon_spell_t( util::string_view n, shaman_t* player, weapon_t* /* w */ )
@@ -3725,6 +3739,7 @@ struct lava_lash_t : public shaman_attack_t
     if ( p()->dbc->ptr )
     {
       p()->trigger_elemental_assault( execute_state );
+      p()->trigger_tempest_strikes( execute_state );
     }
 
     p()->buff.ashen_catalyst->expire();
@@ -3968,6 +3983,8 @@ struct stormstrike_base_t : public shaman_attack_t
         p()->action.crash_lightning_aoe->set_target( execute_state->target );
         p()->action.crash_lightning_aoe->execute();
       }
+
+      p()->trigger_tempest_strikes( execute_state );
     }
 
     // Don't try this at home, or anywhere else ..
@@ -4137,6 +4154,7 @@ struct ice_strike_t : public shaman_attack_t
     if ( p()->dbc->ptr )
     {
       p()->trigger_elemental_assault( execute_state );
+      p()->trigger_tempest_strikes( execute_state );
     }
   }
 };
@@ -8973,6 +8991,11 @@ void shaman_t::create_actions()
     action.dre_ascendance = new ascendance_dre_t( this );
   }
 
+  if ( talent.tempest_strikes.ok() )
+  {
+    action.tempest_strikes = new tempest_strikes_damage_t( this );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -9323,6 +9346,7 @@ void shaman_t::init_spells()
   talent.hailstorm = _ST( "Hailstorm" );
   talent.elemental_weapons = _ST( "Elemental Weapons" );
   talent.crashing_storms = _ST( "Crashing Storms" );
+  talent.tempest_strikes = _ST( "Tempest strikes" );
   // Row 6
   talent.storms_wrath = _ST( "Storm's Wrath" );
   talent.crash_lightning = _ST( "Crash Lightning" );
@@ -10297,12 +10321,28 @@ void shaman_t::trigger_elemental_assault( const action_state_t* state )
     return;
   }
 
-  //assert( 0 );
-
   make_event( sim, 0_s, [ this, state ]() {
     generate_maelstrom_weapon( state,
                                as<int>( talent.elemental_assault->effectN( 2 ).base_value() ) );
     } );
+}
+
+void shaman_t::trigger_tempest_strikes( const action_state_t* state )
+{
+  if ( !talent.tempest_strikes.ok() || cooldown.tempest_strikes->down() )
+  {
+    return;
+  }
+
+  if ( !rng().roll( talent.tempest_strikes->proc_chance() ) )
+  {
+    return;
+  }
+
+  action.tempest_strikes->set_target( state->target );
+  action.tempest_strikes->execute();
+
+  cooldown.tempest_strikes->start( talent.tempest_strikes->internal_cooldown() );
 }
 
 // shaman_t::init_buffs =====================================================
