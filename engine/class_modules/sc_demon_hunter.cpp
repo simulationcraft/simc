@@ -8949,6 +8949,48 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 30000 )
         .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree cooldown with Concentrated Sigils", 389858 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree category cooldown with Concentrated Sigils", 389858 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree charges with Concentrated Sigils", 389858 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree charge cooldown with Concentrated Sigils", 389858 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree cooldown with Precise Sigils", 389815 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree category cooldown with Precise Sigils", 389815 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree charges with Precise Sigils", 389815 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree charge cooldown with Precise Sigils", 389815 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60000 )
+        .verification_value( 0 );
   }
 
   void combat_begin( sim_t* ) const override
