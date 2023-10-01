@@ -9075,6 +9075,48 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 60000 )
         .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains cooldown with Concentrated Sigils", 207665 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains category cooldown with Concentrated Sigils", 207665 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains charges with Concentrated Sigils", 207665 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains charge cooldown with Concentrated Sigils", 207665 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 120000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains cooldown with Precise Sigils", 389807 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains category cooldown with Precise Sigils", 389807 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains charges with Precise Sigils", 389807 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains charge cooldown with Precise Sigils", 389807 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 120000 )
+        .verification_value( 0 );
   }
 
   void combat_begin( sim_t* ) const override
