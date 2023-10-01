@@ -3434,6 +3434,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
     {
+      // 2023-10-01 -- Immolation Aura CD is 15s (hasted) for Vengeance, but due to Immolation Aura changing to a
+      //               spell with charges, our Immolation Aura CDR aura doesn't work.
+      if (!p->bugs) {
+        cooldown->duration = 15_s;
+      }
       energize_amount = data().effectN( 3 ).base_value();
     }
     else
