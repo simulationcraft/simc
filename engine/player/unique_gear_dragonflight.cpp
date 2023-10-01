@@ -6679,7 +6679,7 @@ void infernal_signet_brand( special_effect_t& e )
     firestarter_no_combat_t( const special_effect_t& e, buff_t* b )
       : buff_t( e.player, "firestarter_no_combat" ), buff( b )
     {
-      set_duration( e.driver()->effectN(8).time_value() * 1000 );
+      set_duration( e.driver()->effectN( 8 ).time_value() * 1000 );
       set_quiet( true );
     }
 
@@ -6702,12 +6702,12 @@ void infernal_signet_brand( special_effect_t& e )
       may_crit = false;
     }
 
-    size_t available_targets( std::vector< player_t* >& tl ) const override
+    size_t available_targets( std::vector<player_t*>& tl ) const override
     {
       generic_aoe_proc_t::available_targets( tl );
 
       auto it = range::find( tl, target );
-      if (it != tl.end())
+      if ( it != tl.end() )
       {
         tl.erase( it );
       }
@@ -6758,7 +6758,6 @@ void infernal_signet_brand( special_effect_t& e )
         e( effect )
     {
       base_td = base_damage;
-
       add_child( aoe_damage );
     }
 
@@ -6780,7 +6779,8 @@ void infernal_signet_brand( special_effect_t& e )
 
       if ( buff->at_max_stacks() )
       {
-        aoe_damage->base_dd_min = aoe_damage->base_dd_max = d->state->result_amount * e.driver()->effectN( 6 ).percent();
+        aoe_damage->base_dd_min = aoe_damage->base_dd_max =
+            d->state->result_amount * e.driver()->effectN( 6 ).percent();
         aoe_damage->execute();
       }
     }
@@ -6795,8 +6795,8 @@ void infernal_signet_brand( special_effect_t& e )
       }
     }
   };
-  auto buff = make_buff<buff_t>( e.player, "firestarter", e.player->find_spell( 425153 ) );
 
+  auto buff               = make_buff<buff_t>( e.player, "firestarter", e.player->find_spell( 425153 ) );
   auto out_of_combat_buff = make_buff<firestarter_no_combat_t>( e, buff );
 
   buff->set_tick_callback( [ out_of_combat_buff ]( buff_t* b, int /* total_ticks */, timespan_t /* tick_time */ ) {
@@ -6806,7 +6806,7 @@ void infernal_signet_brand( special_effect_t& e )
     }
   } );
 
-  e.player->register_on_combat_state_callback( [ buff, out_of_combat_buff, e ]( player_t* p, bool c ) {
+  e.player->register_on_combat_state_callback( [ buff, out_of_combat_buff ]( player_t* p, bool c ) {
     if ( !c && buff->check() )
     {
       p->sim->print_debug( "{} leaves combat, starting Firestarter decay", p->name(), c );
