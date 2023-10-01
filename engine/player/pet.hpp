@@ -53,15 +53,6 @@ struct pet_t : public player_t
     double composite_spell_crit = 0.0;
   } current_pet_stats;
 
-  struct pet_scaling_t
-  {
-    bool haste_scaling = true;
-    bool crit_scaling = true;
-    bool ap_scaling = true;
-    bool sp_scaling = true;
-  } pet_scaling;
-
-
 public:
   pet_t( sim_t* sim, player_t* owner, util::string_view name, bool guardian = false, bool dynamic = false );
   pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_type, bool guardian = false,
@@ -83,7 +74,7 @@ public:
   // persistent pets.
   virtual void adjust_duration( timespan_t adjustment );
 
-  void update_stats();
+  virtual void update_stats();
 
   const char* name() const override { return full_name_str.c_str(); }
   const player_t* get_owner_or_self() const override

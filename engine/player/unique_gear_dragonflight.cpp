@@ -5201,13 +5201,25 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
           break;
       }
 
-      pet_scaling.haste_scaling = false;
       npc_id = pet_id;
     }
 
     void init_base_stats() override
     {
       pet_t::init_base_stats();
+    }
+
+    void update_stats() override
+    {
+      pet_t::update_stats();
+      // Current doesnt seem to scale with haste
+      if( owner -> bugs )
+      {
+        current_pet_stats.composite_melee_haste = 1;
+        current_pet_stats.composite_spell_haste = 1;
+        current_pet_stats.composite_melee_speed = 1;
+        current_pet_stats.composite_spell_speed = 1;
+      }
     }
 
     resource_e primary_resource() const override
