@@ -3107,17 +3107,6 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     {
       add_child( p->active.sigil_of_flame_t31 );
     }
-
-    // 2023-09-29 -- Precise/Concentrated Sigils change the spell ID and their versions do not have charges
-    //               attached correctly, which causes Illuminated Sigils to not work as intended.
-    if ( p->talent.vengeance.illuminated_sigils->ok() &&
-         ( p->talent.demon_hunter.precise_sigils->ok() || p->talent.demon_hunter.concentrated_sigils->ok() ) &&
-         !p->bugs )
-    {
-      cooldown->charges += as<int>( p->talent.vengeance.illuminated_sigils->effectN( 1 ).base_value() );
-      sim->print_debug( "{} cooldown charges modified by {}", *this,
-                        as<int>( p->talent.vengeance.illuminated_sigils->effectN( 1 ).base_value() ) );
-    }
   }
 
   void init_finished() override
@@ -4001,17 +3990,6 @@ struct elysian_decree_t : public demon_hunter_spell_t
       sigil = p->get_background_action<elysian_decree_sigil_t>( "elysian_decree_sigil", p->spell.elysian_decree_damage,
                                                                 ground_aoe_duration );
       sigil->stats = stats;
-
-      // 2023-09-29 -- Precise/Concentrated Sigils change the spell ID and their versions do not have charges
-      //               attached correctly, which causes Illuminated Sigils to not work as intended.
-      if ( p->talent.vengeance.illuminated_sigils->ok() &&
-           ( p->talent.demon_hunter.precise_sigils->ok() || p->talent.demon_hunter.concentrated_sigils->ok() ) &&
-           !p->bugs )
-      {
-        cooldown->charges += as<int>( p->talent.vengeance.illuminated_sigils->effectN( 5 ).base_value() );
-        sim->print_debug( "{} cooldown charges modified by {}", *this,
-                          as<int>( p->talent.vengeance.illuminated_sigils->effectN( 5 ).base_value() ) );
-      }
     }
   }
 
@@ -7177,7 +7155,6 @@ void demon_hunter_t::init_spells()
   spell.disrupt           = find_class_spell( "Disrupt" );
   spell.immolation_aura   = find_class_spell( "Immolation Aura" );
   spell.immolation_aura_2 = find_rank_spell( "Immolation Aura", "Rank 2" );
-  spell.sigil_of_flame    = find_spell( 204596 );
   spell.spectral_sight    = find_class_spell( "Spectral Sight" );
 
   // Spec-Overriden Passives
@@ -8930,6 +8907,48 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 25.0 )
         .verification_value( 0.0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame cooldown with Concentrated Sigils", 204513 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 30000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame category cooldown with Concentrated Sigils", 204513 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 30000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame charges with Concentrated Sigils", 204513 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame charge cooldown with Concentrated Sigils", 204513 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 30000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame cooldown with Precise Sigils", 389810 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 30000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame category cooldown with Precise Sigils", 389810 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 30000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame charges with Precise Sigils", 389810 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame charge cooldown with Precise Sigils", 389810 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 30000 )
+        .verification_value( 0 );
   }
 
   void combat_begin( sim_t* ) const override
