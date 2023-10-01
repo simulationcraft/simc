@@ -8991,6 +8991,48 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 60000 )
         .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery cooldown with Concentrated Sigils", 202140 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery category cooldown with Concentrated Sigils", 202140 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery charges with Concentrated Sigils", 202140 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery charge cooldown with Concentrated Sigils", 202140 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 120000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery cooldown with Precise Sigils", 389813 )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery category cooldown with Precise Sigils", 389813 )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery charges with Precise Sigils", 389813 )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery charge cooldown with Precise Sigils", 389813 )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 120000 )
+        .verification_value( 0 );
   }
 
   void combat_begin( sim_t* ) const override
