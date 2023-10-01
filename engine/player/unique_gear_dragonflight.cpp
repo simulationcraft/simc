@@ -6672,6 +6672,28 @@ void branch_of_the_tormented_ancient( special_effect_t& e )
 // 425156 AoE Damage
 void infernal_signet_brand( special_effect_t& e )
 {
+  struct firestarter_no_combat_t : public buff_t
+  {
+    buff_t* buff;
+
+    firestarter_no_combat_t( const special_effect_t& e, buff_t* b )
+      : buff_t( e.player, "firestarter_no_combat" ), buff( b )
+    {
+      set_duration( e.driver()->effectN(8).time_value() * 1000 );
+      set_quiet( true );
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      if ( d == timespan_t::zero() )
+      {
+        buff->expire();
+      }
+
+      buff_t::expire_override( s, d );
+    }
+  };
+
   struct radiating_brand_t : public generic_aoe_proc_t
   {
     radiating_brand_t( const special_effect_t& effect )
@@ -6773,19 +6795,27 @@ void infernal_signet_brand( special_effect_t& e )
       }
     }
   };
+  auto buff = make_buff<buff_t>( e.player, "firestarter", e.player->find_spell( 425153 ) );
 
-  auto buff = create_buff<buff_t>( e.player, e.player->find_spell( 425153 ) );
+  auto out_of_combat_buff = make_buff<firestarter_no_combat_t>( e, buff );
 
-  buff->player->register_on_combat_state_callback( [ buff ]( player_t* p, bool c ) {
+  buff->set_tick_callback( [ out_of_combat_buff ]( buff_t* b, int /* total_ticks */, timespan_t /* tick_time */ ) {
+    if ( out_of_combat_buff->check() )
+    {
+      b->decrement();
+    }
+  } );
+
+  e.player->register_on_combat_state_callback( [ buff, out_of_combat_buff, e ]( player_t* p, bool c ) {
     if ( !c && buff->check() )
     {
-      buff->sim->print_debug( "{} leaves combat, starting Firestarter decay", p->name(), c );
-      buff->set_reverse( true );
+      p->sim->print_debug( "{} leaves combat, starting Firestarter decay", p->name(), c );
+      out_of_combat_buff->trigger();
     }
-    if ( c )
+    if ( c && out_of_combat_buff->check() )
     {
-      buff->sim->print_debug( "{} enters combat, stopping Firestarter decay", p->name(), c );
-      buff->set_reverse( false );
+      p->sim->print_debug( "{} enters combat, stopping Firestarter decay", p->name(), c );
+      out_of_combat_buff->expire();
     }
   } );
 
