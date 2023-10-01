@@ -3959,7 +3959,7 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    auto stormbringer_state = p()->buff.stormbringer->up();
+    auto stormbringer_state = !stormflurry && p()->buff.stormbringer->up();
 
     if ( !stormflurry )
     {
