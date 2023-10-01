@@ -6674,15 +6674,22 @@ void infernal_signet_brand( special_effect_t& e )
 {
   struct radiating_brand_t : public generic_aoe_proc_t
   {
-    radiating_brand_t( const special_effect_t& effect, double base_damage )
+    radiating_brand_t( const special_effect_t& effect )
       : generic_aoe_proc_t( effect, "radiating_brand", effect.player->find_spell( 425156 ) )
     {
-      // This is cursed, but appears to take the base damage of vicious brand's ticks
-      // Then applies the damage modifier for max stacks of the buff, then multiplies it by
-      // driver effect 6 as a percent
-      double buff_mod = pow( 1 + effect.driver()->effectN( 3 ).percent(), effect.driver()->effectN( 2 ).base_value() );
-      double aoe_mod  = effect.driver()->effectN( 6 ).percent();
-      base_dd_min = base_dd_max = base_damage * buff_mod * aoe_mod;
+    }
+
+    size_t available_targets( std::vector< player_t* >& tl ) const override
+    {
+      generic_aoe_proc_t::available_targets( tl );
+
+      auto it = range::find( tl, target );
+      if (it != tl.end())
+      {
+        tl.erase( it );
+      }
+
+      return tl.size();
     }
   };
 
@@ -6723,12 +6730,12 @@ void infernal_signet_brand( special_effect_t& e )
     vicious_brand_t( const special_effect_t& effect, buff_t* b, double base_damage )
       : generic_proc_t( effect, "vicious_brand", effect.player->find_spell( 425154 ) ),
         self_damage( create_proc_action<vicious_brand_self_t>( "vicious_brand_self", effect, b, base_damage ) ),
-        aoe_damage( create_proc_action<radiating_brand_t>( "radiating_brand", effect, base_damage ) ),
+        aoe_damage( create_proc_action<radiating_brand_t>( "radiating_brand", effect ) ),
         buff( b ),
         e( effect )
     {
       base_td = base_damage;
-
+      aoe_damage->may_crit = false;
       add_child( aoe_damage );
     }
 
@@ -6750,6 +6757,7 @@ void infernal_signet_brand( special_effect_t& e )
 
       if ( buff->at_max_stacks() )
       {
+        aoe_damage->base_dd_min = aoe_damage->base_dd_max = d->state->result_amount * e.driver()->effectN( 6 ).percent();
         aoe_damage->execute();
       }
     }
@@ -6781,10 +6789,10 @@ void infernal_signet_brand( special_effect_t& e )
   } );
 
   // Has an insane damage formula, appears to be
-  // ( driver effect 1 / ticks ) * [ ( 1 + driver effect 3 percent ) ^ ( 1 - driver effect 5 ) ]
+  // ( driver effect 1 / ticks ) * [ ( 1 + driver effect 3 percent ) ^ ( -driver effect 5 ) ]
   auto tick_spell    = e.player->find_spell( 425154 );
   auto ticks         = tick_spell->duration() / tick_spell->effectN( 2 ).period();
-  double base_mod    = pow( 1 + e.driver()->effectN( 3 ).percent(), 1 - e.driver()->effectN( 5 ).base_value() );
+  double base_mod    = pow( 1 + e.driver()->effectN( 3 ).percent(), -e.driver()->effectN( 5 ).base_value() );
   double base_damage = ( e.driver()->effectN( 1 ).average( e.item ) / ticks ) * base_mod;
 
   e.execute_action = create_proc_action<vicious_brand_t>( "vicious_brand", e, buff, base_damage );
