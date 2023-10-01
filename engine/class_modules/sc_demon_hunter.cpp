@@ -222,6 +222,7 @@ public:
     damage_buff_t* restless_hunter;
     buff_t* tactical_retreat;
     buff_t* unbound_chaos;
+    buff_t* dash_of_chaos;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -523,6 +524,9 @@ public:
     const spell_data_t* tactical_retreat_buff;
     const spell_data_t* unbound_chaos_buff;
     const spell_data_t* chaotic_disposition_damage;
+    const spell_data_t* dash_of_chaos;
+    const spell_data_t* dash_of_chaos_buff;
+    const spell_data_t* dash_of_chaos_damage;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -618,6 +622,7 @@ public:
     cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
     cooldown_t* movement_shared;
+    cooldown_t* dash_of_chaos_lockout;
 
     // Vengeance
     cooldown_t* demon_spikes;
@@ -5164,8 +5169,138 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     p()->buff.unbound_chaos->expire();
 
+    if (p()->talent.havoc.dash_of_chaos->ok())
+    {
+      p()->buff.dash_of_chaos->trigger();
+    }
+
+    // Dash of chaos incurs 1 second lockout on Felrush
+    if ( p()->talent.havoc.dash_of_chaos && !p()->buff.dash_of_chaos->up() )
+    {
+      p()->cooldown.dash_of_chaos_lockout->start( timespan_t::from_seconds( 1.0 ) );
+    }
+
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
+
+    p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
+
+    p()->buff.fel_rush_move->trigger();
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    // Fel Rush's loss of control causes a GCD lag after the loss ends.
+    // You get roughly 100ms in which to queue the next spell up correctly.
+    // Calculate this once on schedule_execute since gcd() is called multiple times
+    if ( sim->gcd_lag > 100_ms )
+      gcd_lag = rng().gauss( sim->gcd_lag - 100_ms, sim->gcd_lag_stddev );
+    else
+      gcd_lag = 0_ms;
+
+    if ( gcd_lag < 0_ms )
+      gcd_lag = 0_ms;
+
+    demon_hunter_attack_t::schedule_execute( s );
+  }
+
+  timespan_t gcd() const override
+  { 
+    return demon_hunter_attack_t::gcd() + gcd_lag;
+  }
+
+  bool ready() override
+  {
+    // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
+    if ( p()->cooldown.movement_shared->down() )
+      return false;
+   
+    // Not usable while Dash of Chaos buff is present and is locked out for 1 second upon buff expiration
+    if ( p()->talent.havoc.dash_of_chaos && p()->buff.dash_of_chaos && p()->buff.dash_of_chaos->check())
+      return false;      
+
+    if ( p()->cooldown.dash_of_chaos_lockout->down())
+      return false;
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
+
+    return demon_hunter_attack_t::ready();
+  }
+};
+
+
+// Dash of Chaos ============================================================
+
+struct dash_of_chaos_t : public demon_hunter_attack_t
+{
+  struct dash_of_chaos_damage_t : public demon_hunter_spell_t
+  {
+    dash_of_chaos_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->spec.dash_of_chaos_damage )
+    {
+      background = dual   = false;
+      aoe                 = -1;
+      reduced_aoe_targets = p->spec.dash_of_chaos_damage->effectN( 2 ).base_value();
+    }
+
+    double action_multiplier() const override
+    {
+      double am = demon_hunter_spell_t::action_multiplier();
+
+      am *= 1.0 + p()->buff.unbound_chaos->value();
+
+      return am;
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+    }
+  };
+
+  timespan_t gcd_lag;
+
+  dash_of_chaos_t( demon_hunter_t* p, util::string_view options_str )
+    : demon_hunter_attack_t( "dash_of_chaos", p, p->spec.dash_of_chaos )
+  {
+    parse_options( options_str );
+
+    may_miss = may_dodge = may_parry = may_block = false;
+    min_gcd                                      = trigger_gcd;
+
+    execute_action        = p->get_background_action<dash_of_chaos_damage_t>( "dash_of_chaos_damage" );
+    execute_action->stats = stats;
+
+    // Fel Rush does damage in a further line than it moves you
+    base_teleport_distance                = execute_action->radius - 5;
+    movement_directionality               = movement_direction_type::OMNI;
+    p->buff.fel_rush_move->distance_moved = base_teleport_distance;
+
+    //Spelldata currently missing gcd data; this fixes DPET chart -- Oct 1 2023
+    min_gcd                               = 0.5_s;
+    trigger_gcd                           = 0.5_s;
+
+    // Add damage modifiers in dash_of_chaos_damage_t, not here.
+  }
+
+  void execute() override
+  {
+    p()->buff.momentum->trigger();
+
+    demon_hunter_attack_t::execute();
+
+    hit_fodder( false );
+
+    if ( p()->buff.unbound_chaos->up() && p()->talent.havoc.inertia->ok() )
+    {
+      p()->buff.inertia->trigger();
+    }
+
+    p()->buff.unbound_chaos->expire();
+
+    p()->buff.dash_of_chaos->expire();
 
     p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
 
@@ -5195,12 +5330,8 @@ struct fel_rush_t : public demon_hunter_attack_t
 
   bool ready() override
   {
-    // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
-    if ( p()->cooldown.movement_shared->down() )
-      return false;
-
-    // Not usable during the root effect of Stormeater's Boon
-    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+    // Abitlity not available without Dash of Chaos aura.
+    if ( !p()->buff.dash_of_chaos->up() )
       return false;
 
     return demon_hunter_attack_t::ready();
@@ -6530,6 +6661,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new felblade_t( this, options_str );
   if ( name == "fel_rush" )
     return new fel_rush_t( this, options_str );
+  if ( name == "dash_of_chaos" )
+    return new dash_of_chaos_t( this, options_str );
   if ( name == "fracture" )
     return new fracture_t( this, options_str );
   if ( name == "shear" )
@@ -6638,6 +6771,8 @@ void demon_hunter_t::create_buffs()
 
   buff.unbound_chaos = make_buff( this, "unbound_chaos", spec.unbound_chaos_buff )
                            ->set_default_value( talent.havoc.unbound_chaos->effectN( 2 ).percent() );
+
+  buff.dash_of_chaos = make_buff( this, "dash_of_chaos", spec.dash_of_chaos_buff );
 
   buff.chaos_theory = make_buff<damage_buff_t>( this, "chaos_theory", spec.chaos_theory_buff );
 
@@ -7460,6 +7595,9 @@ void demon_hunter_t::init_spells()
   spec.soulrend_debuff        = talent.havoc.soulrend->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff  = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff     = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
+  spec.dash_of_chaos          = talent.havoc.dash_of_chaos->ok() ? find_spell( 428160 ) : spell_data_t::not_found();
+  spec.dash_of_chaos_damage   = talent.havoc.dash_of_chaos->ok() ? find_spell( 192611 ) : spell_data_t::not_found();
+  spec.dash_of_chaos_buff     = talent.havoc.dash_of_chaos->ok() ? find_spell( 427793 ) : spell_data_t::not_found();
   spec.chaotic_disposition_damage =
       talent.havoc.chaotic_disposition->ok() ? find_spell( 428493 ) : spell_data_t::not_found();
 
@@ -7763,6 +7901,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.throw_glaive             = get_cooldown( "throw_glaive" );
   cooldown.vengeful_retreat         = get_cooldown( "vengeful_retreat" );
   cooldown.movement_shared          = get_cooldown( "movement_shared" );
+  cooldown.dash_of_chaos_lockout    = get_cooldown( "dash_of_chaos_lockout" );
 
   // Vengeance
   cooldown.demon_spikes            = get_cooldown( "demon_spikes" );
