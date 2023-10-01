@@ -6677,6 +6677,7 @@ void infernal_signet_brand( special_effect_t& e )
     radiating_brand_t( const special_effect_t& effect )
       : generic_aoe_proc_t( effect, "radiating_brand", effect.player->find_spell( 425156 ) )
     {
+      may_crit = false;
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -6735,7 +6736,7 @@ void infernal_signet_brand( special_effect_t& e )
         e( effect )
     {
       base_td = base_damage;
-      aoe_damage->may_crit = false;
+
       add_child( aoe_damage );
     }
 
