@@ -282,6 +282,7 @@ public:
     actions::rogue_attack_t* blade_flurry = nullptr;
     actions::rogue_attack_t* fan_the_hammer = nullptr;
     actions::flagellation_damage_t* flagellation = nullptr;
+    actions::rogue_attack_t* internal_bleeding = nullptr;
     actions::rogue_attack_t* lingering_shadow = nullptr;
     actions::rogue_attack_t* main_gauche = nullptr;
     actions::rogue_attack_t* poison_bomb = nullptr;
@@ -369,11 +370,10 @@ public:
     
     // Assassination
     buff_t* blindside;
-    damage_buff_t* elaborate_planning;
     buff_t* improved_garrote;
     buff_t* improved_garrote_aura;
-    buff_t* indiscriminate_carnage_garrote;
-    buff_t* indiscriminate_carnage_rupture;
+    buff_t* indiscriminate_carnage;
+    buff_t* indiscriminate_carnage_aura;
     damage_buff_t* kingsbane;
     damage_buff_t* master_assassin;
     damage_buff_t* master_assassin_aura;
@@ -439,7 +439,6 @@ public:
     cooldown_t* ghostly_strike;
     cooldown_t* gouge;
     cooldown_t* grappling_hook;
-    cooldown_t* indiscriminate_carnage;
     cooldown_t* keep_it_rolling;
     cooldown_t* killing_spree;
     cooldown_t* kingsbane;
@@ -558,9 +557,10 @@ public:
     const spell_data_t* dashing_scoundrel;
     double dashing_scoundrel_gain = 0.0;
     const spell_data_t* deadly_poison_instant;
-    const spell_data_t* elaborate_planning_buff;
     const spell_data_t* improved_garrote_buff;
     const spell_data_t* improved_shiv_debuff;
+    const spell_data_t* indiscriminate_carnage_buff;
+    const spell_data_t* indiscriminate_carnage_buff_aura;
     const spell_data_t* internal_bleeding_debuff;
     const spell_data_t* kingsbane_buff;
     const spell_data_t* master_assassin_buff;
@@ -657,7 +657,8 @@ public:
     const spell_data_t* silent_storm_buff;
 
     // Multi-Spec
-    const spell_data_t* rupture; // Assassination + Subtlety
+    const spell_data_t* rupture;      // Assassination + Subtlety
+    const spell_data_t* shadowstep;   // Assassination + Subtlety, baseline charge increase passive
 
     // Set Bonuses
     const spell_data_t* t30_assassination_2pc_tick;
@@ -699,7 +700,7 @@ public:
       player_talent_t fleet_footed;             // No implementation
       player_talent_t iron_stomach;             // No implementation
       player_talent_t unbreakable_stride;       // No implementation
-      player_talent_t featherfoot;              // No implementation
+      player_talent_t featherfoot;
       player_talent_t rushed_setup;
       player_talent_t subterfuge;
 
@@ -738,30 +739,30 @@ public:
 
       player_talent_t improved_shiv;
       player_talent_t venomous_wounds;
-      player_talent_t shadowstep;
+      player_talent_t path_of_blood;
 
       player_talent_t cut_to_the_chase;
-      player_talent_t elaborate_planning;
       player_talent_t improved_poisons;
       player_talent_t bloody_mess;
-      player_talent_t internal_bleeding;
-      
+
       player_talent_t thrown_precision;
-      player_talent_t lightweight_shiv;
-      player_talent_t fatal_concoction;
-      player_talent_t improved_garrote;
-      player_talent_t intent_to_kill;
       player_talent_t seal_fate;
+      player_talent_t caustic_spatter;          // NYI
+      player_talent_t internal_bleeding;
+      player_talent_t improved_garrote;
 
       player_talent_t crimson_tempest;
-      player_talent_t venom_rush;
+      player_talent_t lightweight_shiv;
       player_talent_t deathmark;
-      player_talent_t master_assassin;
       player_talent_t exsanguinate;
+      player_talent_t master_assassin;
 
       player_talent_t flying_daggers;
+      player_talent_t venom_rush;
       player_talent_t vicious_venoms;
+      player_talent_t fatal_concoction;
       player_talent_t lethal_dose;
+      player_talent_t intent_to_kill;
       player_talent_t iron_wire;                // No implementation
 
       player_talent_t systemic_failure;
@@ -771,19 +772,20 @@ public:
 
       player_talent_t blindside;
       player_talent_t tiny_toxic_blade;
-      player_talent_t poison_bomb;
+      player_talent_t dashing_scoundrel;
       player_talent_t shrouded_suffocation;
       player_talent_t sepsis;
       player_talent_t serrated_bone_spike;
 
       player_talent_t zoldyck_recipe;
-      player_talent_t dashing_scoundrel;
+      player_talent_t poison_bomb;
       player_talent_t scent_of_blood;
 
       player_talent_t arterial_precision;
       player_talent_t kingsbane;
       player_talent_t dragon_tempered_blades;
       player_talent_t indiscriminate_carnage;
+      player_talent_t sudden_demise;            // Partial NYI for "execute" mechanic
       
     } assassination;
 
@@ -850,7 +852,7 @@ public:
       player_talent_t find_weakness;
 
       player_talent_t improved_backstab;
-      player_talent_t shadowstep;
+
       player_talent_t improved_shuriken_storm;
 
       player_talent_t weaponmaster;
@@ -908,7 +910,6 @@ public:
     struct shared_talents_t
     {
       player_talent_t sepsis;
-      player_talent_t shadowstep;
 
     } shared;
 
@@ -1038,7 +1039,6 @@ public:
     cooldowns.ghostly_strike            = get_cooldown( "ghostly_strike" );
     cooldowns.gouge                     = get_cooldown( "gouge" );
     cooldowns.grappling_hook            = get_cooldown( "grappling_hook" );
-    cooldowns.indiscriminate_carnage    = get_cooldown( "indiscriminate_carnage" );
     cooldowns.keep_it_rolling           = get_cooldown( "keep_it_rolling" );
     cooldowns.killing_spree             = get_cooldown( "killing_spree" );
     cooldowns.kingsbane                 = get_cooldown( "kingsbane" );
@@ -1492,7 +1492,7 @@ public:
     bool dashing_scoundrel = false;
     bool deathmark = false;             // Tuning Aura
     bool deepening_shadows = false;     // Trigger
-    bool elaborate_planning = false;    // Trigger
+    bool dragon_tempered_blades = false;// Proc Reduction
     bool flagellation = false;
     bool ghostly_strike = false;
     bool improved_ambush = false;
@@ -1555,6 +1555,7 @@ public:
 
     // Affecting Passive Spells
     ab::apply_affecting_aura( p->spec.shadow_dance );
+    ab::apply_affecting_aura( p->spec.shadowstep );
 
     // Affecting Passive Talents
     ab::apply_affecting_aura( p->talent.rogue.master_poisoner );
@@ -1575,11 +1576,13 @@ public:
     ab::apply_affecting_aura( p->talent.assassination.bloody_mess );
     ab::apply_affecting_aura( p->talent.assassination.thrown_precision );
     ab::apply_affecting_aura( p->talent.assassination.lightweight_shiv );
-    ab::apply_affecting_aura( p->talent.assassination.fatal_concoction );
     ab::apply_affecting_aura( p->talent.assassination.flying_daggers );
+    ab::apply_affecting_aura( p->talent.assassination.vicious_venoms );
+    ab::apply_affecting_aura( p->talent.assassination.fatal_concoction );
     ab::apply_affecting_aura( p->talent.assassination.tiny_toxic_blade );
     ab::apply_affecting_aura( p->talent.assassination.shrouded_suffocation );
     ab::apply_affecting_aura( p->talent.assassination.arterial_precision );
+    ab::apply_affecting_aura( p->talent.assassination.sudden_demise );
 
     ab::apply_affecting_aura( p->talent.outlaw.retractable_hook );
     ab::apply_affecting_aura( p->talent.outlaw.blinding_powder );
@@ -1601,8 +1604,6 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.without_a_trace );
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
-
-    ab::apply_affecting_aura( p->talent.shared.shadowstep );
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
@@ -1656,6 +1657,11 @@ public:
     {
       affected_by.deathmark = ab::data().affected_by( p->spec.deathmark_debuff->effectN( 1 ) ) ||
                               ab::data().affected_by( p->spec.deathmark_debuff->effectN( 2 ) );
+    }
+
+    if ( p->talent.assassination.dragon_tempered_blades->ok() )
+    {
+      affected_by.dragon_tempered_blades = ab::data().affected_by( p->talent.assassination.dragon_tempered_blades->effectN( 2 ) );
     }
 
     if ( p->talent.outlaw.ghostly_strike->ok() )
@@ -1724,7 +1730,6 @@ public:
     register_damage_buff( p()->buffs.grand_melee );
     register_damage_buff( p()->buffs.cold_blood );
     register_damage_buff( p()->buffs.danse_macabre );
-    register_damage_buff( p()->buffs.elaborate_planning );
     register_damage_buff( p()->buffs.finality_eviscerate );
     register_damage_buff( p()->buffs.finality_black_powder );
     register_damage_buff( p()->buffs.kingsbane );
@@ -1748,7 +1753,6 @@ public:
     {
       affected_by.alacrity = true;
       affected_by.deepening_shadows = true;
-      affected_by.elaborate_planning = true;
       affected_by.flagellation = true;
       affected_by.relentless_strikes = true;
       affected_by.ruthlessness = true;
@@ -2020,7 +2024,6 @@ public:
   void trigger_blade_flurry( const action_state_t* );
   void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_combo_point_gain( int, gain_t* gain = nullptr, bool requires_reaction = false );
-  void trigger_elaborate_planning( const action_state_t* );
   void trigger_alacrity( const action_state_t* );
   void trigger_deepening_shadows( const action_state_t* );
   void trigger_shadow_techniques( const action_state_t* );
@@ -2343,7 +2346,6 @@ public:
 
       trigger_danse_macabre( ab::execute_state );
       trigger_relentless_strikes( ab::execute_state );
-      trigger_elaborate_planning( ab::execute_state );
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
       trigger_flagellation( ab::execute_state );
@@ -2519,6 +2521,12 @@ struct rogue_poison_t : public rogue_attack_t
     double chance = base_proc_chance;
     chance += p()->buffs.envenom->stack_value();
     chance += rogue_t::cast_attack( source_state->action )->composite_poison_flat_modifier( source_state );
+
+    // Applies as a percent modifier, not a flat modifier
+    if ( affected_by.dragon_tempered_blades )
+    {
+      chance *= 1.0 + p()->talent.assassination.dragon_tempered_blades->effectN( 2 ).percent();
+    }
 
     return chance;
   }
@@ -3060,7 +3068,8 @@ struct melee_t : public rogue_attack_t
 
     // Class Passives
     m *= 1.0 + p()->spec.outlaw_rogue->effectN( 18 ).percent();
-    m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
+    // TOCHECK -- Removed on 10.2.0 PTR build
+    // m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
 
     return m;
   }
@@ -3187,12 +3196,6 @@ struct ambush_t : public rogue_attack_t
       trigger_count_the_odds( execute_state );
     }
 
-    void impact( action_state_t* state ) override
-    {
-      rogue_attack_t::impact( state );
-      trigger_find_weakness( state );
-    }
-
     bool procs_main_gauche() const override
     { return true; }
 
@@ -3231,7 +3234,6 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    trigger_find_weakness( state );
     trigger_opportunity( state, extra_attack );
     if ( p()->talent.assassination.vicious_venoms->ok() )
     {
@@ -3758,6 +3760,18 @@ struct crimson_tempest_t : public rogue_attack_t
     return static_cast<double>( cast_state( s )->get_combo_points() ) + 1.0;
   }
 
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_ta_multiplier( state );
+
+    // Deals bonus damage per target with the DoT ticking, up to 5 targets
+    auto num_targets = std::min( p()->get_active_dots( td( state->target )->dots.crimson_tempest ),
+                                 as<unsigned>( reduced_aoe_targets ) );
+    m *= 1.0 + ( num_targets * data().effectN( 4 ).percent() );
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -4119,7 +4133,8 @@ struct garrote_t : public rogue_attack_t
   {
     int n = rogue_attack_t::n_targets();
 
-    if ( !is_secondary_action() && p()->buffs.indiscriminate_carnage_garrote->check() )
+    if ( !is_secondary_action() && ( p()->buffs.indiscriminate_carnage->check() ||
+                                     p()->buffs.indiscriminate_carnage_aura->check() ) )
     {
       n = as<int>( p()->talent.assassination.indiscriminate_carnage->effectN( 1 ).base_value() );
     }
@@ -4168,8 +4183,6 @@ struct garrote_t : public rogue_attack_t
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
     }
-
-    p()->buffs.indiscriminate_carnage_garrote->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -4315,35 +4328,6 @@ struct gloomblade_t : public rogue_attack_t
       p()->buffs.t29_subtlety_4pc->trigger();
       p()->buffs.t29_subtlety_4pc_black_powder->trigger();
     }
-  }
-};
-
-// Indiscriminate Carnage ===================================================
-
-struct indiscriminate_carnage_t : public rogue_spell_t
-{
-  indiscriminate_carnage_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->talent.assassination.indiscriminate_carnage, options_str )
-  {
-    harmful = false;
-    set_target( p );
-  }
-
-  void execute() override
-  {
-    rogue_spell_t::execute();
-    p()->buffs.indiscriminate_carnage_garrote->trigger();
-    p()->buffs.indiscriminate_carnage_rupture->trigger();
-  }
-
-  bool ready() override
-  {
-    // Cooldown does not begin until both buffs are consumed
-    if ( p()->buffs.indiscriminate_carnage_garrote->check() ||
-         p()->buffs.indiscriminate_carnage_rupture->check() )
-      return false;
-
-    return rogue_spell_t::ready();
   }
 };
 
@@ -4765,7 +4749,8 @@ struct rupture_t : public rogue_attack_t
   {
     int n = rogue_attack_t::n_targets();
 
-    if ( !is_secondary_action() && p()->buffs.indiscriminate_carnage_rupture->check() )
+    if ( !is_secondary_action() && ( p()->buffs.indiscriminate_carnage->check() ||
+                                     p()->buffs.indiscriminate_carnage_aura->check() ) )
     {
       n = as<int>( p()->talent.assassination.indiscriminate_carnage->effectN( 1 ).base_value() );
     }
@@ -4818,8 +4803,6 @@ struct rupture_t : public rogue_attack_t
       else
         p()->buffs.finality_rupture->trigger();
     }
-
-    p()->buffs.indiscriminate_carnage_rupture->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -4829,6 +4812,13 @@ struct rupture_t : public rogue_attack_t
     if ( !is_secondary_action() && td( state->target )->dots.deathmark->is_ticking() )
     {
       p()->active.deathmark.rupture->trigger_secondary_action( state->target,
+                                                               cast_state( state )->get_combo_points() );
+    }
+
+    // TOCHECK -- Double check this interacts as expected for cleaved Ruptures
+    if ( !state->target->is_boss() && p()->active.internal_bleeding )
+    {
+      p()->active.internal_bleeding->trigger_secondary_action( state->target,
                                                                cast_state( state )->get_combo_points() );
     }
   }
@@ -5779,50 +5769,43 @@ struct stealth_t : public rogue_spell_t
   }
 };
 
+// Internal Bleeding ========================================================
+
+struct internal_bleeding_t : public rogue_attack_t
+{
+  internal_bleeding_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.internal_bleeding_debuff )
+  {
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t duration = rogue_attack_t::composite_dot_duration( s );
+    duration *= 1.0 / cast_state( s )->get_exsanguinated_rate();
+    return duration;
+  }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_persistent_multiplier( state );
+    m *= cast_state( state )->get_combo_points();
+    return m;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+    trigger_venomous_wounds( d->state );
+  }
+};
+
 // Kidney Shot ==============================================================
 
 struct kidney_shot_t : public rogue_attack_t
 {
-  struct internal_bleeding_t : public rogue_attack_t
-  {
-    internal_bleeding_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.internal_bleeding_debuff ) // DFALPHA -- Check scaling with talent points
-    {
-    }
-
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    {
-      timespan_t duration = rogue_attack_t::composite_dot_duration( s );
-      duration *= 1.0 / cast_state( s )->get_exsanguinated_rate();
-      return duration;
-    }
-
-    double composite_persistent_multiplier( const action_state_t* state ) const override
-    {
-      double m = rogue_attack_t::composite_persistent_multiplier( state );
-      m *= cast_state( state )->get_combo_points();
-      return m;
-    }
-
-    void tick( dot_t* d ) override
-    {
-      rogue_attack_t::tick( d );
-      trigger_venomous_wounds( d->state );
-    }
-  };
-
-  internal_bleeding_t* internal_bleeding;
-
   kidney_shot_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spell.kidney_shot, options_str ),
-    internal_bleeding( nullptr )
+    rogue_attack_t( name, p, p->spell.kidney_shot, options_str )
   {
-    if ( p->talent.assassination.internal_bleeding->ok() )
-    {
-      internal_bleeding = p->get_secondary_trigger_action<internal_bleeding_t>(
-        secondary_trigger::INTERNAL_BLEEDING, "internal_bleeding" );
-      add_child( internal_bleeding );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -5831,9 +5814,9 @@ struct kidney_shot_t : public rogue_attack_t
 
     trigger_sting_like_a_bee( state );
 
-    if ( !state->target->is_boss() && internal_bleeding )
+    if ( !state->target->is_boss() && p()->active.internal_bleeding )
     {
-      internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
+      p()->active.internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
     }
   }
 };
@@ -5987,7 +5970,7 @@ struct keep_it_rolling_t : public rogue_spell_t
 
 struct echoing_reprimand_t : public rogue_attack_t
 {
-  double random_min, random_max;
+  size_t random_min, random_max;
 
   echoing_reprimand_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.echoing_reprimand, options_str ),
@@ -6009,7 +5992,7 @@ struct echoing_reprimand_t : public rogue_attack_t
       {
         // 2022-12-16 -- Resounding Clarity now animacharges 2 instead of 3 additional buffs
         // This was accomplished by simply removing the chance to generate a 5 CP buff
-        for ( int i = random_min; i < random_max; i++ )
+        for ( size_t i = random_min; i < random_max; i++ )
         {
           p()->buffs.echoing_reprimand[ i ]->trigger();
         }
@@ -6594,7 +6577,7 @@ struct adrenaline_rush_t : public rogue_buff_t
 
     if ( rogue->talent.outlaw.improved_adrenaline_rush->ok() )
     {
-      int cp_gain = rogue->resources.max[ RESOURCE_COMBO_POINT ];
+      const double cp_gain = rogue->resources.max[ RESOURCE_COMBO_POINT ];
       rogue->resource_gain( RESOURCE_COMBO_POINT, cp_gain, rogue->gains.improved_adrenaline_rush );
     }
 
@@ -6615,7 +6598,7 @@ struct adrenaline_rush_t : public rogue_buff_t
 
     if ( rogue->talent.outlaw.improved_adrenaline_rush->ok() )
     {
-      int energy_gain = rogue->resources.max[ RESOURCE_ENERGY ];
+      const double energy_gain = rogue->resources.max[ RESOURCE_ENERGY ];
       rogue->resource_gain( RESOURCE_ENERGY, energy_gain, rogue->gains.improved_adrenaline_rush_expiry );
     }
 
@@ -6717,6 +6700,9 @@ struct stealth_like_buff_t : public BuffBase
       if ( rogue->talent.assassination.improved_garrote->ok() )
         rogue->buffs.improved_garrote_aura->trigger();
 
+      if ( rogue->talent.assassination.indiscriminate_carnage->ok() )
+        rogue->buffs.indiscriminate_carnage->trigger();
+
       if ( rogue->talent.outlaw.take_em_by_surprise->ok() )
         rogue->buffs.take_em_by_surprise_aura->trigger();
 
@@ -6745,6 +6731,7 @@ struct stealth_like_buff_t : public BuffBase
     {
       rogue->buffs.improved_garrote_aura->expire();
       rogue->buffs.master_assassin_aura->expire();
+      rogue->buffs.indiscriminate_carnage_aura->expire();
       rogue->buffs.take_em_by_surprise_aura->expire();
     }
 
@@ -6872,6 +6859,7 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
 
     // These buffs do not persist after Shadow Dance expires, unlike normal Stealth
     rogue->buffs.improved_garrote->expire();
+    rogue->buffs.indiscriminate_carnage->expire();
     rogue->buffs.master_assassin->expire();
   }
 };
@@ -7708,15 +7696,6 @@ void actions::rogue_action_t<Base>::trigger_opportunity( const action_state_t* s
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_state_t* /* state */ )
-{
-  if ( !p()->talent.assassination.elaborate_planning->ok() || !affected_by.elaborate_planning || ab::background )
-    return;
-
-  p()->buffs.elaborate_planning->trigger();
-}
-
-template <typename Base>
 void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* state )
 {
   if ( !p()->talent.rogue.alacrity->ok() || !affected_by.alacrity )
@@ -8462,7 +8441,6 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "gouge"                  ) return new gouge_t                  ( name, this, options_str );
   if ( name == "ghostly_strike"         ) return new ghostly_strike_t         ( name, this, options_str );
   if ( name == "gloomblade"             ) return new gloomblade_t             ( name, this, options_str );
-  if ( name == "indiscriminate_carnage" ) return new indiscriminate_carnage_t ( name, this, options_str );
   if ( name == "keep_it_rolling"        ) return new keep_it_rolling_t        ( name, this, options_str );
   if ( name == "kick"                   ) return new kick_t                   ( name, this, options_str );
   if ( name == "kidney_shot"            ) return new kidney_shot_t            ( name, this, options_str );
@@ -8595,11 +8573,30 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         if ( buffs.shadow_dance->check() )
           return buffs.shadow_dance->remains();
 
-        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( talent.assassination.master_assassin->effectN( 1 ).base_value() );
+        timespan_t nominal_duration = timespan_t::from_seconds( talent.assassination.master_assassin->effectN( 1 ).base_value() );
         timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
-        return gcd_remains + nominal_master_assassin_duration;
+        return gcd_remains + nominal_duration;
       }
       return buffs.master_assassin->remains();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "indiscriminate_carnage_remains" ) )
+  {
+    if ( !talent.assassination.indiscriminate_carnage->ok() )
+      return expr_t::create_constant( name_str, 0 );
+
+    return make_fn_expr( name_str, [ this ]() {
+      if ( buffs.indiscriminate_carnage_aura->check() )
+      {
+        // Shadow Dance has no lingering effect
+        if ( buffs.shadow_dance->check() )
+          return buffs.shadow_dance->remains();
+
+        timespan_t nominal_duration = spec.indiscriminate_carnage_buff->duration();
+        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
+        return gcd_remains + nominal_duration;
+      }
+      return buffs.indiscriminate_carnage->remains();
     } );
   }
   else if ( util::str_compare_ci( name_str, "improved_garrote_remains" ) )
@@ -9081,6 +9078,7 @@ void rogue_t::init_base_stats()
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base[ RESOURCE_ENERGY ] += talent.rogue.vigor->effectN( 1 ).base_value();
+  resources.base[ RESOURCE_ENERGY ] += talent.assassination.path_of_blood->effectN( 1 ).base_value();
   resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue->effectN( 5 ).base_value();
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
@@ -9156,6 +9154,7 @@ void rogue_t::init_spells()
 
   // Multi-Spec
   spec.rupture = find_specialization_spell( "Rupture" ); // Assassination + Subtlety
+  spec.shadowstep = find_specialization_spell( "Shadowstep" ); // Assassination + Subtlety
 
   // Masteries
   mastery.potent_assassin = find_mastery_spell( ROGUE_ASSASSINATION );
@@ -9227,52 +9226,53 @@ void rogue_t::init_spells()
 
   talent.assassination.improved_shiv = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shiv" );
   talent.assassination.venomous_wounds = find_talent_spell( talent_tree::SPECIALIZATION, "Venomous Wounds" );
-  talent.assassination.shadowstep = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowstep", ROGUE_ASSASSINATION );
+  talent.assassination.path_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Path of Blood" );
 
   talent.assassination.cut_to_the_chase = find_talent_spell( talent_tree::SPECIALIZATION, "Cut to the Chase" );
-  talent.assassination.elaborate_planning = find_talent_spell( talent_tree::SPECIALIZATION, "Elaborate Planning" );
   talent.assassination.improved_poisons = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Poisons" );
   talent.assassination.bloody_mess = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Mess" );
-  talent.assassination.internal_bleeding = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Bleeding" );
 
   talent.assassination.thrown_precision = find_talent_spell( talent_tree::SPECIALIZATION, "Thrown Precision" );
-  talent.assassination.lightweight_shiv = find_talent_spell( talent_tree::SPECIALIZATION, "Lightweight Shiv" );
-  talent.assassination.fatal_concoction = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Concoction" );
+  talent.assassination.seal_fate = find_talent_spell( talent_tree::SPECIALIZATION, "Seal Fate" );
+  talent.assassination.caustic_spatter = find_talent_spell( talent_tree::SPECIALIZATION, "Caustic Spatter" );
+  talent.assassination.internal_bleeding = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Bleeding" );
   talent.assassination.improved_garrote = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Garrote" );
-  talent.assassination.intent_to_kill = find_talent_spell( talent_tree::SPECIALIZATION, "Intent to Kill" );
 
   talent.assassination.crimson_tempest = find_talent_spell( talent_tree::SPECIALIZATION, "Crimson Tempest" );
-  talent.assassination.venom_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Venom Rush" );
+  talent.assassination.lightweight_shiv = find_talent_spell( talent_tree::SPECIALIZATION, "Lightweight Shiv" );
   talent.assassination.deathmark = find_talent_spell( talent_tree::SPECIALIZATION, "Deathmark" );
-  talent.assassination.master_assassin = find_talent_spell( talent_tree::SPECIALIZATION, "Master Assassin" );
   talent.assassination.exsanguinate = find_talent_spell( talent_tree::SPECIALIZATION, "Exsanguinate" );
+  talent.assassination.master_assassin = find_talent_spell( talent_tree::SPECIALIZATION, "Master Assassin" );
 
   talent.assassination.flying_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Flying Daggers" );
+  talent.assassination.venom_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Venom Rush" );
   talent.assassination.vicious_venoms = find_talent_spell( talent_tree::SPECIALIZATION, "Vicious Venoms" );
+  talent.assassination.fatal_concoction = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Concoction" );
   talent.assassination.lethal_dose = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Dose" );
+  talent.assassination.intent_to_kill = find_talent_spell( talent_tree::SPECIALIZATION, "Intent to Kill" );
   talent.assassination.iron_wire = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Wire" );
 
   talent.assassination.systemic_failure = find_talent_spell( talent_tree::SPECIALIZATION, "Systemic Failure" );
   talent.assassination.amplifying_poison = find_talent_spell( talent_tree::SPECIALIZATION, "Amplifying Poison" );
   talent.assassination.twist_the_knife = find_talent_spell( talent_tree::SPECIALIZATION, "Twist the Knife" );
   talent.assassination.doomblade = find_talent_spell( talent_tree::SPECIALIZATION, "Doomblade" );
-  talent.assassination.seal_fate = find_talent_spell( talent_tree::SPECIALIZATION, "Seal Fate" );
 
   talent.assassination.blindside = find_talent_spell( talent_tree::SPECIALIZATION, "Blindside" );
   talent.assassination.tiny_toxic_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Tiny Toxic Blade" );
-  talent.assassination.poison_bomb = find_talent_spell( talent_tree::SPECIALIZATION, "Poison Bomb" );
+  talent.assassination.dashing_scoundrel = find_talent_spell( talent_tree::SPECIALIZATION, "Dashing Scoundrel" );
   talent.assassination.shrouded_suffocation = find_talent_spell( talent_tree::SPECIALIZATION, "Shrouded Suffocation" );
   talent.assassination.sepsis = find_talent_spell( talent_tree::SPECIALIZATION, "Sepsis", ROGUE_ASSASSINATION );
   talent.assassination.serrated_bone_spike = find_talent_spell( talent_tree::SPECIALIZATION, "Serrated Bone Spike" );
 
   talent.assassination.zoldyck_recipe = find_talent_spell( talent_tree::SPECIALIZATION, "Zoldyck Recipe" );
-  talent.assassination.dashing_scoundrel = find_talent_spell( talent_tree::SPECIALIZATION, "Dashing Scoundrel" );
+  talent.assassination.poison_bomb = find_talent_spell( talent_tree::SPECIALIZATION, "Poison Bomb" );
   talent.assassination.scent_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood" );
 
   talent.assassination.arterial_precision = find_talent_spell( talent_tree::SPECIALIZATION, "Arterial Precision" );
   talent.assassination.kingsbane = find_talent_spell( talent_tree::SPECIALIZATION, "Kingsbane" );
   talent.assassination.dragon_tempered_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Dragon-Tempered Blades" );
   talent.assassination.indiscriminate_carnage = find_talent_spell( talent_tree::SPECIALIZATION, "Indiscriminate Carnage" );
+  talent.assassination.sudden_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Demise" );
 
   // Outlaw Talents
   talent.outlaw.opportunity = find_talent_spell( talent_tree::SPECIALIZATION, "Opportunity" );
@@ -9340,7 +9340,7 @@ void rogue_t::init_spells()
   talent.subtlety.find_weakness = find_talent_spell( talent_tree::SPECIALIZATION, "Find Weakness" );
 
   talent.subtlety.improved_backstab = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Backstab" );
-  talent.subtlety.shadowstep = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowstep", ROGUE_SUBTLETY );
+
   talent.subtlety.improved_shuriken_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shuriken Storm" );
 
   talent.subtlety.weaponmaster = find_talent_spell( talent_tree::SPECIALIZATION, "Weaponmaster", ROGUE_SUBTLETY );
@@ -9409,7 +9409,6 @@ void rogue_t::init_spells()
   };
 
   talent.shared.sepsis = find_shared_talent( { &talent.assassination.sepsis, &talent.outlaw.sepsis, &talent.subtlety.sepsis } );
-  talent.shared.shadowstep = find_shared_talent( { &talent.rogue.shadowstep, &talent.assassination.shadowstep, &talent.subtlety.shadowstep } );
 
   // Class Background Spells
   spell.alacrity_buff = talent.rogue.alacrity->ok() ? find_spell( 193538 ) : spell_data_t::not_found();
@@ -9420,7 +9419,7 @@ void rogue_t::init_spells()
   spell.recuperator_heal = talent.rogue.recuperator->ok() ? find_spell( 426605 ) : spell_data_t::not_found();
   spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
   spell.sepsis_expire_damage = talent.shared.sepsis->ok() ? find_spell( 394026 ) : spell_data_t::not_found();
-  spell.shadowstep_buff = talent.shared.shadowstep->ok() ? find_spell( 36554 ) : spell_data_t::not_found();
+  spell.shadowstep_buff = ( talent.rogue.shadowstep->ok() || spec.shadowstep->ok() ) ? find_spell( 36554 ) : spell_data_t::not_found();
   spell.subterfuge_buff = ( talent.rogue.subterfuge->ok() || talent.outlaw.underhanded_upper_hand->ok() ) ? find_spell( 115192 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
 
@@ -9432,9 +9431,10 @@ void rogue_t::init_spells()
   spec.dashing_scoundrel_gain = spec.dashing_scoundrel->ok() ? find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY ) : 0.0;
   spec.deadly_poison_instant = talent.assassination.deadly_poison->ok() ? find_spell( 113780 ) : spell_data_t::not_found();
   spec.doomblade_debuff = talent.assassination.doomblade->ok() ? spec.doomblade_debuff = find_spell( 381672 ) : spell_data_t::not_found();
-  spec.elaborate_planning_buff = talent.assassination.elaborate_planning->ok() ? find_spell( 193641 ) : spell_data_t::not_found();
   spec.improved_garrote_buff = talent.assassination.improved_garrote->ok() ? find_spell( 392401 ) : spell_data_t::not_found();
   spec.improved_shiv_debuff = ( talent.assassination.improved_shiv->ok() || talent.assassination.arterial_precision->ok() ) ? find_spell( 319504 ) : spell_data_t::not_found();
+  spec.indiscriminate_carnage_buff = talent.assassination.indiscriminate_carnage->ok() ? find_spell( 385747 ) : spell_data_t::not_found();
+  spec.indiscriminate_carnage_buff_aura = talent.assassination.indiscriminate_carnage->ok() ? find_spell( 385754 ) : spell_data_t::not_found();
   spec.internal_bleeding_debuff = talent.assassination.internal_bleeding->ok() ? find_spell( 154953 ) : spell_data_t::not_found();
   spec.kingsbane_buff = talent.assassination.kingsbane->ok() ? find_spell( 394095 ) : spell_data_t::not_found();
   spec.master_assassin_buff = talent.assassination.master_assassin->ok() ? find_spell( 256735 ) : spell_data_t::not_found();
@@ -9563,6 +9563,12 @@ void rogue_t::init_spells()
       secondary_trigger::DEATHMARK, "instant_poison_deathmark", spec.deathmark_instant_poison );
     active.deathmark.wound_poison = get_secondary_trigger_action<actions::wound_poison_t::wound_poison_dd_t>(
       secondary_trigger::DEATHMARK, "wound_poison_deathmark", spec.deathmark_wound_poison );
+  }
+
+  if ( talent.assassination.internal_bleeding->ok() )
+  {
+    active.internal_bleeding = get_secondary_trigger_action<actions::internal_bleeding_t>(
+      secondary_trigger::INTERNAL_BLEEDING, "internal_bleeding" );
   }
 
   if ( talent.assassination.doomblade->ok() )
@@ -9808,7 +9814,8 @@ void rogue_t::create_buffs()
   buffs.sprint = make_buff( this, "sprint", spell.sprint )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->add_invalidate( CACHE_RUN_SPEED );
+    ->add_invalidate( CACHE_RUN_SPEED )
+    ->apply_affecting_aura( talent.rogue.featherfoot );
 
   buffs.slice_and_dice = new buffs::slice_and_dice_t( this );
   buffs.stealth = new buffs::stealth_t( this );
@@ -9876,7 +9883,6 @@ void rogue_t::create_buffs()
     ->set_affects_regen( true );
 
   buffs.grand_melee = make_buff<damage_buff_t>( this, "grand_melee", spec.grand_melee );
-  buffs.grand_melee->set_default_value_from_effect( 1, 0.05 ); // Damage% Modifier
 
   buffs.skull_and_crossbones = make_buff( this, "skull_and_crossbones", spec.skull_and_crossbones )
     ->set_default_value_from_effect( 1, 0.01 ); // Flat Modifier to Proc%
@@ -9974,30 +9980,17 @@ void rogue_t::create_buffs()
   buffs.blindside = make_buff( this, "blindside", spec.blindside_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
 
-  buffs.elaborate_planning = make_buff<damage_buff_t>( this, "elaborate_planning", spec.elaborate_planning_buff,
-                                                       talent.assassination.elaborate_planning->effectN( 1 ).percent() );
-
-  // Cooldown on Indiscriminate Carnage starts when both buffs are used
-  buffs.indiscriminate_carnage_garrote = make_buff( this, "indiscriminate_carnage_garrote",
-                                                    talent.assassination.indiscriminate_carnage )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-      if ( new_ == 0 && !buffs.indiscriminate_carnage_rupture->check() )
-      {
-        cooldowns.indiscriminate_carnage->reset( false );
-        cooldowns.indiscriminate_carnage->start();
-      }
-    } );
-  buffs.indiscriminate_carnage_rupture = make_buff( this, "indiscriminate_carnage_rupture",
-                                                    talent.assassination.indiscriminate_carnage )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-      if ( new_ == 0 && !buffs.indiscriminate_carnage_garrote->check() )
-      {
-        cooldowns.indiscriminate_carnage->reset( false );
-        cooldowns.indiscriminate_carnage->start();
-      }
-    } );
+  buffs.indiscriminate_carnage = make_buff( this, "indiscriminate_carnage", spec.indiscriminate_carnage_buff );
+  buffs.indiscriminate_carnage_aura = make_buff( this, "indiscriminate_carnage_aura", spec.indiscriminate_carnage_buff_aura );
+  buffs.indiscriminate_carnage_aura
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+    if ( new_ == 0 )
+      buffs.indiscriminate_carnage->trigger();
+    else
+      buffs.indiscriminate_carnage->expire();
+  } );
 
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE );
