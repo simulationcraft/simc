@@ -5158,12 +5158,6 @@ struct fel_rush_t : public demon_hunter_attack_t
       p()->buff.dash_of_chaos->trigger();
     }
 
-    // Dash of chaos incurs 1 second lockout on Felrush
-    if ( p()->talent.havoc.dash_of_chaos && !p()->buff.dash_of_chaos->up() )
-    {
-      p()->cooldown.dash_of_chaos_lockout->start( timespan_t::from_seconds( 1.0 ) );
-    }
-
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
 
@@ -5199,10 +5193,10 @@ struct fel_rush_t : public demon_hunter_attack_t
     if ( p()->cooldown.movement_shared->down() )
       return false;
    
-    // Not usable while Dash of Chaos buff is present and is locked out for 1 second upon buff expiration
-    if ( p()->talent.havoc.dash_of_chaos && p()->buff.dash_of_chaos && p()->buff.dash_of_chaos->check())
+    // Not usable while Dash of Chaos buff is present.
+    if ( p()->talent.havoc.dash_of_chaos->ok() && p()->buff.dash_of_chaos && p()->buff.dash_of_chaos->check() )
       return false;      
-
+    // Locked out for 1 second upon Dash of Chaos buff expiration
     if ( p()->cooldown.dash_of_chaos_lockout->down())
       return false;
 
@@ -6756,7 +6750,11 @@ void demon_hunter_t::create_buffs()
   buff.unbound_chaos = make_buff( this, "unbound_chaos", spec.unbound_chaos_buff )
                            ->set_default_value( talent.havoc.unbound_chaos->effectN( 2 ).percent() );
 
-  buff.dash_of_chaos = make_buff( this, "dash_of_chaos", spec.dash_of_chaos_buff );
+  buff.dash_of_chaos = make_buff( this, "dash_of_chaos", spec.dash_of_chaos_buff )
+                           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                             if ( !new_ )
+                               cooldown.dash_of_chaos_lockout->start( timespan_t::from_seconds( 1.0 ) );
+                           } );
 
   buff.chaos_theory = make_buff<damage_buff_t>( this, "chaos_theory", spec.chaos_theory_buff );
 
