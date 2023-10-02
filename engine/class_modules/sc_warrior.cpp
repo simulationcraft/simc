@@ -271,6 +271,7 @@ public:
     cooldown_t* signet_of_tormented_kings;
     cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
+    cooldown_t* t31_fury_4pc_icd;
   } cooldown;
 
   // Gains
@@ -3016,6 +3017,12 @@ struct bloodthirst_t : public warrior_attack_t
     {
       p()->resource_gain( RESOURCE_RAGE, p()->buff.merciless_assault->stack() * rage_from_merciless_assault,
                           p()->gain.merciless_assault );
+    }
+
+    if ( p()->tier_set.t31_fury_4pc->ok() && s->result == RESULT_CRIT && p()->cooldown.t31_fury_4pc_icd->up() )
+    {
+      p()->cooldown.odyns_fury->adjust( - timespan_t::from_millis( p()->find_spell( 422926 )->effectN( 3 ).base_value() ) );
+      p()->cooldown.t31_fury_4pc_icd->start();
     }
 
     p()->buff.fujiedas_fury->trigger( 1 );
@@ -8697,6 +8704,8 @@ void warrior_t::init_spells()
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
   cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
   cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->effectN( 2 ).trigger() -> internal_cooldown();
+  cooldown.t31_fury_4pc_icd                 = get_cooldown( "cold_steel_hot_blood" );
+  cooldown.t31_fury_4pc_icd->duration = find_spell( 422926 )->internal_cooldown();
 }
 
 // warrior_t::init_base =====================================================
