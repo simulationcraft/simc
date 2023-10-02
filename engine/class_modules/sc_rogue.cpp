@@ -700,7 +700,7 @@ public:
       player_talent_t fleet_footed;             // No implementation
       player_talent_t iron_stomach;             // No implementation
       player_talent_t unbreakable_stride;       // No implementation
-      player_talent_t featherfoot;              // No implementation
+      player_talent_t featherfoot;
       player_talent_t rushed_setup;
       player_talent_t subterfuge;
 
@@ -3196,12 +3196,6 @@ struct ambush_t : public rogue_attack_t
       trigger_count_the_odds( execute_state );
     }
 
-    void impact( action_state_t* state ) override
-    {
-      rogue_attack_t::impact( state );
-      trigger_find_weakness( state );
-    }
-
     bool procs_main_gauche() const override
     { return true; }
 
@@ -3240,7 +3234,6 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    trigger_find_weakness( state );
     trigger_opportunity( state, extra_attack );
     if ( p()->talent.assassination.vicious_venoms->ok() )
     {
