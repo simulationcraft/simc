@@ -7977,13 +7977,6 @@ struct tombstone_t final : public death_knight_spell_t
       }
     }
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
-    {
-      double chance = 0.10 * charges; // Seems to be roughly a 10% chance per bone consumed.  Needs verification
-      if ( rng().roll( chance ) )
-        p() -> buffs.ashen_decay_2pc -> trigger();
-    }
-
     if ( charges > 0 && p() -> talent.blood.shattering_bone.ok() )
     {
       // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
@@ -8797,6 +8790,14 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
         timespan_t sec = talent.blood.red_thirst -> effectN( 1 ).time_value() *
           final_spend / talent.blood.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
+      }
+
+      // T31 Blood
+      if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
+      {
+        double chance = final_spend / 100;
+        if ( rng().roll( chance ) )
+          buffs.ashen_decay_2pc -> trigger();
       }
     }
   }
@@ -10722,14 +10723,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     {
       dk -> bone_shield_charges_consumed = 0;
       buffs.vigorous_lifeblood_4pc -> trigger();
-    }
-  }
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
-  {
-    if( rng().roll( 0.10 ) ) // Very very rough testing, to be 10% proc chance
-    {
-      dk -> buffs.ashen_decay_2pc -> trigger();
     }
   }
 }
