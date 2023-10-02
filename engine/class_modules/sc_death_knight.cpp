@@ -8781,10 +8781,21 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that only trigger if resources were spent
     if ( actual_amount > 0 )
     {
+      auto final_spend = actual_amount;
+      // If we are using actual amount for things, and the triggering action was death strike, the talent
+      // improved death strike is not counted toward actual spent
+      if ( action->id == 49998 )
+      {
+        if ( specialization() == DEATH_KNIGHT_BLOOD )
+          final_spend -= talent.improved_death_strike -> effectN( 5 ).resource( RESOURCE_RUNIC_POWER );
+        else
+          final_spend -= talent.improved_death_strike -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
+      }
+
       if ( talent.blood.red_thirst.ok() )
       {
         timespan_t sec = talent.blood.red_thirst -> effectN( 1 ).time_value() *
-          actual_amount / talent.blood.red_thirst -> effectN( 2 ).base_value();
+          final_spend / talent.blood.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
       }
     }
