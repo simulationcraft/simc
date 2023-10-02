@@ -874,16 +874,13 @@ public:
   bool searing_light_disabled;
   bool clears_judgment;
 
-  bool can_proc_prot_t31;
-
   paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false ),
     searing_light_disabled( false ),
-    clears_judgment( false ),
-    can_proc_prot_t31( true )
+    clears_judgment( false )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
 

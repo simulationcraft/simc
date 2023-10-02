@@ -864,8 +864,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
 struct cleansing_flame_damage_t : public paladin_spell_t
 {
-  bool can_proc_prot_t31;
-  cleansing_flame_damage_t( paladin_t* p ) : paladin_spell_t( "cleansing_flame_damage", p, p->spells.cleansing_flame_damage ), can_proc_prot_t31(false)
+  cleansing_flame_damage_t( paladin_t* p ) : paladin_spell_t( "cleansing_flame_damage", p, p->spells.cleansing_flame_damage )
   {
     background = true;
   }
@@ -873,9 +872,8 @@ struct cleansing_flame_damage_t : public paladin_spell_t
 
 struct cleansing_flame_heal_t : public paladin_heal_t
 {
-  bool can_proc_prot_t31;
   cleansing_flame_heal_t( paladin_t* p )
-    : paladin_heal_t( "cleansing_flame_heal", p, p->spells.cleansing_flame_heal ), can_proc_prot_t31( false )
+    : paladin_heal_t( "cleansing_flame_heal", p, p->spells.cleansing_flame_heal )
   {
     background = true;
     may_crit   = false;
@@ -1128,11 +1126,6 @@ void paladin_t::t31_4p_prot( action_state_t* s )
   double damage = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
   if ( buffs.sanctification_empower->up() && damage > 0 && rng().roll( buffs.sanctification_empower->default_chance ) )
   {
-    // How can I access paladin_action_t::can_proc_prot_t31 here?
-    // s->action is an action_t, not a paladin_action_t, need to convert it or something?
-
-    // ToDo: Check for can_prot_prot_t31 before doing stuff
-
     active.cleansing_flame->base_dd_min = active.cleansing_flame->base_dd_max = damage;
     active.cleansing_flame->target = s->target;
     active.cleansing_flame->schedule_execute();
