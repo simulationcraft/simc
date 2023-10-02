@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51421 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -425,7 +425,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Shockwave (46968), Odyn's Fury (385059)
                    Family Flags: 17, 47, 103
-Description      : Go berserk, increasing all Rage generation by $s4%$?a202751[, greatly empowering Bloodthirst and Raging Blow,][] and granting your abilities $s1% increased critical strike chance for $d.$?a202751[
+Description      : Go berserk, increasing all Rage generation by $s4% and granting your abilities $s1% increased critical strike chance for $d.$?a396749[
 
 |cFFFFFFFFGenerates ${$s3/10} Rage.|r][]
 Tooltip          : Rage generation increased by $s5%.
@@ -1051,6 +1051,8 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
+Category         : 1837
+Category Cooldown: 4.5 seconds
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Deft Experience (383295 effect#2), Impale (383430 effect#1), Improved Bloodthirst (383852 effect#1), Bloodcraze (385735 effect#2), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (409983 effects: #1, #2, #3)
@@ -1370,7 +1372,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=39078)    : Titan Grip (155)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Allows you to dual-wield a pair of two-handed weapons. Two-handed weapons deal more damage, and provide more Strength and Stamina, than one-handed weapons.
+Description      : Allows you to dual-wield a pair of two-handed weapons. Two-handed weapons deal more damage, and provide more Strength and Stamina than one-handed weapons.
 
 Name             : Bladestorm (id=46924) [Spell Family (4)] 
 Class            : Warrior
@@ -3648,7 +3650,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 450 | Trigger Spell: 201364 | Target: Enemy (6)
 #5 (id=268061)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 500 | Trigger Spell: 201363 | Target: Enemy (6)
-Description      : Enrages you and unleashes a series of $s1 brutal strikes for a total of $<damage> Physical damage.
+Description      : Enrages you and unleashes a series of $s1 brutal strikes for a total of $<damage> Physical damage$?a396749[ and greatly empowering your next $396749s3 Bloodthirsts or Raging Blows][].
 Variables        : $damage=${$184707s1+$184709s1+$201364s1+$201363s1}
 
 Name             : Rampage (id=184707) [Spell Family (4)] 
@@ -10256,7 +10258,9 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Cooldown         : 3 seconds
+Cooldown         : 4.5 seconds
+Category         : 1837
+Category Cooldown: 4.5 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Deft Experience (383295 effect#2), Impale (383430 effect#1), Improved Bloodthirst (383852 effect#1), Bloodcraze (385735 effect#2), Bloodcraze (393951 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (409983 effects: #1, #2, #3)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -15675,7 +15679,9 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1039985)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 389774 | Scaled Value: 389774 | PvP Coefficient: 1.00000 | Misc Value: 227847 | Target: Self (1)
-Description      : While $?s137050[Ravager is active][Bladestorming], every $?c2[$390719t1][$390577t1] sec you gain $s2% movement speed and $s1% Strength, stacking up to $s3 times. Lasts $390581d.
+Description      : While $?s137050[Ravager is active][Bladestorming], every $?c2[$390719t1][$390577t1] sec you gain $s2% movement speed and $s1% Strength, stacking up to $s3 times. Lasts $390581d. 
+
+Bladestorm cannot be canceled while using Hurricane.
 
 Name             : Hurricane (id=390567) [Spell Family (4), Hidden] 
 Class            : Warrior
@@ -17848,7 +17854,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1099429)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Sudden Death also makes your next Execute powerfully slam the ground, causing a Thunder Clap that deals $s2% additional damage. In addition, the Execute target bleeds for $s1% of Execute's damage over $426284d.
+Description      : Sudden Death also makes your next Execute powerfully slam the ground, causing a Thunder Clap that deals $s2% increased damage. In addition, the Execute target bleeds for $s1% of Execute's damage over $426284d. If this bleed is reapplied, remaining damage is added to the new bleed.
 
 Name             : Warrior Fury 10.2 Class Set 2pc (id=422925) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -17956,7 +17962,6 @@ Effects          :
 Description      : For each bleed effect consumed from a target, your damage taken is reduced by an additional $s1%. When Shield Slam consumes a bleed, the cooldown of Thunder Clap is reset and the cooldown of Thunderous Roar is reduced by ${$s2/1000}.1 sec.
 
 Name             : Furious Bloodthirst (id=423211) [Spell Family (4)] 
-Hotfixed         : Internal Cooldown (1000 -> 500)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -18141,7 +18146,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1106818)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc422927
 Tooltip          : Damage taken reduced by $w1%.
 

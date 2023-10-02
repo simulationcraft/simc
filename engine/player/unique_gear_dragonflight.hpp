@@ -83,6 +83,7 @@ void elemental_lariat( special_effect_t& );
 void flaring_cowl( special_effect_t& );
 void thriving_thorns( special_effect_t& );
 void ever_decaying_spores( special_effect_t& );
+void dreamtenders_charm( special_effect_t& );
 }
 
 namespace sets

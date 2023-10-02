@@ -1443,6 +1443,9 @@ class SpellDataGenerator(DataGenerator):
          423124, 426564, 426553, # Augury of the Primal Flame
          426114, # Bandolier of Twisted Blades
          424228, 424276, 424274, 424272, 424275, # Pinch of Dream Magic: Shapeshift Buffs
+         427209, 427212, # Dreambinder, Loom of the Great Cycle Damage Spell and Slowed Debuff
+         425509, # Branch of the Tormented Ancient
+         425180, 425156, # Infernal Signet Brand
         ),
 
         # Warrior:
@@ -1467,6 +1470,7 @@ class SpellDataGenerator(DataGenerator):
             ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
             ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
             ( 52437,  0 ),          # Sudden Death (Fury buff)
+            ( 425534, 0 ),          # T31 prot Fervid Bite
         ),
 
         # Paladin:
@@ -1639,6 +1643,7 @@ class SpellDataGenerator(DataGenerator):
             ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
             ( 409483, 0 ),          # T30 Assassination Set Bonus Spells
             ( 413890, 0 ),          # Nightstalker background spell
+            ( 424081, 0 ), ( 424066, 0 ), ( 424080, 0 ), # Underhanded Upper Hand background spells
         ),
 
         # Priest:
@@ -1981,6 +1986,8 @@ class SpellDataGenerator(DataGenerator):
           ( 409890, 0 ),    # T30 - Channel Demonfire
           ( 417282, 3 ),    # Crashing Chaos Buff 10.1.5
           ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
+          ( 423874, 0 ),    # T31 - Flame Rift
+          ( 427285, 0 ),    # T31 - Dimensional Cinder
         ),
 
         # Monk:
@@ -2249,6 +2256,7 @@ class SpellDataGenerator(DataGenerator):
           ( 228532, 1 ), # Consume Lesser Soul heal
           ( 328953, 1 ), # Consume Demon Soul heal
           ( 328951, 1 ), # New Shattered Souls area trigger
+          ( 428493, 1 ), # Chaotic Disposition Damage
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate

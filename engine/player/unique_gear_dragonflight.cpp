@@ -731,7 +731,7 @@ void incandescent_essence( special_effect_t& e )
       buff->set_quiet( true );
       buff->set_duration( 2_s );
       buff->set_period( 1_s );
-      buff->set_tick_callback( [ secondary_damage ]( buff_t* b, int, timespan_t ) { secondary_damage->execute(); } );
+      buff->set_tick_callback( [ secondary_damage ]( buff_t*, int, timespan_t ) { secondary_damage->execute(); } );
 
       add_child( main_damage );
       add_child( secondary_damage );
@@ -4236,11 +4236,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   {
     case SHAMAN_ELEMENTAL:
       driver_id = 408259;
-      proc_spell_id = { { 198067, 192249 } }; // Fire Elemental and Storm Elemental
+      proc_spell_id = { 198067, 192249 }; // Fire Elemental and Storm Elemental
       break;
     case SHAMAN_ENHANCEMENT:
       driver_id = 408259;
-      proc_spell_id = { { 51533 } }; // Feral Spirit
+      proc_spell_id = {  51533  }; // Feral Spirit
       break;
     case SHAMAN_RESTORATION:
       driver_id = 408259;
@@ -4248,39 +4248,39 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case MONK_BREWMASTER:
       driver_id = 408260;
-      proc_spell_id = { { 132578 /*, 395267*/ } };  // Invoke Niuzao, Weapons of Order's Call to Arms
+      proc_spell_id = {  132578 /*, 395267*/  };  // Invoke Niuzao, Weapons of Order's Call to Arms
       break;
     case MONK_WINDWALKER:
       driver_id = 408260;
-      proc_spell_id = { { 123904 } }; // Invoke Xuen
+      proc_spell_id = {  123904  }; // Invoke Xuen
       break;
     case MONK_MISTWEAVER:
       driver_id = 408260;
-      proc_spell_id = { { 322118, 325197 } }; // Invoke Yu'lon or Chi-Ji
+      proc_spell_id = { 322118, 325197 }; // Invoke Yu'lon or Chi-Ji
       break;
     case WARLOCK_DESTRUCTION:
       driver_id = 408256;
-      proc_spell_id = { { 1122 /*, 387160 */ } }; // Summon Infernal. 2023-04-30 PTR: Summon Blasphemy no longer procs trinket. May be intentional.
+      proc_spell_id = {  1122 /*, 387160 */  }; // Summon Infernal. 2023-04-30 PTR: Summon Blasphemy no longer procs trinket. May be intentional.
       break;
     case WARLOCK_DEMONOLOGY:
       driver_id = 408256;
-      proc_spell_id = { { 265187 } }; // Summon Demonic Tyrant
+      proc_spell_id = {  265187  }; // Summon Demonic Tyrant
       break;
     case WARLOCK_AFFLICTION:
       driver_id = 408256;
-      proc_spell_id = { { 205180 } }; // Summon Darkglare
+      proc_spell_id = {  205180  }; // Summon Darkglare
       break;
     case HUNTER_SURVIVAL:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 360969 } }; // Stampede and Coordinated Assault
+      proc_spell_id = { 201430, 360969 }; // Stampede and Coordinated Assault
       break;
     case HUNTER_MARKSMANSHIP:
       driver_id = 408262;
-      proc_spell_id = { { 288613, 378905 } }; // Trueshot & Windrunner's Guidance procs
+      proc_spell_id = { 288613, 378905 }; // Trueshot & Windrunner's Guidance procs
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 19574 } }; // Bestial Wrath
+      proc_spell_id = { 19574 }; // Bestial Wrath
       break;
     default:
       return;
@@ -4439,8 +4439,8 @@ void elementium_pocket_anvil( special_effect_t& e )
       break;
     case MONK:
       driver_id     = 408536;
-      proc_spell_id = { { // Tiger Palm
-                          100780 } };
+      proc_spell_id = { // Tiger Palm
+                          100780 };
       break;
     case PALADIN:
       driver_id     = 408535;
@@ -5209,6 +5209,19 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       pet_t::init_base_stats();
     }
 
+    void update_stats() override
+    {
+      pet_t::update_stats();
+      // Current doesnt seem to scale with haste
+      if( owner -> bugs )
+      {
+        current_pet_stats.composite_melee_haste = 1;
+        current_pet_stats.composite_spell_haste = 1;
+        current_pet_stats.composite_melee_speed = 1;
+        current_pet_stats.composite_spell_speed = 1;
+      }
+    }
+
     resource_e primary_resource() const override
     {
       return RESOURCE_NONE;
@@ -5473,7 +5486,7 @@ void accelerating_sandglass( special_effect_t& e )
 
   auto cb = new dbc_proc_callback_t( e.player, e );
   cb->initialize();
-  e.player->register_combat_begin( [ cb ]( player_t* p ) {
+  e.player->register_combat_begin( [ cb ]( player_t* ) {
     cb->activate();
   } );
 
@@ -5701,7 +5714,7 @@ void paracausal_fragment_of_frostmourne( special_effect_t& e )
 
   auto lich_buff_spell = e.player->find_spell( 415033 );
   auto buff            = create_buff<buff_t>( e.player, "lich_form", lich_buff_spell );
-  buff->set_tick_callback( [ damage ]( buff_t* b, int, timespan_t ) { damage->execute(); } );
+  buff->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
   buff->set_stack_change_callback( [ lich_shield_buff ]( buff_t*, int, int new_ ) {
     if ( new_ )
     {
@@ -5873,15 +5886,15 @@ void ashes_of_the_embersoul( special_effect_t& e )
     soul_ignition_buff_t( const special_effect_t& e, buff_t* haste_debuff )
       : stat_buff_t( e.player, "soul_ignition", e.driver() ),
         haste_debuff( haste_debuff ),
-        effect( e ),
-        current_tick( 0 )
+        current_tick( 0 ),
+        effect( e )
     {
       auto base_buff_value = e.player->find_spell( 423021 )->effectN( 1 ).average( e.item );
       set_period( e.driver()->effectN( 3 ).period() - 1_ms );
       set_stat_from_effect( 1, base_buff_value );
       set_default_value( base_buff_value );
 
-      set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         recalculate();
       } );
     }
@@ -5933,7 +5946,7 @@ void ashes_of_the_embersoul( special_effect_t& e )
       }
     }
 
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    void expire_override( int /*expiration_stacks*/, timespan_t /*remaining_duration*/ ) override
     {
       haste_debuff->trigger();
       recalculate_expiry();
@@ -6162,7 +6175,7 @@ void rune_of_the_umbramane( special_effect_t& effect )
 // Buffs: 424228, 424276, 424274, 424272, 424275
 void pinch_of_dream_magic( special_effect_t& effect )
 {
-  auto cb = new dbc_proc_callback_t( effect.player, effect );
+  [[maybe_unused]] auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
   auto add_buff = [ &effect, &buffs ]( std::string suf, unsigned id ) {
@@ -6312,6 +6325,512 @@ void belorrelos_the_sunstone( special_effect_t& effect )
   effect.execute_action = damage;
 }
 
+// Nymue's Unraveling Spindle
+// Driver: 422956
+// Holds coeff: 422953
+// Buff: 427072
+// Trigger/DoT: 427161
+void nymues_unraveling_spindle( special_effect_t& effect )
+{
+  struct nymues_channel_t : public proc_spell_t
+  {
+    buff_t* buff;
+    double damage;
+    double immobilized_mod;
+
+    nymues_channel_t( const special_effect_t& e, buff_t* mastery )
+      : proc_spell_t( "essence_splice", e.player, e.driver(), e.item ),
+        damage( e.player->find_spell( 422953 )->effectN( 1 ).average( e.item ) ),
+        immobilized_mod( e.player->find_spell( 422953 )->effectN( 3 ).percent() )
+    {
+      channeled = tick_may_crit = true;
+      aoe                       = 0;
+      effect                    = &e;
+      buff                      = mastery;
+
+      // Stored as total damage dealt, need to be divided by number of ticks/stacks
+      dot_duration   = timespan_t::from_seconds( e.driver()->effectN( 2 ).base_value() );
+      base_tick_time = e.driver()->effectN( 1 ).period();
+      base_td        = damage / ( dot_duration.total_seconds() / base_tick_time.total_seconds() );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    // Note that a Target Dummmy counts as an Immobilized target in-game.
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto tm = proc_spell_t::composite_target_multiplier( t );
+
+      actor_target_data_t* td = player->get_target_data( t );
+
+      // Affected By: Roots or Stuns
+      // Not Affected By: Slows
+      bool immobilized = td ? td->debuff.dream_shackles->check() : false;
+
+      if ( t->buffs.stunned->check() || immobilized || player->dragonflight_opts.nymue_forced_immobilized )
+      {
+        tm *= 1.0 + immobilized_mod;
+      }
+
+      return tm;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+      buff->trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
+
+      // Cancelled before the last tick completed, reset the cd
+      if ( d->end_event )
+      {
+        cooldown->reset( false );
+        cdgrp->reset( false );
+      }
+      else
+      {
+        cooldown->adjust( d->duration() );
+        cdgrp->adjust( d->duration() );
+      }
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( 0_ms );
+    }
+  };
+
+  // Stored as total Mastery gained, need to be divided by number of ticks/stacks
+  auto num_ticks =
+      timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) / effect.driver()->effectN( 1 ).period();
+  auto amount = effect.player->find_spell( 422953 )->effectN( 2 ).average( effect.item ) / num_ticks;
+
+  buff_t* buff = buff_t::find( effect.player, "nymues_vengeful_spindle" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "nymues_vengeful_spindle", effect.player->find_spell( 427072 ),
+                                   effect.item )
+               ->add_stat( STAT_MASTERY_RATING, amount );
+  }
+
+  effect.execute_action = create_proc_action<nymues_channel_t>( "essence_splice", effect, buff );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Augury of the Primal Flame
+// Driver: 423124
+// Buff: 426553
+void augury_of_the_primal_flame( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "annihilating_flame" );
+  if ( !buff )
+  {
+    // Use the cap as the default value to be decremented as you trigger
+    // NOTE: Tooltip says total limit increased per enemy struck, up to 5.
+    //       Testing on a training dummy can't find any evidence to support that.
+    buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
+               ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "annihilating_flame", effect, "annihilating_flame",
+                                                        effect.player->find_spell( 426564 ), true );
+  damage->may_crit    = true;
+  damage->base_dd_min = damage->base_dd_max = 1;  // allow the action to scale with modifiers like vers
+
+  // Damage events trigger additional damage based off the original amount
+  // Trigger this after the original damage goes out
+  // Does NOT work with Pet damage or Pet spells
+  struct augury_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    double mod;
+    buff_t* buff;
+
+    augury_cb_t( const special_effect_t& effect, action_t* d, buff_t* b, double m )
+      : dbc_proc_callback_t( effect.player, effect ), damage( d ), mod( m ), buff( b )
+    {
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      double amount       = state->result_amount * mod;
+      damage->base_dd_min = damage->base_dd_max = amount;
+
+      // Remove from the cap before modifiers are added (crit/vers/targets)
+      if ( buff->check() )
+      {
+        // After the hit occurs calculate how much is left or expire if needed
+        if ( buff->current_value > amount )
+        {
+          buff->current_value -= amount;
+
+          effect.player->sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains",
+                                           effect.player->name(), amount, buff->current_value );
+        }
+        else
+        {
+          // If you hit enough to cap, expire the buff
+          // Any in-progress damage events are uninterrupted allowing you to go over the cap
+          buff->expire();
+        }
+      }
+
+      // Always trigger the damage event if you have gotten to this point, even if buff was expired
+      damage->execute_on_target( state->target );
+    }
+  };
+
+  // Create the callback but only activate it while the buff is active
+  const auto driver    = new special_effect_t( effect.player );
+  driver->cooldown_    = 0_ms;
+  driver->spell_id     = effect.trigger()->id();
+  driver->proc_flags2_ = PF2_CRIT;
+  effect.player->special_effects.push_back( driver );
+  double mod = effect.driver()->effectN( 2 ).percent();
+
+  auto cb = new augury_cb_t( *driver, damage, buff, mod );
+  cb->initialize();
+  cb->deactivate();
+
+  buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      cb->activate();
+    }
+    else
+    {
+      cb->deactivate();
+    }
+  } );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Time-Thief's Gambit
+// OnUse Driver/Buff: 417534
+// Paradox Debuff: 417543
+// Frozen in Time Debuff: 417587
+void time_thiefs_gambit( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "time_thiefs_gambit", "paradox", "frozen_in_time" } ) )
+  {
+    return;
+  }
+
+  auto frozen_in_time = buff_t::find( effect.player, "frozen_in_time" );
+  if ( !frozen_in_time )
+  {
+    frozen_in_time = create_buff<buff_t>( effect.player, effect.player->find_spell( 417587 ) )
+                         ->set_duration( 4_s )
+                         ->set_stack_change_callback( [ effect ]( buff_t*, int, int new_ ) {
+                           if ( new_ )
+                           {
+                             if ( !effect.player->is_sleeping() )
+                             {
+                               effect.player->buffs.stunned->trigger();
+                               effect.player->stun();
+                             }
+                           }
+                           else
+                           {
+                             effect.player->buffs.stunned->expire();
+                           }
+                         } );
+  }
+
+  struct paradox_t : public buff_t
+  {
+    buff_t* frozen_buff;
+
+    paradox_t( const special_effect_t& e, buff_t* frozen_in_time ) : buff_t( e.player, "paradox", e.trigger(), e.item )
+    {
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      frozen_buff = frozen_in_time;
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      // Make sure it expired naturally so that boss kill expires don't trigger Frozen in Time
+      if ( remaining_duration == timespan_t::zero() )
+      {
+        sim->print_debug( "Paradox expired naturally. Triggering Frozen in Time." );
+        frozen_buff->trigger();
+      }
+    }
+  };
+
+  auto paradox = make_buff<paradox_t>( effect, frozen_in_time );
+
+  // Haste Buff
+  auto buff = buff_t::find( effect.player, "time_thiefs_gambit" );
+  if ( !buff )
+  {
+    buff = create_buff<stat_buff_t>( effect.player, effect.driver() )
+               ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
+               ->set_stack_change_callback( [ paradox ]( buff_t*, int old_, int ) {
+                 if ( !old_ )
+                 {
+                   paradox->trigger();
+                 }
+               } );
+  }
+
+  effect.player->register_on_kill_callback( [ paradox, effect ]( player_t* t ) {
+    if ( paradox->check() )
+    {
+      if ( t->is_boss() )
+      {
+        effect.player->sim->print_debug( "{} kills a boss enemy, expiring active Paradox ({}).", effect.player->name(),
+                                         paradox->remains().total_seconds() );
+        paradox->current_value = paradox->remains().total_seconds();
+        paradox->expire();
+      }
+      else
+      {
+        effect.player->sim->print_debug( "{} kills an enemy, extending Paradox by {} seconds.", effect.player->name(),
+                                         effect.driver()->effectN( 3 ).base_value() );
+        paradox->extend_duration( effect.player,
+                                  timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() ) );
+      }
+    }
+  } );
+
+  effect.custom_buff = buff;
+}
+
+// Branch of the Tormented Ancient
+// 422441 Driver/Buff
+// 422440 Damage Value
+// 425509 Damage
+// TODO: Implement Slow? 
+void branch_of_the_tormented_ancient( special_effect_t& e )
+{
+  struct branch_of_the_tormented_ancient_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    buff_t* buff;
+
+    branch_of_the_tormented_ancient_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
+      : dbc_proc_callback_t( effect.player, effect ), damage( d ), buff( b )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+      damage->execute_on_target( s->target );
+      buff->decrement();
+    }
+  };
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "severed_embers", e, "severed_embers",
+                                                        e.player->find_spell( 425509 ), true );
+  damage->base_dd_min = damage->base_dd_max = e.player->find_spell( 422440 )->effectN( 1 ).average( e.item );
+
+  auto buff = create_buff<buff_t>( e.player, e.driver() );
+
+  const auto driver = new special_effect_t( e.player );
+  driver->cooldown_ = 0_ms;
+  driver->spell_id = e.driver()->id();
+  e.player->special_effects.push_back( driver );
+
+  auto cb = new branch_of_the_tormented_ancient_cb_t( *driver, damage, buff );
+
+  buff->set_initial_stack( e.driver()->effectN( 7 ).base_value() );
+  buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      cb->activate();
+    }
+    else if ( new_ == 0 )
+    {
+      cb->deactivate();
+    }
+  } );
+
+  e.custom_buff = buff;
+}
+
+// Cataclysmic Signet Brand
+// 422479 Driver
+// 425180 Player DoT
+// 425153 Stack Buff
+// 425154 Enemy DoT
+// 425156 AoE Damage
+void infernal_signet_brand( special_effect_t& e )
+{
+  struct firestarter_no_combat_t : public buff_t
+  {
+    buff_t* buff;
+
+    firestarter_no_combat_t( const special_effect_t& e, buff_t* b )
+      : buff_t( e.player, "firestarter_no_combat" ), buff( b )
+    {
+      set_duration( e.driver()->effectN( 8 ).time_value() * 1000 );
+      set_quiet( true );
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      if ( d == timespan_t::zero() )
+      {
+        buff->expire();
+      }
+
+      buff_t::expire_override( s, d );
+    }
+  };
+
+  struct radiating_brand_t : public generic_aoe_proc_t
+  {
+    radiating_brand_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "radiating_brand", effect.player->find_spell( 425156 ) )
+    {
+      may_crit = false;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      generic_aoe_proc_t::available_targets( tl );
+
+      auto it = range::find( tl, target );
+      if ( it != tl.end() )
+      {
+        tl.erase( it );
+      }
+
+      return tl.size();
+    }
+  };
+
+  struct vicious_brand_self_t : public generic_proc_t
+  {
+    const special_effect_t& e;
+    buff_t* buff;
+
+    vicious_brand_self_t( const special_effect_t& effect, buff_t* b, double base_damage )
+      : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ), e( effect ), buff( b )
+    {
+      double player_mod = e.driver()->effectN( 4 ).percent();
+      base_td           = base_damage * player_mod;
+      target            = effect.player;
+      stats->type       = stats_e::STATS_NEUTRAL;
+    }
+
+    double composite_ta_multiplier( const action_state_t* state ) const override
+    {
+      double m        = generic_proc_t::composite_ta_multiplier( state );
+      double base_mod = 1.0 + e.driver()->effectN( 3 ).percent();
+
+      // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
+      // Doesnt appear to have any sort of cap
+      m *= pow( base_mod, buff->check() );
+
+      return m;
+    }
+  };
+
+  struct vicious_brand_t : public generic_proc_t
+  {
+    action_t* self_damage;
+    action_t* aoe_damage;
+    buff_t* buff;
+    const special_effect_t& e;
+
+    vicious_brand_t( const special_effect_t& effect, buff_t* b, double base_damage )
+      : generic_proc_t( effect, "vicious_brand", effect.player->find_spell( 425154 ) ),
+        self_damage( create_proc_action<vicious_brand_self_t>( "vicious_brand_self", effect, b, base_damage ) ),
+        aoe_damage( create_proc_action<radiating_brand_t>( "radiating_brand", effect ) ),
+        buff( b ),
+        e( effect )
+    {
+      base_td = base_damage;
+      add_child( aoe_damage );
+    }
+
+    double composite_ta_multiplier( const action_state_t* state ) const override
+    {
+      double m        = generic_proc_t::composite_ta_multiplier( state );
+      double base_mod = 1.0 + e.driver()->effectN( 3 ).percent();
+
+      // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
+      // Doesnt appear to have any sort of cap
+      m *= pow( base_mod, buff->check() );
+
+      return m;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+
+      if ( buff->at_max_stacks() )
+      {
+        aoe_damage->base_dd_min = aoe_damage->base_dd_max =
+            d->state->result_amount * e.driver()->effectN( 6 ).percent();
+        aoe_damage->execute();
+      }
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buff->trigger();
+      if ( buff->check() > ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
+      {
+        self_damage->execute();
+      }
+    }
+  };
+
+  auto buff               = make_buff<buff_t>( e.player, "firestarter", e.player->find_spell( 425153 ) );
+  auto out_of_combat_buff = make_buff<firestarter_no_combat_t>( e, buff );
+
+  buff->set_tick_callback( [ out_of_combat_buff ]( buff_t* b, int /* total_ticks */, timespan_t /* tick_time */ ) {
+    if ( out_of_combat_buff->check() )
+    {
+      b->decrement();
+    }
+  } );
+
+  e.player->register_on_combat_state_callback( [ buff, out_of_combat_buff ]( player_t* p, bool c ) {
+    if ( !c && buff->check() )
+    {
+      p->sim->print_debug( "{} leaves combat, starting Firestarter decay", p->name(), c );
+      out_of_combat_buff->trigger();
+    }
+    if ( c && out_of_combat_buff->check() )
+    {
+      p->sim->print_debug( "{} enters combat, stopping Firestarter decay", p->name(), c );
+      out_of_combat_buff->expire();
+    }
+  } );
+
+  // Has an insane damage formula, appears to be
+  // ( driver effect 1 / ticks ) * [ ( 1 + driver effect 3 percent ) ^ ( -driver effect 5 ) ]
+  auto tick_spell    = e.player->find_spell( 425154 );
+  auto ticks         = tick_spell->duration() / tick_spell->effectN( 2 ).period();
+  double base_mod    = pow( 1 + e.driver()->effectN( 3 ).percent(), -e.driver()->effectN( 5 ).base_value() );
+  double base_damage = ( e.driver()->effectN( 1 ).average( e.item ) / ticks ) * base_mod;
+
+  e.execute_action = create_proc_action<vicious_brand_t>( "vicious_brand", e, buff, base_damage );
+
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -6381,7 +6900,7 @@ void spore_keepers_baton( special_effect_t& effect )
                   ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
         if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME )
         {
           buff->trigger();
@@ -6746,7 +7265,9 @@ void iridal_the_earths_master( special_effect_t& e )
   e.execute_action = damage;
 }
 
-
+// [PH] Fyrakk Cantrip 1H Axe STR
+// [PH] Fyrakk Cantrip 1H Mace INT
+// TODO: Check both weapons after they are no longer placeholder
 // Hungering Shadowflame
 // 424320 Driver / Values
 // 424324 Damage
@@ -6768,7 +7289,7 @@ void hungering_shadowflame( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      if ( state->target->health_percentage() > hp_percent)
+      if ( state->target->health_percentage() > hp_percent )
       {
         m *= 1.0 + damage_mult;
       }
@@ -6777,9 +7298,110 @@ void hungering_shadowflame( special_effect_t& e )
     }
   };
 
-  e.execute_action = create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e );
+  struct hungering_shadowflame_self_t : public generic_proc_t
+  {
+    hungering_shadowflame_self_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "hungering_shadowflame_self", effect.player->find_spell( 424324 ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      target                    = effect.player;
+      stats->type               = stats_e::STATS_NEUTRAL;
+    }
+  };
 
-  new dbc_proc_callback_t( e.player , e);
+  struct hungering_shadowflame_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    action_t* self_damage;
+
+    hungering_shadowflame_cb_t( const special_effect_t& e, player_t* p )
+      : dbc_proc_callback_t( p, e ),
+        damage( create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e ) ),
+        self_damage( create_proc_action<hungering_shadowflame_self_t>( "hungering_shadowflame_self", e ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+      damage->execute();
+      self_damage->execute();
+    }
+  };
+
+  new hungering_shadowflame_cb_t( e, e.player );
+}
+
+// Dreambinder, Loom of the Great Cycle
+// Driver: 427113
+// Damage: 427209
+// Debuffs: 427215 (Root - Main Target) & 427212 (Slow - AoE)
+struct web_of_dreams_initializer_t : public item_targetdata_initializer_t
+{
+  web_of_dreams_initializer_t() : item_targetdata_initializer_t( 427113, 427212 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.web_of_dreams = make_buff_fallback( active, *td, "web_of_dreams", debuffs[ td->source ] );
+    td->debuff.web_of_dreams->reset();
+  }
+};
+
+struct dream_shackles_initializer_t : public item_targetdata_initializer_t
+{
+  dream_shackles_initializer_t() : item_targetdata_initializer_t( 427113, 427215 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.dream_shackles = make_buff_fallback( active, *td, "dream_shackles", debuffs[ td->source ] );
+    td->debuff.dream_shackles->reset();
+  }
+};
+
+void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
+{
+  struct dreambinder_loom_of_the_great_cycle_t : public generic_aoe_proc_t
+  {
+    dreambinder_loom_of_the_great_cycle_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "web_of_dreams", effect.player->find_spell( 427209 ), true )
+    {
+      base_dd_min = base_dd_max = data().effectN( 2 ).trigger()->effectN( 1 ).average( effect.item );
+
+      // Mimics the spawn of the ground delay before the damage comes in
+      travel_delay = effect.driver()->duration().total_seconds();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_aoe_proc_t::impact( state );
+
+      if ( !state->target->is_boss() )
+      {
+        actor_target_data_t* td = player->get_target_data( state->target );
+
+        if ( td )
+        {
+          td->debuff.web_of_dreams->trigger();
+
+          // Apply the root if the target is the main target
+          if ( state->chain_target == 0 )
+          {
+            td->debuff.dream_shackles->trigger();
+          }
+        }
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<dreambinder_loom_of_the_great_cycle_t>( "web_of_dreams", effect );
 }
 
 // Armor
@@ -7564,6 +8186,101 @@ void undulating_sporecloak( special_effect_t& effect )
         } );
       } );
     }
+  }
+}
+
+// Dreamtender's Charm
+// Driver: 419368
+// Buff: 420834
+// Recharge Buff: 420812
+// Movement Speed Debuff: 420762
+void dreamtenders_charm( special_effect_t& effect )
+{
+  // Main Crit Buff - dreaming_trance
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 420834 ) );
+  buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buff->set_duration( 0_s );
+  bool first = !buff->manual_stats_added;
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+  buff->set_period( 1_s );
+
+  // 30s lockout debuff
+  auto regaining_power = buff_t::find( effect.player, "regaining_power" );
+  if ( !regaining_power )
+  {
+    regaining_power = create_buff<buff_t>( effect.player, effect.player->find_spell( 420812 ) )
+                          ->set_stack_change_callback( [ buff ]( buff_t*, int, int new_ ) {
+                            // Making an assumption that if you loose the buff by the time
+                            // the lockout expires you will be healthy again
+                            if ( new_ == 0 )
+                            {
+                              buff->trigger();
+                            }
+                          } );
+  }
+
+  // Find all Ysemerald Gems
+  unsigned gem_count = 0;
+  for ( const auto& item : effect.player->items )
+  {
+    for ( auto gem_id : item.parsed.gem_id )
+    {
+      if ( gem_id )
+      {
+        auto n  = std::string( effect.player->dbc->item( gem_id ).name );
+        auto it = n.find( "Ysemerald" );
+        if ( it != std::string::npos )
+        {
+          gem_count++;
+        }
+      }
+    }
+  }
+
+  if ( first && buff->sim->dragonflight_opts.dreamtenders_charm_uptime > 0.0 )
+  {
+    buff->player->register_combat_begin( [ buff, regaining_power, gem_count ]( player_t* p ) {
+      buff->trigger();
+      make_repeating_event( *p->sim, p->sim->dragonflight_opts.dreamtenders_charm_update_interval,
+                            [ buff, p, regaining_power, gem_count ] {
+                              if ( p->rng().roll( p->sim->dragonflight_opts.dreamtenders_charm_uptime ) )
+                              {
+                                // Safety net in case something goes haywire
+                                // buff should re-trigger from regaining_power expiration
+                                if ( !regaining_power->check() && !buff->check() )
+                                {
+                                  buff->trigger();
+                                }
+                              }
+                              else
+                              {
+                                if ( buff->check() )
+                                {
+                                  auto stacks = buff->check();
+                                  buff->expire();
+                                  regaining_power->trigger();
+                                  // Re-trigger the buff with a shorter duration based on the number of Ysemerald's you
+                                  // have equipped
+                                  if ( gem_count > 0 )
+                                  {
+                                    p->sim->print_debug( "{} re-triggers dreaming_trance for {} seconds.", p->name(),
+                                                         gem_count );
+                                    buff->trigger( stacks, timespan_t::from_seconds( gem_count ) );
+                                  }
+                                }
+                              }
+                            } );
+    } );
+
+    // If you drop combat you loose all stacks immedietly but do not trigger regaining power
+    // Does not trigger the extra buff with a shorter duration from Ysemeralds
+    buff->player->register_on_combat_state_callback( [ buff ]( player_t* p, bool c ) {
+      if ( !c && buff->check() )
+      {
+        buff->sim->print_debug( "{} leaves combat, expiring dreaming_trance {}", p->name(), c );
+        buff->expire();
+      }
+    } );
   }
 }
 
@@ -8695,8 +9412,13 @@ void register_special_effects()
   register_special_effect( 422303, items::bandolier_of_twisted_blades );
   register_special_effect( 423926, items::rune_of_the_umbramane );
   register_special_effect( 423927, items::pinch_of_dream_magic );
-  register_special_effect( 423905, items::dancing_dream_blossoms );
+  register_special_effect( 423905, items::dancing_dream_blossoms, true );
   register_special_effect( 422146, items::belorrelos_the_sunstone );
+  register_special_effect( 422956, items::nymues_unraveling_spindle );
+  register_special_effect( 423124, items::augury_of_the_primal_flame );
+  register_special_effect( 417534, items::time_thiefs_gambit, true );
+  register_special_effect( 422441, items::branch_of_the_tormented_ancient );
+  register_special_effect( 422479, items::infernal_signet_brand );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -8709,6 +9431,7 @@ void register_special_effects()
   register_special_effect( 408821, items::djaruun_pillar_of_the_elder_flame, true );  // Djaruun, Pillar of the Elder Flame
   register_special_effect( 419278, items::iridal_the_earths_master );           // Iridal, the Earth's Master
   register_special_effect( 424320, items::hungering_shadowflame );              // Hungering Shadowflame - Unnamed 1h axe
+  register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
@@ -8732,6 +9455,7 @@ void register_special_effects()
   register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
   register_special_effect( 406244, items::ever_decaying_spores );
   register_special_effect( 410230, items::undulating_sporecloak );
+  register_special_effect( 419368, items::dreamtenders_charm );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
@@ -8781,6 +9505,8 @@ void register_special_effects()
   register_special_effect( 382132, DISABLED_EFFECT );  // Iceblood Deathsnare damage data
   register_special_effect( 410530, DISABLED_EFFECT );  // Infurious Boots of Reprieve - Mettle (NYI)
   register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
+  register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
+  register_special_effect( 417545, DISABLED_EFFECT );  // Time-Thief's Gambit unused effect
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -8796,6 +9522,8 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::tideseekers_cataclysm_initializer_t() );
   sim.register_target_data_initializer( items::lava_bolt_initializer_t() );
   sim.register_target_data_initializer( items::embed_blade_initializer_t() );
+  sim.register_target_data_initializer( items::web_of_dreams_initializer_t() );
+  sim.register_target_data_initializer( items::dream_shackles_initializer_t() );
 }
 
 void register_hotfixes()

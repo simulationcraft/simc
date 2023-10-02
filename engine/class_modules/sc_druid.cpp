@@ -471,6 +471,7 @@ public:
     action_t* orbital_strike;
 
     // Feral
+    action_t* burning_frenzy; // 4t31
     action_t* ferocious_bite_apex;  // free bite from apex predator's crazing
     action_t* frenzied_assault;
     action_t* thrashing_claws;
@@ -581,6 +582,7 @@ public:
 
     // Feral
     buff_t* apex_predators_craving;
+    buff_t* ashamanes_guidance;  // buff to track incarnation ashamane's guidance buff 10.2 ptr
     buff_t* berserk_cat;
     buff_t* bloodtalons;
     buff_t* bt_rake;          // dummy buff
@@ -601,6 +603,7 @@ public:
     buff_t* sabertooth;
     buff_t* shadows_of_the_predator;  // 2t30
     buff_t* sharpened_claws;  // 4t29
+    buff_t* smoldering_frenzy; //t31
     buff_t* sudden_ambush;
     buff_t* tigers_fury;
     buff_t* tigers_tenacity;
@@ -710,7 +713,7 @@ public:
     proc_t* pulsar;
 
     // Feral
-    proc_t* ashamanes_guidance;
+    proc_t* ashamanes_guidance; // remove in 10.2
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
     proc_t* predator;
@@ -863,6 +866,7 @@ public:
     player_talent_t rampant_ferocity;
     player_talent_t relentless_predator;
     player_talent_t rip_and_tear;
+    player_talent_t saber_jaws;
     player_talent_t sabertooth;
     player_talent_t soul_of_the_forest_cat;
     player_talent_t sudden_ambush;
@@ -1017,6 +1021,7 @@ public:
     // Feral
     const spell_data_t* feral_overrides;
     const spell_data_t* ashamanes_guidance;
+    const spell_data_t* ashamanes_guidance_buff;  // buff spell for ashamanes guidance 421442
     const spell_data_t* berserk_cat;  // berserk cast/buff spell
 
     // Guardian
@@ -1635,9 +1640,8 @@ struct berserk_cat_buff_t : public druid_buff_t
     auto cp = find_effect( find_trigger( s ).trigger(), E_ENERGIZE ).resource( RESOURCE_COMBO_POINT );
     auto gain = p->get_gain( n );
 
-    set_tick_callback( [ cp, gain, this ]( buff_t*, int, timespan_t ) {
-      player->resource_gain( RESOURCE_COMBO_POINT, cp, gain );
-    } );
+    set_tick_callback(
+        [ cp, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_COMBO_POINT, cp, gain ); } );
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -1645,7 +1649,11 @@ struct berserk_cat_buff_t : public druid_buff_t
     base_t::start( s, v, d );
 
     if ( inc )
+    {
       p()->uptime.incarnation_cat->update( true, sim->current_time() );
+      if ( p()->talent.ashamanes_guidance.ok() && p()->is_ptr() )
+        p()->buff.ashamanes_guidance->trigger();
+    }
   }
 
   void expire_override( int s, timespan_t d ) override
@@ -1657,6 +1665,14 @@ struct berserk_cat_buff_t : public druid_buff_t
 
     if ( inc )
       p()->uptime.incarnation_cat->update( false, sim->current_time() );
+
+    if ( inc && p()->is_ptr() && p()->talent.ashamanes_guidance.ok() )
+    {
+      // ashamanes guidance buff in spell-data is infinite, so we manually expire after 30 seconds here
+      // unfortunately, if incarn procs or is casted during this 30 seconds
+      // so check back if this becomes relevant
+      make_event( *sim, 30_s, [ this ]() { p()->buff.ashamanes_guidance->expire(); } );
+    }
   }
 };
 
@@ -1948,7 +1964,9 @@ public:
     if ( ab::data().ok() )
     {
       apply_buff_effects();
-      apply_debuffs_effects();
+
+      if ( ab::type == action_e::ACTION_SPELL || ab::type == action_e::ACTION_ATTACK )
+        apply_debuffs_effects();
 
       if ( ab::data().flags( spell_attribute::SX_ABILITY ) || ab::trigger_gcd > 0_ms )
         ab::not_a_proc = true;
@@ -2010,8 +2028,11 @@ public:
   {
     if ( !check_form_restriction() && !( ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM ) || autoshift ) )
     {
-      ab::sim->print_debug( "{} ready() failed due to wrong form. form={:#010x} form_mask={:#010x}", ab::name(),
-                            static_cast<unsigned int>( p()->get_form() ), form_mask );
+      if ( ab::sim->debug )
+      {
+        ab::sim->print_debug( "{} ready() failed due to wrong form. form={:#010x} form_mask={:#010x}", ab::name(),
+                              static_cast<unsigned int>( p()->get_form() ), form_mask );
+      }
 
       return false;
     }
@@ -2077,12 +2098,17 @@ public:
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
+    parse_buff_effects( p()->buff.ashamanes_guidance );  //10.2 ashamanes guidance for incarn
     parse_buff_effects( p()->buff.apex_predators_craving );
     parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
     parse_buff_effects( p()->buff.sabertooth, USE_DEFAULT );
     parse_buff_effects( p()->buff.sharpened_claws );
+    if ( p()->is_ptr() )
+    {
+      parse_buff_effects( p()->buff.smoldering_frenzy );
+    }
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -2125,6 +2151,16 @@ public:
                           find_trigger( p()->talent.dire_fixation ).trigger() );
     parse_debuff_effects( []( druid_td_t* td ) { return td->debuff.waning_twilight->check(); },
                           p()->spec.waning_twilight, p()->talent.waning_twilight );
+
+    if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
+    {
+      parse_debuff_effects(
+          [ p = p() ]( druid_td_t* td ) { return p->buff.ashamanes_guidance->check() && td->dots.rip->is_ticking(); },
+          p()->talent.rip, p()->spec.ashamanes_guidance_buff );
+      parse_debuff_effects(
+          [ p = p() ]( druid_td_t* td ) { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
+          find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
+    }
   }
 
   template <typename DOT, typename... Ts>
@@ -3385,8 +3421,11 @@ public:
     {
       p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
-      sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                      util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+      if ( sim->log )
+      {
+        sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
+                        util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+      }
 
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
     }
@@ -3542,6 +3581,11 @@ struct feral_frenzy_t : public cat_attack_t
       is_direct_damage = true;
       cat_attack_t::execute();
       is_direct_damage = false;
+
+      if ( p()->is_ptr() && p()->sets->has_set_bonus( DRUID_FERAL, T31, B2 ) )
+      {
+        p()->buff.smoldering_frenzy->trigger();
+      }
     }
 
     void trigger_primal_fury() override {}
@@ -3747,7 +3791,9 @@ struct ferocious_bite_t : public cat_finisher_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto dam = cat_finisher_t::composite_da_multiplier( s );
-    auto energy_mul = is_free() ? 2.0 : 1.0 + excess_energy / max_excess_energy;
+    auto energy_mul = is_free() ? 2.0
+                                : 1.0 + ( excess_energy / max_excess_energy ) *
+                                            ( 1 + p()->talent.saber_jaws->effectN( 1 ).percent() );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     auto combo_mul = cast_state( s )->combo_points / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
@@ -3767,6 +3813,15 @@ struct ferocious_bite_t : public cat_finisher_t
 struct frenzied_assault_t : public residual_action::residual_periodic_action_t<cat_attack_t>
 {
   frenzied_assault_t( druid_t* p ) : residual_action_t( "frenzied_assault", p, p->find_spell( 391140 ) )
+  {
+    proc = true;
+  }
+};
+
+// t31 4p feral =============================================================
+struct burning_frenzy_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+{
+  burning_frenzy_t( druid_t* p ) : residual_action_t( "burning_frenzy", p, p->find_spell( 422779 ) )
   {
     proc = true;
   }
@@ -5321,7 +5376,10 @@ struct lifebloom_t : public druid_heal_t
         continue;
 
       auto d = get_dot( t );
-      sim->print_debug( "{} fades from {}", *d, *t );
+
+      if ( sim->debug )
+        sim->print_debug( "{} fades from {}", *d, *t );
+
       d->reset();  // we don't want last_tick() because there is no bloom on target swap
     }
 
@@ -6004,8 +6062,11 @@ struct adaptive_swarm_t : public druid_spell_t
       new_state->stacks = d->current_stack() - 1;
       new_state->jump = true;
 
-      BASE::sim->print_log( "ADAPTIVE_SWARM: jumping {} {} stacks to {} ({} yd)", new_state->stacks,
-                            heal ? "heal" : "damage", new_state->target->name(), new_state->range );
+      if ( BASE::sim->log )
+      {
+        BASE::sim->print_log( "ADAPTIVE_SWARM: jumping {} {} stacks to {} ({} yd)", new_state->stacks,
+                              heal ? "heal" : "damage", new_state->target->name(), new_state->range );
+      }
 
       BASE::schedule_execute( new_state );
     }
@@ -6034,12 +6095,16 @@ struct adaptive_swarm_t : public druid_spell_t
           if ( !second_target )
             return;
 
-          BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
+          if ( BASE::sim->log )
+            BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
+
           send_swarm( second_target, d );
         }
         else
         {
-          BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
+          if ( BASE::sim->log )
+            BASE::sim->print_log( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
+
           other->send_swarm( second_target, d );
         }
       }
@@ -6055,8 +6120,11 @@ struct adaptive_swarm_t : public druid_spell_t
       auto d = BASE::get_dot( s->target );
       d->increment( incoming + existing - 1 );
 
-      BASE::sim->print_log( "ADAPTIVE_SWARM: {} incoming:{} existing:{} final:{}", heal ? "heal" : "damage", incoming,
-                            existing, d->current_stack() );
+      if ( BASE::sim->log )
+      {
+        BASE::sim->print_log( "ADAPTIVE_SWARM: {} incoming:{} existing:{} final:{}", heal ? "heal" : "damage", incoming,
+                              existing, d->current_stack() );
+      }
     }
 
     void last_tick( dot_t* d ) override
@@ -6074,7 +6142,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
       if ( d->current_stack() > 1 )
         jump_swarm( d );
-      else
+      else if ( BASE::sim->log )
         BASE::sim->print_log( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
     }
 
@@ -7206,7 +7274,8 @@ struct prowl_t : public druid_spell_t
 
   void execute() override
   {
-    sim->print_log( "{} performs {}", player->name(), name() );
+    if ( sim->log )
+      sim->print_log( "{} performs {}", player->name(), name() );
 
     // since prowl can be used off gcd, it can bypass schedule_execute() so we check for autoshift again here
     check_autoshift();
@@ -9570,6 +9639,7 @@ void druid_t::init_spells()
   talent.raging_fury                    = ST( "Raging Fury" );
   talent.rampant_ferocity               = ST( "Rampant Ferocity" );
   talent.rip_and_tear                   = ST( "Rip and Tear" );
+  talent.saber_jaws                     = ST( "Saber Jaws" );
   talent.sabertooth                     = ST( "Sabertooth" );
   talent.soul_of_the_forest_cat         = STS( "Soul of the Forest", DRUID_FERAL );
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
@@ -9722,9 +9792,13 @@ void druid_t::init_spells()
   spec.starfall                 = check( talent.starfall, 191034 );
 
   // Feral Abilities
-  spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
-  spec.ashamanes_guidance       = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
-  spec.berserk_cat              = talent.berserk.find_override_spell();
+  spec.feral_overrides = find_specialization_spell( "Feral Overrides Passive" );
+  if ( is_ptr() )
+    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421440 );
+  else
+    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
+  spec.ashamanes_guidance_buff = check( talent.ashamanes_guidance, 421442 );
+  spec.berserk_cat             = talent.berserk.find_override_spell();
 
   // Guardian Abilities
   spec.bear_form_2              = find_rank_spell( "Bear Form", "Rank 2" );
@@ -10191,9 +10265,14 @@ void druid_t::create_buffs()
   buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
 
   // Feral buffs
+  buff.ashamanes_guidance =
+      make_buff_fallback( is_ptr() && talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok(), this,
+                          "ashamanes_guidance", spec.ashamanes_guidance_buff );
+
   buff.apex_predators_craving = make_buff_fallback( talent.apex_predators_craving.ok(),
       this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() )
-          ->set_chance( find_trigger( talent.apex_predators_craving ).percent() );
+          // TODO: move to rip_t and add target DR
+          ->set_chance( find_trigger( talent.apex_predators_craving ).percent() * ( is_ptr() ? 0.1 : 1 ) );
 
   buff.berserk_cat = make_buff_fallback<berserk_cat_buff_t>( talent.berserk.ok(),
       this, "berserk_cat", spec.berserk_cat );
@@ -10262,6 +10341,10 @@ void druid_t::create_buffs()
 
   buff.sharpened_claws =
       make_buff_fallback( sets->has_set_bonus( DRUID_FERAL, T29, B4 ), this, "sharpened_claws", find_spell( 394465 ) );
+
+  buff.smoldering_frenzy =
+      make_buff_fallback( is_ptr() && sets->has_set_bonus( DRUID_FERAL, T31, B2 ), this, "smoldering_frenzy",
+                          find_trigger( sets->set( DRUID_FERAL, T31, B2 ) ).trigger() );
 
   buff.sudden_ambush = make_buff_fallback( talent.sudden_ambush.ok(),
       this, "sudden_ambush", find_trigger( talent.sudden_ambush ).trigger() );
@@ -10554,6 +10637,9 @@ void druid_t::create_actions()
 
   if ( talent.berserk_frenzy.ok() )
     active.frenzied_assault = get_secondary_action<frenzied_assault_t>( "frenzied_assault" );
+
+  if ( sets->has_set_bonus( DRUID_FERAL, T31, B4 ) )
+    active.burning_frenzy = get_secondary_action<burning_frenzy_t>( "burning_frenzy " );
 
   if ( talent.thrashing_claws.ok() )
   {
@@ -11241,7 +11327,7 @@ void druid_t::init_special_effects()
   }
 
   // Feral
-  if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() )
+  if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() && !is_ptr())
   {
     const auto driver = new special_effect_t( this );
     driver->name_str = "ashamanes_guidance_driver";
@@ -11279,6 +11365,43 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     new dbc_proc_callback_t( this, *driver );
+  }
+
+  if ( sets->has_set_bonus( DRUID_FERAL, T31, B4 ) )
+  {
+    struct smoldering_frenzy_cb_t : public druid_cb_t
+    {
+      double mul;
+
+      smoldering_frenzy_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), mul( p->buff.smoldering_frenzy->data().effectN( 6 ).percent() )
+      {
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        auto d = s->result_amount * mul;
+
+        residual_action::trigger( p()->active.burning_frenzy, listener, d );
+      }
+    };
+
+    const auto driver    = new special_effect_t( this );
+    driver->name_str     = buff.smoldering_frenzy->data().name_cstr();
+    driver->spell_id     = buff.smoldering_frenzy->data().id();
+    driver->proc_flags2_ = PF2_ALL_HIT;
+    special_effects.push_back( driver );
+
+    auto cb = new smoldering_frenzy_cb_t( this, *driver );
+    cb->initialize();
+    cb->deactivate();
+
+    buff.smoldering_frenzy->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->activate();
+      else
+        cb->deactivate();
+    } );
   }
 
   // Guardian
@@ -11697,8 +11820,11 @@ void druid_t::recalculate_resource_max( resource_e rt, gain_t* source )
     // Maintain current health pct.
     resources.current[ rt ] = resources.max[ rt ] * pct_health;
 
-    sim->print_log( "{} recalculates maximum health. old_current={:.0f} new_current={:.0f} net_health={:.0f}", name(),
-                    current_health, resources.current[ rt ], resources.current[ rt ] - current_health );
+    if ( sim->log )
+    {
+        sim->print_log( "{} recalculates maximum health. old_current={:.0f} new_current={:.0f} net_health={:.0f}",
+                        name(), current_health, resources.current[ rt ], resources.current[ rt ] - current_health );
+    }
   }
 }
 
@@ -13083,7 +13209,7 @@ void druid_t::apply_affecting_auras( action_t& action )
     action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
-  // Feral
+  // Feral 
   action.apply_affecting_aura( spec.ashamanes_guidance );
   action.apply_affecting_aura( talent.dreadful_bleeding );
   action.apply_affecting_aura( talent.infected_wounds_cat );
@@ -13092,6 +13218,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.veinripper );
   action.apply_affecting_aura( talent.wild_slashes );
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
+  action.apply_affecting_aura( sets->set( DRUID_FERAL, T31, B4 ) );
 
   // Guardian
   action.apply_affecting_aura( talent.flashing_claws );

@@ -442,11 +442,6 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
-    // Empirically tested to match 3/10/2023, actual value not available in spell data
-    if ( owner->specialization() == PRIEST_DISCIPLINE )
-    {
-      direct_power_mod = 0.445;
-    }
     npc_id = 19668;
 
     main_hand_weapon.min_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
@@ -487,7 +482,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
     // Empirically tested to match 3/10/2023, actual value not available in spell data
     if ( owner->specialization() == PRIEST_DISCIPLINE )
     {
-      direct_power_mod = 0.326;
+      direct_power_mod = 0.3;
     }
     npc_id = 62982;
 
@@ -624,6 +619,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 // ==========================================================================
 struct inescapable_torment_damage_t final : public priest_pet_spell_t
 {
+  double mod;
   inescapable_torment_damage_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "inescapable_torment_damage", p, p.o().find_spell( 373442 ) )
   {
@@ -645,6 +641,27 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     apply_affecting_aura( p.o().specs.shadow_priest );
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_pet_spell_t::composite_da_multiplier( s );
+
+    if ( p().o().options.t31_ist_echo_nerf )
+    {
+      m *= mod;
+    }
+
+    return m;
+  }
+
+
+  void trigger( player_t* target, double mod_ )
+  {
+    mod = mod_;
+
+    set_target( target );
+    execute();
+  }
+
   void init() override
   {
     priest_pet_spell_t::init();
@@ -659,6 +676,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 struct inescapable_torment_t final : public priest_pet_spell_t
 {
   timespan_t duration;
+  propagate_const<inescapable_torment_damage_t*> damage;
 
   inescapable_torment_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shadow.inescapable_torment ),
@@ -666,11 +684,26 @@ struct inescapable_torment_t final : public priest_pet_spell_t
   {
     background = true;
 
-    impact_action = new inescapable_torment_damage_t( p );
-    add_child( impact_action );
+    damage = new inescapable_torment_damage_t( p );
+    add_child( damage );
 
     // Base spell also has damage values
     base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
+  }
+
+  void trigger( player_t* target, bool echo, double mod )
+  {
+    duration = data().effectN( 2 ).time_value();
+
+    if ( echo )
+    {
+      duration *= mod;
+    }
+    
+    set_target( target );
+    execute();
+
+    damage->trigger( target, mod );
   }
 
   void execute() override
@@ -1001,14 +1034,14 @@ spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest 
 
 namespace priestspace
 {
-void priest_t::trigger_inescapable_torment( player_t* target )
+void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double mod )
 {
   if ( !talents.shadow.inescapable_torment.enabled() || !talents.discipline.inescapable_torment.enabled() )
     return;
 
   if ( get_current_main_pet( *this ).n_active_pets() > 0 )
   {
-    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
+    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value() * mod;
     buffs.devoured_pride->extend_duration( this, extend );
     buffs.devoured_despair->extend_duration( this, extend );
 
@@ -1016,8 +1049,7 @@ void priest_t::trigger_inescapable_torment( player_t* target )
     {
       auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
       assert( pet->inescapable_torment );
-      pet->inescapable_torment->set_target( target );
-      pet->inescapable_torment->execute();
+      pet->inescapable_torment->trigger( target, echo, mod );
     }
   }
 }

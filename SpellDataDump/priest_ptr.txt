@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51421 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -31,17 +31,18 @@ Effects          :
                    Affected School(s): All
 #2 (id=1028381)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Shields an ally for $d, absorbing $<shield> damage.
+Description      : Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
 $shadow=$?a137033[${1.25}][${1}]
-$disc=$?a137032[${1.25}][${1}]
+$disc=$?a137032[${1.37}][${1}]
 $pvp=$?a134735[${1}][${1}]
 $shadowinpvp=$?a134735&a137033[${0.8}][${1}]
-$discinpvp=$?a134735&a137032[${0.85}][${1}]
+$discinpvp=$?a134735&a137032[${1}][${1}]
 $weal=$?a390787[${1+$390787s2/100}][${1}]
 $benevolence=$?a415416[${1+$415416s1/100}][${1}]
-$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<benevolence>}
+$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]
+$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Talent Entry     : Generic [free=(Discipline, Holy), tree=class, row=1, col=1, max_rank=1, req_points=0]
@@ -1490,7 +1491,7 @@ GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 1230
 Category Cooldown: 9 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Shadow Covenant (322105 effect#5), The Penitent One (336009 effect#2), Harsh Discipline (373183 effect#2)
+Affecting spells : Spirit Shell (109964 effect#2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Shadow Covenant (322105 effect#5), The Penitent One (336009 effect#2)
 Family Flags     : 55
 Attributes       : ........ ........ x....... .....x..   ..x....x ..x...x. ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3607,6 +3608,9 @@ Effects          :
 #27 (id=1101463)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 15000 | Scaled Value: 15000 | PvP Coefficient: 1.00000 | Misc Value: 1602 | Target: Self (1)
                    Affected Spells (Category): Mind Blast (8092)
+#28 (id=1108039)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2974 (Label) | Target: Self (1)
+                   Affected Spells (Label): Rhapsody (390636)
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -9735,7 +9739,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Dancing Rune Weapon (49028), Berserk (50334), Pillar of Frost (51271), Feral Spirit (51533), Vampiric Blood (55233), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Revival (115310), Shadow Blades (121471), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Coordinated Assault (360952), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Restoral (388615), Sentinel (389539), Dark Ascension (391109), Invoke Niuzao, the Black Ox (395267), Avatar (401150), Breath of Eons (403631)
+                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Dancing Rune Weapon (49028), Berserk (50334), Pillar of Frost (51271), Feral Spirit (51533), Vampiric Blood (55233), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Revival (115310), Shadow Blades (121471), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Coordinated Assault (360952), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Invoke Niuzao, the Black Ox (395267), Avatar (401150), Breath of Eons (403631)
 #2 (id=868651)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
                    Affected Spells (Category): Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
@@ -11701,7 +11705,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=891148)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Dancing Rune Weapon (49028), Berserk (50334), Pillar of Frost (51271), Feral Spirit (51533), Vampiric Blood (55233), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Revival (115310), Shadow Blades (121471), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Coordinated Assault (360952), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Restoral (388615), Sentinel (389539), Dark Ascension (391109), Invoke Niuzao, the Black Ox (395267), Avatar (401150), Breath of Eons (403631)
+                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Dancing Rune Weapon (49028), Berserk (50334), Pillar of Frost (51271), Feral Spirit (51533), Vampiric Blood (55233), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Revival (115310), Shadow Blades (121471), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Coordinated Assault (360952), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Invoke Niuzao, the Black Ox (395267), Avatar (401150), Breath of Eons (403631)
 #2 (id=891149)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
                    Affected Spells (Category): Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
@@ -12971,7 +12975,7 @@ Description      : $@spelldesc373129
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=4, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(30, 60)]
+                 : Effect#2 [op=set, values=(1, 2)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12989,14 +12993,14 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=998222)   : None (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Power Word: Radiance has a $s1% chance to cause your next Penance to be free and fire $s2 extra bolts.
+Description      : Power Word: Radiance causes your next Penance to fire $s2 additional $Lbolt:bolts;, stacking up to $373183u times.
 
 Name             : Harsh Discipline (id=373183) [Spell Family (6)] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Stacks           : 1 initial, 2 maximum
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ .....x..   ........ ........ ........ ........   
                  : Cast Ended
@@ -13011,15 +13015,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=998225)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
-                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Penance (47758), Dark Reprimand (373129)
                    Family Flags: 71
-#2 (id=998226)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Penance (47540), Dark Reprimand (400169)
-                   Family Flags: 55
 Description      : $@spelldesc373180
-Tooltip          : Penance is free and fires $373180s2 additional bolts.
+Tooltip          : Penance fires additional bolts.
 
 Name             : Mind Devourer (id=373202) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=7, col=3, max_rank=2, req_points=8]
@@ -14269,6 +14269,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Duration         : Aura (infinite)
+Labels           : 2974: Discipline Priest (137032 effect#28)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
@@ -14770,7 +14771,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Duration         : 20 seconds
-Stacks           : 7 maximum
+Stacks           : 8 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
@@ -14798,7 +14799,7 @@ Tooltip          : The damage of your next Smite is increased by $w1%, or the ab
 
 Name             : Expiation (id=390832) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=set, values=(3, 6)]
 Class            : Priest
 School           : Physical
@@ -16497,7 +16498,7 @@ GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 1230
 Category Cooldown: 9 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Shadow Covenant (322105 effect#5), The Penitent One (336009 effect#2), Harsh Discipline (373183 effect#2)
+Affecting spells : Spirit Shell (109964 effect#2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Shadow Covenant (322105 effect#5), The Penitent One (336009 effect#2)
 Family Flags     : 55
 Attributes       : ........ ........ x....... .....x..   ..x....x ..x...x. ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17395,7 +17396,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1095893)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.57500 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc421453
 
 Name             : Ultimate Penitence (id=421544) [Spell Family (6)] 
@@ -17417,7 +17418,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1095896)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.06250 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.30000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(25)
 Description      : $@spelldesc421453
 
 Name             : Overloaded with Light (id=421557) [Spell Family (6), Passive] 
@@ -17609,7 +17610,7 @@ Effects          :
 #2 (id=1099516)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1099544)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Shadow Word: Death triggers $s1 additional $Ltime:times; at $s3% effectiveness. Triggers again $s2 additional $Ltime:times; at $s3% effectiveness if Deathspeaker is active or your target is below $?A364675[${$32379s2+$364675s1}][$32379s2]% health.
 
 Name             : Priest Shadow 10.2 Class Set 4pc (id=422904) [Spell Family (6), Passive, Hidden] 

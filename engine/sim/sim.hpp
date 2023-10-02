@@ -515,6 +515,10 @@ struct sim_t : private sc_thread_t
     double undulating_sporecloak_uptime = 0.9;
     // Interval between checking undulating_sporecloak_uptime
     timespan_t undulating_sporecloak_update_interval = 5_s;
+    // Uptime of the mastery buff (Dreaming Trance) of Dreamtender's Charm (>70% HP), does not include lockout time
+    double dreamtenders_charm_uptime = 0.9;
+    // Interval between checking blue_silken_lining_uptime
+    timespan_t dreamtenders_charm_update_interval = 5_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs

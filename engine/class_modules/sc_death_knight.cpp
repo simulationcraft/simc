@@ -1632,7 +1632,7 @@ timespan_t runes_t::time_to_regen( unsigned n_runes )
   } );
 
   // Number of unsatisfied runes
-  int n_unsatisfied = n_runes - as<int>( dk -> resources.current[ RESOURCE_RUNE ] );
+  int n_unsatisfied = n_runes - as<unsigned int>( dk -> resources.current[ RESOURCE_RUNE ] );
 
   // If we can satisfy the remaining unsatisfied runes with regenerating runes, return the N - 1th
   // remaining regeneration time
@@ -1807,10 +1807,16 @@ struct death_knight_pet_t : public pet_t
   util::string_view pet_name;
   action_t* proxy_action;
 
-  death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
-    pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
-    precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false ), guardian( guardian ), pet_name( name ), proxy_action( nullptr )
+  death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true,
+                      bool dynamic = true )
+    : pet_t( player->sim, player, name, guardian, dynamic ),
+      use_auto_attack( auto_attack ),
+      precombat_spawn( false ),
+      affected_by_commander_of_the_dead( false ),
+      guardian( guardian ),
+      precombat_spawn_adjust( 0_s ),
+      pet_name( name ),
+      proxy_action( nullptr )
   {
     if ( auto_attack )
     {
@@ -2655,7 +2661,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
   }
 
-  void create_actions()
+  void create_actions() override
   {
     death_knight_pet_t::create_actions();
     gargoyle_strike = new gargoyle_strike_t( this, proxy_action );
@@ -2673,7 +2679,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     }
   }
 
-  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ ) override
   {
     reschedule_gargoyle();
   }
@@ -2746,7 +2752,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 1.0;
   }
 
-  void create_actions()
+  void create_actions() override
   {
     death_knight_pet_t::create_actions();
     skulker_shot = new skulker_shot_t( this );
@@ -2770,7 +2776,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     reschedule_skulker();
   }
 
-  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ ) override
   {
     reschedule_skulker();
   }
@@ -3861,7 +3867,7 @@ struct virulent_eruption_t final : public death_knight_disease_t
 
 struct virulent_plague_t final : public death_knight_disease_t
 {
-  virulent_plague_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
+  virulent_plague_t( util::string_view name, death_knight_t* p) :
     death_knight_disease_t( name, p, p -> spell.virulent_plague ),
       ff( get_action<frost_fever_t>( "frost_fever", p, true ) ),
       bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
@@ -4668,7 +4674,6 @@ struct bonestorm_heal_t : public death_knight_heal_t
 
 struct bonestorm_damage_t final : public death_knight_spell_t
 {
-  int heal_count;
 
   bonestorm_damage_t( util::string_view name, death_knight_t* p ) :
     death_knight_spell_t( name, p, p -> talent.blood.bonestorm -> effectN( 3 ).trigger() ),
@@ -4700,7 +4705,8 @@ struct bonestorm_damage_t final : public death_knight_spell_t
     }
   }
 private:
-    propagate_const<action_t*> heal;
+  propagate_const<action_t*> heal;
+  int heal_count;
 };
 
 struct bonestorm_t final : public death_knight_spell_t
@@ -4941,6 +4947,9 @@ struct chill_streak_damage_t final : public death_knight_spell_t
   {
     background = proc = true;
     max_hits = p -> talent.frost.chill_streak -> effectN( 1 ).base_value();
+    // Contained in this spells duration, cant convert from timespan_t to double
+    // Manually setting for now to accurately scale the duration of the T31 2pc. 
+    travel_delay = 0.3; 
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) )
     {
       max_hits += p -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value();
@@ -4966,7 +4975,7 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
     hit_count++;
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && state -> target -> is_enemy() ) 
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) ) 
     {
       p() -> buffs.chilling_rage->trigger();
     }
@@ -5169,7 +5178,7 @@ struct unholy_pact_buff_t final : public buff_t
     } );
     // Unholy pact ticks twice on buff expiration, hence the following override
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/675
-    set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
+    set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
     {
       if ( !new_ )
       {
@@ -5202,7 +5211,7 @@ struct dark_transformation_buff_t final : public buff_t
     cooldown -> duration = 0_ms; // Handled by the player ability
     if( p -> talent.unholy.ghoulish_frenzy.ok() )
     {
-      set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
+      set_stack_change_callback( [ p ] ( buff_t*, int, int new_ ) 
       {
         if ( new_ )
         {
@@ -5867,12 +5876,10 @@ struct death_strike_offhand_t final : public death_knight_melee_attack_t
 
 struct death_strike_t final : public death_knight_melee_attack_t
 {
-  double improved_death_strike_reduction;
-
   death_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "death_strike", p, p -> talent.death_strike ),
-    oh_attack( nullptr ),
     heal( get_action<death_strike_heal_t>( "death_strike_heal", p ) ),
+    oh_attack( nullptr ),
     improved_death_strike_reduction( 0 )
   {
     parse_options( options_str );
@@ -5970,9 +5977,11 @@ struct death_strike_t final : public death_knight_melee_attack_t
     p() -> buffs.hemostasis -> expire();
     p() -> buffs.heartrend -> expire();
   }
-  private:
-      propagate_const<action_t*> heal;
-      propagate_const<action_t*> oh_attack;
+
+private:
+  propagate_const<action_t*> heal;
+  propagate_const<action_t*> oh_attack;
+  double improved_death_strike_reduction;
 };
 
 // Empower Rune Weapon ======================================================
@@ -6478,7 +6487,7 @@ struct frost_strike_t final : public death_knight_melee_attack_t
   bool sb;
   frost_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "frost_strike", p, p -> talent.frost.frost_strike ),
-    mh( nullptr ), oh( nullptr ), sb( false ), mh_sb( nullptr ), oh_sb( nullptr )
+    mh( nullptr ), oh( nullptr ), mh_sb( nullptr ), oh_sb( nullptr ), sb( false )
   {
     parse_options( options_str );
     may_crit = false;
@@ -6653,8 +6662,6 @@ struct leeching_strike_t final : public death_knight_heal_t
     target = p;
     base_pct_heal = data().effectN( 1 ).percent();
   }
-private:
-    propagate_const<action_t*> damage;
 };
 
 struct heart_strike_t final : public death_knight_melee_attack_t
@@ -7536,7 +7543,7 @@ struct remorseless_winter_buff_t final : public buff_t
       damage -> execute();
     } );
     set_partial_tick( true );
-    set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
+    set_stack_change_callback( [ p ] ( buff_t*, int, int new_ ) 
     {
       if ( !new_ )
       {
@@ -7970,13 +7977,6 @@ struct tombstone_t final : public death_knight_spell_t
       }
     }
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
-    {
-      double chance = 0.10 * charges; // Seems to be roughly a 10% chance per bone consumed.  Needs verification
-      if ( rng().roll( chance ) )
-        p() -> buffs.ashen_decay_2pc -> trigger();
-    }
-
     if ( charges > 0 && p() -> talent.blood.shattering_bone.ok() )
     {
       // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
@@ -7999,8 +7999,8 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 
   void execute() override
   {
-    death_knight_melee_attack_t::execute();
     p() -> buffs.unholy_assault -> trigger();
+    death_knight_melee_attack_t::execute();
   }
 
   void impact( action_state_t* s) override
@@ -8774,11 +8774,30 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that only trigger if resources were spent
     if ( actual_amount > 0 )
     {
+      auto final_spend = actual_amount;
+      // If we are using actual amount for things, and the triggering action was death strike, the talent
+      // improved death strike is not counted toward actual spent
+      if ( action->id == 49998 )
+      {
+        if ( specialization() == DEATH_KNIGHT_BLOOD )
+          final_spend -= talent.improved_death_strike -> effectN( 5 ).resource( RESOURCE_RUNIC_POWER );
+        else
+          final_spend -= talent.improved_death_strike -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
+      }
+
       if ( talent.blood.red_thirst.ok() )
       {
         timespan_t sec = talent.blood.red_thirst -> effectN( 1 ).time_value() *
-          actual_amount / talent.blood.red_thirst -> effectN( 2 ).base_value();
+          final_spend / talent.blood.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
+      }
+
+      // T31 Blood
+      if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
+      {
+        double chance = final_spend / 100;
+        if ( rng().roll( chance ) )
+          buffs.ashen_decay_2pc -> trigger();
       }
     }
   }
@@ -10666,7 +10685,8 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 {
-  if ( ( specialization() == DEATH_KNIGHT_BLOOD && ! buffs.bone_shield -> check() || ! cooldown.bone_shield_icd -> up() || state -> action -> special ) )
+  if ( ( ( specialization() == DEATH_KNIGHT_BLOOD && !buffs.bone_shield->check() ) || !cooldown.bone_shield_icd->up() ||
+         state->action->special ) )
   {
     return;
   }
@@ -10703,14 +10723,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     {
       dk -> bone_shield_charges_consumed = 0;
       buffs.vigorous_lifeblood_4pc -> trigger();
-    }
-  }
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
-  {
-    if( rng().roll( 0.10 ) ) // Very very rough testing, to be 10% proc chance
-    {
-      dk -> buffs.ashen_decay_2pc -> trigger();
     }
   }
 }
@@ -10950,8 +10962,6 @@ double death_knight_t::composite_dodge() const
 double death_knight_t::composite_player_target_multiplier( player_t* target, school_e s ) const
 {
   double m = player_t::composite_player_target_multiplier( target, s );
-
-  const death_knight_td_t* td = get_target_data( target );
 
   return m;
 }

@@ -628,6 +628,10 @@ public:
     // Option whether or not to start with higher than 0 Insanity based on talents
     // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
     bool init_insanity = true;
+
+    // Whether or not the echo SW:D casts from the T31 2-set triggered
+    // nerfed versions of Inescapable Torment.
+    bool t31_ist_echo_nerf = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -709,7 +713,7 @@ private:
 public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
-  void trigger_inescapable_torment( player_t* target );
+  void trigger_inescapable_torment( player_t* target, bool echo = false, double mod = 1.0 );
   void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
   void spawn_idol_of_cthun( action_state_t* );
@@ -820,8 +824,8 @@ public:
   // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
-  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
-  //  value_type = optional, default USE_DATA, where the value comes from.
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore
+  //  parameters value_type = optional, default USE_DATA, where the value comes from.
   //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
   //  spell = optional list of spell with redirect effects that modify the effects on the buff
   //

@@ -77,6 +77,10 @@ void warlock_pet_t::create_buffs()
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
+  buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny )
+                               ->set_default_value( o()->talents.reign_of_tyranny->effectN( 2 ).percent() )
+                               ->set_max_stack( 99 );
+
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
                              ->set_default_value_from_effect( 1 );
 
@@ -1398,7 +1402,7 @@ void wild_imp_pet_t::demise()
 
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
 
-      if ( imploded && buffs.imp_gang_boss->check() )
+      if ( imploded && buffs.imp_gang_boss->check() && !o()->min_version_check( VERSION_10_2_0 ) )
       {
         make_event( sim, 0_ms, [ this ] { this->o()->warlock_pet_list.wild_imps.spawn(); } );
       }
@@ -1691,7 +1695,7 @@ void demonic_tyrant_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->talents.reign_of_tyranny->ok() )
+  if ( o()->talents.reign_of_tyranny->ok() && !o()->min_version_check( VERSION_10_2_0 ) )
   {
     buffs.demonic_servitude->trigger( 1, ( ( o()->min_version_check( VERSION_10_2_0 ) ? 0 : 1 ) + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() ); // 2023-09-10: On 10.2 PTR, the stack cap is interfering with the previous 1 "permanent" stack value
   }
@@ -1707,6 +1711,8 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 
     if ( !o()->min_version_check( VERSION_10_2_0 ) )
       m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
+
+    m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
   }
 
   return m;
@@ -1808,6 +1814,48 @@ double pit_lord_t::composite_melee_speed() const
 
 /// Pit Lord End
 
+/// Doomfiend Begin
+
+doomfiend_t::doomfiend_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_DOOMFIEND, name != "doomfiend" )
+{
+  action_list_str = "doom_bolt_volley";
+
+  resource_regeneration = regen_type::DISABLED;
+}
+
+struct doom_bolt_volley_t : public warlock_pet_spell_t
+{
+  doom_bolt_volley_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Doom Bolt Volley", p, p->o()->tier.doom_bolt_volley )
+  {  }
+
+  void consume_resource() override
+  {
+    warlock_pet_spell_t::consume_resource();
+
+    if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
+    {
+      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+    }
+  }
+};
+
+action_t* doomfiend_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "doom_bolt_volley" )
+    return new doom_bolt_volley_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+void doomfiend_t::init_base_stats()
+{
+  warlock_pet_t::init_base_stats();
+
+  resources.base[ RESOURCE_ENERGY ] = 100;
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
+}
+
+/// Doomfiend End
 namespace random_demons
 {
 /// Shivarra Begin
@@ -2458,7 +2506,7 @@ struct eye_beam_t : public warlock_pet_spell_t
     grim_reach = new grim_reach_t( p );
   }
 
-  double composite_target_multiplier( player_t* target ) const
+  double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
 

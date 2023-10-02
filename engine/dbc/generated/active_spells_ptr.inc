@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.2.0.51425
-static const std::array<active_class_spell_t, 285> __ptr_active_spells_data { {
+// Active class spells, wow build 10.2.0.51521
+static const std::array<active_class_spell_t, 286> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -256,6 +256,7 @@ static const std::array<active_class_spell_t, 285> __ptr_active_spells_data { {
   { 12,    0, 185245,      0, "Torment"                            },
   { 12,    0, 188501,      0, "Spectral Sight"                     },
   { 12,    0, 191427,      0, "Metamorphosis"                      },
+  { 12,    0, 204596,      0, "Sigil of Flame"                     },
   { 12,    0, 258920,      0, "Immolation Aura"                    },
   { 12,    0, 344859,      0, "Demon's Bite"                       },
   { 12,    0, 344862,      0, "Chaos Strike"                       },
@@ -287,7 +288,7 @@ static const std::array<active_class_spell_t, 285> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.2.0.51425
+// Pet active spells, wow build 10.2.0.51521
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

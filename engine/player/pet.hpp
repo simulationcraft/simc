@@ -45,14 +45,13 @@ struct pet_t : public player_t
     double attack_power_from_sp = 0.0;
     double spell_power_from_ap = 0.0;
     double spell_power_from_sp = 0.0;
-    double composite_melee_haste = 0.0;
-    double composite_melee_speed = 0.0;
-    double composite_spell_haste = 0.0;
-    double composite_spell_speed = 0.0;
+    double composite_melee_haste = 1.0;
+    double composite_melee_speed = 1.0;
+    double composite_spell_haste = 1.0;
+    double composite_spell_speed = 1.0;
     double composite_melee_crit = 0.0;
     double composite_spell_crit = 0.0;
   } current_pet_stats;
-
 
 public:
   pet_t( sim_t* sim, player_t* owner, util::string_view name, bool guardian = false, bool dynamic = false );
@@ -75,7 +74,7 @@ public:
   // persistent pets.
   virtual void adjust_duration( timespan_t adjustment );
 
-  void update_stats();
+  virtual void update_stats();
 
   const char* name() const override { return full_name_str.c_str(); }
   const player_t* get_owner_or_self() const override

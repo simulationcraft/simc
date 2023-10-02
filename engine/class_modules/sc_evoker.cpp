@@ -1252,8 +1252,8 @@ struct empowered_release_t : public empowered_base_t<BASE>
                    !p()->get_target_data( t )->buffs.shifting_sands->check();
           },
           [ this ]( player_t* t ) { return !p()->get_target_data( t )->buffs.shifting_sands->check(); },
-          [ this ]( player_t* t ) { return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK; },
-          [ this ]( player_t* t ) { return true; } };
+          []( player_t* t ) { return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK; },
+          []( player_t* ) { return true; } };
 
       for ( auto& fn : lambdas )
       {
@@ -1672,11 +1672,11 @@ struct emerald_blossom_t : public essence_heal_t
 
     heal->execute_on_target( s->target );
 
-    auto tl_size = heal->target_list().size();
+    auto tl_size = as<int>(heal->target_list().size());
     if ( heal->aoe > tl_size )
     {
       tl_size = heal->aoe - tl_size;
-      for ( size_t i = 0; i < tl_size; i++ )
+      for ( int i = 0; i < tl_size; i++ )
       {
         virtual_heal->execute_on_target( s->target );
       }
@@ -1965,9 +1965,9 @@ public:
 
   ebon_might_t( evoker_t* p, std::string_view name, std::string_view options_str, timespan_t ebon )
     : evoker_augment_t( name, p, p->talent.ebon_might, options_str ),
+      ebon_time( ebon ),
       secondary_list(),
-      tertiary_list(),
-      ebon_time( ebon )
+      tertiary_list()
   {
     // Add a target so you always hit yourself.
     aoe += 1;
@@ -2945,9 +2945,6 @@ struct living_flame_t : public evoker_spell_t
   {
     evoker_spell_t::execute();
 
-    
-    auto cr = current_resource();
-
     // Single child, update children to parent action on each precombat execute
 
     if ( is_precombat )
@@ -3548,7 +3545,7 @@ public:
     return m;
   }
 
-  double composite_player_critical_multiplier( const action_state_t* state ) const override
+  double composite_player_critical_multiplier( const action_state_t* ) const override
   {
     return 1.0;
   }
@@ -3778,7 +3775,7 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     return source;
   }
 
-  void execute( action_t* a, action_state_t* s ) override
+  void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_sleeping() )
       return;
@@ -4171,11 +4168,11 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       buffs.unbound_surge->set_period( 3_s );
       if ( auto* _target = dynamic_cast<evoker_t*>( target ) )
       {
-        buffs.unbound_surge->set_tick_callback( [ _target, evoker ]( buff_t* b, int s, timespan_t t ) {
+        buffs.unbound_surge->set_tick_callback( [ _target, evoker ]( buff_t* b, int /*current_tick*/, timespan_t /*tick_time*/ ) {
           {
             if ( b->remains() > 0_s && !_target->buff.dragonrage->check() &&
                  _target->rng().roll( evoker->option.naszuro_bounce_chance ) )
-              make_event( _target->sim, [ _target, evoker, b, t ] {
+              make_event( _target->sim, [ _target, evoker, b ] {
                 evoker->bounce_naszuro( _target, b->remains() );
                 b->expire();
               } );
@@ -4184,10 +4181,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       }
       else
       {
-        buffs.unbound_surge->set_tick_callback( [ target, evoker ]( buff_t* b, int s, timespan_t t ) {
+        buffs.unbound_surge->set_tick_callback( [ target, evoker ]( buff_t* b, int /*current_tick*/, timespan_t /*tick_time*/ ) {
           {
             if ( b->remains() > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
-              make_event( target->sim, [ target, evoker, b, t ] {
+              make_event( target->sim, [ target, evoker, b ] {
                 evoker->bounce_naszuro( target, b->remains() );
                 b->expire();
               } );
@@ -4290,8 +4287,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       }
       else
       {
-        buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
-          if ( new_ )
+        buffs.prescience->set_stack_change_callback( [ target, evoker ]( buff_t*, int /*old_stack*/, int new_stack ) {
+          if ( new_stack )
           {
             evoker->allies_with_my_prescience.push_back( target );
           }
@@ -4516,8 +4513,8 @@ void evoker_t::init_action_list()
 
 void evoker_t::init_finished()
 {
-  auto CT = [ this ]( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::CLASS, n ); };
-  auto ST = [ this ]( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::SPECIALIZATION, n ); };
+  auto CT = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::CLASS, n ); };
+  auto ST = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::SPECIALIZATION, n ); };
 
   for ( auto p : sim->player_no_pet_list )
   {
@@ -5674,7 +5671,7 @@ public:
   }
 
 private:
-  evoker_t& p;
+  [[maybe_unused]] evoker_t& p;
 };
 
 // EVOKER MODULE INTERFACE ==================================================

@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51421 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -475,14 +475,14 @@ Mechanic         : Bleed
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effects: #1, #2, #3), Replicating Shadows (382506 effect#3), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3), Sudden Demise (423136 effect#1), Goremaw's Bite (426593 effect#2)
 Family Flags     : 20, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
-                 : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ .....x.. ........ ........ 
                  : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... x....... 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), No Helpful Threat (131), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Do Not Chain To Crowd-Controlled Targets (200), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Chain by Most Hit (440)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Do Not Chain To Crowd-Controlled Targets (200), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Chain by Most Hit (440)
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23856 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
@@ -820,7 +820,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Tree of Life (5420 effects: #7, #8), Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6, #8), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #4, #5, #22), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Heart of the Wild (319454 effects: #1, #2, #13), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Umbral Embrace (393763 effect#2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Friend of the Fae (394083 effects: #1, #2), Gathering Starstuff (394412 effect#1), Circle of Life and Death (400320 effects: #1, #3), Wild Surges (406890 effects: #1, #2), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effects: #1, #2), Dreamstate (424248 effects: #1, #2, #3)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #7, #8), Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6, #8), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #4, #5, #22), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Heart of the Wild (319454 effects: #1, #2, #13), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Mastery: Astral Invocation (393014 effects: #3, #4), Umbral Embrace (393763 effect#2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Friend of the Fae (394083 effects: #1, #2), Gathering Starstuff (394412 effect#1), Circle of Life and Death (400320 effects: #1, #3), Wild Surges (406890 effects: #1, #2), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effects: #1, #2), Dreamstate (424248 effects: #1, #2, #3), Liveliness (426702 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1645,7 +1645,7 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .x...
 Effects          :
 #1 (id=20791)    : Apply Aura (6) | Modify Attacker Spell Hit Chance (186)
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
-#2 (id=20792)    : Trigger Spell (64): (35729)
+#2 (id=20792)    : Trigger Spell (64): Cloak of Shadows
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 35729 | Target: Self (1)
 #3 (id=1078289)  : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1776,7 +1776,7 @@ Cooldown         : 180 seconds
 Category         : 1333
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Berserk (343223 effect#1)
+Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Berserk (343223 effect#1), Orbital Strike (390378 effects: #2, #3)
 Family Flags     : 43, 48
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
@@ -1846,6 +1846,31 @@ Effects          :
 #1 (id=25764)    : Apply Aura (6) | Proc Trigger Spell (42): Fatal Flourish
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 35546 | Target: Self (1)
 Description      : Your off-hand attacks have a $s1% chance to generate $35546s1 Energy.
+
+Name             : Cloak of Shadows (id=35729) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 10
+Duration         : 1 seconds
+Triggered by     : Cloak of Shadows (31224)
+Family Flags     : 30
+Attributes       : ....x..x x....... ..x..... ........   .....x.. ..x....x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Immunity Purges Effect (47), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=25950)    : Apply Aura (6) | School Immunity (39)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+#2 (id=1078297)  : Apply Aura (6) | School Immunity (39)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
+                   Affected School(s): Physical
 
 Name             : Shadowstep (id=36554) [Spell Family (8)] 
 Class            : Rogue
@@ -1988,7 +2013,7 @@ Attributes       : ....x... ........ x....... .....x.x   ........ .xx..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Not an Action (92), PvP Enabling (96), Requires Main-Hand Weapon (106), Suppress Caster Procs (112), Suppress Target Procs (113), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=44062)    : Apply Aura (6) | Periodic Dummy (226): every 0.4 seconds
+#1 (id=44062)    : Apply Aura (6) | Periodic Dummy (226): every 0.3 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #2 (id=44063)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -3012,7 +3037,7 @@ Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ .....
 Effects          :
 #1 (id=133652)   : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Incarnation: Tree of Life (33891), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560)
+                   Affected Spells: Incarnation: Tree of Life (33891), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Incarnation: Chosen of Elune (390414)
                    Family Flags: 43
 Description      : Activates a superior shapeshifting form appropriate to your specialization for $d.  You may freely shapeshift in and out of this form for its duration.
 Tooltip          : Incarnation: Tree of Life activated.
@@ -4193,7 +4218,7 @@ Spell Level      : 12
 Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Opportunity (195627 effects: #1, #2, #3), Ghostly Strike (196937 effect#3), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Deadshot (272940 effect#1), Master Assassin's Mark (340094 effect#1), Greenskin's Wickers (340573 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Greenskin's Wickers (394131 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Opportunity (195627 effects: #1, #2, #3), Ghostly Strike (196937 effect#3), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Deadshot (272940 effect#1), Master Assassin's Mark (340094 effect#1), Greenskin's Wickers (340573 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Greenskin's Wickers (394131 effect#1), Precision Shot (428377 effect#1)
 Family Flags     : 54, 101
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4211,10 +4236,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
-Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing ${$s1*$<CAP>/$AP} Physical damage and reducing movement speed by $s3% for $d.
+#4 (id=1108646)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
+Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing ${$s1*$<CAP>/$AP} Physical damage$?a428377[, also reducing movement speed by $s3% and reducing the target's damage done to you by $s4% for $d.][ and reducing movement speed by $s3% for $d.]
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
-Tooltip          : Movement speed reduced by $s3%.
+Tooltip          : Movement speed reduced by $s3%$?a428377[ and dealing $s4% less damage to the Rogue.][.]
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Poison Knives (id=192376) [Spell Family (8), Passive] 
@@ -4796,8 +4824,8 @@ Labels           : 2943: Deeper Stratagem (193531 effect#6), Secret Stratagem (3
 Internal Cooldown: 0.45 seconds
 Stacks           : 10 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x... ..x..... ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee, Generic Heal
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Affecting spells : Improved Shadow Techniques (394023 effect#1)
 Family Flags     : 107
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4806,14 +4834,14 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Is Ability (4), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=289127)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #2 (id=368528)   : Energize Power (30)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
 #3 (id=1105230)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc196912
@@ -4841,9 +4869,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289128)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your auto attacks have a chance to generate $196911s2 Energy and store $m1 combo $Lpoint:points;, up to $196911u.
+#2 (id=1109358)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 28 | Scaled Value: 28 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your auto attacks have a $s2% chance to generate $196911s2 Energy and store $m1 combo $Lpoint:points;, up to $196911u.
 
-Abilities that generate combo points can expend any stored to generate additional combo points, up to your maximum.
+Attacks that generate combo points can expend those stored to generate additional combo points, up to your maximum.
 
 Name             : Hit and Run (id=196922) [Spell Family (8), Passive] 
 Talent Entry     : Outlaw [tree=spec, row=3, col=5, max_rank=1, req_points=0]
@@ -5390,7 +5420,7 @@ Effects          :
 Description      : You heal $s1% of your maximum health every $158188t2 sec while Stealth or Shadow Dance is active.
 
 Name             : Exsanguinate (id=200806) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Assassination [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5409,12 +5439,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295690)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1099018)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1099019)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While above $s1 Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While above $s1% of maximum Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.
 
 Name             : Blunderbuss (id=202848) [Spell Family (8)] 
 Class            : Rogue
@@ -6356,7 +6386,6 @@ Description      : $@spelldesc196861
 Tooltip          : Damage done reduced by $s1%.
 
 Name             : Blinding Powder (id=256165) [Spell Family (8), Passive] 
-Hotfixed         : Description
 Talent Entry     : Outlaw [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -6375,7 +6404,6 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Blind (2094)
                    Family Flags: 24
-Hotfixed         : Sub Type (107 -> 108), Base Value (-30000 -> -25)
 #2 (id=478577)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Blind (2094)
@@ -7797,7 +7825,7 @@ Description      : Focus intently, then release a Shuriken Storm every sec for t
 Tooltip          : Releasing a Shuriken Storm every sec.
 
 Name             : Night Terrors (id=277953) [Spell Family (8), Passive] 
-Talent Entry     : Subtlety [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Subtlety [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -9370,17 +9398,17 @@ Spell Level      : 17
 Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 45 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effects: #1, #2), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Improved Between the Eyes (235484 effect#1), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effects: #1, #2), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Improved Between the Eyes (235484 effect#1), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Precision Shot (428377 effect#1)
 Family Flags     : 54, 111
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ....x...   ........ ........ .......x x....... 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Aura Is Buff (140), Ignore Combat Timer (156), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Aura Is Buff (140), Ignore Combat Timer (156), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=799020)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.26000 | PvP Coefficient: 1.12000 | Target: Enemy (6)
@@ -14685,7 +14713,7 @@ Attributes       : ........ ........ ..x..... .......x   .....x.. ........ .....
                  : Do Not Sheath (18), No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1019223)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 2865 (Label) | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 2865 (Label) | Target: Self (1)
                    Affected Spells (Label): Garrote (703), Rupture (1943)
 #2 (id=1019224)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Target Range (35)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 35 | Misc Value 2: 2865 (Label) | Target: Self (1)
@@ -14709,7 +14737,7 @@ Attributes       : ........ ........ ........ .......x   .....x.. ........ .....
                  : No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1019232)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 2865 (Label) | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 2865 (Label) | Target: Self (1)
                    Affected Spells (Label): Garrote (703), Rupture (1943)
 #2 (id=1019233)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Target Range (35)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 35 | Misc Value 2: 2865 (Label) | Target: Self (1)
@@ -16999,7 +17027,7 @@ Effects          :
                    Affected Spells: Garrote (703), Rupture (1943), Crimson Tempest (121411), Internal Bleeding (154953), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Serrated Bone Spike (385424), Rupture (394031), Serrated Bone Spike (394036), Deathmark (394331)
                    Family Flags: 8, 20, 59, 81, 95, 115, 126
 #2 (id=1098914)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.25000 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.66667 | Target: Self (1)
 #3 (id=1098992)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.28571 | Target: Self (1)
 Description      : Bleed damage inrcreased by $s1%.
@@ -17207,7 +17235,7 @@ Tooltip          : Absorbing all damage.
 Variables        : $dmg=${$57841s2+$57842s1}
 
 Name             : Exsanguinate (id=425748) [Spell Family (8)] 
-Talent Entry     : Assassination [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Assassination [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -17274,7 +17302,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1105137)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Increases healing received by $s1%.
 
 
@@ -17458,7 +17486,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1105229)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Symbols of Death is active, your Shadow Techniques triggers after $m1 fewer $Lattack:attacks;, stores $m2 additional combo $Lpoint:points;, and finishing moves can expend stored combo points.
+#3 (id=1109359)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While Symbols of Death is active, your Shadow Techniques triggers $s3% more frequently, stores $m2 additional combo $Lpoint:points;, and finishing moves can use those stored when there are enough to refresh full combo points.
 
 Name             : Perforated Veins (id=426602) [Spell Family (8), Hidden] 
 Class            : Rogue
@@ -17502,5 +17532,90 @@ Effects          :
 #1 (id=1105254)  : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc378996
+
+Name             : Precision Shot (id=428377) [Spell Family (8), Passive] 
+Talent Entry     : Outlaw [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 12
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1108645)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+                   Affected Spells: Pistol Shot (185763), Between the Eyes (315341)
+                   Family Flags: 101, 111
+Description      : Between the Eyes and Pistol Shot have $s1 yd increased range, and Pistol Shot reduces the the target's damage done to you by $185763s4%.
+
+Name             : Terrifying Pace (id=428387) [Spell Family (8), Passive] 
+Talent Entry     : Subtlety [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1108661)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Shuriken Storm increases your movement speed by $428389s1% for $428389d when striking $s1 or more enemies.
+
+Name             : Terrifying Pace (id=428389) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : 3 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268)
+Effects          :
+#1 (id=1108669)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc428387
+Tooltip          : Movement speed increased by $w1%.
+
+Name             : Exhilarating Execution (id=428486) [Spell Family (8), Passive] 
+Talent Entry     : Subtlety [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ....x.x. x...x... x.x..... ........   ........ ........ ........ ........   
+                 : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ .......x   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), Can Proc From Procs (122), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1109351)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1109352)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your finishing moves heal you for $s1% of damage dealt. At full health gain shielding instead, absorbing up to $s2% of your maximum health.
 
 

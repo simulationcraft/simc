@@ -12,7 +12,7 @@ specList = ['blood', 'frost', 'unholy',  # Death Knight
             'devastation', # Evoker
             'shadow', 'holy', 'discipline', # Priest
             'retribution', 'protection', # Paladin
-            'assassination', 'outlaw', 'subtlety', 'assassination_df', 'outlaw_df', 'subtlety_df', # Rogue
+            'assassination', 'outlaw', 'subtlety', 'assassination_ptr', 'outlaw_ptr', 'subtlety_ptr', # Rogue
             'havoc', 'vengeance', # Demon Hunter
             'protection', 'fury', 'arms', # Warrior
            ]
