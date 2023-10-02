@@ -9808,7 +9808,8 @@ void rogue_t::create_buffs()
   buffs.sprint = make_buff( this, "sprint", spell.sprint )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->add_invalidate( CACHE_RUN_SPEED );
+    ->add_invalidate( CACHE_RUN_SPEED )
+    ->apply_affecting_aura( talent.rogue.featherfoot );
 
   buffs.slice_and_dice = new buffs::slice_and_dice_t( this );
   buffs.stealth = new buffs::stealth_t( this );
