@@ -1470,6 +1470,7 @@ class SpellDataGenerator(DataGenerator):
             ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
             ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
             ( 52437,  0 ),          # Sudden Death (Fury buff)
+            ( 425534, 0 ),          # T31 prot Fervid Bite
         ),
 
         # Paladin:
