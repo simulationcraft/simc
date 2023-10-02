@@ -9883,7 +9883,6 @@ void rogue_t::create_buffs()
     ->set_affects_regen( true );
 
   buffs.grand_melee = make_buff<damage_buff_t>( this, "grand_melee", spec.grand_melee );
-  buffs.grand_melee->set_default_value_from_effect( 1, 0.05 ); // Damage% Modifier
 
   buffs.skull_and_crossbones = make_buff( this, "skull_and_crossbones", spec.skull_and_crossbones )
     ->set_default_value_from_effect( 1, 0.01 ); // Flat Modifier to Proc%
