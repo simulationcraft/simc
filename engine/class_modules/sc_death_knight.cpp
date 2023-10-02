@@ -7977,13 +7977,6 @@ struct tombstone_t final : public death_knight_spell_t
       }
     }
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
-    {
-      double chance = 0.10 * charges; // Seems to be roughly a 10% chance per bone consumed.  Needs verification
-      if ( rng().roll( chance ) )
-        p() -> buffs.ashen_decay_2pc -> trigger();
-    }
-
     if ( charges > 0 && p() -> talent.blood.shattering_bone.ok() )
     {
       // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
@@ -8781,11 +8774,30 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that only trigger if resources were spent
     if ( actual_amount > 0 )
     {
+      auto final_spend = actual_amount;
+      // If we are using actual amount for things, and the triggering action was death strike, the talent
+      // improved death strike is not counted toward actual spent
+      if ( action->id == 49998 )
+      {
+        if ( specialization() == DEATH_KNIGHT_BLOOD )
+          final_spend -= talent.improved_death_strike -> effectN( 5 ).resource( RESOURCE_RUNIC_POWER );
+        else
+          final_spend -= talent.improved_death_strike -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
+      }
+
       if ( talent.blood.red_thirst.ok() )
       {
         timespan_t sec = talent.blood.red_thirst -> effectN( 1 ).time_value() *
-          actual_amount / talent.blood.red_thirst -> effectN( 2 ).base_value();
+          final_spend / talent.blood.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
+      }
+
+      // T31 Blood
+      if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
+      {
+        double chance = final_spend / 100;
+        if ( rng().roll( chance ) )
+          buffs.ashen_decay_2pc -> trigger();
       }
     }
   }
@@ -10711,14 +10723,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     {
       dk -> bone_shield_charges_consumed = 0;
       buffs.vigorous_lifeblood_4pc -> trigger();
-    }
-  }
-
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) )
-  {
-    if( rng().roll( 0.10 ) ) // Very very rough testing, to be 10% proc chance
-    {
-      dk -> buffs.ashen_decay_2pc -> trigger();
     }
   }
 }

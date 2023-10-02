@@ -532,6 +532,7 @@ public:
     const spell_data_t* find_weakness_debuff;
     const spell_data_t* leeching_poison_buff;
     const spell_data_t* nightstalker_buff;
+    const spell_data_t* recuperator_heal;
     const spell_data_t* sting_like_a_bee_debuff;
     const spell_data_t* sepsis_buff;
     const spell_data_t* sepsis_expire_damage;
@@ -6902,7 +6903,7 @@ struct slice_and_dice_t : public rogue_buff_t
   struct recuperator_t : public actions::rogue_heal_t
   {
     recuperator_t( util::string_view name, rogue_t* p ) :
-      rogue_heal_t( name, p, p->spell.slice_and_dice )
+      rogue_heal_t( name, p, p->spell.recuperator_heal )
     {
       // This is treated as direct triggered by the tick callback on SnD to avoid duration/refresh desync
       direct_tick = not_a_proc = true;
@@ -6910,7 +6911,6 @@ struct slice_and_dice_t : public rogue_buff_t
       dot_duration = timespan_t::zero();
       base_pct_heal = p->talent.rogue.recuperator->effectN( 1 ).percent();
       base_dd_min = base_dd_max = 1; // HAX: Make it always heal as this procs things in-game even with 0 value
-      base_costs.fill( 0 );
     }
 
     result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -6925,14 +6925,14 @@ struct slice_and_dice_t : public rogue_buff_t
     rogue( p ),
     recuperator( nullptr )
   {
-    set_period( data().effectN( 2 ).period() ); // Not explicitly in spell data
     set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED );
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     add_invalidate( CACHE_ATTACK_SPEED );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-    // 2020-11-14- Recuperator triggers can proc periodic healing triggers even when 0 value
-    if ( p->talent.rogue.recuperator->ok() || p->bugs )
+    if ( p->talent.rogue.recuperator->ok() )
     {
+      set_period( p->spell.recuperator_heal->effectN( 1 ).period() );
       recuperator = p->get_background_action<recuperator_t>( "recuperator" );
     }
 
@@ -8195,9 +8195,11 @@ double rogue_t::composite_melee_speed() const
 {
   double h = player_t::composite_melee_speed();
 
-  if ( buffs.slice_and_dice->check() )
+  if ( buffs.slice_and_dice->up() )
   {
-    h *= 1.0 / ( 1.0 + buffs.slice_and_dice->check_value() + (talent.outlaw.swift_slasher->ok() ? ( ( 1.0 / composite_melee_haste() ) - 1.0 ) : 0.0) );
+    double buff_value = buffs.slice_and_dice->check_value() +
+      ( talent.outlaw.swift_slasher->ok() ? ( 1.0 / cache.attack_haste() ) - 1.0 : 0.0 );
+    h *= 1.0 / ( 1.0 + buff_value );
   }
 
   if ( buffs.adrenaline_rush->check() )
@@ -8213,25 +8215,14 @@ double rogue_t::composite_melee_speed() const
 double rogue_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
+  return h;
+}
 
-  if ( buffs.alacrity->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.alacrity->check_stack_value() );
-  }
+// rogue_t::composite_spell_haste ==========================================
 
-  // Talent version gives Mastery, not Haste
-  if ( !talent.subtlety.flagellation->ok() )
-  {
-    if ( buffs.flagellation->check() )
-    {
-      h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
-    }
-    if ( buffs.flagellation_persist->check() )
-    {
-      h *= 1.0 / ( 1.0 + buffs.flagellation_persist->check_stack_value() );
-    }
-  }
-
+double rogue_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
   return h;
 }
 
@@ -8267,33 +8258,6 @@ double rogue_t::composite_spell_crit_chance() const
   }
 
   return crit;
-}
-
-// rogue_t::composite_spell_haste ==========================================
-
-double rogue_t::composite_spell_haste() const
-{
-  double h = player_t::composite_spell_haste();
-
-  if ( buffs.alacrity->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.alacrity->check_stack_value() );
-  }
-
-  // Talent version gives Mastery, not Haste
-  if ( !talent.subtlety.flagellation->ok() )
-  {
-    if ( buffs.flagellation->check() )
-    {
-      h *= 1.0 / ( 1.0 + buffs.flagellation->check_stack_value() );
-    }
-    if ( buffs.flagellation_persist->check() )
-    {
-      h *= 1.0 / ( 1.0 + buffs.flagellation_persist->check_stack_value() );
-    }
-  }
-
-  return h;
 }
 
 // rogue_t::composite_damage_versatility ===================================
@@ -9453,6 +9417,7 @@ void rogue_t::init_spells()
   spell.find_weakness_debuff = talent.subtlety.find_weakness->ok() ? find_spell( 316220 ) : spell_data_t::not_found();
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
+  spell.recuperator_heal = talent.rogue.recuperator->ok() ? find_spell( 426605 ) : spell_data_t::not_found();
   spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
   spell.sepsis_expire_damage = talent.shared.sepsis->ok() ? find_spell( 394026 ) : spell_data_t::not_found();
   spell.shadowstep_buff = talent.shared.shadowstep->ok() ? find_spell( 36554 ) : spell_data_t::not_found();
@@ -9881,11 +9846,13 @@ void rogue_t::create_buffs()
 
   buffs.take_em_by_surprise = make_buff( this, "take_em_by_surprise", spec.take_em_by_surprise_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->add_invalidate( CACHE_HASTE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+    ->apply_affecting_aura( talent.outlaw.take_em_by_surprise ) // Label modifier on talent
     ->set_duration( timespan_t::from_seconds( talent.outlaw.take_em_by_surprise->effectN( 1 ).base_value() ) );
   buffs.take_em_by_surprise_aura = make_buff( this, "take_em_by_surprise_aura", spec.take_em_by_surprise_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->add_invalidate( CACHE_HASTE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+    ->apply_affecting_aura( talent.outlaw.take_em_by_surprise ) // Label modifier on talent
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
@@ -9945,8 +9912,8 @@ void rogue_t::create_buffs()
 
   buffs.alacrity = make_buff( this, "alacrity", spell.alacrity_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->set_chance( talent.rogue.alacrity->ok() )
-    ->add_invalidate( CACHE_HASTE );
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+    ->set_chance( talent.rogue.alacrity->ok() );
 
   buffs.cold_blood = make_buff<damage_buff_t>( this, "cold_blood", talent.rogue.cold_blood );
   buffs.cold_blood
