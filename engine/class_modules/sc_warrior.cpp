@@ -352,6 +352,9 @@ public:
     const spell_data_t* shield_wall;
     const spell_data_t* sudden_death_arms;
     const spell_data_t* sudden_death_fury;
+
+    // T31
+    const spell_data_t* furious_bloodthirst;
   } spell;
 
   // Mastery
@@ -3028,6 +3031,28 @@ struct bloodthirst_t : public warrior_attack_t
     p()->buff.fujiedas_fury->trigger( 1 );
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = warrior_attack_t::composite_da_multiplier( s );
+
+    if ( p()->tier_set.t31_fury_2pc->ok() && p()->buff.furious_bloodthirst->up() && s->chain_target == 0 )
+    {
+      da *= 1 + p()->spell.furious_bloodthirst->effectN( 1 ).percent();
+    }
+
+    return da;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = warrior_attack_t::composite_target_crit_chance( target );
+
+    if ( p()->tier_set.t31_fury_2pc->ok() && p()->buff.furious_bloodthirst->up() && target == p()->target )
+      c += p() -> spell.furious_bloodthirst -> effectN( 2 ).percent();
+
+    return c;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3168,11 +3193,39 @@ struct bloodbath_t : public warrior_attack_t
                           p()->gain.merciless_assault );
     }
 
+    if ( p()->tier_set.t31_fury_4pc->ok() && s->result == RESULT_CRIT && p()->cooldown.t31_fury_4pc_icd->up() )
+    {
+      p()->cooldown.odyns_fury->adjust( - timespan_t::from_millis( p()->find_spell( 422926 )->effectN( 3 ).base_value() ) );
+      p()->cooldown.t31_fury_4pc_icd->start();
+    }
+
     p()->buff.fujiedas_fury->trigger( 1 );
     if ( p()->legendary.cadence_of_fujieda->ok() )
     {
       p()->buff.cadence_of_fujieda->trigger( 1 );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = warrior_attack_t::composite_da_multiplier( s );
+
+    if ( p()->tier_set.t31_fury_2pc->ok() && p()->buff.furious_bloodthirst->up() && s->chain_target == 0 )
+    {
+      da *= 1 + p()->spell.furious_bloodthirst->effectN( 1 ).percent();
+    }
+
+    return da;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = warrior_attack_t::composite_target_crit_chance( target );
+
+    if ( p()->tier_set.t31_fury_2pc->ok() && p()->buff.furious_bloodthirst->up() && target == p()->target )
+      c += p() -> spell.furious_bloodthirst -> effectN( 2 ).percent();
+
+    return c;
   }
 
   void execute() override
@@ -3691,8 +3744,8 @@ struct thunder_clap_t : public warrior_attack_t
 
   // T31 constructor
   thunder_clap_t( warrior_t* p )
-    : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
-      from_t31( false ),
+    : warrior_attack_t( "thunder_clap_t31", p, p->talents.warrior.thunder_clap ),
+      from_t31( true ),
       blood_and_thunder( nullptr ),
       blood_and_thunder_target_cap( 0 ),
       blood_and_thunder_targets_hit( 0 )
@@ -3710,6 +3763,7 @@ struct thunder_clap_t : public warrior_attack_t
       if ( p->talents.arms.rend->ok() )
         blood_and_thunder = new rend_dot_t( p );
     }
+    base_dd_multiplier *= 1.0 + p -> sets -> set( WARRIOR_ARMS, T31, B4 )->effectN( 2 ).percent();
   }
 
   double action_multiplier() const override
@@ -3843,16 +3897,32 @@ struct thunder_clap_t : public warrior_attack_t
 
 // Arms Execute ==================================================================
 
+struct finishing_wound_t : public residual_action::residual_periodic_action_t<warrior_attack_t>
+{
+  finishing_wound_t( util::string_view name, warrior_t* p ) :
+    base_t( name, p, p->find_spell( 426284 ) )
+  {
+    dual = true;
+  }
+};
+
 struct execute_damage_t : public warrior_attack_t
 {
   double max_rage;
   double cost_rage;
+  finishing_wound_t* finishing_wound;
   execute_damage_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute_damage", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
+    : warrior_attack_t( "execute_damage", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 ),
+    finishing_wound( nullptr )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
     background = true;
+    if ( p->dbc->ptr )
+    {
+      finishing_wound = new finishing_wound_t( "finishing_wound", p);
+      add_child( finishing_wound );
+    }
   }
 
   double action_multiplier() const override
@@ -3864,6 +3934,19 @@ struct execute_damage_t : public warrior_attack_t
     else
       am *= 2.0 * ( std::min( max_rage, cost_rage ) / max_rage );
     return am;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    if ( p() -> dbc -> ptr )
+    {
+      if ( p() -> sets -> has_set_bonus( WARRIOR_ARMS, T31, B4 ) && p() -> buff.sudden_death -> up() )
+      {
+        auto amount = state -> result_amount * p() -> sets -> set ( WARRIOR_ARMS, T31, B4 )->effectN( 1 ).percent();
+        residual_action::trigger( finishing_wound, state->target, amount );
+      }
+    }
   }
 };
 
@@ -3894,8 +3977,7 @@ struct execute_arms_t : public warrior_attack_t
     }
     if ( p->tier_set.t31_arms_4pc->ok() )
     {
-      t31_thunder_clap                           = new thunder_clap_t( p, options_str );
-      t31_thunder_clap->from_t31                 = true;
+      t31_thunder_clap = new thunder_clap_t( p );
     }
   }
 
@@ -5069,7 +5151,6 @@ struct torment_odyns_fury_t : warrior_attack_t
     if ( p()->tier_set.t31_fury_2pc->ok() )
     {
       p()->buff.furious_bloodthirst->trigger( p()->buff.furious_bloodthirst->max_stack() );
-      ;
     }
 }
 
@@ -8175,6 +8256,7 @@ void warrior_t::init_spells()
   spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
   spell.siegebreaker_debuff     = find_spell( 280773 );
   spell.sudden_death_fury       = find_spell( 280776 );
+  spell.furious_bloodthirst     = find_spell( 423211 );
 
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
@@ -8739,7 +8821,7 @@ void warrior_t::init_spells()
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
   cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
   cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->effectN( 2 ).trigger() -> internal_cooldown();
-  cooldown.t31_fury_4pc_icd                 = get_cooldown( "cold_steel_hot_blood" );
+  cooldown.t31_fury_4pc_icd                 = get_cooldown( "t31_fury_4pc_icd" );
   cooldown.t31_fury_4pc_icd->duration = find_spell( 422926 )->internal_cooldown();
 }
 
