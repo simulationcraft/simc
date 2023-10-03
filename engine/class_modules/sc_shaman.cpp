@@ -59,6 +59,7 @@ enum class execute_type : unsigned
   DEEPLY_ROOTED_ELEMENTS,
   SHAKE_THE_FOUNDATIONS,
   PRIMORDIAL_WAVE,
+  MOLTEN_CHARGE,
   THORIMS_INVOCATION
 };
 
@@ -220,6 +221,7 @@ static std::string action_name( util::string_view name, execute_type t )
     case execute_type::DEEPLY_ROOTED_ELEMENTS: return fmt::format( "{}_dre", name );
     case execute_type::SHAKE_THE_FOUNDATIONS: return fmt::format( "{}_stf", name );
     case execute_type::PRIMORDIAL_WAVE: return fmt::format( "{}_pw", name );
+    case execute_type::MOLTEN_CHARGE: return fmt::format("{}_mc", name);
     case execute_type::THORIMS_INVOCATION: return fmt::format( "{}_ti", name );
     default: return std::string( name );
   }
@@ -233,6 +235,7 @@ static util::string_view exec_type_str( execute_type t )
     case execute_type::DEEPLY_ROOTED_ELEMENTS: return "deeply_rooted_elements";
     case execute_type::SHAKE_THE_FOUNDATIONS: return "shake_the_foundations";
     case execute_type::PRIMORDIAL_WAVE: return "primordial_wave";
+    case execute_type::MOLTEN_CHARGE: return "molten_charge";
     case execute_type::THORIMS_INVOCATION: return "thorims_invocation";
     default: return "normal";
   }
@@ -344,6 +347,7 @@ public:
     action_t* chain_lightning_ti;
     action_t* ti_trigger;
     action_t* lava_burst_pw;
+    action_t* lava_burst_mc;
     action_t* flame_shock;
     action_t* elemental_blast;
     action_t* molten_slag;
@@ -437,6 +441,7 @@ public:
     buff_t* t29_4pc_ele;
     buff_t* t30_2pc_ele_driver;
     buff_t* t30_4pc_ele;
+    buff_t* t31_4pc_ele;
 
     // buff_t* t31_4pc_ele;
 
@@ -5417,6 +5422,12 @@ struct lava_burst_t : public shaman_spell_t
       cooldown->duration = 0_s;
       switch ( exec_type )
       {
+        case execute_type::MOLTEN_CHARGE:
+          if ( auto mc_action = p()->find_action( "molten_charge" ) )
+          {
+            aoe = 3;
+            mc_action->add_child( this );
+          }
         case execute_type::PRIMORDIAL_WAVE:
           if ( auto pw_action = p()->find_action( "primordial_wave" ) )
           {
@@ -5634,6 +5645,16 @@ struct lava_burst_t : public shaman_spell_t
 
     p()->lava_surge_during_lvb = false;
 
+    if ( exec_type == execute_type::NORMAL && p()->buff.t31_4pc_ele->up() && p()->action.lava_burst_mc )
+    {
+      p()->buff.t31_4pc_ele->decrement();
+      p()->action.lava_burst_pw->set_target( execute_state->target );
+      if ( !p()->action.lava_burst_mc->target_list().empty() )
+      {
+        p()->action.lava_burst_mc->schedule_execute();
+      }
+    }
+
     // Trigger primordial wave if there's targets to trigger it on
     if ( p()->specialization() == SHAMAN_ELEMENTAL && exec_type == execute_type::NORMAL &&
          p()->buff.primordial_wave->up() && p()->action.lava_burst_pw )
@@ -5645,7 +5666,14 @@ struct lava_burst_t : public shaman_spell_t
         p()->action.lava_burst_pw->schedule_execute();
       }
       p()->trigger_splintered_elements( p()->action.lava_burst_pw );
+      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
+      {
+        auto max_stacks = p()->buff.t31_4pc_ele->max_stack();
+        p()->buff.t31_4pc_ele->trigger( max_stacks );
+      }
     }
+
+
 
     if ( exec_type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -7380,7 +7408,7 @@ struct ascendance_t : public shaman_spell_t
       }
     }
 
-    p()->accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
+    
   }
 
   bool ready() override
@@ -8917,6 +8945,11 @@ void shaman_t::create_actions()
     action.lava_burst_pw = new lava_burst_t( this, execute_type::PRIMORDIAL_WAVE );
   }
 
+  if (sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B4))
+  {
+    action.lava_burst_mc = new lava_burst_t( this, execute_type::MOLTEN_CHARGE );
+  }
+
   if ( talent.thorims_invocation.ok() )
   {
     action.lightning_bolt_ti = new lightning_bolt_t( this, execute_type::THORIMS_INVOCATION );
@@ -9387,7 +9420,7 @@ void shaman_t::init_spells()
   // 4pc bonus: 422912, but that's currently empty. values are in:
   // spell.t31_4pc_ele_can_proc = find_spell( 426577 );
   // TODO: add cleave/aoe component of 4p
-  // spell.t31_4pc_ele          = find_spell( 426578 );
+  spell.t31_4pc_ele          = find_spell( 426578 );
 
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
@@ -9885,6 +9918,9 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   dre_samples.add( as<double>( dre_attempts ) );
   dre_attempts = 0U;
 
+  if (!buff.ascendance->up())
+    accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
+
   action.dre_ascendance->set_target( state->target );
   action.dre_ascendance->execute();
   proc.deeply_rooted_elements->occur();
@@ -10306,7 +10342,7 @@ void shaman_t::create_buffs()
       ->set_tick_zero(true);
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
 
-  // buff.t31_4pc_ele = make_buff( this, "molten_charge", spell.t31_4pc_ele );
+  buff.t31_4pc_ele = make_buff( this, "molten_charge", spell.t31_4pc_ele );
 
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
