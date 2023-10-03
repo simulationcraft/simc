@@ -1646,6 +1646,7 @@ class SpellDataGenerator(DataGenerator):
             ( 424081, 0 ), ( 424066, 0 ), ( 424080, 0 ), # Underhanded Upper Hand background spells
             ( 421979, 0 ),          # Caustic Spatter damage spell
             ( 426595, 0 ),          # Shadow Techniques delayed CP energize
+            ( 423193, 0 ),          # Exsanguinate residual damage spell
         ),
 
         # Priest:
