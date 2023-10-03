@@ -3689,6 +3689,29 @@ struct thunder_clap_t : public warrior_attack_t
     }
   }
 
+  // T31 constructor
+  thunder_clap_t( warrior_t* p )
+    : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
+      from_t31( false ),
+      blood_and_thunder( nullptr ),
+      blood_and_thunder_target_cap( 0 ),
+      blood_and_thunder_targets_hit( 0 )
+  {
+    aoe       = -1;
+    may_dodge = may_parry = may_block = false;
+    background                        = true;
+
+    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
+    energize_type = action_energize::NONE;
+
+    if ( p->talents.warrior.blood_and_thunder.ok() )
+    {
+      blood_and_thunder_target_cap = p->talents.warrior.blood_and_thunder->effectN( 3 ).base_value();
+      if ( p->talents.arms.rend->ok() )
+        blood_and_thunder = new rend_dot_t( p );
+    }
+  }
+
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -4971,7 +4994,7 @@ struct odyns_fury_t : warrior_attack_t
 
     if ( p()->tier_set.t31_fury_2pc->ok() )
     {
-      p()->buff.furious_bloodthirst->trigger();
+      p()->buff.furious_bloodthirst->trigger( p()->buff.furious_bloodthirst->max_stack() );
     }
   }
 
@@ -5045,7 +5068,8 @@ struct torment_odyns_fury_t : warrior_attack_t
 
     if ( p()->tier_set.t31_fury_2pc->ok() )
     {
-      p()->buff.furious_bloodthirst->trigger();
+      p()->buff.furious_bloodthirst->trigger( p()->buff.furious_bloodthirst->max_stack() );
+      ;
     }
 }
 
