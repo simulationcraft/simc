@@ -359,7 +359,7 @@ public:
       player_talent_t know_your_enemy;
       player_talent_t glaive_tempest;
       player_talent_t cycle_of_hatred;
-      player_talent_t soulrend;
+      player_talent_t soulscar;
       player_talent_t chaotic_disposition;
 
       player_talent_t essence_break;
@@ -518,7 +518,7 @@ public:
     const spell_data_t* inertia_buff;
     const spell_data_t* ragefire_damage;
     const spell_data_t* serrated_glaive_debuff;
-    const spell_data_t* soulrend_debuff;
+    const spell_data_t* soulscar_debuff;
     const spell_data_t* restless_hunter_buff;
     const spell_data_t* tactical_retreat_buff;
     const spell_data_t* unbound_chaos_buff;
@@ -5592,9 +5592,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
 {
   struct throw_glaive_damage_t : public demon_hunter_attack_t
   {
-    struct soulrend_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
+    struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
     {
-      soulrend_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.soulrend_debuff )
+      soulscar_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.soulscar_debuff )
       {
         dual = true;
       }
@@ -5606,20 +5606,20 @@ struct throw_glaive_t : public demon_hunter_attack_t
       }
     };
 
-    soulrend_t* soulrend;
+    soulscar_t* soulscar;
     bool from_t31;
 
     throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, bool from_t31 = false )
       : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
-        soulrend( nullptr ),
+        soulscar( nullptr ),
         from_t31( from_t31 )
     {
       background = dual = true;
       radius            = 10.0;
 
-      if ( p->talent.havoc.soulrend->ok() )
+      if ( p->talent.havoc.soulscar->ok() )
       {
-        soulrend = p->get_background_action<soulrend_t>( "soulrend" );
+        soulscar = p->get_background_action<soulscar_t>( "soulscar" );
       }
 
       if ( from_t31 )
@@ -5634,10 +5634,10 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( soulrend )
+        if ( soulscar )
         {
-          const double dot_damage = state->result_amount * p()->talent.havoc.soulrend->effectN( 1 ).percent();
-          residual_action::trigger( soulrend, state->target, dot_damage );
+          const double dot_damage = state->result_amount * p()->talent.havoc.soulscar->effectN( 1 ).percent();
+          residual_action::trigger( soulscar, state->target, dot_damage );
         }
 
         if ( p()->spec.burning_wound_debuff->ok() )
@@ -5682,9 +5682,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( !t31 )
     {
-      if ( damage->soulrend )
+      if ( damage->soulscar )
       {
-        add_child( damage->soulrend );
+        add_child( damage->soulscar );
       }
 
       if ( p->set_bonuses.t31_havoc_2pc->ok() )
@@ -7330,7 +7330,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.know_your_enemy     = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
   talent.havoc.glaive_tempest      = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
   talent.havoc.cycle_of_hatred     = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Hatred" );
-  talent.havoc.soulrend            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulrend" );
+  talent.havoc.soulscar            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulscar" );
   talent.havoc.chaotic_disposition = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Disposition" );
 
   talent.havoc.essence_break = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
@@ -7440,7 +7440,7 @@ void demon_hunter_t::init_spells()
   spec.ragefire_damage        = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
   spec.restless_hunter_buff   = talent.havoc.restless_hunter->ok() ? find_spell( 390212 ) : spell_data_t::not_found();
   spec.serrated_glaive_debuff = talent.havoc.serrated_glaive->effectN( 1 ).trigger();
-  spec.soulrend_debuff        = talent.havoc.soulrend->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
+  spec.soulscar_debuff        = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff  = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff     = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
   spec.chaotic_disposition_damage =
