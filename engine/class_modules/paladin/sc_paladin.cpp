@@ -1292,15 +1292,21 @@ void judgment_t::impact( action_state_t* s )
 
   if ( result_is_hit( s->result ) )
   {
-      if ( p()->talents.greater_judgment->ok() )
+    if ( p()->talents.greater_judgment->ok() )
+    {
+      int num_stacks = 1;
+      if ( p()->talents.highlords_judgment->ok() )
       {
-        int num_stacks = 1;
-        if ( p()->talents.highlords_judgment->ok() )
-        {
         num_stacks += as<int>( p()->talents.highlords_judgment->effectN( 1 ).base_value() );
-        }
-        td( s->target )->debuff.judgment->trigger( num_stacks );
       }
+      td( s->target )->debuff.judgment->trigger( num_stacks );
+    }
+
+    if ( p()->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2) && td( s->target )->dots.expurgation->is_ticking())
+    {
+        p()->active.wrathful_sanction->set_target( target );
+        p()->active.wrathful_sanction->execute();
+    }
 
     int amount = 5;
     if ( p()->talents.judgment_of_light->ok() )
@@ -1919,6 +1925,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_max_stack( 3 );
   debuff.heartfire = make_buff( *this, "heartfire", paladin-> find_spell( 408461 ) );
+
+  dots.expurgation = target->get_dot( "expurgation", paladin );
 }
 
 bool paladin_td_t::standing_in_consecration()

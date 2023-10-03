@@ -48,6 +48,7 @@ struct paladin_td_t : public actor_target_data_t
 {
   struct dots_t
   {
+    dot_t* expurgation;
   } dots;
 
   struct buffs_t
@@ -106,6 +107,9 @@ public:
     action_t* divine_arbiter;
     action_t* searing_light;
     action_t* searing_light_cons;
+
+    action_t* expurgation;
+    action_t* wrathful_sanction;
   } active;
 
   // Buffs
@@ -323,6 +327,7 @@ public:
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
+    const spell_data_t* wrathful_sanction;
   } spells;
 
   // Talents

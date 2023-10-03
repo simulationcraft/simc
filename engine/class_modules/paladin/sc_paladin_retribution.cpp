@@ -324,7 +324,14 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
       if ( p->talents.jurisdiction->ok() )
       {
-        base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
+        // Jurisdiction doesn't increase Expurgation's damage in-game
+        // base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
+      }
+      if (p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2))
+      {
+        dot_duration +=
+            timespan_t::from_millis( p->sets->set( PALADIN_RETRIBUTION, T31, B2 )->effectN( 2 ).base_value() );
+        base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T31, B2 )->effectN( 1 ).percent();
       }
     }
   };
@@ -390,8 +397,8 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
     if ( p()->talents.expurgation->ok() )
     {
-      expurgation->set_target( state->target );
-      expurgation->execute();
+      p()->active.expurgation->target = state->target;
+      p()->active.expurgation->execute();
     }
   }
 };
@@ -1173,6 +1180,29 @@ struct searing_light_t : public paladin_spell_t
   }
 };
 
+struct wrathful_sanction_t : public paladin_spell_t
+{
+  wrathful_sanction_t( paladin_t* p ) : paladin_spell_t( "wrathful_sanction", p, p->spells.wrathful_sanction )
+  {
+    background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    double amount = s->result_total;
+
+    if ( s->chain_target > 0 )
+    {
+      amount /= p()->spells.wrathful_sanction->effectN( 2 ).base_value();
+    }
+    s->result_total = s->result_raw = amount;
+
+    paladin_spell_t::impact( s );
+  }
+  
+};
+
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
@@ -1228,10 +1258,20 @@ void paladin_t::create_ret_actions()
     active.searing_light = new searing_light_t( this );
   }
 
+  if (talents.expurgation->ok())
+  {
+    active.expurgation = new blade_of_justice_t::expurgation_t( this );
+  }
+
   if ( specialization() == PALADIN_RETRIBUTION )
   {
     active.divine_toll = new judgment_ret_t( this, "divine_toll_judgment", true );
     active.divine_resonance = new judgment_ret_t( this, "divine_resonance_judgment", false );
+  }
+
+  if ( sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2) )
+  {
+    active.wrathful_sanction = new wrathful_sanction_t( this );
   }
 }
 
@@ -1365,6 +1405,7 @@ void paladin_t::init_spells_retribution()
   passives.boundless_conviction = find_spell( 115675 );
 
   spells.crusade = find_spell( 231895 );
+  spells.wrathful_sanction = find_spell( 424590 );
 }
 
 // Action Priority List Generation
