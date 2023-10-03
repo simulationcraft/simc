@@ -4417,6 +4417,9 @@ struct kingsbane_t : public rogue_attack_t
     rogue_attack_t::last_tick( d );
     p()->buffs.kingsbane->expire();
   }
+
+  bool snapshots_nightstalker() const override
+  { return true; }
 };
 
 // Pistol Shot ==============================================================
@@ -5768,6 +5771,9 @@ struct internal_bleeding_t : public rogue_attack_t
     rogue_attack_t::tick( d );
     trigger_venomous_wounds( d->state );
   }
+
+  bool snapshots_nightstalker() const override
+  { return true; }
 };
 
 // Kidney Shot ==============================================================
@@ -10099,17 +10105,18 @@ void rogue_t::create_buffs()
   buffs.perforated_veins_counter = make_buff( this, "perforated_veins_counter", spec.perforated_veins_counter );
   if ( spec.perforated_veins_counter->ok() )
   {
-    buffs.perforated_veins_counter->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    buffs.perforated_veins_counter
+      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
       ->set_expire_at_max_stack( true )
       ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
       // 2023-10-02 -- Buff can trigger prior to a WM proc but is not immediately consumed nor does it benefit
       //               Delay application to avoid this timing issue, ensure we clear any errant counter stacks
       if ( b->at_max_stacks() )
         make_event( sim, 1_ms, [ this ] {
-        buffs.perforated_veins->trigger();
-        buffs.perforated_veins_counter->expire();
+          buffs.perforated_veins->trigger();
+          buffs.perforated_veins_counter->expire();
+        } );
       } );
-    } );
   }
 
   // Talent ranks override the value of the buffs via dummy effects
