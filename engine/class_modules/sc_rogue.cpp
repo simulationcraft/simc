@@ -7620,7 +7620,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   // 2021-04-22 -- Initial 9.1.0 testing appears to show the threshold is reduced to 4/3
   // 2023-10-02 -- 10.2.0 tooltip was adjusted to show "28%" for Shadow Techniques and "reduced by 40%" for Shadowcraft
   //               However, this is just an expansion of the probability and doesn't change the underlying counter mechanic
-  const unsigned shadowcraft_adjustment = ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.symbols_of_death->check() ? 1 : 0 );
+  const unsigned shadowcraft_adjustment = ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.symbols_of_death->check() ) ? 1 : 0;
   const unsigned shadow_techniques_upper = 4 - shadowcraft_adjustment;
   const unsigned shadow_techniques_lower = 3 - shadowcraft_adjustment;
   if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper || ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
@@ -10043,7 +10043,7 @@ void rogue_t::create_buffs()
 
   buffs.premeditation = make_buff( this, "premeditation", spec.premeditation_buff );
 
-  buffs.shadow_techniques = make_buff( this, "shadow_techniques", spec.shadow_techniques )
+  buffs.shadow_techniques = make_buff( this, "shadow_techniques", spec.shadow_techniques_energize )
     ->apply_affecting_aura( talent.rogue.deeper_stratagem )     // Max stack increase
     ->apply_affecting_aura( talent.subtlety.secret_stratagem )  // Max stack increase
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
