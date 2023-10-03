@@ -1470,6 +1470,7 @@ class SpellDataGenerator(DataGenerator):
             ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
             ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
             ( 52437,  0 ),          # Sudden Death (Fury buff)
+            ( 425534, 0 ),          # T31 prot Fervid Bite
         ),
 
         # Paladin:
@@ -1643,6 +1644,9 @@ class SpellDataGenerator(DataGenerator):
             ( 409483, 0 ),          # T30 Assassination Set Bonus Spells
             ( 413890, 0 ),          # Nightstalker background spell
             ( 424081, 0 ), ( 424066, 0 ), ( 424080, 0 ), # Underhanded Upper Hand background spells
+            ( 421979, 0 ),          # Caustic Spatter damage spell
+            ( 426595, 0 ),          # Shadow Techniques delayed CP energize
+            ( 423193, 0 ),          # Exsanguinate residual damage spell
         ),
 
         # Priest:

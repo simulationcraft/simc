@@ -340,7 +340,16 @@ struct malefic_rapture_t : public affliction_spell_t
     double c = affliction_spell_t::cost();
 
     if ( p()->buffs.tormented_crescendo->check() )
-      c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
+    {
+      if ( p()->min_version_check( VERSION_10_2_0 ) )
+      {
+        c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
+      }
+      else
+      {
+        c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
+      }
+    }
 
     return c;
   }
@@ -350,7 +359,16 @@ struct malefic_rapture_t : public affliction_spell_t
     timespan_t t = affliction_spell_t::execute_time();
 
     if ( p()->buffs.tormented_crescendo->check() )
-      t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
+    {
+      if ( p()->min_version_check( VERSION_10_2_0 ) )
+      {
+        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
+      }
+      else
+      {
+        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
+      }
+    }
 
     return t;
   }

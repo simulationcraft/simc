@@ -3107,17 +3107,6 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     {
       add_child( p->active.sigil_of_flame_t31 );
     }
-
-    // 2023-09-29 -- Precise/Concentrated Sigils change the spell ID and their versions do not have charges
-    //               attached correctly, which causes Illuminated Sigils to not work as intended.
-    if ( p->talent.vengeance.illuminated_sigils->ok() &&
-         ( p->talent.demon_hunter.precise_sigils->ok() || p->talent.demon_hunter.concentrated_sigils->ok() ) &&
-         !p->bugs )
-    {
-      cooldown->charges += as<int>( p->talent.vengeance.illuminated_sigils->effectN( 1 ).base_value() );
-      sim->print_debug( "{} cooldown charges modified by {}", *this,
-                        as<int>( p->talent.vengeance.illuminated_sigils->effectN( 1 ).base_value() ) );
-    }
   }
 
   void init_finished() override
@@ -3445,6 +3434,12 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
     {
+      // 2023-10-01 -- Immolation Aura CD is 15s (hasted) for Vengeance, but due to Immolation Aura changing to a
+      //               spell with charges, our Immolation Aura CDR aura doesn't work.
+      if ( !p->bugs )
+      {
+        cooldown->duration = 15_s;
+      }
       energize_amount = data().effectN( 3 ).base_value();
     }
     else
@@ -4001,17 +3996,6 @@ struct elysian_decree_t : public demon_hunter_spell_t
       sigil = p->get_background_action<elysian_decree_sigil_t>( "elysian_decree_sigil", p->spell.elysian_decree_damage,
                                                                 ground_aoe_duration );
       sigil->stats = stats;
-
-      // 2023-09-29 -- Precise/Concentrated Sigils change the spell ID and their versions do not have charges
-      //               attached correctly, which causes Illuminated Sigils to not work as intended.
-      if ( p->talent.vengeance.illuminated_sigils->ok() &&
-           ( p->talent.demon_hunter.precise_sigils->ok() || p->talent.demon_hunter.concentrated_sigils->ok() ) &&
-           !p->bugs )
-      {
-        cooldown->charges += as<int>( p->talent.vengeance.illuminated_sigils->effectN( 5 ).base_value() );
-        sim->print_debug( "{} cooldown charges modified by {}", *this,
-                          as<int>( p->talent.vengeance.illuminated_sigils->effectN( 5 ).base_value() ) );
-      }
     }
   }
 
@@ -7177,7 +7161,6 @@ void demon_hunter_t::init_spells()
   spell.disrupt           = find_class_spell( "Disrupt" );
   spell.immolation_aura   = find_class_spell( "Immolation Aura" );
   spell.immolation_aura_2 = find_rank_spell( "Immolation Aura", "Rank 2" );
-  spell.sigil_of_flame    = find_spell( 204596 );
   spell.spectral_sight    = find_class_spell( "Spectral Sight" );
 
   // Spec-Overriden Passives
@@ -8930,6 +8913,264 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 25.0 )
         .verification_value( 0.0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame cooldown with Concentrated Sigils",
+                            204513, hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 30000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01",
+                            "Fix Sigil of Flame category cooldown with Concentrated Sigils", 204513,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 30000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame charges with Concentrated Sigils", 204513,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame charge cooldown with Concentrated Sigils",
+                            204513, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 30000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame cooldown with Precise Sigils", 389810,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 30000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame category cooldown with Precise Sigils",
+                            389810, hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 30000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame charges with Precise Sigils", 389810,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Flame charge cooldown with Precise Sigils",
+                            389810, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 30000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree cooldown with Concentrated Sigils",
+                            389858, hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01",
+                            "Fix Elysian Decree category cooldown with Concentrated Sigils", 389858,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree charges with Concentrated Sigils", 389858,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree charge cooldown with Concentrated Sigils",
+                            389858, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree cooldown with Precise Sigils", 389815,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree category cooldown with Precise Sigils",
+                            389815, hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree charges with Precise Sigils", 389815,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Elysian Decree charge cooldown with Precise Sigils",
+                            389815, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery cooldown with Concentrated Sigils",
+                            202140, hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01",
+                            "Fix Sigil of Misery category cooldown with Concentrated Sigils", 202140,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery charges with Concentrated Sigils",
+                            202140, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01",
+                            "Fix Sigil of Misery charge cooldown with Concentrated Sigils", 202140,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 120000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery cooldown with Precise Sigils", 389813,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery category cooldown with Precise Sigils",
+                            389813, hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery charges with Precise Sigils", 389813,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Misery charge cooldown with Precise Sigils",
+                            389813, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 120000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence cooldown with Concentrated Sigils",
+                            207682, hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01",
+                            "Fix Sigil of Silence category cooldown with Concentrated Sigils", 207682,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence charges with Concentrated Sigils",
+                            207682, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01",
+                            "Fix Sigil of Silence charge cooldown with Concentrated Sigils", 207682,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence cooldown with Precise Sigils", 389809,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence category cooldown with Precise Sigils",
+                            389809, hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 60000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence charges with Precise Sigils", 389809,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Silence charge cooldown with Precise Sigils",
+                            389809, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 60000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains cooldown with Concentrated Sigils",
+                            207665, hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01",
+                            "Fix Sigil of Chains category cooldown with Concentrated Sigils", 207665,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains charges with Concentrated Sigils",
+                            207665, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01",
+                            "Fix Sigil of Chains charge cooldown with Concentrated Sigils", 207665,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 120000 )
+        .verification_value( 0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains cooldown with Precise Sigils", 389807,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains category cooldown with Precise Sigils",
+                            389807, hotfix::HOTFIX_FLAG_PTR )
+        .field( "category_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 120000 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains charges with Precise Sigils", 389807,
+                            hotfix::HOTFIX_FLAG_PTR )
+        .field( "charges" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 0 );
+    hotfix::register_spell( "Demon Hunter", "2023-10-01", "Fix Sigil of Chains charge cooldown with Precise Sigils",
+                            389807, hotfix::HOTFIX_FLAG_PTR )
+        .field( "charge_cooldown" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 120000 )
+        .verification_value( 0 );
   }
 
   void combat_begin( sim_t* ) const override

@@ -1964,7 +1964,9 @@ public:
     if ( ab::data().ok() )
     {
       apply_buff_effects();
-      apply_debuffs_effects();
+
+      if ( ab::type == action_e::ACTION_SPELL || ab::type == action_e::ACTION_ATTACK )
+        apply_debuffs_effects();
 
       if ( ab::data().flags( spell_attribute::SX_ABILITY ) || ab::trigger_gcd > 0_ms )
         ab::not_a_proc = true;
@@ -10269,7 +10271,8 @@ void druid_t::create_buffs()
 
   buff.apex_predators_craving = make_buff_fallback( talent.apex_predators_craving.ok(),
       this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() )
-          ->set_chance( find_trigger( talent.apex_predators_craving ).percent() );
+          // TODO: move to rip_t and add target DR
+          ->set_chance( find_trigger( talent.apex_predators_craving ).percent() * ( is_ptr() ? 0.1 : 1 ) );
 
   buff.berserk_cat = make_buff_fallback<berserk_cat_buff_t>( talent.berserk.ok(),
       this, "berserk_cat", spec.berserk_cat );
