@@ -5257,7 +5257,6 @@ struct dash_of_chaos_t : public demon_hunter_attack_t
     p->buff.fel_rush_move->distance_moved = base_teleport_distance;
 
     //Spelldata currently missing gcd data; this fixes DPET chart -- Oct 1 2023
-    min_gcd                               = 0.5_s;
     trigger_gcd                           = 0.5_s;
 
     // Add damage modifiers in dash_of_chaos_damage_t, not here.
