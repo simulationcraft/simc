@@ -7016,7 +7016,8 @@ void hunter_t::create_buffs()
             cooldowns.kill_shot -> reset( true );
             buffs.razor_fragments -> trigger();
           }
-        } );
+        } )
+      -> set_activated( false );
 
   buffs.razor_fragments =
     make_buff( this, "razor_fragments", find_spell( 388998 ) )
