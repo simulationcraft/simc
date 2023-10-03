@@ -569,6 +569,7 @@ public:
     const spell_data_t* poison_bomb_damage;
     const spell_data_t* serrated_bone_spike_energize;
     const spell_data_t* scent_of_blood_buff;
+    const spell_data_t* venom_rush_energize;
     const spell_data_t* vicious_venoms_ambush;
     const spell_data_t* vicious_venoms_mutilate_mh;
     const spell_data_t* vicious_venoms_mutilate_oh;
@@ -2535,13 +2536,15 @@ struct rogue_poison_t : public rogue_attack_t
 
     double chance = base_proc_chance;
     chance += p()->buffs.envenom->stack_value();
-    chance += rogue_t::cast_attack( source_state->action )->composite_poison_flat_modifier( source_state );
 
     // Applies as a percent modifier, not a flat modifier
     if ( affected_by.dragon_tempered_blades )
     {
       chance *= 1.0 + p()->talent.assassination.dragon_tempered_blades->effectN( 2 ).percent();
     }
+
+    // Applied after Dragon-Tempered Blades' modifer for Thrown Precision and Poisoned Knife
+    chance += rogue_t::cast_attack( source_state->action )->composite_poison_flat_modifier( source_state );
 
     return chance;
   }
@@ -3763,7 +3766,10 @@ struct crimson_tempest_t : public rogue_attack_t
     // Deals bonus damage per target with the DoT ticking, up to 5 targets
     auto num_targets = std::min( p()->get_active_dots( td( state->target )->dots.crimson_tempest ),
                                  as<unsigned>( reduced_aoe_targets ) );
-    m *= 1.0 + ( num_targets * data().effectN( 4 ).percent() );
+    if ( num_targets > 1 )
+    {
+      m *= 1.0 + ( num_targets * data().effectN( 4 ).percent() );
+    }
 
     return m;
   }
@@ -4078,6 +4084,14 @@ struct fan_of_knives_t: public rogue_attack_t
     return m;
   }
 
+  double composite_poison_flat_modifier( const action_state_t* state ) const override
+  {
+    if( p()->talent.assassination.thrown_precision->ok() && state->result == RESULT_CRIT )
+      return 1.0;
+
+    return rogue_attack_t::composite_poison_flat_modifier( state );
+  }
+
   bool procs_poison() const override
   { return true; }
 };
@@ -4232,7 +4246,6 @@ struct ghostly_strike_t : public rogue_attack_t
   ghostly_strike_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.outlaw.ghostly_strike, options_str )
   {
-    use_off_gcd = true;
   }
 
   void impact( action_state_t* state ) override
@@ -4251,7 +4264,6 @@ struct ghostly_strike_t : public rogue_attack_t
   bool procs_blade_flurry() const override
   { return true; }
 };
-
 
 // Gloomblade ===============================================================
 
@@ -4785,7 +4797,7 @@ struct rupture_t : public rogue_attack_t
     }
 
     // TOCHECK -- Double check this interacts as expected for cleaved Ruptures
-    if ( !state->target->is_boss() && p()->active.internal_bleeding )
+    if ( p()->active.internal_bleeding )
     {
       p()->active.internal_bleeding->trigger_secondary_action( state->target,
                                                                cast_state( state )->get_combo_points() );
@@ -7746,7 +7758,7 @@ void actions::rogue_action_t<Base>::trigger_venom_rush( const action_state_t* st
   if ( !ab::result_is_hit( state->result ) || !p()->get_target_data( state->target )->is_poisoned() )
     return;
   
-  p()->resource_gain( RESOURCE_ENERGY, p()->talent.assassination.venom_rush->effectN( 1 ).base_value(), p()->gains.venom_rush );
+  p()->resource_gain( RESOURCE_ENERGY, p()->spec.venom_rush_energize->effectN( 1 ).resource( RESOURCE_ENERGY ), p()->gains.venom_rush );
 }
 
 template <typename Base>
@@ -9422,6 +9434,7 @@ void rogue_t::init_spells()
   spec.poison_bomb_damage = talent.assassination.poison_bomb->ok() ? find_spell( 255546 ) : spell_data_t::not_found();
   spec.serrated_bone_spike_energize = talent.assassination.serrated_bone_spike->ok() ? find_spell( 328548 ) : spell_data_t::not_found();
   spec.scent_of_blood_buff = talent.assassination.scent_of_blood->ok() ? find_spell( 394080 ) : spell_data_t::not_found();
+  spec.venom_rush_energize = talent.assassination.venom_rush->ok() ? find_spell( 256522 ) : spell_data_t::not_found();
   spec.vicious_venoms_ambush = talent.assassination.vicious_venoms->ok() ? find_spell( 385794 ) : spell_data_t::not_found();
   spec.vicious_venoms_mutilate_mh = talent.assassination.vicious_venoms->ok() ? find_spell( 385806 ) : spell_data_t::not_found();
   spec.vicious_venoms_mutilate_oh = talent.assassination.vicious_venoms->ok() ? find_spell( 385802 ) : spell_data_t::not_found();
@@ -10083,18 +10096,21 @@ void rogue_t::create_buffs()
     ->set_default_value( talent.subtlety.deeper_daggers->effectN( 1 ).percent() );
 
   buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins", spec.perforated_veins_buff );
-  buffs.perforated_veins_counter = make_buff( this, "perforated_veins_counter", spec.perforated_veins_counter )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_expire_at_max_stack( true )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+  buffs.perforated_veins_counter = make_buff( this, "perforated_veins_counter", spec.perforated_veins_counter );
+  if ( spec.perforated_veins_counter->ok() )
+  {
+    buffs.perforated_veins_counter->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+      ->set_expire_at_max_stack( true )
+      ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
       // 2023-10-02 -- Buff can trigger prior to a WM proc but is not immediately consumed nor does it benefit
       //               Delay application to avoid this timing issue, ensure we clear any errant counter stacks
       if ( b->at_max_stacks() )
         make_event( sim, 1_ms, [ this ] {
-          buffs.perforated_veins->trigger();
-          buffs.perforated_veins_counter->expire();
-        } );
+        buffs.perforated_veins->trigger();
+        buffs.perforated_veins_counter->expire();
+      } );
     } );
+  }
 
   // Talent ranks override the value of the buffs via dummy effects
   buffs.finality_black_powder = make_buff<damage_buff_t>( this, "finality_black_powder", spec.finality_black_powder_buff,
