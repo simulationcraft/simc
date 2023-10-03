@@ -1,5 +1,5 @@
-// Item effects, wow build 10.2.0.51521
-static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
+// Item effects, wow build 10.2.0.51601
+static const std::array<item_effect_t, 8656> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -2504,8 +2504,8 @@ static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
   {  36802,  96173,  56136,   1,   1,    0,      -1,      -1 }, // Corrupted Egg Shell
   {  12067,  90943,  56138,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Spell Power
   {  12084,  92175,  56280,   0,   1,    0,      -1,      -1 }, // Hardened Shell
-  {  12085,  91340,  56285,   0,   0, 1141,   90000,   15000 }, // Typhoon
-  {  12086,  91136,  56290,   0,   0, 1141,  120000,   20000 }, // Leviathan
+  {  12085,  91340,  56285,   0,   0, 1141,   90000,   15000 }, // Tidehunter's Blessing
+  {  12086,  91136,  56290,   0,   0, 1141,  120000,   20000 }, // Leviathan's Wisdom
   {  12087,  92088,  56295,   0,   1,    0,      -1,      -1 }, // Grace of the Herald
   {  12088,  90888,  56320,   0,   1,    0,      -1,      -1 }, // Witching Hourglass
   {  12089,  92093,  56328,   0,   1,    0,      -1,      -1 }, // Final Key
@@ -4378,19 +4378,19 @@ static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
   {  19645,  17619, 109262,   1,   1,    0,      -1,      -1 }, // Alchemist Stone
   {  20333, 165485, 109997,   0,   0, 1141,  120000,   20000 }, // Mastery
   {  20334, 165542, 109998,   0,   0, 1141,   90000,   15000 }, // Critical Strike
-  {  20357, 165821, 109999,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  20357, 429257, 109999,   0,   0,    0,      -1,      -1 }, // Aqueous Dowsing
   {  20335, 165531, 110002,   0,   0, 1141,  120000,   20000 }, // Haste
   {  20336, 165543, 110003,   0,   0, 1141,   90000,   15000 }, // Versatility
-  {  20359, 165838, 110004,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Critical Strike
+  {  20359, 429244, 110004,   0,   1,    0,      -1,      -1 }, // Coagulated Genesaur Blood
   {  20337, 397399, 110007,   0,   0,    0,      -1,      -1 }, // Voidmender's Shadowgem
   {  20338, 165535, 110008,   0,   0, 1141,   90000,   15000 }, // Mastery
-  {  20360, 165840, 110009,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Versatility
+  {  20360, 429271, 110009,   0,   0,    0,      -1,      -1 }, // Ancient Protection
   {  20339, 397400, 110012,   0,   0,    0,      -1,      -1 }, // Bonemaw's Big Toe
   {  20340, 165543, 110013,   0,   0, 1141,   90000,   15000 }, // Versatility
-  {  20361, 165821, 110014,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Haste
+  {  20361, 429225, 110014,   0,   0,    0,      -1,      -1 }, // Alacritous Spores
   {  20341, 165534, 110017,   0,   0, 1141,  120000,   20000 }, // Versatility
   {  20342, 165535, 110018,   0,   0, 1141,   90000,   15000 }, // Mastery
-  {  20362, 165825, 110019,   0,   1,    0,      -1,      -1 }, // Item - Attacks Proc Mastery
+  {  20362, 429267, 110019,   0,   1,    0,      -1,      -1 }, // Xeri'tac's Defense
   {  19271,    483, 110672,   0,   0,    0,      -1,      -1 }, // Learning
   {  19272, 115913, 110672,   1,   6,    0,      -1,      -1 }, // Wisdom of the Four Winds
   {  19506, 182073, 111222,   0,   0, 1141,   60000,   20000 }, // Rapid Adaptation
@@ -5608,8 +5608,8 @@ static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
   {  27260, 202874, 132970,   0,   1,    0,      -1,      -1 }, // Ley Surge
   {  27261, 202863, 132971,   0,   1,    0,      -1,      -1 }, // Desperation
   {  27292,  92175, 133192,   0,   1,    0,      -1,      -1 }, // Hardened Shell
-  {  27293,  91340, 133197,   0,   0, 1141,   90000,   20000 }, // Typhoon
-  {  27294,  91136, 133201,   0,   0, 1141,   90000,   20000 }, // Leviathan
+  {  27293,  91340, 133197,   0,   0, 1141,   90000,   20000 }, // Tidehunter's Blessing
+  {  27294,  91136, 133201,   0,   1,    0,      -1,      -1 }, // Leviathan's Wisdom
   {  27295,  92093, 133206,   0,   1,    0,      -1,      -1 }, // Final Key
   {  27296,  90899, 133216,   0,   1,    0,      -1,      -1 }, // Tendrils of Darkness
   {  27297,  91352, 133222,   0,   0, 1141,   90000,   15000 }, // Polarization
@@ -8479,7 +8479,7 @@ static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
   { 178954, 416344, 207114,   1,   0,    0,      -1,      -1 }, // Grimoire of the Fiendish Imp
   { 180054, 422297, 207165,   0,   1,    0,      -1,      -1 }, // Bandolier of Twisted Blades
   { 180055, 422303, 207165,   1,   0,    0,      -1,      -1 }, // Embed Blade
-  { 180066, 422479, 207166,   0,   1,    0,      -1,      -1 }, // Infernal Signet Brand
+  { 180066, 422479, 207166,   0,   1,    0,      -1,      -1 }, // Cataclysmic Signet Brand
   { 180206, 423021, 207167,   0,   1,    0,      -1,      -1 }, // Ashes of the Embersoul
   { 180335, 423611, 207167,   1,   0,    0,      -1,      -1 }, // Soul Ignition
   { 180169, 422858, 207168,   0,   1,    0,      -1,      -1 }, // Pip's Emerald Friendship Badge
@@ -8490,7 +8490,7 @@ static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
   { 180306, 423418, 207171,   0,   1,    0,      -1,      -1 }, // Blossom of Amirdrassil
   { 180049, 422141, 207172,   0,   1,    0,      -1,      -1 }, // Belor'relos, the Sunstone
   { 180050, 422146, 207172,   1,   0,    0,      -1,      -1 }, // Solar Maelstrom
-  { 180039, 421990, 207173,   0,   1,    0,      -1,      -1 }, // Gift of Urctos
+  { 180039, 421990, 207173,   0,   1,    0,      -1,      -1 }, // Gift of Ursine Vengeance
   { 180078, 422652, 207174,   0,   1,    0,      -1,      -1 }, // Tainted Rageheart
   { 180088, 422750, 207174,   1,   0,    0,      -1,      -1 }, // Shadowflame Rage
   { 180762, 426827, 207175,   0,   1,    0,      -1,      -1 }, // Coiled Serpent Idol
@@ -8511,7 +8511,7 @@ static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
   { 180489, 424846, 207783,   0,   0,    0,      -1,      -1 }, // Dream Eater
   { 180826, 427265, 207783,   1,   1,    0,      -1,      -1 }, // Cruel Dreamcarver
   { 180427, 424406, 207784,   0,   1,    0,      -1,      -1 }, // Thorncaller Claw
-  { 180525, 425177, 207784,   1,   1,    0,      -1,      -1 }, // Thornbursting Potential
+  { 180525, 425177, 207784,   1,   1,    0,      -1,      -1 }, // Thorncaller Claw
   { 180419, 424320, 207786,   0,   1,    0,      -1,      -1 }, // Hungering Shadowflame
   { 180418, 424320, 207788,   0,   1,    0,      -1,      -1 }, // Hungering Shadowflame
   { 180420, 424320, 207793,   0,   1,    0,      -1,      -1 }, // Hungering Shadowflame
@@ -8654,9 +8654,11 @@ static const std::array<item_effect_t, 8654> __ptr_item_effect_data { {
   { 180914, 428045, 211080,   1,   0,    0,      -1,      -1 }, // Mark of the Boreal Dreamtalon
   { 180915, 428050, 211081,   1,   0,    0,      -1,      -1 }, // Mark of the Auroral Dreamtalon
   { 180945, 428181, 211132,   0,   0,    0,      -1,      -1 }, // Omni Storm
+  { 181005, 428622, 211280,   1,   0,    0,      -1,      -1 }, // Feather of the Smoke Red Moon
+  { 181105, 429141, 211400,   1,   0,    0,      -1,      -1 }, // The Lunar Chameleon
 } };
 
-static const std::array<uint16_t, 8654> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 8656> __ptr_item_effect_id_index { {
     418,   419,   420,   421,   422,   423,   424,   427,
     428,   429,   430,   431,   432,   433,   434,   435,
     436,   437,   438,   439,   442,   443,   444,   445,
@@ -9738,6 +9740,6 @@ static const std::array<uint16_t, 8654> __ptr_item_effect_id_index { {
    8630,  8631,  8632,  8633,  8634,  8635,   344,  8636,
    8637,  8638,  8639,  8640,  8641,  8642,  8643,  8644,
    8645,  8493,  8646,  8647,  8648,  8649,  8566,  8567,
-   8509,  8625,  8650,  8651,  8652,  8653,
+   8509,  8625,  8650,  8651,  8652,  8653,  8654,  8655,
 } };
 

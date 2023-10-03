@@ -1,4 +1,4 @@
-// Item name descriptions, wow build 10.2.0.51521
+// Item name descriptions, wow build 10.2.0.51601
 static const std::array<item_name_description_t, 813> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
@@ -201,7 +201,7 @@ static const std::array<item_name_description_t, 813> __ptr_item_name_descriptio
   { 13300, "Legion Season 5 Elite"                       },
   { 13301, "Gladiator"                                   },
   { 13302, "Combatant I"                                 },
-  { 13303, "Aspirant"                                    },
+  { 13303, "PvP"                                         },
   { 13304, "Honor"                                       },
   { 13305, "Sunwell"                                     },
   { 13306, "PVP Rare"                                    },

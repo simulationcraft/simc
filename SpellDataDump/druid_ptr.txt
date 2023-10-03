@@ -1508,6 +1508,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 18
+#11 (id=1113110)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing the damage of your spells by $s9% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
 
 While in this form, single-target attacks against you have a $h% chance to make your next Starfire instant.][]
@@ -2726,7 +2728,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.37230 | PvP Coefficient: 1.27200 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.45500 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -3972,7 +3974,7 @@ Category         : 1257
 Labels           : 2706: Spatial Paradox (406732 effect#10)
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
-Affecting spells : Cat Form (106840 effect#1), Bear Form (106899 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202461 effect#1), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2)
+Affecting spells : Cat Form (106840 effect#1), Bear Form (106899 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202461 effect#1), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2)
 Family Flags     : 27
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ......x. 
@@ -4817,8 +4819,8 @@ Effects          :
                    Family Flags: 11, 38, 40, 52, 62, 91
 #4 (id=191164)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Frenzied Regeneration (22842), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Mount Form (210053), Swipe (213771), Strength of the Wild (236716), Incarnation: Avatar of Ashamane (252071), Aquatic Form (276012), Flight Form (276029), Incarnation: Chosen of Elune (390414), Raze (400254)
-                   Family Flags: 3, 11, 13, 25, 29, 30, 31, 32, 38, 40, 43, 45, 46, 47, 52, 62, 87, 91, 106, 123
+                   Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Frenzied Regeneration (22842), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Stampeding Roar (106898), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Mount Form (210053), Swipe (213771), Strength of the Wild (236716), Incarnation: Avatar of Ashamane (252071), Aquatic Form (276012), Flight Form (276029), Incarnation: Chosen of Elune (390414), Raze (400254)
+                   Family Flags: 3, 11, 13, 25, 27, 29, 30, 31, 32, 38, 40, 43, 45, 46, 47, 52, 62, 87, 91, 106, 123
 #5 (id=191165)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1072297)  : Apply Aura (6) | Modify Ranged Attack Speed% (320)
@@ -5071,6 +5073,13 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wild Growth (48438)
                    Family Flags: 58
+#24 (id=1113290)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 1182 | Target: Self (1)
+                   Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
+#25 (id=1113620)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3043 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fragile Echoes (215266)
+Hotfixed         : NEW EFFECT
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
@@ -7428,7 +7437,7 @@ Attributes       : ........ ........ ........ ...x....   .......x ..x..... .....
                  : Allow While Sitting (27), No Reflection (39), No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), PvP Enabling (96), Not a Proc (105), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), No Harmful Threat (132), Not In Spellbook (143), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=298525)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.20500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=298537)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
 Description      : $@spelldesc202342
@@ -7585,7 +7594,7 @@ GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Adaptive Swarm (391889 effect#2), Adaptive Swarm (391891 effect#2)
 Family Flags     : 54
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7593,7 +7602,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Aura Icon (60), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300414)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -21480,8 +21489,8 @@ Effects          :
 #1 (id=1098462)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103293)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : $s1% of your damage and healing and $s2% of the armor you gain during Rage of the Sleeper fuel the growth of Dream Thorns, which wreath you in their protection after Rage of the Sleeper expires, absorbing $425407s2% of damage dealt to you while the thorns remain. 
+                   Base Value: 220 | Scaled Value: 220 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Rage you spend during Rage of the Sleeper fuel the growth of Dream Thorns, which wreath you in their protection after Rage of the Sleeper expires, absorbing $425407s2% of damage dealt to you while the thorns remain, up to ${$s2/100*$AP} per $s1 Rage spent. 
 
 Name             : Druid Guardian 10.2 Class Set 4pc (id=422865) [Passive, Hidden] 
 Class            : Druid
