@@ -1555,9 +1555,8 @@ Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Charges          : 1 (120 seconds cooldown)
 Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1), Illuminated Sigils (428557 effect#3)
-Category Cooldown: 120 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -2254,9 +2253,8 @@ Spell Type       : None
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 30 seconds
+Charges          : 1 (30 seconds cooldown)
 Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
-Category Cooldown: 30 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
@@ -2683,9 +2681,8 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Charges          : 1 (120 seconds cooldown)
 Category         : 1606: Quickened Sigils (209281 effect#2), Illuminated Sigils (428557 effect#2)
-Category Cooldown: 120 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -2743,9 +2740,8 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 60 seconds
+Charges          : 1 (60 seconds cooldown)
 Category         : 1608: Quickened Sigils (209281 effect#5), Illuminated Sigils (428557 effect#4)
-Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -11501,6 +11497,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Charges          : 1 (120 seconds cooldown)
 Category         : 1606: Quickened Sigils (209281 effect#2), Illuminated Sigils (428557 effect#2)
 Category Cooldown: 90 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
@@ -11531,9 +11528,8 @@ Spell Level      : 39
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 60 seconds
+Charges          : 1 (60 seconds cooldown)
 Category         : 1608: Quickened Sigils (209281 effect#5), Illuminated Sigils (428557 effect#4)
-Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32, 75
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -11562,9 +11558,8 @@ Spell Level      : 12
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 30 seconds
+Charges          : 1 (30 seconds cooldown)
 Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
-Category Cooldown: 30 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -11595,9 +11590,8 @@ Spell Type       : None
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Charges          : 1 (120 seconds cooldown)
 Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1), Illuminated Sigils (428557 effect#3)
-Category Cooldown: 120 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -11626,9 +11620,8 @@ Spell Level      : 48
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 60 seconds
+Charges          : 1 (60 seconds cooldown)
 Category         : 1887: Illuminated Sigils (428557 effect#5)
-Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -11743,9 +11736,8 @@ Spell Type       : None
 Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 60 seconds
+Charges          : 1 (60 seconds cooldown)
 Category         : 1887: Illuminated Sigils (428557 effect#5)
-Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
