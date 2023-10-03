@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51521
-static const std::array<spelltext_data_t, 20471> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20477> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20149,6 +20149,7 @@ static const std::array<spelltext_data_t, 20471> __ptr_spelltext_data { {
   { 421970, "$@spelldesc387526", "Damage done increased by $w1%.", 0 },
   { 421975, "Using Mutilate on a target afflicted by your Rupture and Deadly Poison applies Caustic Spatter for $421976d. Limit 1.\r\n\r\nCaustic Spatter causes $421976s1% of your Poison damage dealt to splash onto other nearby enemies, reduced beyond $421976s2 targets.", 0, 0 },
   { 421976, "$@spelldesc421975", "$w1% of Poison damage taken from $@auracaster splashes onto other nearby enemies.", 0 },
+  { 421979, "$@spelldesc319606", 0, 0 },
   { 421990, "Swipe at a the nearest enemy for $s1 Physical damage and gain 1 stack of $@spellname421994 whenever you or an ally takes damage, granting $s2 $pri and stacking up to $421994u times. This effect may occur every 3 sec.\r\n\r\nAt $421994u stacks of $@spellname421994, gain $@spellname422016 for $422016d before consuming them, counterattacking all blows and regenerating $s3 health every $422016T1 sec. $?(a137048|a137028|a137023|a137010|a212613|a137008)[][\r\n\r\n|CFF808080Valid only for tank specializations.|R]", 0, 0 },
   { 421994, "$@spelldesc421990", "$pri increased by $w1.", 0 },
   { 421996, "$@spelldesc421990", 0, 0 },
@@ -20290,8 +20291,11 @@ static const std::array<spelltext_data_t, 20471> __ptr_spelltext_data { {
   { 423932, "$@spelldesc423920", 0, 0 },
   { 424044, "Slice and Dice does not lose duration during Blade Flurry.\r\n\r\nBlade Flurry does not lose duration during Adrenaline Rush.\r\n\r\nAdrenaline Rush does not lose duration during while Stealthed.\r\n\r\nStealth abilities can be used for an additional ${$s2/1000} sec after Stealth breaks.", 0, 0 },
   { 424051, "While Well Fed, your spells and abilities have a chance of granting you and $s2 nearby allies $s1 Mastery.", 0, 0 },
+  { 424066, "$@spelldesc424044", 0, 0 },
   { 424073, "Melee attacks have a chance to burn the enemy, dealing ${$s1*($424075d+1)} Fire damage over $424075d.", 0, 0 },
   { 424075, "$@spelldesc424073", "Burning for $w1 Fire damage every sec.", 0 },
+  { 424080, "$@spelldesc424044", 0, 0 },
+  { 424081, "$@spelldesc424044", 0, 0 },
   { 424105, "Taking damage and melee attacks can coat yourself in fiery thorns, granting $s1 Strength and reducing damage taken from enemies by $s2 for $424107d.", 0, 0 },
   { 424107, "$@spelldesc424105", "Strength increased by $w1, and reducing damage taken by $w2.", 0 },
   { 424120, "$@spelldesc422884", 0, 0 },
@@ -20350,6 +20354,7 @@ static const std::array<spelltext_data_t, 20471> __ptr_spelltext_data { {
   { 425509, "$@spelldesc422441", 0, 0 },
   { 425517, "$@spelldesc422927", "Your next Shield Slam will consume active bleeds on its target.", 0 },
   { 425529, "Smites an enemy for $s1 Shadow damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy][].", 0, 0 },
+  { 425534, "$@spelldesc422927", 0, 0 },
   { 425571, 0, "Absorbs $w1 damage.", 0 },
   { 425653, "When you attack a target afflicted by Sigil of Flame, your damage and healing are increased by $s1% and your Stamina is increased by $s2% for $d, stacking up to $U.", "Damage and healing increased by $s1%. Stamina increased by $s3%.", 0 },
   { 425672, "$@spelldesc422861", 0, 0 },
@@ -20400,6 +20405,7 @@ static const std::array<spelltext_data_t, 20471> __ptr_spelltext_data { {
   { 426592, "$@spelldesc426591", 0, 0 },
   { 426593, "$@spelldesc426591", "Your finishing moves cost no Energy.", 0 },
   { 426594, "While Symbols of Death is active, your Shadow Techniques triggers $s3% more frequently, stores $m2 additional combo $Lpoint:points;, and finishing moves can use those stored when there are enough to refresh full combo points.", 0, 0 },
+  { 426595, "$@spelldesc196912", 0, 0 },
   { 426602, "$@spelldesc382518", "At $394254u stacks, your next attack that generates combo points deals $w1% increased damage.", 0 },
   { 426605, "$@spelldesc378996", 0, 0 },
   { 426647, "$@spelldesc422858", "Mastery increased by $w1.", 0 },
