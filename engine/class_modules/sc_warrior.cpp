@@ -3037,6 +3037,7 @@ struct bloodthirst_t : public warrior_attack_t
       p()->buff.bloodcraze->trigger();
     }
 
+    p()->buff.furious_bloodthirst->decrement();
     p()->buff.meat_cleaver->decrement();
     p()->buff.merciless_assault->expire();
 
@@ -3184,7 +3185,7 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     p()->buff.reckless_abandon->decrement();
-
+    p()->buff.furious_bloodthirst->decrement();
     p()->buff.meat_cleaver->decrement();
     p()->buff.merciless_assault->expire();
 
@@ -4967,6 +4968,11 @@ struct odyns_fury_t : warrior_attack_t
       action_t* torment_ability = p()->active.torment_avatar;
       torment_ability->schedule_execute();
     }
+
+    if ( p()->tier_set.t31_fury_2pc->ok() )
+    {
+      p()->buff.furious_bloodthirst->trigger();
+    }
   }
 
   bool ready() override
@@ -5036,7 +5042,12 @@ struct torment_odyns_fury_t : warrior_attack_t
     oh_attack->execute();
     mh_attack2->execute();
     oh_attack2->execute();
-  }
+
+    if ( p()->tier_set.t31_fury_2pc->ok() )
+    {
+      p()->buff.furious_bloodthirst->trigger();
+    }
+}
 
   bool ready() override
   {
@@ -9426,8 +9437,8 @@ void warrior_t::create_buffs()
                                 find_spell( 410218 ) : spell_data_t::not_found() );
 
   buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst",
-                                      tier_set.t30_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() )
-                               ->set_default_value( find_spell( 423211 )->effectN( 1 ).percent() );
+                                      tier_set.t31_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() );
+                               //->set_default_value( find_spell( 423211 )->effectN( 1 ).percent() );
                                //->set_duration( find_spell( 423211 )->duration() );
 }
 // warrior_t::init_rng ==================================================
