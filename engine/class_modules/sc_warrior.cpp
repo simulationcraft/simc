@@ -3691,8 +3691,8 @@ struct thunder_clap_t : public warrior_attack_t
 
   // T31 constructor
   thunder_clap_t( warrior_t* p )
-    : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
-      from_t31( false ),
+    : warrior_attack_t( "thunder_clap_t31", p, p->talents.warrior.thunder_clap ),
+      from_t31( true ),
       blood_and_thunder( nullptr ),
       blood_and_thunder_target_cap( 0 ),
       blood_and_thunder_targets_hit( 0 )
@@ -3710,6 +3710,7 @@ struct thunder_clap_t : public warrior_attack_t
       if ( p->talents.arms.rend->ok() )
         blood_and_thunder = new rend_dot_t( p );
     }
+    base_dd_multiplier *= 1.0 + p -> sets -> set( WARRIOR_ARMS, T31, B4 )->effectN( 2 ).percent();
   }
 
   double action_multiplier() const override
@@ -3843,16 +3844,32 @@ struct thunder_clap_t : public warrior_attack_t
 
 // Arms Execute ==================================================================
 
+struct finishing_wound_t : public residual_action::residual_periodic_action_t<warrior_attack_t>
+{
+  finishing_wound_t( util::string_view name, warrior_t* p ) :
+    base_t( name, p, p->find_spell( 426284 ) )
+  {
+    dual = true;
+  }
+};
+
 struct execute_damage_t : public warrior_attack_t
 {
   double max_rage;
   double cost_rage;
+  finishing_wound_t* finishing_wound;
   execute_damage_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute_damage", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
+    : warrior_attack_t( "execute_damage", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 ),
+    finishing_wound( nullptr )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
     background = true;
+    if ( p->dbc->ptr )
+    {
+      finishing_wound = new finishing_wound_t( "finishing_wound", p);
+      add_child( finishing_wound );
+    }
   }
 
   double action_multiplier() const override
@@ -3864,6 +3881,19 @@ struct execute_damage_t : public warrior_attack_t
     else
       am *= 2.0 * ( std::min( max_rage, cost_rage ) / max_rage );
     return am;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    if ( p() -> dbc -> ptr )
+    {
+      if ( p() -> sets -> has_set_bonus( WARRIOR_ARMS, T31, B4 ) && p() -> buff.sudden_death -> up() )
+      {
+        auto amount = state -> result_amount * p() -> sets -> set ( WARRIOR_ARMS, T31, B4 )->effectN( 1 ).percent();
+        residual_action::trigger( finishing_wound, state->target, amount );
+      }
+    }
   }
 };
 
@@ -3894,8 +3924,7 @@ struct execute_arms_t : public warrior_attack_t
     }
     if ( p->tier_set.t31_arms_4pc->ok() )
     {
-      t31_thunder_clap                           = new thunder_clap_t( p, options_str );
-      t31_thunder_clap->from_t31                 = true;
+      t31_thunder_clap = new thunder_clap_t( p );
     }
   }
 
