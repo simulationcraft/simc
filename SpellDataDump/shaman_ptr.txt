@@ -127,7 +127,7 @@ Spell Level      : 21
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Shaman (137040 effect#23), Enhancement Shaman (137041 effect#19), Maelstrom Weapon (187881 effects: #3, #5), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2, #3), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2), Initial Shaman (417374 effects: #3, #4)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #24), Elemental Shaman (137040 effect#23), Enhancement Shaman (137041 effect#19), Maelstrom Weapon (187881 effects: #3, #5), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2, #3), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2), Initial Shaman (417374 effects: #3, #4)
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1990,11 +1990,9 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=67005)    : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=217829)   : Weapon Damage% (31)
-                   Base Value: 34 | Scaled Value: 0.34 | PvP Coefficient: 1.00000
-Description      : An instant weapon strike that causes $sw2 Physical damage.
+#1 (id=67005)    : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.34000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : An instant weapon strike that causes $s1 Physical damage.
 
 Name             : Healing Rain (id=73920) [Spell Family (11)] 
 Talent Entry     : Restoration [tree=spec, row=3, col=1, max_rank=1, req_points=0]
@@ -3440,6 +3438,13 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #22 (id=1080081)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
+#23 (id=1113288)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 1182 | Target: Self (1)
+                   Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
+#24 (id=1113392)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064)
+                   Family Flags: 8
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -6483,6 +6488,7 @@ Talent Entry     : Enhancement [tree=spec, row=9, col=2, max_rank=2, req_points=
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Internal Cooldown: 0.1 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
@@ -6506,7 +6512,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Stormstrike (17364)
                    Family Flags: 36
-Description      : Stormstrike damage is increased by $s1%, and Stormstrike has a $m3% chance to generate $m2 $Lstack:stacks; of Maelstrom Weapon.
+Description      : Stormstrike damage is increased by $s1%, and Stormstrike, Lava Lash, and Ice Strike have a $m3% chance to generate $m2 $Lstack:stacks; of Maelstrom Weapon.
 
 Name             : Ancestral Vision (id=212048) [Spell Family (11)] 
 Class            : Restoration Shaman
@@ -18168,7 +18174,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098510)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Lava Burst burns your target for $426577s1% additional damage over $427729d, and after consuming Pirmordial Wave, your next $426578u casts of Lava Burst to also hit up to $426578s1 additional targets affected by your Flame Shock for $426578s2% of normal damage.
+Description      : Lava Burst burns your target for $426577s1% additional damage over $427729d, and after consuming Primordial Wave, your next $426578u casts of Lava Burst to also hit up to $426578s1 additional targets affected by your Flame Shock for $426578s2% of normal damage.
 
 Name             : Shaman Enhancement 10.2 Class Set 2pc (id=422913) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -18285,7 +18291,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Stacks           : 3 maximum
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
