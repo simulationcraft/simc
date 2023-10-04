@@ -757,8 +757,6 @@ public:
     double darkglare_boon_cdr_high_roll_seconds = 18;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
-    // Use the new 2pc from Realz Forum Post
-    bool use_new_2pc_design = false;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -4515,13 +4513,10 @@ struct blade_dance_base_t : public demon_hunter_attack_t
         }
       }
 
-      if ( p()->options.use_new_2pc_design )
+      if ( p()->cooldown.throw_glaive->up() )
       {
-        if ( p()->cooldown.throw_glaive->up() )
-        {
-          p()->active.throw_glaive_t31_throw->set_target( target );
-          p()->active.throw_glaive_t31_throw->execute();
-        }
+        p()->active.throw_glaive_t31_throw->set_target( target );
+        p()->active.throw_glaive_t31_throw->execute();
       }
     }
 
@@ -6952,7 +6947,6 @@ void demon_hunter_t::create_options()
       opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
   add_option(
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
-  add_option( opt_bool( "use_new_2pc_design", options.use_new_2pc_design ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
