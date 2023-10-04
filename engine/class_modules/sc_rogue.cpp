@@ -1017,7 +1017,6 @@ public:
   {
     std::vector<size_t> fixed_rtb;
     std::vector<double> fixed_rtb_odds;
-    std::string prepull_t31_buff = "";
     int initial_combo_points = 0;
     int initial_shadow_techniques = -1;
     bool rogue_ready_trigger = true;
@@ -7121,8 +7120,6 @@ struct roll_the_bones_t : public buff_t
   };
   std::vector<overflow_state> overflow_states;
 
-  buff_t* t31_last_extended;
-
   roll_the_bones_t( rogue_t* r ) :
     buff_t( r, "roll_the_bones", r->spec.roll_the_bones ),
     rogue( r )
@@ -7139,8 +7136,6 @@ struct roll_the_bones_t : public buff_t
       rogue->buffs.skull_and_crossbones,
       rogue->buffs.true_bearing
     };
-    t31_last_extended = nullptr;
-    apply_prepull_t31_buff();
   }
 
   void extend_secondary_buffs( timespan_t duration )
@@ -7235,7 +7230,7 @@ struct roll_the_bones_t : public buff_t
     }
   }
 
-  std::vector<buff_t*> random_roll( bool loaded_dice )
+  std::vector<buff_t*> random_roll( bool loaded_dice, std::vector<unsigned> pool )
   {
     std::vector<buff_t*> rolled;
 
@@ -7285,7 +7280,6 @@ struct roll_the_bones_t : public buff_t
         }
       }
 
-      std::vector<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
       for ( size_t i = 0; i < num_buffs; i++ )
       {
         unsigned buff = (unsigned)rng().range( 0, (double)pool.size() );
@@ -7306,12 +7300,12 @@ struct roll_the_bones_t : public buff_t
     return rolled;
   }
 
-  unsigned roll_the_bones( timespan_t duration )
+  unsigned roll_the_bones( timespan_t duration, std::vector<unsigned> pool )
   {
     std::vector<buff_t*> rolled;
     if ( rogue->options.fixed_rtb.empty() )
     {
-      rolled = random_roll( rogue->buffs.loaded_dice->up() );
+      rolled = random_roll( rogue->buffs.loaded_dice->up(), pool );
     }
     else
     {
@@ -7333,6 +7327,9 @@ struct roll_the_bones_t : public buff_t
 
     buff_t::execute( stacks, value, duration );
 
+    const timespan_t roll_duration = remains();
+    std::vector<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
+
     if ( rogue->set_bonuses.t31_outlaw_4pc->ok() ) {
       std::vector<buff_t*> active_buffs;
       for ( auto buff : buffs )
@@ -7341,7 +7338,7 @@ struct roll_the_bones_t : public buff_t
           active_buffs.push_back( buff );
       }
 
-      if ( active_buffs.empty() && t31_last_extended == nullptr )
+      if ( active_buffs.empty() )
       {
         expire_secondary_buffs();
         rogue->procs.t31_buff_not_extended->occur();
@@ -7349,59 +7346,33 @@ struct roll_the_bones_t : public buff_t
       else
       {
         rogue->procs.t31_buff_extended->occur();
-        timespan_t trigger_duration = timespan_t::from_millis( rogue->set_bonuses.t31_outlaw_4pc->effectN( 1 ).base_value() );
 
-        buff_t* extended;
-        if ( active_buffs.empty() )
+        unsigned active_buff_idx = static_cast<int>( rng().range( 0, as<double>( active_buffs.size() ) ) );
+        buff_t* extended = active_buffs[ active_buff_idx ];
+        unsigned buff_idx = 0;
+        for ( auto buff : buffs )
         {
-          extended = t31_last_extended;
-        }
-        else
-        {
-          unsigned buff_idx = static_cast<int>( rng().range( 0, as<double>( active_buffs.size() ) ) );
-          extended = active_buffs[ buff_idx ];
+          if ( buff == extended )
+          {
+            pool.erase( pool.begin() + buff_idx ); // remove the extended buff as a possible roll for the actual roll
+            break;
+          }
+          buff_idx++;
         }
         expire_secondary_buffs();
-        t31_last_extended = extended;
-        extended->trigger( trigger_duration );
+        extended->trigger( roll_duration );
       }
     }
     else {
       expire_secondary_buffs();
     }
 
-    const timespan_t roll_duration = remains();
-    const unsigned buffs_rolled = roll_the_bones( roll_duration );
+    const unsigned buffs_rolled = roll_the_bones( roll_duration, pool );
 
     procs[ buffs_rolled - 1 ]->occur();
     rogue->buffs.loaded_dice->expire();
 
     overflow_restore();
-  }
-
-  void apply_prepull_t31_buff()
-  {
-    auto value = rogue->options.prepull_t31_buff;
-
-    if ( value == "" ) {
-      t31_last_extended = nullptr;
-    }
-    else
-    {
-      auto it = range::find_if( buffs, [value]( const buff_t* buff ) {
-        return util::str_compare_ci( buff->name_str, value ); } );
-
-      if ( it == buffs.end() )
-        throw std::invalid_argument( fmt::format( "Invalid prepull_t31_buff buff name given '{}'.", value ) );
-
-      t31_last_extended = ( *it );
-    }
-  }
-
-  void reset() override
-  {
-    buff_t::reset();
-    apply_prepull_t31_buff();
   }
 };
 
@@ -8890,29 +8861,6 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         for ( auto buff : primary->buffs )
           n_buffs += ( !filter_buff || filter_buff == buff ) && pred( primary, buff );
         return n_buffs;
-      } );
-    }
-    else if ( util::str_compare_ci( split[ 1 ], "t31" ) )
-    {
-      buff_t* filter_buff = nullptr;
-      if ( split.size() == 3 )
-      {
-        util::string_view buff_name = split[ 2 ];
-        auto it = range::find_if( primary->buffs, [buff_name]( const buff_t* buff ) {
-          return util::str_compare_ci( buff->name_str, buff_name ); } );
-
-        if ( it == primary->buffs.end() )
-          throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.t31 buff name given '{}'.", buff_name ) );
-        else
-          filter_buff = ( *it );
-
-        return make_fn_expr( name_str, [ primary, filter_buff ]() -> double {
-          return filter_buff == primary->t31_last_extended ? 1.0 : 0.0;
-        } );
-      }
-
-      return make_fn_expr( name_str, [ primary ]() -> double {
-        return primary->t31_last_extended != nullptr ? 1.0 : 0.0;
       } );
     }
   }
@@ -10484,7 +10432,6 @@ void rogue_t::create_options()
   add_option( opt_int( "initial_shadow_techniques", options.initial_shadow_techniques, -1, 4 ) );
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
-  add_option( opt_string( "prepull_t31_buff", options.prepull_t31_buff ) );
   add_option( opt_bool( "prepull_shadowdust", options.prepull_shadowdust ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
 }
@@ -10513,7 +10460,6 @@ void rogue_t::copy_from( player_t* source )
 
   options.fixed_rtb = rogue->options.fixed_rtb;
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
-  options.prepull_t31_buff = rogue->options.prepull_t31_buff;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.prepull_shadowdust = rogue->options.prepull_shadowdust;
   options.priority_rotation = rogue->options.priority_rotation;
