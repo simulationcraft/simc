@@ -7006,11 +7006,11 @@ void demon_hunter_t::init_action_list()
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    demon_hunter_apl::havoc( this );
+    demon_hunter_apl::havoc_ptr( this );
   }
   else if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    demon_hunter_apl::vengeance( this );
+    demon_hunter_apl::vengeance_ptr( this );
   }
 
   use_default_action_list = true;
