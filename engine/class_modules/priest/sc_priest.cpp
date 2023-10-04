@@ -1049,7 +1049,7 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
   void execute() override
   {
     base_t::execute();
-    if ( priest().sets->set( PRIEST_SHADOW, T31, B4 ) )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
       p().buffs.deaths_torment->trigger();
   }
 
