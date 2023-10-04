@@ -3820,8 +3820,10 @@ struct multishot_bm_t: public hunter_ranged_attack_t
         pet -> buffs.beast_cleave -> trigger();
 
       if ( p() -> tier_set.t31_bm_4pc.ok() ) {
-        for ( auto pet : p() -> pets.dire_beast.active_pets() )
+        for ( auto pet : p() -> pets.dire_beast.active_pets() ){
           pet -> buffs.beast_cleave -> trigger();
+          break;
+        }
       }
     }
 
@@ -5531,9 +5533,10 @@ struct kill_command_t: public hunter_spell_t
       pet -> active.kill_command -> execute_on_target( target );
 
     if ( p() -> tier_set.t31_bm_4pc.ok() )
-      for ( auto pet : p() -> pets.dire_beast.active_pets() )
+      for ( auto pet : p() -> pets.dire_beast.active_pets() ){
         pet -> active.kill_command -> execute_on_target( target );
-
+        break;
+      }
     p() -> buffs.tip_of_the_spear -> trigger();
 
     if ( reset.chance != 0 )
