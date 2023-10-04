@@ -1538,6 +1538,7 @@ public:
     proc_t* proc = nullptr;
     timespan_t delay = timespan_t::zero();
     bool on_background = false;
+    bool decrement = false;
   };
   std::vector<consume_buff_t> consume_buffs;
 
@@ -1775,12 +1776,12 @@ public:
     }
 
     // Auto-Consume Buffs on Execute
-    auto register_consume_buff = [this]( buff_t* buff, bool condition, proc_t* proc = nullptr,
-                                         timespan_t delay = timespan_t::zero(), bool on_background = false )
+    auto register_consume_buff = [this]( buff_t* buff, bool condition, proc_t* proc = nullptr, timespan_t delay = timespan_t::zero(),
+                                         bool on_background = false, bool decrement = false )
     {
       if ( condition )
       {
-        consume_buffs.push_back( { buff, proc, delay, on_background } );
+        consume_buffs.push_back( { buff, proc, delay, on_background, decrement } );
       }
     };
 
@@ -1791,7 +1792,7 @@ public:
                            cold_blood_consumed_proc );
     register_consume_buff( p()->buffs.perforated_veins, p()->buffs.perforated_veins->is_affecting( &ab::data() ),
                            perforated_veins_consumed_proc, 1_ms ); // TOCHECK -- Ensure this still affects WM procs like it used to
-    register_consume_buff( p()->buffs.the_rotten, p()->buffs.the_rotten->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms );
+    register_consume_buff( p()->buffs.the_rotten, p()->buffs.the_rotten->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms, false, true );
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
     register_consume_buff( p()->buffs.t29_outlaw_2pc, p()->buffs.t29_outlaw_2pc->is_affecting( &ab::data() ) );
     register_consume_buff( p()->buffs.t29_outlaw_4pc, p()->buffs.t29_outlaw_4pc->is_affecting( &ab::data() ) );
@@ -2408,7 +2409,17 @@ public:
       {
         if ( consume_buff.buff->check() )
         {
-          consume_buff.buff->expire( consume_buff.delay );
+          if ( consume_buff.decrement )
+          {
+            if ( consume_buff.delay > 0_s )
+              make_event( *p()->sim, consume_buff.delay, [ consume_buff ] { consume_buff.buff->decrement(); } );
+            else
+              consume_buff.buff->decrement();
+          }
+          else
+          {
+            consume_buff.buff->expire( consume_buff.delay );
+          }
           if ( consume_buff.proc )
             consume_buff.proc->occur();
         }
@@ -5144,7 +5155,7 @@ struct shadow_dance_t : public rogue_spell_t
       {
         p()->buffs.symbols_of_death->trigger( symbols_duration );
       }
-      p()->buffs.the_rotten->trigger();
+      p()->buffs.the_rotten->trigger( p()->talent.subtlety.the_rotten->effectN( 1 ).base_value() );
       p()->resource_gain( RESOURCE_ENERGY, p()->spec.symbols_of_death->effectN( 5 ).resource(),
                           p()->gains.symbols_of_death_t30 );
 
@@ -5714,7 +5725,7 @@ struct symbols_of_death_t : public rogue_spell_t
     rogue_spell_t::execute();
 
     p()->buffs.symbols_of_death->trigger();
-    p()->buffs.the_rotten->trigger();
+    p()->buffs.the_rotten->trigger( p()->talent.subtlety.the_rotten->effectN( 1 ).base_value() );
   }
 };
 
