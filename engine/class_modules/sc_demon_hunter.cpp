@@ -5730,7 +5730,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
     // Hit the fodder 250ms after the action is used to fake the travel time.
     make_event( sim, 250_ms, ( [ this ] { hit_fodder( true ); } ) );
 
-    if ( t31 != 1 && p()->talent.havoc.furious_throws->ok() )
+    // 04/10/2023 All throw glaives currently count towards cycle of hatred.
+    if ( ( p()->bugs || t31 != 1 ) && p()->talent.havoc.furious_throws->ok() )
     {
       trigger_cycle_of_hatred();
     }
@@ -5742,7 +5743,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( hit_any_target && furious_throws )
     {
-      furious_throws->execute_on_target( target );
+      make_event<delayed_execute_event_t>( *sim, p(), furious_throws, target, 400_ms );
     }
 
     if ( td( target )->debuffs.serrated_glaive->up() )
