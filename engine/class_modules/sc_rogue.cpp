@@ -2052,7 +2052,7 @@ public:
   void trigger_deepening_shadows( const action_state_t* );
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
-  void trigger_opportunity( const action_state_t*, rogue_attack_t* action );
+  void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
   void trigger_restless_blades( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_venom_rush( const action_state_t* );
@@ -3272,7 +3272,11 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    trigger_opportunity( state, extra_attack );
+    if ( p()->talent.outlaw.hidden_opportunity->ok() )
+    {
+      trigger_opportunity( state, extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
+    }
+
     if ( p()->talent.assassination.vicious_venoms->ok() )
     {
       p()->active.vicious_venoms.ambush->trigger_secondary_action( state->target );
@@ -5560,11 +5564,15 @@ struct sinister_strike_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
 
-      // Triple Threat procs do not appear to be able to chain-proc based on testing
-      if ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE && p()->active.triple_threat_oh &&
-           p()->rng().roll( triple_threat_chance ) )
+      if ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE )
       {
-        p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 300_ms );
+        // Triple Threat procs do not appear to be able to chain-proc based on testing
+        if ( p()->active.triple_threat_oh && p()->rng().roll( triple_threat_chance ) )
+        {
+          p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 300_ms );
+        }
+
+        trigger_count_the_odds( execute_state ); // TOCHECK -- Triple Threat?
       }
     }
 
@@ -5602,6 +5610,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     trigger_opportunity( execute_state, extra_attack );
+    trigger_count_the_odds( execute_state );
   }
 
   bool procs_main_gauche() const override
@@ -7767,13 +7776,13 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_opportunity( const action_state_t* state, actions::rogue_attack_t* action )
+void actions::rogue_action_t<Base>::trigger_opportunity( const action_state_t* state, actions::rogue_attack_t* action, double modifier )
 {
   if ( !p()->talent.outlaw.opportunity->ok() || !ab::result_is_hit( state->result ) || !action )
     return;
 
   const int stacks = 1 + as<int>( p()->talent.outlaw.fan_the_hammer->effectN( 1 ).base_value() );
-  if ( p()->buffs.opportunity->trigger( stacks, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() ) )
+  if ( p()->buffs.opportunity->trigger( stacks, buff_t::DEFAULT_VALUE(), p()->extra_attack_proc_chance() * modifier ) )
   {
     action->trigger_secondary_action( state->target, 300_ms );
   }
