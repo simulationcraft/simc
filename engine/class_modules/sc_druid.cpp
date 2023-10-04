@@ -1976,6 +1976,8 @@ public:
       {
         form_mask |= form_e::BEAR_FORM;
       }
+
+      parse_passive_effects( p()->mastery.astral_invocation );
     }
   }
 
