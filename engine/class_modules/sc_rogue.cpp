@@ -968,6 +968,10 @@ public:
     // Outlaw
     proc_t* count_the_odds;
     proc_t* count_the_odds_capped;
+    proc_t* count_the_odds_ambush;
+    proc_t* count_the_odds_ss;
+    proc_t* count_the_odds_dispatch;
+    proc_t* count_the_odds_stealth;
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
@@ -2062,7 +2066,7 @@ public:
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_master_of_shadows();
   void trigger_dashing_scoundrel( const action_state_t* state );
-  void trigger_count_the_odds( const action_state_t* state );
+  void trigger_count_the_odds( const action_state_t* state, proc_t* source_proc );
   void trigger_keep_it_rolling();
   void trigger_flagellation( const action_state_t* state );
   void trigger_perforated_veins( const action_state_t* state );
@@ -3241,7 +3245,7 @@ struct ambush_t : public rogue_attack_t
     void execute() override
     {
       rogue_attack_t::execute();
-      trigger_count_the_odds( execute_state );
+      trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ambush );
     }
 
     bool procs_main_gauche() const override
@@ -3273,7 +3277,7 @@ struct ambush_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    trigger_count_the_odds( execute_state );
+    trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ambush );
     trigger_blindside( execute_state );
     trigger_venom_rush( execute_state );
   }
@@ -3436,7 +3440,7 @@ struct dispatch_t: public rogue_attack_t
     {
       trigger_restless_blades( execute_state );
     }
-    trigger_count_the_odds( execute_state );
+    trigger_count_the_odds( execute_state, p()->procs.count_the_odds_dispatch );
   }
 
   bool procs_main_gauche() const override
@@ -5582,7 +5586,7 @@ struct sinister_strike_t : public rogue_attack_t
           p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 300_ms );
         }
 
-        trigger_count_the_odds( execute_state ); // TOCHECK -- Triple Threat?
+        trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ss ); // TOCHECK -- Triple Threat?
       }
     }
 
@@ -5620,7 +5624,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     trigger_opportunity( execute_state, extra_attack );
-    trigger_count_the_odds( execute_state );
+    trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ss );
   }
 
   bool procs_main_gauche() const override
@@ -7975,7 +7979,7 @@ void actions::rogue_action_t<Base>::trigger_dashing_scoundrel( const action_stat
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t* state, proc_t* source_proc )
 {
   if ( !p()->talent.outlaw.count_the_odds->ok() )
     return;
@@ -7998,6 +8002,11 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
 
   debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->count_the_odds_trigger( trigger_duration * stealth_bonus );
   p()->procs.count_the_odds->occur();
+  source_proc->occur();
+  if ( stealth_bonus > 1.0 )
+  {
+    p()->procs.count_the_odds_stealth->occur();
+  }
 }
 
 template <typename Base>
@@ -9856,6 +9865,10 @@ void rogue_t::init_procs()
   procs.serrated_bone_spike_waste_partial     = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
 
   procs.count_the_odds          = get_proc( "Count the Odds" );
+  procs.count_the_odds_ambush   = get_proc( "Count the Odds (Ambush)" );
+  procs.count_the_odds_ss       = get_proc( "Count the Odds (Sinister Strike)" );
+  procs.count_the_odds_dispatch = get_proc( "Count the Odds (Dispatch)" );
+  procs.count_the_odds_stealth  = get_proc( "Count the Odds (Stealthed)" );
   procs.count_the_odds_capped   = get_proc( "Count the Odds Capped" );
   procs.roll_the_bones_wasted   = get_proc( "Roll the Bones Wasted" );
   procs.t31_buff_extended       = get_proc( "(T31) Roll the Bones Buff Extended" );
