@@ -10586,7 +10586,7 @@ void druid_t::create_actions()
   }
 
   if ( talent.orbital_strike.ok() )
-    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" ); 
+    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" );
   
   // Feral
   if ( talent.apex_predators_craving.ok() )
