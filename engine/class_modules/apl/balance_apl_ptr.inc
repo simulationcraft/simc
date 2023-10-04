@@ -61,7 +61,6 @@ st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff
 st->add_action( "variable,name=starsurge_condition2,value=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+action.wrath.energize_amount+(action.starfire.energize_amount+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5" );
 st->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starsurge_condition2" );
 st->add_action( "starsurge,if=variable.starsurge_condition2" );
-st->add_action( "orbital_strike,if=!fight_style.dungeonroute|target.time_to_die>(cooldown-7)|fight_remains<10" );
 st->add_action( "wrath" );
 st->add_action( "run_action_list,name=fallthru" );
 
@@ -80,7 +79,6 @@ aoe->add_action( "warrior_of_elune" );
 aoe->add_action( "variable,name=enter_solar,value=spell_targets.starfire<3" );
 aoe->add_action( "starfire,if=variable.enter_solar&(eclipse.any_next|buff.eclipse_solar.remains<action.starfire.cast_time)" );
 aoe->add_action( "wrath,if=!variable.enter_solar&(eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.cast_time)" );
-aoe->add_action( "orbital_strike,if=astral_power.deficit>variable.passive_asp+30" );
 aoe->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&(!talent.waning_twilight|dot.fungal_growth.remains<2&target.time_to_die>7&!prev_gcd.1.wild_mushroom)" );
 aoe->add_action( "fury_of_elune,if=target.time_to_die>2&(buff.ca_inc.remains>3|cooldown.ca_inc.remains>30&buff.primordial_arcanic_pulsar.value<=280|buff.primordial_arcanic_pulsar.value>=560&astral_power>50)|fight_remains<10" );
 aoe->add_action( "variable,name=starfall_condition2,value=target.time_to_die>4&(buff.starweavers_warp.up|talent.starlord&buff.starlord.stack<3)" );

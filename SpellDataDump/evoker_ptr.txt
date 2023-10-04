@@ -832,7 +832,7 @@ Effects          :
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428)
                    Family Flags: 0
 #20 (id=1093837)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
-                   Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Misc Value: 1182 | Target: Self (1)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 1182 | Target: Self (1)
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
@@ -2863,7 +2863,6 @@ Spell Level      : 60
 Duration         : Aura (infinite)
 Cooldown         : 90 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Internal Cooldown: 0.2 seconds
 Stacks           : 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........   ........ ........ ........ ........   
@@ -8612,7 +8611,7 @@ Range            : 25 yards
 Max Targets      : 1
 GCD              : 1.5 seconds
 Charges          : 2 (12 seconds cooldown)
-Category         : 2207: Time Skip (404977 effect#7)
+Category         : 2207: Time Skip (404977 effect#7), Interwoven Threads (412713 effect#7)
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Affecting spells : Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#6)
 Family Flags     : 67, 73
@@ -9418,6 +9417,9 @@ Effects          :
                    Affected Spells (Label): Tail Swipe (368970)
 #6 (id=1080805)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1862 (Label) | Target: Self (1)
+#7 (id=1113202)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 2207 | Target: Self (1)
+                   Affected Spells (Category): Prescience (409311)
 Description      : The cooldowns of your spells are reduced by $s1%.
 
 Name             : Tomorrow, Today (id=412723) [Spell Family (224), Passive] 
