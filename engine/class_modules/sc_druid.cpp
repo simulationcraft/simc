@@ -2210,7 +2210,7 @@ public:
         auto eff_val = i.value;
 
         if ( i.mastery )
-          eff_val += p()->cache.mastery_value();
+          eff_val += p()->cache.mastery() * p()->mastery.astral_invocation->effectN( 5 ).mastery_value();
 
         return_value *= 1.0 + eff_val * check;
       }
@@ -10586,7 +10586,7 @@ void druid_t::create_actions()
   }
 
   if ( talent.orbital_strike.ok() )
-    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" );
+    active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" ); 
   
   // Feral
   if ( talent.apex_predators_craving.ok() )
