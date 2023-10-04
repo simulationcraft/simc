@@ -273,6 +273,7 @@ public:
 
       player_talent_t felfire_haste;  // NYI
       player_talent_t master_of_the_glaive;
+      player_talent_t champion_of_the_glaive;
       player_talent_t aura_of_pain;
       player_talent_t concentrated_sigils;  // Partial NYI (debuff Sigils)
       player_talent_t precise_sigils;       // Partial NYI (debuff Sigils)
@@ -284,7 +285,6 @@ public:
       player_talent_t aldrachi_design;
 
       player_talent_t chaos_fragments;
-      player_talent_t unleashed_power;
       player_talent_t illidari_knowledge;
       player_talent_t demonic;
       player_talent_t will_of_the_illidari;  // NYI Vengeance
@@ -1442,10 +1442,10 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.bouncing_glaives );
     ab::apply_affecting_aura( p->talent.demon_hunter.aura_of_pain );
     ab::apply_affecting_aura( p->talent.demon_hunter.master_of_the_glaive );
+    ab::apply_affecting_aura( p->talent.demon_hunter.champion_of_the_glaive );
     ab::apply_affecting_aura( p->talent.demon_hunter.rush_of_chaos );
     ab::apply_affecting_aura( p->talent.demon_hunter.concentrated_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.precise_sigils );
-    ab::apply_affecting_aura( p->talent.demon_hunter.unleashed_power );
     ab::apply_affecting_aura( p->talent.demon_hunter.improved_sigil_of_misery );
     ab::apply_affecting_aura( p->talent.demon_hunter.erratic_felheart );
     ab::apply_affecting_aura( p->talent.demon_hunter.pitch_black );
@@ -7240,6 +7240,7 @@ void demon_hunter_t::init_spells()
 
   talent.demon_hunter.felfire_haste        = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
   talent.demon_hunter.master_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
+  talent.demon_hunter.champion_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Champion of the Glaive" );
   talent.demon_hunter.aura_of_pain         = find_talent_spell( talent_tree::CLASS, "Aura of Pain" );
   talent.demon_hunter.concentrated_sigils  = find_talent_spell( talent_tree::CLASS, "Concentrated Sigils" );
   talent.demon_hunter.precise_sigils       = find_talent_spell( talent_tree::CLASS, "Precise Sigils" );
@@ -7251,7 +7252,6 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.aldrachi_design = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
 
   talent.demon_hunter.chaos_fragments      = find_talent_spell( talent_tree::CLASS, "Chaos Fragments" );
-  talent.demon_hunter.unleashed_power      = find_talent_spell( talent_tree::CLASS, "Unleashed Power" );
   talent.demon_hunter.illidari_knowledge   = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
   talent.demon_hunter.demonic              = find_talent_spell( talent_tree::CLASS, "Demonic" );
   talent.demon_hunter.will_of_the_illidari = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
