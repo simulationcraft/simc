@@ -2210,7 +2210,12 @@ public:
         auto eff_val = i.value;
 
         if ( i.mastery )
-          eff_val += p()->cache.mastery() * p()->mastery.astral_invocation->effectN( 5 ).mastery_value();
+        {
+          if ( p()->specialization() == DRUID_BALANCE && p()->is_ptr() )
+            eff_val += p()->cache.mastery() * p()->mastery.astral_invocation->effectN( 5 ).mastery_value();
+          else
+            eff_val += p()->cache.mastery_value();
+        }
 
         return_value *= 1.0 + eff_val * check;
       }
