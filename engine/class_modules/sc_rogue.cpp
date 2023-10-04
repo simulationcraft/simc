@@ -170,6 +170,7 @@ public:
     buff_t* amplifying_poison_deathmark;
     buff_t* atrophic_poison;
     buff_t* between_the_eyes;
+    buff_t* caustic_spatter;
     buff_t* crippling_poison;
     damage_buff_t* deathmark;
     buff_t* find_weakness;
@@ -280,6 +281,7 @@ public:
     actions::rogue_poison_t* nonlethal_poison_dtb = nullptr;
 
     actions::rogue_attack_t* blade_flurry = nullptr;
+    actions::rogue_attack_t* caustic_spatter = nullptr;
     actions::rogue_attack_t* fan_the_hammer = nullptr;
     actions::flagellation_damage_t* flagellation = nullptr;
     actions::rogue_attack_t* internal_bleeding = nullptr;
@@ -313,6 +315,14 @@ public:
       actions::rogue_attack_t* mutilate_oh = nullptr;
       actions::rogue_attack_t* ambush = nullptr;
     } vicious_venoms;
+    struct
+    {
+      actions::rogue_attack_t* crimson_tempest = nullptr;
+      actions::rogue_attack_t* garrote = nullptr;
+      actions::rogue_attack_t* rupture = nullptr;
+      actions::rogue_attack_t* deathmark_garrote = nullptr;
+      actions::rogue_attack_t* deathmark_rupture = nullptr;
+    } sanguine_blades;
   } active;
 
   // Autoattacks
@@ -555,6 +565,8 @@ public:
 
     const spell_data_t* amplifying_poison_debuff;
     const spell_data_t* blindside_buff;
+    const spell_data_t* caustic_spatter_buff;
+    const spell_data_t* caustic_spatter_damage;
     const spell_data_t* dashing_scoundrel;
     double dashing_scoundrel_gain = 0.0;
     const spell_data_t* deadly_poison_instant;
@@ -567,6 +579,7 @@ public:
     const spell_data_t* master_assassin_buff;
     const spell_data_t* poison_bomb_driver;
     const spell_data_t* poison_bomb_damage;
+    const spell_data_t* sanguine_blades_damage;
     const spell_data_t* serrated_bone_spike_energize;
     const spell_data_t* scent_of_blood_buff;
     const spell_data_t* venom_rush_energize;
@@ -752,14 +765,14 @@ public:
 
       player_talent_t thrown_precision;
       player_talent_t seal_fate;
-      player_talent_t caustic_spatter;          // NYI
+      player_talent_t caustic_spatter;
       player_talent_t internal_bleeding;
       player_talent_t improved_garrote;
 
       player_talent_t crimson_tempest;
       player_talent_t lightweight_shiv;
       player_talent_t deathmark;
-      player_talent_t exsanguinate;
+      player_talent_t sanguine_blades;
       player_talent_t master_assassin;
 
       player_talent_t flying_daggers;
@@ -1132,7 +1145,6 @@ public:
   void do_exsanguinate( dot_t* dot, double coeff );
 
   void trigger_venomous_wounds_death( player_t* ); // On-death trigger for Venomous Wounds energy replenish
-  void trigger_exsanguinate( player_t* );
 
   double consume_cp_max() const
   {
@@ -1986,6 +1998,10 @@ public:
   virtual bool procs_shadow_blades_damage() const
   { return ab::special; }
 
+  // Generic rules for proccing Caustic Spatter, used by rogue_t::trigger_caustic_spatter()
+  virtual bool procs_caustic_spatter() const
+  { return ab::get_school() == SCHOOL_NATURE; }
+
   // Generic rules for proccing Seal Fate, used by rogue_t::trigger_seal_fate()
   virtual bool procs_seal_fate() const
   { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT; }
@@ -2041,7 +2057,7 @@ public:
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_venom_rush( const action_state_t* );
   void trigger_blindside( const action_state_t* );
-  void trigger_shadow_blades_attack( action_state_t* );
+  void trigger_shadow_blades_attack( const action_state_t* );
   void trigger_sting_like_a_bee( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_master_of_shadows();
@@ -2053,6 +2069,8 @@ public:
   void trigger_inevitability( const action_state_t* state );
   void trigger_lingering_shadow( const action_state_t* state );
   void trigger_danse_macabre( const action_state_t* state );
+  void trigger_sanguine_blades( const action_state_t* state, rogue_attack_t* action );
+  void trigger_caustic_spatter( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -2483,6 +2501,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_blade_flurry( state );
     trigger_shadow_blades_attack( state );
     trigger_dashing_scoundrel( state );
+    trigger_caustic_spatter( state );
   }
 
   void tick( dot_t* d ) override
@@ -2491,6 +2510,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
 
     trigger_shadow_blades_attack( d->state );
     trigger_dashing_scoundrel( d->state );
+    trigger_caustic_spatter( d->state );
   }
 };
 
@@ -3727,6 +3747,9 @@ struct crimson_tempest_t : public rogue_attack_t
 
     bool procs_poison() const override
     { return false; }
+
+    bool procs_caustic_spatter() const override
+    { return false; }
   };
 
   poisoned_edges_t* poisoned_edges_damage;
@@ -3742,6 +3765,16 @@ struct crimson_tempest_t : public rogue_attack_t
     {
       poisoned_edges_damage = p->get_background_action<poisoned_edges_t>( "crimson_tempest_t30" );
       add_child( poisoned_edges_damage );
+    }
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( p()->talent.assassination.sanguine_blades->ok() )
+    {
+      add_child( p()->active.sanguine_blades.crimson_tempest );
     }
   }
 
@@ -3789,6 +3822,8 @@ struct crimson_tempest_t : public rogue_attack_t
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
+
+    trigger_sanguine_blades( d->state, p()->active.sanguine_blades.crimson_tempest );
 
     if ( poisoned_edges_damage )
     {
@@ -4037,21 +4072,6 @@ struct eviscerate_t : public rogue_attack_t
   }
 };
 
-// Exsanguinate =============================================================
-
-struct exsanguinate_t : public rogue_attack_t
-{
-  exsanguinate_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
-    rogue_attack_t( name, p, p->talent.assassination.exsanguinate, options_str )
-  { }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-    p()->trigger_exsanguinate( state->target );
-  }
-};
-
 // Fan of Knives ============================================================
 
 struct fan_of_knives_t: public rogue_attack_t
@@ -4133,6 +4153,13 @@ struct garrote_t : public rogue_attack_t
       energize_amount = 0;
       energize_resource = RESOURCE_NONE;
     }
+
+    if ( p()->talent.assassination.sanguine_blades->ok() )
+    {
+      add_child( secondary_trigger_type == secondary_trigger::DEATHMARK ?
+                 p()->active.sanguine_blades.deathmark_garrote :
+                 p()->active.sanguine_blades.garrote );
+    }
   }
 
   int n_targets() const override
@@ -4172,6 +4199,9 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
     trigger_venomous_wounds( d->state );
+    trigger_sanguine_blades( d->state, secondary_trigger_type == secondary_trigger::DEATHMARK ?
+                                       p()->active.sanguine_blades.deathmark_garrote :
+                                       p()->active.sanguine_blades.garrote );
   }
 
   void execute() override
@@ -4638,6 +4668,24 @@ struct mutilate_t : public rogue_attack_t
 
       trigger_blindside( execute_state );
       trigger_venom_rush( execute_state );
+
+      // Caustic Spatter is checked after impacts have an opportunity to trigger poisons
+      if ( p()->talent.assassination.caustic_spatter->ok() )
+      {
+        auto tdata = td( execute_state->target );
+        if ( tdata->dots.rupture->is_ticking() && tdata->dots.deadly_poison->is_ticking() )
+        {
+          // Caustic Spatter debuff can only exist on one target at a time
+          tdata->debuffs.caustic_spatter->trigger();
+          for ( auto t : p()->sim->target_non_sleeping_list )
+          {
+            if ( t != execute_state->target )
+            {
+              td( t )->debuffs.caustic_spatter->expire();
+            }
+          }
+        }
+      }
     }
   }
 
@@ -4700,6 +4748,9 @@ struct rupture_t : public rogue_attack_t
 
     bool procs_poison() const override
     { return false; }
+
+    bool procs_caustic_spatter() const override
+    { return false; }
   };
 
   replicating_shadows_tick_t* replicating_shadows_tick;
@@ -4726,6 +4777,13 @@ struct rupture_t : public rogue_attack_t
         secondary_trigger_type == secondary_trigger::DEATHMARK ? "rupture_deathmark_t30" :
                                                                  "rupture_t30" );
       add_child( poisoned_edges_damage );
+    }
+
+    if ( p()->talent.assassination.sanguine_blades->ok() )
+    {
+      add_child( secondary_trigger_type == secondary_trigger::DEATHMARK ?
+                 p()->active.sanguine_blades.deathmark_rupture :
+                 p()->active.sanguine_blades.rupture );
     }
   }
 
@@ -4811,6 +4869,9 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
     trigger_venomous_wounds( d->state );
+    trigger_sanguine_blades( d->state, secondary_trigger_type == secondary_trigger::DEATHMARK ?
+                                       p()->active.sanguine_blades.deathmark_rupture :
+                                       p()->active.sanguine_blades.rupture );
 
     if ( replicating_shadows_tick )
     {
@@ -5843,6 +5904,53 @@ struct poison_bomb_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.poison_bomb_damage )
   {
     aoe = -1;
+  }
+
+  bool procs_caustic_spatter() const override
+  { return false; }
+};
+
+// Caustic Spatter ==========================================================
+
+struct caustic_spatter_t : public rogue_attack_t
+{
+  caustic_spatter_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.caustic_spatter_damage )
+  {
+    aoe = -1;
+    reduced_aoe_targets = p->spec.caustic_spatter_buff->effectN( 2 ).base_value();
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    rogue_attack_t::available_targets( tl );
+
+    // Cannot hit the original target.
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+
+    return tl.size();
+  }
+
+  bool procs_poison() const override
+  { return false; }
+
+  bool procs_caustic_spatter() const override
+  { return false; }
+};
+
+// Sanguine Blades ==========================================================
+
+struct sanguine_blades_t : public rogue_attack_t
+{
+  sanguine_blades_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.sanguine_blades_damage )
+  {
   }
 };
 
@@ -7334,24 +7442,6 @@ void rogue_t::do_exsanguinate( dot_t* dot, double rate )
   dot->adjust_full_ticks( coeff );
 }
 
-void rogue_t::trigger_exsanguinate( player_t* target )
-{
-  if ( !talent.assassination.exsanguinate->ok() )
-    return;
-
-  rogue_td_t* td = get_target_data( target );
-
-  double rate = 1.0 + talent.assassination.exsanguinate->effectN( 1 ).percent();
-  do_exsanguinate( td->dots.garrote, rate );
-  do_exsanguinate( td->dots.internal_bleeding, rate );
-  do_exsanguinate( td->dots.rupture, rate );
-  do_exsanguinate( td->dots.crimson_tempest, rate );
-
-  do_exsanguinate( td->dots.deathmark, rate );
-  do_exsanguinate( td->dots.rupture_deathmark, rate );
-  do_exsanguinate( td->dots.garrote_deathmark, rate );
-}
-
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /* state */ )
 {
@@ -7826,7 +7916,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( const action_state_t* state )
 {
   if ( !p()->buffs.shadow_blades->check() || state->result_total <= 0 || !ab::result_is_hit( state->result ) || !procs_shadow_blades_damage() )
     return;
@@ -8026,6 +8116,65 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
   }
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_sanguine_blades( const action_state_t* state, actions::rogue_attack_t* action )
+{
+  if ( !p()->talent.assassination.sanguine_blades->ok() || state->result_total <= 0 || !ab::result_is_hit( state->result ) )
+    return;
+
+  if ( !action )
+    return;
+
+  if ( ( p()->resources.current[ RESOURCE_ENERGY ] / p()->resources.max[ RESOURCE_ENERGY ] ) <=
+       p()->talent.assassination.sanguine_blades->effectN( 1 ).percent() )
+    return;
+
+  const double additional_cost = p()->talent.assassination.sanguine_blades->effectN( 2 ).base_value();
+  p()->resource_loss( RESOURCE_ENERGY, additional_cost, nullptr, action );
+  action->stats->consume_resource( RESOURCE_ENERGY, additional_cost );
+  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), additional_cost, RESOURCE_ENERGY,
+                       *action, p()->resources.current[ RESOURCE_ENERGY ] );
+
+  double amount = state->result_amount * p()->talent.assassination.sanguine_blades->effectN( 3 ).percent();
+  action->execute_on_target( state->target, amount );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_t* state )
+{
+  if ( !p()->talent.assassination.caustic_spatter->ok() || state->result_total <= 0 || !ab::result_is_hit( state->result ) )
+    return;
+
+  if ( !procs_caustic_spatter() )
+    return;
+
+  if ( p()->sim->active_enemies == 1 )
+    return;
+
+  if ( !td( state->target )->debuffs.caustic_spatter->up() )
+    return;
+
+  double multiplier = p()->spec.caustic_spatter_buff->effectN( 1 ).percent();
+
+  // Target multipliers do not replicate to secondary targets, need to reverse them out
+  const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
+
+  // Note: Unmitigated damage as target mitigation is handled on each impact
+  double damage = state->result_total * multiplier * target_da_multiplier;
+  player_t* primary_target = state->target;
+
+  p()->sim->print_debug( "{} spatters {} for {:.2f} damage ({:.2f} * {} * {:.3f})", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier );
+
+  // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
+  // Can't use schedule_execute() since multiple damage events can trigger at the same time
+  make_event( *p()->sim, 0_ms, [ this, damage, primary_target ]() {
+    if ( p()->sim->active_enemies > 1 )
+    {
+      p()->active.caustic_spatter->execute_on_target( primary_target, damage );
+    }
+  } );
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -8061,6 +8210,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.deathmark = make_buff<damage_buff_t>( *this, "deathmark", source->spec.deathmark_debuff );
   debuffs.deathmark->set_cooldown( timespan_t::zero() );
 
+  debuffs.caustic_spatter = make_buff( *this, "caustic_spatter", source->spec.caustic_spatter_buff )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION ); // TOCHECK
   debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.improved_shiv_debuff, false )
     ->set_direct_mod( source->spec.improved_shiv_debuff->effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
@@ -8433,7 +8584,6 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "echoing_reprimand"      ) return new echoing_reprimand_t      ( name, this, options_str );
   if ( name == "envenom"                ) return new envenom_t                ( name, this, options_str );
   if ( name == "eviscerate"             ) return new eviscerate_t             ( name, this, options_str );
-  if ( name == "exsanguinate"           ) return new exsanguinate_t           ( name, this, options_str );
   if ( name == "fan_of_knives"          ) return new fan_of_knives_t          ( name, this, options_str );
   if ( name == "feint"                  ) return new feint_t                  ( name, this, options_str );
   if ( name == "flagellation"           ) return new flagellation_t           ( name, this, options_str );
@@ -9237,7 +9387,7 @@ void rogue_t::init_spells()
   talent.assassination.crimson_tempest = find_talent_spell( talent_tree::SPECIALIZATION, "Crimson Tempest" );
   talent.assassination.lightweight_shiv = find_talent_spell( talent_tree::SPECIALIZATION, "Lightweight Shiv" );
   talent.assassination.deathmark = find_talent_spell( talent_tree::SPECIALIZATION, "Deathmark" );
-  talent.assassination.exsanguinate = find_talent_spell( talent_tree::SPECIALIZATION, "Exsanguinate" );
+  talent.assassination.sanguine_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Blades" );
   talent.assassination.master_assassin = find_talent_spell( talent_tree::SPECIALIZATION, "Master Assassin" );
 
   talent.assassination.flying_daggers = find_talent_spell( talent_tree::SPECIALIZATION, "Flying Daggers" );
@@ -9425,6 +9575,8 @@ void rogue_t::init_spells()
   // Assassination
   spec.amplifying_poison_debuff = talent.assassination.amplifying_poison->effectN( 3 ).trigger();
   spec.blindside_buff = talent.assassination.blindside->ok() ? find_spell( 121153 ) : spell_data_t::not_found();
+  spec.caustic_spatter_buff = talent.assassination.caustic_spatter->ok() ? find_spell( 421976 ) : spell_data_t::not_found();
+  spec.caustic_spatter_damage = talent.assassination.caustic_spatter->ok() ? find_spell( 421979 ) : spell_data_t::not_found();
   spec.dashing_scoundrel = talent.assassination.dashing_scoundrel->ok() ? talent.assassination.dashing_scoundrel : spell_data_t::not_found();
   spec.dashing_scoundrel_gain = spec.dashing_scoundrel->ok() ? find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY ) : 0.0;
   spec.deadly_poison_instant = talent.assassination.deadly_poison->ok() ? find_spell( 113780 ) : spell_data_t::not_found();
@@ -9438,6 +9590,7 @@ void rogue_t::init_spells()
   spec.master_assassin_buff = talent.assassination.master_assassin->ok() ? find_spell( 256735 ) : spell_data_t::not_found();
   spec.poison_bomb_driver = talent.assassination.poison_bomb->ok() ? find_spell( 255545 ) : spell_data_t::not_found();
   spec.poison_bomb_damage = talent.assassination.poison_bomb->ok() ? find_spell( 255546 ) : spell_data_t::not_found();
+  spec.sanguine_blades_damage = talent.assassination.sanguine_blades->ok() ? find_spell( 423193 ) : spell_data_t::not_found();
   spec.serrated_bone_spike_energize = talent.assassination.serrated_bone_spike->ok() ? find_spell( 328548 ) : spell_data_t::not_found();
   spec.scent_of_blood_buff = talent.assassination.scent_of_blood->ok() ? find_spell( 394080 ) : spell_data_t::not_found();
   spec.venom_rush_energize = talent.assassination.venom_rush->ok() ? find_spell( 256522 ) : spell_data_t::not_found();
@@ -9572,9 +9725,18 @@ void rogue_t::init_spells()
       secondary_trigger::INTERNAL_BLEEDING, "internal_bleeding" );
   }
 
-  if ( talent.assassination.doomblade->ok() )
+  if ( talent.assassination.caustic_spatter->ok() )
   {
-    active.doomblade = get_background_action<actions::doomblade_t>( "mutilated_flesh" );
+    active.caustic_spatter = get_background_action<actions::caustic_spatter_t>( "caustic_spatter" );
+  }
+
+  if ( talent.assassination.sanguine_blades->ok() )
+  {
+    active.sanguine_blades.crimson_tempest = get_background_action<actions::sanguine_blades_t>( "sanguine_blades_crimson_tempest" );
+    active.sanguine_blades.garrote = get_background_action<actions::sanguine_blades_t>( "sanguine_blades_garrote" );
+    active.sanguine_blades.rupture = get_background_action<actions::sanguine_blades_t>( "sanguine_blades_rupture" );
+    active.sanguine_blades.deathmark_garrote = get_background_action<actions::sanguine_blades_t>( "sanguine_blades_deathmark_garrote" );
+    active.sanguine_blades.deathmark_rupture = get_background_action<actions::sanguine_blades_t>( "sanguine_blades_deathmark_rupture" );
   }
 
   if ( talent.assassination.vicious_venoms->ok() )
@@ -9586,6 +9748,11 @@ void rogue_t::init_spells()
     active.vicious_venoms.mutilate_oh = get_secondary_trigger_action<actions::vicious_venoms_t>(
       secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh, true );
     active.vicious_venoms.mutilate_oh->weapon = &( off_hand_weapon ); // Flagged as MH in spell data
+  }
+
+  if ( talent.assassination.doomblade->ok() )
+  {
+    active.doomblade = get_background_action<actions::doomblade_t>( "mutilated_flesh" );
   }
 
   if ( talent.assassination.poison_bomb->ok() )
