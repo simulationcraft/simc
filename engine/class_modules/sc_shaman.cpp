@@ -355,6 +355,9 @@ public:
     action_t* lightning_rod;
     action_t* tempest_strikes;
 
+    action_t* stormflurry_ss;
+    action_t* stormflurry_ws;
+
     /// Totemic Recall last used totem (action)
     action_t* totemic_recall_totem;
 
@@ -576,6 +579,7 @@ public:
     // Enhancement
     proc_t* hot_hand;
     proc_t* stormflurry;
+    proc_t* stormflurry_failed;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
     proc_t* reset_swing_mw;
@@ -947,6 +951,7 @@ public:
   void trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks );
   void trigger_elemental_assault( const action_state_t* state );
   void trigger_tempest_strikes( const action_state_t* state );
+  void trigger_stormflurry( const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
@@ -3254,8 +3259,8 @@ struct stormstrike_attack_t : public shaman_attack_t
 
   action_t* stormblast;
 
-  stormstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w )
-    : shaman_attack_t( n, player, s ), stormflurry( false ), stormbringer( false ),
+  stormstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w, bool sf = false )
+    : shaman_attack_t( n, player, s ), stormflurry( sf ), stormbringer( false ),
     stormblast( nullptr )
   {
     background = true;
@@ -3304,7 +3309,6 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    stormflurry = false;
     stormbringer = false;
   }
 
@@ -3327,8 +3331,8 @@ struct stormstrike_attack_t : public shaman_attack_t
 
 struct windstrike_attack_t : public stormstrike_attack_t
 {
-  windstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w )
-    : stormstrike_attack_t( n, player, s, w )
+  windstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w, bool sf = false )
+    : stormstrike_attack_t( n, player, s, w, sf )
   { }
 
   double composite_target_armor( player_t* ) const override
@@ -3918,23 +3922,62 @@ struct lava_lash_t : public shaman_attack_t
 
 struct stormstrike_base_t : public shaman_attack_t
 {
+  struct stormflurry_event_t : public event_t
+  {
+    stormstrike_base_t* action;
+    player_t* target;
+
+    stormflurry_event_t( stormstrike_base_t* a, player_t* t, timespan_t delay ) :
+      event_t( *a->player, delay ), action( a ), target( t )
+    { }
+
+    const char* name() const override
+    { return "stormflurry_event"; }
+
+    void execute() override
+    {
+      // Ensure we can execute on target, before doing anything
+      if ( !action->target_ready( target ) )
+      {
+        action->p()->proc.stormflurry_failed->occur();
+        return;
+      }
+
+      action->set_target( target );
+      action->execute();
+      action->p()->proc.stormflurry->occur();
+    }
+  };
+
   stormstrike_attack_t *mh, *oh;
   bool stormflurry;
 
   stormstrike_base_t( shaman_t* player, util::string_view name, const spell_data_t* spell,
-                      util::string_view options_str )
-    : shaman_attack_t( name, player, spell ), mh( nullptr ), oh( nullptr ),
-      stormflurry( false )
+                      util::string_view options_str, bool sf = false )
+    : shaman_attack_t( name, player, spell ), mh( nullptr ), oh( nullptr ), stormflurry( sf )
   {
     parse_options( options_str );
 
     weapon             = &( p()->main_hand_weapon );
-    cooldown           = p()->cooldown.strike;
-    cooldown->duration = data().cooldown();
-    cooldown->action   = this;
     weapon_multiplier  = 0.0;
     may_crit           = false;
     school             = SCHOOL_PHYSICAL;
+
+    if ( stormflurry )
+    {
+      cooldown = player->get_cooldown( "strike_stormflurry" );
+      cooldown->duration = 0_ms;
+
+      dual = true;
+      background = true;
+      base_costs[ RESOURCE_MANA ] = 0.0;
+    }
+    else
+    {
+      cooldown = p()->cooldown.strike;
+      cooldown->duration = data().cooldown();
+      cooldown->action = this;
+    }
   }
 
   void init() override
@@ -3943,16 +3986,6 @@ struct stormstrike_base_t : public shaman_attack_t
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = false;
 
     p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
-  }
-
-  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
-  {
-    if ( background )
-    {
-      cd_duration = timespan_t::zero();
-    }
-
-    shaman_attack_t::update_ready( cd_duration );
   }
 
   void execute() override
@@ -3968,12 +4001,12 @@ struct stormstrike_base_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      mh->stormflurry = stormflurry;
+      mh->set_target( execute_state->target );
       mh->stormbringer = stormbringer_state;
       mh->execute();
       if ( oh )
       {
-        oh->stormflurry = stormflurry;
+        oh->set_target( execute_state->target );
         oh->stormbringer = stormbringer_state;
         oh->execute();
       }
@@ -3987,21 +4020,7 @@ struct stormstrike_base_t : public shaman_attack_t
       p()->trigger_tempest_strikes( execute_state );
     }
 
-    // Don't try this at home, or anywhere else ..
-    if ( p()->talent.stormflurry.ok() &&
-         rng().roll( p()->talent.stormflurry->effectN( 1 ).percent() ) )
-    {
-      background = dual = stormflurry = true;
-      schedule_execute();
-      p()->proc.stormflurry->occur();
-    }
-    // Potential stormflurrying ends, reset things
-    else
-    {
-      background  = false;
-      dual        = false;
-      stormflurry = false;
-    }
+    p()->trigger_stormflurry( execute_state );
 
     p()->buff.converging_storms->expire();
 
@@ -4020,30 +4039,22 @@ struct stormstrike_base_t : public shaman_attack_t
       p()->buff.t29_2pc_enh->trigger();
     }
   }
-
-  void reset() override
-  {
-    shaman_attack_t::reset();
-    background  = false;
-    dual        = false;
-    stormflurry = false;
-  }
 };
 
 struct stormstrike_t : public stormstrike_base_t
 {
-  stormstrike_t( shaman_t* player, util::string_view options_str )
-    : stormstrike_base_t( player, "stormstrike", player->talent.stormstrike, options_str )
+  stormstrike_t( shaman_t* player, util::string_view options_str, bool sf = false )
+    : stormstrike_base_t( player, "stormstrike", player->talent.stormstrike, options_str, sf )
   {
     // Actual damaging attacks are done by stormstrike_attack_t
     mh = new stormstrike_attack_t( "stormstrike_mh", player, data().effectN( 1 ).trigger(),
-                                   &( player->main_hand_weapon ) );
+                                   &( player->main_hand_weapon ), stormflurry );
     add_child( mh );
 
     if ( p()->off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 2 ).trigger(),
-                                     &( player->off_hand_weapon ) );
+                                     &( player->off_hand_weapon ), stormflurry );
       add_child( oh );
     }
   }
@@ -4061,20 +4072,18 @@ struct stormstrike_t : public stormstrike_base_t
 
 struct windstrike_t : public stormstrike_base_t
 {
-  timespan_t cd;
-
-  windstrike_t( shaman_t* player, util::string_view options_str )
-    : stormstrike_base_t( player, "windstrike", player->find_spell( 115356 ), options_str ), cd( data().cooldown() )
+  windstrike_t( shaman_t* player, util::string_view options_str, bool sf = false )
+    : stormstrike_base_t( player, "windstrike", player->find_spell( 115356 ), options_str, sf )
   {
     // Actual damaging attacks are done by stormstrike_attack_t
     mh = new windstrike_attack_t( "windstrike_mh", player, data().effectN( 1 ).trigger(),
-                                  &( player->main_hand_weapon ) );
+                                  &( player->main_hand_weapon ), stormflurry );
     add_child( mh );
 
     if ( p()->off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 2 ).trigger(),
-                                    &( player->off_hand_weapon ) );
+                                    &( player->off_hand_weapon ), stormflurry );
       add_child( oh );
     }
   }
@@ -8996,6 +9005,12 @@ void shaman_t::create_actions()
     action.tempest_strikes = new tempest_strikes_damage_t( this );
   }
 
+  if ( talent.stormflurry.ok() )
+  {
+    action.stormflurry_ss = new stormstrike_t( this, "", true );
+    action.stormflurry_ws = new windstrike_t( this, "", true );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -10345,6 +10360,34 @@ void shaman_t::trigger_tempest_strikes( const action_state_t* state )
   cooldown.tempest_strikes->start( talent.tempest_strikes->internal_cooldown() );
 }
 
+void shaman_t::trigger_stormflurry( const action_state_t* state )
+{
+  if ( !talent.stormflurry.ok() )
+  {
+    return;
+  }
+
+  if ( !rng().roll( talent.stormflurry->effectN( 1 ).percent() ) )
+  {
+    return;
+  }
+
+  auto a = state->action->id == 115356 ? action.stormflurry_ws : action.stormflurry_ss;
+
+  timespan_t delay = rng().gauss( 200_ms, 25_ms );
+  if ( sim->debug )
+  {
+    auto ss = static_cast<stormstrike_base_t*>( state->action );
+    sim->out_debug.print(
+      "{} scheduling stormflurry source={}, action={}, target={}, delay={}, chained={}",
+      name(), state->action->name(), a->name(), state->target->name(), delay,
+      ss ? ss->stormflurry : false );
+  }
+
+  make_event<stormstrike_t::stormflurry_event_t>( *sim, static_cast<stormstrike_base_t*>( a ),
+                                                 state->target, delay );
+}
+
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -10651,6 +10694,7 @@ void shaman_t::init_procs()
 
   proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
   proc.stormflurry            = get_proc( "Stormflurry" );
+  proc.stormflurry_failed     = get_proc( "Stormflurry (failed)" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
 
