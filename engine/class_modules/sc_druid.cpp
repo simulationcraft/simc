@@ -1721,7 +1721,7 @@ struct bt_dummy_buff_t : public druid_buff_t
 struct celestial_alignment_buff_t : public druid_buff_t
 {
   celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
-    : base_t( p, n, p->is_ptr() ? s : p->apply_override( s, p->talent.orbital_strike ) )
+    : base_t( p, n, p->apply_override( s, p->talent.orbital_strike ) )
   {
     set_cooldown( 0_ms );
 
@@ -1741,7 +1741,7 @@ struct celestial_alignment_buff_t : public druid_buff_t
       p()->eclipse_handler.trigger_both( remains() );
       p()->uptime.combined_ca_inc->update( true, sim->current_time() );
 
-      if ( p()->active.orbital_strike && !p()->is_ptr() )
+      if ( p()->active.orbital_strike )
         p()->active.orbital_strike->execute_on_target( p()->target );
     }
 
@@ -1976,6 +1976,8 @@ public:
       {
         form_mask |= form_e::BEAR_FORM;
       }
+
+      parse_passive_effects( p()->mastery.astral_invocation );
     }
   }
 
@@ -2208,7 +2210,12 @@ public:
         auto eff_val = i.value;
 
         if ( i.mastery )
-          eff_val += p()->cache.mastery_value();
+        {
+          if ( p()->specialization() == DRUID_BALANCE && p()->is_ptr() )
+            eff_val += p()->cache.mastery() * p()->mastery.astral_invocation->effectN( 5 ).mastery_value();
+          else
+            eff_val += p()->cache.mastery_value();
+        }
 
         return_value *= 1.0 + eff_val * check;
       }
@@ -6421,7 +6428,7 @@ struct celestial_alignment_base_t : public druid_spell_t
   buff_t* buff;
 
   celestial_alignment_base_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, p->is_ptr() ? s : p->apply_override( s, p->talent.orbital_strike ), opt ),
+    : druid_spell_t( n, p, p->apply_override( s, p->talent.orbital_strike ), opt ),
       buff( p->buff.celestial_alignment )
   {
     harmful = false;
@@ -8038,36 +8045,6 @@ struct survival_instincts_t : public druid_spell_t
 struct orbital_strike_t : public druid_spell_t
 {
   action_t* flare;
-  struct orbital_strike_damage_t : public druid_spell_t
-  {
-    action_t* flare;
-    orbital_strike_damage_t( druid_t* p, orbital_strike_t* driver )
-      : druid_spell_t( "orbital_strike_damage", p, p->find_spell( 361237 ) )
-    {
-      background = dual = true;
-      aoe          = -1;
-      travel_speed = 75.0;  // guesstimate
-
-      flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_orbital_strike", p->find_spell( 202347 ), "" );
-      flare->dot_duration       = timespan_t::from_seconds( this->data().effectN( 2 ).base_value() );
-      flare->name_str_reporting = "stellar_flare";
-      flare->energize_type      = action_energize::NONE;
-      driver->add_child( flare );
-
-      force_buff_effect( p->buff.eclipse_lunar, 1 );
-      force_buff_effect( p->buff.eclipse_solar, 1 );
-      force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
-      force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      flare->execute_on_target( s->target );  // flare is applied before impact damage
-
-      druid_spell_t::impact( s );
-    }
-  };
-
   orbital_strike_t( druid_t* p ) : druid_spell_t( "orbital_strike", p, p->find_spell( 361237 ) )
   {
     aoe          = -1;
@@ -8083,17 +8060,9 @@ struct orbital_strike_t : public druid_spell_t
     force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
   }
 
-  orbital_strike_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "orbital_strike", p, p->talent.orbital_strike, opt )
-  {
-    execute_action = p->get_secondary_action<orbital_strike_damage_t>( "orbital_strike_damage", this );
-    execute_action->stats = stats;
-  }
-
   void impact( action_state_t* s ) override
   {
-    if ( !p()->is_ptr() )
-      flare->execute_on_target( s->target );  // flare is applied before impact damage
+    flare->execute_on_target( s->target );  // flare is applied before impact damage
 
     druid_spell_t::impact( s );
   }
@@ -9378,8 +9347,6 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "stellar_flare"         ) return new         stellar_flare_t( this, options_str );
   if ( name == "warrior_of_elune"      ) return new      warrior_of_elune_t( this, options_str );
   if ( name == "wild_mushroom"         ) return new         wild_mushroom_t( this, options_str );
-  if ( name == "orbital_strike" && is_ptr() )
-    return new orbital_strike_t( this, options_str );
 
   // Feral
   if ( name == "berserk_cat"           ) return new           berserk_cat_t( this, options_str );
@@ -10623,7 +10590,7 @@ void druid_t::create_actions()
     active.sundered_firmament = firmament;
   }
 
-  if ( talent.orbital_strike.ok() && !is_ptr() )
+  if ( talent.orbital_strike.ok() )
     active.orbital_strike = get_secondary_action<orbital_strike_t>( "orbital_strike" );
   
   // Feral
@@ -13199,8 +13166,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.cosmic_rapidity );
   action.apply_affecting_aura( talent.elunes_guidance );
   action.apply_affecting_aura( talent.lunar_shrapnel );
-  if ( !is_ptr() )
-    action.apply_affecting_aura( talent.orbital_strike );
+  action.apply_affecting_aura( talent.orbital_strike );
   action.apply_affecting_aura( talent.power_of_goldrinn );
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );

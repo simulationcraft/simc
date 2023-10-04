@@ -1049,7 +1049,7 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
   void execute() override
   {
     base_t::execute();
-    if ( priest().sets->set( PRIEST_SHADOW, T31, B4 ) )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
       p().buffs.deaths_torment->trigger();
   }
 
@@ -2715,7 +2715,6 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
-  add_option( opt_bool( "priest.t31_ist_echo_nerf", options.t31_ist_echo_nerf ) );
 }
 
 std::string priest_t::create_profile( save_e type )

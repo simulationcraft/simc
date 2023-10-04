@@ -1,4 +1,4 @@
-// 572 talents, wow build 10.2.0.51521
+// 572 talents, wow build 10.2.0.51601
 static std::array<talent_data_t, 572> __ptr_talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -299,7 +299,7 @@ static std::array<talent_data_t, 572> __ptr_talent_data { {
   { "Blindside"                         , 22339, 0x00, 0x0008,  259,   2,   0,  328085,       0,  0 },
   { "Leeching Poison"                   , 22340, 0x00, 0x0008,  259,   0,   3,  280716,       0,  0 },
   { "Venom Rush"                        , 22343, 0x00, 0x0008,  259,   0,   5,  152152,       0,  0 },
-  { "Exsanguinate"                      , 22344, 0x00, 0x0008,  259,   2,   5,  200806,       0,  0 },
+  { "Sanguine Blades"                   , 22344, 0x00, 0x0008,  259,   2,   5,  200806,       0,  0 },
   { "Thrill of the Hunt"                , 22347, 0x00, 0x0004,  253,   1,   3,  257944,       0,  0 },
   { "Sundering"                         , 22351, 0x00, 0x0040,  263,   2,   5,  197214,       0,  0 },
   { "Stormkeeper"                       , 22352, 0x00, 0x0040,  263,   1,   5,  320137,       0,  0 },

@@ -4279,7 +4279,7 @@ void item::chaos_talisman( special_effect_t& effect )
 }
 
 // Corrupted Starlight ======================================================
-// TOCHECK: Do these void zones stack?
+// If you get lucky proc-wise you will spawn two ground events that tick independently of each other
 
 struct nightfall_t : public proc_spell_t
 {
