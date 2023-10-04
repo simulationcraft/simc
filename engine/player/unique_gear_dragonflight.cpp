@@ -8284,6 +8284,47 @@ void dreamtenders_charm( special_effect_t& effect )
   }
 }
 
+// Verdant Conduit
+// Driver: 418410
+// Buff: 418562
+// Trigger: 418523
+void verdant_conduit( special_effect_t& effect )
+{
+  // When stacking you just double the value and get the same stat on both
+  std::vector<buff_t*> buffs;
+  // TODO: increase amount based on allies option
+  double amount = effect.driver()->effectN( 2 ).average( effect.item );
+
+  auto init_buff = [ &effect, &buffs, amount ]( std::string n, unsigned effect_id ) {
+    auto buff = make_buff<stat_buff_t>( effect.player, "verdant_conduit_" + n, effect.player->find_spell( 418562 ) )
+                    ->add_stat_from_effect( effect_id, amount )
+                    ->set_name_reporting( util::inverse_tokenize( n ) );
+
+    buffs.push_back( buff );
+  };
+
+  // Spell data uses Misc Value's to set the effect, all under the same buff
+  // Manually creating 4 buffs for better tracking
+  init_buff( "crit", 1 );
+  init_buff( "haste", 2 );
+  init_buff( "mastery", 3 );
+  init_buff( "vers", 4 );
+
+  // Proc Data is all stored in the Trigger (418523)
+  // TODO: lower proc rate based on allies option
+  effect.proc_flags_  = effect.trigger()->_proc_flags;
+  effect.proc_chance_ = effect.trigger()->_proc_chance;
+  effect.ppm_         = effect.trigger()->_rppm;
+  effect.cooldown_    = effect.trigger()->internal_cooldown();
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+      } );
+}
+
 }  // namespace items
 
 namespace sets
@@ -9456,6 +9497,7 @@ void register_special_effects()
   register_special_effect( 406244, items::ever_decaying_spores );
   register_special_effect( 410230, items::undulating_sporecloak );
   register_special_effect( 419368, items::dreamtenders_charm );
+  register_special_effect( 418410, items::verdant_conduit );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
