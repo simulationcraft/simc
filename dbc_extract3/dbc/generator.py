@@ -1523,6 +1523,7 @@ class SpellDataGenerator(DataGenerator):
             ( 387113, 0 ),          # ES
             ( 425261, 0 ),          # Cleansing Flame (Damage - Prot T31 4pc)
             ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
+            ( 423590, 0 ),          # Echoes of Wrath (Ret T31 4pc buff)
         ),
 
         # Hunter:
