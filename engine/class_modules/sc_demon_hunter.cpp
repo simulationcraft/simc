@@ -6604,6 +6604,9 @@ void demon_hunter_t::create_buffs()
   } );
 
   buff.inertia = make_buff<damage_buff_t>( this, "inertia", spec.inertia_buff );
+  buff.inertia->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+    return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds
+  } );
 
   buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 
