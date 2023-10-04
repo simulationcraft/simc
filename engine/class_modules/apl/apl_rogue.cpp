@@ -551,8 +551,8 @@ void outlaw_ptr( player_t* p )
 
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)", "Cooldowns" );
   cds->add_action( "blade_flurry,if=(spell_targets>=2-talent.underhanded_upper_hand&!stealthed.rogue)&buff.blade_flurry.remains<gcd|talent.deft_maneuvers&spell_targets>=5&!variable.finish_condition", "Maintain Blade Flurry on 2+ targets, and on single target with Underhanded, or on cooldown at 5+ targets with Deft Maneuvers" );
-  cds->add_action( "roll_the_bones,if=rtb_buffs=0|variable.rtb_reroll" );
-  cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+buff.buried_treasure.up&(buff.shadow_dance.down|rtb_buffs>=6)", "Use KIR if we have 3 or more buffs that are not Buried Treasure" );
+  cds->add_action( "roll_the_bones,if=rtb_buffs=0|variable.rtb_reroll|buff.roll_the_bones.remains<=2&set_bonus.tier31_4pc", "Use RTB with no buffs, or to reroll, or just before normal buffs expire with T31" );
+  cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=4&(buff.shadow_dance.down|rtb_buffs>=6)", "Use KIR with at least 4 buffs" );
   cds->add_action( "ghostly_strike,if=talent.killing_spree&cooldown.killing_spree.ready|!talent.killing_spree|fight_remains<13", "Sync Ghostly Strike with Killing Spree, otherwise use on cooldown" );
   cds->add_action( "blade_rush,if=variable.blade_flurry_sync&(energy.base_time_to_max>4-spell_targets%3)&!stealthed.all", "Use Blade Rush at ~50% energy, and more regularly with increasing target count" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all" );
@@ -583,7 +583,7 @@ void outlaw_ptr( player_t* p )
   stealth->add_action( "between_the_eyes,if=variable.finish_condition&talent.crackshot" );
   stealth->add_action( "dispatch,if=variable.finish_condition" );
   stealth->add_action( "pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.up&(buff.broadside.up&combo_points<=1|buff.opportunity.stack>=6&buff.greenskins_wickers.up)", "2 FTH Crackshot builds can consume FTH in stealth during Broadside and low CP, or at max stacks with GSW" );
-  stealth->add_action( "ambush,if=!buff.subterfuge.up|talent.hidden_opportunity" );
+  stealth->add_action( "ambush,if=talent.hidden_opportunity" );
 
   stealth_cds->add_action( "variable,name=vanish_opportunity_condition,value=!talent.shadow_dance&talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling", "Stealth Cooldowns" );
   stealth_cds->add_action( "vanish,if=talent.hidden_opportunity&!talent.crackshot&!buff.audacity.up&(variable.vanish_opportunity_condition|buff.opportunity.stack<buff.opportunity.max_stack)&variable.ambush_condition", "HO builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks" );
