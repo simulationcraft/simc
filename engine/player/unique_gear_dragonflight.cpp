@@ -8292,37 +8292,58 @@ void verdant_conduit( special_effect_t& effect )
 {
   // When stacking you just double the value and get the same stat on both
   std::vector<buff_t*> buffs;
-  // TODO: increase amount based on allies option
   double amount = effect.driver()->effectN( 2 ).average( effect.item );
 
-  auto init_buff = [ &effect, &buffs, amount ]( std::string n, unsigned effect_id ) {
-    auto buff = make_buff<stat_buff_t>( effect.player, "verdant_conduit_" + n, effect.player->find_spell( 418562 ) )
-                    ->add_stat_from_effect( effect_id, amount )
-                    ->set_name_reporting( util::inverse_tokenize( n ) );
+  // Proc Data is all stored in the Trigger (418523)
+  effect.proc_flags_          = effect.trigger()->_proc_flags;
+  effect.proc_chance_         = effect.trigger()->_proc_chance;
+  effect.ppm_                 = effect.trigger()->_rppm;
+  effect.cooldown_            = effect.trigger()->internal_cooldown();
+  auto verdant_embrace_allies = effect.player->sim->dragonflight_opts.verdant_embrace_allies;
 
-    buffs.push_back( buff );
-  };
+  if ( verdant_embrace_allies > 0 )
+  {
+    // effect.driver()->effectN( 3 ).base_value() == 20
+    // TODO: increase amount based on allies option
+    amount *= verdant_embrace_allies;
+    // TODO: lower proc rate based on allies option
+    effect.rppm_modifier = 1 - ( .1 * verdant_embrace_allies );
+  }
 
   // Spell data uses Misc Value's to set the effect, all under the same buff
   // Manually creating 4 buffs for better tracking
-  init_buff( "crit", 1 );
-  init_buff( "haste", 2 );
-  init_buff( "mastery", 3 );
-  init_buff( "vers", 4 );
+  auto buff_spell = effect.player->find_spell( 418562 );
+  auto crit       = create_buff<stat_buff_t>( effect.player, "verdant_conduit_crit", buff_spell );
+  // Check if this is the first time we've added stats
+  bool first = !crit->manual_stats_added;
+  crit->add_stat_from_effect( 1, amount );
+  crit->set_name_reporting( util::inverse_tokenize( "verdant_conduit_crit" ) );
+  buffs.push_back( crit );
 
-  // Proc Data is all stored in the Trigger (418523)
-  // TODO: lower proc rate based on allies option
-  effect.proc_flags_  = effect.trigger()->_proc_flags;
-  effect.proc_chance_ = effect.trigger()->_proc_chance;
-  effect.ppm_         = effect.trigger()->_rppm;
-  effect.cooldown_    = effect.trigger()->internal_cooldown();
+  auto haste = create_buff<stat_buff_t>( effect.player, "verdant_conduit_haste", buff_spell );
+  haste->add_stat_from_effect( 2, amount );
+  haste->set_name_reporting( util::inverse_tokenize( "verdant_conduit_haste" ) );
+  buffs.push_back( haste );
+
+  auto mastery = create_buff<stat_buff_t>( effect.player, "verdant_conduit_mastery", buff_spell );
+  mastery->add_stat_from_effect( 3, amount );
+  mastery->set_name_reporting( util::inverse_tokenize( "verdant_conduit_mastery" ) );
+  buffs.push_back( mastery );
+
+  auto vers = create_buff<stat_buff_t>( effect.player, "verdant_conduit_vers", buff_spell );
+  vers->add_stat_from_effect( 4, amount );
+  vers->set_name_reporting( util::inverse_tokenize( "verdant_conduit_vers" ) );
+  buffs.push_back( vers );
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
-      } );
+  if ( first )
+  {
+    effect.player->callbacks.register_callback_execute_function(
+        effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+          buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+        } );
+  }
 }
 
 }  // namespace items
