@@ -1089,6 +1089,7 @@ public:
   // Character Definition
   void        init_spells() override;
   void        init_base_stats() override;
+  void        init_talents() override;
   void        init_gains() override;
   void        init_procs() override;
   void        init_scaling() override;
@@ -9790,6 +9791,38 @@ void rogue_t::init_spells()
   {
     active.flagellation = get_secondary_trigger_action<actions::flagellation_damage_t>(
       secondary_trigger::FLAGELLATION, "flagellation_damage" );
+  }
+}
+
+// rogue_t::init_talents ====================================================
+
+void rogue_t::init_talents()
+{
+  player_t::init_talents();
+
+  // 2023-10-04 -- Terrible hack to work around the dirty talent tree data and duplicated entries
+  // If we find that we are parsing the old Exsanguinate talent, inject the Sanguine Blades talent at the same rank
+  const trait_data_t* trait_obj_old = trait_data_t::find_tokenized( talent_tree::SPECIALIZATION, "exsanguinate",
+                                                                    util::class_id( type ), specialization(), dbc->ptr );
+  auto it = range::find_if( player_traits, [ trait_obj_old ]( const auto& entry ) {
+    return std::get<1>( entry ) == trait_obj_old->id_trait_node_entry;
+  } );
+
+  unsigned old_rank = ( it != player_traits.end() ) ? std::get<2>( *it ) : 0;
+  if ( old_rank > 0 )
+  {
+    const trait_data_t* trait_obj_new = trait_data_t::find_tokenized( talent_tree::SPECIALIZATION, "sanguine_blades",
+                                                                      util::class_id( type ), specialization(), dbc->ptr );
+    auto it = range::find_if( player_traits, [ trait_obj_new ]( const auto& entry ) {
+      return std::get<1>( entry ) == trait_obj_new->id_trait_node_entry;
+    } );
+
+    // Only inject this entry if we didn't actually parse a valid one already
+    if ( it == player_traits.end() )
+    {
+      auto entry = std::make_tuple( talent_tree::SPECIALIZATION, trait_obj_new->id_trait_node_entry, old_rank );
+      player_traits.push_back( entry );
+    }
   }
 }
 
