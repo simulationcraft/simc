@@ -519,6 +519,8 @@ struct sim_t : private sc_thread_t
     double dreamtenders_charm_uptime = 0.9;
     // Interval between checking blue_silken_lining_uptime
     timespan_t dreamtenders_charm_update_interval = 5_s;
+    // Amount of allies using Verdant Embrace to increase the amount and reduce RPPM
+    unsigned int verdant_embrace_allies = 0;
   } dragonflight_opts;
 
   // Auras and De-Buffs
