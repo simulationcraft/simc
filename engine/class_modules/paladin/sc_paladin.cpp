@@ -1408,6 +1408,7 @@ struct righteous_might_t : public heal_t
 
 struct divine_toll_t : public paladin_spell_t
 {
+  bool t31HasProcced;
   divine_toll_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "divine_toll", p, p->talents.divine_toll )
   {
@@ -1428,6 +1429,15 @@ struct divine_toll_t : public paladin_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      // T31 only procs on the first valid target, others are not affected, even if valid
+      if ( !t31HasProcced && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) &&
+           td( s->target )->dots.expurgation->is_ticking() )
+      {
+        t31HasProcced = true;
+        p()->active.wrathful_sanction->set_target( s->target );
+        p()->active.wrathful_sanction->execute();
+      }
+
       p()->active.divine_toll->set_target( s->target );
       p()->active.divine_toll->schedule_execute();
     }
@@ -1435,6 +1445,8 @@ struct divine_toll_t : public paladin_spell_t
 
   void execute() override
   {
+    t31HasProcced = false;
+
     paladin_spell_t::execute();
 
     if ( p()->talents.divine_resonance->ok() )

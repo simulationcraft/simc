@@ -651,10 +651,12 @@ struct final_reckoning_t : public paladin_spell_t
 struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
+  bool procsT31;
 
   judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
-    holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) )
+    holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
+      procsT31( true )
   {
     parse_options( options_str );
 
@@ -686,7 +688,8 @@ struct judgment_ret_t : public judgment_t
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
     judgment_t( p, name ),
-      holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) )
+      holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
+      procsT31( false ) // Divine Toll proc in divine_toll_t
   {
     // This is for Divine Toll's background judgments
     background = true;
@@ -701,6 +704,7 @@ struct judgment_ret_t : public judgment_t
     // This is called for Divine Resonance Judgments, they benefit from Blessed Champion
     else
     {
+      procsT31 = true;
       if ( p->talents.blessed_champion->ok() )
       {
         aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
@@ -741,8 +745,9 @@ struct judgment_ret_t : public judgment_t
   void impact(action_state_t* s) override
   {
     judgment_t::impact( s );
-
-    if ( s->chain_target == 0 ) // Only main target triggers Wrathful Sanction for Blessed Champion
+    // Only main target triggers Wrathful Sanction for Blessed Champion
+    // T31 proc for Divine Toll in divine_toll_t, the others are here
+    if ( s->chain_target == 0 && procsT31 ) 
     {
       if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) && td( s->target )->dots.expurgation->is_ticking() )
       {
