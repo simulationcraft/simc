@@ -195,6 +195,9 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> emerald_trance;
     propagate_const<buff_t*> ebon_might_self_buff;
     propagate_const<buff_t*> momentum_shift;
+    propagate_const<buff_t*> t31_2pc_proc;
+    propagate_const<buff_t*> t31_2pc_stacks;
+    propagate_const<buff_t*> trembling_earth;
 
     // Preservation
 
@@ -3368,8 +3371,44 @@ struct dragonrage_t : public evoker_spell_t
 
 struct eruption_t : public essence_spell_t
 {
+  struct eruption_4pc_t : public evoker_spell_t
+  {
+    timespan_t extend_ebon;
+
+    eruption_4pc_t( evoker_t* p )
+      : evoker_spell_t( "eruption_4pc", p, p->find_spell( 424428 ) ),
+        extend_ebon( p->sets->set( EVOKER_AUGMENTATION, T31, B4 )->effectN( 1 ).time_value() * 100 )
+    {
+      aoe              = -1;
+      split_aoe_damage = true;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double da = evoker_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.ricocheting_pyroclast->ok() )
+      {
+        da *= 1 + std::min( static_cast<double>( s->n_targets ),
+                            p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
+                      p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
+      }
+
+      return da;
+    }
+
+    void execute() override
+    {
+      evoker_spell_t::execute();
+
+      p()->extend_ebon( extend_ebon );
+    }
+  };
+
+  
   timespan_t extend_ebon;
   timespan_t upheaval_cdr;
+  action_t* t31_4pc_eruption;
 
   eruption_t( evoker_t* p, std::string_view name ) : eruption_t( p, name, {} )
   {
@@ -3382,6 +3421,10 @@ struct eruption_t : public essence_spell_t
   {
     aoe              = -1;
     split_aoe_damage = true;
+    t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( "eruption_4pc" );
+
+    if ( t31_4pc_eruption )
+      add_child( t31_4pc_eruption );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -3403,6 +3446,15 @@ struct eruption_t : public essence_spell_t
     essence_spell_t::execute();
 
     p()->extend_ebon( extend_ebon );
+
+    if ( p()->buff.trembling_earth->check() && t31_4pc_eruption )
+    {
+      for ( size_t i = 0; i < p()->buff.trembling_earth->check(); i++ )
+      {
+        t31_4pc_eruption->execute_on_target( p()->target );
+      }
+      p()->buff.trembling_earth->expire();
+    }
 
     if ( p()->talent.accretion->ok() )
     {
@@ -3576,11 +3628,23 @@ struct prescience_t : public evoker_augment_t
 
     if ( is_precombat )
     {
+      cooldown->reset( 1 );
       for ( auto ally : p()->allies_with_my_prescience )
       {
         p()->get_target_data( ally )->buffs.prescience->extend_duration(
             p(), ally == s->target ? -gcd() : -cooldown->cooldown_duration( cooldown ) );
       }
+    }
+    
+    if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B2 ) )
+    {
+      p()->buff.t31_2pc_proc->expire();
+      p()->buff.t31_2pc_stacks->trigger();
+    }
+
+    if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
+    {
+      p()->buff.trembling_earth->trigger( p()->allies_with_my_prescience.size() );
     }
   }
 
@@ -3590,7 +3654,7 @@ struct prescience_t : public evoker_augment_t
     // precombat we can guarantee the first entry is the first buff because we do not allow the sim to cast prescience
     // if it would expire a prescience before the next cast, factoring in a gcds since you need time to make use of your
     // spell.
-    if ( is_precombat )
+    if ( is_precombat && cooldown->up() )
       return p()->allies_with_my_prescience.empty() ||
              p()->get_target_data( p()->allies_with_my_prescience[ 0 ] )->buffs.prescience->remains() >
                  cooldown->cooldown_duration( cooldown ) + gcd() + 100_ms;
@@ -3959,6 +4023,32 @@ public:
 
 };
 
+struct prescience_buff_t : public evoker_buff_t<buff_t>
+{
+protected:
+  using bb = evoker_buff_t<buff_t>;
+
+public:
+  prescience_buff_t( evoker_td_t& td )
+    : bb( td, "prescience", static_cast<evoker_t*>( td.source )->talent.prescience_buff )
+  {
+    set_default_value( p()->talent.prescience_buff->effectN( 1 ).percent() );
+    set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    set_chance( 1.0 );
+  };
+
+  timespan_t buff_duration() const override
+  {
+    timespan_t bd = bb::buff_duration();
+
+    if ( p()->buff.t31_2pc_proc->check() )
+    {
+      bd *= 1 + p()->buff.t31_2pc_proc->check_value();
+    }
+    return bd;
+  }
+};
+
 struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 {
   target_specific_t<spells::breath_of_eons_damage_t> eon_actions;
@@ -4252,11 +4342,9 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
             }
           } );
 
-      buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
-                             ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
-                             ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                             ->set_chance( 1.0 );
+      buffs.prescience = new buffs::prescience_buff_t( *this );
 
+      // TODO: Move into the buff itself
       if ( evoker->talent.fate_mirror.ok() )
       {
         auto fate_mirror_effect      = new special_effect_t( target );
@@ -5165,6 +5253,29 @@ void evoker_t::create_buffs()
         static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->update_stats();
     } );
   }
+
+  buff.t31_2pc_proc = make_buff<e_buff_t>( this, "t31_2pc_proc", sets->set( EVOKER_AUGMENTATION, T31, B2 ) )
+                          ->set_can_cancel( false )
+                          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                          ->set_default_value_from_effect( 1, 0.01 )
+                          ->set_duration( 0_s );
+
+  buff.t31_2pc_stacks = make_buff<e_buff_t>( this, "t31_2pc_stacks" )
+                            ->set_can_cancel( false )
+                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                            ->set_duration( 0_s )
+                            ->set_max_stack( 3 )
+                            ->set_expire_at_max_stack( true )
+                            ->set_stack_change_callback( [ this ]( buff_t* b, int _old, int _new ) {
+                              if ( _old == b->max_stack() )
+                              {
+                                buff.t31_2pc_proc->trigger();
+                              }
+                            } );
+
+  buff.trembling_earth = make_buff<e_buff_t>( this, "trembling_earth", find_spell( 424368 ) )
+                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
 
   buff.momentum_shift = make_buff<e_buff_t>( this, "momentum_shift", find_spell( 408005 ) )
                             ->set_default_value_from_effect( 1 )

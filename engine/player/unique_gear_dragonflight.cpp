@@ -8284,6 +8284,69 @@ void dreamtenders_charm( special_effect_t& effect )
   }
 }
 
+// Verdant Conduit
+// Driver: 418410
+// Buff: 418562
+// Trigger: 418523
+void verdant_conduit( special_effect_t& effect )
+{
+  // When stacking you just double the value and get the same stat on both
+  std::vector<buff_t*> buffs;
+  double amount = effect.driver()->effectN( 2 ).average( effect.item );
+
+  // Proc Data is all stored in the Trigger (418523)
+  effect.proc_flags_          = effect.trigger()->_proc_flags;
+  effect.proc_flags2_         = PF2_ALL_CAST;
+  effect.proc_chance_         = effect.trigger()->_proc_chance;
+  effect.ppm_                 = -( effect.trigger()->_rppm );
+  effect.cooldown_            = effect.trigger()->internal_cooldown();
+  auto verdant_embrace_allies = effect.player->sim->dragonflight_opts.verdant_embrace_allies;
+
+  if ( verdant_embrace_allies > 0 )
+  {
+    auto ally_coef = effect.driver()->effectN( 3 ).percent();
+    // You get 20% more stat per ally that also has it
+    amount *= 1.0 + ( ally_coef * verdant_embrace_allies );
+    // Empirically testing this is lowered by roughly 20% per ally
+    effect.rppm_modifier_ = 1.0 - ( ally_coef * verdant_embrace_allies );
+  }
+
+  // Spell data uses Misc Value's to set the effect, all under the same buff
+  // Manually creating 4 buffs for better tracking
+  auto buff_spell = effect.player->find_spell( 418562 );
+  auto crit       = create_buff<stat_buff_t>( effect.player, "verdant_conduit_crit", buff_spell );
+  // Check if this is the first time we've added stats
+  bool first = !crit->manual_stats_added;
+  crit->add_stat_from_effect( 1, amount );
+  crit->set_name_reporting( util::inverse_tokenize( "verdant_conduit_crit" ) );
+  buffs.push_back( crit );
+
+  auto haste = create_buff<stat_buff_t>( effect.player, "verdant_conduit_haste", buff_spell );
+  haste->add_stat_from_effect( 2, amount );
+  haste->set_name_reporting( util::inverse_tokenize( "verdant_conduit_haste" ) );
+  buffs.push_back( haste );
+
+  auto mastery = create_buff<stat_buff_t>( effect.player, "verdant_conduit_mastery", buff_spell );
+  mastery->add_stat_from_effect( 3, amount );
+  mastery->set_name_reporting( util::inverse_tokenize( "verdant_conduit_mastery" ) );
+  buffs.push_back( mastery );
+
+  auto vers = create_buff<stat_buff_t>( effect.player, "verdant_conduit_vers", buff_spell );
+  vers->add_stat_from_effect( 4, amount );
+  vers->set_name_reporting( util::inverse_tokenize( "verdant_conduit_vers" ) );
+  buffs.push_back( vers );
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  if ( first )
+  {
+    effect.player->callbacks.register_callback_execute_function(
+        effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+          buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+        } );
+  }
+}
+
 }  // namespace items
 
 namespace sets
@@ -9456,6 +9519,7 @@ void register_special_effects()
   register_special_effect( 406244, items::ever_decaying_spores );
   register_special_effect( 410230, items::undulating_sporecloak );
   register_special_effect( 419368, items::dreamtenders_charm );
+  register_special_effect( 418410, items::verdant_conduit );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
