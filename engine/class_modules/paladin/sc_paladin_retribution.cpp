@@ -1208,21 +1208,8 @@ struct wrathful_sanction_t : public paladin_spell_t
   wrathful_sanction_t( paladin_t* p ) : paladin_spell_t( "wrathful_sanction", p, p->spells.wrathful_sanction )
   {
     background = true;
+    base_aoe_multiplier /= p->spells.wrathful_sanction->effectN( 2 ).base_value();
   }
-
-  void impact( action_state_t* s ) override
-  {
-    double amount = s->result_total;
-
-    if ( s->chain_target > 0 )
-    {
-      amount /= p()->spells.wrathful_sanction->effectN( 2 ).base_value();
-    }
-    s->result_total = s->result_raw = amount;
-
-    paladin_spell_t::impact( s );
-  }
-  
 };
 
 
