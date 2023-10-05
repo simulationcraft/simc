@@ -3376,7 +3376,7 @@ struct eruption_t : public essence_spell_t
     timespan_t extend_ebon;
 
     eruption_4pc_t( evoker_t* p )
-      : evoker_spell_t( "eruption_4pc", p, p->find_spell( 424368 ) ),
+      : evoker_spell_t( "eruption_4pc", p, p->find_spell( 424428 ) ),
         extend_ebon( p->sets->set( EVOKER_AUGMENTATION, T31, B4 )->effectN( 1 ).time_value() * 100 )
     {
       aoe              = -1;
@@ -3422,6 +3422,9 @@ struct eruption_t : public essence_spell_t
     aoe              = -1;
     split_aoe_damage = true;
     t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( "eruption_4pc" );
+
+    if ( t31_4pc_eruption )
+      add_child( t31_4pc_eruption );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4026,7 +4029,7 @@ protected:
 
 public:
   prescience_buff_t( evoker_td_t& td )
-      : bb( td, "prescience", p()->talent.prescience_buff )
+    : bb( td, "prescience", static_cast<evoker_t*>( td.source )->talent.prescience_buff )
   {
     set_default_value( p()->talent.prescience_buff->effectN( 1 ).percent() );
     set_pct_buff_type( STAT_PCT_BUFF_CRIT );
@@ -5260,8 +5263,8 @@ void evoker_t::create_buffs()
                             ->set_can_cancel( false )
                             ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                             ->set_duration( 0_s )
-                            ->set_expire_at_max_stack( true )
                             ->set_max_stack( 3 )
+                            ->set_expire_at_max_stack( true )
                             ->set_stack_change_callback( [ this ]( buff_t* b, int _old, int _new ) {
                               if ( _old == b->max_stack() )
                               {
