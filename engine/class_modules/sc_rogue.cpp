@@ -268,6 +268,8 @@ class rogue_t : public player_t
 public:
   // Shadow Techniques swing counter;
   unsigned shadow_techniques_counter;
+  // Assassination T31 Natureblight energy accumulator
+  double t31_assassination_2pc_accumulator;
 
   // Danse Macabre Ability ID Tracker
   std::vector<unsigned> danse_macabre_tracker;
@@ -429,6 +431,7 @@ public:
     damage_buff_t* t29_subtlety_4pc_black_powder;
     buff_t* t30_assassination_4pc;
     buff_t* t30_outlaw_4pc;
+    damage_buff_t* t31_assassination_2pc;
 
   } buffs;
 
@@ -685,6 +688,8 @@ public:
     const spell_data_t* t30_outlaw_4pc_attack;
     const spell_data_t* t30_outlaw_4pc_buff;
     const spell_data_t* t30_subtlety_4pc_buff;
+    const spell_data_t* t31_assassination_2pc_buff;
+    const spell_data_t* t31_assassination_4pc_attack;
 
   } spec;
 
@@ -1769,6 +1774,7 @@ public:
     register_damage_buff( p()->buffs.t29_subtlety_2pc );
     register_damage_buff( p()->buffs.t29_subtlety_4pc );
     register_damage_buff( p()->buffs.t29_subtlety_4pc_black_powder );
+    register_damage_buff( p()->buffs.t31_assassination_2pc );
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -2335,15 +2341,30 @@ public:
 
     spend_combo_points( ab::execute_state );
 
-    if ( ab::current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
+    if ( ab::current_resource() == RESOURCE_ENERGY )
     {
-      if ( !ab::hit_any_target )
+      // Appears to count base energy cost of Blindside abilities, so can't use last_resource_cost
+      if ( p()->set_bonuses.t31_assassination_2pc->ok() )
       {
-        trigger_energy_refund();
+        p()->t31_assassination_2pc_accumulator += std::max( ab::cost(), ab::last_resource_cost );
+        const double threshold = p()->set_bonuses.t31_assassination_2pc->effectN( 3 ).base_value();
+        while ( p()->t31_assassination_2pc_accumulator >= threshold )
+        {
+          p()->t31_assassination_2pc_accumulator -= threshold;
+          p()->buffs.t31_assassination_2pc->trigger();
+        }
       }
-      else
+
+      if ( ab::last_resource_cost > 0 )
       {
-        // Energy Spend Mechanics
+        if ( !ab::hit_any_target )
+        {
+          trigger_energy_refund();
+        }
+        else
+        {
+          // Energy Spend Mechanics
+        }
       }
     }
   }
@@ -3943,12 +3964,37 @@ struct detection_t : public rogue_spell_t
 
 struct envenom_t : public rogue_attack_t
 {
+  struct envenomous_explosion_t : public rogue_attack_t
+  {
+    envenomous_explosion_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.t31_assassination_4pc_attack )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->set_bonuses.t31_assassination_4pc->effectN( 2 ).base_value();
+    }
+
+    bool procs_poison() const override
+    { return false; }
+
+    bool procs_caustic_spatter() const override
+    { return true; } // TOCHECK
+  };
+
+  envenomous_explosion_t* envenomous_explosion;
+
   envenom_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spec.envenom, options_str )
+    rogue_attack_t( name, p, p->spec.envenom, options_str ),
+    envenomous_explosion( nullptr )
   {
     dot_duration = timespan_t::zero();
     affected_by.lethal_dose = false;
     affected_by.zoldyck_insignia = false;
+
+    if ( p->set_bonuses.t31_assassination_4pc->ok() )
+    {
+      envenomous_explosion = p->get_background_action<envenomous_explosion_t>( "envenomous_explosion" );
+      add_child( envenomous_explosion );
+    }
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -4001,6 +4047,12 @@ struct envenom_t : public rogue_attack_t
 
   void impact( action_state_t* state ) override
   {
+    // T31 checks before applying Envenom, otherwise this would always succeed
+    if ( envenomous_explosion && p()->buffs.envenom->check() )
+    {
+      envenomous_explosion->execute_on_target( state->target );
+    }
+
     // Trigger Envenom buff before impact() so that poison procs from Envenom itself benefit
     timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( state )->get_combo_points() ) +
                                   p()->talent.assassination.twist_the_knife->effectN( 1 ).time_value();
@@ -5159,7 +5211,7 @@ struct shadow_dance_t : public rogue_spell_t
       {
         p()->buffs.symbols_of_death->trigger( symbols_duration );
       }
-      p()->buffs.the_rotten->trigger( p()->talent.subtlety.the_rotten->effectN( 1 ).base_value() );
+      p()->buffs.the_rotten->trigger( as<int>( p()->talent.subtlety.the_rotten->effectN( 1 ).base_value() ) );
       p()->resource_gain( RESOURCE_ENERGY, p()->spec.symbols_of_death->effectN( 5 ).resource(),
                           p()->gains.symbols_of_death_t30 );
 
@@ -5729,7 +5781,7 @@ struct symbols_of_death_t : public rogue_spell_t
     rogue_spell_t::execute();
 
     p()->buffs.symbols_of_death->trigger();
-    p()->buffs.the_rotten->trigger( p()->talent.subtlety.the_rotten->effectN( 1 ).base_value() );
+    p()->buffs.the_rotten->trigger( as<int>( p()->talent.subtlety.the_rotten->effectN( 1 ).base_value() ) );
   }
 };
 
@@ -6307,7 +6359,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
   }
 };
 
-// Outlaw T30 Set Bonus
+// Outlaw T30 Set Bonus =====================================================
 
 struct soulrip_cb_t : public dbc_proc_callback_t
 {
@@ -8326,6 +8378,8 @@ double rogue_t::composite_melee_speed() const
     h *= 1.0 / ( 1.0 + buffs.adrenaline_rush->check_value() );
   }
 
+  h *= 1.0 / ( 1.0 + buffs.t31_assassination_2pc->check_stack_value() );
+
   return h;
 }
 
@@ -9672,6 +9726,8 @@ void rogue_t::init_spells()
   spec.t30_outlaw_4pc_attack = set_bonuses.t30_outlaw_4pc->ok() ? find_spell( 409605 ) : spell_data_t::not_found();
   spec.t30_outlaw_4pc_buff = set_bonuses.t30_outlaw_4pc->ok() ? find_spell( 409606 ) : spell_data_t::not_found();
   spec.t30_subtlety_4pc_buff = set_bonuses.t30_subtlety_4pc->ok() ? find_spell( 409987 ) : spell_data_t::not_found();
+  spec.t31_assassination_2pc_buff = set_bonuses.t31_assassination_2pc->ok() ? find_spell( 426568 ) : spell_data_t::not_found();
+  spec.t31_assassination_4pc_attack = set_bonuses.t31_assassination_4pc->ok() ? find_spell( 426581 ) : spell_data_t::not_found();
 
   // Active Spells ==========================================================
 
@@ -10349,6 +10405,11 @@ void rogue_t::create_buffs()
     ->set_direct_mod( t29_buff, 2 );
   buffs.t29_subtlety_4pc_black_powder->set_quiet( true );
 
+  buffs.t31_assassination_2pc = make_buff<damage_buff_t>( this, "natureblight", spec.t31_assassination_2pc_buff )
+    ->set_is_stacking_mod( true );
+  buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED )
+    ->add_invalidate( CACHE_ATTACK_SPEED )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
 // rogue_t::invalidate_cache =========================================
@@ -10360,7 +10421,7 @@ void rogue_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_HASTE:
-      if ( is_ptr() && talent.outlaw.swift_slasher->ok() && buffs.slice_and_dice->check() )
+      if ( talent.outlaw.swift_slasher->ok() && buffs.slice_and_dice->check() )
       {
         invalidate_cache( CACHE_ATTACK_SPEED );
       }
@@ -10657,6 +10718,7 @@ void rogue_t::reset()
   else
     shadow_techniques_counter = rng().range( 0, 4 );
 
+  t31_assassination_2pc_accumulator = 0;
   danse_macabre_tracker.clear();
 
   restealth_allowed = false;
