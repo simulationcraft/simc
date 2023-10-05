@@ -10336,7 +10336,7 @@ void rogue_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buffs.deeper_daggers = make_buff( this, "deeper_daggers", spec.deeper_daggers_buff )
-    ->set_default_value( talent.subtlety.deeper_daggers->effectN( 1 ).percent() );
+    ->set_default_value_from_effect( 1 );
 
   buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins", spec.perforated_veins_buff );
   buffs.perforated_veins_counter = make_buff( this, "perforated_veins_counter", spec.perforated_veins_counter );
