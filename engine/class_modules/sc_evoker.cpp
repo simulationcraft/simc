@@ -3628,6 +3628,7 @@ struct prescience_t : public evoker_augment_t
 
     if ( is_precombat )
     {
+      cooldown->reset( 1 );
       for ( auto ally : p()->allies_with_my_prescience )
       {
         p()->get_target_data( ally )->buffs.prescience->extend_duration(
@@ -3653,7 +3654,7 @@ struct prescience_t : public evoker_augment_t
     // precombat we can guarantee the first entry is the first buff because we do not allow the sim to cast prescience
     // if it would expire a prescience before the next cast, factoring in a gcds since you need time to make use of your
     // spell.
-    if ( is_precombat )
+    if ( is_precombat && cooldown->up() )
       return p()->allies_with_my_prescience.empty() ||
              p()->get_target_data( p()->allies_with_my_prescience[ 0 ] )->buffs.prescience->remains() >
                  cooldown->cooldown_duration( cooldown ) + gcd() + 100_ms;
