@@ -8296,18 +8296,19 @@ void verdant_conduit( special_effect_t& effect )
 
   // Proc Data is all stored in the Trigger (418523)
   effect.proc_flags_          = effect.trigger()->_proc_flags;
+  effect.proc_flags2_         = PF2_ALL_CAST;
   effect.proc_chance_         = effect.trigger()->_proc_chance;
-  effect.ppm_                 = effect.trigger()->_rppm;
+  effect.ppm_                 = -( effect.trigger()->_rppm );
   effect.cooldown_            = effect.trigger()->internal_cooldown();
   auto verdant_embrace_allies = effect.player->sim->dragonflight_opts.verdant_embrace_allies;
 
   if ( verdant_embrace_allies > 0 )
   {
-    // effect.driver()->effectN( 3 ).base_value() == 20
-    // TODO: increase amount based on allies option
-    amount *= verdant_embrace_allies;
-    // TODO: lower proc rate based on allies option
-    effect.rppm_modifier = 1 - ( .1 * verdant_embrace_allies );
+    auto ally_coef = effect.driver()->effectN( 3 ).percent();
+    // You get 20% more stat per ally that also has it
+    amount *= 1.0 + ( ally_coef * verdant_embrace_allies );
+    // Empirically testing this is lowered by roughly 20% per ally
+    effect.rppm_modifier_ = 1.0 - ( ally_coef * verdant_embrace_allies );
   }
 
   // Spell data uses Misc Value's to set the effect, all under the same buff
