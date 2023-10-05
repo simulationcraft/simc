@@ -3821,6 +3821,7 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 
       if ( p() -> tier_set.t31_bm_4pc.ok() ) {
 
+        // see https://github.com/SimCMinMax/WoW-BugTracker/issues/1135
         if ( p() -> bugs )
         {
           if (!( p() -> pets.dire_beast.active_pets().empty()))
@@ -5542,7 +5543,8 @@ struct kill_command_t: public hunter_spell_t
       pet -> active.kill_command -> execute_on_target( target );
 
     if ( p() -> tier_set.t31_bm_4pc.ok() )
-
+    {
+      // see https://github.com/SimCMinMax/WoW-BugTracker/issues/1135
       if ( p() -> bugs )
       {
         if (!( p() -> pets.dire_beast.active_pets().empty()))
@@ -5555,6 +5557,7 @@ struct kill_command_t: public hunter_spell_t
         for ( auto pet : p() -> pets.dire_beast.active_pets() )
           pet -> active.kill_command -> execute_on_target( target );
       }
+    }
     p() -> buffs.tip_of_the_spear -> trigger();
 
     if ( reset.chance != 0 )
