@@ -4929,10 +4929,11 @@ struct rupture_t : public rogue_attack_t
     }
 
     // TOCHECK -- Double check this interacts as expected for cleaved Ruptures
+    // 2023-10-05 -- Currently when triggerd by an ER cast, only uses base combo points
     if ( p()->active.internal_bleeding )
     {
       p()->active.internal_bleeding->trigger_secondary_action( state->target,
-                                                               cast_state( state )->get_combo_points() );
+                                                               cast_state( state )->get_combo_points( p()->bugs ) );
     }
   }
 
@@ -5924,7 +5925,8 @@ struct kidney_shot_t : public rogue_attack_t
 
     if ( !state->target->is_boss() && p()->active.internal_bleeding )
     {
-      p()->active.internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->get_combo_points() );
+      // 2023-10-05 -- Currently when triggerd by an ER cast, only uses base combo points
+      p()->active.internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->get_combo_points( p()->bugs ) );
     }
   }
 };
