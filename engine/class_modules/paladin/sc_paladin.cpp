@@ -1302,12 +1302,6 @@ void judgment_t::impact( action_state_t* s )
       td( s->target )->debuff.judgment->trigger( num_stacks );
     }
 
-    if ( p()->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2) && td( s->target )->dots.expurgation->is_ticking())
-    {
-        p()->active.wrathful_sanction->set_target( target );
-        p()->active.wrathful_sanction->execute();
-    }
-
     int amount = 5;
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( amount );

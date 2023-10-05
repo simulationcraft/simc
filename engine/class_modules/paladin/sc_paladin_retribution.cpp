@@ -686,7 +686,7 @@ struct judgment_ret_t : public judgment_t
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
     judgment_t( p, name ),
-    holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) )
+      holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) )
   {
     // This is for Divine Toll's background judgments
     background = true;
@@ -698,6 +698,15 @@ struct judgment_ret_t : public judgment_t
     // according to skeletor this is given the bonus of 326011
     if ( is_divine_toll )
       base_multiplier *= 1.0 + p->find_spell( 326011 )->effectN( 1 ).percent();
+    // This is called for Divine Resonance Judgments, they benefit from Blessed Champion
+    else
+    {
+      if ( p->talents.blessed_champion->ok() )
+      {
+        aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
+        base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+      }
+    }
 
     if ( p->talents.boundless_judgment->ok() )
     {
@@ -725,6 +734,20 @@ struct judgment_ret_t : public judgment_t
       {
         p()->buffs.empyrean_legacy->trigger();
         p()->buffs.empyrean_legacy_cooldown->trigger();
+      }
+    }
+  }
+
+  void impact(action_state_t* s) override
+  {
+    judgment_t::impact( s );
+
+    if ( s->chain_target == 0 ) // Only main target triggers Wrathful Sanction for Blessed Champion
+    {
+      if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) && td( s->target )->dots.expurgation->is_ticking() )
+      {
+        p()->active.wrathful_sanction->set_target( target );
+        p()->active.wrathful_sanction->execute();
       }
     }
   }
