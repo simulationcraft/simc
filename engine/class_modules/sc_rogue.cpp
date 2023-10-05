@@ -5903,12 +5903,6 @@ struct internal_bleeding_t : public rogue_attack_t
     return m;
   }
 
-  void tick( dot_t* d ) override
-  {
-    rogue_attack_t::tick( d );
-    trigger_venomous_wounds( d->state );
-  }
-
   bool snapshots_nightstalker() const override
   { return true; }
 };
