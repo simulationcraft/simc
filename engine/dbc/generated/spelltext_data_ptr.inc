@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51601
-static const std::array<spelltext_data_t, 20486> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20488> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20261,6 +20261,7 @@ static const std::array<spelltext_data_t, 20486> __ptr_spelltext_data { {
   { 423510, "$@spelldesc422902", "Your next Holy Word: Sanctify or Holy Word: Serenity does not consume a charge when cast and costs $s2% less Mana.", 0 },
   { 423583, "$@spelldesc422919", "Deals $423584s1 Shadow damage to enemies within $423584a1 yds after $d.", 0 },
   { 423584, "$@spelldesc422919", 0, 0 },
+  { 423590, "$@spelldesc424572", "Your next Holy Power ability will echo its damage effect at $s1% effectiveness.", 0 },
   { 423611, "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every 3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat.", "$pri increased by $w1.", 0 },
   { 423618, "Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.", 0, 0 },
   { 423647, "Feint has $m1 additional $Lcharge:charges;.\r\n", 0, 0 },
@@ -20318,6 +20319,7 @@ static const std::array<spelltext_data_t, 20486> __ptr_spelltext_data { {
   { 424324, "$@spelldesc424320", 0, 0 },
   { 424331, "$@spelldesc422881", "Next Arcane Missiles damage increased by $s1% and fires at up to ${$s2-1} nearby targets.", 0 },
   { 424334, "$@spelldesc422881", "Empowering Arcane Missiles.", 0 },
+  { 424368, "$@spelldesc422869", "Next Eruption triggers $s1 smaller $LEruption:Eruptions;.", 0 },
   { 424402, "$@spelldesc422871", "Damage done increased by ${$w1}.1%.\r\nGaining Essence Burst every $t3 sec.", 0 },
   { 424406, "Your melee abilities have a chance to inflict Thorn Spirit, dealing ${$s2*($424965d/$424965t2)} Nature damage over $424965d. Striking the target while the spirit remains deals $s3 Nature damage split between all nearby enemies. This effect may only occur every 2 sec.\r\n\r\nIf a target dies while afflicted with Thorn Spirit, it will seek a new foe.", 0, 0 },
   { 424428, "$@spelldesc422869", 0, "Black" },

@@ -2297,6 +2297,7 @@ class SpellDataGenerator(DataGenerator):
           ( 409632, 3 ), # Breath of Eons Damage
           ( 360828, 3 ), # Blistering Scales
           ( 410265, 3 ), # Inferno's Blessing
+          ( 424368, 3 ), # T31 4pc Buff Trembling Earth
        ),
     ]
 
