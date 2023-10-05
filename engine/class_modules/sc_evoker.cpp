@@ -5273,7 +5273,8 @@ void evoker_t::create_buffs()
                               }
                             } );
 
-  buff.trembling_earth = make_buff<e_buff_t>( this, "trembling_earth", find_spell( 424368 ) );
+  buff.trembling_earth = make_buff<e_buff_t>( this, "trembling_earth", find_spell( 424368 ) )
+                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
 
   buff.momentum_shift = make_buff<e_buff_t>( this, "momentum_shift", find_spell( 408005 ) )
