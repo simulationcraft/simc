@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51601
-static const std::array<spelltext_data_t, 20487> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20488> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20261,6 +20261,7 @@ static const std::array<spelltext_data_t, 20487> __ptr_spelltext_data { {
   { 423510, "$@spelldesc422902", "Your next Holy Word: Sanctify or Holy Word: Serenity does not consume a charge when cast and costs $s2% less Mana.", 0 },
   { 423583, "$@spelldesc422919", "Deals $423584s1 Shadow damage to enemies within $423584a1 yds after $d.", 0 },
   { 423584, "$@spelldesc422919", 0, 0 },
+  { 423585, "$@spelldesc422920", 0, 0 },
   { 423590, "$@spelldesc424572", "Your next Holy Power ability will echo its damage effect at $s1% effectiveness.", 0 },
   { 423611, "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every 3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat.", "$pri increased by $w1.", 0 },
   { 423618, "Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.", 0, 0 },
