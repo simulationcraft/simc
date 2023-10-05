@@ -2327,15 +2327,6 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
     {
       min_travel_time = 0.1;
     }
-
-    void init() override
-    {
-      demon_hunter_spell_t::init();
-
-      // As of 28/09/2023 Chaotic Disposition double dips target vulnerabilities
-      if ( p()->bugs )
-        snapshot_flags |= STATE_TGT_MUL_DA;
-    }
   };
 
   uint32_t mask;
@@ -5946,14 +5937,14 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
       ragefire_accumulator      = 0.0;
       ragefire_crit_accumulator = 0;
-      growing_inferno_ticks     = 0;
+      growing_inferno_ticks     = 1;
 
       if ( p()->active.immolation_aura_initial && p()->sim->current_time() > 0_s )
       {
         state_t* s = static_cast<state_t*>( p()->active.immolation_aura_initial->get_state() );
 
         s->target                     = p()->target;
-        s->growing_inferno_multiplier = 1;
+        s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
         s->immolation_aura            = this;
 
         p()->active.immolation_aura_initial->snapshot_state( s, p()->active.immolation_aura_initial->amount_type( s ) );
