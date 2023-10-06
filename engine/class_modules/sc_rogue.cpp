@@ -6888,7 +6888,7 @@ struct stealth_like_buff_t : public BuffBase
       if ( rogue->talent.assassination.improved_garrote->ok() )
         rogue->buffs.improved_garrote_aura->trigger();
 
-      if ( rogue->talent.assassination.indiscriminate_carnage_aura->ok() )
+      if ( rogue->talent.assassination.indiscriminate_carnage->ok() )
         rogue->buffs.indiscriminate_carnage_aura->trigger();
 
       if ( rogue->talent.outlaw.take_em_by_surprise->ok() )
