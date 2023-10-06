@@ -2015,7 +2015,7 @@ public:
 
   // Generic rules for proccing Seal Fate, used by rogue_t::trigger_seal_fate()
   virtual bool procs_seal_fate() const
-  { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT; }
+  { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT && ab::energize_amount > 0; }
 
   // Generic rules for snapshotting the Nightstalker pmultiplier, default to false as this is a custom script.
   virtual bool snapshots_nightstalker() const
@@ -2396,7 +2396,7 @@ public:
         }
 
         // Shadow Techniques gains are the last thing to be evaluated in order to reduce buff stack consume waste
-        if ( p()->spec.shadow_techniques->ok() && p()->buffs.shadow_techniques->up() )
+        if ( p()->spec.shadow_techniques->ok() && p()->buffs.shadow_techniques->up() && ab::energize_amount > 0 )
         {
           auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(), std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
           if ( consume_stacks > 0 )
