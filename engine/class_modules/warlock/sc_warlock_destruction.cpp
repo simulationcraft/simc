@@ -1239,7 +1239,7 @@ struct dimensional_cinder_t : public destruction_spell_t
 {
   dimensional_cinder_t( warlock_t* p ) : destruction_spell_t( "Dimensional Cinder", p, p->tier.dimensional_cinder )
   {
-    destro_mastery = may_crit = false;
+    destro_mastery = false;
     background = dual = true;
     aoe = -1;
     base_dd_min = base_dd_max = 0.0;
