@@ -505,6 +505,7 @@ public:
     gain_t* seal_fate;
     gain_t* serrated_bone_spike;
     gain_t* shadow_techniques;
+    gain_t* shadow_techniques_shadowcraft;
     gain_t* shadow_blades;
     gain_t* shrouded_suffocation;
     gain_t* the_first_dance;
@@ -7987,6 +7988,17 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       animacharged_cp_proc->occur();
     }
   }
+
+  // Shadowcraft refunds only trigger if the current available Shadow Techniques stacks will bring you to maximum
+  if ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.symbols_of_death->check() )
+  {
+    const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
+    if( current_deficit > 0 && p()->buffs.shadow_techniques->check() >= current_deficit  )
+    {
+      trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_shadowcraft );
+      p()->buffs.shadow_techniques->decrement( current_deficit );
+    }
+  }
 }
 
 template <typename Base>
@@ -9923,36 +9935,36 @@ void rogue_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.adrenaline_rush           = get_gain( "Adrenaline Rush" );
-  gains.adrenaline_rush_expiry    = get_gain( "Adrenaline Rush (Expiry)" );
-  gains.blade_rush                = get_gain( "Blade Rush" );
-  gains.broadside                 = get_gain( "Broadside" );
-  gains.buried_treasure           = get_gain( "Buried Treasure" );
-  gains.fatal_flourish            = get_gain( "Fatal Flourish" );
-  gains.dashing_scoundrel         = get_gain( "Dashing Scoundrel" );
-  gains.energy_refund             = get_gain( "Energy Refund" );
-  gains.master_of_shadows         = get_gain( "Master of Shadows" );
-  gains.premeditation             = get_gain( "Premeditation" );
-  gains.quick_draw                = get_gain( "Quick Draw" );
-  gains.relentless_strikes        = get_gain( "Relentless Strikes" );
-  gains.ruthlessness              = get_gain( "Ruthlessness" );
-  gains.seal_fate                 = get_gain( "Seal Fate" );
-  gains.serrated_bone_spike       = get_gain( "Serrated Bone Spike" );
-  gains.shadow_blades             = get_gain( "Shadow Blades" );
-  gains.shadow_techniques         = get_gain( "Shadow Techniques" );
-  gains.slice_and_dice            = get_gain( "Slice and Dice" );
-  gains.symbols_of_death          = get_gain( "Symbols of Death" );
-  gains.symbols_of_death_t30      = get_gain( "Symbols of Death (T30)" );
-  gains.venom_rush                = get_gain( "Venom Rush" );
-  gains.venomous_wounds           = get_gain( "Venomous Vim" );
-  gains.venomous_wounds_death     = get_gain( "Venomous Vim (Death)" );
-
   gains.ace_up_your_sleeve              = get_gain( "Ace Up Your Sleeve" );
+  gains.adrenaline_rush                 = get_gain( "Adrenaline Rush" );
+  gains.adrenaline_rush_expiry          = get_gain( "Adrenaline Rush (Expiry)" );
+  gains.blade_rush                      = get_gain( "Blade Rush" );
+  gains.broadside                       = get_gain( "Broadside" );
+  gains.buried_treasure                 = get_gain( "Buried Treasure" );
+  gains.dashing_scoundrel               = get_gain( "Dashing Scoundrel" );
+  gains.energy_refund                   = get_gain( "Energy Refund" );
+  gains.fatal_flourish                  = get_gain( "Fatal Flourish" );
   gains.improved_adrenaline_rush        = get_gain( "Improved Adrenaline Rush" );
   gains.improved_adrenaline_rush_expiry = get_gain( "Improved Adrenaline Rush (Expiry)" );
   gains.improved_ambush                 = get_gain( "Improved Ambush" );
+  gains.master_of_shadows               = get_gain( "Master of Shadows" );
+  gains.premeditation                   = get_gain( "Premeditation" );
+  gains.quick_draw                      = get_gain( "Quick Draw" );
+  gains.relentless_strikes              = get_gain( "Relentless Strikes" );
+  gains.ruthlessness                    = get_gain( "Ruthlessness" );
+  gains.seal_fate                       = get_gain( "Seal Fate" );
+  gains.serrated_bone_spike             = get_gain( "Serrated Bone Spike" );
+  gains.shadow_blades                   = get_gain( "Shadow Blades" );
+  gains.shadow_techniques               = get_gain( "Shadow Techniques" );
+  gains.shadow_techniques_shadowcraft   = get_gain( "Shadow Techniques (Shadowcraft)" );
   gains.shrouded_suffocation            = get_gain( "Shrouded Suffocation" );
+  gains.slice_and_dice                  = get_gain( "Slice and Dice" );
+  gains.symbols_of_death                = get_gain( "Symbols of Death" );
+  gains.symbols_of_death_t30            = get_gain( "Symbols of Death (T30)" );
   gains.the_first_dance                 = get_gain( "The First Dance " );
+  gains.venom_rush                      = get_gain( "Venom Rush" );
+  gains.venomous_wounds                 = get_gain( "Venomous Vim" );
+  gains.venomous_wounds_death           = get_gain( "Venomous Vim (Death)" );
 }
 
 // rogue_t::init_procs ======================================================
