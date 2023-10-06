@@ -8919,6 +8919,15 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return n_buffs;
       } );
     }
+    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "max_remains" ) )
+    {
+      return make_fn_expr( name_str, [ primary ]() {
+        timespan_t remains = 0_s;
+        for ( auto buff : primary->buffs )
+          remains = std::max( remains, buff->remains() );
+        return remains.total_seconds();
+      } );
+    }
     else if ( ( util::str_compare_ci( split[ 1 ], "longer" ) ||
                 util::str_compare_ci( split[ 1 ], "shorter" ) ||
                 util::str_compare_ci( split[ 1 ], "normal" ) ||
