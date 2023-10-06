@@ -2007,7 +2007,7 @@ public:
 
   // Generic rules for proccing Shadow Blades, used by rogue_t::trigger_shadow_blades_attack()
   virtual bool procs_shadow_blades_damage() const
-  { return ab::special; }
+  { return true; }
 
   // Generic rules for proccing Caustic Spatter, used by rogue_t::trigger_caustic_spatter()
   virtual bool procs_caustic_spatter() const
@@ -2399,8 +2399,11 @@ public:
         if ( p()->spec.shadow_techniques->ok() && p()->buffs.shadow_techniques->up() )
         {
           auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(), std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
-          trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
-          p()->buffs.shadow_techniques->decrement( consume_stacks );
+          if ( consume_stacks > 0 )
+          {
+            trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
+            p()->buffs.shadow_techniques->decrement( consume_stacks );
+          }
         }
       }
 
