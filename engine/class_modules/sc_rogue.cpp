@@ -4247,6 +4247,25 @@ struct garrote_t : public rogue_attack_t
     return n;
   }
 
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    rogue_attack_t::available_targets( tl );
+
+    // Indiscriminate Carnage smart-targets beyond the primary target, preferring lowest duration
+    if ( tl.size() > 1 && !is_secondary_action() && ( p()->buffs.indiscriminate_carnage->check() ||
+                                                      p()->buffs.indiscriminate_carnage_aura->check() ) )
+    {
+      auto it = std::partition( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+        return t == this->target;
+      } );
+      std::sort( it, tl.end(), [ this ]( player_t* a, player_t* b ) {
+        return td( a )->dots.garrote->remains() < td( b )->dots.garrote->remains();
+      } );
+    }
+
+    return tl.size();
+  }
+
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = rogue_attack_t::composite_persistent_multiplier( state );
@@ -4876,14 +4895,21 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_attack_t::available_targets( tl );
 
-    // Replicating Shadows does not smart target (but is planned to) but prefers the nearest target
-    // As this is somewhat possible to play around, randomize non-primary target order for now
-    if ( p()->talent.subtlety.replicating_shadows->ok() && is_aoe() && tl.size() > 1 )
-    {
-      auto it = std::partition( tl.begin(), tl.end(), [this]( player_t* t ) {
-        return t == this->target;
-      } );
-      rng().shuffle( it, tl.end() );
+    // Indiscriminate Carnage smart-targets beyond the primary target, preferring lowest duration
+    // Replicating Shadows also smart-targets in a similar fashion as of 10.2.0
+    if ( is_aoe() && tl.size() > 1 && !is_secondary_action() )
+    {      
+      if ( p()->talent.subtlety.replicating_shadows->ok() ||
+           p()->buffs.indiscriminate_carnage->check() ||
+           p()->buffs.indiscriminate_carnage_aura->check() )
+      {
+        auto it = std::partition( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+          return t == this->target;
+        } );
+        std::sort( it, tl.end(), [ this ]( player_t* a, player_t* b ) {
+          return td( a )->dots.rupture->remains() < td( b )->dots.rupture->remains();
+        } );
+      }
     }
 
     return tl.size();
