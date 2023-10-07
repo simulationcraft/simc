@@ -5136,27 +5136,6 @@ struct fel_rush_t : public demon_hunter_attack_t
     p()->buff.fel_rush_move->trigger();
   }
 
-  void schedule_execute( action_state_t* s ) override
-  {
-    // Fel Rush's loss of control causes a GCD lag after the loss ends.
-    // You get roughly 100ms in which to queue the next spell up correctly.
-    // Calculate this once on schedule_execute since gcd() is called multiple times
-    if ( sim->gcd_lag > 100_ms )
-      gcd_lag = rng().gauss( sim->gcd_lag - 100_ms, sim->gcd_lag_stddev );
-    else
-      gcd_lag = 0_ms;
-
-    if ( gcd_lag < 0_ms )
-      gcd_lag = 0_ms;
-
-    demon_hunter_attack_t::schedule_execute( s );
-  }
-
-  timespan_t gcd() const override
-  {
-    return demon_hunter_attack_t::gcd() + gcd_lag;
-  }
-
   bool ready() override
   {
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
