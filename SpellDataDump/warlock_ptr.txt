@@ -17413,6 +17413,7 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
+Real PPM         : 3
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -17425,8 +17426,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1098518)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1098518)  : Apply Aura (6) | Proc Trigger Spell (42): Doomfiend
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 423585 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 42), Trigger Spell (0 -> 423585)
 #2 (id=1109338)  : None (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : When Doom Brand explodes, you have a chance to summon a Doomfiend that casts $423734s2 Doom Bolt Volleys before departing. Each Doom Bolt Volley deals $<damage> Shadow damage to up to $423734x1 enemies or ${$<damage>*(1+$s2/100)} Shadow damage to a single enemy.
@@ -17511,6 +17513,26 @@ Effects          :
 #1 (id=1099704)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.68747 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc422919
+
+Name             : Doomfiend (id=423585) 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 20 seconds
+Triggered by     : Warlock Demonology 10.2 Class Set 4pc (422920)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1099705)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 210910 | Misc Value 2: 0x1671 | Radius: 10 yards | Target: Unknown(72)
+Description      : $@spelldesc422920
 
 Name             : Doom Bolt Volley (id=423734) [Spell Family (5)] 
 Class            : Warlock
