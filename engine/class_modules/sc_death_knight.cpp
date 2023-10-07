@@ -1806,6 +1806,7 @@ struct death_knight_pet_t : public pet_t
   timespan_t precombat_spawn_adjust;
   util::string_view pet_name;
   action_t* proxy_action;
+  double army_ghoul_ap_mod;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
@@ -1816,7 +1817,8 @@ struct death_knight_pet_t : public pet_t
       guardian( guardian ),
       precombat_spawn_adjust( 0_s ),
       pet_name( name ),
-      proxy_action( nullptr )
+      proxy_action( nullptr ),
+      army_ghoul_ap_mod()
   {
     if ( auto_attack )
     {
@@ -1827,6 +1829,9 @@ struct death_knight_pet_t : public pet_t
     {
       proxy_action = dk()->find_action( "raise_dead" );
     }
+
+    // Not in spell data, storing here to ensure parity between magus/apoc/army ghouls. 
+    army_ghoul_ap_mod = 0.4664;
   }
 
   double composite_melee_speed() const override
@@ -2527,21 +2532,22 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::init_base_stats();
 
-    // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
-    if (!is_ptr())
-    {
-      owner_coeff.ap_from_ap = 0.4664;
-    }
+    // Shares a value with Magus of the Dead, stored in death_knight_pet_t
+    // Ensures parity between all pets that share this ap_from_ap mod.
+    owner_coeff.ap_from_ap = army_ghoul_ap_mod;
+
     if (is_ptr())
     {
       if ( name_str == "army_ghoul" )
       {
-        owner_coeff.ap_from_ap = 0.3498;
+        // Currently has a 0.75x modiier, doesnt appear to be in spell data anywhere
+        owner_coeff.ap_from_ap *= 0.75;
       }
 
       if ( name_str == "apoc_ghoul" )
       {
-        owner_coeff.ap_from_ap = 0.522368;
+        // Currently has a 1.12x modifier, also not in spell data
+        owner_coeff.ap_from_ap *= 1.12;
       }
     }
   }
@@ -3248,8 +3254,9 @@ struct magus_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    // Magus of the Dead's AP% appears to have been decoupled from ghouls, and buffed 10% at some point.
-    owner_coeff.ap_from_ap = 0.4664;
+    // Shares a value with Army of the Dead/Apocalypse, stored in death_knight_pet_t
+    // Ensures parity between all pets that share this ap_from_ap mod.
+    owner_coeff.ap_from_ap = army_ghoul_ap_mod;
   }
 
   void init_action_list() override
