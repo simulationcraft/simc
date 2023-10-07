@@ -8789,6 +8789,32 @@ void shaman_t::create_pets()
 
 std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
+  if ( util::str_compare_ci( name, "fb_extension_possible" ) )
+  {
+    if ( !talent.further_beyond->ok() )
+    {
+      return false;
+    }
+    else
+    {
+      if ( talent.elemental_blast->ok() )
+      {
+        return p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time -
+                   p()->talent.further_beyond->effectN( 2 ).time_value() <=
+               0;
+      }
+      else
+      {
+        return p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time -
+                   p()->talent.further_beyond->effectN( 1 ).time_value() <=
+               0;
+      }
+    }
+  }
+  if ( util::str_compare_ci( name, "fb_extension_remaining" ) )
+  {
+    return talent.further_beyond->ok() ? p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time : 0;
+  }
   if ( util::str_compare_ci( name, "t30_2pc_timer.next_tick" ) )
   {
     return make_fn_expr( name, [ this ]() {
