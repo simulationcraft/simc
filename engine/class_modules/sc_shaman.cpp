@@ -5180,6 +5180,14 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       }
     }
 
+        if ( exec_type == execute_type::MOLTEN_CHARGE )
+    {
+      if ( p()->talent.primordial_wave->ok() )
+      {
+        m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
+      }
+    }
+
     if ( p()->buff.ascendance->up() )
     {
       m *= 1.0 + p()->cache.spell_crit_chance();
