@@ -6389,19 +6389,6 @@ void nymues_unraveling_spindle( special_effect_t& effect )
     void last_tick( dot_t* d ) override
     {
       bool was_channeling = player->channeling == this;
-      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
-
-      // Cancelled before the last tick completed, reset the cd
-      if ( d->end_event )
-      {
-        cooldown->reset( false );
-        cdgrp->reset( false );
-      }
-      else
-      {
-        cooldown->adjust( d->duration() );
-        cdgrp->adjust( d->duration() );
-      }
 
       proc_spell_t::last_tick( d );
 
