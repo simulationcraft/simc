@@ -488,7 +488,7 @@ struct sim_t : private sc_thread_t
     // The Blessing the player will receive if they have Primal Ritual Shell trinket equiped (wind,stone,flame,sea)
     std::string primal_ritual_shell_blessing = "wind";
     // Number of nearby allies for the effect of Allied Wristguards of Companionship
-    unsigned int allied_wristguards_allies = 4;
+    unsigned int allied_wristguards_allies = 3;
     // Chance for nearby enemies to move out of range for Allied Wristguards of Companionship
     double allied_wristguards_ally_leave_chance = 0.05;
     // Corrupting Rages Average Uptime
@@ -519,6 +519,8 @@ struct sim_t : private sc_thread_t
     double dreamtenders_charm_uptime = 0.9;
     // Interval between checking blue_silken_lining_uptime
     timespan_t dreamtenders_charm_update_interval = 5_s;
+    // Amount of allies using Verdant Embrace to increase the amount and reduce RPPM
+    unsigned int verdant_embrace_allies = 0;
   } dragonflight_opts;
 
   // Auras and De-Buffs

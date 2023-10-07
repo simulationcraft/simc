@@ -5221,10 +5221,13 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_COOLDOWN:
-        base_recharge_multiplier *= 1.0 + effect.percent();
-        if ( base_recharge_multiplier <= 0 )
-          cooldown->duration = timespan_t::zero();
-        sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        if ( data().charge_cooldown() <= 0_ms )
+        {
+          base_recharge_multiplier *= 1.0 + effect.percent();
+          if ( base_recharge_multiplier <= 0 )
+            cooldown->duration = timespan_t::zero();
+          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        }
         break;
 
       case P_RESOURCE_COST:

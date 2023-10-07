@@ -64,9 +64,10 @@ actions.build+=/sinister_strike
 actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)
 # Maintain Blade Flurry on 2+ targets, and on single target with Underhanded, or on cooldown at 5+ targets with Deft Maneuvers
 actions.cds+=/blade_flurry,if=(spell_targets>=2-talent.underhanded_upper_hand&!stealthed.rogue)&buff.blade_flurry.remains<gcd|talent.deft_maneuvers&spell_targets>=5&!variable.finish_condition
-actions.cds+=/roll_the_bones,if=rtb_buffs=0|variable.rtb_reroll
-# Use KIR if we have 3 or more buffs that are not Buried Treasure
-actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+buff.buried_treasure.up&(buff.shadow_dance.down|rtb_buffs>=6)
+# Use RTB with no buffs, or to reroll, or just before normal buffs expire with T31
+actions.cds+=/roll_the_bones,if=rtb_buffs=0|variable.rtb_reroll|buff.roll_the_bones.remains<=2&set_bonus.tier31_4pc
+# Use KIR with at least 4 buffs
+actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=4&(buff.shadow_dance.down|rtb_buffs>=6)
 # Sync Ghostly Strike with Killing Spree, otherwise use on cooldown
 actions.cds+=/ghostly_strike,if=talent.killing_spree&cooldown.killing_spree.ready|!talent.killing_spree|fight_remains<13
 # Use Blade Rush at ~50% energy, and more regularly with increasing target count
@@ -105,7 +106,7 @@ actions.stealth+=/between_the_eyes,if=variable.finish_condition&talent.crackshot
 actions.stealth+=/dispatch,if=variable.finish_condition
 # 2 FTH Crackshot builds can consume FTH in stealth during Broadside and low CP, or at max stacks with GSW
 actions.stealth+=/pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.up&(buff.broadside.up&combo_points<=1|buff.opportunity.stack>=6&buff.greenskins_wickers.up)
-actions.stealth+=/ambush,if=!buff.subterfuge.up|talent.hidden_opportunity
+actions.stealth+=/ambush,if=talent.hidden_opportunity
 
 # Stealth Cooldowns
 actions.stealth_cds=variable,name=vanish_opportunity_condition,value=!talent.shadow_dance&talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling
