@@ -5180,6 +5180,14 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       }
     }
 
+        if ( exec_type == execute_type::MOLTEN_CHARGE )
+    {
+      if ( p()->talent.primordial_wave->ok() )
+      {
+        m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
+      }
+    }
+
     if ( p()->buff.ascendance->up() )
     {
       m *= 1.0 + p()->cache.spell_crit_chance();
@@ -5466,7 +5474,7 @@ struct lava_burst_t : public shaman_spell_t
         case execute_type::MOLTEN_CHARGE:
           if ( auto mc_action = p()->find_action( "molten_charge" ) )
           {
-            aoe = 3;
+            aoe = p()->spell.t31_4pc_ele->effectN( 1 ).default_value();
             mc_action->add_child( this );
           }
         case execute_type::PRIMORDIAL_WAVE:
@@ -5602,6 +5610,11 @@ struct lava_burst_t : public shaman_spell_t
       {
         m *= p()->talent.primordial_wave->effectN( 3 ).percent();
       }
+    }
+
+    if (exec_type == execute_type::MOLTEN_CHARGE)
+    {
+      m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
     }
 
     if ( p()->buff.ascendance->up() )
