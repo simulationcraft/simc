@@ -4080,6 +4080,10 @@ struct melee_t : public death_knight_melee_attack_t
     {
       m *= 1.0 + td -> debuff.tightening_grasp -> check_stack_value();
     }
+    if( td && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) && td -> debuff.ashen_decay -> check() )
+    {
+      m *= 1.0 + p() -> spell.ashen_decay_debuff -> effectN ( 3 ).percent();
+    }
 
     return m;
   }
@@ -10821,7 +10825,7 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
     state -> result_amount *= 1.0 + td -> debuff.apocalypse_famine -> check_stack_value();
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && td && td -> debuff.ashen_decay -> check() )
-    state -> result_amount *= 1.0 + spell.ashen_decay_debuff -> effectN( 1 ).base_value();
+    state -> result_amount *= 1.0 + spell.ashen_decay_debuff -> effectN( 1 ).percent();
 
   if ( dbc::is_school( school, SCHOOL_MAGIC ) && runeforge.rune_of_spellwarding )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellwarding;
