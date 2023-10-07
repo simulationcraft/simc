@@ -1002,9 +1002,11 @@ public:
   double temporary_movement_modifier() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_speed() const override;
+  double composite_melee_haste() const override;
   double composite_spell_crit_chance() const override;
   double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
+  double composite_spell_haste() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const override;
@@ -1174,13 +1176,18 @@ struct cl_crash_lightning_buff_t : public buff_t
 struct splintered_elements_buff_t : public buff_t
 {
   shaman_t* shaman;
-  splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
+  splintered_elements_buff_t( shaman_t* p ) :
+    buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
   {
-    unsigned max_targets = as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() );
-    set_default_value_from_effect_type( A_HASTE_ALL );
-    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    unsigned max_targets = as<unsigned>(
+      shaman->find_class_spell( "Flame Shock" )->max_targets() );
+    //set_default_value_from_effect_type( A_HASTE_ALL );
+    //set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+    // Note, explicitly set here, as value is derived through a formula, not by buff value.
+    add_invalidate( cache_e::CACHE_HASTE );
     set_stack_behavior( buff_stack_behavior::DEFAULT );
-    set_max_stack( max_targets );
+    set_max_stack( max_targets ? max_targets : 1 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
@@ -10234,9 +10241,7 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
     return;
   }
 
-  auto value = talent.splintered_elements->effectN( 1 ).percent();
-
-  buff.splintered_elements->trigger( as<int>( count_duplicates ), value );
+  buff.splintered_elements->trigger( as<int>( count_duplicates ) );
 }
 
 void shaman_t::trigger_flash_of_lightning()
@@ -11528,6 +11533,48 @@ double shaman_t::composite_melee_speed() const
   speed *= 1.0 / ( 1.0 + buff.flurry->value() );
 
   return speed;
+}
+
+// shaman_t::composite_melee_haste =========================================
+
+double shaman_t::composite_melee_haste() const
+{
+  double haste = player_t::composite_melee_haste();
+
+  if ( dbc->ptr )
+  {
+    haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
+      buff.splintered_elements->stack() *
+      talent.splintered_elements->effectN( 2 ).percent() );
+  }
+  else
+  {
+    haste *= 1.0 / ( 1.0 + buff.splintered_elements->stack() *
+      talent.splintered_elements->effectN( 1 ).percent() );
+  }
+
+  return haste;
+}
+
+// shaman_t::composite_spell_haste =========================================
+
+double shaman_t::composite_spell_haste() const
+{
+  double haste = player_t::composite_spell_haste();
+
+  if ( dbc->ptr )
+  {
+    haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
+      buff.splintered_elements->stack() *
+      talent.splintered_elements->effectN( 2 ).percent() );
+  }
+  else
+  {
+    haste *= 1.0 / ( 1.0 + buff.splintered_elements->stack() *
+      talent.splintered_elements->effectN( 1 ).percent() );
+  }
+
+  return haste;
 }
 
 // shaman_t::composite_spell_power ==========================================
