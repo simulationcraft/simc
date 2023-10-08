@@ -1136,7 +1136,7 @@ void paladin_t::t31_4p_prot( action_state_t* s )
 void paladin_t::t31_4p_prot_heal(action_state_t* s)
 {
   auto actionId = s->action->id;
-  if ( actionId == 425262 )  // Cleansing Flame
+  if ( actionId == 425262 || actionId == 633 )  // Cleansing Flame, Lay on Hands
     return;
 
   double healing = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
