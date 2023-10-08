@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51601
-static const std::array<spelltext_data_t, 20488> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20492> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20261,6 +20261,7 @@ static const std::array<spelltext_data_t, 20488> __ptr_spelltext_data { {
   { 423510, "$@spelldesc422902", "Your next Holy Word: Sanctify or Holy Word: Serenity does not consume a charge when cast and costs $s2% less Mana.", 0 },
   { 423583, "$@spelldesc422919", "Deals $423584s1 Shadow damage to enemies within $423584a1 yds after $d.", 0 },
   { 423584, "$@spelldesc422919", 0, 0 },
+  { 423585, "$@spelldesc422920", 0, 0 },
   { 423590, "$@spelldesc424572", "Your next Holy Power ability will echo its damage effect at $s1% effectiveness.", 0 },
   { 423611, "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every 3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat.", "$pri increased by $w1.", 0 },
   { 423618, "Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.", 0, 0 },
@@ -20325,6 +20326,9 @@ static const std::array<spelltext_data_t, 20488> __ptr_spelltext_data { {
   { 424428, "$@spelldesc422869", 0, "Black" },
   { 424454, "$@spelldesc422891", "Blackout Kick damage increased by $w1%.\r\n$?a422892[Cooldown of abilities reduced by $422892s1 sec.][]", 0 },
   { 424461, "$@spelldesc422915", "Receiving $422915s1% of all Riptide healing $@auracaster deals.", 0 },
+  { 424491, "Finishing move that disembowels the target, causing Shadow damage.", 0, 0 },
+  { 424492, "Finishing move that launches Shadow Powder at all nearby enemies dealing Shadow damage. Deals reduced damage beyond $s2 targets.", 0, 0 },
+  { 424493, "Finishing move that tears open the target, dealing Shadow damage over time.", "Bleeding for $w1 Shadow damage every $t1 sec.", 0 },
   { 424509, "Mind Blast fractures the enemy's mind, increasing your spell damage to the target by $214621s1% for $214621d.", 0, 0 },
   { 424513, "Expurgation lasts an additional ${$s2/1000} sec and deals $s1% increased damage. Casting Judgment or Divine Toll on a target with Expurgation causes Wrathful Sanction, damaging the target for $424590s1 Holy damage and resonating ${$424590s1/$424590s2} Holy damage to up to $s3 nearby enemies.", 0, 0 },
   { 424556, "$@spelldesc51690", 0, 0 },

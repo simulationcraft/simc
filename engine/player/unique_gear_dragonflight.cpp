@@ -6389,19 +6389,6 @@ void nymues_unraveling_spindle( special_effect_t& effect )
     void last_tick( dot_t* d ) override
     {
       bool was_channeling = player->channeling == this;
-      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
-
-      // Cancelled before the last tick completed, reset the cd
-      if ( d->end_event )
-      {
-        cooldown->reset( false );
-        cdgrp->reset( false );
-      }
-      else
-      {
-        cooldown->adjust( d->duration() );
-        cdgrp->adjust( d->duration() );
-      }
 
       proc_spell_t::last_tick( d );
 
@@ -6649,7 +6636,7 @@ void branch_of_the_tormented_ancient( special_effect_t& e )
 
   auto cb = new branch_of_the_tormented_ancient_cb_t( *driver, damage, buff );
 
-  buff->set_initial_stack( e.driver()->effectN( 7 ).base_value() );
+  buff->set_initial_stack( as<int>( e.driver()->effectN( 7 ).base_value() ) );
   buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
     if ( new_ )
     {
@@ -7760,7 +7747,7 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
   timespan_t period = effect.driver()->effectN( 1 ).period();
 
   effect.player->register_combat_begin( [ buff, period ]( player_t* p ) {
-    int allies = p->sim->dragonflight_opts.allied_wristguards_allies;
+    int allies = 1 + p->sim->dragonflight_opts.allied_wristguards_allies;
 
     buff->trigger( p->sim->rng().range( 1, allies ) );
 

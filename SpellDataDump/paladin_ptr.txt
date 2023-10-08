@@ -19263,6 +19263,32 @@ Effects          :
 Description      : $@spelldesc422893
 Tooltip          : Receiving $w1 Holy damage every $t.
 
+Name             : Echoes of Wrath (id=423590) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Duration         : 12 seconds
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Log (8), Not In Spellbook (143), Disable Aura While Dead (226), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1099715)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1099716)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc424572
+Tooltip          : Your next Holy Power ability will echo its damage effect at $s1% effectiveness.
+
 Name             : Paladin Retribution 10.2 Class Set 2pc (id=424513) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
 School           : Physical

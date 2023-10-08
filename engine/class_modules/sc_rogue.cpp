@@ -505,6 +505,7 @@ public:
     gain_t* seal_fate;
     gain_t* serrated_bone_spike;
     gain_t* shadow_techniques;
+    gain_t* shadow_techniques_shadowcraft;
     gain_t* shadow_blades;
     gain_t* shrouded_suffocation;
     gain_t* the_first_dance;
@@ -2007,7 +2008,7 @@ public:
 
   // Generic rules for proccing Shadow Blades, used by rogue_t::trigger_shadow_blades_attack()
   virtual bool procs_shadow_blades_damage() const
-  { return ab::special; }
+  { return true; }
 
   // Generic rules for proccing Caustic Spatter, used by rogue_t::trigger_caustic_spatter()
   virtual bool procs_caustic_spatter() const
@@ -2015,7 +2016,7 @@ public:
 
   // Generic rules for proccing Seal Fate, used by rogue_t::trigger_seal_fate()
   virtual bool procs_seal_fate() const
-  { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT; }
+  { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT && ab::energize_amount > 0; }
 
   // Generic rules for snapshotting the Nightstalker pmultiplier, default to false as this is a custom script.
   virtual bool snapshots_nightstalker() const
@@ -2396,11 +2397,14 @@ public:
         }
 
         // Shadow Techniques gains are the last thing to be evaluated in order to reduce buff stack consume waste
-        if ( p()->spec.shadow_techniques->ok() && p()->buffs.shadow_techniques->up() )
+        if ( p()->spec.shadow_techniques->ok() && p()->buffs.shadow_techniques->up() && ab::energize_amount > 0 )
         {
           auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(), std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
-          trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
-          p()->buffs.shadow_techniques->decrement( consume_stacks );
+          if ( consume_stacks > 0 )
+          {
+            trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
+            p()->buffs.shadow_techniques->decrement( consume_stacks );
+          }
         }
       }
 
@@ -4054,7 +4058,8 @@ struct envenom_t : public rogue_attack_t
     }
 
     // Trigger Envenom buff before impact() so that poison procs from Envenom itself benefit
-    timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( state )->get_combo_points() ) +
+    // 2023-10-05 -- Envenom spell no longer has a base 1s duration, hard code for now
+    timespan_t envenom_duration = 1_s * ( 1 + cast_state( state )->get_combo_points() ) +
                                   p()->talent.assassination.twist_the_knife->effectN( 1 ).time_value();
     p()->buffs.envenom->trigger( envenom_duration );
 
@@ -4244,6 +4249,25 @@ struct garrote_t : public rogue_attack_t
     }
 
     return n;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    rogue_attack_t::available_targets( tl );
+
+    // Indiscriminate Carnage smart-targets beyond the primary target, preferring lowest duration
+    if ( tl.size() > 1 && !is_secondary_action() && ( p()->buffs.indiscriminate_carnage->check() ||
+                                                      p()->buffs.indiscriminate_carnage_aura->check() ) )
+    {
+      auto it = std::partition( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+        return t == this->target;
+      } );
+      std::sort( it, tl.end(), [ this ]( player_t* a, player_t* b ) {
+        return td( a )->dots.garrote->remains() < td( b )->dots.garrote->remains();
+      } );
+    }
+
+    return tl.size();
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -4875,14 +4899,21 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_attack_t::available_targets( tl );
 
-    // Replicating Shadows does not smart target (but is planned to) but prefers the nearest target
-    // As this is somewhat possible to play around, randomize non-primary target order for now
-    if ( p()->talent.subtlety.replicating_shadows->ok() && is_aoe() && tl.size() > 1 )
-    {
-      auto it = std::partition( tl.begin(), tl.end(), [this]( player_t* t ) {
-        return t == this->target;
-      } );
-      rng().shuffle( it, tl.end() );
+    // Indiscriminate Carnage smart-targets beyond the primary target, preferring lowest duration
+    // Replicating Shadows also smart-targets in a similar fashion as of 10.2.0
+    if ( is_aoe() && tl.size() > 1 && !is_secondary_action() )
+    {      
+      if ( p()->talent.subtlety.replicating_shadows->ok() ||
+           p()->buffs.indiscriminate_carnage->check() ||
+           p()->buffs.indiscriminate_carnage_aura->check() )
+      {
+        auto it = std::partition( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+          return t == this->target;
+        } );
+        std::sort( it, tl.end(), [ this ]( player_t* a, player_t* b ) {
+          return td( a )->dots.rupture->remains() < td( b )->dots.rupture->remains();
+        } );
+      }
     }
 
     return tl.size();
@@ -6888,7 +6919,7 @@ struct stealth_like_buff_t : public BuffBase
         rogue->buffs.improved_garrote_aura->trigger();
 
       if ( rogue->talent.assassination.indiscriminate_carnage->ok() )
-        rogue->buffs.indiscriminate_carnage->trigger();
+        rogue->buffs.indiscriminate_carnage_aura->trigger();
 
       if ( rogue->talent.outlaw.take_em_by_surprise->ok() )
         rogue->buffs.take_em_by_surprise_aura->trigger();
@@ -7957,6 +7988,17 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       animacharged_cp_proc->occur();
     }
   }
+
+  // Shadowcraft refunds only trigger if the current available Shadow Techniques stacks will bring you to maximum
+  if ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.symbols_of_death->check() )
+  {
+    const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
+    if( current_deficit > 0 && p()->buffs.shadow_techniques->check() >= current_deficit  )
+    {
+      trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_shadowcraft );
+      p()->buffs.shadow_techniques->decrement( current_deficit );
+    }
+  }
 }
 
 template <typename Base>
@@ -8887,6 +8929,15 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         for ( auto buff : primary->buffs )
           n_buffs += buff->check();
         return n_buffs;
+      } );
+    }
+    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "max_remains" ) )
+    {
+      return make_fn_expr( name_str, [ primary ]() {
+        timespan_t remains = 0_s;
+        for ( auto buff : primary->buffs )
+          remains = std::max( remains, buff->remains() );
+        return remains.total_seconds();
       } );
     }
     else if ( ( util::str_compare_ci( split[ 1 ], "longer" ) ||
@@ -9884,36 +9935,36 @@ void rogue_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.adrenaline_rush           = get_gain( "Adrenaline Rush" );
-  gains.adrenaline_rush_expiry    = get_gain( "Adrenaline Rush (Expiry)" );
-  gains.blade_rush                = get_gain( "Blade Rush" );
-  gains.broadside                 = get_gain( "Broadside" );
-  gains.buried_treasure           = get_gain( "Buried Treasure" );
-  gains.fatal_flourish            = get_gain( "Fatal Flourish" );
-  gains.dashing_scoundrel         = get_gain( "Dashing Scoundrel" );
-  gains.energy_refund             = get_gain( "Energy Refund" );
-  gains.master_of_shadows         = get_gain( "Master of Shadows" );
-  gains.premeditation             = get_gain( "Premeditation" );
-  gains.quick_draw                = get_gain( "Quick Draw" );
-  gains.relentless_strikes        = get_gain( "Relentless Strikes" );
-  gains.ruthlessness              = get_gain( "Ruthlessness" );
-  gains.seal_fate                 = get_gain( "Seal Fate" );
-  gains.serrated_bone_spike       = get_gain( "Serrated Bone Spike" );
-  gains.shadow_blades             = get_gain( "Shadow Blades" );
-  gains.shadow_techniques         = get_gain( "Shadow Techniques" );
-  gains.slice_and_dice            = get_gain( "Slice and Dice" );
-  gains.symbols_of_death          = get_gain( "Symbols of Death" );
-  gains.symbols_of_death_t30      = get_gain( "Symbols of Death (T30)" );
-  gains.venom_rush                = get_gain( "Venom Rush" );
-  gains.venomous_wounds           = get_gain( "Venomous Vim" );
-  gains.venomous_wounds_death     = get_gain( "Venomous Vim (Death)" );
-
   gains.ace_up_your_sleeve              = get_gain( "Ace Up Your Sleeve" );
+  gains.adrenaline_rush                 = get_gain( "Adrenaline Rush" );
+  gains.adrenaline_rush_expiry          = get_gain( "Adrenaline Rush (Expiry)" );
+  gains.blade_rush                      = get_gain( "Blade Rush" );
+  gains.broadside                       = get_gain( "Broadside" );
+  gains.buried_treasure                 = get_gain( "Buried Treasure" );
+  gains.dashing_scoundrel               = get_gain( "Dashing Scoundrel" );
+  gains.energy_refund                   = get_gain( "Energy Refund" );
+  gains.fatal_flourish                  = get_gain( "Fatal Flourish" );
   gains.improved_adrenaline_rush        = get_gain( "Improved Adrenaline Rush" );
   gains.improved_adrenaline_rush_expiry = get_gain( "Improved Adrenaline Rush (Expiry)" );
   gains.improved_ambush                 = get_gain( "Improved Ambush" );
+  gains.master_of_shadows               = get_gain( "Master of Shadows" );
+  gains.premeditation                   = get_gain( "Premeditation" );
+  gains.quick_draw                      = get_gain( "Quick Draw" );
+  gains.relentless_strikes              = get_gain( "Relentless Strikes" );
+  gains.ruthlessness                    = get_gain( "Ruthlessness" );
+  gains.seal_fate                       = get_gain( "Seal Fate" );
+  gains.serrated_bone_spike             = get_gain( "Serrated Bone Spike" );
+  gains.shadow_blades                   = get_gain( "Shadow Blades" );
+  gains.shadow_techniques               = get_gain( "Shadow Techniques" );
+  gains.shadow_techniques_shadowcraft   = get_gain( "Shadow Techniques (Shadowcraft)" );
   gains.shrouded_suffocation            = get_gain( "Shrouded Suffocation" );
+  gains.slice_and_dice                  = get_gain( "Slice and Dice" );
+  gains.symbols_of_death                = get_gain( "Symbols of Death" );
+  gains.symbols_of_death_t30            = get_gain( "Symbols of Death (T30)" );
   gains.the_first_dance                 = get_gain( "The First Dance " );
+  gains.venom_rush                      = get_gain( "Venom Rush" );
+  gains.venomous_wounds                 = get_gain( "Venomous Vim" );
+  gains.venomous_wounds_death           = get_gain( "Venomous Vim (Death)" );
 }
 
 // rogue_t::init_procs ======================================================

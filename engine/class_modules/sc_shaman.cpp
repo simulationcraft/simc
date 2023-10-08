@@ -45,6 +45,13 @@ enum wolf_type_e
   UNSPECIFIED
 };
 
+enum class feral_spirit_cast : unsigned
+{
+  NORMAL = 0U,
+  TIER28,
+  TIER31
+};
+
 enum class elemental
 {
   FIRE,
@@ -357,6 +364,9 @@ public:
 
     action_t* stormflurry_ss;
     action_t* stormflurry_ws;
+
+    action_t* feral_spirit_t28;
+    action_t* feral_spirit_t31;
 
     /// Totemic Recall last used totem (action)
     action_t* totemic_recall_totem;
@@ -894,8 +904,6 @@ public:
   // Misc
   bool is_elemental_pet_active() const;
   pet_t* get_active_elemental_pet() const;
-  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool resetFeralSpiritMaelstrom = false,
-                             bool t31_2pc = false );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
   timespan_t last_t30_proc;
@@ -1002,9 +1010,11 @@ public:
   double temporary_movement_modifier() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_speed() const override;
+  double composite_melee_haste() const override;
   double composite_spell_crit_chance() const override;
   double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
+  double composite_spell_haste() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const override;
@@ -1174,13 +1184,18 @@ struct cl_crash_lightning_buff_t : public buff_t
 struct splintered_elements_buff_t : public buff_t
 {
   shaman_t* shaman;
-  splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
+  splintered_elements_buff_t( shaman_t* p ) :
+    buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
   {
-    unsigned max_targets = as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() );
-    set_default_value_from_effect_type( A_HASTE_ALL );
-    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    unsigned max_targets = as<unsigned>(
+      shaman->find_class_spell( "Flame Shock" )->max_targets() );
+    //set_default_value_from_effect_type( A_HASTE_ALL );
+    //set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+    // Note, explicitly set here, as value is derived through a formula, not by buff value.
+    add_invalidate( cache_e::CACHE_HASTE );
     set_stack_behavior( buff_stack_behavior::DEFAULT );
-    set_max_stack( max_targets );
+    set_max_stack( max_targets ? max_targets : 1 );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
@@ -5173,6 +5188,14 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       }
     }
 
+        if ( exec_type == execute_type::MOLTEN_CHARGE )
+    {
+      if ( p()->talent.primordial_wave->ok() )
+      {
+        m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
+      }
+    }
+
     if ( p()->buff.ascendance->up() )
     {
       m *= 1.0 + p()->cache.spell_crit_chance();
@@ -5459,7 +5482,7 @@ struct lava_burst_t : public shaman_spell_t
         case execute_type::MOLTEN_CHARGE:
           if ( auto mc_action = p()->find_action( "molten_charge" ) )
           {
-            aoe = 3;
+            aoe = p()->spell.t31_4pc_ele->effectN( 1 ).default_value();
             mc_action->add_child( this );
           }
         case execute_type::PRIMORDIAL_WAVE:
@@ -5595,6 +5618,11 @@ struct lava_burst_t : public shaman_spell_t
       {
         m *= p()->talent.primordial_wave->effectN( 3 ).percent();
       }
+    }
+
+    if (exec_type == execute_type::MOLTEN_CHARGE)
+    {
+      m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
     }
 
     if ( p()->buff.ascendance->up() )
@@ -6325,21 +6353,111 @@ struct icefury_t : public shaman_spell_t
 
 struct feral_spirit_spell_t : public shaman_spell_t
 {
-  feral_spirit_spell_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "feral_spirit", player, player->talent.feral_spirit )
+  feral_spirit_cast type;
+  timespan_t duration;
+  unsigned n_summons;
+
+  feral_spirit_spell_t( shaman_t* player, util::string_view options_str,
+                        feral_spirit_cast c = feral_spirit_cast::NORMAL ) :
+    shaman_spell_t( "feral_spirit", player, player->talent.feral_spirit ), type( c )
   {
     parse_options( options_str );
     harmful = true;
 
+    switch ( type )
+    {
+      case feral_spirit_cast::NORMAL:
+        duration = player->find_spell( 228562 )->duration();
+        n_summons = 2U;
+        break;
+      // TODO: Figure out the T31 driver
+      case feral_spirit_cast::TIER31:
+        duration = player->find_spell( 228562 )->duration();
+        n_summons = 1U;
+        background = true;
+        cooldown = player->get_cooldown( "feral_spirit_proc" );
+        cooldown->duration = 0_ms;
+        break;
+      case feral_spirit_cast::TIER28:
+        duration = timespan_t::from_seconds( player->spell.t28_2pc_enh->effectN( 2 ).base_value() );
+        n_summons = 1U;
+        background = true;
+        cooldown = player->get_cooldown( "feral_spirit_proc" );
+        cooldown->duration = 0_ms;
+        break;
+    }
+
     // Cache pointer for MW tracking uses
-    p()->action.feral_spirits = this;
+    if ( !p()->action.feral_spirits )
+    {
+      p()->action.feral_spirits = this;
+    }
   }
 
   void execute() override
   {
     shaman_spell_t::execute();
 
-    p()->summon_feral_spirits( p()->spell.feral_spirit->duration() );
+    // Evaluate before n gets messed with
+    if ( player->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B4 ) )
+    {
+      p()->cooldown.primordial_wave->adjust( -1.0 *
+        player->sets->set( SHAMAN_ENHANCEMENT, T31, B4 )->effectN( 1 ).time_value() * n_summons );
+    }
+
+    if ( type == feral_spirit_cast::TIER31 )
+    {
+      p()->pet.lightning_wolves.spawn( duration );
+      p()->buff.crackling_surge->trigger( n_summons, buff_t::DEFAULT_VALUE(), -1, duration );
+    }
+    else
+    {
+      // No elemental spirits selected, just summon normal pets
+      if ( !p()->talent.elemental_spirits->ok() )
+      {
+        p()->pet.spirit_wolves.spawn( duration, n_summons );
+        for ( unsigned i = 0; i < n_summons; ++i )
+        {
+          p()->buff.earthen_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+        }
+      }
+      else
+      {
+        // This summon evaluates the wolf type to spawn as the roll, instead of rolling against
+        // the available pool of wolves to spawn.
+        auto n = n_summons;
+        while ( n )
+        {
+          switch ( static_cast<wolf_type_e>( 1 + rng().range( 0, 3 ) ) )
+          {
+            case FIRE_WOLF:
+              p()->pet.fire_wolves.spawn( duration );
+              p()->buff.molten_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+              break;
+            case FROST_WOLF:
+              p()->pet.frost_wolves.spawn( duration );
+              p()->buff.icy_edge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+              break;
+            case LIGHTNING_WOLF:
+              p()->pet.lightning_wolves.spawn( duration );
+              p()->buff.crackling_surge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+              break;
+            default:
+              assert( 0 );
+              break;
+          }
+          n--;
+        }
+      }
+    }
+
+    // Enhancement T28 or T31 bonuses will only override the buff from manually cast spell
+    // if the new duration exceeds the remaining duration of the buff.
+    if ( type == feral_spirit_cast::NORMAL ||
+      duration > p()->buff.feral_spirit_maelstrom->remains() )
+    {
+      p()->buff.feral_spirit_maelstrom->trigger( 1, duration );
+    }
   }
 };
 
@@ -8389,8 +8507,8 @@ struct primordial_wave_t : public shaman_spell_t
 
     if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
     {
-      p()->summon_feral_spirits( p()->spell.feral_spirit->duration(), 1, true,
-                                 p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) );
+      p()->action.feral_spirit_t31->set_target( execute_state->target );
+      p()->action.feral_spirit_t31->execute();
     }
   }
 };
@@ -8782,6 +8900,42 @@ void shaman_t::create_pets()
 
 std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
+if ( util::str_compare_ci( name, "fb_extension_possible" ) )
+  {
+    if ( !talent.further_beyond->ok() )
+    {
+      return expr_t::create_constant( name, 0.0 );
+    }
+    else
+    {
+      if ( talent.elemental_blast->ok() )
+      {
+        return make_fn_expr( name, [ this ]() {
+          auto test = ascendance_extension_cap - accumulated_ascendance_extension_time -
+                      talent.further_beyond->effectN( 2 ).time_value();
+          auto comp = test <= timespan_t::zero();
+          return comp ? 0.0 : 1.0;
+        } );
+      }
+      else
+      {
+        return make_fn_expr( name, [ this ]() {
+          auto test = ascendance_extension_cap - accumulated_ascendance_extension_time -
+                      talent.further_beyond->effectN( 1 ).time_value();
+
+          return test <= timespan_t::zero() ? 1.0 : 0.0;
+        } );
+      }
+    }
+  }
+  if ( util::str_compare_ci( name, "fb_extension_remaining" ) )
+  {
+    return make_fn_expr( name, [ this ]() {
+      return talent.further_beyond->ok()
+                 ? ( ascendance_extension_cap - accumulated_ascendance_extension_time ).total_seconds()
+                 : timespan_t::zero().total_seconds();
+    } );
+  }
   if ( util::str_compare_ci( name, "t30_2pc_timer.next_tick" ) )
   {
     return make_fn_expr( name, [ this ]() {
@@ -9009,6 +9163,16 @@ void shaman_t::create_actions()
   {
     action.stormflurry_ss = new stormstrike_t( this, "", true );
     action.stormflurry_ws = new windstrike_t( this, "", true );
+  }
+
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) )
+  {
+    action.feral_spirit_t28 = new feral_spirit_spell_t( this, "", feral_spirit_cast::TIER28 );
+  }
+
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
+  {
+    action.feral_spirit_t31 = new feral_spirit_spell_t( this, "", feral_spirit_cast::TIER31 );
   }
 
   // Generic Actions
@@ -9566,67 +9730,6 @@ pet_t* shaman_t::get_active_elemental_pet() const
   return nullptr;
 }
 
-void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool resetFeralSpiritMaelstrom, bool t31_2pc )
-{
-  //Evaluate before n gets messed with
-  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B4 ) )
-  {
-    cooldown.primordial_wave->adjust( -1.0 * ( timespan_t::from_seconds( 7 ) * n ) );
-  }
-  if ( t31_2pc )
-  {
-    pet.lightning_wolves.spawn( duration );
-    buff.crackling_surge->trigger( n, buff_t::DEFAULT_VALUE(), -1, duration );
-  }
-  else
-  {
-    // No elemental spirits selected, just summon normal pets
-    if ( !talent.elemental_spirits->ok() )
-    {
-      pet.spirit_wolves.spawn( duration, n );
-      for ( unsigned i = 0; i < n; ++i )
-      {
-        buff.earthen_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-      }
-    }
-    else
-    {
-      // This summon evaluates the wolf type to spawn as the roll, instead of rolling against
-      // the available pool of wolves to spawn.
-      while ( n )
-      {
-        switch ( static_cast<wolf_type_e>( 1 + rng().range( 0, 3 ) ) )
-        {
-          case FIRE_WOLF:
-              pet.fire_wolves.spawn( duration );
-              buff.molten_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-              break;
-          case FROST_WOLF:
-              pet.frost_wolves.spawn( duration );
-              buff.icy_edge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-              break;
-          case LIGHTNING_WOLF:
-              pet.lightning_wolves.spawn( duration );
-              buff.crackling_surge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-              break;
-          default:
-              assert( 0 );
-              break;
-        }
-        n--;
-      }
-    }
-  }
-
-  // Enhancement T28 or T31 bonuses will only override the buff from manually cast spell
-  // if the new duration exceeds the remaining duration of the buff.
-  if ( !resetFeralSpiritMaelstrom ||
-       ( resetFeralSpiritMaelstrom && duration > buff.feral_spirit_maelstrom->remains() ) )
-  {
-    buff.feral_spirit_maelstrom->trigger( 1, duration );
-  }
-}
-
 void shaman_t::summon_fire_elemental( timespan_t duration )
 {
   if ( talent.storm_elemental->ok() )
@@ -10043,8 +10146,8 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
         sim->out_debug.print( "{} Enhancement T28 2PC", name() );
       }
 
-      summon_feral_spirits( timespan_t::from_seconds(
-        spell.t28_2pc_enh->effectN( 2 ).base_value() ), 1, true );
+      action.feral_spirit_t28->set_target( state->target );
+      action.feral_spirit_t28->execute();
     }
 
     if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
@@ -10234,9 +10337,7 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
     return;
   }
 
-  auto value = talent.splintered_elements->effectN( 1 ).percent();
-
-  buff.splintered_elements->trigger( as<int>( count_duplicates ), value );
+  buff.splintered_elements->trigger( as<int>( count_duplicates ) );
 }
 
 void shaman_t::trigger_flash_of_lightning()
@@ -11528,6 +11629,48 @@ double shaman_t::composite_melee_speed() const
   speed *= 1.0 / ( 1.0 + buff.flurry->value() );
 
   return speed;
+}
+
+// shaman_t::composite_melee_haste =========================================
+
+double shaman_t::composite_melee_haste() const
+{
+  double haste = player_t::composite_melee_haste();
+
+  if ( dbc->ptr )
+  {
+    haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
+      buff.splintered_elements->stack() *
+      talent.splintered_elements->effectN( 2 ).percent() );
+  }
+  else
+  {
+    haste *= 1.0 / ( 1.0 + buff.splintered_elements->stack() *
+      talent.splintered_elements->effectN( 1 ).percent() );
+  }
+
+  return haste;
+}
+
+// shaman_t::composite_spell_haste =========================================
+
+double shaman_t::composite_spell_haste() const
+{
+  double haste = player_t::composite_spell_haste();
+
+  if ( dbc->ptr )
+  {
+    haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
+      buff.splintered_elements->stack() *
+      talent.splintered_elements->effectN( 2 ).percent() );
+  }
+  else
+  {
+    haste *= 1.0 / ( 1.0 + buff.splintered_elements->stack() *
+      talent.splintered_elements->effectN( 1 ).percent() );
+  }
+
+  return haste;
 }
 
 // shaman_t::composite_spell_power ==========================================
