@@ -2671,6 +2671,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
   {
     may_miss  = false;
     channeled = true;
+    tick_on_application = false;
 
     tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
 
