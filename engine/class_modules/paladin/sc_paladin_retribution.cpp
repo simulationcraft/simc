@@ -337,20 +337,10 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   };
 
-  expurgation_t* expurgation;
-
   blade_of_justice_t( paladin_t* p, util::string_view options_str ) :
-    paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice ),
-    expurgation( nullptr )
+    paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice )
   {
     parse_options( options_str );
-
-    if ( p->talents.expurgation->ok() )
-    {
-      expurgation = new expurgation_t( p );
-      add_child( expurgation );
-    }
-
     if ( p->talents.holy_blade->ok() )
     {
       energize_amount += p->talents.holy_blade->effectN( 1 ).resource( RESOURCE_HOLY_POWER );
