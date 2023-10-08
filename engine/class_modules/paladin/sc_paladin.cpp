@@ -1436,6 +1436,8 @@ struct divine_toll_t : public paladin_spell_t
         t31HasProcced = true;
         p()->active.wrathful_sanction->set_target( s->target );
         p()->active.wrathful_sanction->execute();
+        if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+          p()->buffs.echoes_of_wrath->trigger();
       }
 
       p()->active.divine_toll->set_target( s->target );

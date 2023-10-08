@@ -405,6 +405,19 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 // Divine Storm =============================================================
 
+struct divine_storm_echo_tempest_t : public paladin_melee_attack_t
+{
+  divine_storm_echo_tempest_t( paladin_t* p )
+    : paladin_melee_attack_t( "divine_storm_echo_tempest", p, p->find_spell( 224239 ) )  // ToDo: Change spell id to 423593
+  {
+    background = true;
+
+    aoe = -1;
+    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    clears_judgment = false;
+  }
+};
+
 struct divine_storm_tempest_t : public paladin_melee_attack_t
 {
   divine_storm_tempest_t( paladin_t* p ) :
@@ -418,13 +431,42 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
   }
 };
 
+struct divine_storm_echo_t : public paladin_melee_attack_t
+{
+  divine_storm_echo_tempest_t* tempest;
+  divine_storm_echo_t( paladin_t* p )
+    : paladin_melee_attack_t( "divine_storm_echo", p, p->talents.divine_storm ), tempest( nullptr )
+  {
+    background = true;
+
+    aoe = -1;
+    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    clears_judgment                   = false;
+    base_costs[ RESOURCE_HOLY_POWER ] = 0;
+
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+    {
+      tempest = new divine_storm_echo_tempest_t( p );
+      add_child( tempest );
+    }
+  }
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p()->talents.tempest_of_the_lightbringer->ok() )
+      tempest->schedule_execute();
+  }
+};
+
 struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_tempest_t* tempest;
+  divine_storm_echo_t* echo;
 
   divine_storm_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "divine_storm", p, p->talents.divine_storm ),
-    tempest( nullptr )
+    tempest( nullptr ), echo( nullptr )
   {
     parse_options( options_str );
 
@@ -440,6 +482,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     {
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
+    }
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+    {
+      echo = new divine_storm_echo_t( p );
+      add_child( echo );
     }
   }
 
@@ -458,6 +505,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     {
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
+    }
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+    {
+      echo = new divine_storm_echo_t( p );
+      add_child( echo );
     }
   }
 
@@ -481,6 +533,12 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p()->talents.tempest_of_the_lightbringer->ok() )
       tempest->schedule_execute();
 
+    if ( p()->buffs.echoes_of_wrath->up() )
+    {
+      p()->buffs.echoes_of_wrath->expire();
+      echo->start_action_execute_event( 700_ms ); // Maybe this 700ms is Echoes of Wrath effect 2? It's more like 600-700ms
+    }
+
     if ( p()->buffs.inquisitors_ire->up() )
       p()->buffs.inquisitors_ire->expire();
   }
@@ -494,6 +552,20 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       if ( p()->talents.sanctify->ok() )
         td( s->target )->debuff.sanctify->trigger();
     }
+  }
+};
+
+struct templars_verdict_echo_t : public paladin_melee_attack_t
+{
+  templars_verdict_echo_t( paladin_t* p ) : 
+    paladin_melee_attack_t(( p->talents.final_verdict->ok() ) ? "final_verdict_echo" : "templars_verdict_echo",
+      p,
+      ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) )
+  {
+    background = true;
+    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    clears_judgment                   = false;
+    base_costs[ RESOURCE_HOLY_POWER ] = 0;
   }
 };
 
@@ -513,13 +585,15 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   };
 
   bool is_fv;
+  templars_verdict_echo_t* echo;
 
   templars_verdict_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t(
       ( p->talents.final_verdict->ok() ) ? "final_verdict" : "templars_verdict",
       p,
       ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) ),
-    is_fv( p->talents.final_verdict->ok() )
+    is_fv( p->talents.final_verdict->ok() ),
+    echo(nullptr)
   {
     parse_options( options_str );
 
@@ -544,6 +618,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
       // Okay, when did this get reset to 1?
       weapon_multiplier = 0;
+    }
+    if ( p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B4) )
+    {
+      echo = new templars_verdict_echo_t( p );
+      add_child( echo );
     }
   }
 
@@ -592,6 +671,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
           p()->procs.righteous_cause->occur();
           p()->cooldowns.blade_of_justice->reset( true );
         }
+      }
+      if ( p()->buffs.echoes_of_wrath->up() )
+      {
+        p()->buffs.echoes_of_wrath->expire();
+        echo->target = execute_state->target;
+        echo->start_action_execute_event( 700_ms );
       }
     }
   }
@@ -753,6 +838,8 @@ struct judgment_ret_t : public judgment_t
       {
         p()->active.wrathful_sanction->set_target( target );
         p()->active.wrathful_sanction->execute();
+        if ( p()->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B4) )
+          p()->buffs.echoes_of_wrath->trigger();
       }
     }
   }
@@ -1340,6 +1427,8 @@ void paladin_t::create_buffs_retribution()
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
   buffs.empyrean_legacy_cooldown = make_buff( this, "empyrean_legacy_cooldown", find_spell( 387441 ) );
+
+  buffs.echoes_of_wrath = make_buff( this, "echoes_of_wrath", find_spell( 423590 ) );
 }
 
 void paladin_t::init_rng_retribution()
