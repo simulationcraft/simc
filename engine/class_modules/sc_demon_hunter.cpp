@@ -273,6 +273,7 @@ public:
 
       player_talent_t felfire_haste;  // NYI
       player_talent_t master_of_the_glaive;
+      player_talent_t champion_of_the_glaive;
       player_talent_t aura_of_pain;
       player_talent_t concentrated_sigils;  // Partial NYI (debuff Sigils)
       player_talent_t precise_sigils;       // Partial NYI (debuff Sigils)
@@ -284,7 +285,6 @@ public:
       player_talent_t aldrachi_design;
 
       player_talent_t chaos_fragments;
-      player_talent_t unleashed_power;
       player_talent_t illidari_knowledge;
       player_talent_t demonic;
       player_talent_t will_of_the_illidari;  // NYI Vengeance
@@ -359,7 +359,7 @@ public:
       player_talent_t know_your_enemy;
       player_talent_t glaive_tempest;
       player_talent_t cycle_of_hatred;
-      player_talent_t soulrend;
+      player_talent_t soulscar;
       player_talent_t chaotic_disposition;
 
       player_talent_t essence_break;
@@ -518,7 +518,7 @@ public:
     const spell_data_t* inertia_buff;
     const spell_data_t* ragefire_damage;
     const spell_data_t* serrated_glaive_debuff;
-    const spell_data_t* soulrend_debuff;
+    const spell_data_t* soulscar_debuff;
     const spell_data_t* restless_hunter_buff;
     const spell_data_t* tactical_retreat_buff;
     const spell_data_t* unbound_chaos_buff;
@@ -757,8 +757,6 @@ public:
     double darkglare_boon_cdr_high_roll_seconds = 18;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
-    // Use the new 2pc from Realz Forum Post
-    bool use_new_2pc_design = false;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -1444,10 +1442,10 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.bouncing_glaives );
     ab::apply_affecting_aura( p->talent.demon_hunter.aura_of_pain );
     ab::apply_affecting_aura( p->talent.demon_hunter.master_of_the_glaive );
+    ab::apply_affecting_aura( p->talent.demon_hunter.champion_of_the_glaive );
     ab::apply_affecting_aura( p->talent.demon_hunter.rush_of_chaos );
     ab::apply_affecting_aura( p->talent.demon_hunter.concentrated_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.precise_sigils );
-    ab::apply_affecting_aura( p->talent.demon_hunter.unleashed_power );
     ab::apply_affecting_aura( p->talent.demon_hunter.improved_sigil_of_misery );
     ab::apply_affecting_aura( p->talent.demon_hunter.erratic_felheart );
     ab::apply_affecting_aura( p->talent.demon_hunter.pitch_black );
@@ -4515,13 +4513,10 @@ struct blade_dance_base_t : public demon_hunter_attack_t
         }
       }
 
-      if ( p()->options.use_new_2pc_design )
+      if ( p()->cooldown.throw_glaive->up() )
       {
-        if ( p()->cooldown.throw_glaive->up() )
-        {
-          p()->active.throw_glaive_t31_throw->set_target( target );
-          p()->active.throw_glaive_t31_throw->execute();
-        }
+        p()->active.throw_glaive_t31_throw->set_target( target );
+        p()->active.throw_glaive_t31_throw->execute();
       }
     }
 
@@ -5592,9 +5587,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
 {
   struct throw_glaive_damage_t : public demon_hunter_attack_t
   {
-    struct soulrend_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
+    struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
     {
-      soulrend_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.soulrend_debuff )
+      soulscar_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.soulscar_debuff )
       {
         dual = true;
       }
@@ -5606,20 +5601,20 @@ struct throw_glaive_t : public demon_hunter_attack_t
       }
     };
 
-    soulrend_t* soulrend;
+    soulscar_t* soulscar;
     bool from_t31;
 
     throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, bool from_t31 = false )
       : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
-        soulrend( nullptr ),
+        soulscar( nullptr ),
         from_t31( from_t31 )
     {
       background = dual = true;
       radius            = 10.0;
 
-      if ( p->talent.havoc.soulrend->ok() )
+      if ( p->talent.havoc.soulscar->ok() )
       {
-        soulrend = p->get_background_action<soulrend_t>( "soulrend" );
+        soulscar = p->get_background_action<soulscar_t>( "soulscar" );
       }
 
       if ( from_t31 )
@@ -5634,10 +5629,10 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( soulrend )
+        if ( soulscar )
         {
-          const double dot_damage = state->result_amount * p()->talent.havoc.soulrend->effectN( 1 ).percent();
-          residual_action::trigger( soulrend, state->target, dot_damage );
+          const double dot_damage = state->result_amount * p()->talent.havoc.soulscar->effectN( 1 ).percent();
+          residual_action::trigger( soulscar, state->target, dot_damage );
         }
 
         if ( p()->spec.burning_wound_debuff->ok() )
@@ -5682,9 +5677,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( !t31 )
     {
-      if ( damage->soulrend )
+      if ( damage->soulscar )
       {
-        add_child( damage->soulrend );
+        add_child( damage->soulscar );
       }
 
       if ( p->set_bonuses.t31_havoc_2pc->ok() )
@@ -5735,7 +5730,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
     // Hit the fodder 250ms after the action is used to fake the travel time.
     make_event( sim, 250_ms, ( [ this ] { hit_fodder( true ); } ) );
 
-    if ( t31 != 1 && p()->talent.havoc.furious_throws->ok() )
+    // 04/10/2023 All throw glaives currently count towards cycle of hatred.
+    if ( ( p()->bugs || t31 != 1 ) && p()->talent.havoc.furious_throws->ok() )
     {
       trigger_cycle_of_hatred();
     }
@@ -5747,7 +5743,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( hit_any_target && furious_throws )
     {
-      furious_throws->execute_on_target( target );
+      make_event<delayed_execute_event_t>( *sim, p(), furious_throws, target, 400_ms );
     }
 
     if ( td( target )->debuffs.serrated_glaive->up() )
@@ -6609,6 +6605,9 @@ void demon_hunter_t::create_buffs()
   } );
 
   buff.inertia = make_buff<damage_buff_t>( this, "inertia", spec.inertia_buff );
+  buff.inertia->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+    return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds
+  } );
 
   buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 
@@ -6952,7 +6951,6 @@ void demon_hunter_t::create_options()
       opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
   add_option(
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
-  add_option( opt_bool( "use_new_2pc_design", options.use_new_2pc_design ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -7012,11 +7010,11 @@ void demon_hunter_t::init_action_list()
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    demon_hunter_apl::havoc( this );
+    demon_hunter_apl::havoc_ptr( this );
   }
   else if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    demon_hunter_apl::vengeance( this );
+    demon_hunter_apl::vengeance_ptr( this );
   }
 
   use_default_action_list = true;
@@ -7246,6 +7244,7 @@ void demon_hunter_t::init_spells()
 
   talent.demon_hunter.felfire_haste        = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
   talent.demon_hunter.master_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
+  talent.demon_hunter.champion_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Champion of the Glaive" );
   talent.demon_hunter.aura_of_pain         = find_talent_spell( talent_tree::CLASS, "Aura of Pain" );
   talent.demon_hunter.concentrated_sigils  = find_talent_spell( talent_tree::CLASS, "Concentrated Sigils" );
   talent.demon_hunter.precise_sigils       = find_talent_spell( talent_tree::CLASS, "Precise Sigils" );
@@ -7257,7 +7256,6 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.aldrachi_design = find_talent_spell( talent_tree::CLASS, "Aldrachi Design" );
 
   talent.demon_hunter.chaos_fragments      = find_talent_spell( talent_tree::CLASS, "Chaos Fragments" );
-  talent.demon_hunter.unleashed_power      = find_talent_spell( talent_tree::CLASS, "Unleashed Power" );
   talent.demon_hunter.illidari_knowledge   = find_talent_spell( talent_tree::CLASS, "Illidari Knowledge" );
   talent.demon_hunter.demonic              = find_talent_spell( talent_tree::CLASS, "Demonic" );
   talent.demon_hunter.will_of_the_illidari = find_talent_spell( talent_tree::CLASS, "Will of the Illidari" );
@@ -7330,7 +7328,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.know_your_enemy     = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
   talent.havoc.glaive_tempest      = find_talent_spell( talent_tree::SPECIALIZATION, "Glaive Tempest" );
   talent.havoc.cycle_of_hatred     = find_talent_spell( talent_tree::SPECIALIZATION, "Cycle of Hatred" );
-  talent.havoc.soulrend            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulrend" );
+  talent.havoc.soulscar            = find_talent_spell( talent_tree::SPECIALIZATION, "Soulscar" );
   talent.havoc.chaotic_disposition = find_talent_spell( talent_tree::SPECIALIZATION, "Chaotic Disposition" );
 
   talent.havoc.essence_break = find_talent_spell( talent_tree::SPECIALIZATION, "Essence Break" );
@@ -7440,7 +7438,7 @@ void demon_hunter_t::init_spells()
   spec.ragefire_damage        = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
   spec.restless_hunter_buff   = talent.havoc.restless_hunter->ok() ? find_spell( 390212 ) : spell_data_t::not_found();
   spec.serrated_glaive_debuff = talent.havoc.serrated_glaive->effectN( 1 ).trigger();
-  spec.soulrend_debuff        = talent.havoc.soulrend->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
+  spec.soulscar_debuff        = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff  = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff     = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
   spec.chaotic_disposition_damage =

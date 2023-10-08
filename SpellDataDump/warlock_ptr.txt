@@ -1015,7 +1015,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.96000 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10400 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
@@ -7395,7 +7395,6 @@ Effects          :
 Description      : Casting $?a137009[Wild Growth]?a137022[Essence Font]?a137030[Prayer of Healing or Power Word: Radiance]?a137026[Light of Dawn]?a137038[Chain Heal][your multi-target healing spell] grants you $s1 Mastery for $272090d. This cannot occur more than once every $272089proccooldown sec.
 
 Name             : Soul Strike (id=267964) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -8145,13 +8144,13 @@ Duration         : 15 seconds
 Cooldown         : 4 seconds
 Attributes       : ........ ........ ..x..... ........   ..x..... .x....x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Is Channelled (34), Initiates Combat (Enables Auto-Attack) (41), Track Target in Channel (46), Name in Channel Bar (61), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+                 : Do Not Sheath (18), Is Channelled (34), Initiates Combat (Enables Auto-Attack) (41), Track Target in Channel (46), Name in Channel Bar (61), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=722746)   : Apply Aura (6) | Periodic Damage (3): shadowflame every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -16618,6 +16617,9 @@ Talent Entry     : Demonology [tree=spec, row=10, col=3, max_rank=1, req_points=
 Class            : Warlock
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16634,29 +16636,27 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 #3 (id=1054159)  : None (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
-Description      : Your primary Felguard's Legion Strike deals $s1% increased damage to its primary target.
- 
-Your primary Felguard deals $<damage> Physical damage after auto-attacking the same enemy $s2 consecutive times.
+Description      : When you consume a Demonic Core, your primary Felguard carves your target, dealing $<damage> Physical damage.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
-$damage=${0.574241*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
+$damage=${0.743415734365969*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Immutable Hatred (id=405681) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
+                 : Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1054100)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.57424 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.74342 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc405670
 
 Name             : Umbral Blaze (id=405798) [Spell Family (5), Passive, Hidden] 
@@ -17413,7 +17413,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 3
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -17426,13 +17425,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1098518)  : Apply Aura (6) | Proc Trigger Spell (42): Doom Brand
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 423585 | Target: Self (1)
+#1 (id=1098518)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1109338)  : None (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : When Doom Brand explodes, you have a chance to summon a Doomfiend that casts $423734s2 Doom Bolt Volleys before departing. Each Doom Bolt Volley deals $<damage> Shadow damage to up to $423734x1 enemies or ${$<damage>*(1+$s2/100)} Shadow damage to a single enemy.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
-$damage=${(1.10955*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}
+$damage=${(2.773875*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}
 
 Name             : Warlock Destruction 10.2 Class Set 2pc (id=422921) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -17510,28 +17509,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Dead Target (64), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1099704)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.07499 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.68747 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc422919
-
-Name             : Doom Brand (id=423585) 
-Class            : Warlock
-School           : Shadow
-Spell Type       : None
-Range            : 100 yards
-Duration         : 20 seconds
-Triggered by     : Warlock Demonology 10.2 Class Set 4pc (422920)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=1099705)  : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 210910 | Misc Value 2: 0x1671 | Radius: 10 yards | Target: Unknown(72)
-Description      : $@spelldesc422920
 
 Name             : Doom Bolt Volley (id=423734) [Spell Family (5)] 
 Class            : Warlock
@@ -17553,7 +17532,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1099963)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10955 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.10674 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Enemy (6)
 #2 (id=1099964)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=1099965)  : Dummy (3)
@@ -17717,16 +17696,16 @@ Range            : 100 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1107335)  : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.69090 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.89817 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc387578
 Tooltip          : Suffering Fire damage every $t1 sec.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
@@ -17836,7 +17815,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1109300)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18129 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09064 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc428351
 
 

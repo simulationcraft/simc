@@ -1077,7 +1077,6 @@ Spell Type       : None
 Range            : 30 yards
 Duration         : 25 seconds
 Cooldown         : 180 seconds
-Category         : 1834
 Category Cooldown: 180 seconds
 Stance Mask      : 0x01000000
 Affecting spells : Val'kyr (278107 effect#1)
@@ -6055,7 +6054,6 @@ Spell Type       : None
 Range            : 30 yards
 Duration         : 25 seconds
 Cooldown         : 180 seconds
-Category         : 1834
 Category Cooldown: 180 seconds
 Family Flags     : 52
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

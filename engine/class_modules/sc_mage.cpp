@@ -1806,16 +1806,22 @@ struct arcane_mage_spell_t : public mage_spell_t
       if ( before )
       {
         cr->decrement();
-        // Effects that trigger when Clearcasting is consumed do not trigger
-        // if the buff decrement is skipped because of Concentration.
-        if ( cr == p()->buffs.clearcasting && cr->check() < before )
+        if ( cr == p()->buffs.clearcasting )
         {
-          p()->buffs.nether_precision->trigger();
-          p()->buffs.forethought->trigger();
-          // Technically, the buff disappears immediately when it reaches 3 stacks
-          // and the Artillery buff is applied with a delay. Here, we just use
-          // 3 stacks of the buff to track the delay.
-          p()->buffs.arcane_battery->trigger();
+          // TODO: Remove PTR check
+          if ( cr->check() < before || p()->dbc->ptr )
+            p()->buffs.nether_precision->trigger();
+
+          // Effects that trigger when Clearcasting is consumed do not trigger
+          // if the buff decrement is skipped because of Concentration.
+          if ( cr->check() < before )
+          {
+            p()->buffs.forethought->trigger();
+            // Technically, the buff disappears immediately when it reaches 3 stacks
+            // and the Artillery buff is applied with a delay. Here, we just use
+            // 3 stacks of the buff to track the delay.
+            p()->buffs.arcane_battery->trigger();
+          }
         }
         break;
       }
@@ -3201,8 +3207,13 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     triggers.radiant_spark = true;
-    // TODO: Arcane Surge is currently fully capped at 5 targets instead of dealing reduced damage beyond 5 targets like the tooltip says.
-    if ( !p->bugs )
+    // TODO: Remove PTR check
+    if ( p->dbc->ptr )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
+    else if ( !p->bugs )
     {
       aoe = -1;
       reduced_aoe_targets = as<double>( data().max_targets() );
@@ -3583,12 +3594,13 @@ struct use_mana_gem_t final : public mage_spell_t
 
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p()->gains.mana_gem, this );
     p()->buffs.invigorating_powder->trigger();
-    // TODO: In game, this is bugged and will not properly apply buffs.clearcasting_channel when triggered from 0 stacks.
+    // TODO: Remove PTR check
     if ( p()->talents.cascading_power.ok() )
     {
       bool old_state = p()->state.trigger_cc_channel;
       p()->buffs.clearcasting->trigger( as<int>( p()->talents.cascading_power->effectN( 1 ).base_value() ) );
-      p()->state.trigger_cc_channel = old_state;
+      if ( !p()->dbc->ptr )
+        p()->state.trigger_cc_channel = old_state;
     }
 
     p()->state.mana_gem_charges--;
@@ -3695,7 +3707,7 @@ struct evocation_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    if ( p()->bugs && p()->talents.siphon_storm.ok() )
+    if ( p()->talents.siphon_storm.ok() )
       p()->trigger_arcane_charge();
 
     if ( is_precombat && execute_state )

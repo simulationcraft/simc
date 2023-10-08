@@ -645,10 +645,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
   {
     double m = priest_pet_spell_t::composite_da_multiplier( s );
 
-    if ( p().o().options.t31_ist_echo_nerf )
-    {
-      m *= mod;
-    }
+    m *= mod;
 
     return m;
   }

@@ -1729,7 +1729,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Proc Equip Requirement (97), Not a Proc (105), Requires Main-Hand Weapon (106), Can Proc From Procs (122), No Helpful Threat (131), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=22420)    : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23100 | PvP Coefficient: 0.96000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.25000 | PvP Coefficient: 0.96000 | Target: Enemy (6)
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Numbing Poison (5761), Wound Poison (8679), Leeching Poison (108211), Instant Poison (315584), Atrophic Poison (381637), Amplifying Poison (381664)
@@ -3573,6 +3573,13 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wild Growth (48438)
                    Family Flags: 58
+#24 (id=1113290)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 1182 | Target: Self (1)
+                   Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
+#25 (id=1113620)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3043 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fragile Echoes (215266)
+Hotfixed         : NEW EFFECT
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
@@ -4171,7 +4178,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=269259)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.40000 | PvP Coefficient: 1.08000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.50000 | PvP Coefficient: 1.08000 | Target: Enemy (6)
 #2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : Strike the target, dealing $s1 Physical damage.
@@ -4933,7 +4940,7 @@ Effects          :
                    Family Flags: 93
 #6 (id=1041020)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 2423 (Label)
-                   Affected Spells (Label): Exsanguinate (200806), Exsanguinate (425748)
+                   Affected Spells (Label): Sanguine Blades (200806), Exsanguinate (425748)
 Description      : Increases the range of your melee attacks by $s1 yds.
 
 Name             : Ghostly Strike (id=196937) [Spell Family (8)] 
@@ -5419,7 +5426,7 @@ Effects          :
                    Family Flags: 103, 110
 Description      : You heal $s1% of your maximum health every $158188t2 sec while Stealth or Shadow Dance is active.
 
-Name             : Exsanguinate (id=200806) [Spell Family (8), Passive] 
+Name             : Sanguine Blades (id=200806) [Spell Family (8), Passive] 
 Talent Entry     : Assassination [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -13686,7 +13693,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1013015)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Sinister Strike has a $s1% chance to strike with both weapons after it strikes an additional time.
 
 Name             : Count the Odds (id=381982) [Spell Family (8), Passive] 
@@ -13706,12 +13713,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1013152)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1013153)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1013154)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Ambush and Dispatch have a $s1% chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.
+Description      : Ambush, Sinister Strike, and Dispatch have a $s1% chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.
 
 Duration and chance doubled while Stealthed.
 
@@ -13825,8 +13832,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1013203)  : Apply Aura (6) | Proc Trigger Spell (42): The Rotten
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394203 | Target: Self (1)
-Description      : After activating Symbols of Death, your next attack that generates combo points deals $394203s3% increased damage and is guaranteed to critically strike.
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 394203 | Target: Self (1)
+Description      : After activating Symbols of Death, your next $@switch<$s1>[attack][$s1 attacks] that $@switch<$s1>[generates][generate] combo points $@switch<$s1>[deals][deal] $394203s3% increased damage and $@switch<$s1>[is][are] guaranteed to critically strike.
 
 Name             : Veiltouched (id=382017) [Spell Family (8), Passive] 
 Talent Entry     : Subtlety [tree=spec, row=7, col=4, max_rank=1, req_points=8]
@@ -14016,13 +14023,15 @@ Effects          :
 #1 (id=1013875)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1013876)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 2350 (Label) | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 2350 (Label) | Target: Self (1)
                    Affected Spells (Label): Rupture (1943)
 #3 (id=1033367)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Target Range (35)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 35 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 35 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031)
                    Family Flags: 20
-Description      : Rupture deals an additional $s1% damage as Shadow and applies to ${$s2-1} additional enemy within $s3 yds.
+#4 (id=1112903)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Rupture deals an additional $s1% damage as Shadow and applies to $s4 additional nearby enemy.
 
 Name             : Shrouded in Darkness (id=382507) [Spell Family (8), Passive] 
 Talent Entry     : Subtlety [tree=spec, row=4, col=1, max_rank=1, req_points=0]
@@ -14205,7 +14214,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1013902)  : Apply Aura (6) | Proc Trigger Spell (42): Perforated Veins
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 394254 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 394254 | Target: Self (1)
 Description      : After striking $s1 times with $?s200758[Gloomblade][Backstab], your next attack that generates combo points deals $426602s1% increased damage.
 
 Name             : Invigorating Shadowdust (id=382523) [Spell Family (8), Passive] 
@@ -14357,7 +14366,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1015086)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Effects that grant a chance for Sinister Strike to strike an additional time also apply to Ambush at $s1% of their value.
 
 Name             : Deeper Daggers (id=383405) [Spell Family (8)] 
@@ -14641,7 +14650,7 @@ Effects          :
 #3 (id=1019024)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1019025)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23285 | PvP Coefficient: 0.89000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22121 | PvP Coefficient: 0.89000 | Target: Enemy (6)
 #5 (id=1019026)  : Apply Aura (6) | Proc Trigger Spell (42): Kingsbane
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 394095 | Target: Self (1)
 #6 (id=1019027)  : Energize Power (30)
@@ -14718,7 +14727,7 @@ Effects          :
 #2 (id=1019224)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Target Range (35)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 35 | Misc Value 2: 2865 (Label) | Target: Self (1)
                    Affected Spells (Label): Garrote (703), Rupture (1943)
-Description      : $spelldesc381802
+Description      : $@spelldesc381802
 Tooltip          : Garrote and Rupture apply to additional nearby enemies.
 
 Name             : Indiscriminate Carnage (id=385754) [Spell Family (8)] 
@@ -14742,7 +14751,7 @@ Effects          :
 #2 (id=1019233)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Target Range (35)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 35 | Misc Value 2: 2865 (Label) | Target: Self (1)
                    Affected Spells (Label): Garrote (703), Rupture (1943)
-Description      : $spelldesc381802
+Description      : $@spelldesc381802
 Tooltip          : Garrote and Rupture apply to additional nearby enemies.
 
 Name             : Ambush (id=385794) [Spell Family (8)] 
@@ -15433,7 +15442,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1033346)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Shadow Techniques (196911), Shadow Techniques (196912)
+                   Affected Spells: Shadow Techniques (196911), Shadow Techniques (196912), Shadow Techniques (426595)
                    Family Flags: 107
 Description      : Shadow Techniques generates $s1 additional Energy.
 
@@ -15648,6 +15657,7 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
+Stacks           : 1 initial, 2 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
@@ -15671,7 +15681,7 @@ Effects          :
                    Affected Spells: Backstab (53)
                    Family Flags: 2
 #3 (id=1033681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Goremaw's Bite (209783), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354838), Echoing Reprimand (385616), Goremaw's Bite (426591), Goremaw's Bite (426592)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
 #4 (id=1035123)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
@@ -15686,7 +15696,7 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Stacks           : 5 maximum
+Stacks           : 4 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
@@ -16855,6 +16865,27 @@ Effects          :
 Description      : $@spelldesc421975
 Tooltip          : $w1% of Poison damage taken from $@auracaster splashes onto other nearby enemies.
 
+Name             : Caustic Spatter (id=421979) [Spell Family (8)] 
+Class            : Rogue
+School           : Nature
+Spell Type       : Melee
+Range            : 100 yards
+Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
+                 : x......x ....x... ......x. .....x..   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ .x...... 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow Dead Target (64), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), Treat as Area Effect (175), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore PvP Power (365), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1096995)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#2 (id=1097661)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : $@spelldesc319606
+
 Name             : Rogue Assassination 10.2 Class Set 2pc (id=422905) [Passive, Hidden] 
 Class            : Rogue
 School           : Physical
@@ -16892,16 +16923,20 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1098504)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      :  Envenom with Envenom active explodes, dealing $426581s1 Nature damage to all enemies within 8 yards. Deals reduced damage beyond 8 targets.
-Tooltip          : Envenom with Envenom active explodes, dealing $42681s1 Nature damage to all enemies within 8 yards. Deals reduced damage beyond 8 targets.
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1109698)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Envenom with Envenom active explodes, dealing $426581s1 Nature damage to all nearby enemies. Deals reduced damage beyond $s2 targets.
+Tooltip          : Envenom with Envenom active explodes, dealing $42681s1 Nature damage to all nearby enemies. Deals reduced damage beyond $s2 targets.
+Variables        : $targetBonus=${$cond($gt($s1,0),1,0)}
+$targetBonusAlso=${$s1}
 
 Name             : Rogue Outlaw 10.2 Class Set 2pc (id=422907) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -16940,8 +16975,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098506)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40000 | Scaled Value: 40000 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Roll the Bones additionally refreshes a random Roll the Bones combat enhancement buff you currently possess for ${$s1/1000} sec.
-Tooltip          : Roll the Bones additionally refreshes a random Roll the Bones combat enhancement buff you currently possess for ${$s1/1000} sec.
+Description      : Roll the Bones additionally refreshes a random Roll the Bones combat enhancement buff you currently possess.
+Tooltip          : Roll the Bones additionally refreshes a random Roll the Bones combat enhancement buff you currently possess.
 
 Name             : Rogue Subtlety 10.2 Class Set 4pc (id=422909) [Passive, Hidden] 
 Class            : Rogue
@@ -17030,9 +17065,28 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.66667 | Target: Self (1)
 #3 (id=1098992)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.28571 | Target: Self (1)
-Description      : Bleed damage inrcreased by $s1%.
+Description      : Bleed damage increased by $s1%.
 
 Targets below $s3% health instantly bleed out and take fatal damage when the remaining Bleed damage you would deal to them exceeds $s2% of their remaining health.
+
+Name             : Sanguine Blades (id=423193) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... x....... ........ .....x..   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Can't Crit (93), Allow Cast While Casting (135), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1099022)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc200806
 
 Name             : Graceful Guile (id=423647) [Spell Family (8), Passive] 
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8]
@@ -17172,9 +17226,66 @@ Description      : Slice and Dice does not lose duration during Blade Flurry.
 
 Blade Flurry does not lose duration during Adrenaline Rush.
 
-Adrenaline Rush does not lose duration during while Stealthed.
+Adrenaline Rush does not lose duration while Stealthed.
 
 Stealth abilities can be used for an additional ${$s2/1000} sec after Stealth breaks.
+
+Name             : Underhanded Upper Hand (SnD) (id=424066) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : .......x x....... ........ ...x...x   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1100497)  : Apply Aura (6) | Unknown(470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2880 | Target: Self (1)
+Description      : $@spelldesc424044
+
+Name             : Underhanded Upper Hand (Blade Flurry) (id=424080) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : .......x x....... ........ ...x...x   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1100520)  : Apply Aura (6) | Unknown(470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2886 | Target: Self (1)
+Description      : $@spelldesc424044
+
+Name             : Underhanded Upper Hand (Adrenaline Rush) (id=424081) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : .......x x....... ........ ...x...x   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1100521)  : Apply Aura (6) | Unknown(470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2887 | Target: Self (1)
+Description      : $@spelldesc424044
 
 Name             : Killing Spree (id=424556) [Spell Family (8)] 
 Class            : Rogue
@@ -17489,6 +17600,28 @@ Effects          :
 #3 (id=1109359)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While Symbols of Death is active, your Shadow Techniques triggers $s3% more frequently, stores $m2 additional combo $Lpoint:points;, and finishing moves can use those stored when there are enough to refresh full combo points.
+
+Name             : Shadow Techniques (id=426595) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Range            : 50000 yards
+Affecting spells : Improved Shadow Techniques (394023 effect#1)
+Family Flags     : 107
+Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1105231)  : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+Description      : $@spelldesc196912
 
 Name             : Perforated Veins (id=426602) [Spell Family (8), Hidden] 
 Class            : Rogue
