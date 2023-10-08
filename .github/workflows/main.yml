@@ -130,7 +130,6 @@ jobs:
           CCACHE_BASEDIR: ${{ runner.workspace }}
           CCACHE_DIR: ${{ runner.workspace }}/.ccache
           CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
-          CCACHE_COMPILERCHECK: content
         run: |
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
