@@ -115,6 +115,7 @@ void protection( player_t* p )
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
 
+  standard->add_action( "consecration,if=buff.sanctification.stack=buff.sanctification.max_stack" );
   standard->add_action( "shield_of_the_righteous,if=((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
   standard->add_action( "avengers_shield,if=spell_targets.avengers_shield>2" );
@@ -132,7 +133,7 @@ void protection( player_t* p )
   standard->add_action( "eye_of_tyr,if=!talent.inmost_light.enabled&raid_event.adds.in>=60" );
   standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
   standard->add_action( "arcane_torrent,if=holy_power<5" );
-  standard->add_action( "consecration" );
+  standard->add_action( "consecration,if=!buff.sanctification_empower.up" );
 
   trinkets->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
   trinkets->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
