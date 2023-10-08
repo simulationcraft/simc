@@ -1119,8 +1119,8 @@ void paladin_t::t29_4p_prot()
 
 void paladin_t::t31_4p_prot( action_state_t* s )
 {
-  auto name = s->action->name_str;
-  if ( name == "cleansing_flame_damage" || name == "seal_of_the_crusader" )
+  auto actionId = s->action->id;
+  if ( actionId == 385723 || actionId == 425261 ) // Seal of the Crusader, Cleansing Flame
     return;
 
   double damage = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
@@ -1135,6 +1135,10 @@ void paladin_t::t31_4p_prot( action_state_t* s )
 
 void paladin_t::t31_4p_prot_heal(action_state_t* s)
 {
+  auto actionId = s->action->id;
+  if ( actionId == 425262 )  // Cleansing Flame
+    return;
+
   double healing = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
   if ( buffs.sanctification_empower->up() && healing > 0 && rng().roll( buffs.sanctification_empower->default_chance ) )
   {

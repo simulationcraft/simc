@@ -1039,8 +1039,12 @@ public:
       }
       if ( p()->sets->has_set_bonus(PALADIN_PROTECTION, T31, B4) )
       {
-        p()->t31_4p_prot( s );
+        if ( s->action->harmful )
+          p()->t31_4p_prot( s );
+        else
+          p()->t31_4p_prot_heal( s );
       }
+      
     }
   }
 

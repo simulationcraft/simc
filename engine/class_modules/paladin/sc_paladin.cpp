@@ -1182,11 +1182,6 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     {
       light_of_the_titans->execute();
     }
-
-    if ( p()->sets->has_set_bonus(PALADIN_PROTECTION, T31, B4) )
-    {
-      p()->t31_4p_prot_heal( s );
-    }
   }
 
   void execute() override
