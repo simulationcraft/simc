@@ -7656,7 +7656,7 @@ std::string demon_hunter_t::default_flask() const
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::flask_vengeance( this );
+      return is_ptr() ? demon_hunter_apl::flask_vengeance_ptr( this ) : demon_hunter_apl::flask_vengeance( this );
     default:
       return demon_hunter_apl::flask_havoc( this );
   }
