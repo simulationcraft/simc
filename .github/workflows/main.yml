@@ -87,10 +87,12 @@ jobs:
           - compiler: clang++-7
             os: ubuntu-20.04
             packages: clang-7 lld-7
+            linker: lld-7
           - compiler: clang++-15
             os: ubuntu-22.04
             packages: clang-15 lld-15
             enable_file_prefix_map: true
+            linker: lld-15
         exclude:
           - compiler: clang++-7
             cppVersion: 20
@@ -119,7 +121,7 @@ jobs:
               -DCMAKE_CXX_FLAGS="-Og ${{ matrix.enable_file_prefix_map && format('-ffile-prefix-map={0}/=/', runner.workspace) || ''}}
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
-              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
+              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=${{ matrix.linker }} -fsanitize=address,undefined"
               -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
