@@ -7288,6 +7288,7 @@ struct prowl_t : public druid_spell_t
     check_autoshift();
 
     p()->buff.incarnation_cat_prowl->expire();
+    p()->buffs.shadowmeld->expire();
     p()->buff.prowl->trigger();
 
     druid_spell_t::execute();
@@ -7300,7 +7301,8 @@ struct prowl_t : public druid_spell_t
 
   bool ready() override
   {
-    if ( p()->buff.prowl->check() || ( p()->in_combat && !p()->buff.incarnation_cat_prowl->check() ) )
+    if ( p()->buff.prowl->check() ||
+         ( p()->in_combat && !p()->buff.incarnation_cat_prowl->check() && !p()->buffs.shadowmeld->up() ) )
       return false;
 
     return druid_spell_t::ready();
