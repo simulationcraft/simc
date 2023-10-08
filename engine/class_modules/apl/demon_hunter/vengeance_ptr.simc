@@ -3,99 +3,47 @@ actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
 actions.precombat+=/snapshot_stats
-
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
 actions.precombat+=/sigil_of_flame
-actions.precombat+=/immolation_aura
+actions.precombat+=/immolation_aura,if=active_enemies=1|!talent.fallout
 
-# When will the next fire damage cooldown be available?
-actions+=/variable,name=next_fire_cd_time,value=cooldown.fel_devastation.remains
-actions+=/variable,name=next_fire_cd_time,op=min,value=cooldown.soul_carver.remains,if=talent.soul_carver
-
-actions+=/variable,name=incoming_souls,op=reset
-actions+=/variable,name=incoming_souls,op=add,value=2,if=prev_gcd.1.fracture&!buff.metamorphosis.up
-actions+=/variable,name=incoming_souls,op=add,value=3,if=prev_gcd.1.fracture&buff.metamorphosis.up
-actions+=/variable,name=incoming_souls,op=add,value=2,if=talent.soul_sigils&(prev_gcd.2.sigil_of_flame|prev_gcd.2.sigil_of_silence|prev_gcd.2.sigil_of_chains|prev_gcd.2.elysian_decree)
-actions+=/variable,name=incoming_souls,op=add,value=active_enemies>?3,if=talent.elysian_decree&prev_gcd.2.elysian_decree
-actions+=/variable,name=incoming_souls,op=add,value=0.6*active_enemies>?5,if=talent.fallout&prev_gcd.1.immolation_aura
-actions+=/variable,name=incoming_souls,op=add,value=active_enemies>?5,if=talent.bulk_extraction&prev_gcd.1.bulk_extraction
-actions+=/variable,name=incoming_souls,op=add,value=3-(cooldown.soul_carver.duration-ceil(cooldown.soul_carver.remains)),if=talent.soul_carver&cooldown.soul_carver.remains>57
-
-# Fiery Demise is up
-actions+=/variable,name=fd,value=talent.fiery_demise&dot.fiery_brand.ticking
-
-actions+=/auto_attack
+actions=/auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
-actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
-actions+=/call_action_list,name=externals
-actions+=/metamorphosis,use_off_gcd=1,if=talent.first_of_the_illidari&(trinket.beacon_to_the_beyond.cooldown.remains<10|fight_remains<=20|!equipped.beacon_to_the_beyond|fight_remains%%120>5&fight_remains%%120<30)
 actions+=/infernal_strike,use_off_gcd=1
+actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
+actions+=/metamorphosis
+actions+=/fel_devastation,if=!talent.fiery_demise.enabled
+actions+=/fiery_brand,if=!talent.fiery_demise.enabled&!ticking
+actions+=/bulk_extraction
 actions+=/potion
+actions+=/invoke_external_buff,name=power_infusion
 actions+=/call_action_list,name=trinkets
-actions+=/call_action_list,name=maintenance
-actions+=/run_action_list,name=single_target,if=active_enemies<=1
-actions+=/run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5
-actions+=/run_action_list,name=big_aoe,if=active_enemies>=6
+actions+=/call_action_list,name=racials
 
-# Maintenance & upkeep
-actions.maintenance+=/fiery_brand,if=(!ticking&active_dot.fiery_brand=0)|charges>=2|(full_recharge_time<=cast_time+gcd.remains)
-actions.maintenance+=/bulk_extraction,if=active_enemies>=(5-soul_fragments)
-actions.maintenance+=/spirit_bomb,if=soul_fragments>=5
-actions.maintenance+=/fracture,target_if=max:dot.fiery_brand.remains,if=active_enemies>1&buff.recrimination.up
-actions.maintenance+=/fracture,if=(full_recharge_time<=cast_time+gcd.remains)
-actions.maintenance+=/immolation_aura,if=!talent.fallout|soul_fragments<5
-actions.maintenance+=/sigil_of_flame
-actions.maintenance+=/metamorphosis,if=talent.demonic&!buff.metamorphosis.up&!cooldown.fel_devastation.up
+actions+=/the_hunt
+actions+=/elysian_decree
+actions+=/soul_carver,if=(!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking))&soul_fragments<=2
+actions+=/sigil_of_flame
+actions+=/fel_devastation
+actions+=/fiery_brand,if=((remains<tick_time|!ticking)&talent.fiery_demise)
+actions+=/immolation_aura,if=dot.fiery_brand.ticking&talent.charred_flesh
+actions+=/felblade,if=fury.deficit>=40
+actions+=/spirit_bomb,if=(soul_fragments>=5&spell_targets=1)|(soul_fragments>=4&spell_targets>1)
+actions+=/soul_cleave
+actions+=/immolation_aura
+actions+=/fracture
+actions+=/shear
+actions+=/throw_glaive
 
-# External buffs
-actions.externals+=/invoke_external_buff,name=symbol_of_hope,if=cooldown.fiery_brand.charges=0
-actions.externals+=/invoke_external_buff,name=power_infusion
+# Use racial abilities that give buffs, resource, or damage.
+actions.racials=arcane_torrent,if=fury.deficit>15
 
-# Trinkets
-actions.trinkets+=/use_item,name=elementium_pocket_anvil,use_off_gcd=1
-actions.trinkets+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=!talent.first_of_the_illidari|buff.metamorphosis.up|fight_remains<=10|cooldown.metamorphosis.remains>25
-actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=trinket.beacon_to_the_beyond.cooldown.remains>5|!equipped.beacon_to_the_beyond
-actions.trinkets+=/use_items
-
-# Single Target
-actions.single_target+=/fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)
-actions.single_target+=/soul_carver
-actions.single_target+=/the_hunt
-actions.single_target+=/elysian_decree
-actions.single_target+=/fracture,if=set_bonus.tier30_4pc&variable.fd&soul_fragments<=4&soul_fragments>=1
-actions.single_target+=/spirit_bomb,if=soul_fragments>=4
-actions.single_target+=/soul_cleave,if=talent.focused_cleave
-actions.single_target+=/spirit_bomb,if=variable.fd&soul_fragments>=3
-actions.single_target+=/fracture,if=soul_fragments<=3&soul_fragments>=1
-actions.single_target+=/soul_cleave,if=soul_fragments<=1
-actions.single_target+=/call_action_list,name=filler
-
-# 2-5 targets
-actions.small_aoe+=/fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)
-actions.small_aoe+=/the_hunt
-actions.small_aoe+=/elysian_decree,if=(soul_fragments+variable.incoming_souls)<=2
-actions.small_aoe+=/soul_carver,if=(soul_fragments+variable.incoming_souls)<=3
-actions.small_aoe+=/fracture,if=soul_fragments<=3&soul_fragments>=1
-actions.small_aoe+=/spirit_bomb,if=soul_fragments>=3
-actions.small_aoe+=/soul_cleave,if=(talent.focused_cleave|(soul_fragments<=2&variable.incoming_souls=0))
-actions.small_aoe+=/call_action_list,name=filler
-
-# 6+ targets
-actions.big_aoe+=/spirit_bomb,if=(active_enemies<=7&soul_fragments>=4)|(active_enemies>7&soul_fragments>=3)
-actions.big_aoe+=/fel_devastation,if=!(talent.demonic&buff.metamorphosis.up)
-actions.big_aoe+=/the_hunt
-actions.big_aoe+=/elysian_decree,if=(soul_fragments+variable.incoming_souls)<=2
-actions.big_aoe+=/soul_carver,if=(soul_fragments+variable.incoming_souls)<=3
-actions.big_aoe+=/fracture,if=soul_fragments>=2
-actions.big_aoe+=/spirit_bomb,if=soul_fragments>=3
-actions.big_aoe+=/soul_cleave,if=soul_fragments<=2&variable.incoming_souls=0
-actions.big_aoe+=/call_action_list,name=filler
-
-# Filler
-actions.filler+=/sigil_of_flame
-actions.filler+=/immolation_aura
-actions.filler+=/fracture
-actions.filler+=/shear
-actions.filler+=/felblade
-actions.filler+=/spirit_bomb,if=soul_fragments>=3
-actions.filler+=/soul_cleave,if=soul_fragments<=1
-actions.filler+=/throw_glaive,if=gcd.remains>=0.5*gcd.max
+# Prioritize damage dealing on use trinkets over trinkets that give buffs
+actions.trinkets=use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs
+actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(variable.trinket_1_buffs|trinket.1.cooldown.remains)&(variable.trinket_2_buffs|trinket.2.cooldown.remains)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_2_exclude|trinket.2.cooldown.remains|!trinket.2.has_cooldown|variable.trinket_2_buffs)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_1_exclude|trinket.1.cooldown.remains|!trinket.1.has_cooldown|variable.trinket_1_buffs)
