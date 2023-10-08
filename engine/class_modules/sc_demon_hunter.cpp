@@ -728,7 +728,8 @@ public:
     attack_t* relentless_onslaught              = nullptr;
     attack_t* relentless_onslaught_annihilation = nullptr;
     attack_t* throw_glaive_t31_proc             = nullptr;
-    attack_t* throw_glaive_t31_throw            = nullptr;
+    attack_t* throw_glaive_bd_throw             = nullptr;
+    attack_t* throw_glaive_ds_throw             = nullptr;
 
     // Vengeance
     spell_t* infernal_armor     = nullptr;
@@ -4497,12 +4498,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
           make_event<delayed_execute_event_t>( *sim, p(), p()->active.throw_glaive_t31_proc, target, attack->delay );
         }
       }
-
-      if ( p()->cooldown.throw_glaive->up() )
-      {
-        p()->active.throw_glaive_t31_throw->set_target( target );
-        p()->active.throw_glaive_t31_throw->execute();
-      }
     }
 
     // Create Strike Events
@@ -4558,6 +4553,11 @@ struct blade_dance_t : public blade_dance_base_t
       first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
           "blade_dance_first_blood_4", data().effectN( 5 ), p->spec.first_blood_blade_dance_2_damage ) );
     }
+
+    if ( p->set_bonuses.t31_havoc_2pc->ok() && p->active.throw_glaive_bd_throw )
+    {
+      add_child( p->active.throw_glaive_bd_throw );
+    }
   }
 
   bool ready() override
@@ -4566,6 +4566,17 @@ struct blade_dance_t : public blade_dance_base_t
       return false;
 
     return !p()->buff.metamorphosis->check();
+  }
+
+  void execute() override
+  {
+    blade_dance_base_t::execute();
+
+    if ( p()->set_bonuses.t31_havoc_2pc->ok() && p()->cooldown.throw_glaive->up() )
+    {
+      p()->active.throw_glaive_bd_throw->set_target( target );
+      p()->active.throw_glaive_bd_throw->execute();
+    }
   }
 };
 
@@ -4595,6 +4606,11 @@ struct death_sweep_t : public blade_dance_base_t
       first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
           "death_sweep_first_blood_4", data().effectN( 5 ), p->spec.first_blood_death_sweep_2_damage ) );
     }
+
+    if ( p->set_bonuses.t31_havoc_2pc->ok() && p->active.throw_glaive_ds_throw )
+    {
+      add_child( p->active.throw_glaive_ds_throw );
+    }
   }
 
   void execute() override
@@ -4608,6 +4624,12 @@ struct death_sweep_t : public blade_dance_base_t
     }
 
     blade_dance_base_t::execute();
+
+    if ( p()->set_bonuses.t31_havoc_2pc->ok() && p()->cooldown.throw_glaive->up() )
+    {
+      p()->active.throw_glaive_ds_throw->set_target( target );
+      p()->active.throw_glaive_ds_throw->execute();
+    }
   }
 
   bool ready() override
@@ -5570,6 +5592,14 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
 struct throw_glaive_t : public demon_hunter_attack_t
 {
+  enum class glaive_source
+  {
+    THROWN = 0,
+    T31_PROC = 1,
+    BLADE_DANCE_THROW = 2,
+    DEATH_SWEEP_THROW = 3
+  };
+
   struct throw_glaive_damage_t : public demon_hunter_attack_t
   {
     struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
@@ -5634,47 +5664,48 @@ struct throw_glaive_t : public demon_hunter_attack_t
   };
 
   throw_glaive_damage_t* furious_throws;
-  size_t t31;
+  glaive_source source;
   timespan_t t31_4pc_adjust_seconds;
 
-  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str, size_t t31 = 0 )
+  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str, glaive_source source = glaive_source::THROWN )
     : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ),
       furious_throws( nullptr ),
-      t31( t31 ),
+      source( source ),
       t31_4pc_adjust_seconds( -timespan_t::from_millis( p->set_bonuses.t31_havoc_4pc->effectN( 1 ).base_value() ) )
   {
     throw_glaive_damage_t* damage;
 
-    switch ( t31 )
+    switch ( source )
     {
-      case 2:
-        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_t31_throw", false );
+      case glaive_source::DEATH_SWEEP_THROW:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_ds_throw", false );
         break;
-      case 1:
+      case glaive_source::BLADE_DANCE_THROW:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_bd_throw", false );
+        break;
+      case glaive_source::T31_PROC:
         damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_t31_proc", true );
         break;
       default:
         damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage", false );
     }
 
-    execute_action        = damage;
-    execute_action->stats = stats;
+    // 08/10/2023 Death Sweep does not throw the primary throw glaive at the target.
+    if ( !p->bugs || source != glaive_source::DEATH_SWEEP_THROW )
+    {
+      execute_action        = damage;
+      execute_action->stats = stats;
+    }
 
-    if ( !t31 )
+    if ( source == glaive_source::THROWN && !p->sets->has_set_bonus( DEMON_HUNTER_HAVOC, T31, B2 ) )
     {
       if ( damage->soulscar )
       {
         add_child( damage->soulscar );
       }
-
-      if ( p->set_bonuses.t31_havoc_2pc->ok() )
-      {
-        /*add_child( p->active.throw_glaive_t31_proc );
-        add_child( p->active.throw_glaive_t31_throw );*/
-      }
     }
 
-    if ( t31 == 2 )
+    if ( source == glaive_source::BLADE_DANCE_THROW || source == glaive_source::DEATH_SWEEP_THROW )
     {
       cooldown->duration = 0_ms;
       cooldown->charges  = 0;
@@ -5684,19 +5715,23 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     if ( p->talent.havoc.furious_throws->ok() )
     {
-      if ( !t31 )
+      if ( source == glaive_source::THROWN )
       {
         resource_current            = RESOURCE_FURY;
         base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
       }
 
-      switch ( t31 )
+      switch ( source )
       {
-        case 2:
+        case glaive_source::DEATH_SWEEP_THROW:
           furious_throws =
-              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_t31_proc_throw", false );
+              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_ds_throw", false );
           break;
-        case 1:
+        case glaive_source::BLADE_DANCE_THROW:
+          furious_throws =
+              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_bd_throw", false );
+          break;
+        case glaive_source::T31_PROC:
           furious_throws =
               p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_t31_proc", true );
           break;
@@ -5708,6 +5743,23 @@ struct throw_glaive_t : public demon_hunter_attack_t
     }
   }
 
+  void init() override
+  {
+    track_cd_waste = false;
+    demon_hunter_attack_t::init();
+
+    if ( source != glaive_source::T31_PROC )
+    {
+      track_cd_waste = true;
+      cd_wasted_exec =
+          p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>( "throw_glaive", p()->cd_waste_exec );
+      cd_wasted_cumulative = p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
+          "throw_glaive", p()->cd_waste_cumulative );
+      cd_wasted_iter =
+          p()->template get_data_entry<simple_sample_data_t, simple_data_t>( "throw_glaive", p()->cd_waste_iter );
+    }
+  }
+
   void execute() override
   {
     demon_hunter_attack_t::execute();
@@ -5716,7 +5768,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     make_event( sim, 250_ms, ( [ this ] { hit_fodder( true ); } ) );
 
     // 04/10/2023 All throw glaives currently count towards cycle of hatred.
-    if ( ( p()->bugs || t31 != 1 ) && p()->talent.havoc.furious_throws->ok() )
+    if ( ( p()->bugs || source != glaive_source::T31_PROC ) && p()->talent.havoc.furious_throws->ok() )
     {
       trigger_cycle_of_hatred();
     }
@@ -5726,7 +5778,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
       p()->cooldown.the_hunt->adjust( t31_4pc_adjust_seconds );
     }
 
-    if ( hit_any_target && furious_throws )
+    if ( ( hit_any_target || p()->bugs && source == glaive_source::DEATH_SWEEP_THROW ) && furious_throws )
     {
       make_event<delayed_execute_event_t>( *sim, p(), furious_throws, target, 400_ms );
     }
@@ -7576,13 +7628,19 @@ void demon_hunter_t::init_spells()
 
   if ( set_bonuses.t31_havoc_2pc->ok() )
   {
-    throw_glaive_t* throw_glaive_t31_proc     = get_background_action<throw_glaive_t>( "throw_glaive_t31_proc", "", 1 );
+    throw_glaive_t* throw_glaive_t31_proc =
+        get_background_action<throw_glaive_t>( "throw_glaive_t31_proc", "", throw_glaive_t::glaive_source::T31_PROC );
     throw_glaive_t31_proc->cooldown->charges  = 0;
     throw_glaive_t31_proc->cooldown->duration = 0_ms;
     active.throw_glaive_t31_proc              = throw_glaive_t31_proc;
 
-    throw_glaive_t* throw_glaive_t31_throw = get_background_action<throw_glaive_t>( "throw_glaive_t31_throw", "", 2 );
-    active.throw_glaive_t31_throw          = throw_glaive_t31_throw;
+    throw_glaive_t* throw_glaive_bd_throw = get_background_action<throw_glaive_t>(
+        "throw_glaive_bd_throw", "", throw_glaive_t::glaive_source::BLADE_DANCE_THROW );
+    active.throw_glaive_bd_throw = throw_glaive_bd_throw;
+
+    throw_glaive_t* throw_glaive_ds_throw = get_background_action<throw_glaive_t>(
+        "throw_glaive_ds_throw", "", throw_glaive_t::glaive_source::DEATH_SWEEP_THROW );
+    active.throw_glaive_ds_throw = throw_glaive_ds_throw;
   }
 }
 
