@@ -3123,6 +3123,8 @@ struct bloodbath_t : public warrior_attack_t
 
     weapon = &( p->main_hand_weapon );
     radius = 5;
+    cooldown = p->cooldown.bloodthirst;
+    track_cd_waste = true;
     if ( p->non_dps_mechanics )
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
