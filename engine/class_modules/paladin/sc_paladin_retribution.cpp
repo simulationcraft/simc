@@ -322,10 +322,11 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       searing_light_disabled = true;
 
-      if ( p->talents.jurisdiction->ok() )
+      // Jurisdiction doesn't increase Expurgation's damage in-game
+      // It's increasing Spell Direct Amount instead of Spell Periodic Amount
+      if ( p->talents.jurisdiction->ok() && p->bugs)
       {
-        // Jurisdiction doesn't increase Expurgation's damage in-game
-        // base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
+        base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
       }
       if (p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2))
       {
