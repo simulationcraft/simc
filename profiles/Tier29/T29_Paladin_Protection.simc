@@ -48,8 +48,9 @@ actions.cooldowns+=/eye_of_tyr,if=talent.inmost_light.enabled&spell_targets.shie
 actions.cooldowns+=/bastion_of_light,if=buff.avenging_wrath.up
 actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up
 
+actions.standard=consecration,if=buff.sanctification.stack=buff.sanctification.max_stack
 # Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)
-actions.standard=shield_of_the_righteous,if=((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up
+actions.standard+=/shield_of_the_righteous,if=((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3
 actions.standard+=/avengers_shield,if=spell_targets.avengers_shield>2
 actions.standard+=/hammer_of_wrath,if=buff.avenging_wrath.up
@@ -66,7 +67,7 @@ actions.standard+=/crusader_strike
 actions.standard+=/eye_of_tyr,if=!talent.inmost_light.enabled&raid_event.adds.in>=60
 actions.standard+=/word_of_glory,if=buff.shining_light_free.up
 actions.standard+=/arcane_torrent,if=holy_power<5
-actions.standard+=/consecration
+actions.standard+=/consecration,if=!buff.sanctification_empower.up
 
 actions.trinkets=use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)
 actions.trinkets+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)

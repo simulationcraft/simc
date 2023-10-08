@@ -272,6 +272,10 @@ struct consecration_tick_t : public paladin_spell_t
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
     }
+    if (p()->buffs.sanctification_empower->up())
+    {
+      m *= 1.0 + p()->buffs.sanctification_empower->data().effectN( 1 ).percent();
+    }
     return m;
   }
 
@@ -376,25 +380,41 @@ struct consecration_t : public paladin_spell_t
                       .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
                         switch ( type )
                         {
+                          case ground_aoe_params_t::EVENT_STOPPED:
+                            if ( p()->buffs.sanctification_empower->up() )
+                            {
+                              p()->buffs.sanctification_empower->expire();
+                            }
+                            break;
                           case ground_aoe_params_t::EVENT_CREATED:
-                            if ( source_type == HARDCAST ) {
+                            if ( source_type == HARDCAST )
+                            {
                               p()->active_consecration = event;
-                            } else if ( source_type == BLADE_OF_JUSTICE ) {
+                            }
+                            else if ( source_type == BLADE_OF_JUSTICE )
+                            {
                               p()->active_boj_cons = event;
-                            } else if ( source_type == SEARING_LIGHT ) {
+                            }
+                            else if ( source_type == SEARING_LIGHT )
+                            {
                               p()->active_searing_light_cons = event;
                             }
-                            p()->all_active_consecrations.insert(event);
+                            p()->all_active_consecrations.insert( event );
                             break;
                           case ground_aoe_params_t::EVENT_DESTRUCTED:
-                            if ( source_type == HARDCAST ) {
+                            if ( source_type == HARDCAST && p()->active_consecration != nullptr )
+                            {
                               p()->active_consecration = nullptr;
-                            } else if ( source_type == BLADE_OF_JUSTICE ) {
+                            }
+                            else if ( source_type == BLADE_OF_JUSTICE )
+                            {
                               p()->active_boj_cons = nullptr;
-                            } else if ( source_type == SEARING_LIGHT ) {
+                            }
+                            else if ( source_type == SEARING_LIGHT )
+                            {
                               p()->active_searing_light_cons = nullptr;
                             }
-                            p()->all_active_consecrations.erase(event);
+                            p()->all_active_consecrations.erase( event );
                             break;
                           default:
                             break;
@@ -406,13 +426,32 @@ struct consecration_t : public paladin_spell_t
   {
     // If this is an active Cons, cancel the current consecration if it exists
     if ( source_type == HARDCAST && p()->active_consecration != nullptr )
+    {
+      if ( p()->buffs.sanctification_empower->up() )
+      {
+        p()->buffs.sanctification_empower->expire();
+      }
+      p()->all_active_consecrations.erase( p()->active_consecration );
       event_t::cancel( p()->active_consecration );
+    }
     // or if it's a boj-triggered Cons, cancel the previous BoJ-triggered cons
     else if ( source_type == BLADE_OF_JUSTICE && p()->active_boj_cons != nullptr )
+    {
+      p()->all_active_consecrations.erase( p()->active_boj_cons );
       event_t::cancel( p()->active_boj_cons );
+    }
     // or if it's a searing light-triggered Cons, cancel the previous searing light-triggered cons
     else if ( source_type == SEARING_LIGHT && p()->active_searing_light_cons != nullptr )
+    {
+      p()->all_active_consecrations.erase( p()->active_searing_light_cons );
       event_t::cancel( p()->active_searing_light_cons );
+    }
+
+    if (p()->buffs.sanctification->at_max_stacks())
+    {
+      p()->buffs.sanctification->expire();
+      p()->buffs.sanctification_empower->execute();
+    }
 
     paladin_spell_t::execute();
 
@@ -2576,6 +2615,8 @@ void paladin_t::init_spells()
   tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
   tier_sets.heartfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
   tier_sets.heartfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
+  tier_sets.t31_2pc = sets->set( PALADIN_PROTECTION, T31, B2 );
+  tier_sets.t31_4pc = sets->set( PALADIN_PROTECTION, T31, B4 );
 }
 
 // paladin_t::primary_role ==================================================
@@ -2885,7 +2926,6 @@ double paladin_t::composite_bonus_armor() const
     double bonus = buffs.shield_of_the_righteous->value() * cache.strength();
     ba += bonus;
   }
-
   return ba;
 }
 
