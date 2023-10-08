@@ -45,6 +45,13 @@ enum wolf_type_e
   UNSPECIFIED
 };
 
+enum class feral_spirit_cast : unsigned
+{
+  NORMAL = 0U,
+  TIER28,
+  TIER31
+};
+
 enum class elemental
 {
   FIRE,
@@ -357,6 +364,9 @@ public:
 
     action_t* stormflurry_ss;
     action_t* stormflurry_ws;
+
+    action_t* feral_spirit_t28;
+    action_t* feral_spirit_t31;
 
     /// Totemic Recall last used totem (action)
     action_t* totemic_recall_totem;
@@ -894,8 +904,6 @@ public:
   // Misc
   bool is_elemental_pet_active() const;
   pet_t* get_active_elemental_pet() const;
-  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool resetFeralSpiritMaelstrom = false,
-                             bool t31_2pc = false );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
   timespan_t last_t30_proc;
@@ -6345,21 +6353,111 @@ struct icefury_t : public shaman_spell_t
 
 struct feral_spirit_spell_t : public shaman_spell_t
 {
-  feral_spirit_spell_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "feral_spirit", player, player->talent.feral_spirit )
+  feral_spirit_cast type;
+  timespan_t duration;
+  unsigned n_summons;
+
+  feral_spirit_spell_t( shaman_t* player, util::string_view options_str,
+                        feral_spirit_cast c = feral_spirit_cast::NORMAL ) :
+    shaman_spell_t( "feral_spirit", player, player->talent.feral_spirit ), type( c )
   {
     parse_options( options_str );
     harmful = true;
 
+    switch ( type )
+    {
+      case feral_spirit_cast::NORMAL:
+        duration = player->find_spell( 228562 )->duration();
+        n_summons = 2U;
+        break;
+      // TODO: Figure out the T31 driver
+      case feral_spirit_cast::TIER31:
+        duration = player->find_spell( 228562 )->duration();
+        n_summons = 1U;
+        background = true;
+        cooldown = player->get_cooldown( "feral_spirit_proc" );
+        cooldown->duration = 0_ms;
+        break;
+      case feral_spirit_cast::TIER28:
+        duration = timespan_t::from_seconds( player->spell.t28_2pc_enh->effectN( 2 ).base_value() );
+        n_summons = 1U;
+        background = true;
+        cooldown = player->get_cooldown( "feral_spirit_proc" );
+        cooldown->duration = 0_ms;
+        break;
+    }
+
     // Cache pointer for MW tracking uses
-    p()->action.feral_spirits = this;
+    if ( !p()->action.feral_spirits )
+    {
+      p()->action.feral_spirits = this;
+    }
   }
 
   void execute() override
   {
     shaman_spell_t::execute();
 
-    p()->summon_feral_spirits( p()->spell.feral_spirit->duration() );
+    // Evaluate before n gets messed with
+    if ( player->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B4 ) )
+    {
+      p()->cooldown.primordial_wave->adjust( -1.0 *
+        player->sets->set( SHAMAN_ENHANCEMENT, T31, B4 )->effectN( 1 ).time_value() * n_summons );
+    }
+
+    if ( type == feral_spirit_cast::TIER31 )
+    {
+      p()->pet.lightning_wolves.spawn( duration );
+      p()->buff.crackling_surge->trigger( n_summons, buff_t::DEFAULT_VALUE(), -1, duration );
+    }
+    else
+    {
+      // No elemental spirits selected, just summon normal pets
+      if ( !p()->talent.elemental_spirits->ok() )
+      {
+        p()->pet.spirit_wolves.spawn( duration, n_summons );
+        for ( unsigned i = 0; i < n_summons; ++i )
+        {
+          p()->buff.earthen_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+        }
+      }
+      else
+      {
+        // This summon evaluates the wolf type to spawn as the roll, instead of rolling against
+        // the available pool of wolves to spawn.
+        auto n = n_summons;
+        while ( n )
+        {
+          switch ( static_cast<wolf_type_e>( 1 + rng().range( 0, 3 ) ) )
+          {
+            case FIRE_WOLF:
+              p()->pet.fire_wolves.spawn( duration );
+              p()->buff.molten_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+              break;
+            case FROST_WOLF:
+              p()->pet.frost_wolves.spawn( duration );
+              p()->buff.icy_edge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+              break;
+            case LIGHTNING_WOLF:
+              p()->pet.lightning_wolves.spawn( duration );
+              p()->buff.crackling_surge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+              break;
+            default:
+              assert( 0 );
+              break;
+          }
+          n--;
+        }
+      }
+    }
+
+    // Enhancement T28 or T31 bonuses will only override the buff from manually cast spell
+    // if the new duration exceeds the remaining duration of the buff.
+    if ( type == feral_spirit_cast::NORMAL ||
+      duration > p()->buff.feral_spirit_maelstrom->remains() )
+    {
+      p()->buff.feral_spirit_maelstrom->trigger( 1, duration );
+    }
   }
 };
 
@@ -8409,8 +8507,8 @@ struct primordial_wave_t : public shaman_spell_t
 
     if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
     {
-      p()->summon_feral_spirits( p()->spell.feral_spirit->duration(), 1, true,
-                                 p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) );
+      p()->action.feral_spirit_t31->set_target( execute_state->target );
+      p()->action.feral_spirit_t31->execute();
     }
   }
 };
@@ -9067,6 +9165,16 @@ void shaman_t::create_actions()
     action.stormflurry_ws = new windstrike_t( this, "", true );
   }
 
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) )
+  {
+    action.feral_spirit_t28 = new feral_spirit_spell_t( this, "", feral_spirit_cast::TIER28 );
+  }
+
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
+  {
+    action.feral_spirit_t31 = new feral_spirit_spell_t( this, "", feral_spirit_cast::TIER31 );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -9622,67 +9730,6 @@ pet_t* shaman_t::get_active_elemental_pet() const
   return nullptr;
 }
 
-void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool resetFeralSpiritMaelstrom, bool t31_2pc )
-{
-  //Evaluate before n gets messed with
-  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B4 ) )
-  {
-    cooldown.primordial_wave->adjust( -1.0 * ( timespan_t::from_seconds( 7 ) * n ) );
-  }
-  if ( t31_2pc )
-  {
-    pet.lightning_wolves.spawn( duration );
-    buff.crackling_surge->trigger( n, buff_t::DEFAULT_VALUE(), -1, duration );
-  }
-  else
-  {
-    // No elemental spirits selected, just summon normal pets
-    if ( !talent.elemental_spirits->ok() )
-    {
-      pet.spirit_wolves.spawn( duration, n );
-      for ( unsigned i = 0; i < n; ++i )
-      {
-        buff.earthen_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-      }
-    }
-    else
-    {
-      // This summon evaluates the wolf type to spawn as the roll, instead of rolling against
-      // the available pool of wolves to spawn.
-      while ( n )
-      {
-        switch ( static_cast<wolf_type_e>( 1 + rng().range( 0, 3 ) ) )
-        {
-          case FIRE_WOLF:
-              pet.fire_wolves.spawn( duration );
-              buff.molten_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-              break;
-          case FROST_WOLF:
-              pet.frost_wolves.spawn( duration );
-              buff.icy_edge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-              break;
-          case LIGHTNING_WOLF:
-              pet.lightning_wolves.spawn( duration );
-              buff.crackling_surge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-              break;
-          default:
-              assert( 0 );
-              break;
-        }
-        n--;
-      }
-    }
-  }
-
-  // Enhancement T28 or T31 bonuses will only override the buff from manually cast spell
-  // if the new duration exceeds the remaining duration of the buff.
-  if ( !resetFeralSpiritMaelstrom ||
-       ( resetFeralSpiritMaelstrom && duration > buff.feral_spirit_maelstrom->remains() ) )
-  {
-    buff.feral_spirit_maelstrom->trigger( 1, duration );
-  }
-}
-
 void shaman_t::summon_fire_elemental( timespan_t duration )
 {
   if ( talent.storm_elemental->ok() )
@@ -10099,8 +10146,8 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
         sim->out_debug.print( "{} Enhancement T28 2PC", name() );
       }
 
-      summon_feral_spirits( timespan_t::from_seconds(
-        spell.t28_2pc_enh->effectN( 2 ).base_value() ), 1, true );
+      action.feral_spirit_t28->set_target( state->target );
+      action.feral_spirit_t28->execute();
     }
 
     if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
