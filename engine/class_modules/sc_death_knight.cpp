@@ -1165,6 +1165,8 @@ public:
     double ams_absorb_percent = 0;
     double amz_absorb_percent = 0;
     bool individual_pet_reporting = false;
+    std::vector<timespan_t> amz_use_time;
+    bool amz_specified = false;
   } options;
 
   // Runes
@@ -8286,6 +8288,11 @@ struct antimagic_zone_t final : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
+    if ( p -> options.amz_use_time.size() != 0 )
+    {
+      p -> options.amz_specified = true;
+    }
+
     // Don't allow lower than AMZ cd intervals
     if ( interval < min_interval )
     {
@@ -8763,7 +8770,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Bug? Intended?
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/396
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/397
-
     // Some abilities use the actual RP spent by the ability, others use the base RP cost
     double base_rp_cost = actual_amount;
 
@@ -8832,12 +8838,30 @@ void death_knight_t::create_options()
 {
   player_t::create_options();
 
+  auto opt_external_buff_times = []( util::string_view name, std::vector<timespan_t>& times )
+  {
+    return opt_func( name, [ &times ]( sim_t*, util::string_view, util::string_view val )
+                     {
+                       times.clear();
+                       auto splits = util::string_split<util::string_view>( val, "/" );
+                       for (auto split : splits)
+                       {
+                         double t = util::to_double( split );
+                         if (t < 0.0)
+                           throw std::invalid_argument( "external buffs cannot be applied at negative times" );
+                         times.push_back( timespan_t::from_seconds( t ) );
+                       }
+                       return true;
+                     } );
+  };
+
   add_option( opt_bool( "deathknight.disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "deathknight.split_ghoul_regen", options.split_ghoul_regen ) );
   add_option( opt_bool( "deathknight.split_obliterate_schools", options.split_obliterate_schools ) );
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
+  add_option( opt_external_buff_times( "deathknight.amz_use_time", options.amz_use_time ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -9478,6 +9502,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
   {
     if ( util::str_compare_ci( splits[ 1 ], "ams_absorb_percent" ) && splits.size() == 2 )
       return expr_t::create_constant( "ams_absorb_percent", options.amz_absorb_percent );
+  }
+
+  // Expose AMZ Specified to the APL to prevent its use.
+  if (util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1)
+  {
+    if (util::str_compare_ci( splits[ 1 ], "amz_specified" ) && splits.size() == 2)
+      return expr_t::create_constant( "amz_specified", options.amz_specified );
   }
 
   // Death Knight special expressions
@@ -11162,6 +11193,15 @@ void death_knight_t::combat_begin()
   {
     resource_loss( RESOURCE_RUNIC_POWER, rp_overflow, gains.start_of_combat_overflow );
   }
+
+  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
+  {
+    if (buff)
+      for (auto t : times)
+        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
+  };
+
+  add_timed_buff_triggers( options.amz_use_time, buffs.antimagic_zone );
 }
 
 // death_knight_t::invalidate_cache =========================================
