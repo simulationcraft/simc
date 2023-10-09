@@ -407,6 +407,14 @@ struct divine_storm_echo_tempest_t : public paladin_melee_attack_t
     base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
     clears_judgment = false;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    // Tempest of the Lightbringer munches Empyrean Power without doing anything
+    if ( p()->buffs.empyrean_power->up() && p()->bugs )
+      p()->buffs.empyrean_power->expire();
+    paladin_melee_attack_t::impact( s );
+  }
 };
 
 struct divine_storm_tempest_t : public paladin_melee_attack_t
@@ -419,6 +427,14 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
     aoe = -1;
     base_multiplier *= p->talents.tempest_of_the_lightbringer->effectN( 1 ).percent();
     clears_judgment = false;
+  }
+
+  void impact(action_state_t* s) override
+  {
+    // Tempest of the Lightbringer munches Empyrean Power without doing anything
+    if ( p()->buffs.empyrean_power->up() && p()->bugs )
+      p()->buffs.empyrean_power->expire();
+    paladin_melee_attack_t::impact( s );
   }
 };
 
