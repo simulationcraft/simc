@@ -2090,7 +2090,8 @@ public:
   void trigger_danse_macabre( const action_state_t* state );
   void trigger_sanguine_blades( const action_state_t* state, rogue_attack_t* action );
   void trigger_caustic_spatter( const action_state_t* state );
-  virtual void trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
+  void trigger_shadowcraft( const action_state_t* state );
+  virtual bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
 
   // General Methods ==========================================================
 
@@ -2420,6 +2421,7 @@ public:
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
       trigger_flagellation( ab::execute_state );
+      trigger_shadowcraft( ab::execute_state );
     }
 
     // 2020-12-04 -- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
@@ -2549,6 +2551,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_shadow_blades_attack( state );
     trigger_dashing_scoundrel( state );
     trigger_caustic_spatter( state );
+    trigger_t31_subtlety_set_bonus( state );
   }
 
   void tick( dot_t* d ) override
@@ -4179,9 +4182,26 @@ struct eviscerate_t : public rogue_attack_t
     }
   }
 
-  void trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* ) override
+  bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* ) override
   {
-    rogue_attack_t::trigger_t31_subtlety_set_bonus( state, shadow_eviscerate_attack );
+    if ( rogue_attack_t::trigger_t31_subtlety_set_bonus( state, shadow_eviscerate_attack ) )
+    {
+      // Damage is residual at the time of cast, benefitting from Dark Brew and Deeper Daggers
+      double damage_amount = state->result_amount * p()->set_bonuses.t31_subtlety_2pc->effectN( 1 ).percent();
+      damage_amount *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 4 ).percent();
+      damage_amount *= 1.0 + p()->buffs.deeper_daggers->stack_value();
+
+      shadow_eviscerate_attack->base_dd_min = shadow_eviscerate_attack->base_dd_max = damage_amount;
+      shadow_eviscerate_attack->set_target( state->target );
+      auto damage_state = shadow_eviscerate_attack->get_state();
+      damage_state->target = state->target;
+      shadow_eviscerate_attack->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+      shadow_eviscerate_attack->trigger_secondary_action( damage_state, 1_s );
+
+      return true;
+    }
+
+    return false;
   }
 };
 
@@ -5117,9 +5137,35 @@ struct rupture_t : public rogue_attack_t
     }
   }
 
-  void trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* ) override
+  bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* ) override
   {
-    rogue_attack_t::trigger_t31_subtlety_set_bonus( state, shadow_rupture_attack );
+    if ( rogue_attack_t::trigger_t31_subtlety_set_bonus( state, shadow_rupture_attack ) )
+    {
+      // Damage is fully residual at the time of cast, across the DoT duration
+      // Currently does not benefit from Dark Brew or Deeper Daggers
+      const auto dot = td( state->target )->dots.rupture;
+      assert( dot && dot->is_ticking() );
+
+      // Takes the entire remaining DoT damage as if it were dealt instantly with the current state
+      double damage_amount = calculate_tick_amount( dot->state, 1.0 );
+      damage_amount *= ( dot->remains() / tick_time( dot->state ) );
+
+      // Stretch the damage across the total ticks used for the DoT then apply the set bonus multiplier
+      double num_ticks = shadow_rupture_attack->composite_dot_duration( state ) / shadow_rupture_attack->tick_time( state );
+      damage_amount *= ( 1.0 / num_ticks );
+      damage_amount *= p()->set_bonuses.t31_subtlety_2pc->effectN( 1 ).percent();
+
+      shadow_rupture_attack->base_td = damage_amount;
+      shadow_rupture_attack->set_target( state->target );
+      auto damage_state = shadow_rupture_attack->get_state();
+      damage_state->target = state->target;
+      shadow_rupture_attack->snapshot_state( damage_state, result_amount_type::DMG_OVER_TIME );
+      shadow_rupture_attack->trigger_secondary_action( damage_state, 1_s );
+
+      return true;
+    }
+
+    return false;
   }
 
   bool snapshots_nightstalker() const override
@@ -5595,9 +5641,27 @@ struct black_powder_t: public rogue_attack_t
     }
   }
 
-  void trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* ) override
+  bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* ) override
   {
-    rogue_attack_t::trigger_t31_subtlety_set_bonus( state, shadow_powder_attack );
+    if ( rogue_attack_t::trigger_t31_subtlety_set_bonus( state, shadow_powder_attack ) )
+    {
+      // Damage is residual at the time of cast, benefitting from Dark Brew and Deeper Daggers
+      // For Black Powder, this appears to take the critical damage state of a random target
+      double damage_amount = state->result_amount * p()->set_bonuses.t31_subtlety_2pc->effectN( 1 ).percent();
+      damage_amount *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 4 ).percent();
+      damage_amount *= 1.0 + p()->buffs.deeper_daggers->stack_value();
+
+      shadow_powder_attack->base_dd_min = shadow_powder_attack->base_dd_max = damage_amount;
+      shadow_powder_attack->set_target( state->target );
+      auto damage_state = shadow_powder_attack->get_state();
+      damage_state->target = state->target;
+      shadow_powder_attack->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+      shadow_powder_attack->trigger_secondary_action( damage_state, 1_s );
+
+      return true;
+    }
+
+    return false;
   }
 
   bool procs_poison() const override
@@ -6397,10 +6461,26 @@ struct sepsis_t : public rogue_attack_t
     sepsis_expire_damage->stats = stats;
   }
 
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_persistent_multiplier( state );
+
+    // 2023-10-08 -- Sepsis is now scripted to snapshot Perforated Veins and The Rotten
+    if ( p()->buffs.perforated_veins->check() )
+      m *= p()->buffs.perforated_veins->direct_mod.multiplier;
+
+    if ( p()->buffs.the_rotten->check() )
+      m *= p()->buffs.the_rotten->direct_mod.multiplier;
+
+    return m;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
     p()->buffs.sepsis->trigger();
+    p()->buffs.perforated_veins->decrement();
+    p()->buffs.the_rotten->decrement();
   }
 
   void last_tick( dot_t* d ) override
@@ -8087,20 +8167,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       animacharged_cp_proc->occur();
     }
   }
-
-  // T31 Set Bonus is intended to have its CP gains triggered immediately, prior to Shadowcraft
-  trigger_t31_subtlety_set_bonus( state );
-
-  // Shadowcraft refunds only trigger if the current available Shadow Techniques stacks will bring you to maximum
-  if ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.symbols_of_death->check() )
-  {
-    const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
-    if( current_deficit > 0 && p()->buffs.shadow_techniques->check() >= current_deficit  )
-    {
-      trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_shadowcraft );
-      p()->buffs.shadow_techniques->decrement( current_deficit );
-    }
-  }
 }
 
 template <typename Base>
@@ -8369,20 +8435,43 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action )
+void actions::rogue_action_t<Base>::trigger_shadowcraft( const action_state_t* state )
+{
+  if ( !p()->talent.subtlety.shadowcraft->ok() || !ab::hit_any_target )
+    return;
+
+  if ( !p()->buffs.symbols_of_death->check() )
+    return;
+
+  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+    return;
+
+  // Shadowcraft refunds only trigger if the current available Shadow Techniques stacks will bring you to maximum
+  const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
+  if ( current_deficit > 0 && p()->buffs.shadow_techniques->check() >= current_deficit )
+  {
+    trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_shadowcraft );
+    p()->buffs.shadow_techniques->decrement( current_deficit );
+  }
+}
+
+template <typename Base>
+bool actions::rogue_action_t<Base>::trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action )
 {
   if ( !p()->set_bonuses.t31_subtlety_2pc->ok() )
-    return;
+    return false;
 
   if ( !( action && action->secondary_trigger_type == secondary_trigger::T31_SUBTLETY_2PC ||
           affected_by.t31_subtlety_4pc ) )
-    return;
+    return false;
+
+  // Only triggers on a single impact for Black Powder
+  if ( state->chain_target > 0 )
+    return false;
 
   int num_clones = 0;
   if ( action && p()->rng().roll( p()->spec.t31_subtlety_2pc_chance ) )
   {
-    // TODO -- Implement setting the damage correctly on these, as they are residual
-    action->trigger_secondary_action( state->target, 1_s );
     num_clones = 1; // Only count if we are spawning a clone attack
   }
   else if ( affected_by.t31_subtlety_4pc && ab::data().id() == p()->talent.subtlety.secret_technique->id() )
@@ -8395,6 +8484,8 @@ void actions::rogue_action_t<Base>::trigger_t31_subtlety_set_bonus( const action
     const int cp_gain = as<int>( p()->set_bonuses.t31_subtlety_4pc->effectN( 2 ).base_value() );
     trigger_combo_point_gain( cp_gain * num_clones, p()->gains.t31_subtlety_4pc );
   }
+
+  return ( num_clones > 0 );
 }
 
 // ==========================================================================
