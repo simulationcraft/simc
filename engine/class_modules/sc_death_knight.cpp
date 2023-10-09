@@ -1148,6 +1148,12 @@ public:
     propagate_const<proc_t*> fw_unholy_assault;
     propagate_const<proc_t*> fw_vile_contagion;
     propagate_const<proc_t*> fw_ruptured_viscera;
+
+    // Chill Streak related procs
+    propagate_const<proc_t*> enduring_chill; // Extra bounces given by Enduring Chill
+    propagate_const<proc_t*> t31_4pc_erw;    // Empower Rune Weapon CDR from T31 4pc
+    propagate_const<proc_t*> t31_4pc_cs;     // Chill Streak CDR from T31 4pc
+    propagate_const<proc_t*> t31_4pc_rune;   // Runes generated from T31 4pc
   } procs;
 
   // Death Knight Options
@@ -4995,6 +5001,7 @@ struct chill_streak_damage_t final : public death_knight_spell_t
          rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
     {
       hit_count--;
+      p() -> procs.enduring_chill -> occur();
     }
 	
     if ( ! state -> action -> result_is_hit( state -> result ) )
@@ -5013,14 +5020,17 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       if ( roll < .3333 )
       {
         p() -> cooldown.chill_streak -> adjust( -timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 2 ).base_value() ) );
+        p() -> procs.t31_4pc_cs -> occur();
       }
       else if ( roll < .6666 )
       {
         p() -> cooldown.empower_rune_weapon -> adjust( -timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 3 ).base_value() ) );
+        p() -> procs.t31_4pc_erw -> occur();
       }
       else
       {
         p() -> replenish_rune( 1, p() -> gains.t31_4pc );
+        p() -> procs.t31_4pc_rune -> occur();
       }
     }
 
@@ -10603,6 +10613,10 @@ void death_knight_t::init_procs()
   procs.fw_vile_contagion   = get_proc( "Festering Wound from Vile Contagion" );
   procs.fw_ruptured_viscera = get_proc( "Festering Wound from Ruptured Viscera" );
 
+  procs.enduring_chill      = get_proc( "Enduring Chill extra bounces" );
+  procs.t31_4pc_cs          = get_proc( "Chill Streak CDR from T31 4pc" );
+  procs.t31_4pc_erw         = get_proc( "ERW CDR from T31 4pc" );
+  procs.t31_4pc_rune        = get_proc( "Runes from T31 4pc" );
 }
 
 // death_knight_t::init_finished ============================================
