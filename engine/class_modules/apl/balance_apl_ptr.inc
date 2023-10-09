@@ -49,7 +49,7 @@ st->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+5
 st->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 st->add_action( "fury_of_elune,if=target.time_to_die>2&(buff.ca_inc.remains>3|cooldown.ca_inc.remains>30&buff.primordial_arcanic_pulsar.value<=280|buff.primordial_arcanic_pulsar.value>=560&astral_power>50)|fight_remains<10" );
 st->add_action( "starfall,if=buff.starweavers_warp.up" );
-st->add_action( "variable,name=starsurge_condition1,value=talent.starlord&buff.starlord.stack<3" );
+st->add_action( "variable,name=starsurge_condition1,value=talent.starlord&buff.starlord.stack<3|(buff.balance_of_all_things_arcane.stack+buff.balance_of_all_things_nature.stack)>2&buff.starlord.remains>4" );
 st->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starsurge_condition1" );
 st->add_action( "starsurge,if=variable.starsurge_condition1" );
 st->add_action( "sunfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3" );
