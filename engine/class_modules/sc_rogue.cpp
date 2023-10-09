@@ -8447,12 +8447,15 @@ void actions::rogue_action_t<Base>::trigger_shadowcraft( const action_state_t* s
     return;
 
   // Shadowcraft refunds only trigger if the current available Shadow Techniques stacks will bring you to maximum
-  const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
-  if ( current_deficit > 0 && p()->buffs.shadow_techniques->check() >= current_deficit )
-  {
-    trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_shadowcraft );
-    p()->buffs.shadow_techniques->decrement( current_deficit );
-  }
+  // Needs to be delayed as consume_resource for finishers doesn't trigger until post-impact
+  make_event( *p()->sim, [ this ] {
+    const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
+    if ( current_deficit > 0 && p()->buffs.shadow_techniques->check() >= current_deficit )
+    {
+      trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_shadowcraft );
+      p()->buffs.shadow_techniques->decrement( current_deficit );
+    }
+  } );
 }
 
 template <typename Base>
@@ -8481,8 +8484,11 @@ bool actions::rogue_action_t<Base>::trigger_t31_subtlety_set_bonus( const action
 
   if ( p()->set_bonuses.t31_subtlety_4pc->ok() && affected_by.t31_subtlety_4pc && num_clones > 0 )
   {
-    const int cp_gain = as<int>( p()->set_bonuses.t31_subtlety_4pc->effectN( 2 ).base_value() );
-    trigger_combo_point_gain( cp_gain * num_clones, p()->gains.t31_subtlety_4pc );
+    // Needs to be delayed as consume_resource for finishers doesn't trigger until post-impact
+    const int cp_gain = as<int>( p()->set_bonuses.t31_subtlety_4pc->effectN( 2 ).base_value() ) * num_clones;
+    make_event( *p()->sim, [ this, cp_gain ] {
+      trigger_combo_point_gain( cp_gain, p()->gains.t31_subtlety_4pc );
+    } );
   }
 
   return ( num_clones > 0 );
