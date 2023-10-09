@@ -1524,6 +1524,7 @@ class SpellDataGenerator(DataGenerator):
             ( 425261, 0 ),          # Cleansing Flame (Damage - Prot T31 4pc)
             ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
             ( 423590, 0 ),          # Echoes of Wrath (Ret T31 4pc buff)
+            ( 423593, 0 ),          # Tempest of the Lightbringer triggered by T31 4pc
         ),
 
         # Hunter:

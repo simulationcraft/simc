@@ -1331,15 +1331,15 @@ void judgment_t::impact( action_state_t* s )
 
   if ( result_is_hit( s->result ) )
   {
-      if ( p()->talents.greater_judgment->ok() )
+    if ( p()->talents.greater_judgment->ok() )
+    {
+      int num_stacks = 1;
+      if ( p()->talents.highlords_judgment->ok() )
       {
-        int num_stacks = 1;
-        if ( p()->talents.highlords_judgment->ok() )
-        {
         num_stacks += as<int>( p()->talents.highlords_judgment->effectN( 1 ).base_value() );
-        }
-        td( s->target )->debuff.judgment->trigger( num_stacks );
       }
+      td( s->target )->debuff.judgment->trigger( num_stacks );
+    }
 
     int amount = 5;
     if ( p()->talents.judgment_of_light->ok() )
@@ -1447,6 +1447,7 @@ struct righteous_might_t : public heal_t
 
 struct divine_toll_t : public paladin_spell_t
 {
+  bool t31HasProcced;
   divine_toll_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "divine_toll", p, p->talents.divine_toll )
   {
@@ -1467,6 +1468,17 @@ struct divine_toll_t : public paladin_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      // T31 only procs on the first valid target, others are not affected, even if valid
+      if ( !t31HasProcced && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) &&
+           td( s->target )->dots.expurgation->is_ticking() )
+      {
+        t31HasProcced = true;
+        p()->active.wrathful_sanction->set_target( s->target );
+        p()->active.wrathful_sanction->execute();
+        if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+          p()->buffs.echoes_of_wrath->trigger();
+      }
+
       p()->active.divine_toll->set_target( s->target );
       p()->active.divine_toll->schedule_execute();
     }
@@ -1474,6 +1486,8 @@ struct divine_toll_t : public paladin_spell_t
 
   void execute() override
   {
+    t31HasProcced = false;
+
     paladin_spell_t::execute();
 
     if ( p()->talents.divine_resonance->ok() )
@@ -1958,6 +1972,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_max_stack( 3 );
   debuff.heartfire = make_buff( *this, "heartfire", paladin-> find_spell( 408461 ) );
+
+  dots.expurgation = target->get_dot( "expurgation", paladin );
 }
 
 bool paladin_td_t::standing_in_consecration()

@@ -48,6 +48,7 @@ struct paladin_td_t : public actor_target_data_t
 {
   struct dots_t
   {
+    dot_t* expurgation;
   } dots;
 
   struct buffs_t
@@ -110,6 +111,9 @@ public:
     // Tier stuff
     action_t* cleansing_flame; // Prot Tier 31 4pc
     action_t* cleansing_flame_heal;
+
+    action_t* expurgation;
+    action_t* wrathful_sanction;
   } active;
 
   // Buffs
@@ -184,6 +188,8 @@ public:
     buff_t* empyrean_legacy_cooldown;
     buff_t* relentless_inquisitor;
     buff_t* divine_arbiter;
+
+    buff_t* echoes_of_wrath; // T31 4pc
   } buffs;
 
   // Gains
@@ -331,6 +337,7 @@ public:
     const spell_data_t* sentinel;
     const spell_data_t* cleansing_flame_damage;
     const spell_data_t* cleansing_flame_heal;
+    const spell_data_t* wrathful_sanction;
   } spells;
 
   // Talents

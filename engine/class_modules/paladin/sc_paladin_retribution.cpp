@@ -322,27 +322,25 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       searing_light_disabled = true;
 
-      if ( p->talents.jurisdiction->ok() )
+      // Jurisdiction doesn't increase Expurgation's damage in-game
+      // It's increasing Spell Direct Amount instead of Spell Periodic Amount
+      if ( p->talents.jurisdiction->ok() && p->bugs)
       {
         base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
+      }
+      if (p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2))
+      {
+        dot_duration +=
+            timespan_t::from_millis( p->sets->set( PALADIN_RETRIBUTION, T31, B2 )->effectN( 2 ).base_value() );
+        base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T31, B2 )->effectN( 1 ).percent();
       }
     }
   };
 
-  expurgation_t* expurgation;
-
   blade_of_justice_t( paladin_t* p, util::string_view options_str ) :
-    paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice ),
-    expurgation( nullptr )
+    paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice )
   {
     parse_options( options_str );
-
-    if ( p->talents.expurgation->ok() )
-    {
-      expurgation = new expurgation_t( p );
-      add_child( expurgation );
-    }
-
     if ( p->talents.holy_blade->ok() )
     {
       energize_amount += p->talents.holy_blade->effectN( 1 ).resource( RESOURCE_HOLY_POWER );
@@ -390,13 +388,26 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
     if ( p()->talents.expurgation->ok() )
     {
-      expurgation->set_target( state->target );
-      expurgation->execute();
+      p()->active.expurgation->target = state->target;
+      p()->active.expurgation->execute();
     }
   }
 };
 
 // Divine Storm =============================================================
+
+struct divine_storm_echo_tempest_t : public paladin_melee_attack_t
+{
+  divine_storm_echo_tempest_t( paladin_t* p )
+    : paladin_melee_attack_t( "divine_storm_echo_tempest", p, p->find_spell( 224239 ) )  // ToDo: Change spell id to 423593
+  {
+    background = true;
+
+    aoe = -1;
+    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    clears_judgment = false;
+  }
+};
 
 struct divine_storm_tempest_t : public paladin_melee_attack_t
 {
@@ -411,13 +422,42 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
   }
 };
 
+struct divine_storm_echo_t : public paladin_melee_attack_t
+{
+  divine_storm_echo_tempest_t* tempest;
+  divine_storm_echo_t( paladin_t* p )
+    : paladin_melee_attack_t( "divine_storm_echo", p, p->talents.divine_storm ), tempest( nullptr )
+  {
+    background = true;
+
+    aoe = -1;
+    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    clears_judgment                   = false;
+    base_costs[ RESOURCE_HOLY_POWER ] = 0;
+
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+    {
+      tempest = new divine_storm_echo_tempest_t( p );
+      add_child( tempest );
+    }
+  }
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p()->talents.tempest_of_the_lightbringer->ok() )
+      tempest->schedule_execute();
+  }
+};
+
 struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_tempest_t* tempest;
+  divine_storm_echo_t* echo;
 
   divine_storm_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "divine_storm", p, p->talents.divine_storm ),
-    tempest( nullptr )
+    tempest( nullptr ), echo( nullptr )
   {
     parse_options( options_str );
 
@@ -433,6 +473,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     {
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
+    }
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+    {
+      echo = new divine_storm_echo_t( p );
+      add_child( echo );
     }
   }
 
@@ -451,6 +496,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     {
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
+    }
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+    {
+      echo = new divine_storm_echo_t( p );
+      add_child( echo );
     }
   }
 
@@ -474,6 +524,12 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p()->talents.tempest_of_the_lightbringer->ok() )
       tempest->schedule_execute();
 
+    if ( p()->buffs.echoes_of_wrath->up() )
+    {
+      p()->buffs.echoes_of_wrath->expire();
+      echo->start_action_execute_event( 700_ms ); // Maybe this 700ms is Echoes of Wrath effect 2? It's more like 600-700ms
+    }
+
     if ( p()->buffs.inquisitors_ire->up() )
       p()->buffs.inquisitors_ire->expire();
   }
@@ -487,6 +543,20 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       if ( p()->talents.sanctify->ok() )
         td( s->target )->debuff.sanctify->trigger();
     }
+  }
+};
+
+struct templars_verdict_echo_t : public paladin_melee_attack_t
+{
+  templars_verdict_echo_t( paladin_t* p ) : 
+    paladin_melee_attack_t(( p->talents.final_verdict->ok() ) ? "final_verdict_echo" : "templars_verdict_echo",
+      p,
+      ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) )
+  {
+    background = true;
+    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    clears_judgment                   = false;
+    base_costs[ RESOURCE_HOLY_POWER ] = 0;
   }
 };
 
@@ -506,13 +576,15 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   };
 
   bool is_fv;
+  templars_verdict_echo_t* echo;
 
   templars_verdict_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t(
       ( p->talents.final_verdict->ok() ) ? "final_verdict" : "templars_verdict",
       p,
       ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) ),
-    is_fv( p->talents.final_verdict->ok() )
+    is_fv( p->talents.final_verdict->ok() ),
+    echo(nullptr)
   {
     parse_options( options_str );
 
@@ -537,6 +609,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
       // Okay, when did this get reset to 1?
       weapon_multiplier = 0;
+    }
+    if ( p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B4) )
+    {
+      echo = new templars_verdict_echo_t( p );
+      add_child( echo );
     }
   }
 
@@ -585,6 +662,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
           p()->procs.righteous_cause->occur();
           p()->cooldowns.blade_of_justice->reset( true );
         }
+      }
+      if ( p()->buffs.echoes_of_wrath->up() )
+      {
+        p()->buffs.echoes_of_wrath->expire();
+        echo->target = execute_state->target;
+        echo->start_action_execute_event( 700_ms );
       }
     }
   }
@@ -644,10 +727,12 @@ struct final_reckoning_t : public paladin_spell_t
 struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
+  bool procsT31;
 
   judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
-    holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) )
+    holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
+      procsT31( true )
   {
     parse_options( options_str );
 
@@ -679,7 +764,8 @@ struct judgment_ret_t : public judgment_t
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
     judgment_t( p, name ),
-    holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) )
+      holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
+      procsT31( false ) // Divine Toll proc in divine_toll_t
   {
     // This is for Divine Toll's background judgments
     background = true;
@@ -691,6 +777,16 @@ struct judgment_ret_t : public judgment_t
     // according to skeletor this is given the bonus of 326011
     if ( is_divine_toll )
       base_multiplier *= 1.0 + p->find_spell( 326011 )->effectN( 1 ).percent();
+    // This is called for Divine Resonance Judgments, they benefit from Blessed Champion
+    else
+    {
+      procsT31 = true;
+      if ( p->talents.blessed_champion->ok() )
+      {
+        aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
+        base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+      }
+    }
 
     if ( p->talents.boundless_judgment->ok() )
     {
@@ -718,6 +814,23 @@ struct judgment_ret_t : public judgment_t
       {
         p()->buffs.empyrean_legacy->trigger();
         p()->buffs.empyrean_legacy_cooldown->trigger();
+      }
+    }
+  }
+
+  void impact(action_state_t* s) override
+  {
+    judgment_t::impact( s );
+    // Only main target triggers Wrathful Sanction for Blessed Champion
+    // T31 proc for Divine Toll in divine_toll_t, the others are here
+    if ( s->chain_target == 0 && procsT31 ) 
+    {
+      if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) && td( s->target )->dots.expurgation->is_ticking() )
+      {
+        p()->active.wrathful_sanction->set_target( target );
+        p()->active.wrathful_sanction->execute();
+        if ( p()->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B4) )
+          p()->buffs.echoes_of_wrath->trigger();
       }
     }
   }
@@ -1173,6 +1286,16 @@ struct searing_light_t : public paladin_spell_t
   }
 };
 
+struct wrathful_sanction_t : public paladin_spell_t
+{
+  wrathful_sanction_t( paladin_t* p ) : paladin_spell_t( "wrathful_sanction", p, p->spells.wrathful_sanction )
+  {
+    background = true;
+    base_aoe_multiplier /= p->spells.wrathful_sanction->effectN( 2 ).base_value();
+  }
+};
+
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
@@ -1228,10 +1351,20 @@ void paladin_t::create_ret_actions()
     active.searing_light = new searing_light_t( this );
   }
 
+  if (talents.expurgation->ok())
+  {
+    active.expurgation = new blade_of_justice_t::expurgation_t( this );
+  }
+
   if ( specialization() == PALADIN_RETRIBUTION )
   {
     active.divine_toll = new judgment_ret_t( this, "divine_toll_judgment", true );
     active.divine_resonance = new judgment_ret_t( this, "divine_resonance_judgment", false );
+  }
+
+  if ( sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2) )
+  {
+    active.wrathful_sanction = new wrathful_sanction_t( this );
   }
 }
 
@@ -1285,6 +1418,8 @@ void paladin_t::create_buffs_retribution()
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
   buffs.empyrean_legacy_cooldown = make_buff( this, "empyrean_legacy_cooldown", find_spell( 387441 ) );
+
+  buffs.echoes_of_wrath = make_buff( this, "echoes_of_wrath", find_spell( 423590 ) );
 }
 
 void paladin_t::init_rng_retribution()
@@ -1365,6 +1500,7 @@ void paladin_t::init_spells_retribution()
   passives.boundless_conviction = find_spell( 115675 );
 
   spells.crusade = find_spell( 231895 );
+  spells.wrathful_sanction = find_spell( 424590 );
 }
 
 // Action Priority List Generation
