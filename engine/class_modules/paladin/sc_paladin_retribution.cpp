@@ -435,7 +435,7 @@ struct divine_storm_echo_t : public paladin_melee_attack_t
     clears_judgment                   = false;
     base_costs[ RESOURCE_HOLY_POWER ] = 0;
 
-    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
+    if ( p->talents.tempest_of_the_lightbringer->ok() )
     {
       tempest = new divine_storm_echo_tempest_t( p );
       add_child( tempest );
