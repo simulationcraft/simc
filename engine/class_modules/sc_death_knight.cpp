@@ -8838,7 +8838,7 @@ void death_knight_t::create_options()
 {
   player_t::create_options();
 
-  auto opt_external_buff_times = []( util::string_view name, std::vector<timespan_t>& times )
+  auto opt_specified_buff_times = []( util::string_view name, std::vector<timespan_t>& times )
   {
     return opt_func( name, [ &times ]( sim_t*, util::string_view, util::string_view val )
                      {
@@ -8848,7 +8848,7 @@ void death_knight_t::create_options()
                        {
                          double t = util::to_double( split );
                          if (t < 0.0)
-                           throw std::invalid_argument( "external buffs cannot be applied at negative times" );
+                           throw std::invalid_argument( "specified buffs cannot be applied at negative times" );
                          times.push_back( timespan_t::from_seconds( t ) );
                        }
                        return true;
@@ -8861,7 +8861,7 @@ void death_knight_t::create_options()
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
-  add_option( opt_external_buff_times( "deathknight.amz_use_time", options.amz_use_time ) );
+  add_option( opt_specified_buff_times( "deathknight.amz_use_time", options.amz_use_time ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
