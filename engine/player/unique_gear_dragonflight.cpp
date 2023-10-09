@@ -6707,9 +6707,13 @@ void infernal_signet_brand( special_effect_t& e )
   {
     const special_effect_t& e;
     buff_t* buff;
+    int current_mod;
 
     vicious_brand_self_t( const special_effect_t& effect, buff_t* b, double base_damage )
-      : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ), e( effect ), buff( b )
+      : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ),
+        e( effect ),
+        buff( b ),
+        current_mod( 0 )
     {
       double player_mod = e.driver()->effectN( 4 ).percent();
       base_td           = base_damage * player_mod;
@@ -6724,9 +6728,25 @@ void infernal_signet_brand( special_effect_t& e )
 
       // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
       // Doesnt appear to have any sort of cap
-      m *= pow( base_mod, buff->check() );
+      m *= pow( base_mod, current_mod );
 
       return m;
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+      // Damage mod doesnt seem to update til the next application
+      if ( buff->stack() != current_mod )
+      {
+        current_mod = buff->stack();
+      }
+    }
+
+    void reset() override
+    {
+      generic_proc_t::reset();
+      current_mod = 0;
     }
   };
 
@@ -6736,13 +6756,15 @@ void infernal_signet_brand( special_effect_t& e )
     action_t* aoe_damage;
     buff_t* buff;
     const special_effect_t& e;
+    int current_mod;
 
     vicious_brand_t( const special_effect_t& effect, buff_t* b, double base_damage )
       : generic_proc_t( effect, "vicious_brand", effect.player->find_spell( 425154 ) ),
         self_damage( create_proc_action<vicious_brand_self_t>( "vicious_brand_self", effect, b, base_damage ) ),
         aoe_damage( create_proc_action<radiating_brand_t>( "radiating_brand", effect ) ),
         buff( b ),
-        e( effect )
+        e( effect ),
+        current_mod( 0 )
     {
       base_td = base_damage;
       add_child( aoe_damage );
@@ -6755,7 +6777,7 @@ void infernal_signet_brand( special_effect_t& e )
 
       // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
       // Doesnt appear to have any sort of cap
-      m *= pow( base_mod, buff->check() );
+      m *= pow( base_mod, current_mod );
 
       return m;
     }
@@ -6770,6 +6792,22 @@ void infernal_signet_brand( special_effect_t& e )
             d->state->result_amount * e.driver()->effectN( 6 ).percent();
         aoe_damage->execute();
       }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+      // Damage mod doesnt seem to update til the next application
+      if ( buff->stack() != current_mod )
+      {
+        current_mod = buff->stack();
+      }
+    }
+
+    void reset() override
+    {
+      generic_proc_t::reset();
+      current_mod = 0;
     }
 
     void execute() override
