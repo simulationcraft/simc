@@ -564,15 +564,51 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
 struct templars_verdict_echo_t : public paladin_melee_attack_t
 {
+  bool is_fv;
   templars_verdict_echo_t( paladin_t* p ) : 
     paladin_melee_attack_t(( p->talents.final_verdict->ok() ) ? "final_verdict_echo" : "templars_verdict_echo",
       p,
-      ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) )
+      ( p->talents.final_verdict->ok() ) ? ( p->find_spell( 383328 ) ) : ( p->find_specialization_spell( "Templar's Verdict" ) ) ),
+      is_fv(p->talents.final_verdict->ok())
   {
     background = true;
     base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    // TV/FV Echo damage is increased by Jurisdiction
+    if ( p->talents.jurisdiction->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
+    }
     clears_judgment                   = false;
     base_costs[ RESOURCE_HOLY_POWER ] = 0;
+  }
+
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    // FV Echo can reset Hammer of Wrath
+    if ( is_fv )
+    {
+      double proc_chance = data().effectN( 2 ).percent();
+      if ( rng().roll( proc_chance ) )
+      {
+        p()->cooldowns.hammer_of_wrath->reset( true );
+        p()->buffs.final_verdict->trigger();
+      }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    // Echo can also proc Divine Arbiter
+    if ( p()->buffs.divine_arbiter->stack() == as<int>( p()->buffs.divine_arbiter->data().effectN( 2 ).base_value() ) )
+    {
+      p()->active.divine_arbiter->set_target( s->target );
+      p()->active.divine_arbiter->schedule_execute();
+      p()->buffs.divine_arbiter->expire();
+    }
   }
 };
 
