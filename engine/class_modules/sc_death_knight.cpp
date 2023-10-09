@@ -4983,6 +4983,8 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     }
     death_knight_spell_t::impact( state );
     hit_count++;
+    // Setting a variable min travel time to more accurately emulate in game variance
+    min_travel_time = rng().gauss( 0.5, 0.2 );
 
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) ) 
     {
