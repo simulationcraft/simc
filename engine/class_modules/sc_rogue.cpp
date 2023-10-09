@@ -5195,7 +5195,7 @@ struct secret_technique_t : public rogue_attack_t
         m *= p()->composite_player_pet_damage_multiplier( state, true );
 
         // 2023-10-06 -- T31 4pc bonus affects SecTec, not just clone attacks from the 2pc
-        m *= p()->set_bonuses.t31_subtlety_4pc->effectN( 1 ).percent();
+        m *= 1.0 + p()->set_bonuses.t31_subtlety_4pc->effectN( 1 ).percent();
       }
 
       return m;
