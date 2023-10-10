@@ -1,0 +1,92 @@
+# mage="T31_Mage_Arcane"
+# spec=arcane
+# level=70
+# race=mechagnome
+# role=spell
+# position=back
+# talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJRSKCikQEJhEJQSQSLJAAAAAAAAAAAgIJJJRSSSgA
+
+# flask=phial_of_corrupting_rage_3
+# temporary_enchant=main_hand:hissing_rune_3
+
+# head=underlight_conjurers_arcanocowl,id=202551,bonus_id=9321/7979/6652/9414/9229/1472/8767,ilevel=447,gem_id=192988
+# neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192938/192938/192938
+# shoulders=underlight_conjurers_aurora,id=202549,ilevel=450
+# back=voice_of_the_silent_star,id=204465,bonus_id=6652/9330/7979/1485/8767,ilevel=457
+# chest=underlight_conjurers_vestment,id=202554,bonus_id=9321/7979/6652/9231/1466/8767,ilevel=447,enchant_id=6625
+# wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8780/8793,ilevel=447,gem_id=192938,enchant_id=6580,crafted_stats=40/32
+# hands=underlight_conjurers_gloves,id=202552,ilevel=447
+# waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8780/8790,ilevel=447,gem_id=192938,crafted_stats=36/49
+# legs=underlight_conjurers_trousers,id=202550,ilevel=450,enchant_id=6544
+# feet=underlight_conjurers_treads,id=202553,ilevel=450
+# finger1=bloodied_wedding_ring,id=193671,bonus_id=8780,ilevel=447,gem_id=192938,enchant_id=6556
+# finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192938,enchant_id=6556
+# trinket1=irideus_fragment,id=193743,ilevel=447
+# trinket2=ominous_chromatic_essence,id=203729,ilevel=447
+# main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=sophic_devotion_3,enchant_id=6643
+
+# dragonflight.ominous_chromatic_essence_dragonflight=ruby
+# dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+
+# save=T31_Mage_Arcane.simc
+
+# mage="T31_Mage_Fire"
+# spec=fire
+# level=70
+# race=dwarf
+# role=spell
+# position=back
+# talents=B8DArSxcnei16P8xFL3rzzOyRGJIFNkIRKCikQERkkAAAAAAAAAIiIJJOQJRJJJJJJJaAAAgA
+
+# head=vibrant_wildercloth_headcover,id=193523,ilevel=447,gem_id=192985,bonus_id=523/9379/8960,crafted_stats=36/40
+# neck=ionized_choker,id=206181,ilevel=447,gem_id=192952/192952/192952,bonus_id=8782
+# shoulder=underlight_conjurers_aurora,id=205858,ilevel=450
+# back=voice_of_the_silent_star,id=204465,ilevel=457,enchant_id=6592
+# chest=underlight_conjurers_vestment,id=205862,ilevel=447,enchant_id=6625
+# wrist=overengineered_sleeve_extenders,id=198322,ilevel=447,gem_id=201409/192952,enchant_id=6574,bonus_id=523,crafted_stats=36/36
+# hands=underlight_conjurers_gloves,id=205861,ilevel=447
+# waist=vibrant_wildercloth_girdle,id=193516,ilevel=447,gem_id=192952,bonus_id=523/9379/8960,crafted_stats=36/40
+# legs=underlight_conjurers_trousers,id=205859,ilevel=450,enchant_id=6541
+# feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6613
+# finger1=circle_of_ascended_frost,id=193731,ilevel=447,gem_id=192952,enchant_id=6556,bonus_id=523
+# finger2=signet_of_titanic_insight,id=192999,ilevel=447,gem_id=192952,enchant_id=6556,bonus_id=523,crafted_stats=36/40
+# trinket1=vessel_of_searing_shadow,id=202615,ilevel=447
+# trinket2=ominous_chromatic_essence,id=203729,ilevel=447
+# main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
+
+# dragonflight.ominous_chromatic_essence_dragonflight=ruby
+# dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+
+# save=T31_Mage_Fire.simc
+
+# mage="T31_Mage_Frost"
+# spec=frost
+# level=70
+# race=dwarf
+# role=spell
+# position=ranged_back
+# talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJhQDJJJpBISERSkkAAAIlEJhEJJhkkkkkEAAAAAAAAAICA
+
+# head=underlight_conjurers_arcanocowl,id=202551,ilevel=447,gem_id=192922
+# neck=bromachs_disentombed_locket,id=193809,bonus_id=8782,ilevel=447,gem_id=192988/192958/192958
+# shoulders=underlight_conjurers_aurora,id=202549,ilevel=450
+# back=voice_of_the_silent_star,id=204465,ilevel=457,enchant_id=6595
+# chest=vibrant_wildercloth_vestments,id=193509,ilevel=447,enchant_id=6625,crafted_stats=vers/mastery
+# wrists=vibrant_wildercloth_wristwraps,id=193510,ilevel=447,bonus_id=9379/8960,gem_id=192922,enchant_id=6574,crafted_stats=vers/mastery
+# hands=underlight_conjurers_gloves,id=202552,ilevel=447
+# waist=vibrant_wildercloth_girdle,id=193516,ilevel=447,bonus_id=9379/8960,gem_id=192922,enchant_id=6904,crafted_stats=vers/mastery
+# legs=underlight_conjurers_trousers,id=202550,ilevel=450,enchant_id=6541
+# feet=underlight_conjurers_treads,id=202553,ilevel=450,enchant_id=6613
+# finger1=onyx_impostors_birthright,id=204398,ilevel=450,gem_id=192958,enchant_id=6562
+# finger2=signet_of_titanic_insight,id=192999,ilevel=447,gem_id=192958,enchant_id=6562,crafted_stats=vers/mastery
+# trinket1=ominous_chromatic_essence,id=203729,ilevel=447
+# trinket2=vessel_of_searing_shadow,id=202615,ilevel=447
+# main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
+
+# dragonflight.ominous_chromatic_essence_dragonflight=azure
+# dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+
+# flask=phial_of_corrupting_rage_3
+# temporary_enchant=main_hand:hissing_rune_3
+
+# save=T31_Mage_Frost.simc

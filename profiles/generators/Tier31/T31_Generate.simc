@@ -1,0 +1,62 @@
+# TODO: Remove this when 10.2 goes live
+ptr=1
+
+# T31
+# Tier 31 Amirdrassil, the Dream's Hope
+# * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
+# * Set pieces are permitted up to the item level cap (489). ["bonus_id=?"]
+# * Raid gear is permitted up to the Mythic item level cap (489). ["bonus_id=?"]
+#   * NOTE: Very Rare Items from Fyrakk are permitted up to 496. ["bonus_id=?"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (489).
+# * Honor PvP gear is permitted up to the item level cap (?). ["bonus_id=?"]
+# * Conquest PvP gear is permitted up to the item level cap (Duelist, 463). ["bonus_id=?"]
+# * Crafted gear is permitted up to the item level cap (483), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=?"]
+#   * NOTE: You may use however many crafted pieces you wish, just as long as its possible to wear it all in-game.
+# * World Bosses gear is permitted.
+# * World Drop gear is permitted.
+# * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
+# * Use sockets on the slots head, neck (x3 with jewelcrafting), wrist, waist, finger1, finger2.
+# * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
+# * No Tertiary Stats.
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
+# * Must use enchant name (ex: ",enchant=devotion_of_haste_3") instead of ids/hardcoded stats if possible. Rank 3 enchants are permitted.
+
+
+# Death Knight
+# T31_Generate_Death_Knight.simc
+
+# Demon Hunter
+# T31_Generate_Demon_Hunter.simc
+
+# Druid
+# T31_Generate_Druid.simc
+
+# Evoker
+# T31_Generate_Evoker.simc
+
+# Hunter
+# T31_Generate_Hunter.simc
+
+# Mage
+# T31_Generate_Mage.simc
+
+# Monk
+# T31_Generate_Monk.simc
+
+# Paladin
+# T31_Generate_Paladin.simc
+
+# Priest
+T31_Generate_Priest.simc
+
+# Rogue
+# T31_Generate_Rogue.simc
+
+# Shaman
+# T31_Generate_Shaman.simc
+
+# Warlock
+# T31_Generate_Warlock.simc
+
+# Warrior
+# T31_Generate_Warrior.simc
