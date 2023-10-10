@@ -6220,6 +6220,9 @@ struct sanguine_blades_t : public rogue_attack_t
   sanguine_blades_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spec.sanguine_blades_damage )
   {
+    ignores_armor = true;           // Not in spell data
+    affected_by.lethal_dose = true; // Matches the reversed target modifier for bleeds
+    base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
   }
 };
 
@@ -8399,7 +8402,10 @@ void actions::rogue_action_t<Base>::trigger_sanguine_blades( const action_state_
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), additional_cost, RESOURCE_ENERGY,
                        *action, p()->resources.current[ RESOURCE_ENERGY ] );
 
-  double amount = state->result_amount * p()->talent.assassination.sanguine_blades->effectN( 3 ).percent();
+  // Target multipliers do not replicate to secondary targets, need to reverse them out
+  const double target_ta_multiplier = ( 1.0 / state->target_ta_multiplier );
+
+  double amount = state->result_amount * target_ta_multiplier * p()->talent.assassination.sanguine_blades->effectN( 3 ).percent();
   action->execute_on_target( state->target, amount );
 }
 
