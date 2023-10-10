@@ -9750,11 +9750,13 @@ void rogue_t::create_buffs()
 
   buffs.take_em_by_surprise = make_buff( this, "take_em_by_surprise", spec.take_em_by_surprise_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->add_invalidate( CACHE_HASTE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+    ->apply_affecting_aura( talent.outlaw.take_em_by_surprise ) // Label modifier on talent
     ->set_duration( timespan_t::from_seconds( talent.outlaw.take_em_by_surprise->effectN( 1 ).base_value() ) );
   buffs.take_em_by_surprise_aura = make_buff( this, "take_em_by_surprise_aura", spec.take_em_by_surprise_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->add_invalidate( CACHE_HASTE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+    ->apply_affecting_aura( talent.outlaw.take_em_by_surprise ) // Label modifier on talent
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
