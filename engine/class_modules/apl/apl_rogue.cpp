@@ -507,8 +507,8 @@ void outlaw_ptr( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand" );
-  precombat->add_action( "adrenaline_rush,precombat_seconds=2,if=talent.improved_adrenaline_rush" );
   precombat->add_action( "roll_the_bones,precombat_seconds=2" );
+  precombat->add_action( "adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush" );
   precombat->add_action( "slice_and_dice,precombat_seconds=1" );
   precombat->add_action( "stealth" );
 
@@ -516,9 +516,9 @@ void outlaw_ptr( player_t* p )
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that" );
   default_->add_action( "variable,name=rtb_reroll,value=rtb_buffs.will_lose=(rtb_buffs.will_lose.buried_treasure+rtb_buffs.will_lose.grand_melee&spell_targets.blade_flurry<2&raid_event.adds.in>10)", "Default Roll the Bones reroll rule: reroll for any buffs that aren't Buried Treasure, excluding Grand Melee in single target" );
   default_->add_action( "variable,name=rtb_reroll,if=talent.crackshot&talent.hidden_opportunity&!set_bonus.tier31_4pc,value=(!rtb_buffs.will_lose.true_bearing&talent.hidden_opportunity|!rtb_buffs.will_lose.broadside&!talent.hidden_opportunity)&rtb_buffs.will_lose<=1", "Crackshot builds without T31 should reroll for TB (or BS without HO) if we won't lose over 1 buff" );
-  default_->add_action( "variable,name=rtb_reroll,if=talent.crackshot&set_bonus.tier31_4pc,value=buff.true_bearing.up&rtb_buffs.total=1|(buff.true_bearing.remains<=3&talent.hidden_opportunity|buff.broadside.remains<=3&!talent.hidden_opportunity)&rtb_buffs.will_lose<=2", "Crackshot builds with T31 should attempt to get or preserve TB (or BS without HO) if we won't lose over 2 buffs" );
+  default_->add_action( "variable,name=rtb_reroll,if=talent.crackshot&set_bonus.tier31_4pc,value=buff.true_bearing.up&rtb_buffs.total=1|(buff.true_bearing.remains<=3&talent.hidden_opportunity|buff.broadside.remains<=3&!talent.hidden_opportunity)&rtb_buffs.will_lose<=2+buff.loaded_dice.up", "Crackshot builds with T31 should attempt to get or preserve TB (or BS without HO) if we won't lose over 2 buffs (3 with Loaded Dice)" );
   default_->add_action( "variable,name=rtb_reroll,if=!talent.crackshot&talent.hidden_opportunity,value=!rtb_buffs.will_lose.skull_and_crossbones&(rtb_buffs.will_lose<2+rtb_buffs.will_lose.grand_melee&spell_targets.blade_flurry<2&raid_event.adds.in>10)", "With HO and no Crackshot, reroll for SnC or any 2 buffs excluding GM in single target" );
-  default_->add_action( "variable,name=rtb_reroll,if=!talent.hidden_opportunity,value=variable.rtb_reroll|(rtb_buffs.normal=0&rtb_buffs.longer>=1)&!(buff.broadside.up&buff.true_bearing.up&buff.skull_and_crossbones.up)&!(buff.broadside.remains>39|buff.true_bearing.remains>39|buff.ruthless_precision.remains>39|buff.skull_and_crossbones.remains>39)", "Additional reroll conditions in the event all active buffs will not be rolled away" );
+  default_->add_action( "variable,name=rtb_reroll,value=variable.rtb_reroll|rtb_buffs.normal=0&rtb_buffs.longer>=1&!(buff.broadside.up&buff.true_bearing.up&buff.skull_and_crossbones.up)&rtb_buffs.max_remains<=39", "Additional reroll rules if all active buffs will not be rolled away and we don't already have BS+TB+SnC" );
   default_->add_action( "variable,name=rtb_reroll,op=reset,if=!(raid_event.adds.remains>12|raid_event.adds.up&(raid_event.adds.in-raid_event.adds.remains)<6|target.time_to_die>12)|fight_remains<12", "Avoid rerolls when we will not have time remaining on the fight or add wave to recoup the opportunity cost of the global" );
   default_->add_action( "variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up)&energy>=50" );
   default_->add_action( "variable,name=finish_condition,value=effective_combo_points>=cp_max_spend-1-(stealthed.all&talent.crackshot)", "Use finishers if at -1 from max combo points, or -2 in Stealth with Crackshot" );
@@ -542,11 +542,11 @@ void outlaw_ptr( player_t* p )
   build->add_action( "pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)", "If not using Fan the Hammer, then consume Opportunity based on energy, when it will exactly cap CP, or when using Quick Draw" );
   build->add_action( "sinister_strike" );
 
-  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!talent.improved_adrenaline_rush|combo_points<=2)", "Cooldowns" );
+  cds->add_action( "adrenaline_rush,if=(!buff.adrenaline_rush.up|stealthed.all&talent.crackshot&talent.improved_adrenaline_rush)&(combo_points<=2|!talent.improved_adrenaline_rush)", "Cooldowns  Use ADR without clipping itself and when under 2cp if Improved, but Crackshot builds can clip it in stealth" );
   cds->add_action( "blade_flurry,if=(spell_targets>=2-talent.underhanded_upper_hand&!stealthed.rogue)&buff.blade_flurry.remains<gcd|talent.deft_maneuvers&spell_targets>=5&!variable.finish_condition", "Maintain Blade Flurry on 2+ targets, and on single target with Underhanded, or on cooldown at 5+ targets with Deft Maneuvers" );
-  cds->add_action( "roll_the_bones,if=rtb_buffs=0|variable.rtb_reroll|buff.roll_the_bones.remains<=2&set_bonus.tier31_4pc", "Use RTB with no buffs, or to reroll, or just before normal buffs expire with T31" );
-  cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=4&(buff.shadow_dance.down|rtb_buffs>=6)", "Use KIR with at least 4 buffs" );
-  cds->add_action( "ghostly_strike,if=talent.killing_spree&cooldown.killing_spree.ready|!talent.killing_spree|fight_remains<13", "Sync Ghostly Strike with Killing Spree, otherwise use on cooldown" );
+  cds->add_action( "roll_the_bones,if=rtb_buffs=0|variable.rtb_reroll|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc", "Use RTB with no buffs, or to reroll, or just before buffs expire with T31" );
+  cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+set_bonus.tier31_4pc&(buff.shadow_dance.down|rtb_buffs>=6)", "Use KIR with at least 3 buffs (4 with T31)" );
+  cds->add_action( "ghostly_strike" );
   cds->add_action( "blade_rush,if=variable.blade_flurry_sync&(energy.base_time_to_max>4-spell_targets%3)&!stealthed.all", "Use Blade Rush at ~50% energy, and more regularly with increasing target count" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all" );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=100|fight_remains<charges*6)" );
@@ -564,10 +564,10 @@ void outlaw_ptr( player_t* p )
   cds->add_action( "use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20" );
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
-  finish->add_action( "between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.remains<4|talent.greenskins_wickers&!buff.greenskins_wickers.up|!talent.greenskins_wickers&talent.improved_between_the_eyes|!talent.greenskins_wickers&set_bonus.tier30_4pc)", "Finishers  Use BtE to keep the crit buff up, but on cooldown if Improved or for Greenskins, and avoid overriding Greenskins" );
+  finish->add_action( "between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.remains<4|talent.improved_between_the_eyes|talent.greenskins_wickers|set_bonus.tier30_4pc)&!buff.greenskins_wickers.up", "Finishers  Use BtE to keep the crit buff up, but on cooldown if Improved/Greenskins/T30, and avoid overriding Greenskins" );
   finish->add_action( "between_the_eyes,if=talent.crackshot&(cooldown.vanish.remains>45&cooldown.shadow_dance.remains>15)", "Crackshot builds use BtE outside of Stealth if Vanish or Dance will not come off cooldown within the next cast" );
   finish->add_action( "slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable" );
-  finish->add_action( "killing_spree" );
+  finish->add_action( "killing_spree,if=debuff.ghostly_strike.up|!talent.ghostly_strike" );
   finish->add_action( "cold_blood" );
   finish->add_action( "dispatch" );
 
