@@ -4,13 +4,13 @@ ptr=1
 # T31
 # Tier 31 Amirdrassil, the Dream's Hope
 # * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
-# * Set pieces are permitted up to the item level cap (489). ["bonus_id=?"]
-# * Raid gear is permitted up to the Mythic item level cap (489). ["bonus_id=?"]
-#   * NOTE: Very Rare Items from Fyrakk are permitted up to 496. ["bonus_id=?"]
+# * Set pieces are permitted up to the item level cap (489). ["bonus_id=7187/1520"]
+# * Raid gear is permitted up to the Mythic item level cap (489). ["bonus_id=7187/1520"]
+#   * NOTE: Very Rare Items from Fyrakk are permitted up to 496. ["bonus_id=7187/1527"]
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (489).
 # * Honor PvP gear is permitted up to the item level cap (?). ["bonus_id=?"]
 # * Conquest PvP gear is permitted up to the item level cap (Duelist, 463). ["bonus_id=?"]
-# * Crafted gear is permitted up to the item level cap (483), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=?"]
+# * Crafted gear is permitted up to the item level cap (483), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=9500/9405"]
 #   * NOTE: You may use however many crafted pieces you wish, just as long as its possible to wear it all in-game.
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
@@ -23,7 +23,7 @@ ptr=1
 
 
 # Death Knight
-# T31_Generate_Death_Knight.simc
+T31_Generate_Death_Knight.simc
 
 # Demon Hunter
 # T31_Generate_Demon_Hunter.simc
