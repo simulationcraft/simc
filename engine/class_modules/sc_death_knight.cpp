@@ -475,6 +475,7 @@ public:
     // Shared
     buff_t* antimagic_shell;
     buff_t* antimagic_zone;
+    buff_t* amz_timing;
     propagate_const<buff_t*> icebound_fortitude;
     propagate_const<buff_t*> rune_mastery;
     propagate_const<buff_t*> unholy_ground;
@@ -8329,6 +8330,7 @@ struct antimagic_zone_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.antimagic_zone -> trigger();
+    p() -> buffs.amz_timing -> expire();
   }
 };
 
@@ -10225,6 +10227,11 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_zone = new antimagic_zone_buff_t( this );
 
+  // Fake buff to trigger AMZ at a specified time
+  buffs.amz_timing = make_buff( this, "amz_timing" )
+        -> set_quiet( true )
+        -> set_duration( 5_s );
+
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
         -> set_duration( talent.icebound_fortitude -> duration() )
         -> set_cooldown( 0_ms ); // Handled by the action
@@ -11201,7 +11208,7 @@ void death_knight_t::combat_begin()
         make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
   };
 
-  add_timed_buff_triggers( options.amz_use_time, buffs.antimagic_zone );
+  add_timed_buff_triggers( options.amz_use_time, buffs.amz_timing );
 }
 
 // death_knight_t::invalidate_cache =========================================
