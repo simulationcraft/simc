@@ -481,6 +481,7 @@ public:
     const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* sigil_of_misery;
+    const spell_data_t* sigil_of_misery_debuff;
 
     // Havoc
     const spell_data_t* havoc_demon_hunter;
@@ -546,7 +547,9 @@ public:
     const spell_data_t* soul_fragments_buff;
     const spell_data_t* retaliation_damage;
     const spell_data_t* sigil_of_silence;
+    const spell_data_t* sigil_of_silence_debuff;
     const spell_data_t* sigil_of_chains;
+    const spell_data_t* sigil_of_chains_debuff;
   } spec;
 
   // Set Bonus effects
@@ -2058,9 +2061,8 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
       std::vector<cooldown_t*> sigils_on_cooldown;
       range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
                       []( cooldown_t* c ) { return c->down(); } );
-      if ( !sigils_on_cooldown.empty() )
+      for (auto sigil_cooldown : sigils_on_cooldown)
       {
-        cooldown_t* sigil_cooldown = sigils_on_cooldown[ static_cast<int>( rng().range( sigils_on_cooldown.size() ) ) ];
         sigil_cooldown->adjust( sigil_cooldown_adjust );
       }
     }
@@ -4110,6 +4112,135 @@ struct spectral_sight_t : public demon_hunter_spell_t
     {
       p()->buff.fodder_to_the_flame->trigger();
     }
+  }
+};
+
+struct sigil_of_misery_t : public demon_hunter_spell_t
+{
+  struct sigil_of_misery_sigil_t : public demon_hunter_sigil_t
+  {
+    sigil_of_misery_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
+      : demon_hunter_sigil_t( name, p, s, delay )
+    {
+    }
+
+    void execute() override
+    {
+      demon_hunter_sigil_t::execute();
+    }
+  };
+
+  sigil_of_misery_sigil_t* sigil;
+
+  sigil_of_misery_t( demon_hunter_t* p, util::string_view options_str )
+    : demon_hunter_spell_t( "sigil_of_misery", p, p->spec.sigil_of_misery, options_str ), sigil( nullptr )
+  {
+    sigil = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil", p->spec.sigil_of_misery_debuff,
+                                                               ground_aoe_duration );
+    sigil->stats = stats;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+    sigil->place_sigil( target );
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( sigil )
+    {
+      if ( auto e = sigil->create_sigil_expression( name ) )
+        return e;
+    }
+
+    return demon_hunter_spell_t::create_expression( name );
+  }
+};
+
+struct sigil_of_silence_t : public demon_hunter_spell_t
+{
+  struct sigil_of_silence_sigil_t : public demon_hunter_sigil_t
+  {
+    sigil_of_silence_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
+      : demon_hunter_sigil_t( name, p, s, delay )
+    {
+    }
+    
+    void execute() override
+    {
+      demon_hunter_sigil_t::execute();
+    }
+  };
+
+  sigil_of_silence_sigil_t* sigil;
+
+  sigil_of_silence_t( demon_hunter_t* p, util::string_view options_str )
+    : demon_hunter_spell_t( "sigil_of_silence", p, p->spec.sigil_of_silence, options_str ), sigil( nullptr )
+  {
+    sigil = p->get_background_action<sigil_of_silence_sigil_t>( "sigil_of_silence_sigil", p->spec.sigil_of_silence_debuff,
+                                                               ground_aoe_duration );
+    sigil->stats = stats;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+    sigil->place_sigil( target );
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( sigil )
+    {
+      if ( auto e = sigil->create_sigil_expression( name ) )
+        return e;
+    }
+
+    return demon_hunter_spell_t::create_expression( name );
+  }
+};
+
+struct sigil_of_chains_t : public demon_hunter_spell_t
+{
+  struct sigil_of_chains_sigil_t : public demon_hunter_sigil_t
+  {
+    sigil_of_chains_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
+      : demon_hunter_sigil_t( name, p, s, delay )
+    {
+    }
+    
+    void execute() override
+    {
+      demon_hunter_sigil_t::execute();
+    }
+  };
+  
+  sigil_of_chains_sigil_t* sigil;
+
+  sigil_of_chains_t( demon_hunter_t* p, util::string_view options_str )
+    : demon_hunter_spell_t( "sigil_of_chains", p, p->spec.sigil_of_chains, options_str ), sigil( nullptr )
+  {
+    sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil", p->spec.sigil_of_chains_debuff,
+                                                                ground_aoe_duration );
+    sigil->stats = stats;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+    sigil->place_sigil( target );
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    if ( sigil )
+    {
+      if ( auto e = sigil->create_sigil_expression( name ) )
+        return e;
+    }
+
+    return demon_hunter_spell_t::create_expression( name );
   }
 };
 
@@ -6527,6 +6658,12 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new the_hunt_t( this, options_str );
   if ( name == "spectral_sight" )
     return new spectral_sight_t( this, options_str );
+  if ( name == "sigil_of_misery" )
+    return new sigil_of_misery_t( this, options_str );
+  if ( name == "sigil_of_silence" )
+    return new sigil_of_silence_t( this, options_str );
+  if ( name == "sigil_of_chains" )
+    return new sigil_of_chains_t( this, options_str );
 
   using namespace actions::attacks;
 
@@ -7447,6 +7584,7 @@ void demon_hunter_t::init_spells()
   spell.sigil_of_flame_damage  = find_spell( 204598 );
   spell.sigil_of_flame_fury    = find_spell( 389787 );
   spell.the_hunt               = talent.demon_hunter.the_hunt;
+  spec.sigil_of_misery_debuff = talent.demon_hunter.sigil_of_misery->ok() ? find_spell( 207685 ) : spell_data_t::not_found();
 
   // Spec Background Spells
   mastery.any_means_necessary = talent.havoc.any_means_necessary;
@@ -7491,6 +7629,8 @@ void demon_hunter_t::init_spells()
   spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
   spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
   spec.retaliation_damage      = talent.vengeance.retaliation->ok() ? find_spell( 391159 ) : spell_data_t::not_found();
+  spec.sigil_of_silence_debuff = talent.vengeance.sigil_of_silence->ok() ? find_spell( 204490 ) : spell_data_t::not_found();
+  spec.sigil_of_chains_debuff = talent.vengeance.sigil_of_chains->ok() ? find_spell( 204843 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils,
