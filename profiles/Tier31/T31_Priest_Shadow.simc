@@ -5,12 +5,12 @@ level=70
 race=human
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIIJ5AAAAAAAAAAAAAASoFRiUiIJRSSigUIJJRaEIiQKSLkEUgE
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIIREAAAAAAAAAAAAgkkSEJSJIJRkkIIFSSSkGBiIki0CJBFIB
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=iced_phial_of_corrupting_rage_3
-food=fated_fortune_cookie
+food=feisty_fish_sticks
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:hissing_rune_3
 
@@ -99,8 +99,8 @@ actions.main+=/void_bolt,if=variable.dots_up
 actions.main+=/devouring_plague,if=fight_remains<=duration+4
 actions.main+=/devouring_plague,target_if=!talent.distorted_reality|active_enemies=1|remains<=gcd.max,if=(remains<=gcd.max|remains<3&cooldown.void_torrent.up)|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<=buff.voidform.remains+2|buff.mind_devourer.up&pmultiplier<1.2
 actions.main+=/shadow_word_death,if=set_bonus.tier31_2pc
-actions.main+=/shadow_crash,if=!variable.holding_crash&(dot.vampiric_touch.refreshable|buff.deaths_torment.stack>=9&set_bonus.tier31_4pc)
-actions.main+=/shadow_word_pain,if=buff.deaths_torment.stack=buff.deaths_torment.max_stack&!talent.shadow_crash&set_bonus.tier31_4pc
+actions.main+=/shadow_crash,if=!variable.holding_crash&(dot.vampiric_touch.refreshable|buff.deaths_torment.stack>9&set_bonus.tier31_4pc)
+actions.main+=/shadow_word_pain,if=buff.deaths_torment.stack>9&set_bonus.tier31_4pc&(!variable.holding_crash|!talent.shadow_crash)
 actions.main+=/shadow_word_death,if=variable.dots_up&talent.inescapable_torment&pet.fiend.active&((!talent.insidious_ire&!talent.idol_of_yoggsaron)|buff.deathspeaker.up)&!set_bonus.tier31_2pc
 actions.main+=/vampiric_touch,target_if=min:remains,if=refreshable&target.time_to_die>=12&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains&!action.shadow_crash.in_flight|variable.holding_crash|!talent.whispering_shadows)
 actions.main+=/mind_blast,if=(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)
