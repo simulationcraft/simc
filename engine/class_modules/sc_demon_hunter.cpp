@@ -275,7 +275,6 @@ public:
       player_talent_t master_of_the_glaive;
       player_talent_t champion_of_the_glaive;
       player_talent_t aura_of_pain;
-      player_talent_t concentrated_sigils;  // Partial NYI (debuff Sigils)
       player_talent_t precise_sigils;       // Partial NYI (debuff Sigils)
       player_talent_t lost_in_darkness;     // No Implementation
 
@@ -1448,7 +1447,6 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.master_of_the_glaive );
     ab::apply_affecting_aura( p->talent.demon_hunter.champion_of_the_glaive );
     ab::apply_affecting_aura( p->talent.demon_hunter.rush_of_chaos );
-    ab::apply_affecting_aura( p->talent.demon_hunter.concentrated_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.precise_sigils );
     ab::apply_affecting_aura( p->talent.demon_hunter.improved_sigil_of_misery );
     ab::apply_affecting_aura( p->talent.demon_hunter.erratic_felheart );
@@ -2038,8 +2036,8 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
         *sim, p(),
         ground_aoe_params_t()
             .target( target )
-            .x( p()->talent.demon_hunter.concentrated_sigils->ok() ? p()->x_position : target->x_position )
-            .y( p()->talent.demon_hunter.concentrated_sigils->ok() ? p()->y_position : target->y_position )
+            .x( target->x_position )
+            .y( target->y_position )
             .pulse_time( sigil_delay )
             .duration( sigil_delay )
             .action( this ) );
@@ -7422,7 +7420,6 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.master_of_the_glaive   = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
   talent.demon_hunter.champion_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Champion of the Glaive" );
   talent.demon_hunter.aura_of_pain           = find_talent_spell( talent_tree::CLASS, "Aura of Pain" );
-  talent.demon_hunter.concentrated_sigils    = find_talent_spell( talent_tree::CLASS, "Concentrated Sigils" );
   talent.demon_hunter.precise_sigils         = find_talent_spell( talent_tree::CLASS, "Precise Sigils" );
   talent.demon_hunter.lost_in_darkness       = find_talent_spell( talent_tree::CLASS, "Lost in Darkness" );
 
@@ -7637,8 +7634,7 @@ void demon_hunter_t::init_spells()
       talent.vengeance.sigil_of_chains->ok() ? find_spell( 204843 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
-  std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils,
-                                                       talent.demon_hunter.concentrated_sigils };
+  std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
   spell.sigil_of_flame                             = find_spell_override( find_spell( 204596 ), sigil_overrides );
   spell.elysian_decree = find_spell_override( talent.demon_hunter.elysian_decree, sigil_overrides );
   spell.elysian_decree_damage =
