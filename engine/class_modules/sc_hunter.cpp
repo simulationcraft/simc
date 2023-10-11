@@ -7328,7 +7328,7 @@ void hunter_t::create_buffs()
     buffs.coordinated_assault -> set_stack_change_callback(
       [ this ]( buff_t*, int /*old*/, int /*cur*/ ) {
         if ( talents.bombardier.ok() )
-          cooldowns.wildfire_bomb -> reset( true );
+          cooldowns.wildfire_bomb -> reset( true, -1 );
 
         cooldowns.wildfire_bomb -> adjust_recharge_multiplier();
         cooldowns.kill_shot -> adjust_recharge_multiplier();
