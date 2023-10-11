@@ -1004,7 +1004,7 @@ public:
     if ( triggers_calling_the_shots )
       ab::sim -> print_debug( "{} action {} set to proc Calling the Shots", ab::player -> name(), ab::name() );
 
-    if ( p() -> tier_set.t30_sv_4pc.ok() ) 
+    if ( p() -> tier_set.t30_sv_4pc.ok() )
     {
       if ( triggers_t30_sv_4p.is_none() )
       {
@@ -1013,7 +1013,7 @@ public:
     }
     else
     {
-      triggers_t30_sv_4p = false; 
+      triggers_t30_sv_4p = false;
     }
 
     if ( triggers_t30_sv_4p )
@@ -3819,9 +3819,12 @@ struct multishot_bm_t: public hunter_ranged_attack_t
       for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
         pet -> buffs.beast_cleave -> trigger();
 
-      if ( p() -> tier_set.t31_bm_4pc.ok() ) {
-        for ( auto pet : p() -> pets.dire_beast.active_pets() )
-          pet -> buffs.beast_cleave -> trigger();
+      if ( p() -> tier_set.t31_bm_4pc.ok() )
+      {
+        if (!( p() -> pets.dire_beast.active_pets().empty()))
+        {
+            p() -> pets.dire_beast.active_pets().back() -> buffs.beast_cleave -> trigger();
+        }
       }
     }
 
@@ -5531,9 +5534,12 @@ struct kill_command_t: public hunter_spell_t
       pet -> active.kill_command -> execute_on_target( target );
 
     if ( p() -> tier_set.t31_bm_4pc.ok() )
-      for ( auto pet : p() -> pets.dire_beast.active_pets() )
-        pet -> active.kill_command -> execute_on_target( target );
-
+    {
+      if (!( p() -> pets.dire_beast.active_pets().empty()))
+      {
+        p() -> pets.dire_beast.active_pets().back() -> active.kill_command -> execute_on_target( target );
+      }
+    }
     p() -> buffs.tip_of_the_spear -> trigger();
 
     if ( reset.chance != 0 )
