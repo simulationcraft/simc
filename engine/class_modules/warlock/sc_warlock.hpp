@@ -286,7 +286,7 @@ public:
     player_talent_t malevolent_visionary; // Longer Darkglare and more damage scaling
     player_talent_t wrath_of_consumption; // DoT damage buff on target deaths
     const spell_data_t* wrath_of_consumption_buff;
-    player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction
+    player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction. TODO: Changed in 10.2 to flat base reduction rather than per-tick effect
 
     player_talent_t doom_blossom; // Seed of Corruption damage on Unstable Affliction target procs AoE damage
     const spell_data_t* doom_blossom_proc;
