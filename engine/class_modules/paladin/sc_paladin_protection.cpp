@@ -1120,7 +1120,7 @@ void paladin_t::t29_4p_prot()
 void paladin_t::t31_4p_prot( action_state_t* s )
 {
   auto actionId = s->action->id;
-  if ( actionId == 385723 || actionId == 425261 ) // Seal of the Crusader, Cleansing Flame
+  if ( actionId == 425261 ) // Cleansing Flame
     return;
 
   double damage = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
