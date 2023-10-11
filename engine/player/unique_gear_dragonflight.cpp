@@ -4879,21 +4879,18 @@ void drogbar_stones( special_effect_t& effect )
     buff = create_buff<buff_t>( effect.player, buff_spell );
 
     auto drogbar_stones_damage = new special_effect_t( effect.player );
-    drogbar_stones_damage->name_str = "drogbar_stones_damage";
-    drogbar_stones_damage->item = effect.item;
+    drogbar_stones_damage->name_str = "drogbar_stones_damage_proc";
     drogbar_stones_damage->spell_id = buff->data().id();
-    drogbar_stones_damage->type = SPECIAL_EFFECT_EQUIP;
-    drogbar_stones_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
-    drogbar_stones_damage->execute_action = create_proc_action<generic_proc_t>(
+
+    auto damage_effect = create_proc_action<generic_proc_t>(
       "drogbar_stones_damage", *drogbar_stones_damage, "drogbar_stones_damage", effect.player->find_spell( 407907 ) );
 
     drogbar_stones_damage->player->callbacks.register_callback_execute_function(
         drogbar_stones_damage->spell_id,
-        [ buff, drogbar_stones_damage, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        [ buff, drogbar_stones_damage, damage_effect, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
           if ( buff->check() )
           {
-            drogbar_stones_damage->execute_action->execute();
-
+            damage_effect->execute();
             buff->expire();
           }
         } );
