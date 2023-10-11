@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.2.0.51601
-static const std::array<item_name_description_t, 813> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.2.0.51685
+static const std::array<item_name_description_t, 818> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -201,7 +201,7 @@ static const std::array<item_name_description_t, 813> __ptr_item_name_descriptio
   { 13300, "Legion Season 5 Elite"                       },
   { 13301, "Gladiator"                                   },
   { 13302, "Combatant I"                                 },
-  { 13303, "PvP"                                         },
+  { 13303, "Aspirant"                                    },
   { 13304, "Honor"                                       },
   { 13305, "Sunwell"                                     },
   { 13306, "PVP Rare"                                    },
@@ -756,6 +756,7 @@ static const std::array<item_name_description_t, 813> __ptr_item_name_descriptio
   { 14029, "Dawn of the Infinite"                        },
   { 14030, "Soridormi"                                   },
   { 14031, "Dragonflight Season 3"                       },
+  { 14033, "Heritage"                                    },
   { 14034, "Emerald Bounty"                              },
   { 14035, "|nShadowflame Suffused"                      },
   { 14037, "Unique Creatures"                            },
@@ -813,5 +814,9 @@ static const std::array<item_name_description_t, 813> __ptr_item_name_descriptio
   { 14093, "|nUpgrade Level: Myth 3/4"                   },
   { 14094, "|nUpgrade Level: Myth 4/4"                   },
   { 14095, "Mythic+"                                     },
+  { 14098, "Shadowflame Suffused"                        },
+  { 14099, "Heroic|n"                                    },
+  { 14100, "Mythic|n"                                    },
+  { 14101, "Raid Finder|n"                               },
 } };
 
