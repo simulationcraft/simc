@@ -4,9 +4,10 @@ race=human
 spec=shadow
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIIJ5AAAAAAAAAAAAAASoFRiUiIJRSSigUIJJRaEIiQKSLkEUgE
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIIREAAAAAAAAAAAAgkkSEJSJIJRkkIIFSSSkGBiIki0CJBFIB
 
 temporary_enchant=main_hand:hissing_rune_3
+food=feisty_fish_sticks
 
 # TODO: use default when it goes live
 default_actions=0
@@ -138,9 +139,9 @@ actions.main+=/devouring_plague,if=fight_remains<=duration+4
 actions.main+=/devouring_plague,target_if=!talent.distorted_reality|active_enemies=1|remains<=gcd.max,if=(remains<=gcd.max|remains<3&cooldown.void_torrent.up)|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<=buff.voidform.remains+2|buff.mind_devourer.up&pmultiplier<1.2
 actions.main+=/shadow_word_death,if=set_bonus.tier31_2pc
 # Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range
-actions.main+=/shadow_crash,if=!variable.holding_crash&(dot.vampiric_touch.refreshable|buff.deaths_torment.stack>=9&set_bonus.tier31_4pc)
+actions.main+=/shadow_crash,if=!variable.holding_crash&(dot.vampiric_touch.refreshable|buff.deaths_torment.stack>9&set_bonus.tier31_4pc)
 # Consume T31 4pc SWPs
-actions.main+=/shadow_word_pain,if=buff.deaths_torment.stack=buff.deaths_torment.max_stack&!talent.shadow_crash&set_bonus.tier31_4pc
+actions.main+=/shadow_word_pain,if=buff.deaths_torment.stack>9&set_bonus.tier31_4pc&(!variable.holding_crash|!talent.shadow_crash)
 # Use Shadow Word: Death with Inescapable Torment and Mindbender active and not talented into Insidious Ire and Yogg or Deathspeaker is active
 actions.main+=/shadow_word_death,if=variable.dots_up&talent.inescapable_torment&pet.fiend.active&((!talent.insidious_ire&!talent.idol_of_yoggsaron)|buff.deathspeaker.up)&!set_bonus.tier31_2pc
 # Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon
