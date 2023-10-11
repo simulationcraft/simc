@@ -17448,7 +17448,6 @@ Effects          :
                    Family Flags: 43
 #3 (id=1104886)  : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Enemy (6)
-Hotfixed         : Sub Type (126 -> 343)
 Description      : $@spelldesc422850
 Tooltip          : Dealing $w1% reduced damage to you. Taking $w2% increased damage from you.
 

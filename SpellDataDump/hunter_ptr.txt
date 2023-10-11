@@ -17297,7 +17297,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098473)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Dire Beasts now obey your Kill Command and can gain Beast Cleave.
+Description      : Your most recently summoned Dire Beast now obeys your Kill Command and can benefit from Beast Cleave.
 
 Name             : Hunter Marksmanship 10.2 Class Set 2pc (id=422876) [Passive, Hidden] 
 Class            : Hunter

@@ -767,7 +767,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
 Labels           : 359: Serenity (152173 effect#4)
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #28), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #5, #12, #16, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #28), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #5, #12, #16, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Family Flags     : 39, 67
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -866,7 +866,7 @@ Effects          :
 #5 (id=303680)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.15000
 #6 (id=480070)   : Dummy (3)
-                   Base Value: 59 | Scaled Value: 59 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 54 | Scaled Value: 54 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Pummels all targets in front of you, dealing ${5*$117418s1} Physical damage to your primary target and ${5*$117418s1*$s6/100} damage to all other enemies over $113656d. Deals reduced damage beyond $s1 targets. Can be channeled while moving.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -1754,7 +1754,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=131794)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.41000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.41770 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Causes a surge of invigorating mists, healing the target for $<healing>$?s274586[ and all allies with your Renewing Mist active for $s2, reduced beyond $274586s1 allies][].
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
 
@@ -2069,7 +2069,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Flashing Fists (388854 effect#1), Open Palm Strikes (392970 effect#4), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Fists of Flowing Momentum (394951 effect#1), Press the Advantage (418361 effect#1)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Flashing Fists (388854 effect#1), Open Palm Strikes (392970 effect#4), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Fists of Flowing Momentum (394951 effect#1), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2083,7 +2083,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=133162)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20750 | PvP Coefficient: 1.15000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.39000 | PvP Coefficient: 1.15000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 Description      : $@spelldesc113656
@@ -4070,7 +4070,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2425 (Label) | Target: Self (1)
                    Affected Spells (Label): Teachings of the Monastery (116645)
 #22 (id=1041505)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
 #23 (id=1042524)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -4096,7 +4096,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2917 (Label) | Target: Self (1)
                    Affected Spells (Label): Yu'lon's Grace (414131)
 #31 (id=1103899)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Misc Value 2: 2930 (Label) | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Misc Value 2: 2930 (Label) | Target: Self (1)
 #32 (id=1108334)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 550 | Scaled Value: 550 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Expel Harm (322101)
@@ -4170,7 +4170,7 @@ Effects          :
                    Affected Spells: Tiger Palm (100780), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 10, 72, 118
 #16 (id=984572)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 26.5 | Scaled Value: 26.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 36.5 | Scaled Value: 36.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
 #17 (id=984590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4400,7 +4400,7 @@ Spell Type       : Melee
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 24 seconds
-Affecting spells : Monk (137022 effect#1), Storm, Earth, and Fire (137639 effects: #1, #2)
+Affecting spells : Monk (137022 effect#1), Storm, Earth, and Fire (137639 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Family Flags     : 122
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4515,7 +4515,7 @@ Name             : Whirling Dragon Punch (id=158221) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Press the Advantage (418361 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Family Flags     : 103, 122
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4528,7 +4528,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Extra Initial Period (169), Always Line of Sight (185), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=220760)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.74639 | PvP Coefficient: 2.20000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.82103 | PvP Coefficient: 2.20000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc152175
 
 Name             : Refreshing Jade Wind (id=162530) [Spell Family (53)] 
@@ -4712,7 +4712,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #28), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #12, #16, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #28), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #12, #16, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Triggered by     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -14531,7 +14531,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Duration         : 8 seconds
-Stacks           : 3 maximum
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered by     : Clouded Focus (388047)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16464,7 +16464,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 40 seconds
 Labels           : 359: Serenity (152173 effect#4)
-Affecting spells : Windwalker Monk (137025 effects: #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), The Wind Blows (248101 effect#1)
+Affecting spells : Windwalker Monk (137025 effects: #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Family Flags     : 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17424,7 +17424,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 12 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Press the Advantage (418361 effect#1)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Triggered by     : Strike of the Windlord (392983)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -17446,7 +17446,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 12 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Press the Advantage (418361 effect#1)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2, #15, #17), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (248101 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Triggered by     : Strike of the Windlord (392983)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -18048,7 +18048,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1053881)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
 Description      : Rising Sun Kick deals $s1% increased damage and goes nova, dealing $410139s1 Shadowflame damage to all enemies within $410139A1 yds.
@@ -18282,7 +18282,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1077926)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Trigger Spell: 411376 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Trigger Spell: 411376 | Target: Self (1)
 Description      : Fists of Fury deals $s1% increased damage to the primary target and increases Shadowflame Nova damage you deal to all targets hit by $411376s2% for $411376d.
 Tooltip          : Fists of Fury deals $s1% increased damage to the primary target and increases Shadowflame Nova damage you deal to all targets hit by $411376s2% for $411376d.
 
@@ -18557,7 +18557,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098488)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $s1% of all healing you do to targets with Chi Harmony is stored and then dispersed evenly among your allies with Renewing Mist when Chi Harmony fades or is refreshed.
 
 Name             : Monk Windwalker 10.2 Class Set 2pc (id=422891) [Passive, Hidden] 
@@ -18583,7 +18583,7 @@ Effects          :
 Description      : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 Tooltip          : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 
-Name             : Monk Windwalker 10.2 Class Set 4pc (id=422892) [Passive, Hidden] 
+Name             : Monk Windwalker 10.2 Class Set 4pc (id=422892) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18591,16 +18591,22 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1098490)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. 
-Tooltip          : Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.
+#2 (id=1113776)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Rising Sun Kick (107428), Fists of Fury (117418), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
+                   Family Flags: 20, 39, 118, 122
+Description      : Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by ${$s1}.1 sec. 
+Damage of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch increased by $s2%.
+Tooltip          : Blackout Reinforcement empowered Blackout Kicks reduce the cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch by $s1 sec.
+Damage of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch increased by $w2%.
 
 Name             : Chi Harmony (id=423439) [Spell Family (53)] 
 Class            : Monk
@@ -18652,7 +18658,7 @@ Effects          :
                    Family Flags: 4
 Description      : $@spelldesc422891
 Tooltip          : Blackout Kick damage increased by $w1%.
-$?a422892[Cooldown of abilities reduced by $422892s1 sec.][]
+$?a422892[Cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch reduced by $422892s1 sec.][]
 
 Name             : Charred Dreams (id=425298) [Spell Family (53)] 
 Class            : Monk

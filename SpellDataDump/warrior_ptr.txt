@@ -12178,6 +12178,7 @@ Talent Entry     : Arms [tree=class, row=5, col=2, max_rank=2, req_points=8]
                  : Fury [tree=class, row=5, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
+                 : Effect#3 [op=mul, values=(1, 2)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17969,7 +17970,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Internal Cooldown: 0.5 seconds
-Stacks           : 3 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
