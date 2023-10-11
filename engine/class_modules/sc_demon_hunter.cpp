@@ -385,7 +385,7 @@ public:
       player_talent_t fracture;
       player_talent_t calcified_spikes;  // NYI
       player_talent_t roaring_fire;      // NYI
-      player_talent_t sigil_of_silence;  // NYI
+      player_talent_t sigil_of_silence;  // Partial Implementation
       player_talent_t retaliation;
       player_talent_t fel_flame_fortification;  // NYI
 
@@ -406,7 +406,7 @@ public:
 
       player_talent_t soul_furnace;
       player_talent_t painbringer;
-      player_talent_t darkglare_boon;
+      player_talent_t sigil_of_chains;  // Partial Implementation
       player_talent_t fiery_demise;
       player_talent_t chains_of_anger;
 
@@ -422,8 +422,8 @@ public:
 
       player_talent_t soulcrush;
       player_talent_t soul_carver;
-      player_talent_t last_resort;      // NYI
-      player_talent_t sigil_of_chains;  // NYI
+      player_talent_t last_resort;  // NYI
+      player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
       player_talent_t illuminated_sigils;  // Partial Implementation
 
@@ -2061,7 +2061,7 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
       std::vector<cooldown_t*> sigils_on_cooldown;
       range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
                       []( cooldown_t* c ) { return c->down(); } );
-      for (auto sigil_cooldown : sigils_on_cooldown)
+      for ( auto sigil_cooldown : sigils_on_cooldown )
       {
         sigil_cooldown->adjust( sigil_cooldown_adjust );
       }
@@ -2671,8 +2671,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
   fel_devastation_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str ), heal( nullptr )
   {
-    may_miss  = false;
-    channeled = true;
+    may_miss            = false;
+    channeled           = true;
     tick_on_application = false;
 
     tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
@@ -4166,7 +4166,7 @@ struct sigil_of_silence_t : public demon_hunter_spell_t
       : demon_hunter_sigil_t( name, p, s, delay )
     {
     }
-    
+
     void execute() override
     {
       demon_hunter_sigil_t::execute();
@@ -4178,8 +4178,8 @@ struct sigil_of_silence_t : public demon_hunter_spell_t
   sigil_of_silence_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_silence", p, p->spec.sigil_of_silence, options_str ), sigil( nullptr )
   {
-    sigil = p->get_background_action<sigil_of_silence_sigil_t>( "sigil_of_silence_sigil", p->spec.sigil_of_silence_debuff,
-                                                               ground_aoe_duration );
+    sigil        = p->get_background_action<sigil_of_silence_sigil_t>( "sigil_of_silence_sigil",
+                                                                p->spec.sigil_of_silence_debuff, ground_aoe_duration );
     sigil->stats = stats;
   }
 
@@ -4209,20 +4209,20 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
       : demon_hunter_sigil_t( name, p, s, delay )
     {
     }
-    
+
     void execute() override
     {
       demon_hunter_sigil_t::execute();
     }
   };
-  
+
   sigil_of_chains_sigil_t* sigil;
 
   sigil_of_chains_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_chains", p, p->spec.sigil_of_chains, options_str ), sigil( nullptr )
   {
     sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil", p->spec.sigil_of_chains_debuff,
-                                                                ground_aoe_duration );
+                                                               ground_aoe_duration );
     sigil->stats = stats;
   }
 
@@ -5726,8 +5726,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
 {
   enum class glaive_source
   {
-    THROWN = 0,
-    T31_PROC = 1,
+    THROWN            = 0,
+    T31_PROC          = 1,
     BLADE_DANCE_THROW = 2,
     DEATH_SWEEP_THROW = 3
   };
@@ -5799,7 +5799,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
   glaive_source source;
   timespan_t t31_4pc_adjust_seconds;
 
-  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str, glaive_source source = glaive_source::THROWN )
+  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str,
+                  glaive_source source = glaive_source::THROWN )
     : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ),
       furious_throws( nullptr ),
       source( source ),
@@ -7417,13 +7418,13 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.swallowed_anger   = find_talent_spell( talent_tree::CLASS, "Swallowed Anger" );
   talent.demon_hunter.charred_warblades = find_talent_spell( talent_tree::CLASS, "Charred Warblades" );
 
-  talent.demon_hunter.felfire_haste        = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
-  talent.demon_hunter.master_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
+  talent.demon_hunter.felfire_haste          = find_talent_spell( talent_tree::CLASS, "Felfire Haste" );
+  talent.demon_hunter.master_of_the_glaive   = find_talent_spell( talent_tree::CLASS, "Master of the Glaive" );
   talent.demon_hunter.champion_of_the_glaive = find_talent_spell( talent_tree::CLASS, "Champion of the Glaive" );
-  talent.demon_hunter.aura_of_pain         = find_talent_spell( talent_tree::CLASS, "Aura of Pain" );
-  talent.demon_hunter.concentrated_sigils  = find_talent_spell( talent_tree::CLASS, "Concentrated Sigils" );
-  talent.demon_hunter.precise_sigils       = find_talent_spell( talent_tree::CLASS, "Precise Sigils" );
-  talent.demon_hunter.lost_in_darkness     = find_talent_spell( talent_tree::CLASS, "Lost in Darkness" );
+  talent.demon_hunter.aura_of_pain           = find_talent_spell( talent_tree::CLASS, "Aura of Pain" );
+  talent.demon_hunter.concentrated_sigils    = find_talent_spell( talent_tree::CLASS, "Concentrated Sigils" );
+  talent.demon_hunter.precise_sigils         = find_talent_spell( talent_tree::CLASS, "Precise Sigils" );
+  talent.demon_hunter.lost_in_darkness       = find_talent_spell( talent_tree::CLASS, "Lost in Darkness" );
 
   talent.demon_hunter.chaos_nova      = find_talent_spell( talent_tree::CLASS, "Chaos Nova" );
   talent.demon_hunter.soul_rending    = find_talent_spell( talent_tree::CLASS, "Soul Rending" );
@@ -7552,7 +7553,7 @@ void demon_hunter_t::init_spells()
 
   talent.vengeance.soul_furnace    = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Furnace" );
   talent.vengeance.painbringer     = find_talent_spell( talent_tree::SPECIALIZATION, "Painbringer" );
-  talent.vengeance.darkglare_boon  = find_talent_spell( talent_tree::SPECIALIZATION, "Darkglare Boon" );
+  talent.vengeance.sigil_of_chains = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
   talent.vengeance.fiery_demise    = find_talent_spell( talent_tree::SPECIALIZATION, "Fiery Demise" );
   talent.vengeance.chains_of_anger = find_talent_spell( talent_tree::SPECIALIZATION, "Chains of Anger" );
 
@@ -7569,7 +7570,7 @@ void demon_hunter_t::init_spells()
   talent.vengeance.soulcrush          = find_talent_spell( talent_tree::SPECIALIZATION, "Soulcrush" );
   talent.vengeance.soul_carver        = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Carver" );
   talent.vengeance.last_resort        = find_talent_spell( talent_tree::SPECIALIZATION, "Last Resort" );
-  talent.vengeance.sigil_of_chains    = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Chains" );
+  talent.vengeance.darkglare_boon     = find_talent_spell( talent_tree::SPECIALIZATION, "Darkglare Boon" );
   talent.vengeance.down_in_flames     = find_talent_spell( talent_tree::SPECIALIZATION, "Down in Flames" );
   talent.vengeance.illuminated_sigils = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Sigils" );
 
@@ -7584,7 +7585,8 @@ void demon_hunter_t::init_spells()
   spell.sigil_of_flame_damage  = find_spell( 204598 );
   spell.sigil_of_flame_fury    = find_spell( 389787 );
   spell.the_hunt               = talent.demon_hunter.the_hunt;
-  spec.sigil_of_misery_debuff = talent.demon_hunter.sigil_of_misery->ok() ? find_spell( 207685 ) : spell_data_t::not_found();
+  spec.sigil_of_misery_debuff =
+      talent.demon_hunter.sigil_of_misery->ok() ? find_spell( 207685 ) : spell_data_t::not_found();
 
   // Spec Background Spells
   mastery.any_means_necessary = talent.havoc.any_means_necessary;
@@ -7629,8 +7631,10 @@ void demon_hunter_t::init_spells()
   spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
   spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
   spec.retaliation_damage      = talent.vengeance.retaliation->ok() ? find_spell( 391159 ) : spell_data_t::not_found();
-  spec.sigil_of_silence_debuff = talent.vengeance.sigil_of_silence->ok() ? find_spell( 204490 ) : spell_data_t::not_found();
-  spec.sigil_of_chains_debuff = talent.vengeance.sigil_of_chains->ok() ? find_spell( 204843 ) : spell_data_t::not_found();
+  spec.sigil_of_silence_debuff =
+      talent.vengeance.sigil_of_silence->ok() ? find_spell( 204490 ) : spell_data_t::not_found();
+  spec.sigil_of_chains_debuff =
+      talent.vengeance.sigil_of_chains->ok() ? find_spell( 204843 ) : spell_data_t::not_found();
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils,
