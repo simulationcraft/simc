@@ -2793,16 +2793,9 @@ double paladin_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  return m;
-}
-
-double paladin_t::composite_mastery_value() const
-{
-  double m = player_t::composite_mastery_value();
-
   if ( talents.seal_of_might->ok() )
   {
-    m += talents.seal_of_might->effectN( 2 ).percent();
+    m += talents.seal_of_might->effectN( 2 ).base_value();
   }
 
   return m;
@@ -2987,12 +2980,7 @@ double paladin_t::composite_attack_power_multiplier() const
   if ( specialization() == PALADIN_PROTECTION )
   {
       //Note for future; If something changes with mastery, make sure you verify this to still be accurate
-    auto m = cache.mastery();
-
-    if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
-      m += talents.seal_of_might->effectN( 2 ).base_value();
-
-    ap *= 1.0 + m * mastery.divine_bulwark->effectN( 2 ).mastery_value();
+      ap *= 1.0 + cache.mastery() * mastery.divine_bulwark->effectN( 2 ).mastery_value();
   }
 
   // Holy paladin AP scales purely off of Spell power and nothing else not even Weapon
