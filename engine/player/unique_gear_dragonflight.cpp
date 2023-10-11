@@ -4894,7 +4894,7 @@ void drogbar_stones( special_effect_t& effect )
             buff->expire();
           }
         } );
-
+    effect.player->special_effects.push_back( drogbar_stones_damage );
     auto damage = new dbc_proc_callback_t( effect.player, *drogbar_stones_damage );
     damage->initialize();
     damage->deactivate();
