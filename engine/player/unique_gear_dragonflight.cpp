@@ -6853,6 +6853,20 @@ void infernal_signet_brand( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Rezans Gleaming Eye
+// 429228 Driver
+// 429233 Damage
+void rezans_gleaming_eye( special_effect_t& e )
+{
+  auto damage_spell = e.player->find_spell( 429233 );
+  auto damage = create_proc_action<generic_proc_t>( "rezans_fury", e, "rezans_fury", damage_spell );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+  damage->base_td = e.driver()->effectN( 2 ).average( e.item );
+
+  e.execute_action = damage;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -9504,6 +9518,7 @@ void register_special_effects()
   register_special_effect( 417534, items::time_thiefs_gambit, true );
   register_special_effect( 422441, items::branch_of_the_tormented_ancient );
   register_special_effect( 422479, items::infernal_signet_brand );
+  register_special_effect( 429228, items::rezans_gleaming_eye );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
