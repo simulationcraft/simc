@@ -5188,7 +5188,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       }
     }
 
-        if ( exec_type == execute_type::MOLTEN_CHARGE )
+    if ( exec_type == execute_type::MOLTEN_CHARGE )
     {
       if ( p()->talent.primordial_wave->ok() )
       {
@@ -5622,7 +5622,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if (exec_type == execute_type::MOLTEN_CHARGE)
     {
-      m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
+        m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
     }
 
     if ( p()->buff.ascendance->up() )
@@ -6228,16 +6228,15 @@ struct elemental_blast_t : public shaman_spell_t
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       timespan_t duration = p()->talent.further_beyond->effectN( 2 ).time_value();
-      // probably intended behavior:
-      // if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap ) {
-      //   duration = timespan_t::from_seconds( 0 );
-      // }
-      // else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
-      //   duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
-      // }
-      // bugged behavior:
-      if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+
+      // limit extension
+      if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
+      {
         duration = timespan_t::from_seconds( 0 );
+      }
+      else if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
+      {
+        duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
       }
 
       p()->accumulated_ascendance_extension_time += duration;
@@ -6726,16 +6725,15 @@ struct earthquake_t : public earthquake_base_t
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       timespan_t duration = p()->talent.further_beyond->effectN( 1 ).time_value();
-      // probably intended behavior:
-      // if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap ) {
-      //   duration = timespan_t::from_seconds( 0 );
-      // }
-      // else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
-      //   duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
-      // }
-      // bugged behavior:
-      if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+
+      // limit extension
+      if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
+      {
         duration = timespan_t::from_seconds( 0 );
+      }
+      else if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
+      {
+        duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
       }
 
       p()->accumulated_ascendance_extension_time += duration;
@@ -6968,16 +6966,15 @@ struct earth_shock_t : public shaman_spell_t
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       timespan_t duration = p()->talent.further_beyond->effectN( 1 ).time_value();
-      // probably intended behavior:
-      // if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap ) {
-      //   duration = timespan_t::from_seconds( 0 );
-      // }
-      // else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
-      //   duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
-      // }
-      // bugged behavior:
-      if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap ) {
+
+      // limit extension
+      if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
+      {
         duration = timespan_t::from_seconds( 0 );
+      }
+      else if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
+      {
+        duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
       }
 
       p()->accumulated_ascendance_extension_time += duration;
@@ -9629,7 +9626,6 @@ void shaman_t::init_spells()
   spell.t31_4pc_ele_molten_slag = find_spell( 422912 );
   // 4pc bonus: 422912, but that's currently empty. values are in:
   // spell.t31_4pc_ele_can_proc = find_spell( 426577 );
-  // TODO: add cleave/aoe component of 4p
   spell.t31_4pc_ele          = find_spell( 426578 );
 
   // Misc spell-related init
@@ -10067,8 +10063,9 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   dre_samples.add( as<double>( dre_attempts ) );
   dre_attempts = 0U;
 
-  if (!buff.ascendance->up())
+  if ( specialization() == SHAMAN_ELEMENTAL && talent.further_beyond->ok() ) {
     accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
+  }
 
   action.dre_ascendance->set_target( state->target );
   action.dre_ascendance->execute();
@@ -11640,7 +11637,7 @@ double shaman_t::composite_melee_haste() const
   if ( dbc->ptr )
   {
     haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
-      buff.splintered_elements->stack() *
+      std::max( buff.splintered_elements->stack() - 1, 0 ) *
       talent.splintered_elements->effectN( 2 ).percent() );
   }
   else
@@ -11661,7 +11658,7 @@ double shaman_t::composite_spell_haste() const
   if ( dbc->ptr )
   {
     haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
-      buff.splintered_elements->stack() *
+      std::max( buff.splintered_elements->stack() - 1, 0 ) *
       talent.splintered_elements->effectN( 2 ).percent() );
   }
   else
