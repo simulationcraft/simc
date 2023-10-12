@@ -5202,12 +5202,17 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     }
 
     // Buff damage in both "snapshotted" and "current state" cases
-    if ( wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() )
-    {
-      m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
-    }
+    // Note 2023-10-12: Snapshotting got lost ingame at some point.
+    //                  Neither normal Overloads, nor Primordial Wave Overloads, 
+    //                  nor T31 4p Elemental bonus Overloads are affected by WLR.
+    //                  Unknown: Ascendance/Deeply Rooted Elements
+    // if ( wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() )
+    // {
+    //   m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
+    // }
 
-    if ( ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() )
+    if ( exec_type == execute_type::NORMAL && ( 
+        ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() ) )
     {
       m *= 1.0 + p()->buff.primordial_surge_lava_burst_buff->default_value;
     }
@@ -5631,12 +5636,18 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     // Buff damage in both "snapshotted" and "current state" cases
-    if ( wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() )
+    // Note 2023-10-12: Snapshotting got lost ingame at some point.
+    //                  Neither Primordial Wave echoes, nor T31 4p Elemental
+    //                  bonus echoes are affected by WLR.
+    //                  Unknown: Ascendance/Deeply Rooted Elements
+    if ( exec_type == execute_type::NORMAL && (
+        wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() ) )
     {
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-    if ( ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() )
+    if ( exec_type == execute_type::NORMAL && ( 
+        ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() ) )
     {
       m *= 1.0 + p()->buff.primordial_surge_lava_burst_buff->default_value;
     }
