@@ -19081,7 +19081,7 @@ static const std::array<spelltext_data_t, 20498> __ptr_spelltext_data { {
   { 396621, "Restores $s1% of your health per second for $d.  Must remain seated while eating.\r\n\r\nNote: May cause excitability.", "Restores $s1% of your health per second.", 0 },
   { 396718, "Brutally attack an enemy for $s1 Physical damage$?388933[\r\n\r\nand become Enrage for 5 sec.][.]\r\n\r\n|cFFFFFFFFGenerates ${$m2/10} Rage.", 0, 0 },
   { 396719, "Blasts all enemies within $6343A1 yards for $s1 Physical damage$?(s199045)[, rooting them for $199042d]?s199045[ and roots them for $199042d.][.] and reduces their movement speed by $s2% for $d. Deals reduced damage beyond $s5 targets.$?s386229[\r\n\r\n|cFFFFFFFFGenerates ${$s4/10} Rage.][]", "Movement speed reduced by $s2%.", 0 },
-  { 396749, "Recklessness generates ${$s1/10} Rage and Rampage greatly empowers your next $s3 Bloodthirsts or Raging Blows.", 0, 0 },
+  { 396749, "Recklessness generates ${$s1/10} Rage and Rampage greatly empowers your next Bloodthirst or Raging Blow.", 0, 0 },
   { 396752, "$@spelldesc396749", "Your next Bloodthirst or Raging Blow is greatly empowered.", 0 },
   { 396767, "Recklessly, but nonetheless effectively, remove a Tinker module from its socket for later use.", 0, 0 },
   { 396768, "$@spelldesc389537", 0, 0 },
@@ -20501,7 +20501,8 @@ static const std::array<spelltext_data_t, 20498> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.51685
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  396749,  0, "Recklessness generates ${$s1/10} Rage and Rampage greatly empowers your next $s3 Bloodthirsts or Raging Blows.", "Recklessness generates ${$s1/10} Rage and Rampage greatly empowers your next Bloodthirst or Raging Blow." },
 } };
 
 // Spell description variables, wow build 10.2.0.51685
