@@ -11651,9 +11651,12 @@ double shaman_t::composite_melee_haste() const
 
   if ( dbc->ptr )
   {
-    haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
-      std::max( buff.splintered_elements->stack() - 1, 0 ) *
-      talent.splintered_elements->effectN( 2 ).percent() );
+    if ( buff.splintered_elements->up() )
+    {
+      haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
+                       std::max( buff.splintered_elements->stack() - 1, 0 ) *
+                           talent.splintered_elements->effectN( 2 ).percent() );
+    }
   }
   else
   {
@@ -11672,9 +11675,12 @@ double shaman_t::composite_spell_haste() const
 
   if ( dbc->ptr )
   {
-    haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
-      std::max( buff.splintered_elements->stack() - 1, 0 ) *
-      talent.splintered_elements->effectN( 2 ).percent() );
+    if ( buff.splintered_elements->up() )
+    {
+      haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
+                       std::max( buff.splintered_elements->stack() - 1, 0 ) *
+                           talent.splintered_elements->effectN( 2 ).percent() );
+    }
   }
   else
   {
