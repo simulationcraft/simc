@@ -20911,7 +20911,7 @@ static const std::array<spelldesc_vars_data_t, 410> __ptr_spelldesc_vars_data { 
   {  421557, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390706[${1+($390706s1/100)}][${1}]\r\n$penancedamage=${$47666s1*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$47750s1*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   {  421558, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390706[${1+($390706s1/100)}][${1}]\r\n$penancedamage=${$47666s1*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$47750s1*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   {  422906, "$targetBonus=${$cond($gt($s1,0),1,0)}\r\n$targetBonusAlso=${$s1}" },
-  {  422920, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${(2.773875*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}" },
+  {  422920, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${(1.553369999\r\n*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}" },
   {  424556, "$dmg=${$57841s2+$57842s1}" },
   {  424562, "$dmg=${$57841s2+$57842s1}" },
   {  425529, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
@@ -20919,6 +20919,7 @@ static const std::array<spelldesc_vars_data_t, 410> __ptr_spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.2.0.51685
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelldesc_vars_hotfix_data { {
+  {  422920,  0, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${(2.773875*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}", "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${(1.553369999\r\n*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}" },
 } };
 
