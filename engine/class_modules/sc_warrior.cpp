@@ -9548,8 +9548,8 @@ void warrior_t::create_buffs()
 
   buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst",
                                       tier_set.t31_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() )
+                               ->set_cooldown( 0_ms ) // used for buff consumption, not application
                                ->set_max_stack( find_spell( 423211 )->max_stacks() );
-                               //->set_duration( find_spell( 423211 )->duration() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
