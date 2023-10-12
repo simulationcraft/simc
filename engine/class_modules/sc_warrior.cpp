@@ -9546,10 +9546,9 @@ void warrior_t::create_buffs()
   buff.earthen_tenacity = make_buff( this, "earthen_tenacity", tier_set.t30_prot_4pc -> ok() ?
                                 find_spell( 410218 ) : spell_data_t::not_found() );
 
-  buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst",
-                                      tier_set.t31_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() )
-                               ->set_cooldown( 0_ms ) // used for buff consumption, not application
-                               ->set_max_stack( find_spell( 423211 )->max_stacks() );
+  buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst", tier_set.t31_fury_2pc->ok() ?
+                                   find_spell( 423211 ) : spell_data_t::not_found() )
+                             ->set_cooldown( 0_ms ); // used for buff consumption, not application
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
