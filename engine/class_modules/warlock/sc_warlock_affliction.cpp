@@ -191,7 +191,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::tick( d );
 
-    if ( p()->talents.souleaters_gluttony->ok() )
+    if ( !p()->min_version_check( VERSION_10_2_0 ) && p()->talents.souleaters_gluttony->ok() )
     {
       timespan_t adjustment = timespan_t::from_seconds( p()->talents.souleaters_gluttony->effectN( 1 ).base_value() );
       adjustment = adjustment / p()->talents.souleaters_gluttony->effectN( 2 ).base_value();

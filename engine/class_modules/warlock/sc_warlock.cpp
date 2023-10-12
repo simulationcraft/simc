@@ -610,6 +610,11 @@ struct soul_rot_t : public warlock_spell_t
 
     if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B2 ) )
       apply_affecting_aura( p->sets->set( WARLOCK_AFFLICTION, T31, B2 ) );
+
+    if ( p->min_version_check( VERSION_10_2_0 ) && p->talents.souleaters_gluttony->ok() )
+    {
+      cooldown->duration += p->talents.souleaters_gluttony->effectN( 1 ).time_value();
+    }
   }
 
   soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
