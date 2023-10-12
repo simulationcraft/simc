@@ -17407,12 +17407,10 @@ Effects          :
 Description      : Consuming a Demonic Core applies a Doom Brand that explodes after $423583d, dealing $423584s1 Shadow damage to nearby enemies or ${$423584s1*(1+$s2/100)} Shadow damage to a single enemy. Hand of Gul'dan reduces the duration of your Doom Brands by ${$s1/1000} sec per Soul Shard spent.
 
 Name             : Warlock Demonology 10.2 Class Set 4pc (id=422920) [Spell Family (5), Passive, Hidden] 
+Hotfixed         : Variables
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -17429,7 +17427,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : When Doom Brand is removed, you have a chance to summon a Doomfiend that casts $423734s2 Doom Bolt Volleys before departing. Each Doom Bolt Volley deals $<damage> Shadow damage to up to $423734x1 enemies or ${$<damage>*(1+$s2/100)} Shadow damage to a single enemy.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
-$damage=${(2.773875*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}
+$damage=${(1.553369999
+*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}
 
 Name             : Warlock Destruction 10.2 Class Set 2pc (id=422921) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -17550,7 +17549,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1099963)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.10674 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.55337 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (3.10674 -> 1.55337)
 #2 (id=1099964)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=1099965)  : Dummy (3)
