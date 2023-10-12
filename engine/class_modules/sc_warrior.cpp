@@ -5078,7 +5078,8 @@ struct odyns_fury_t : warrior_attack_t
 
     if ( p()->tier_set.t31_fury_2pc->ok() )
     {
-      p()->buff.furious_bloodthirst->trigger( p()->buff.furious_bloodthirst->max_stack() );
+      // Triggers 3 stacks on cast (not in data), stacking up to 6 max
+      p()->buff.furious_bloodthirst->trigger( 3 );
     }
   }
 
@@ -5152,7 +5153,8 @@ struct torment_odyns_fury_t : warrior_attack_t
 
     if ( p()->tier_set.t31_fury_2pc->ok() )
     {
-      p()->buff.furious_bloodthirst->trigger( p()->buff.furious_bloodthirst->max_stack() );
+      // Triggers 3 stacks on cast (not in data), stacking up to 6 max
+      p()->buff.furious_bloodthirst->trigger( 3 );
     }
 }
 
@@ -9545,8 +9547,8 @@ void warrior_t::create_buffs()
                                 find_spell( 410218 ) : spell_data_t::not_found() );
 
   buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst",
-                                      tier_set.t31_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() );
-                               //->set_default_value( find_spell( 423211 )->effectN( 1 ).percent() );
+                                      tier_set.t31_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() )
+                               ->set_max_stack( find_spell( 423211 )->max_stacks() );
                                //->set_duration( find_spell( 423211 )->duration() );
 }
 // warrior_t::init_rng ==================================================
