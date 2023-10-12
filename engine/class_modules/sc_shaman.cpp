@@ -5696,7 +5696,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->buff.surge_of_power->up() )
+    if ( exec_type == execute_type::NORMAL && p()->buff.surge_of_power->up() )
     {
       p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
       p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
@@ -5704,14 +5704,14 @@ struct lava_burst_t : public shaman_spell_t
       p()->proc.surge_of_power_lava_burst->occur();
     }
 
-    if ( p()->talent.master_of_the_elements->ok() )
+    if ( exec_type == execute_type::NORMAL && p()->talent.master_of_the_elements->ok() )
     {
       p()->buff.master_of_the_elements->trigger();
     }
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
-    if ( !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
+    if ( exec_type == execute_type::NORMAL && !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
     {
       p()->buff.lava_surge->decrement();
     }
@@ -5754,7 +5754,7 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     // Rolls on execute and on impact
-    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
+    if ( exec_type == execute_type::NORMAL && rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
     {
       p()->buff.power_of_the_maelstrom->trigger();
     }
@@ -5764,12 +5764,14 @@ struct lava_burst_t : public shaman_spell_t
       p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() * num_targets_hit );
     }
 
-    if (p()->buff.primordial_surge_lava_burst_buff->up() )
+    if ( exec_type == execute_type::NORMAL && p()->buff.primordial_surge_lava_burst_buff->up() )
     {
       p()->buff.primordial_surge_lava_burst_buff->decrement();
     }
 
-    p()->buff.flux_melting->decrement();
+    if ( exec_type == execute_type::NORMAL ) {
+      p()->buff.flux_melting->decrement();
+    }
 
     p()->buff.t29_2pc_ele->trigger();
   }
@@ -7501,12 +7503,18 @@ struct ascendance_t : public shaman_spell_t
     if ( background )
     {
       p()->buff.ascendance->extend_duration_or_trigger( dre_duration, player );
-      p()->ascendance_extension_cap = dre_duration * p()->talent.further_beyond->effectN( 3 ).percent();
+      if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.further_beyond->ok() ) {
+        p()->ascendance_extension_cap = dre_duration * p()->talent.further_beyond->effectN( 3 ).percent();
+        p()->accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
+      }
     }
     else
     {
       p()->buff.ascendance->trigger();
-      p()->ascendance_extension_cap = p()->buff.ascendance->base_buff_duration * p()->talent.further_beyond->effectN( 3 ).percent();
+      if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.further_beyond->ok() ) {
+        p()->ascendance_extension_cap = p()->buff.ascendance->base_buff_duration * p()->talent.further_beyond->effectN( 3 ).percent();
+        p()->accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
+      }
     }
 
     if ( lvb )
@@ -10073,10 +10081,6 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
 
   dre_samples.add( as<double>( dre_attempts ) );
   dre_attempts = 0U;
-
-  if ( specialization() == SHAMAN_ELEMENTAL && talent.further_beyond->ok() ) {
-    accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
-  }
 
   action.dre_ascendance->set_target( state->target );
   action.dre_ascendance->execute();
