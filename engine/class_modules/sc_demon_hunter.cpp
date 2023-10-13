@@ -2690,7 +2690,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     p()->trigger_demonic();
     demon_hunter_spell_t::execute();
 
-    // Since Demonic triggers Meta with 5s + hasted duration, need to extend by the hasted duration after have an
+    // Since Demonic triggers Meta with 5s + duration, need to extend by the duration after have an
     // execute_state
     if ( p()->talent.demon_hunter.demonic->ok() )
     {
