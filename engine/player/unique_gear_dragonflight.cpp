@@ -7485,7 +7485,7 @@ void thorncaller_claw( special_effect_t& effect ) {
         return td->check();
       } );
 
-  auto thorn_spirit = new thorn_spirit_t( effect );
+  auto thorn_spirit = create_proc_action<thorn_spirit_t>( "thorn_spirit", effect );
   thorn_spirit->add_child( thorn_burst_damage );
   effect.execute_action = thorn_spirit;
 
