@@ -2574,8 +2574,7 @@ namespace monk
               p()->buff.dance_of_chiji_hidden->trigger();
               p()->buff.blackout_reinforcement->trigger();
             }
-
-            if ( p()->buff.serenity->up() )
+            else if ( p()->buff.serenity->up() )
               p()->buff.blackout_reinforcement->trigger();
           }
 
