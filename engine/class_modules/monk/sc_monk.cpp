@@ -639,7 +639,7 @@ namespace monk
 
           p()->trigger_spirit_of_forged_vermillion( s );
 
-          if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && s->result_amount <= 0 &&
+          if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && s->result_amount >= 0 &&
                p()->rppm.blackout_reinforcement->trigger() )
             p()->buff.blackout_reinforcement->trigger();
         }
@@ -1598,7 +1598,7 @@ namespace monk
 
           am *= 1 + p()->passives.leverage->effectN( 2 ).percent() * p()->buff.leverage->check();
 
-          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+          am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
           return am;
         }
@@ -2156,7 +2156,7 @@ namespace monk
           if ( p()->buff.blackout_reinforcement->up() )
           {
             p()->buff.blackout_reinforcement->expire();
-            timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).base_value() );
+            timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
             p()->cooldown.fists_of_fury->adjust( cooldown_reduction );
             p()->cooldown.rising_sun_kick->adjust( cooldown_reduction );
             p()->cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
@@ -2667,7 +2667,7 @@ namespace monk
 
           am *= 1 + p()->buff.fists_of_flowing_momentum_fof->check_value();
 
-          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+          am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
           return am;
         }
@@ -2805,7 +2805,7 @@ namespace monk
         {
           double am = monk_melee_attack_t::action_multiplier();
 
-          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+          am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
           return am;
         }
@@ -2935,7 +2935,7 @@ namespace monk
         {
           double am = monk_melee_attack_t::action_multiplier();
 
-          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+          am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
           return am;
         }
@@ -2971,7 +2971,7 @@ namespace monk
         {
           double am = monk_melee_attack_t::action_multiplier();
 
-          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+          am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
           return am;
         }
