@@ -638,6 +638,10 @@ namespace monk
             p()->bonedust_brew_assessor( s );
 
           p()->trigger_spirit_of_forged_vermillion( s );
+
+          if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && s->result_amount <= 0 &&
+               p()->rppm.blackout_reinforcement->trigger() )
+            p()->buff.blackout_reinforcement->trigger();
         }
       }
 
@@ -1594,6 +1598,8 @@ namespace monk
 
           am *= 1 + p()->passives.leverage->effectN( 2 ).percent() * p()->buff.leverage->check();
 
+          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+
           return am;
         }
 
@@ -2096,6 +2102,8 @@ namespace monk
 
           am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
 
+          am *= 1 + p()->buff.blackout_reinforcement->data().effectN( 1 ).percent();
+
           return am;
         }
 
@@ -2142,6 +2150,16 @@ namespace monk
         void impact( action_state_t *s ) override
         {
           monk_melee_attack_t::impact( s );
+
+          if ( p()->buff.blackout_reinforcement->up() )
+          {
+            p()->buff.blackout_reinforcement->expire();
+            timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).base_value() );
+            p()->cooldown.fists_of_fury->adjust( cooldown_reduction );
+            p()->cooldown.rising_sun_kick->adjust( cooldown_reduction );
+            p()->cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
+            p()->cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
+          }
 
           // Teachings of the Monastery
           // Used by both Windwalker and Mistweaver
@@ -2552,7 +2570,11 @@ namespace monk
             {
               p()->buff.dance_of_chiji->expire();
               p()->buff.dance_of_chiji_hidden->trigger();
+              p()->buff.blackout_reinforcement->trigger();
             }
+
+            if ( p()->buff.serenity->up() )
+              p()->buff.blackout_reinforcement->trigger();
           }
 
           monk_melee_attack_t::execute();
@@ -2642,6 +2664,8 @@ namespace monk
           am *= 1 + p()->talent.windwalker.open_palm_strikes->effectN( 4 ).percent();
 
           am *= 1 + p()->buff.fists_of_flowing_momentum_fof->check_value();
+
+          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
 
           return am;
         }
@@ -2774,6 +2798,15 @@ namespace monk
           radius = s->effectN( 1 ).radius();
           apply_dual_wield_two_handed_scaling();
         }
+
+        double action_multiplier() const override
+        {
+          double am = monk_melee_attack_t::action_multiplier();
+
+          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+
+          return am;
+        }
       };
 
       struct whirling_dragon_punch_t : public monk_melee_attack_t
@@ -2895,6 +2928,15 @@ namespace monk
 
           return 1.0;
         }
+
+        double action_multiplier() const override
+        {
+          double am = monk_melee_attack_t::action_multiplier();
+
+          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+
+          return am;
+        }
       };
 
       struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
@@ -2921,6 +2963,15 @@ namespace monk
           }
 
           return 1.0;
+        }
+
+        double action_multiplier() const override
+        {
+          double am = monk_melee_attack_t::action_multiplier();
+
+          am *= 1 + p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+
+          return am;
         }
 
         void impact( action_state_t *s ) override
@@ -7169,6 +7220,7 @@ namespace monk
     cooldown.touch_of_death = get_cooldown( "touch_of_death" );
     cooldown.serenity = get_cooldown( "serenity" );
     cooldown.weapons_of_order = get_cooldown( "weapons_of_order" );
+    cooldown.whirling_dragon_punch = get_cooldown( "whirling_dragon_punch" );
 
     // T29 Set Bonus
     cooldown.brewmasters_rhythm = get_cooldown( "brewmasters_rhythm" );
@@ -8424,6 +8476,11 @@ namespace monk
       ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+    // Tier 31 Set Bonus
+    buff.blackout_reinforcement = make_buff( this, "blackout_reinforcement", find_spell( 424454 ) )
+      ->set_trigger_spell( sets->set( MONK_WINDWALKER, T31, B2 ) )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
     // ------------------------------
     // Movement
     // ------------------------------
@@ -8533,6 +8590,9 @@ namespace monk
 
     // Tier 30
     rppm.shadowflame_spirit = get_rppm( "shadowflame_spirit", sets->set( MONK_WINDWALKER, T30, B4 ) );
+
+    // Tier 31
+    rppm.blackout_reinforcement = get_rppm( "blackout_reinforcement", sets->set( MONK_WINDWALKER, T31, B2 ) );
   }
 
   // monk_t::init_special_effects ===========================================
