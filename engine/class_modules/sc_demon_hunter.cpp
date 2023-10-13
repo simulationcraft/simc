@@ -2590,7 +2590,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     p()->buff.t30_havoc_4pc->expire();
 
-    // Since Demonic triggers Meta with 6s + hasted duration, need to extend by the hasted duration after have an
+    // Since Demonic triggers Meta with 5s + hasted duration, need to extend by the hasted duration after have an
     // execute_state
     if ( p()->talent.demon_hunter.demonic->ok() )
     {
@@ -2679,13 +2679,6 @@ struct fel_devastation_t : public demon_hunter_spell_t
 
     tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
 
-    /* NYI
-    if ( p->spec.fel_devastation_rank_2->ok() )
-    {
-      heal = p->get_background_action<heals::fel_devastation_heal_t>( "fel_devastation_heal" );
-    }
-    */
-
     if ( p->active.collective_anguish )
     {
       add_child( p->active.collective_anguish );
@@ -2697,7 +2690,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     p()->trigger_demonic();
     demon_hunter_spell_t::execute();
 
-    // Since Demonic triggers Meta with 6s + hasted duration, need to extend by the hasted duration after have an
+    // Since Demonic triggers Meta with 5s + hasted duration, need to extend by the hasted duration after have an
     // execute_state
     if ( p()->talent.demon_hunter.demonic->ok() )
     {
@@ -2710,6 +2703,12 @@ struct fel_devastation_t : public demon_hunter_spell_t
       p()->active.collective_anguish->set_target( target );
       p()->active.collective_anguish->execute();
     }
+  }
+
+  // Fel Devastation is always a 2s channel
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration;
   }
 
   void last_tick( dot_t* d ) override
@@ -3378,16 +3377,20 @@ struct immolation_aura_t : public demon_hunter_spell_t
           if ( target_data->dots.fiery_brand->is_ticking() )
           {
             target_data->dots.fiery_brand->adjust_duration( cdr );
-            p()->uptime.charred_flesh_fiery_brand->update(true, p()->sim->current_time());
-          } else {
-            p()->uptime.charred_flesh_fiery_brand->update(false, p()->sim->current_time());
+            p()->uptime.charred_flesh_fiery_brand->update( true, p()->sim->current_time() );
+          }
+          else
+          {
+            p()->uptime.charred_flesh_fiery_brand->update( false, p()->sim->current_time() );
           }
           if ( target_data->dots.sigil_of_flame->is_ticking() )
           {
             target_data->dots.sigil_of_flame->adjust_duration( cdr );
-            p()->uptime.charred_flesh_sigil_of_flame->update(true, p()->sim->current_time());
-          } else {
-            p()->uptime.charred_flesh_sigil_of_flame->update(false, p()->sim->current_time());
+            p()->uptime.charred_flesh_sigil_of_flame->update( true, p()->sim->current_time() );
+          }
+          else
+          {
+            p()->uptime.charred_flesh_sigil_of_flame->update( false, p()->sim->current_time() );
           }
         }
 
@@ -7274,7 +7277,7 @@ void demon_hunter_t::init_uptimes()
 {
   base_t::init_uptimes();
 
-  uptime.charred_flesh_fiery_brand = get_uptime( "Charred Flesh (Fiery Brand)" )->collect_duration( *sim );
+  uptime.charred_flesh_fiery_brand    = get_uptime( "Charred Flesh (Fiery Brand)" )->collect_duration( *sim );
   uptime.charred_flesh_sigil_of_flame = get_uptime( "Charred Flesh (Sigil of Flame)" )->collect_duration( *sim );
 }
 
