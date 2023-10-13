@@ -3163,6 +3163,7 @@ struct collective_anguish_t : public demon_hunter_spell_t
   {
     may_miss = channeled = false;
     dual                 = true;
+    tick_on_application  = false;
 
     tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick" );
   }
