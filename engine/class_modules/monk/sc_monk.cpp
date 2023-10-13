@@ -2151,6 +2151,8 @@ namespace monk
         {
           monk_melee_attack_t::impact( s );
 
+          // The damage only affects the initial Blackout Kick (and any initial cleaved Blackout Kicks).
+          // Buff is removed prior to Teaching of the Monastery Blackout Kick procs trigger.
           if ( p()->buff.blackout_reinforcement->up() )
           {
             p()->buff.blackout_reinforcement->expire();
