@@ -7462,6 +7462,7 @@ void thorncaller_claw( special_effect_t& effect ) {
     }
   };
 
+  // Split damage has generic AOE scaling, confirmed via testing
   auto thorn_burst_damage = create_proc_action<generic_aoe_proc_t>( "thorn_burst", effect, "thorn_burst", effect.player->find_spell( 425181 ), true );
   thorn_burst_damage->base_dd_min = thorn_burst_damage->base_dd_max = effect.driver()->effectN( 3 ).average( effect.item );
 
