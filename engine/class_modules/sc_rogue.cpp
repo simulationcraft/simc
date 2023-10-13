@@ -5588,7 +5588,6 @@ struct black_powder_t: public rogue_attack_t
       rogue_attack_t( name, p, p->spec.t31_subtlety_2pc_black_powder )
     {
       aoe = -1;
-      reduced_aoe_targets = p->spec.t31_subtlety_2pc_black_powder->effectN( 2 ).base_value();
       base_multiplier *= 1.0 + p->set_bonuses.t31_subtlety_4pc->effectN( 1 ).percent();
     }
 
