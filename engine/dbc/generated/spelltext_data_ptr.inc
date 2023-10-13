@@ -6196,7 +6196,6 @@ static const std::array<spelltext_data_t, 20498> __ptr_spelltext_data { {
   { 194315, "Blazing Barrier reduces all Physical damage you take by $s1%.", 0, 0 },
   { 194384, "$@spelldesc81749", "Healed whenever $@auracaster damages an enemy.", 0 },
   { 194407, "$@spelldesc257891", 0, 0 },
-  { 194429, "Ambush the target, causing $s1 Physical damage.\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r", 0, 0 },
   { 194431, "Flamestrike calls down $m1 additional pillar of fire each time it is cast.", 0, 0 },
   { 194432, "$@spelldesc194431", "Movement speed slowed by $s2%.", 0 },
   { 194466, "Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $224637s2 Fire damage to other nearby enemies. This damage is always a critical strike.", 0, "Artifact" },
@@ -20498,6 +20497,7 @@ static const std::array<spelltext_data_t, 20498> __ptr_spelltext_data { {
   { 429271, "Envelop an ally in ancient protection, absorbing up to $s1 damage. If the protection is fully consumed, the ally gains an ancient resurgence, increasing Versatility by $429272s1 for $429272d.", "Absorbs $w1 damage.", 0 },
   { 429272, "$@spelldesc429271", "Versatility increased by $s1.", 0 },
   { 429364, "Plant a banner representing your successes against the Dreaming.", 0, 0 },
+  { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.51685
