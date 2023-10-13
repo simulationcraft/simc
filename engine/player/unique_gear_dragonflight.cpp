@@ -7440,6 +7440,72 @@ void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
   effect.execute_action = create_proc_action<dreambinder_loom_of_the_great_cycle_t>( "web_of_dreams", effect );
 }
 
+// Thorncaller Claw
+// 424406 Driver/Values
+// 424965 Thorn Spirit DoT
+// 425177 Thorn Burst ICD + Proc Flags
+// 425181 Thorn Burst Damage
+// TODO: Implement on-death effect
+void thorncaller_claw( special_effect_t& effect ) {
+  struct thorn_spirit_t : public generic_proc_t
+  {
+    thorn_spirit_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "thorn_spirit", effect.player->find_spell( 424965 ) )
+    {
+      base_td = effect.driver()->effectN( 2 ).average( effect.item );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      player->get_target_data( s->target )->debuff.thorn_spirit->trigger();
+    }
+  };
+
+  auto thorn_burst_damage = create_proc_action<generic_aoe_proc_t>( "thorn_burst", effect, "thorn_burst", effect.player->find_spell( 425181 ), true );
+  thorn_burst_damage->base_dd_min = thorn_burst_damage->base_dd_max = effect.driver()->effectN( 3 ).average( effect.item );
+
+  auto thorn_burst            = new special_effect_t( effect.player );
+  thorn_burst->name_str       = "thorn_burst";
+  thorn_burst->type           = SPECIAL_EFFECT_EQUIP;
+  thorn_burst->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+  thorn_burst->spell_id       = 425177;
+  thorn_burst->execute_action = thorn_burst_damage;
+  effect.player->special_effects.push_back( thorn_burst );
+
+  auto thorn_burst_proc = new dbc_proc_callback_t( effect.player, *thorn_burst );
+  thorn_burst_proc->initialize();
+  thorn_burst_proc->activate();
+
+  effect.player->callbacks.register_callback_trigger_function(
+      425177, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        auto td = effect.player->get_target_data( s->target )->debuff.thorn_spirit;
+        return td->check();
+      } );
+
+  auto thorn_spirit = new thorn_spirit_t( effect );
+  thorn_spirit->add_child( thorn_burst_damage );
+  effect.execute_action = thorn_spirit;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+struct thorn_spirit_initializer_t : public item_targetdata_initializer_t
+{
+  thorn_spirit_initializer_t() : item_targetdata_initializer_t( 424406, 424965 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.thorn_spirit = make_buff_fallback( active, *td, "thorn_spirit", debuffs[ td->source ] );
+    td->debuff.thorn_spirit->reset();
+  }
+};
+
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
 {
@@ -9532,6 +9598,7 @@ void register_special_effects()
   register_special_effect( 419278, items::iridal_the_earths_master );           // Iridal, the Earth's Master
   register_special_effect( 424320, items::hungering_shadowflame );              // Hungering Shadowflame - Unnamed 1h axe
   register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
+  register_special_effect( 424406, items::thorncaller_claw );                   // Thorncaller Claw
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
@@ -9608,6 +9675,7 @@ void register_special_effects()
   register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
   register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
   register_special_effect( 417545, DISABLED_EFFECT );  // Time-Thief's Gambit unused effect
+  register_special_effect( 425177, DISABLED_EFFECT );  // Thorncaller's Claw secondary proc data
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -9625,6 +9693,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::embed_blade_initializer_t() );
   sim.register_target_data_initializer( items::web_of_dreams_initializer_t() );
   sim.register_target_data_initializer( items::dream_shackles_initializer_t() );
+  sim.register_target_data_initializer( items::thorn_spirit_initializer_t() );
 }
 
 void register_hotfixes()
