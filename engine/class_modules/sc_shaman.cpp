@@ -5748,7 +5748,7 @@ struct lava_burst_t : public shaman_spell_t
 
 
 
-    if ( exec_type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       p()->trigger_deeply_rooted_elements( execute_state );
     }
@@ -10043,7 +10043,9 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
     auto lvb = debug_cast<lava_burst_t*>( state->action );
-    if ( lvb->exec_type != execute_type::NORMAL )
+    if ( lvb->exec_type != execute_type::NORMAL
+      && lvb->exec_type != execute_type::PRIMORDIAL_WAVE
+      && lvb->exec_type != execute_type::MOLTEN_CHARGE )
     {
       return;
     }
