@@ -208,6 +208,8 @@ public:
     buff_t* merciless_assault;
     buff_t* earthen_tenacity;  // T30 Protection 4PC
     buff_t* furious_bloodthirst;  // T31 Fury 2PC
+    buff_t* fervid; // T31 Prot 2pc proc
+    buff_t* fervid_opposition; // T31 2pc DR buff
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -2328,6 +2330,16 @@ struct rend_prot_t : public warrior_attack_t
     }
     return warrior_attack_t::ready();
   }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    // 25% proc chance found via testing
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) )
+    {
+      p() -> buff.fervid -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.25 );
+    }
+  }
 };
 
 // Mortal Strike ============================================================
@@ -4083,6 +4095,12 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->buff.strike_vulnerabilities->trigger();
     }
+
+    // 25% proc chance found via testing
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) )
+    {
+      p() -> buff.fervid -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.25 );
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4443,6 +4461,12 @@ struct impending_victory_t : public warrior_attack_t
     if ( impending_victory_heal )
     {
       impending_victory_heal->execute();
+    }
+
+    // 25% proc chance found via testing
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) )
+    {
+      p() -> buff.fervid -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.25 );
     }
   }
 };
@@ -5757,6 +5781,12 @@ struct revenge_t : public warrior_attack_t
 
     if ( p() -> sets->has_set_bonus( WARRIOR_PROTECTION, T29, B2 ) )
       p()->buff.vanguards_determination->trigger();
+
+    // 25% proc chance found via testing
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) )
+    {
+      p() -> buff.fervid -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.25 );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5974,14 +6004,27 @@ struct earthen_smash_t : public warrior_attack_t
   }
 };
 
+// Linked action for shield slam fervid bite T31 Protection
+struct fervid_bite_t : public warrior_attack_t
+{
+  fervid_bite_t( util::string_view name, warrior_t* p )
+  : warrior_attack_t( name, p, p->find_spell( 425534 ) )
+  {
+    background = true;
+    ignores_armor = true;
+  }
+};
+
 struct shield_slam_t : public warrior_attack_t
 {
   double rage_gain;
   action_t* earthen_smash;
+  action_t* fervid_bite;
   shield_slam_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
     rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) ),
-    earthen_smash( get_action<earthen_smash_t>( "earthen_smash", p ))
+    earthen_smash( get_action<earthen_smash_t>( "earthen_smash", p ) ),
+    fervid_bite( get_action<fervid_bite_t>( "fervid_bite", p ) )
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
@@ -6099,6 +6142,51 @@ struct shield_slam_t : public warrior_attack_t
     if ( p()->talents.protection.punish.ok() )
     {
       td -> debuffs_punish -> trigger();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) && p() -> buff.fervid -> up() )
+    {
+      double total_amount = 0;
+      if ( td->dots_deep_wounds->is_ticking() )
+      {
+        auto amount = td->dots_deep_wounds->state->result_raw * td->dots_deep_wounds->ticks_left_fractional();
+        // Damage reduction
+        amount *= p() -> sets -> set( WARRIOR_PROTECTION, T31, B2 ) -> effectN( 1 ).percent();
+        total_amount += amount;
+        td->dots_deep_wounds->cancel();
+      }
+
+      if ( td->dots_rend->is_ticking() )
+      {
+        auto amount = td->dots_rend->state->result_raw * td->dots_rend->ticks_left_fractional();
+        // Damage reduction
+        amount *= p() -> sets -> set( WARRIOR_PROTECTION, T31, B2 ) -> effectN( 1 ).percent();
+        total_amount += amount;
+        td->dots_rend->cancel();
+      }
+
+      if ( td->dots_thunderous_roar->is_ticking() )
+      {
+        auto amount = td->dots_thunderous_roar->state->result_raw * td->dots_thunderous_roar->ticks_left_fractional();
+        // Damage reduction, Thunderous Roar uses effect4, instead of effect1
+        amount *= p() -> sets -> set( WARRIOR_PROTECTION, T31, B2 ) -> effectN( 4 ).percent();
+        total_amount += amount;
+        td->dots_thunderous_roar->cancel();
+      }
+
+      if ( total_amount > 0 )
+      {
+        fervid_bite->execute_on_target( state->target, total_amount );
+      }
+
+      if( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B4 ) )
+      {
+        p() -> cooldown.thunderous_roar -> adjust ( -1.0 * p() -> sets -> set( WARRIOR_PROTECTION, T31, B4 ) -> effectN( 2 ).time_value() );
+        p() -> cooldown.thunder_clap -> reset( true );
+      }
+
+      p() -> buff.fervid -> expire();
+      p() -> buff.fervid_opposition -> trigger();
     }
   }
 
@@ -7891,6 +7979,12 @@ struct ignore_pain_t : public warrior_spell_t
     {
       p() -> buff.bloodsport -> trigger();
     }
+
+    // 87.5% proc chance found via testing
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) )
+    {
+      p() -> buff.fervid -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.875 );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -7961,6 +8055,12 @@ struct shield_block_t : public warrior_spell_t
     else
     {
       p()->buff.shield_block->trigger();
+    }
+
+    // 25% proc chance found via testing
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) )
+    {
+      p() -> buff.fervid -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.25 );
     }
   }
 
@@ -9134,7 +9234,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_ravager     = target->get_dot( "ravager", &p );
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
-  dots_thunderous_roar = target->get_dot( "thunderous_roar", &p );
+  dots_thunderous_roar = target->get_dot( "thunderous_roar_dot", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
                                ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent()
@@ -9542,10 +9642,16 @@ void warrior_t::create_buffs()
   buff.earthen_tenacity = make_buff( this, "earthen_tenacity", tier_set.t30_prot_4pc -> ok() ?
                                 find_spell( 410218 ) : spell_data_t::not_found() );
 
+  // T31 Tier Effects ===============================================================================================================
+
   buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst",
                                       tier_set.t31_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() );
                                //->set_default_value( find_spell( 423211 )->effectN( 1 ).percent() );
                                //->set_duration( find_spell( 423211 )->duration() );
+
+  buff.fervid = make_buff( this, "fervid", sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2) ? find_spell( 425517 ) : spell_data_t::not_found() );
+
+  buff.fervid_opposition = make_buff( this, "fervid_opposition", sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2) ? find_spell( 427413 ) : spell_data_t::not_found() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
@@ -10690,6 +10796,11 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
     else if ( buff.die_by_the_sword->up() )
     {
       s->result_amount *= 1.0 + buff.die_by_the_sword->default_value;
+    }
+
+    if ( sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) && buff.fervid_opposition -> up() )
+    {
+      s->result_amount *= 1.0 - sets -> set( WARRIOR_PROTECTION, T31, B2 )->effectN( 2 ).base_value();
     }
 
     if ( specialization() == WARRIOR_PROTECTION )
