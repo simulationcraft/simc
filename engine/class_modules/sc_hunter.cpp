@@ -359,6 +359,7 @@ public:
     spell_data_ptr_t t31_sv_2pc_buff;
     spell_data_ptr_t t31_sv_4pc;
     spell_data_ptr_t t31_sv_4pc_buff;
+    spell_data_ptr_t t31_sv_4pc_buff2;
   } tier_set;
 
   // Buffs
@@ -424,6 +425,7 @@ public:
     //T31
     buff_t* fury_strikes;
     buff_t* contained_explosion;
+    buff_t* light_the_fuse;
   } buffs;
 
   // Cooldowns
@@ -1004,7 +1006,7 @@ public:
     if ( triggers_calling_the_shots )
       ab::sim -> print_debug( "{} action {} set to proc Calling the Shots", ab::player -> name(), ab::name() );
 
-    if ( p() -> tier_set.t30_sv_4pc.ok() ) 
+    if ( p() -> tier_set.t30_sv_4pc.ok() )
     {
       if ( triggers_t30_sv_4p.is_none() )
       {
@@ -1013,7 +1015,7 @@ public:
     }
     else
     {
-      triggers_t30_sv_4p = false; 
+      triggers_t30_sv_4p = false;
     }
 
     if ( triggers_t30_sv_4p )
@@ -1613,9 +1615,9 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     cc += buffs.thrill_of_the_hunt -> check_stack_value();
 
-    if ( !bugs && o() -> buffs.fury_strikes -> check() )
+    if ( o() -> buffs.fury_strikes -> check() )
     {
-      cc += o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ).percent();
+      cc += o() -> tier_set.t31_sv_2pc_buff -> effectN( 3 ).percent();
     }
 
     return cc;
@@ -1628,10 +1630,10 @@ struct hunter_main_pet_base_t : public stable_pet_t
     if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
       m *= 1 + buffs.piercing_fangs -> check_value();
 
-    if ( !bugs && o() -> buffs.fury_strikes -> check() && 
+    if ( o() -> buffs.fury_strikes -> check() && 
         o() -> buffs.fury_strikes -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
     {
-      m *= 1 + o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ).percent();
+      m *= 1 + o() -> tier_set.t31_sv_2pc_buff -> effectN( 4 ).percent();
     }
 
     return m;
@@ -2002,7 +2004,7 @@ public:
   {
     double cc = ab::composite_crit_chance();
 
-    if ( ab::p() -> bugs && affected_by.fury_strikes_crit_chance && ab::o() -> buffs.fury_strikes -> check() )
+    if ( affected_by.fury_strikes_crit_chance && ab::o() -> buffs.fury_strikes -> check() )
       cc += ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 2 ).percent();
 
     return cc;
@@ -2012,7 +2014,7 @@ public:
   {
     double cm = ab::composite_crit_damage_bonus_multiplier();
 
-    if ( ab::p() -> bugs && affected_by.fury_strikes_crit_dmg && ab::o() -> buffs.fury_strikes -> check() )
+    if ( affected_by.fury_strikes_crit_dmg && ab::o() -> buffs.fury_strikes -> check() )
       cm *= 1.0 + ab::o() -> tier_set.t31_sv_2pc_buff -> effectN( 1 ).percent();
 
     return cm;
@@ -3819,9 +3821,12 @@ struct multishot_bm_t: public hunter_ranged_attack_t
       for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
         pet -> buffs.beast_cleave -> trigger();
 
-      if ( p() -> tier_set.t31_bm_4pc.ok() ) {
-        for ( auto pet : p() -> pets.dire_beast.active_pets() )
-          pet -> buffs.beast_cleave -> trigger();
+      if ( p() -> tier_set.t31_bm_4pc.ok() )
+      {
+        if ( !( p() -> pets.dire_beast.active_pets().empty() ) )
+        {
+            p() -> pets.dire_beast.active_pets().back() -> buffs.beast_cleave -> trigger();
+        }
       }
     }
 
@@ -5118,8 +5123,8 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     if ( p() -> tier_set.t31_sv_4pc.ok() )
     {
       p() -> buffs.contained_explosion -> trigger();
-      p() -> cooldowns.wildfire_bomb -> reset( false );
       p() -> actions.wildfire_bomb_t31 -> execute_on_target( execute_state -> target );
+      p() -> buffs.light_the_fuse -> trigger();
     }
   }
 
@@ -5531,9 +5536,12 @@ struct kill_command_t: public hunter_spell_t
       pet -> active.kill_command -> execute_on_target( target );
 
     if ( p() -> tier_set.t31_bm_4pc.ok() )
-      for ( auto pet : p() -> pets.dire_beast.active_pets() )
-        pet -> active.kill_command -> execute_on_target( target );
-
+    {
+      if ( !( p() -> pets.dire_beast.active_pets().empty() ) )
+      {
+        p() -> pets.dire_beast.active_pets().back() -> active.kill_command -> execute_on_target( target );
+      }
+    }
     p() -> buffs.tip_of_the_spear -> trigger();
 
     if ( reset.chance != 0 )
@@ -6398,6 +6406,12 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     if ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() )
       p() -> resource_gain( RESOURCE_FOCUS, p() -> talents.coordinated_kill -> effectN( 2 ).base_value(), p() -> gains.coordinated_kill, this);
+
+    if ( p() -> buffs.light_the_fuse -> check() )
+    {
+      p() -> buffs.light_the_fuse -> expire();
+      p() -> cooldowns.wildfire_bomb -> reset( false );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -7009,6 +7023,7 @@ void hunter_t::init_spells()
   tier_set.t31_sv_2pc_buff = find_spell( 425830 );
   tier_set.t31_sv_4pc = sets -> set( HUNTER_SURVIVAL, T31, B4 );
   tier_set.t31_sv_4pc_buff = find_spell( 426344 );
+  tier_set.t31_sv_4pc_buff2 = find_spell( 428464 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
@@ -7322,7 +7337,7 @@ void hunter_t::create_buffs()
     buffs.coordinated_assault -> set_stack_change_callback(
       [ this ]( buff_t*, int /*old*/, int /*cur*/ ) {
         if ( talents.bombardier.ok() )
-          cooldowns.wildfire_bomb -> reset( true );
+          cooldowns.wildfire_bomb -> reset( true, -1 );
 
         cooldowns.wildfire_bomb -> adjust_recharge_multiplier();
         cooldowns.kill_shot -> adjust_recharge_multiplier();
@@ -7400,6 +7415,9 @@ void hunter_t::create_buffs()
   buffs.contained_explosion =
     make_buff( this, "contained_explosion", tier_set.t31_sv_4pc_buff )
       -> set_default_value( tier_set.t31_sv_4pc_buff -> effectN( 1 ).percent() );
+
+  buffs.light_the_fuse =
+    make_buff( this, "light_the_fuse", tier_set.t31_sv_4pc_buff2 );
 }
 
 // hunter_t::init_gains =====================================================

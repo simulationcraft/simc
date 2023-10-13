@@ -1524,6 +1524,7 @@ class SpellDataGenerator(DataGenerator):
             ( 425261, 0 ),          # Cleansing Flame (Damage - Prot T31 4pc)
             ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
             ( 423590, 0 ),          # Echoes of Wrath (Ret T31 4pc buff)
+            ( 423593, 0 ),          # Tempest of the Lightbringer triggered by T31 4pc
         ),
 
         # Hunter:
@@ -1648,6 +1649,7 @@ class SpellDataGenerator(DataGenerator):
             ( 421979, 0 ),          # Caustic Spatter damage spell
             ( 426595, 0 ),          # Shadow Techniques delayed CP energize
             ( 423193, 0 ),          # Exsanguinate residual damage spell
+            ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
         ),
 
         # Priest:
@@ -2297,6 +2299,7 @@ class SpellDataGenerator(DataGenerator):
           ( 409632, 3 ), # Breath of Eons Damage
           ( 360828, 3 ), # Blistering Scales
           ( 410265, 3 ), # Inferno's Blessing
+          ( 424368, 3 ), # T31 4pc Buff Trembling Earth
        ),
     ]
 

@@ -3135,6 +3135,8 @@ struct bloodbath_t : public warrior_attack_t
 
     weapon = &( p->main_hand_weapon );
     radius = 5;
+    cooldown = p->cooldown.bloodthirst;
+    track_cd_waste = true;
     if ( p->non_dps_mechanics )
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
@@ -5100,7 +5102,8 @@ struct odyns_fury_t : warrior_attack_t
 
     if ( p()->tier_set.t31_fury_2pc->ok() )
     {
-      p()->buff.furious_bloodthirst->trigger( p()->buff.furious_bloodthirst->max_stack() );
+      // Triggers 3 stacks on cast (not in data), stacking up to 6 max
+      p()->buff.furious_bloodthirst->trigger( 3 );
     }
   }
 
@@ -5174,7 +5177,8 @@ struct torment_odyns_fury_t : warrior_attack_t
 
     if ( p()->tier_set.t31_fury_2pc->ok() )
     {
-      p()->buff.furious_bloodthirst->trigger( p()->buff.furious_bloodthirst->max_stack() );
+      // Triggers 3 stacks on cast (not in data), stacking up to 6 max
+      p()->buff.furious_bloodthirst->trigger( 3 );
     }
 }
 
@@ -9644,14 +9648,14 @@ void warrior_t::create_buffs()
 
   // T31 Tier Effects ===============================================================================================================
 
-  buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst",
-                                      tier_set.t31_fury_2pc->ok() ? find_spell( 423211 ) : spell_data_t::not_found() );
-                               //->set_default_value( find_spell( 423211 )->effectN( 1 ).percent() );
-                               //->set_duration( find_spell( 423211 )->duration() );
+  buff.furious_bloodthirst = make_buff( this, "furious_bloodthirst", tier_set.t31_fury_2pc->ok() ?
+                                   find_spell( 423211 ) : spell_data_t::not_found() )
+                                   ->set_cooldown( 0_ms ); // used for buff consumption, not application
 
   buff.fervid = make_buff( this, "fervid", sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2) ? find_spell( 425517 ) : spell_data_t::not_found() );
 
   buff.fervid_opposition = make_buff( this, "fervid_opposition", sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2) ? find_spell( 427413 ) : spell_data_t::not_found() );
+
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()

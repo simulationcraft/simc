@@ -4879,25 +4879,22 @@ void drogbar_stones( special_effect_t& effect )
     buff = create_buff<buff_t>( effect.player, buff_spell );
 
     auto drogbar_stones_damage = new special_effect_t( effect.player );
-    drogbar_stones_damage->name_str = "drogbar_stones_damage";
-    drogbar_stones_damage->item = effect.item;
+    drogbar_stones_damage->name_str = "drogbar_stones_damage_proc";
     drogbar_stones_damage->spell_id = buff->data().id();
-    drogbar_stones_damage->type = SPECIAL_EFFECT_EQUIP;
-    drogbar_stones_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
-    drogbar_stones_damage->execute_action = create_proc_action<generic_proc_t>(
+
+    auto damage_effect = create_proc_action<generic_proc_t>(
       "drogbar_stones_damage", *drogbar_stones_damage, "drogbar_stones_damage", effect.player->find_spell( 407907 ) );
 
     drogbar_stones_damage->player->callbacks.register_callback_execute_function(
         drogbar_stones_damage->spell_id,
-        [ buff, drogbar_stones_damage, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        [ buff, drogbar_stones_damage, damage_effect, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
           if ( buff->check() )
           {
-            drogbar_stones_damage->execute_action->execute();
-
+            damage_effect->execute();
             buff->expire();
           }
         } );
-
+    effect.player->special_effects.push_back( drogbar_stones_damage );
     auto damage = new dbc_proc_callback_t( effect.player, *drogbar_stones_damage );
     damage->initialize();
     damage->deactivate();
@@ -6389,19 +6386,6 @@ void nymues_unraveling_spindle( special_effect_t& effect )
     void last_tick( dot_t* d ) override
     {
       bool was_channeling = player->channeling == this;
-      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
-
-      // Cancelled before the last tick completed, reset the cd
-      if ( d->end_event )
-      {
-        cooldown->reset( false );
-        cdgrp->reset( false );
-      }
-      else
-      {
-        cooldown->adjust( d->duration() );
-        cdgrp->adjust( d->duration() );
-      }
 
       proc_spell_t::last_tick( d );
 
@@ -6649,7 +6633,7 @@ void branch_of_the_tormented_ancient( special_effect_t& e )
 
   auto cb = new branch_of_the_tormented_ancient_cb_t( *driver, damage, buff );
 
-  buff->set_initial_stack( e.driver()->effectN( 7 ).base_value() );
+  buff->set_initial_stack( as<int>( e.driver()->effectN( 7 ).base_value() ) );
   buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
     if ( new_ )
     {
@@ -6720,9 +6704,13 @@ void infernal_signet_brand( special_effect_t& e )
   {
     const special_effect_t& e;
     buff_t* buff;
+    int current_mod;
 
     vicious_brand_self_t( const special_effect_t& effect, buff_t* b, double base_damage )
-      : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ), e( effect ), buff( b )
+      : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ),
+        e( effect ),
+        buff( b ),
+        current_mod( 0 )
     {
       double player_mod = e.driver()->effectN( 4 ).percent();
       base_td           = base_damage * player_mod;
@@ -6737,9 +6725,25 @@ void infernal_signet_brand( special_effect_t& e )
 
       // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
       // Doesnt appear to have any sort of cap
-      m *= pow( base_mod, buff->check() );
+      m *= pow( base_mod, current_mod );
 
       return m;
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+      // Damage mod doesnt seem to update til the next application
+      if ( buff->stack() != current_mod )
+      {
+        current_mod = buff->stack();
+      }
+    }
+
+    void reset() override
+    {
+      generic_proc_t::reset();
+      current_mod = 0;
     }
   };
 
@@ -6749,13 +6753,15 @@ void infernal_signet_brand( special_effect_t& e )
     action_t* aoe_damage;
     buff_t* buff;
     const special_effect_t& e;
+    int current_mod;
 
     vicious_brand_t( const special_effect_t& effect, buff_t* b, double base_damage )
       : generic_proc_t( effect, "vicious_brand", effect.player->find_spell( 425154 ) ),
         self_damage( create_proc_action<vicious_brand_self_t>( "vicious_brand_self", effect, b, base_damage ) ),
         aoe_damage( create_proc_action<radiating_brand_t>( "radiating_brand", effect ) ),
         buff( b ),
-        e( effect )
+        e( effect ),
+        current_mod( 0 )
     {
       base_td = base_damage;
       add_child( aoe_damage );
@@ -6768,7 +6774,7 @@ void infernal_signet_brand( special_effect_t& e )
 
       // Currently appears to increase the damage done multiplicatively by 20% per stack of the buff
       // Doesnt appear to have any sort of cap
-      m *= pow( base_mod, buff->check() );
+      m *= pow( base_mod, current_mod );
 
       return m;
     }
@@ -6783,6 +6789,22 @@ void infernal_signet_brand( special_effect_t& e )
             d->state->result_amount * e.driver()->effectN( 6 ).percent();
         aoe_damage->execute();
       }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+      // Damage mod doesnt seem to update til the next application
+      if ( buff->stack() != current_mod )
+      {
+        current_mod = buff->stack();
+      }
+    }
+
+    void reset() override
+    {
+      generic_proc_t::reset();
+      current_mod = 0;
     }
 
     void execute() override
@@ -6828,6 +6850,20 @@ void infernal_signet_brand( special_effect_t& e )
 
   e.execute_action = create_proc_action<vicious_brand_t>( "vicious_brand", e, buff, base_damage );
 
+  new dbc_proc_callback_t( e.player, e );
+}
+
+// Rezans Gleaming Eye
+// 429228 Driver
+// 429233 Damage
+void rezans_gleaming_eye( special_effect_t& e )
+{
+  auto damage_spell = e.player->find_spell( 429233 );
+  auto damage = create_proc_action<generic_proc_t>( "rezans_fury", e, "rezans_fury", damage_spell );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+  damage->base_td = e.driver()->effectN( 2 ).average( e.item );
+
+  e.execute_action = damage;
   new dbc_proc_callback_t( e.player, e );
 }
 
@@ -7760,7 +7796,7 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
   timespan_t period = effect.driver()->effectN( 1 ).period();
 
   effect.player->register_combat_begin( [ buff, period ]( player_t* p ) {
-    int allies = p->sim->dragonflight_opts.allied_wristguards_allies;
+    int allies = 1 + p->sim->dragonflight_opts.allied_wristguards_allies;
 
     buff->trigger( p->sim->rng().range( 1, allies ) );
 
@@ -9482,6 +9518,7 @@ void register_special_effects()
   register_special_effect( 417534, items::time_thiefs_gambit, true );
   register_special_effect( 422441, items::branch_of_the_tormented_ancient );
   register_special_effect( 422479, items::infernal_signet_brand );
+  register_special_effect( 429228, items::rezans_gleaming_eye );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment

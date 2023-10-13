@@ -200,6 +200,9 @@ void variable_t::reset()
 {
   action_t::reset();
 
+  if ( !var )
+    return;
+
   // In addition to if= expression removing the variable from the APLs, if the the variable value
   // is constant, we can remove any variable action referencing it from the APL
   if (action_list && sim->optimize_expressions && player->nth_iteration() == 1 &&

@@ -1,0 +1,55 @@
+# demonhunter="T31_Demon_Hunter_Havoc"
+# spec=havoc
+# level=70
+# race=night_elf
+# timeofday=day
+# role=attack
+# position=back
+# talents=BEkAAAAAAAAAAAAAAAAAAAAAAQAJkSEaJJSSkGCAAAAAAAkg0SJSSKSi0SC5AJJJRA
+
+# head=kinslayers_hood,id=202524,bonus_id=1478/6652/7981/1498/8767/8780,gem_id=192982
+# neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/1537/8782,gem_id=192919/192919/192919,crafted_stats=32/36
+# shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=1481/6652/7981/1498/8767
+# back=voice_of_the_silent_star,id=204465,bonus_id=6652/7981/1498/8767
+# chest=kinslayers_vest,id=202527,bonus_id=6652/7981/1498/8767,enchant_id=6625
+# wrists=needlessly_complex_wristguards,id=198327,bonus_id=8836/8840/8902/1537/8780,gem_id=192919,crafted_stats=32
+# hands=kinslayers_bloodstained_grips,id=202525,bonus_id=1475/6652/7981/1498/8767
+# waist=oblivions_immortal_coil,id=204399,bonus_id=6652/7981/1498/8767/8780,gem_id=192919
+# legs=lifebound_trousers,id=193408,bonus_id=8836/8840/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
+# feet=toxic_thorn_footwraps,id=193452,bonus_id=8836/8840/8902/1537/8960
+# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
+# finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
+# trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/7981/1498/8767
+# trinket2=elementium_pocket_anvil,id=202617,bonus_id=6652/7981/1498/8767
+# main_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant_id=6655
+# off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant_id=6655
+
+# save=T31_Demon_Hunter_Havoc.simc
+
+demonhunter="T31_Demon_Hunter_Vengeance"
+spec=vengeance
+level=70
+race=night_elf
+timeofday=day
+role=tank
+position=front
+talents=BUkAAAAAAAAAAAAAAAAAAAAAAAASiEJCJIJBkIlkQiWiEJSCJplk0kkWSQAAAAAJJA
+
+head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=7187/1520,gem_id=192919
+neck=torc_of_passed_time,id=201759,bonus_id=9500/9405/8782/8960,gem_id=192919/192919/192919,crafted_stats=36/32
+shoulders=screaming_torchfiends_horned_memento,id=207261,bonus_id=7187/1520
+back=screaming_torchfiends_shawl,id=207258,bonus_id=7187/1520
+chest=screaming_torchfiends_binding,id=207266,bonus_id=7187/1520,enchant_id=6625
+wrists=screaming_torchfiends_armlets,id=207259,bonus_id=7187/1520,gem_id=192919
+hands=screaming_torchfiends_grasp,id=207264,bonus_id=7187/1520
+waist=screaming_torchfiends_clasp,id=207260,bonus_id=7187/1520,gem_id=192985
+legs=screaming_torchfiends_blazewraps,id=207262,bonus_id=7187/1520,enchant=frosted_armor_kit_3
+feet=screaming_torchfiends_clutches,id=207265,bonus_id=7187/1520
+finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
+finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
+trinket1=accelerating_sandglass,id=207566,bonus_id=6536/1540/6646
+trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+main_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant=sophic_devotion_3
+off_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=sophic_devotion_3
+
+save=T31_Demon_Hunter_Vengeance.simc

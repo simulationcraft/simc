@@ -55,8 +55,10 @@ void retribution( player_t* p )
   finishers->add_action( "templars_verdict,if=!talent.crusade|cooldown.crusade.remains>gcd*3|buff.crusade.up&buff.crusade.stack<10" );
 
   generators->add_action( "call_action_list,name=finishers,if=holy_power=5|(debuff.judgment.up|holy_power=4)&buff.divine_resonance.up" );
+  generators->add_action( "blade_of_justice,if=!dot.expurgation.ticking&holy_power<=3&set_bonus.tier31_2pc" );
   generators->add_action( "wake_of_ashes,if=holy_power<=2&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)&(!talent.execution_sentence|cooldown.execution_sentence.remains>4|target.time_to_die<8)&(!raid_event.adds.exists|raid_event.adds.in>20|raid_event.adds.up)" );
   generators->add_action( "divine_toll,if=holy_power<=2&!debuff.judgment.up&(!raid_event.adds.exists|raid_event.adds.in>30|raid_event.adds.up)&(cooldown.avenging_wrath.remains>15|cooldown.crusade.remains>15|fight_remains<8)" );
+  generators->add_action( "judgment,if=dot.expurgation.ticking&holy_power<=3&set_bonus.tier31_4pc&!buff.echoes_of_wrath.up" );
   generators->add_action( "call_action_list,name=finishers,if=holy_power>=3&buff.crusade.up&buff.crusade.stack<10" );
   generators->add_action( "templar_slash,if=buff.templar_strikes.remains<gcd&spell_targets.divine_storm>=2" );
   generators->add_action( "blade_of_justice,if=(holy_power<=3|!talent.holy_blade)&(spell_targets.divine_storm>=2&!talent.crusading_strikes|spell_targets.divine_storm>=4)" );
@@ -115,6 +117,7 @@ void protection( player_t* p )
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
 
+  standard->add_action( "consecration,if=buff.sanctification.stack=buff.sanctification.max_stack" );
   standard->add_action( "shield_of_the_righteous,if=((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
   standard->add_action( "avengers_shield,if=spell_targets.avengers_shield>2" );
@@ -132,7 +135,7 @@ void protection( player_t* p )
   standard->add_action( "eye_of_tyr,if=!talent.inmost_light.enabled&raid_event.adds.in>=60" );
   standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
   standard->add_action( "arcane_torrent,if=holy_power<5" );
-  standard->add_action( "consecration" );
+  standard->add_action( "consecration,if=!buff.sanctification_empower.up" );
 
   trinkets->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
   trinkets->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );

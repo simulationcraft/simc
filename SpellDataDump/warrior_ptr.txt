@@ -10274,7 +10274,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831435)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.11100 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.36510 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.111 -> 1.3651), PvP Coefficient (1 -> 0.8)
 #2 (id=831436)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
@@ -10338,7 +10339,8 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831441)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.95000 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.23420 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.95 -> 1.2342)
 Description      : $@spelldesc335097
 
 Name             : Crushing Blow (id=335100) [Spell Family (4)] 
@@ -10362,7 +10364,8 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831443)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.95000 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.23420 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.95 -> 1.2342)
 Description      : $@spelldesc335097
 
 Name             : Reckless Abandon (id=335101) [Spell Family (4)] 
@@ -12178,6 +12181,7 @@ Talent Entry     : Arms [tree=class, row=5, col=2, max_rank=2, req_points=8]
                  : Fury [tree=class, row=5, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
+                 : Effect#3 [op=mul, values=(1, 2)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15373,9 +15377,10 @@ Effects          :
                    Affected Spells: Whirlwind (1680), Whirlwind (190411)
                    Family Flags: 54
 #2 (id=1024873)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: 12000 | Scaled Value: 12000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 9000 | Scaled Value: 9000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Slam (1464)
                    Family Flags: 21
+Hotfixed         : Base Value (12000 -> 9000)
 #3 (id=1024877)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Whirlwind (411547)
@@ -17078,6 +17083,7 @@ Description      : Blasts all enemies within $6343A1 yards for $s1 Physical dama
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Reckless Abandon (id=396749) [Spell Family (4), Passive] 
+Hotfixed         : Description
 Talent Entry     : Fury [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Warrior
 School           : Physical
@@ -17103,14 +17109,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 396752 | Target: Self (1)
 #3 (id=1039094)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
-Description      : Recklessness generates ${$s1/10} Rage and Rampage greatly empowers your next $s3 Bloodthirsts or Raging Blows.
+Description      : Recklessness generates ${$s1/10} Rage and Rampage greatly empowers your next Bloodthirst or Raging Blow.
 
 Name             : Reckless Abandon (id=396752) [Spell Family (4)] 
+Hotfixed         : Proc Stacks (2 -> 1)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Stacks           : 2 initial, 2 maximum
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
@@ -17969,7 +17976,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Internal Cooldown: 0.5 seconds
-Stacks           : 3 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee

@@ -1,0 +1,108 @@
+# deathknight="T31_Death_Knight_Blood"
+# level=70
+# race=dwarf
+# spec=blood
+# role=tank
+# position=front
+# talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJIIJRiIRQiIJCJJJRAAAAAAJSSOARSTiIBAAISSSCAAAA
+
+# head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192982
+# neck=tuskarr_bone_necklace,id=193666,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192945/192945/192945
+# shoulder=lingering_phantoms_shoulderplates,id=202459,bonus_id=4800/4786/1507
+# back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+# chest=lingering_phantoms_plackart,id=202464,bonus_id=4800/4786/1501,enchant=waking_stats_3
+# wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192945
+# hands=sharktoothknuckled_grips,id=155890,bonus_id=6652/8811/8812/6808/4786/3317
+# waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501,gem_id=192945
+# legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
+# feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/1537/9379,enchant=plainsrunners_breeze_3,crafted_stats=36/40
+# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/1808/6935,enchant=devotion_of_haste_3,gem_id=192945
+# finger2=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,enchant=devotion_of_haste_3,gem_id=192945,crafted_stats=36/40
+# trinket1=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
+# trinket2=mark_of_dargrul,id=137357,bonus_id=6652/8811/8812/6808/4786/3326
+# main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
+
+# save=T31_Death_Knight_Blood.simc
+
+deathknight="T31_Death_Knight_Frost"
+spec=frost
+level=70
+race=human
+role=attack
+position=back
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAIikEJiERISSIkIJRECkERikkkkkkWOAAAAAAAAAAAAAA
+deathknight.ams_absorb_percent=1
+deathknight.amz_absorb_percent=1
+
+head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192985,enchant_id=7052
+neck=elemental_lariat,id=193001,bonus_id=9500/9405/8782/8960,gem_id=192922/192922/192922,crafted_stats=32/36
+shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
+back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
+chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=9500/9405/8932/6935/8960,gem_id=192922,crafted_stats=32/36
+hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
+waist=phlegethic_girdle,id=207149,bonus_id=7187/1520/6935,gem_id=192922
+legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent_armor_kit_3
+feet=lavaforged_sollerets,id=207148,bonus_id=7187/1520
+finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
+finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
+trinket1=accelerating_sandglass,id=207566,bonus_id=6536/1540/6646
+trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+main_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
+off_hand=volcorosss_barbed_fang,id=207789,bonus_id=7187/1520,enchant=rune_of_hysteria
+
+save="T31_Death_Knight_Frost.simc"
+
+deathknight="T31_Death_Knight_Frost_2h"
+spec=frost
+level=70
+race=tauren
+role=attack
+position=back
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAICACSSkISEhkkECJSSEJAJhkERSSSSKJBAAAAAAAAAAAA
+deathknight.ams_absorb_percent=1
+deathknight.amz_absorb_percent=1
+
+head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192988,enchant_id=7052
+neck=elemental_lariat,id=193001,bonus_id=9500/9405/8782/8960,gem_id=192922/192922/192922,crafted_stats=32/36
+shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
+back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
+chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=9500/9405/8932/6935/8960,gem_id=192945,crafted_stats=32/49
+hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
+waist=unwinding_eon_girdle,id=207858,bonus_id=1582/6536/6646/6935,gem_id=192922
+legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent_armor_kit_3
+feet=rook_footmans_warboots,id=139241,bonus_id=3326/1514/6536/6646
+finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
+finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
+trinket1=accelerating_sandglass,id=207566,bonus_id=6536/1540/6646
+trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
+
+save="T31_Death_Knight_Frost_2h.simc"
+
+deathknight="T31_Death_Knight_Unholy"
+spec=unholy
+level=70
+race=troll
+role=attack
+position=back
+talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
+
+head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192985,enchant_id=7052
+neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520/8782,gem_id=192922/192922/192922
+shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
+back=undulating_sporecloak,id=205025,bonus_id=9500/9405/8960
+chest=unceasing_footmans_breastplate,id=207884,bonus_id=6536/1579/6646,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=9500/9405/8932/6935/8960,gem_id=192952,crafted_stats=32/36
+hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
+waist=unwinding_eon_girdle,id=207858,bonus_id=1582/6536/6646/6935,gem_id=192922
+legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent_armor_kit_3
+feet=fused_obsidian_sabatons,id=207156,bonus_id=7187/1520
+finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
+finger2=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+trinket2=mirror_of_fractured_tomorrows,id=207581,bonus_id=6536/1540/6646
+main_hand=incandescent_soulcleaver,id=207799,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
+
+save=T31_Death_Knight_Unholy.simc

@@ -48,6 +48,7 @@ struct paladin_td_t : public actor_target_data_t
 {
   struct dots_t
   {
+    dot_t* expurgation;
   } dots;
 
   struct buffs_t
@@ -106,6 +107,13 @@ public:
     action_t* divine_arbiter;
     action_t* searing_light;
     action_t* searing_light_cons;
+
+    // Tier stuff
+    action_t* cleansing_flame; // Prot Tier 31 4pc
+    action_t* cleansing_flame_heal;
+
+    action_t* expurgation;
+    action_t* wrathful_sanction;
   } active;
 
   // Buffs
@@ -157,6 +165,8 @@ public:
     buff_t* barricade_of_faith;
     buff_t* ally_of_the_light; // T29 2pc
     buff_t* deflecting_light; // T29 4pc
+    buff_t* sanctification; // T31 2pc building
+    buff_t* sanctification_empower;  // T31 2pc consecration effect
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -178,6 +188,8 @@ public:
     buff_t* empyrean_legacy_cooldown;
     buff_t* relentless_inquisitor;
     buff_t* divine_arbiter;
+
+    buff_t* echoes_of_wrath; // T31 4pc
   } buffs;
 
   // Gains
@@ -323,6 +335,9 @@ public:
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
+    const spell_data_t* cleansing_flame_damage;
+    const spell_data_t* cleansing_flame_heal;
+    const spell_data_t* wrathful_sanction;
   } spells;
 
   // Talents
@@ -532,6 +547,8 @@ public:
     const spell_data_t* ally_of_the_light_4pc;
     const spell_data_t* heartfire_sentinels_authority_2pc;
     const spell_data_t* heartfire_sentinels_authority_4pc;
+    const spell_data_t* t31_2pc;
+    const spell_data_t* t31_4pc;
 
   } tier_sets;
 
@@ -616,6 +633,8 @@ public:
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    heartfire( action_state_t* s );
   void    t29_4p_prot();
+  void    t31_4p_prot(action_state_t* s);
+  void    t31_4p_prot_heal( action_state_t* s );
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
   int     get_local_enemies( double distance ) const;
@@ -1025,6 +1044,14 @@ public:
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
       }
+      if ( p()->sets->has_set_bonus(PALADIN_PROTECTION, T31, B4) )
+      {
+        if ( s->action->harmful )
+          p()->t31_4p_prot( s );
+        else
+          p()->t31_4p_prot_heal( s );
+      }
+      
     }
   }
 

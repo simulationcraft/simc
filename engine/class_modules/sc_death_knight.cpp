@@ -475,6 +475,7 @@ public:
     // Shared
     buff_t* antimagic_shell;
     buff_t* antimagic_zone;
+    buff_t* amz_timing;
     propagate_const<buff_t*> icebound_fortitude;
     propagate_const<buff_t*> rune_mastery;
     propagate_const<buff_t*> unholy_ground;
@@ -991,6 +992,7 @@ public:
     const spell_data_t* frost_t30_2pc; // TODO rename when blizz gives it a name
     const spell_data_t* frost_t30_4pc; // TODO rename when blizz gives it a name
     const spell_data_t* wrath_of_the_frostwyrm_damage;
+    const spell_data_t* wrath_of_the_frostwyrm_buff;
     const spell_data_t* obliteration_gains;
     const spell_data_t* chilling_rage; // T31 Frost 2 set
 
@@ -1036,9 +1038,6 @@ public:
     // T31 Blood
     const spell_data_t* ashen_decay_buff; // Self buff for proc
     const spell_data_t* ashen_decay_debuff; // Debuff on mob
-
-    // T31 Unholy
-    const spell_data_t* t31_unholy_value_container;
   } spell;
 
   // Pet Abilities
@@ -1150,6 +1149,12 @@ public:
     propagate_const<proc_t*> fw_unholy_assault;
     propagate_const<proc_t*> fw_vile_contagion;
     propagate_const<proc_t*> fw_ruptured_viscera;
+
+    // Chill Streak related procs
+    propagate_const<proc_t*> enduring_chill; // Extra bounces given by Enduring Chill
+    propagate_const<proc_t*> t31_4pc_erw;    // Empower Rune Weapon CDR from T31 4pc
+    propagate_const<proc_t*> t31_4pc_cs;     // Chill Streak CDR from T31 4pc
+    propagate_const<proc_t*> t31_4pc_rune;   // Runes generated from T31 4pc
   } procs;
 
   // Death Knight Options
@@ -1161,6 +1166,8 @@ public:
     double ams_absorb_percent = 0;
     double amz_absorb_percent = 0;
     bool individual_pet_reporting = false;
+    std::vector<timespan_t> amz_use_time;
+    bool amz_specified = false;
   } options;
 
   // Runes
@@ -1806,6 +1813,7 @@ struct death_knight_pet_t : public pet_t
   timespan_t precombat_spawn_adjust;
   util::string_view pet_name;
   action_t* proxy_action;
+  double army_ghoul_ap_mod;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true,
                       bool dynamic = true )
@@ -1816,7 +1824,8 @@ struct death_knight_pet_t : public pet_t
       guardian( guardian ),
       precombat_spawn_adjust( 0_s ),
       pet_name( name ),
-      proxy_action( nullptr )
+      proxy_action( nullptr ),
+      army_ghoul_ap_mod()
   {
     if ( auto_attack )
     {
@@ -1827,6 +1836,9 @@ struct death_knight_pet_t : public pet_t
     {
       proxy_action = dk()->find_action( "raise_dead" );
     }
+
+    // Not in spell data, storing here to ensure parity between magus/apoc/army ghouls. 
+    army_ghoul_ap_mod = 0.4664;
   }
 
   double composite_melee_speed() const override
@@ -2527,21 +2539,22 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::init_base_stats();
 
-    // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
-    if (!is_ptr())
-    {
-      owner_coeff.ap_from_ap = 0.4664;
-    }
+    // Shares a value with Magus of the Dead, stored in death_knight_pet_t
+    // Ensures parity between all pets that share this ap_from_ap mod.
+    owner_coeff.ap_from_ap = army_ghoul_ap_mod;
+
     if (is_ptr())
     {
       if ( name_str == "army_ghoul" )
       {
-        owner_coeff.ap_from_ap = 0.3498;
+        // Currently has a 0.75x modiier, doesnt appear to be in spell data anywhere
+        owner_coeff.ap_from_ap *= 0.75;
       }
 
       if ( name_str == "apoc_ghoul" )
       {
-        owner_coeff.ap_from_ap = 0.522368;
+        // Currently has a 1.12x modifier, also not in spell data
+        owner_coeff.ap_from_ap *= 1.12;
       }
     }
   }
@@ -3205,9 +3218,9 @@ struct magus_pet_t : public death_knight_pet_t
           proxy->add_child( this );
       }
 
-      if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ))
+      if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
       {
-        aoe = as<int>(dk()->find_spell( 422854 )->effectN(2).base_value());
+        aoe = as<int>( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 )->effectN( 2 ).base_value() );
       }
     }
   };
@@ -3248,8 +3261,9 @@ struct magus_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    // Magus of the Dead's AP% appears to have been decoupled from ghouls, and buffed 10% at some point.
-    owner_coeff.ap_from_ap = 0.4664;
+    // Shares a value with Army of the Dead/Apocalypse, stored in death_knight_pet_t
+    // Ensures parity between all pets that share this ap_from_ap mod.
+    owner_coeff.ap_from_ap = army_ghoul_ap_mod;
   }
 
   void init_action_list() override
@@ -3258,7 +3272,7 @@ struct magus_pet_t : public death_knight_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ))
+    if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
       def->add_action( "amplify_damage" );
     }
@@ -3271,7 +3285,7 @@ struct magus_pet_t : public death_knight_pet_t
     if ( name == "frostbolt" ) return new frostbolt_magus_t( this, proxy_action, options_str );
     if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, proxy_action, options_str );
 
-    if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ))
+    if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
       if ( name == "amplify_damage" ) return new amplify_damage_t( this, options_str );
     }
@@ -4080,6 +4094,10 @@ struct melee_t : public death_knight_melee_attack_t
     {
       m *= 1.0 + td -> debuff.tightening_grasp -> check_stack_value();
     }
+    if( td && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T31, B2 ) && td -> debuff.ashen_decay -> check() )
+    {
+      m *= 1.0 + p() -> spell.ashen_decay_debuff -> effectN ( 3 ).percent();
+    }
 
     return m;
   }
@@ -4333,7 +4351,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     {
         p()->pets.apoc_magus.spawn( summon_duration, 1 );
 
-      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ))
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
       {
         p() -> pets.apoc_magus.spawn( summon_duration, 1 );
       }
@@ -4974,6 +4992,8 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     }
     death_knight_spell_t::impact( state );
     hit_count++;
+    // Setting a variable min travel time to more accurately emulate in game variance
+    min_travel_time = rng().gauss( 0.5, 0.2 );
 
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) ) 
     {
@@ -4984,6 +5004,7 @@ struct chill_streak_damage_t final : public death_knight_spell_t
          rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
     {
       hit_count--;
+      p() -> procs.enduring_chill -> occur();
     }
 	
     if ( ! state -> action -> result_is_hit( state -> result ) )
@@ -5002,14 +5023,17 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       if ( roll < .3333 )
       {
         p() -> cooldown.chill_streak -> adjust( -timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 2 ).base_value() ) );
+        p() -> procs.t31_4pc_cs -> occur();
       }
       else if ( roll < .6666 )
       {
         p() -> cooldown.empower_rune_weapon -> adjust( -timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 3 ).base_value() ) );
+        p() -> procs.t31_4pc_erw -> occur();
       }
       else
       {
         p() -> replenish_rune( 1, p() -> gains.t31_4pc );
+        p() -> procs.t31_4pc_rune -> occur();
       }
     }
 
@@ -8265,6 +8289,11 @@ struct antimagic_zone_t final : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
+    if ( p -> options.amz_use_time.size() != 0 )
+    {
+      p -> options.amz_specified = true;
+    }
+
     // Don't allow lower than AMZ cd intervals
     if ( interval < min_interval )
     {
@@ -8301,6 +8330,7 @@ struct antimagic_zone_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.antimagic_zone -> trigger();
+    p() -> buffs.amz_timing -> expire();
   }
 };
 
@@ -8710,9 +8740,9 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       buffs.rune_mastery -> trigger();
     }
 
-    if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ))
+    if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
-      auto extension_time = spell.t31_unholy_value_container->effectN( 1 ).time_value();
+      auto extension_time = sets->set( DEATH_KNIGHT_UNHOLY, T31, B4 )->effectN( 1 ).time_value();
 
       for ( auto& apoc_magus : pets.apoc_magus )
       {
@@ -8742,7 +8772,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Bug? Intended?
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/396
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/397
-
     // Some abilities use the actual RP spent by the ability, others use the base RP cost
     double base_rp_cost = actual_amount;
 
@@ -8811,12 +8840,30 @@ void death_knight_t::create_options()
 {
   player_t::create_options();
 
+  auto opt_specified_buff_times = []( util::string_view name, std::vector<timespan_t>& times )
+  {
+    return opt_func( name, [ &times ]( sim_t*, util::string_view, util::string_view val )
+                     {
+                       times.clear();
+                       auto splits = util::string_split<util::string_view>( val, "/" );
+                       for (auto split : splits)
+                       {
+                         double t = util::to_double( split );
+                         if (t < 0.0)
+                           throw std::invalid_argument( "specified buffs cannot be applied at negative times" );
+                         times.push_back( timespan_t::from_seconds( t ) );
+                       }
+                       return true;
+                     } );
+  };
+
   add_option( opt_bool( "deathknight.disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "deathknight.split_ghoul_regen", options.split_ghoul_regen ) );
   add_option( opt_bool( "deathknight.split_obliterate_schools", options.split_obliterate_schools ) );
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
+  add_option( opt_specified_buff_times( "deathknight.amz_use_time", options.amz_use_time ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -9459,6 +9506,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
       return expr_t::create_constant( "ams_absorb_percent", options.amz_absorb_percent );
   }
 
+  // Expose AMZ Specified to the APL to prevent its use.
+  if (util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1)
+  {
+    if (util::str_compare_ci( splits[ 1 ], "amz_specified" ) && splits.size() == 2)
+      return expr_t::create_constant( "amz_specified", options.amz_specified );
+  }
+
   // Death Knight special expressions
   if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
   {
@@ -10015,6 +10069,7 @@ void death_knight_t::init_spells()
   spell.frost_t30_4pc                 = find_spell( 405502 );
   spell.lingering_chill               = find_spell( 410879 );
   spell.wrath_of_the_frostwyrm_damage = find_spell( 410790 );
+  spell.wrath_of_the_frostwyrm_buff   = find_spell( 408368 );
   // T31 Frost
   spell.chilling_rage                 = find_spell( 424165 );
 
@@ -10049,8 +10104,6 @@ void death_knight_t::init_spells()
   spell.unholy_t30_4pc_mastery     = find_spell( 408377 );
   spell.unholy_t30_2pc_values      = find_spell( 405503 );
   spell.unholy_t30_4pc_values      = find_spell( 405504 );
-  // T30 Unholy
-  spell.t31_unholy_value_container = find_spell( 422855 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10174,14 +10227,19 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_zone = new antimagic_zone_buff_t( this );
 
+  // Fake buff to trigger AMZ at a specified time
+  buffs.amz_timing = make_buff( this, "amz_timing" )
+        -> set_quiet( true )
+        -> set_duration( 5_s );
+
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
         -> set_duration( talent.icebound_fortitude -> duration() )
         -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.rune_mastery = make_buff(this, "rune_mastery", spell.rune_mastery_buff)
-      ->set_chance(0.15)  // This was found through testing 2022 July 21.  Not in spelldata.
-      -> set_default_value(talent.rune_mastery->effectN(1).percent())
-      ->set_pct_buff_type(STAT_PCT_BUFF_STRENGTH);
+        -> set_chance(0.15)  // This was found through testing 2022 July 21.  Not in spelldata.
+        -> set_default_value(talent.rune_mastery->effectN(1).percent())
+        -> set_pct_buff_type(STAT_PCT_BUFF_STRENGTH);
 
   buffs.unholy_strength = make_buff( this, "unholy_strength", spell.unholy_strength_buff )
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
@@ -10369,30 +10427,30 @@ void death_knight_t::create_buffs()
             } );
 
   buffs.pillar_of_frost = make_buff( this, "pillar_of_frost", talent.frost.pillar_of_frost)
-      ->set_cooldown( 0_ms )
-      ->set_default_value( talent.frost.pillar_of_frost -> effectN( 1 ).percent() )
-      ->add_invalidate( CACHE_STRENGTH )
-      ->set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
-          {
+        -> set_cooldown( 0_ms )
+        -> set_default_value( talent.frost.pillar_of_frost -> effectN( 1 ).percent() )
+        -> add_invalidate( CACHE_STRENGTH )
+        -> set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
+        {
             // Right now it is impossible to refresh Pillar of Frost. If it is refreshed though, Enduring Strength builder, as well as Pillar's Bonus strength expire
 	    // If enduring strength builder expires in a refresh, trigger the strength buff with the duration of the builder added as it was when pillar was refreshed.
-            if ( !new_ || buffs.pillar_of_frost -> up() )
-            {
-                buffs.pillar_of_frost_bonus -> expire();
-            }
-            if ( !new_ && talent.frost.enduring_strength.ok() )
-            {
-              buffs.enduring_strength -> trigger();
-              buffs.enduring_strength -> extend_duration( this, talent.frost.enduring_strength -> effectN( 2 ).time_value() * buffs.enduring_strength_builder -> stack() );
-              buffs.enduring_strength_builder -> expire();
-            }
-          } );
+          if ( !new_ || buffs.pillar_of_frost -> up() )
+          {
+              buffs.pillar_of_frost_bonus -> expire();
+          }
+          if ( !new_ && talent.frost.enduring_strength.ok() )
+          {
+            buffs.enduring_strength -> trigger();
+            buffs.enduring_strength -> extend_duration( this, talent.frost.enduring_strength -> effectN( 2 ).time_value() * buffs.enduring_strength_builder -> stack() );
+            buffs.enduring_strength_builder -> expire();
+          }
+        } );
 
   buffs.pillar_of_frost_bonus = make_buff( this, "pillar_of_frost_bonus" )
-      ->set_max_stack( 99 )
-      ->set_duration( talent.frost.pillar_of_frost -> duration() )
-      ->set_default_value( talent.frost.pillar_of_frost -> effectN( 2 ).percent() )
-      ->add_invalidate( CACHE_STRENGTH );
+        -> set_max_stack( 99 )
+        -> set_duration( talent.frost.pillar_of_frost -> duration() )
+        -> set_default_value( talent.frost.pillar_of_frost -> effectN( 2 ).percent() )
+        -> add_invalidate( CACHE_STRENGTH );
 
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
@@ -10421,16 +10479,16 @@ void death_knight_t::create_buffs()
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
-      -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-      -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
-      -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
+        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+        -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
+        -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
-  buffs.wrath_of_the_frostwyrm = make_buff( this, "wrath_of_the_frostwyrm", find_spell ( 408368 ) )
-      -> set_default_value( find_spell ( 408368 ) -> effectN( 1 ).percent() );
+  buffs.wrath_of_the_frostwyrm = make_buff( this, "wrath_of_the_frostwyrm", spell.wrath_of_the_frostwyrm_buff )
+        -> set_default_value( spell.wrath_of_the_frostwyrm_buff -> effectN( 1 ).percent() );
 
   buffs.chilling_rage = make_buff( this, "chilling_rage", spell.chilling_rage )
-      -> set_default_value_from_effect( 1 )
-      -> set_schools_from_effect( 1 );
+        -> set_default_value_from_effect( 1 )
+        -> set_schools_from_effect( 1 );
 
   }
 
@@ -10442,68 +10500,68 @@ void death_knight_t::create_buffs()
   buffs.runic_corruption = new runic_corruption_buff_t( this );
 
   buffs.sudden_doom = make_buff( this, "sudden_doom", talent.unholy.sudden_doom -> effectN( 1 ).trigger() )
-          -> set_rppm( RPPM_ATTACK_SPEED, get_rppm( "sudden_doom", talent.unholy.sudden_doom ) -> get_frequency(), 1.0 + talent.unholy.harbinger_of_doom -> effectN( 2 ).percent())
-          -> set_trigger_spell( talent.unholy.sudden_doom )
-          -> set_max_stack( talent.unholy.sudden_doom.ok() ?
+        -> set_rppm( RPPM_ATTACK_SPEED, get_rppm( "sudden_doom", talent.unholy.sudden_doom ) -> get_frequency(), 1.0 + talent.unholy.harbinger_of_doom -> effectN( 2 ).percent())
+        -> set_trigger_spell( talent.unholy.sudden_doom )
+        -> set_max_stack( talent.unholy.sudden_doom.ok() ?
                    as<unsigned int>( talent.unholy.sudden_doom -> effectN( 1 ).trigger() -> max_stacks() + talent.unholy.harbinger_of_doom -> effectN( 1 ).base_value() ):
                    1 );
 
   buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
-          -> set_cooldown( 0_ms ); // Handled by the action
+        -> set_cooldown( 0_ms ); // Handled by the action
 
-      if (!is_ptr())
-      {
-        buffs.unholy_assault->set_default_value_from_effect( 1 );
-        buffs.unholy_assault->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-      }
-      if (is_ptr())
-      {
-        buffs.unholy_assault->set_default_value_from_effect( 4 );
-      }
+        if (!is_ptr())
+        {
+          buffs.unholy_assault->set_default_value_from_effect( 1 );
+          buffs.unholy_assault->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+        }
+        if (is_ptr())
+        {
+          buffs.unholy_assault->set_default_value_from_effect( 4 );
+        }
           
 
   buffs.unholy_pact = new unholy_pact_buff_t( this );
 
   buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
-          -> add_invalidate( CACHE_ATTACK_SPEED )
-          -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        -> add_invalidate( CACHE_ATTACK_SPEED )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.plaguebringer = make_buff( this, "plaguebringer", spell.plaguebringer_buff )
-          ->set_cooldown( talent.unholy.plaguebringer -> internal_cooldown() )
-          ->set_default_value( talent.unholy.plaguebringer -> effectN( 1 ).percent() )
-          ->set_max_stack( 1 );
+        -> set_cooldown( talent.unholy.plaguebringer -> internal_cooldown() )
+        -> set_default_value( talent.unholy.plaguebringer -> effectN( 1 ).percent() )
+        -> set_max_stack( 1 );
 
   buffs.festermight = make_buff( this, "festermight", spell.festermight_buff )
-          ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-          ->set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
-          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+        -> set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
+        -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
-          -> set_duration( spell.ghoulish_infusion -> duration() )
-          -> set_default_value_from_effect( 2 )
-          -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        -> set_duration( spell.ghoulish_infusion -> duration() )
+        -> set_default_value_from_effect( 2 )
+        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
   buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
-          -> add_invalidate( CACHE_MASTERY )
-          -> set_default_value( spell.defile_buff -> effectN( 1 ).percent() );
+        -> add_invalidate( CACHE_MASTERY )
+        -> set_default_value( spell.defile_buff -> effectN( 1 ).percent() );
 
   buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
-          -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+        -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.unholy_t30_4pc_mastery = make_buff( this, "doom_dealer", spell.unholy_t30_4pc_mastery )
-          -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
-          -> add_invalidate( CACHE_MASTERY );
+        -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
+        -> add_invalidate( CACHE_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-          -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
-          -> set_max_stack( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) ? spell.unholy_t30_2pc_stacking -> max_stacks() : 1 )
-          -> add_invalidate( CACHE_MASTERY );
+        -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
+        -> set_max_stack( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) ? spell.unholy_t30_2pc_stacking -> max_stacks() : 1 )
+        -> add_invalidate( CACHE_MASTERY );
 
   buffs.amplify_damage = make_buff( this, "amplify_damage", pet_spell.amplify_damage )
-      ->set_default_value( pet_spell.amplify_damage -> effectN( 1 ).percent() );
+        -> set_default_value( pet_spell.amplify_damage -> effectN( 1 ).percent() );
   }
 }
 
@@ -10593,6 +10651,10 @@ void death_knight_t::init_procs()
   procs.fw_vile_contagion   = get_proc( "Festering Wound from Vile Contagion" );
   procs.fw_ruptured_viscera = get_proc( "Festering Wound from Ruptured Viscera" );
 
+  procs.enduring_chill      = get_proc( "Enduring Chill extra bounces" );
+  procs.t31_4pc_cs          = get_proc( "Chill Streak CDR from T31 4pc" );
+  procs.t31_4pc_erw         = get_proc( "ERW CDR from T31 4pc" );
+  procs.t31_4pc_rune        = get_proc( "Runes from T31 4pc" );
 }
 
 // death_knight_t::init_finished ============================================
@@ -10821,7 +10883,7 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
     state -> result_amount *= 1.0 + td -> debuff.apocalypse_famine -> check_stack_value();
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && td && td -> debuff.ashen_decay -> check() )
-    state -> result_amount *= 1.0 + spell.ashen_decay_debuff -> effectN( 1 ).base_value();
+    state -> result_amount *= 1.0 + spell.ashen_decay_debuff -> effectN( 1 ).percent();
 
   if ( dbc::is_school( school, SCHOOL_MAGIC ) && runeforge.rune_of_spellwarding )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellwarding;
@@ -11138,6 +11200,15 @@ void death_knight_t::combat_begin()
   {
     resource_loss( RESOURCE_RUNIC_POWER, rp_overflow, gains.start_of_combat_overflow );
   }
+
+  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
+  {
+    if (buff)
+      for (auto t : times)
+        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
+  };
+
+  add_timed_buff_triggers( options.amz_use_time, buffs.amz_timing );
 }
 
 // death_knight_t::invalidate_cache =========================================

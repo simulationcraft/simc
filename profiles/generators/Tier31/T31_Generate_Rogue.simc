@@ -1,0 +1,80 @@
+# rogue="T31_Rogue_Assassination"
+# level=70
+# race=tauren
+# role=attack
+# position=back
+# spec=assassination
+# talents=BMQAAAAAAAAAAAAAAAAAAAAAAIFJSCiQJBAAAAAAQSAkIAAAAAAASDJOQJJkkkkWKJikQCRiFE
+
+# head=,id=202497,bonus_id=1808,gem_id=192982,ilevel=447
+# neck=,id=206180,bonus_id=8782,gem_id=192919/192919/192919,ilevel=447
+# shoulder=,id=202495,ilevel=450
+# back=,id=204465,ilevel=457
+# chest=,id=193399,bonus_id=8960/8797,enchant=waking_stats_3,ilevel=447,crafted_stats=36/49
+# wrist=,id=198327,bonus_id=8780,gem_id=192922,ilevel=447,crafted_stats=49
+# hands=,id=202498,ilevel=450
+# waist=,id=204399,bonus_id=1808,gem_id=192919,ilevel=450
+# legs=,id=202496,enchant=fierce_armor_kit_3,ilevel=447
+# feet=,id=193452,ilevel=447
+# finger1=,id=193768,bonus_id=1808,enchant=devotion_of_critical_strike_3,gem_id=192919,ilevel=447
+# finger2=,id=204398,bonus_id=1808,enchant=devotion_of_critical_strike_3,gem_id=192919,ilevel=450
+# trinket1=,id=202610,ilevel=447
+# trinket2=,id=203729,ilevel=447
+# main_hand=,id=202564,enchant=sophic_devotion_3,ilevel=450
+# off_hand=nick_of_time,id=207996,enchant=sophic_devotion_3,ilevel=441
+
+# save=T31_Rogue_Assassination.simc
+
+# rogue="T31_Rogue_Outlaw"
+# level=70
+# race=tauren
+# role=attack
+# position=back
+# spec=outlaw
+# talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAAgEkEkkkkkk0SECBSISikkkIAAAAAAARLAlIkkEpEAAAA
+
+# head=,id=198324,bonus_id=8780,gem_id=192991,ilevel=447,crafted_stats=40
+# neck=,id=206183,bonus_id=8782,gem_id=192932/192932/192932,ilevel=447
+# shoulder=,id=202495,ilevel=450
+# back=,id=204465,ilevel=457
+# chest=,id=202500,enchant=waking_stats_3,ilevel=447
+# wrist=,id=198327,bonus_id=8780,gem_id=192932,ilevel=447,crafted_stats=40
+# hands=,id=202498,ilevel=450
+# waist=,id=193407,bonus_id=8797/8780/8960,gem_id=192932,ilevel=447,crafted_stats=32/40
+# legs=,id=202496,enchant=fierce_armor_kit_3,ilevel=447
+# feet=,id=193451,bonus_id=8836/8840/8902/8960/9405/9376/9366,enchant_id=6607
+# finger1=,id=192999,bonus_id=523,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=447,crafted_stats=40/32
+# finger2=,id=204466,ilevel=447,gem_id=192932,enchant=devotion_of_versatility_3,bonus_id=523
+# trinket1=,id=202610,ilevel=447
+# trinket2=,id=203963,ilevel=450
+# main_hand=,id=159653,enchant=sophic_devotion_3,ilevel=447
+# off_hand=,id=159653,enchant=sophic_devotion_3,ilevel=447
+
+# save=T31_Rogue_Outlaw.simc
+
+# rogue="T31_Rogue_Subtlety"
+# level=70
+# race=tauren
+# role=attack
+# position=back
+# spec=subtlety
+# talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkICJgESCSSSkQSokkEtAJlIkkkkWAAAA
+
+# head=,id=198324,bonus_id=8780,gem_id=192988,ilevel=447,crafted_stats=40
+# neck=,id=193666,bonus_id=8782,gem_id=192932/192932/192932,ilevel=447
+# shoulder=,id=202495,ilevel=450
+# back=,id=204465,ilevel=457
+# chest=,id=202500,enchant=waking_stats_3,ilevel=447
+# wrist=,id=193419,bonus_id=8797/8780/8960,gem_id=192932,ilevel=447,crafted_stats=32/49
+# hands=,id=202498,ilevel=450
+# waist=,id=204399,bonus_id=1808,gem_id=192932,ilevel=450
+# legs=,id=202496,enchant=fierce_armor_kit_3,ilevel=447
+# feet=,id=193451,ilevel=447
+# finger1=,id=134524,bonus_id=6654/1808,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=447
+# finger2=,id=192999,bonus_id=8780,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=447,crafted_stats=32/49
+# trinket1=,id=202610,ilevel=447
+# trinket2=,id=203963,ilevel=450
+# main_hand=,id=202564,enchant=sophic_devotion_3,ilevel=450
+# off_hand=nick_of_time,id=207996,enchant=sophic_devotion_3,ilevel=441
+
+# save=T31_Rogue_Subtlety.simc

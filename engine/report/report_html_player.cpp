@@ -557,7 +557,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     rowspan = " rowspan=\"" + util::to_string( result_rows ) + "\"";
 
   // Ability name
-  os << "<td class=\"left\"" << rowspan << ">";
+  os << "<td style=\"white-space:nowrap\" class=\"left\"" << rowspan << ">";
 
   if ( hasparent )
   {
@@ -3380,7 +3380,8 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   if ( report_details )
   {
     const stat_buff_t* stat_buff = dynamic_cast<const stat_buff_t*>( &b );
-    const auto* absorb_buff = dynamic_cast<const absorb_buff_t*>(&b);
+    const auto* absorb_buff = dynamic_cast<const absorb_buff_t*>( &b );
+    const auto* damage_buff = dynamic_cast<const damage_buff_t*>( &b );
 
     int first_rows    = 2 + ( b.item ? 16 : 15 );  // # of rows in the first column incl 2 for header (buff details)
     int second_rows   = ( b.rppm ? 5 : 0 ) +
@@ -3457,6 +3458,23 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                     stat.amount );
       }
       os << "</ul>\n";
+    }
+
+    if ( damage_buff )
+    {
+      os.printf( "<h4>Damage Modifiers</h4>\n"
+                 "<ul>\n"
+                 "<li><span class=\"label\">direct:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">is_stacking:</span>%s</li>\n"
+                 "</ul>\n",
+                 damage_buff->direct_mod.multiplier,
+                 damage_buff->periodic_mod.multiplier,
+                 damage_buff->auto_attack_mod.multiplier,
+                 damage_buff->crit_chance_mod.multiplier,
+                 damage_buff->is_stacking ? "true" : "false" );
     }
 
     if ( !constant_buffs )

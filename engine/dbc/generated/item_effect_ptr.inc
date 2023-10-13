@@ -1,4 +1,4 @@
-// Item effects, wow build 10.2.0.51601
+// Item effects, wow build 10.2.0.51685
 static const std::array<item_effect_t, 8656> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -2503,7 +2503,7 @@ static const std::array<item_effect_t, 8656> __ptr_item_effect_data { {
   {  36801,  91296,  56136,   0,   0,    0,  120000,      -1 }, // Egg Shell
   {  36802,  96173,  56136,   1,   1,    0,      -1,      -1 }, // Corrupted Egg Shell
   {  12067,  90943,  56138,   0,   1,    0,      -1,      -1 }, // Item - Proc Stacking Spell Power
-  {  12084,  92175,  56280,   0,   1,    0,      -1,      -1 }, // Hardened Shell
+  {  12084,  92175,  56280,   0,   1,    0,      -1,      -1 }, // Carcinized Adaptation
   {  12085,  91340,  56285,   0,   0, 1141,   90000,   15000 }, // Tidehunter's Blessing
   {  12086,  91136,  56290,   0,   0, 1141,  120000,   20000 }, // Leviathan's Wisdom
   {  12087,  92088,  56295,   0,   1,    0,      -1,      -1 }, // Grace of the Herald
@@ -5607,7 +5607,7 @@ static const std::array<item_effect_t, 8656> __ptr_item_effect_data { {
   {  27687, 202840, 132964,   0,   1,    0,      -1,      -1 }, // Stellagosa's Breath
   {  27260, 202874, 132970,   0,   1,    0,      -1,      -1 }, // Ley Surge
   {  27261, 202863, 132971,   0,   1,    0,      -1,      -1 }, // Desperation
-  {  27292,  92175, 133192,   0,   1,    0,      -1,      -1 }, // Hardened Shell
+  {  27292,  92175, 133192,   0,   1,    0,      -1,      -1 }, // Carcinized Adaptation
   {  27293,  91340, 133197,   0,   0, 1141,   90000,   20000 }, // Tidehunter's Blessing
   {  27294,  91136, 133201,   0,   1,    0,      -1,      -1 }, // Leviathan's Wisdom
   {  27295,  92093, 133206,   0,   1,    0,      -1,      -1 }, // Final Key
@@ -6739,7 +6739,7 @@ static const std::array<item_effect_t, 8656> __ptr_item_effect_data { {
   { 109291, 273799, 158679,   0,   1,    0,      -1,      -1 }, // Maokka's Carving
   { 109292, 268566, 158680,   0,   1,    0,      -1,      -1 }, // Rikal's Ritual Beads
   { 109293, 256067, 158681,   0,   1,    0,      -1,      -1 }, // Lightning Jolt
-  { 109206, 271102, 158712,   0,   1,    0,      -1,      -1 }, // Rezan's Gleaming Eye
+  { 109206, 429228, 158712,   0,   1,    0,      -1,      -1 }, // Rezan's Fury
   { 109271, 268603, 159074,   0,   1,    0,      -1,      -1 }, // Master's Sight
   { 109272, 268605, 159075,   0,   1,    0,      -1,      -1 }, // Blood Crazed
   { 109273, 268608, 159077,   0,   1,    0,      -1,      -1 }, // PH Crit Buff - Nazmir

@@ -639,6 +639,10 @@ struct judgment_prot_t : public judgment_t
         td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.heartfire_sentinels_authority_2pc->duration() );
         p()->trigger_grand_crusader( GC_JUDGMENT );
       }
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T31, B2 ) && !p()->buffs.sanctification_empower->up() )
+      {
+        p()->buffs.sanctification->trigger();
+      }
     }
   }
 };
@@ -858,6 +862,24 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
   }
 };
 
+struct cleansing_flame_damage_t : public paladin_spell_t
+{
+  cleansing_flame_damage_t( paladin_t* p ) : paladin_spell_t( "cleansing_flame_damage", p, p->spells.cleansing_flame_damage )
+  {
+    background = true;
+  }
+};
+
+struct cleansing_flame_heal_t : public paladin_heal_t
+{
+  cleansing_flame_heal_t( paladin_t* p )
+    : paladin_heal_t( "cleansing_flame_heal", p, p->spells.cleansing_flame_heal )
+  {
+    background = true;
+    may_crit   = false;
+    harmful    = false;
+  }
+};
 
 // paladin_t::target_mitigation ===============================================
 
@@ -916,6 +938,15 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( buffs.devotion_aura->up() )
     s->result_amount *= 1.0 + buffs.devotion_aura->value();
+
+  if ( buffs.sanctification->up() )
+  {
+    s->result_amount *= 1.0 + buffs.sanctification->data().effectN( 1 ).percent() * buffs.sanctification->stack();
+  }
+  if ( buffs.sanctification_empower->up() )
+  {
+    s->result_amount *= 1.0 + buffs.sanctification_empower->data().effectN( 4 ).percent();
+  }
 
   paladin_td_t* td = get_target_data( s->action->player );
 
@@ -1086,6 +1117,39 @@ void paladin_t::t29_4p_prot()
     buffs.ally_of_the_light->extend_duration( this, tier_sets.ally_of_the_light_4pc->effectN( 1 ).time_value() );
 }
 
+void paladin_t::t31_4p_prot( action_state_t* s )
+{
+  auto actionId = s->action->id;
+  if ( actionId == 385723 || actionId == 425261 ) // Seal of the Crusader, Cleansing Flame
+    return;
+
+  double damage = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
+  if ( buffs.sanctification_empower->up() && damage > 0 && rng().roll( buffs.sanctification_empower->default_chance ) )
+  {
+    active.cleansing_flame->base_dd_min = active.cleansing_flame->base_dd_max = damage;
+    active.cleansing_flame->target = s->target;
+    active.cleansing_flame->schedule_execute();
+    sim->print_debug( "{} procced Cleansing Flame for {} damage.", s->action->name(), damage );
+  }
+}
+
+void paladin_t::t31_4p_prot_heal(action_state_t* s)
+{
+  auto actionId = s->action->id;
+  if ( actionId == 425262 || actionId == 633 )  // Cleansing Flame, Lay on Hands
+    return;
+
+  double healing = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
+  if ( buffs.sanctification_empower->up() && healing > 0 && rng().roll( buffs.sanctification_empower->default_chance ) )
+  {
+    active.cleansing_flame_heal->base_dd_min = active.cleansing_flame_heal->base_dd_max = healing;
+    active.cleansing_flame_heal->target                                                 = s->target;
+    active.cleansing_flame_heal->schedule_execute();
+    sim->print_debug( "{} procced Cleansing Flame for {} healing.", s->action->name(), healing );
+  }
+}
+
+
 void paladin_t::adjust_health_percent( )
 {
   double oh             = resources.current[ RESOURCE_HEALTH ];
@@ -1104,6 +1168,11 @@ void paladin_t::create_prot_actions()
   if ( specialization() == PALADIN_PROTECTION )
   {
     active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
+  }
+  if ( sets->has_set_bonus( PALADIN_PROTECTION, T31, B4 ) )
+  {
+    active.cleansing_flame = new cleansing_flame_damage_t( this );
+    active.cleansing_flame_heal = new cleansing_flame_heal_t( this );
   }
 }
 
@@ -1199,6 +1268,10 @@ void paladin_t::create_buffs_protection()
   buffs.deflecting_light = make_buff( this, "deflecting_light", find_spell( 394727 ) )
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
+
+  buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) );
+
+  buffs.sanctification_empower = make_buff( this, "sanctification_empower", find_spell( 424622 ) );
 }
 
 void paladin_t::init_spells_protection()
@@ -1288,6 +1361,8 @@ void paladin_t::init_spells_protection()
   tier_sets.heartfire_sentinels_authority_2pc = find_spell( 408399 );
   tier_sets.heartfire_sentinels_authority_4pc = find_spell( 405548 );
   spells.sentinel = find_spell( 389539 );
+  spells.cleansing_flame_damage               = find_spell( 425261 );
+  spells.cleansing_flame_heal                 = find_spell( 425262 );
 }
 
 // Action Priority List Generation

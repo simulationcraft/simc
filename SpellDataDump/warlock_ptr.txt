@@ -10390,7 +10390,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Labels           : 976
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Deadwind Harvester (216708 effect#4), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Eater (340348 effects: #1, #2), Wrath of Consumption (387066 effect#1), Haunted Soul (387310 effect#1), Dread Touch (389868 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Deadwind Harvester (216708 effect#4), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Eater (340348 effects: #1, #2), Wrath of Consumption (387066 effect#1), Haunted Soul (387310 effect#1), Soul-Eater's Gluttony (389630 effect#1), Dread Touch (389868 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2)
 Family Flags     : 49, 112
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -13521,7 +13521,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Deadwind Harvester (216708 effect#4), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Eater (340348 effects: #1, #2), Wrath of Consumption (387066 effect#1), Haunted Soul (387310 effect#1), Dread Touch (389868 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Deadwind Harvester (216708 effect#4), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Eater (340348 effects: #1, #2), Wrath of Consumption (387066 effect#1), Haunted Soul (387310 effect#1), Soul-Eater's Gluttony (389630 effect#1), Dread Touch (389868 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2)
 Family Flags     : 49, 112
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -15937,13 +15937,10 @@ Tooltip          : Damage taken is reduced by $s1%.
 
 Name             : Soul-Eater's Gluttony (id=389630) [Spell Family (5), Passive] 
 Talent Entry     : Affliction [tree=spec, row=9, col=6, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(1, 2)]
+                 : Effect#1 [op=set, values=(-15000, -30000)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -15954,11 +15951,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1025984)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1025997)  : None (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
-Description      : Whenever Unstable Affliction deals damage, the cooldown of Soul Rot is reduced by ${$s1/$s2}.1 sec.
+#1 (id=1025984)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -8000 | Scaled Value: -8000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Soul Rot (325640), Soul Rot (386997)
+                   Family Flags: 112
+Description      : Soul Rot cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Dread Touch (id=389775) [Spell Family (5), Passive] 
 Talent Entry     : Affliction [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
@@ -16644,16 +16641,17 @@ Name             : Immutable Hatred (id=405681) [Spell Family (5)]
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
-Range            : 5 yards
-Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
+Range            : 10 yards
+Cooldown         : 0.75 seconds
+Attributes       : ....x... ........ x.x..... .....x..   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), AI Primary Ranged Attack (206), Attack on Charge to Unit (242), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1054100)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.74342 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -17406,15 +17404,13 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1109334)  : None (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
-Description      : Demonbolt applies a Doom Brand that explodes after $423583d, dealing $423584s1 Shadow damage to nearby enemies or ${$423584s1*(1+$s2/100)} Shadow damage to a single enemy. Hand of Gul'dan reduces the duration of your Doom Brands by ${$s1/1000} sec per Soul Shard spent.
+Description      : Consuming a Demonic Core applies a Doom Brand that explodes after $423583d, dealing $423584s1 Shadow damage to nearby enemies or ${$423584s1*(1+$s2/100)} Shadow damage to a single enemy. Hand of Gul'dan reduces the duration of your Doom Brands by ${$s1/1000} sec per Soul Shard spent.
 
 Name             : Warlock Demonology 10.2 Class Set 4pc (id=422920) [Spell Family (5), Passive, Hidden] 
+Hotfixed         : Variables
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -17426,12 +17422,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098518)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 423585 | Target: Self (1)
 #2 (id=1109338)  : None (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
-Description      : When Doom Brand explodes, you have a chance to summon a Doomfiend that casts $423734s2 Doom Bolt Volleys before departing. Each Doom Bolt Volley deals $<damage> Shadow damage to up to $423734x1 enemies or ${$<damage>*(1+$s2/100)} Shadow damage to a single enemy.
+Description      : When Doom Brand is removed, you have a chance to summon a Doomfiend that casts $423734s2 Doom Bolt Volleys before departing. Each Doom Bolt Volley deals $<damage> Shadow damage to up to $423734x1 enemies or ${$<damage>*(1+$s2/100)} Shadow damage to a single enemy.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
-$damage=${(2.773875*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}
+$damage=${(1.553369999
+*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}
 
 Name             : Warlock Destruction 10.2 Class Set 2pc (id=422921) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -17472,7 +17469,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Dimensional Rift can now summon a powerful Flame Rift which blasts $s1 Searing Bolts that deal $423886s1 Fire damage and an additional $423886o2 Fire damage over $423886d.
 
-Name             : Doom Brand (id=423583) 
+Name             : Doom Brand (id=423583) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -17512,6 +17509,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.68747 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc422919
 
+Name             : Doomfiend (id=423585) 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 20 seconds
+Triggered by     : Warlock Demonology 10.2 Class Set 4pc (422920)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1099705)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 210910 | Misc Value 2: 0x1671 | Radius: 10 yards | Target: Unknown(72)
+Description      : $@spelldesc422920
+
 Name             : Doom Bolt Volley (id=423734) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -17532,7 +17549,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1099963)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.10674 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.55337 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (3.10674 -> 1.55337)
 #2 (id=1099964)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=1099965)  : Dummy (3)
@@ -17649,14 +17667,14 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Ignore Caster Damage Modifiers (221)
+                 : Can't Crit (93), Ignore Caster Damage Modifiers (221)
 Effects          :
 #1 (id=1106573)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Unknown(25) -> AOE Custom (8)
