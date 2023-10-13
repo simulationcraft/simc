@@ -3992,6 +3992,18 @@ struct envenom_t : public rogue_attack_t
       reduced_aoe_targets = p->set_bonuses.t31_assassination_4pc->effectN( 2 ).base_value();
     }
 
+    double action_multiplier() const override
+    {
+      double m = rogue_attack_t::action_multiplier();
+
+      if ( target_list().size() == 1 )
+      {
+        m *= 1.0 + p()->set_bonuses.t31_assassination_4pc->effectN(3).percent();
+      }
+
+      return m;
+    }
+
     bool procs_poison() const override
     { return false; }
 
@@ -6341,6 +6353,7 @@ struct goremaws_bite_t : public rogue_attack_t
   {
     impact_action = p->get_background_action<goremaws_bite_damage_t>( "goremaws_bite_damage" );
     impact_action->stats = stats;
+    stats->school = impact_action->school; // Fix HTML Reporting
 
     // 2023-10-02 -- CP gen is technically in the buff, move to the ability for expression and event handling
     affected_by.shadow_blades_cp = true; // Buff is affected by Shadow Blades label 
@@ -7282,7 +7295,8 @@ struct shuriken_tornado_t : public buff_t
 
     shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>(
       secondary_trigger::SHURIKEN_TORNADO, "shuriken_storm_tornado" );
-    shuriken_storm_action->callbacks = false; // 2021-07-19-- Damage triggered directly, doesn't appear to proc anything
+    shuriken_storm_action->callbacks = false; // 2021-07-19 -- Damage triggered directly, doesn't appear to proc anything
+    shuriken_storm_action->affected_by.shadow_blades_cp = false; // 2023-10-11 -- No longer generates increased CP
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       shuriken_storm_action->trigger_secondary_action( rogue->target );
     } );
