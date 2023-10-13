@@ -3146,6 +3146,9 @@ namespace monk
               p()->passive_actions.thunderfist->target = s->target;
               p()->passive_actions.thunderfist->schedule_execute();
             }
+
+            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && p()->rppm.blackout_reinforcement->trigger() )
+              p()->buff.blackout_reinforcement->trigger();
           }
         }
       };
