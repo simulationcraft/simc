@@ -7462,7 +7462,7 @@ void thorncaller_claw( special_effect_t& effect ) {
     }
   };
 
-  // 2023-10-13: Split damage has generic AOE scaling, confirmed via testing 
+  // 2023-10-13: Split damage has generic AOE scaling, confirmed via testing
   auto thorn_burst_damage = create_proc_action<generic_aoe_proc_t>( "thorn_burst", effect, "thorn_burst", effect.player->find_spell( 425181 ), true );
   thorn_burst_damage->base_dd_min = thorn_burst_damage->base_dd_max = effect.driver()->effectN( 3 ).average( effect.item );
 
@@ -7487,7 +7487,6 @@ void thorncaller_claw( special_effect_t& effect ) {
 
   auto thorn_spirit = create_proc_action<thorn_spirit_t>( "thorn_spirit", effect );
   thorn_spirit->add_child( thorn_burst_damage );
-
 
   // 2023-10-14: When Thorn Spirit spreads to a new target on demise it is applied with full duration.
   // Can spread to a target with an existing Thorn Spirit even if other targets are in range, refreshes normally.
