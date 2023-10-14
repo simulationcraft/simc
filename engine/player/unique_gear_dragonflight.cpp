@@ -5980,6 +5980,7 @@ struct lava_bolt_initializer_t : public item_targetdata_initializer_t
     td->debuff.lava_bolt->set_quiet( true );
     td->debuff.lava_bolt->set_period( timespan_t::max() );  // Ticking handled by the DoT in the main effect
     td->debuff.lava_bolt->set_max_stack( 20 ); // Setting to an unreasonably high number to handle the number of explosion events
+    td->debuff.lava_bolt->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS ); // Model getting pets procs at different times properly
   }
 };
 
