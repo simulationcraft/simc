@@ -6153,6 +6153,7 @@ struct shield_slam_t : public warrior_attack_t
       double total_amount = 0;
       if ( td->dots_deep_wounds->is_ticking() )
       {
+        td->dots_deep_wounds->current_action->calculate_tick_amount( td->dots_deep_wounds->state, td->dots_deep_wounds->get_tick_factor() * td->dots_deep_wounds->current_stack() );
         auto amount = td->dots_deep_wounds->state->result_raw * td->dots_deep_wounds->ticks_left_fractional();
         // Damage reduction
         amount *= p() -> sets -> set( WARRIOR_PROTECTION, T31, B2 ) -> effectN( 1 ).percent();
@@ -6162,6 +6163,7 @@ struct shield_slam_t : public warrior_attack_t
 
       if ( td->dots_rend->is_ticking() )
       {
+        td->dots_rend->current_action->calculate_tick_amount( td->dots_rend->state, td->dots_rend->get_tick_factor() * td->dots_rend->current_stack() );
         auto amount = td->dots_rend->state->result_raw * td->dots_rend->ticks_left_fractional();
         // Damage reduction
         amount *= p() -> sets -> set( WARRIOR_PROTECTION, T31, B2 ) -> effectN( 1 ).percent();
@@ -6171,6 +6173,7 @@ struct shield_slam_t : public warrior_attack_t
 
       if ( td->dots_thunderous_roar->is_ticking() )
       {
+        td->dots_thunderous_roar->current_action->calculate_tick_amount( td->dots_thunderous_roar->state, td->dots_thunderous_roar->get_tick_factor() * td->dots_thunderous_roar->current_stack() );
         auto amount = td->dots_thunderous_roar->state->result_raw * td->dots_thunderous_roar->ticks_left_fractional();
         // Damage reduction, Thunderous Roar uses effect4, instead of effect1
         amount *= p() -> sets -> set( WARRIOR_PROTECTION, T31, B2 ) -> effectN( 4 ).percent();
@@ -10804,7 +10807,7 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
 
     if ( sets -> has_set_bonus( WARRIOR_PROTECTION, T31, B2 ) && buff.fervid_opposition -> up() )
     {
-      s->result_amount *= 1.0 - sets -> set( WARRIOR_PROTECTION, T31, B2 )->effectN( 2 ).base_value();
+      s->result_amount *= 1.0 - sets -> set( WARRIOR_PROTECTION, T31, B2 )->effectN( 2 ).percent();
     }
 
     if ( specialization() == WARRIOR_PROTECTION )
