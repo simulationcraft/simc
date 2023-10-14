@@ -7215,7 +7215,7 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     {
       for ( cooldown_t* c : shadowdust_cooldowns )
       {
-        if ( c && c->down() )
+        if ( c && ( c->down() || c->current_charge_remains() > 0_s ) )
           c->adjust( -shadowdust_reduction, false );
       }
     }
