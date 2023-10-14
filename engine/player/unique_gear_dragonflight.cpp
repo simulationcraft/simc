@@ -7492,15 +7492,18 @@ void thorncaller_claw( special_effect_t& effect ) {
   // Can spread to a target with an existing Thorn Spirit even if other targets are in range, refreshes normally.
   range::for_each( effect.player->sim->actor_list, [ effect, thorn_spirit ]( player_t* target ) {
     target->register_on_demise_callback( effect.player, [ effect, thorn_spirit ]( player_t* t ) {
-      thorn_spirit->target_cache.is_valid = false;
-      std::vector<player_t*> targets      = thorn_spirit->target_list();
-      if ( targets.size() != 0 )
+      if ( effect.player->get_target_data( t )->debuff.thorn_spirit->check() )
       {
-        // Choose a random new target to spread to
-        player_t* new_target =
-            targets[ static_cast<int>( effect.player->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
-        effect.player->sim->print_debug( "{} demised with Thorn Spirit active. Spreading to new target {}.", t->name(), new_target->name() );
-        thorn_spirit->execute_on_target( new_target );
+        thorn_spirit->target_cache.is_valid = false;
+        std::vector<player_t*> targets      = thorn_spirit->target_list();
+        if ( targets.size() != 0 )
+        {
+          // Choose a random new target to spread to
+          player_t* new_target =
+              targets[ static_cast<int>( effect.player->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+          effect.player->sim->print_debug( "{} demised with Thorn Spirit active. Spreading to new target {}.", t->name(), new_target->name() );
+          thorn_spirit->execute_on_target( new_target );
+        }
       }
     } );
   } );
