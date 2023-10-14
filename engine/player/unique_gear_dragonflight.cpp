@@ -7462,7 +7462,7 @@ void thorncaller_claw( special_effect_t& effect ) {
     }
   };
 
-  // Split damage has generic AOE scaling, confirmed via testing
+  // 2023-10-13: Split damage has generic AOE scaling, confirmed via testing 
   auto thorn_burst_damage = create_proc_action<generic_aoe_proc_t>( "thorn_burst", effect, "thorn_burst", effect.player->find_spell( 425181 ), true );
   thorn_burst_damage->base_dd_min = thorn_burst_damage->base_dd_max = effect.driver()->effectN( 3 ).average( effect.item );
 
@@ -7487,6 +7487,25 @@ void thorncaller_claw( special_effect_t& effect ) {
 
   auto thorn_spirit = create_proc_action<thorn_spirit_t>( "thorn_spirit", effect );
   thorn_spirit->add_child( thorn_burst_damage );
+
+
+  // 2023-10-14: When Thorn Spirit spreads to a new target on demise it is applied with full duration.
+  // Can spread to a target with an existing Thorn Spirit even if other targets are in range, refreshes normally.
+  range::for_each( effect.player->sim->actor_list, [ effect, thorn_spirit ]( player_t* target ) {
+    target->register_on_demise_callback( effect.player, [ effect, thorn_spirit ]( player_t* t ) {
+      thorn_spirit->target_cache.is_valid = false;
+      std::vector<player_t*> targets      = thorn_spirit->target_list();
+      if ( targets.size() != 0 )
+      {
+        // Choose a random new target to spread to
+        player_t* new_target =
+            targets[ static_cast<int>( effect.player->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+        effect.player->sim->print_debug( "{} demised with Thorn Spirit active. Spreading to new target {}.", t->name(), new_target->name() );
+        thorn_spirit->execute_on_target( new_target );
+      }
+    } );
+  } );
+
   effect.execute_action = thorn_spirit;
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -9676,7 +9695,7 @@ void register_special_effects()
   register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
   register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
   register_special_effect( 417545, DISABLED_EFFECT );  // Time-Thief's Gambit unused effect
-  register_special_effect( 425177, DISABLED_EFFECT );  // Thorncaller's Claw secondary proc data
+  register_special_effect( 425177, DISABLED_EFFECT );  // Thorncaller Claw secondary proc data
 }
 
 void register_target_data_initializers( sim_t& sim )
