@@ -7301,22 +7301,37 @@ void iridal_the_earths_master( special_effect_t& e )
   e.execute_action = damage;
 }
 
-// [PH] Fyrakk Cantrip 1H Axe STR
-// [PH] Fyrakk Cantrip 1H Mace INT
+// Gholak, the Final Conflagration
+// Rashon, the Immortal Blaze
+// Vakash, the Shadowed Inferno
 // TODO: Check both weapons after they are no longer placeholder
 // Hungering Shadowflame
 // 424320 Driver / Values
 // 424324 Damage
 void hungering_shadowflame( special_effect_t& e )
 {
+  struct hungering_shadowflame_self_t : public generic_proc_t
+  {
+    hungering_shadowflame_self_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "hungering_shadowflame_self", effect.player->find_spell( 424324 ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      target                    = effect.player;
+      stats->type               = stats_e::STATS_NEUTRAL;
+    }
+  };
+
   struct hungering_shadowflame_t : public generic_proc_t
   {
     double damage_mult;
     double hp_percent;
+    action_t* self_damage;
+
     hungering_shadowflame_t( const special_effect_t& effect )
       : generic_proc_t( effect, "hungering_shadowflame", effect.player->find_spell( 424324 ) ),
         damage_mult( effect.driver()->effectN( 2 ).percent() ),
-        hp_percent( effect.driver()->effectN( 3 ).base_value() )
+        hp_percent( effect.driver()->effectN( 3 ).base_value() ),
+        self_damage( create_proc_action<hungering_shadowflame_self_t>( "hungering_shadowflame_self", effect ) )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
     }
@@ -7332,40 +7347,17 @@ void hungering_shadowflame( special_effect_t& e )
 
       return m;
     }
-  };
 
-  struct hungering_shadowflame_self_t : public generic_proc_t
-  {
-    hungering_shadowflame_self_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "hungering_shadowflame_self", effect.player->find_spell( 424324 ) )
+    void execute() override
     {
-      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-      target                    = effect.player;
-      stats->type               = stats_e::STATS_NEUTRAL;
+      generic_proc_t::execute();
+      self_damage->execute_on_target( player );
     }
   };
 
-  struct hungering_shadowflame_cb_t : public dbc_proc_callback_t
-  {
-    action_t* damage;
-    action_t* self_damage;
+  e.execute_action = create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e );
 
-    hungering_shadowflame_cb_t( const special_effect_t& e, player_t* p )
-      : dbc_proc_callback_t( p, e ),
-        damage( create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e ) ),
-        self_damage( create_proc_action<hungering_shadowflame_self_t>( "hungering_shadowflame_self", e ) )
-    {
-    }
-
-    void execute( action_t* a, action_state_t* s ) override
-    {
-      dbc_proc_callback_t::execute( a, s );
-      damage->execute();
-      self_damage->execute();
-    }
-  };
-
-  new hungering_shadowflame_cb_t( e, e.player );
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Dreambinder, Loom of the Great Cycle
