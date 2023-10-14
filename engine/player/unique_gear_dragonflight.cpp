@@ -6737,6 +6737,12 @@ void infernal_signet_brand( special_effect_t& e )
       current_mod = buff->check();
       generic_proc_t::execute();
     }
+
+    void reset() override
+    {
+      generic_proc_t::reset();
+      current_mod = 0;
+    }
   };
 
   struct vicious_brand_t : public generic_proc_t
