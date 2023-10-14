@@ -36,7 +36,7 @@ position=front
 talents=BUkAAAAAAAAAAAAAAAAAAAAAAAASiEJCJIJBkIlkQiWiEJSCJplk0kkWSQAAAAAJJA
 
 head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=7187/1520,gem_id=192919
-neck=torc_of_passed_time,id=201759,bonus_id=9500/9405/8782/8960,gem_id=192919/192919/192919,crafted_stats=36/32
+neck=torc_of_passed_time,id=201759,bonus_id=9500/9498//9405/8782,gem_id=192919/192919/192919,crafted_stats=36/32
 shoulders=screaming_torchfiends_horned_memento,id=207261,bonus_id=7187/1520
 back=screaming_torchfiends_shawl,id=207258,bonus_id=7187/1520
 chest=screaming_torchfiends_binding,id=207266,bonus_id=7187/1520,enchant_id=6625
