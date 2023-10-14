@@ -6024,7 +6024,7 @@ void coiled_serpent_idol( special_effect_t& e )
       generic_proc_t::tick( d );
       for (int stacks = 0; player->get_target_data( d->target )->debuff.lava_bolt->check() > stacks; ++stacks)
       {
-        damage->execute();
+        damage->execute_on_target( d->target );
       }
     }
   };
@@ -6076,6 +6076,8 @@ void coiled_serpent_idol( special_effect_t& e )
       }
     } );
   } );
+
+  e.proc_flags2_ = PF2_CRIT;
 
   new serpent_cb_t( e );
 }
