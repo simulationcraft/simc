@@ -7910,7 +7910,7 @@ std::string demon_hunter_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::temporary_enchant_vengeance( this );
+      return demon_hunter_apl::temporary_enchant_vengeance_ptr( this );
     default:
       return demon_hunter_apl::temporary_enchant_havoc( this );
   }
