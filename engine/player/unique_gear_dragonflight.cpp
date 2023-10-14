@@ -6712,7 +6712,7 @@ void infernal_signet_brand( special_effect_t& e )
       : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ),
         e( effect ),
         buff( b ),
-        current_mod( 0 )
+        current_mod( current_mod )
     {
       double player_mod = e.driver()->effectN( 4 ).percent();
       base_td           = base_damage * player_mod;
@@ -6732,20 +6732,10 @@ void infernal_signet_brand( special_effect_t& e )
       return m;
     }
 
-    void last_tick( dot_t* d ) override
+    void execute() override
     {
-      generic_proc_t::last_tick( d );
-      // Damage mod doesnt seem to update til the next application
-      if ( buff->stack() != current_mod )
-      {
-        current_mod = buff->stack();
-      }
-    }
-
-    void reset() override
-    {
-      generic_proc_t::reset();
-      current_mod = 0;
+      current_mod = buff->check();
+      generic_proc_t::execute();
     }
   };
 
@@ -6793,16 +6783,6 @@ void infernal_signet_brand( special_effect_t& e )
       }
     }
 
-    void last_tick( dot_t* d ) override
-    {
-      generic_proc_t::last_tick( d );
-      // Damage mod doesnt seem to update til the next application
-      if ( buff->stack() != current_mod )
-      {
-        current_mod = buff->stack();
-      }
-    }
-
     void reset() override
     {
       generic_proc_t::reset();
@@ -6811,12 +6791,17 @@ void infernal_signet_brand( special_effect_t& e )
 
     void execute() override
     {
-      generic_proc_t::execute();
-      buff->trigger();
+      // Damage mod doesnt seem to update until the next application
+      if ( buff->stack() != current_mod )
+      {
+        current_mod = buff->stack();
+      }
       if ( buff->check() > ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
       {
         self_damage->execute();
       }
+      generic_proc_t::execute();
+      buff->trigger();
     }
   };
 
