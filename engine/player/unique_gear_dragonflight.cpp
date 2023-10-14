@@ -6017,7 +6017,6 @@ void coiled_serpent_idol( special_effect_t& e )
         damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
     {
       hasted_ticks = false;
-      stats = damage->stats;
     }
 
     void tick( dot_t* d ) override
