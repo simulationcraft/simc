@@ -642,6 +642,63 @@ namespace monk
           if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && s->result_amount >= 0 &&
                p()->rppm.blackout_reinforcement->trigger() )
             p()->buff.blackout_reinforcement->trigger();
+
+          if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && s->result_amount >= 0 &&
+               p()->rppm.blackout_reinforcement->trigger() )
+            p()->buff.blackout_reinforcement->trigger();
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 )
+          {
+            if ( s->action->school  == SCHOOL_SHADOWFLAME )
+            {
+              double current_value = p()->buff.brewmaster_t31_4p_accumulator->check_value();
+              double result = s->result_amount;
+              double increase = std::fmin( current_value + result, p()->max_health() ); // accumulator is capped at the player's current max hp
+              p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
+              p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+            }
+
+            switch ( s->action->id )
+            {
+              // Blacklist
+              case 425299: // charred dreams
+              case 386959: // charred passions
+              case 325217: // bonedust brew
+              case 387621: // dragonfire brew puffs
+              case 385941: // claw of the white tiger
+              case 227291: // invoke niuzao stomp
+                break;
+              default:
+                if ( p()->rng().roll( 0.5 ) )
+                {
+                  double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
+                  p()->active_actions.charred_dreams_dmg_4p->target = s->target;
+                  p()->active_actions.charred_dreams_dmg_4p->base_dd_min =
+                      p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
+                  p()->active_actions.charred_dreams_dmg_4p->execute();
+                  p()->sim->print_debug( "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}", s->action->id, s->result_amount, amt );
+                }
+            }
+          }
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 &&
+               s->action->school == SCHOOL_FIRE )
+          {
+            switch ( s->action->id )
+            {
+              // Blacklist
+              case 387621: // dragonfire brew puffs
+                break;
+              default:
+                double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
+                p()->active_actions.charred_dreams_heal->base_dd_min =
+                    p()->active_actions.charred_dreams_heal->base_dd_max = amt;
+                p()->active_actions.charred_dreams_heal->execute();
+                p()->sim->print_debug(
+                    "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}",
+                    s->action->id, s->result_amount, amt );
+            }
+          }
         }
       }
 
@@ -655,6 +712,33 @@ namespace monk
 
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && dot->state->result_amount > 0 && dot->state->action->school == SCHOOL_FIRE )
+          {
+            if ( dot->state->action->school  == SCHOOL_SHADOWFLAME )
+            {
+              double current_value = p()->buff.brewmaster_t31_4p_accumulator->check_value();
+              double result = dot->state->result_amount;
+              double increase = std::fmin( current_value + result, p()->max_health() ); // accumulator is capped at the player's current max hp
+              p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
+              p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+            }
+
+            switch ( dot->state->action->id )
+            {
+              // Blacklist
+              case 387621:  // dragonfire brew puffs
+                break;
+              default:
+                double amt = dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
+                p()->active_actions.charred_dreams_heal->base_dd_min =
+                    p()->active_actions.charred_dreams_heal->base_dd_max = amt;
+                p()->active_actions.charred_dreams_heal->execute();
+                p()->sim->print_debug(
+                    "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}",
+                    dot->state->action->id, dot->state->result_amount, amt );
+            }
+          }
         }
       }
 
@@ -2102,7 +2186,8 @@ namespace monk
 
           am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
 
-          am *= 1 + p()->buff.blackout_reinforcement->data().effectN( 1 ).percent();
+          if ( p()->buff.blackout_reinforcement->check() )
+            am *= 1 + p()->buff.blackout_reinforcement->data().effectN( 1 ).percent();
 
           return am;
         }
@@ -3791,9 +3876,35 @@ namespace monk
           get_td( state->target )->debuff.flying_serpent_kick->trigger();
         }
       };
-    }  // namespace attacks
 
-    namespace spells
+      // ==========================================================================
+      // Charred Dreams T31 Brewmaster Monk 2P+4P Damage
+      // ==========================================================================
+      // This would be much better done with dbc_proc_callback and overloading execute
+      // of a struct that it's derived from to offload logic out of triggering contexts.
+      struct charred_dreams_dmg_2p_t : public monk_melee_attack_t
+      {
+        charred_dreams_dmg_2p_t( monk_t *player )
+          : monk_melee_attack_t( "charred_dreams_dmg_2p", player, player->passives.charred_dreams_dmg )
+        {
+          background = true;
+          proc       = true;
+        }
+      };
+
+      struct charred_dreams_dmg_4p_t : public monk_melee_attack_t
+      {
+        charred_dreams_dmg_4p_t( monk_t *player )
+          : monk_melee_attack_t( "charred_dreams_dmg_4p", player, player->passives.charred_dreams_dmg )
+        {
+          background = true;
+          proc       = true;
+        }
+      };
+
+      }  // namespace attacks
+
+      namespace spells
     {
 
     // ==========================================================================
@@ -4101,6 +4212,21 @@ namespace monk
 
           monk_spell_t::execute();
         }
+
+        void tick( dot_t *d ) override
+        {
+          monk_spell_t::tick( d );
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( d->state->result ) )
+          {
+            double amt = d->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
+            p()->active_actions.charred_dreams_dmg_2p->target = d->state->target;
+            p()->active_actions.charred_dreams_dmg_2p->base_dd_min =
+                p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
+            p()->active_actions.charred_dreams_dmg_2p->execute();
+            p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
+          }
+        }
       };
 
       struct breath_of_fire_t : public monk_spell_t
@@ -4187,6 +4313,16 @@ namespace monk
           {
             p()->active_actions.breath_of_fire->target = s->target;
             p()->active_actions.breath_of_fire->execute();
+          }
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
+          {
+            double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
+            p()->active_actions.charred_dreams_dmg_2p->target = s->target;
+            p()->active_actions.charred_dreams_dmg_2p->base_dd_min =
+                p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
+            p()->active_actions.charred_dreams_dmg_2p->execute();
+            p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
           }
         }
       };
@@ -6260,6 +6396,21 @@ namespace monk
           snapshot_flags |= STATE_MUL_DA;
         }
       };
+
+      // ==========================================================================
+      // Charred Dreams T31 Brewmaster Monk 2P Heal
+      // ==========================================================================
+      struct charred_dreams_heal_2p_t : public monk_heal_t
+      {
+        charred_dreams_heal_2p_t( monk_t &p )
+          : monk_heal_t( "charred_dreams_heal_2p", p, p.passives.charred_dreams_heal )
+        {
+          background = true;
+          proc       = true;
+          target     = player;
+        }
+      };
+
     }  // namespace heals
 
     namespace absorbs
@@ -6340,6 +6491,12 @@ namespace monk
             p()->buff.purified_chi->trigger( ( int )p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
             p()->proc.blackout_combo_celestial_brew->occur();
             p()->buff.blackout_combo->expire();
+          }
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
+          {
+            double accumulated = p()->buff.brewmaster_t31_4p_accumulator->check_value();
+            p()->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, accumulated );
           }
 
           monk_absorb_t::execute();
@@ -8001,6 +8158,11 @@ namespace monk
     passives.shadowflame_spirit = find_spell( 410159 );
     passives.shadowflame_spirit_summon = find_spell( 410153 );
 
+    // Tier 31
+    passives.charred_dreams_dmg  = find_spell( 425299 );
+    passives.charred_dreams_heal = find_spell( 425298 );
+    passives.t31_celestial_brew  = find_spell( 425965 );
+
     // Mastery spells =========================================
     mastery.combo_strikes = find_mastery_spell( MONK_WINDWALKER );
     mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
@@ -8082,6 +8244,12 @@ namespace monk
       active_actions.rising_sun_kick_press_the_advantage = new actions::attacks::rising_sun_kick_press_the_advantage_t( this );
       active_actions.keg_smash_press_the_advantage = new actions::attacks::keg_smash_press_the_advantage_t( this );
       active_actions.chi_surge = new actions::spells::chi_surge_t( *this );
+      if ( sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) )
+        active_actions.charred_dreams_dmg_2p = new actions::attacks::charred_dreams_dmg_2p_t( this );
+      if ( sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
+        active_actions.charred_dreams_dmg_4p = new actions::attacks::charred_dreams_dmg_4p_t( this );
+      if ( sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) )
+        active_actions.charred_dreams_heal = new actions::heals::charred_dreams_heal_2p_t( *this );
     }
 
     // Windwalker
@@ -8346,8 +8514,15 @@ namespace monk
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     buff.leverage_helper = new buffs::leverage_helper_t( *this, "leverage_helper", spell_data_t::nil() );
 
+    buff.brewmaster_t31_4p_accumulator =
+        make_buff( this, "brewmaster_t31_4p_accumulator", spell_data_t::nil() )->set_default_value( 0.0 );
+    buff.brewmaster_t31_4p_fake_absorb =
+        make_buff( this, "brewmaster_t31_4p_fake_absorb", spell_data_t::nil() )
+            ->set_default_value( 0.0 )
+            ->set_duration( 8_s )
+            ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-  // Mistweaver
+    // Mistweaver
     buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) )
       ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane );
 
@@ -8967,6 +9142,7 @@ namespace monk
       case 388867: // exploding_keg_proc
       case 227291: // Niuzao's Stomp
       case 393786: // chi_surge
+      case 425299: // Charred Dreams (BrM T31 2P + 4P)
         break;
 
       // Known blacklist
@@ -9852,6 +10028,18 @@ namespace monk
       // Hook up Stagger Mechanism
       if ( stagger_dmg > 0 )
       {
+        double t31_fake_absorb = buff.brewmaster_t31_4p_fake_absorb->check_value();
+        if ( t31_fake_absorb > stagger_dmg )
+        {
+          sim->print_debug( "removing up to {} of {} candidate staggered damage with 4p fake absorb, adding {} to stagger pool", t31_fake_absorb, stagger_dmg, 0 );
+          buff.brewmaster_t31_4p_fake_absorb->trigger( 1, t31_fake_absorb - stagger_dmg );
+          stagger_dmg = 0;
+          return;
+        } else if ( t31_fake_absorb > 0 ) {
+          sim->print_debug( "removing up to {} of {} candidate staggered damage with 4p fake absorb, adding {} to stagger pool", t31_fake_absorb, stagger_dmg, stagger_dmg - t31_fake_absorb );
+          stagger_dmg -= t31_fake_absorb;
+          buff.brewmaster_t31_4p_fake_absorb->expire();
+        }
         // Blizzard is putting a cap on how much damage can go into stagger
         double amount_remains = active_actions.stagger_self_damage->amount_remaining();
         double cap = max_health() * spec.stagger->effectN( 4 ).percent();
@@ -10172,7 +10360,7 @@ namespace monk
     // These abilities are blacklisted when Fury of Xuen is up and it has ticked once
     // OR, both tigers are spawned
     auto etl_blacklist_fox_2 = {
-      228649, // Teachings of the Monastery 
+      228649, // Teachings of the Monastery
       185099, // Rising Sun Kick
       395519, // Strike of the Windlord MH
       395519, // Strike of the Windlord OH

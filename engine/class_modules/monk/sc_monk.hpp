@@ -13,7 +13,6 @@
 
 namespace monk
 {
-
 namespace actions::spells
 {
 struct stagger_self_damage_t;
@@ -181,6 +180,11 @@ public:
     propagate_const<action_t*> empowered_tiger_lightning;
     propagate_const<action_t*> fury_of_xuen_summon;
     propagate_const<action_t*> fury_of_xuen_empowered_tiger_lightning;
+
+    // Tier 31
+    propagate_const<action_t*> charred_dreams_dmg_2p;
+    propagate_const<action_t*> charred_dreams_dmg_4p;
+    propagate_const<action_t*> charred_dreams_heal;
   } active_actions;
 
   struct passive_actions_t
@@ -385,6 +389,8 @@ public:
     propagate_const<buff_t*> leverage_helper;
 
     // T31 Set Bonus
+    propagate_const<buff_t*> brewmaster_t31_4p_accumulator;
+    propagate_const<buff_t*> brewmaster_t31_4p_fake_absorb;
     propagate_const<buff_t*> blackout_reinforcement;
   } buff;
 
@@ -939,6 +945,10 @@ public:
     const spell_data_t *shadowflame_spirit_summon;
     const spell_data_t* leverage;
 
+    // Tier 31
+    const spell_data_t* charred_dreams_dmg;
+    const spell_data_t* charred_dreams_heal;
+    const spell_data_t* t31_celestial_brew;
   } passives;
 
   // RPPM objects
