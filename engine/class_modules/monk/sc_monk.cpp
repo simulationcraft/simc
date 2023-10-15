@@ -646,7 +646,8 @@ namespace monk
           if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && s->result_amount >= 0 &&
                p()->rppm.blackout_reinforcement->trigger() )
             p()->buff.blackout_reinforcement->trigger();
-          if ( p()->sets->set( MONK_BREWMASTER, T31, B4 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 )
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 )
           {
             if ( s->action->school  == SCHOOL_SHADOWFLAME )
             {
@@ -680,7 +681,7 @@ namespace monk
             }
           }
 
-          if ( p()->sets->set( MONK_BREWMASTER, T31, B2 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 &&
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 &&
                s->action->school == SCHOOL_FIRE )
           {
             switch ( s->action->id )
@@ -712,7 +713,7 @@ namespace monk
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
 
-          if ( p()->sets->set( MONK_BREWMASTER, T31, B2 ) && dot->state->result_amount > 0 && dot->state->action->school == SCHOOL_FIRE )
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && dot->state->result_amount > 0 && dot->state->action->school == SCHOOL_FIRE )
           {
             if ( dot->state->action->school  == SCHOOL_SHADOWFLAME )
             {
@@ -4216,7 +4217,7 @@ namespace monk
         {
           monk_spell_t::tick( d );
 
-          if ( p()->sets->set( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( d->state->result ) )
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( d->state->result ) )
           {
             double amt = d->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
             p()->active_actions.charred_dreams_dmg_2p->target = d->state->target;
@@ -4314,7 +4315,7 @@ namespace monk
             p()->active_actions.breath_of_fire->execute();
           }
 
-          if ( p()->sets->set( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
           {
             double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
             p()->active_actions.charred_dreams_dmg_2p->target = s->target;
@@ -6492,7 +6493,7 @@ namespace monk
             p()->buff.blackout_combo->expire();
           }
 
-          if ( p()->sets->set( MONK_BREWMASTER, T31, B4 ) )
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
           {
             double accumulated = p()->buff.brewmaster_t31_4p_accumulator->check_value();
             p()->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, accumulated );
@@ -8243,9 +8244,12 @@ namespace monk
       active_actions.rising_sun_kick_press_the_advantage = new actions::attacks::rising_sun_kick_press_the_advantage_t( this );
       active_actions.keg_smash_press_the_advantage = new actions::attacks::keg_smash_press_the_advantage_t( this );
       active_actions.chi_surge = new actions::spells::chi_surge_t( *this );
-      active_actions.charred_dreams_dmg_2p = new actions::attacks::charred_dreams_dmg_2p_t( this );
-      active_actions.charred_dreams_dmg_4p = new actions::attacks::charred_dreams_dmg_4p_t( this );
-      active_actions.charred_dreams_heal = new actions::heals::charred_dreams_heal_2p_t( *this );
+      if ( sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) )
+        active_actions.charred_dreams_dmg_2p = new actions::attacks::charred_dreams_dmg_2p_t( this );
+      if ( sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
+        active_actions.charred_dreams_dmg_4p = new actions::attacks::charred_dreams_dmg_4p_t( this );
+      if ( sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) )
+        active_actions.charred_dreams_heal = new actions::heals::charred_dreams_heal_2p_t( *this );
     }
 
     // Windwalker
