@@ -6356,6 +6356,7 @@ struct goremaws_bite_t : public rogue_attack_t
 
     // 2023-10-02 -- CP gen is technically in the buff, move to the ability for expression and event handling
     affected_by.shadow_blades_cp = true; // Buff is affected by Shadow Blades label 
+    affected_by.danse_macabre = true; // Triggers a stack, but damage spell is not in the whitelist
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = p->spec.goremaws_bite_buff->effectN( 1 ).base_value();
