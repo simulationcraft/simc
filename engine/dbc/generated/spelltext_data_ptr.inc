@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51685
-static const std::array<spelltext_data_t, 20498> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20353,6 +20353,7 @@ static const std::array<spelltext_data_t, 20498> __ptr_spelltext_data { {
   { 425261, "$@spelldesc422896", 0, 0 },
   { 425262, "$@spelldesc422896", 0, 0 },
   { 425298, "$@spelldesc422886", 0, 0 },
+  { 425299, "$@spelldesc422886", 0, 0 },
   { 425407, "$@spelldesc422864", "Absorbing up to $w1 damage.", 0 },
   { 425417, "$@spelldesc422146", "Scorched by the sun for $w1 Fire damage every $t sec.", 0 },
   { 425461, "$@spelldesc422652", 0, 0 },
@@ -20373,6 +20374,7 @@ static const std::array<spelltext_data_t, 20498> __ptr_spelltext_data { {
   { 425914, "Attune yourself to the energies of the targeted Amirdrassil, the Dream's Hope raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 425915, "Attune yourself to the energies of the targeted Amirdrassil, the Dream's Hope raid boss, increasing your Versatility by $384212s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 425916, "Attune yourself to the energies of the targeted Amirdrassil, the Dream's Hope raid boss, increasing your Versatility by $384202s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
+  { 425965, "$@spelldesc422887", "The next $w1 damage you Stagger will be prevented instead.", 0 },
   { 426114, "$@spelldesc422303", 0, 0 },
   { 426115, "Grants access to the following abilities:\r\n\r\n$@spellicon264178 $@spellname264178\r\n$@spelldesc264178\r\n\r\n$@spellicon267102 $@spellname267102\r\n$@spelldesc267102", 0, 0 },
   { 426196, "Create a piece of Verdant Gladiator's equipment at Unranked rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -20506,7 +20508,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_ho
 } };
 
 // Spell description variables, wow build 10.2.0.51685
-static const std::array<spelldesc_vars_data_t, 410> __ptr_spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -20916,6 +20918,7 @@ static const std::array<spelldesc_vars_data_t, 410> __ptr_spelldesc_vars_data { 
   {  424556, "$dmg=${$57841s2+$57842s1}" },
   {  424562, "$dmg=${$57841s2+$57842s1}" },
   {  425529, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
+  {  425965, "$absorb=${($AP*10.5)*(1+$@versadmg)}\r\n" },
   {  427688, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${((0.690899398201283*($SP*1.25)*$<demoMastery>*(1+$@versadmg))*1.18)\r\n}" },
 } };
 
