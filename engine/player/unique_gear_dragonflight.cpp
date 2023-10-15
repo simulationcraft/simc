@@ -6717,6 +6717,8 @@ void infernal_signet_brand( special_effect_t& e )
       double player_mod = e.driver()->effectN( 4 ).percent();
       base_td           = base_damage * player_mod;
       target            = effect.player;
+      hasted_ticks      = false;
+      dot_behavior      = DOT_REFRESH_PANDEMIC;
       stats->type       = stats_e::STATS_NEUTRAL;
     }
 
@@ -6761,7 +6763,9 @@ void infernal_signet_brand( special_effect_t& e )
         e( effect ),
         current_mod( 0 )
     {
-      base_td = base_damage;
+      base_td      = base_damage;
+      hasted_ticks = false;
+      dot_behavior = DOT_REFRESH_PANDEMIC;
       add_child( aoe_damage );
     }
 
