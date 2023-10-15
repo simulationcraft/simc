@@ -2185,7 +2185,8 @@ namespace monk
 
           am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
 
-          am *= 1 + p()->buff.blackout_reinforcement->data().effectN( 1 ).percent();
+          if ( p()->buff.blackout_reinforcement->check() )
+            am *= 1 + p()->buff.blackout_reinforcement->data().effectN( 1 ).percent();
 
           return am;
         }
