@@ -920,6 +920,7 @@ public:
       parse_buff_effects( p().buffs.twilight_equilibrium_shadow_amp );
       parse_buff_effects( p().buffs.twilight_equilibrium_holy_amp );
       parse_buff_effects( p().buffs.light_weaving );
+      parse_buff_effects( p().buffs.weal_and_woe, true );
     }
 
     // HOLY BUFF EFFECTS

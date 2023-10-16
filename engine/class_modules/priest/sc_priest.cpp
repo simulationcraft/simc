@@ -571,14 +571,6 @@ struct smite_base_t : public priest_spell_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( s );
-    if ( priest().buffs.weal_and_woe->check() )
-    {
-      d *= 1.0 +
-           ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
-      sim->print_debug(
-          "Smite damage modified by {} (new total: {}), from weal_and_woe",
-          priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack, d );
-    }
     if ( priest().talents.holy.searing_light.enabled() )
     {
       const priest_td_t* td = priest().find_target_data( s->target );
