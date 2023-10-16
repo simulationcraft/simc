@@ -6712,7 +6712,7 @@ void infernal_signet_brand( special_effect_t& e )
       : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ),
         e( effect ),
         buff( b ),
-        current_mod( current_mod )
+        current_mod( 0 )
     {
       double player_mod = e.driver()->effectN( 4 ).percent();
       base_td           = base_damage * player_mod;
