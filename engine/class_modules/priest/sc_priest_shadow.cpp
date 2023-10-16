@@ -2310,12 +2310,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.minds_eye                = ST( "Mind's Eye" );
   talents.shadow.distorted_reality        = ST( "Distorted Reality" );
   // Row 8
-  talents.shadow.mindbender         = ST( "Mindbender" );
+  // talents.shadow.mindbender         = ST( "Mindbender" ); - Shared Talent
   talents.shadow.deathspeaker       = ST( "Deathspeaker" );
   talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
   talents.shadow.void_torrent       = ST( "Void Torrent" );
   // Row 9
-  talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
+  // talents.shadow.inescapable_torment = ST( "Inescapable Torment" ); - Shared Talent
   talents.shadow.mastermind          = ST( "Mastermind" );
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.tormented_spirits   = ST( "Tormented Spirits" );

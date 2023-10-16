@@ -100,7 +100,6 @@ public:
       child_expiation( nullptr )
   {
     parse_options( options_str );
-
     affected_by_shadow_weaving = true;
     cooldown->hasted           = true;
 
@@ -185,7 +184,12 @@ public:
         priest().buffs.insidious_ire->up();
       }
 
-      if ( priest().talents.shadow.inescapable_torment.enabled() )
+      if ( priest().talents.discipline.schism.enabled() )
+      {
+        td.buffs.schism->trigger();
+      }
+
+      if ( priest().talents.shared.inescapable_torment.enabled() )
       {
         priest().trigger_inescapable_torment( s->target );
       }
@@ -553,12 +557,6 @@ struct smite_t final : public priest_spell_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( s );
-    if ( priest().buffs.wrath_unleashed->check() )
-    {
-      d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
-      sim->print_debug( "Smite damage modified by {} (new total: {}), from wrath_unleashed",
-                        priest().buffs.wrath_unleashed->data().effectN( 1 ).percent(), d );
-    }
     if ( priest().buffs.weal_and_woe->check() )
     {
       d *= 1.0 +
@@ -566,12 +564,6 @@ struct smite_t final : public priest_spell_t
       sim->print_debug(
           "Smite damage modified by {} (new total: {}), from weal_and_woe",
           priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack, d );
-    }
-    if ( priest().talents.discipline.blaze_of_light.enabled() )
-    {
-      d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
-      sim->print_debug( "Smite damage modified by {} (new total: {}), from blaze_of_light",
-                        priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
     if ( priest().talents.holy.searing_light.enabled() )
     {
@@ -837,10 +829,10 @@ struct summon_fiend_t final : public priest_spell_t
   spawner::pet_spawner_t<pet_t, priest_t>* spawner;
 
   summon_fiend_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( p.talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend", p,
-                      p.talents.shadow.mindbender.enabled() ? p.talents.shadow.mindbender : p.talents.shadowfiend ),
+    : priest_spell_t( p.talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend", p,
+                      p.talents.shared.mindbender.enabled() ? p.talents.shared.mindbender : p.talents.shadowfiend ),
       default_duration( data().duration() ),
-      spawner( p.talents.shadow.mindbender.enabled() ? &p.pets.mindbender : &p.pets.shadowfiend )
+      spawner( p.talents.shared.mindbender.enabled() ? &p.pets.mindbender : &p.pets.shadowfiend )
   {
     parse_options( options_str );
     harmful = false;
@@ -1213,7 +1205,7 @@ public:
   {
     ab::impact( s );
 
-    if ( priest().talents.shadow.inescapable_torment.enabled() )
+    if ( priest().talents.shared.inescapable_torment.enabled() )
     {
       auto mod = 1.0;
       if ( cast_state( s )->chain_number > 0 )
@@ -1600,7 +1592,7 @@ struct essence_devourer_t final : public priest_heal_t
 {
   essence_devourer_t( priest_t& p )
     : priest_heal_t( "essence_devourer", p,
-                     p.talents.shadow.mindbender.enabled() ? p.talents.essence_devourer_mindbender
+                     p.talents.shared.mindbender.enabled() ? p.talents.essence_devourer_mindbender
                                                            : p.talents.essence_devourer_shadowfiend )
   {
     harmful = false;
@@ -1769,7 +1761,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.purge_the_wicked   = target->get_dot( "purge_the_wicked", &p );
   dots.holy_fire          = target->get_dot( "holy_fire", &p );
 
-  buffs.schism                   = make_buff( *this, "schism", p.talents.discipline.schism );
+  buffs.schism = make_buff( *this, "schism", p.talents.discipline.schism )
+                     ->apply_affecting_aura( p.talents.discipline.malicious_intent );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.echoing_void             = make_buff( *this, "echoing_void", p.find_spell( 373281 ) );
 
@@ -2337,10 +2330,15 @@ void priest_t::init_spells()
   base_t::init_spells();
 
   auto CT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::CLASS, n ); };
+  auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
 
   init_spells_shadow();
   init_spells_discipline();
   init_spells_holy();
+
+  // Shared Spells
+  talents.shared.mindbender          = ST( "Mindbender" );
+  talents.shared.inescapable_torment = ST( "Inescapable Torment" );
 
   // Generic Spells
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
@@ -2548,6 +2546,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
   action.apply_affecting_aura( talents.discipline.expiation );
+  action.apply_affecting_aura( talents.discipline.blaze_of_light );
 
   // Holy Talents
   action.apply_affecting_aura( talents.holy.miracle_worker );

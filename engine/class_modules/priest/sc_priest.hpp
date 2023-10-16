@@ -155,7 +155,6 @@ public:
     propagate_const<buff_t*> twilight_equilibrium_holy_amp;
     propagate_const<buff_t*> twilight_equilibrium_shadow_amp;
     propagate_const<buff_t*> harsh_discipline;
-    propagate_const<buff_t*> harsh_discipline_ready;
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
@@ -337,12 +336,12 @@ public:
       player_talent_t minds_eye;
       player_talent_t distorted_reality;
       // Row 8
-      player_talent_t mindbender;
+      // player_talent_t mindbender; - Shared Talent
       player_talent_t deathspeaker;
       player_talent_t auspicious_spirits;
       player_talent_t void_torrent;
       // Row 9
-      player_talent_t inescapable_torment;
+      // player_talent_t inescapable_torment; - Shared Talent
       player_talent_t mastermind;
       player_talent_t screams_of_the_void;
       player_talent_t tormented_spirits;
@@ -359,48 +358,75 @@ public:
       player_talent_t idol_of_yoggsaron;
       player_talent_t idol_of_cthun;
     } shadow;
+    
+    struct
+    {
+      player_talent_t mindbender;
+      player_talent_t inescapable_torment;
+    } shared;
 
     struct
     {
       // Row 1
+      player_talent_t atonement;
+      // Row 2
+      player_talent_t power_word_radiance;
+      player_talent_t pain_suppression;
       player_talent_t power_of_the_dark_side;
       // Row 3
+      player_talent_t lights_promise;
+      player_talent_t sanctuary;
+      player_talent_t pain_transformation;
+      player_talent_t protector_of_the_frail;
       player_talent_t dark_indulgence;
       player_talent_t schism;
       // Row 4
+      player_talent_t bright_pupil;
+      player_talent_t enduring_luminescence;
+      player_talent_t shield_discipline;
+      player_talent_t luminous_barrier;
+      player_talent_t power_word_barrier;
       player_talent_t painful_punishment;
-      player_talent_t power_word_solace;
-      player_talent_t purge_the_wicked;
       player_talent_t malicious_intent;
       // Row 5
+      player_talent_t purge_the_wicked;
+      player_talent_t rapture;
       player_talent_t shadow_covenant;
       const spell_data_t* dark_reprimand;
       // Row 6
-      player_talent_t embrace_shadow;
-      player_talent_t twilight_corruption;
       player_talent_t revel_in_purity;
+      player_talent_t contrition;
+      player_talent_t exaltation;
+      player_talent_t indemnity;
       player_talent_t pain_and_suffering;
-      // Row 7
-      player_talent_t castigation;
+      player_talent_t twilight_corruption;
+      // Row
       player_talent_t borrowed_time;
+      player_talent_t castigation;
+      player_talent_t abyssal_reverie;
       // Row 8
-      player_talent_t lights_wrath;
       player_talent_t train_of_thought;
+      player_talent_t ultimate_penance;
+      player_talent_t lenience;
+      player_talent_t evangelism;
+      player_talent_t void_summoner;
       // Row 9
-      player_talent_t expiation;
-      player_talent_t harsh_discipline;
-      const spell_data_t* harsh_discipline_ready;
+      player_talent_t divine_aegis;
       player_talent_t blaze_of_light;
-      player_talent_t inescapable_torment;
+      player_talent_t heavens_wrath;
+      player_talent_t harsh_discipline;
+      const spell_data_t* harsh_discipline_buff;
+      player_talent_t expiation;
+      // player_talent_t inescapable_torment; - Shared
       // Row 10
+      player_talent_t aegis_of_wrath;
+      player_talent_t weal_and_woe;
+      const spell_data_t* weal_and_woe_buff;
+      player_talent_t overloaded_with_light;
       player_talent_t twilight_equilibrium;
       const spell_data_t* twilight_equilibrium_holy_amp;
       const spell_data_t* twilight_equilibrium_shadow_amp;
-      player_talent_t wrath_unleashed;
-      const spell_data_t* wrath_unleashed_buff;
-      player_talent_t weal_and_woe;
-      const spell_data_t* weal_and_woe_buff;
-      player_talent_t void_summoner;
+      // player_talent_t mindbender; - Shared
     } discipline;
 
     struct
@@ -456,7 +482,6 @@ public:
     const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
     const spell_data_t* sins_of_the_many;
-    const spell_data_t* harsh_discipline_value;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data

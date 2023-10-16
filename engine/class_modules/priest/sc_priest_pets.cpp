@@ -506,7 +506,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   {
     base_fiend_pet_t::demise();
 
-    if ( o().talents.shadow.inescapable_torment.enabled() || o().talents.discipline.inescapable_torment.enabled() )
+    if ( o().talents.shared.inescapable_torment.enabled() )
     {
       if ( o().cooldowns.mind_blast->is_ready() )
       {
@@ -591,7 +591,7 @@ struct fiend_melee_t : public priest_pet_melee_t
         p().o().trigger_essence_devourer();
       }
 
-      if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )
+      if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {
@@ -635,7 +635,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
-    spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 3 ).percent() );
+    spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
 
     // Tuning modifier effect
     apply_affecting_aura( p.o().specs.shadow_priest );
@@ -676,7 +676,7 @@ struct inescapable_torment_t final : public priest_pet_spell_t
   propagate_const<inescapable_torment_damage_t*> damage;
 
   inescapable_torment_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shadow.inescapable_torment ),
+    : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shared.inescapable_torment ),
       duration( data().effectN( 2 ).time_value() )
   {
     background = true;
@@ -1024,7 +1024,7 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 // summoned through the action list, so please check for null.
 spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest )
 {
-  return priest.talents.shadow.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
+  return priest.talents.shared.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
 }
 
 }  // namespace
@@ -1033,12 +1033,12 @@ namespace priestspace
 {
 void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double mod )
 {
-  if ( !talents.shadow.inescapable_torment.enabled() || !talents.discipline.inescapable_torment.enabled() )
+  if ( !talents.shared.inescapable_torment.enabled() )
     return;
 
   if ( get_current_main_pet( *this ).n_active_pets() > 0 )
   {
-    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value() * mod;
+    auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
     buffs.devoured_pride->extend_duration( this, extend );
     buffs.devoured_despair->extend_duration( this, extend );
 
@@ -1109,12 +1109,12 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     if ( util::str_compare_ci( splits[ 1 ], "fiend" ) || util::str_compare_ci( splits[ 1 ], "shadowfiend" ) ||
          util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) )
     {
-      if ( cooldown_t* cooldown = get_cooldown( talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" ) )
+      if ( cooldown_t* cooldown = get_cooldown( talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) )
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
       throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.",
-                                                talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
+                                                talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
     }
   }
 
