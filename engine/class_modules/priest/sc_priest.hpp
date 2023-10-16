@@ -465,7 +465,6 @@ public:
     const spell_data_t* shining_force;
 
     // Discipline
-    const spell_data_t* castigation;
     const spell_data_t* sins_of_the_many;  // assumes 0 atonement targets
   } talents;
 

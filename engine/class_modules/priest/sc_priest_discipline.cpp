@@ -129,126 +129,157 @@ struct purge_the_wicked_t final : public priest_spell_t
 // Dark Reprimand:
 // - Base(373129) -> (373130)
 // ==========================================================================
-// Penance damage spell
-struct penance_damage_t : public priest_spell_t
-{
-  timespan_t dot_extension;
-
-  penance_damage_t( priest_t& p, util::string_view n, const spell_data_t* s ) : priest_spell_t( n, p, s )
-  {
-    background = dual = direct_tick = tick_may_crit = may_crit = true;
-    dot_extension = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
-
-    // This is not found in the affected spells for Shadow Covenant, overriding it manually
-    // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-    force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT );
-    force_buff_effect( p.buffs.shadow_covenant, 2, false, USE_DEFAULT );
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( s );
-    if ( priest().buffs.power_of_the_dark_side->check() )
-    {
-      d *= 1.0 + priest().buffs.power_of_the_dark_side->data().effectN( 1 ).percent();
-    }
-    return d;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-    priest_td_t& td = get_td( s->target );
-    td.dots.shadow_word_pain->adjust_duration( dot_extension );
-    td.dots.purge_the_wicked->adjust_duration( dot_extension );
-  }
-};
 
 // Penance channeled spell
 struct penance_channel_t final : public priest_spell_t
 {
+protected:  
+  struct penance_data
+  {
+    int bolts = 3;
+    double potds_mult = 1.0;
+  };
+
+  using state_t = priest_action_state_t<penance_data>;
+  using ab = priest_spell_t;
+
+  struct penance_damage_t : public priest_spell_t
+  {
+    timespan_t dot_extension;
+
+    penance_damage_t( priest_t& p, util::string_view n, const spell_data_t* s ) : priest_spell_t( n, p, s )
+    {
+      background = dual = direct_tick = tick_may_crit = may_crit = true;
+      dot_extension = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
+
+      // This is not found in the affected spells for Shadow Covenant, overriding it manually
+      // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
+      force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT );
+      force_buff_effect( p.buffs.shadow_covenant, 2, false, USE_DEFAULT );
+    }
+
+    
+  action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    state_t* cast_state( action_state_t* s )
+    {
+      return static_cast<state_t*>( s );
+    }
+
+    const state_t* cast_state( const action_state_t* s ) const
+    {
+      return static_cast<const state_t*>( s );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double d = priest_spell_t::composite_da_multiplier( s );
+      return d;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      priest_spell_t::impact( s );
+      priest_td_t& td = get_td( s->target );
+      td.dots.shadow_word_pain->adjust_duration( dot_extension );
+      td.dots.purge_the_wicked->adjust_duration( dot_extension );
+    }
+  };
+
 private:
-  propagate_const<action_t*> damage;
+  propagate_const<penance_damage_t*> damage;
+  timespan_t manipulation_cdr;
+  timespan_t void_summoner_cdr;
+  unsigned max_spread_targets;
+  double default_bolts;
 
 public:
   penance_channel_t( priest_t& p, util::string_view n, const spell_data_t* s, const spell_data_t* s_tick )
-    : priest_spell_t( n, p, s ), damage( new penance_damage_t( p, std::string( n ) + "_tick", s_tick ) )
+    : priest_spell_t( n, p, s ), damage( new penance_damage_t( p, std::string( n ) + "_tick", s_tick ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) )
   {
     channeled = true;
     dual      = false;
     may_miss = may_crit = false;
+    tick_zero           = true;
+
     cooldown->duration  = 0_s;
     add_child( damage );
+    
+    apply_affecting_aura( priest().talents.discipline.castigation );
+
+    // One is always tick zero
+    default_bolts = floor( dot_duration / base_tick_time );
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    ab::snapshot_state( s, rt );
+    cast_state( s )->bolts      = default_bolts + p().buffs.harsh_discipline->check_stack_value();
+    cast_state( s )->potds_mult = 1.0 + priest().buffs.power_of_the_dark_side->check_value();
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t full_duration = dot_duration * s->haste;
+
+    return full_duration;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    timespan_t t = ab::tick_time( s );
+    
+    sim->print_debug( "{} default bolts {} state bolts", default_bolts, cast_state( s )->bolts );
+
+    t *= default_bolts / cast_state( s )->bolts;
+
+    return t;
   }
 
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
-    if ( priest().talents.discipline.weal_and_woe.enabled() )
+    if ( d->get_tick_factor() >= 1.0 )
     {
-      priest().buffs.weal_and_woe->trigger();
-    }
+      if ( priest().talents.discipline.weal_and_woe.enabled() )
+      {
+        priest().buffs.weal_and_woe->trigger();
+      }
 
-    damage->execute();
+      state_t* state                   = damage->cast_state( damage->get_state() );
+      state->target                    = d->state->target;
+      state->potds_mult                = cast_state( d->state )->potds_mult;
+      damage->snapshot_state( state, damage->amount_type( state ) );
+
+      damage->schedule_execute( state );
+    }
   }
 
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
-    if ( priest().buffs.harsh_discipline->up() )
-    {
-      priest().buffs.harsh_discipline->expire();
-    }
-  }
-
-  void execute() override
-  {
-    //double value = priest().talents.discipline.harsh_discipline_buff->effectN( 1 ).percent();
-
-    //// For some cursed reason tick_time overrides do not work with this spell. Overriding base tick time in execute
-    //// instead. Ideally someone smarter than me can figure out why.
-    //base_tick_time = priest().specs.penance_channel->effectN( 2 ).period();
-
-    //// Modifying base_tick_time when castigation talent is selected
-    //base_tick_time *= 1.0 + priest().talents.discipline.castigation->effectN( 1 ).percent();
-
-    //// When harsh discipline is talented, and the buff is up, modify the tick time. If castigation is also talented,
-    //// modify the value and set tick on application to false.
-    //if ( priest().talents.discipline.harsh_discipline.ok() && priest().buffs.harsh_discipline->up() )
-    //{
-    //  if ( priest().talents.discipline.castigation.ok() )
-    //  {
-    //    value = value + 0.1;  // Appears to take a 10% hit to the reduction with castigation talented
-    //  }
-    //  base_tick_time *= 1.0 + value;
-    //}
-
-    //double num_ticks = floor( dot_duration / base_tick_time );
-    //dot_duration     = num_ticks * base_tick_time;
-    priest_spell_t::execute();
-  }
-};
-
-// Main penance action spell
-struct penance_t : public priest_spell_t
-{
-  timespan_t manipulation_cdr;
-  timespan_t void_summoner_cdr;
-  unsigned max_spread_targets;
-
-  penance_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "penance_cast", p, p.specs.penance ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
-      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) ),
-      channel( new penance_channel_t( p, "penance", p.specs.penance_channel, p.specs.penance_tick ) ),
-      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand, p.talents.discipline.dark_reprimand->effectN( 2 ).trigger()  ) )
-  {
-    parse_options( options_str );
-    cooldown->duration = p.specs.penance->cooldown();
-    name_str_reporting = "penance";
-
   }
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
@@ -325,6 +356,57 @@ struct penance_t : public priest_spell_t
         targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
   }
 
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+
+    if ( priest().talents.discipline.void_summoner.enabled() )
+    {
+      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+    }
+
+    priest().buffs.power_of_the_dark_side->expire();
+
+    priest().buffs.harsh_discipline->expire();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    priest_spell_t::impact( state );
+
+    if ( p().talents.discipline.purge_the_wicked.enabled() )
+    {
+      spread_purge_the_wicked( state, p() );
+    }
+
+    priest().trigger_inescapable_torment( state->target );
+  }
+};
+
+// Main penance action spell
+struct penance_t : public priest_spell_t
+{
+private:
+  propagate_const<action_t*> channel;
+  propagate_const<action_t*> shadow_covenant_channel;
+
+public:
+  penance_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "penance_cast", p, p.specs.penance ),
+      channel( new penance_channel_t( p, "penance", p.specs.penance_channel, p.specs.penance_tick ) ),
+      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand,
+                                                      p.talents.discipline.dark_reprimand->effectN( 2 ).trigger() ) )
+  {
+    parse_options( options_str );
+    cooldown->duration = p.specs.penance->cooldown();
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -337,36 +419,9 @@ struct penance_t : public priest_spell_t
     {
       channel->execute();
     }
-    
-    if ( priest().talents.manipulation.enabled() )
-    {
-      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
-    }
-    if ( priest().talents.discipline.void_summoner.enabled() )
-    {
-      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
-    }
-    if ( priest().talents.discipline.power_of_the_dark_side.enabled() &&
-         priest().buffs.power_of_the_dark_side->check() )
-    {
-      priest().buffs.power_of_the_dark_side->expire();
-    }
   }
-
-  void impact( action_state_t* state ) override
-  {
-    if ( p().talents.discipline.purge_the_wicked.enabled() )
-    {
-      spread_purge_the_wicked( state, p() );
-    }
-
-    priest().trigger_inescapable_torment( state->target );
-  }
-
-private:
-  propagate_const<action_t*> channel;
-  propagate_const<action_t*> shadow_covenant_channel;
 };
+
 }  // namespace actions::spells
 
 namespace buffs
@@ -376,7 +431,8 @@ namespace buffs
 void priest_t::create_buffs_discipline()
 {
   buffs.power_of_the_dark_side =
-      make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() );
+      make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
+          ->set_default_value_from_effect( 1, 0.01 );
 
   buffs.shadow_covenant = make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant_buff );
 
@@ -413,7 +469,8 @@ void priest_t::create_buffs_discipline()
   buffs.twilight_equilibrium_shadow_amp =
       make_buff( this, "twilight_equilibrium_shadow_amp", talents.discipline.twilight_equilibrium_shadow_amp );
 
-  buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) );
+  buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) )
+                               ->set_default_value( talents.discipline.harsh_discipline->effectN( 2 ).base_value() );
 
   buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) );
 
