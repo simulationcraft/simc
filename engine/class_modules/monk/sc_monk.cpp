@@ -639,17 +639,9 @@ namespace monk
 
           p()->trigger_spirit_of_forged_vermillion( s );
 
-          if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && s->result_amount >= 0 &&
-               p()->rppm.blackout_reinforcement->trigger() )
-            p()->buff.blackout_reinforcement->trigger();
-
-          if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && s->result_amount >= 0 &&
-               p()->rppm.blackout_reinforcement->trigger() )
-            p()->buff.blackout_reinforcement->trigger();
-
           if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 )
           {
-            if ( s->action->school  == SCHOOL_SHADOWFLAME )
+            if ( s->action->school == SCHOOL_SHADOWFLAME )
             {
               double current_value = p()->buff.brewmaster_t31_4p_accumulator->check_value();
               double result = s->result_amount;
@@ -674,7 +666,7 @@ namespace monk
                   double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
                   p()->active_actions.charred_dreams_dmg_4p->target = s->target;
                   p()->active_actions.charred_dreams_dmg_4p->base_dd_min =
-                      p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
+                    p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
                   p()->active_actions.charred_dreams_dmg_4p->execute();
                   p()->sim->print_debug( "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}", s->action->id, s->result_amount, amt );
                 }
@@ -682,7 +674,7 @@ namespace monk
           }
 
           if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 &&
-               s->action->school == SCHOOL_FIRE )
+            s->action->school == SCHOOL_FIRE )
           {
             switch ( s->action->id )
             {
@@ -692,11 +684,11 @@ namespace monk
               default:
                 double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
                 p()->active_actions.charred_dreams_heal->base_dd_min =
-                    p()->active_actions.charred_dreams_heal->base_dd_max = amt;
+                  p()->active_actions.charred_dreams_heal->base_dd_max = amt;
                 p()->active_actions.charred_dreams_heal->execute();
                 p()->sim->print_debug(
-                    "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}",
-                    s->action->id, s->result_amount, amt );
+                  "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}",
+                  s->action->id, s->result_amount, amt );
             }
           }
         }
@@ -715,7 +707,7 @@ namespace monk
 
           if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && dot->state->result_amount > 0 && dot->state->action->school == SCHOOL_FIRE )
           {
-            if ( dot->state->action->school  == SCHOOL_SHADOWFLAME )
+            if ( dot->state->action->school == SCHOOL_SHADOWFLAME )
             {
               double current_value = p()->buff.brewmaster_t31_4p_accumulator->check_value();
               double result = dot->state->result_amount;
@@ -732,11 +724,11 @@ namespace monk
               default:
                 double amt = dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
                 p()->active_actions.charred_dreams_heal->base_dd_min =
-                    p()->active_actions.charred_dreams_heal->base_dd_max = amt;
+                  p()->active_actions.charred_dreams_heal->base_dd_max = amt;
                 p()->active_actions.charred_dreams_heal->execute();
                 p()->sim->print_debug(
-                    "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}",
-                    dot->state->action->id, dot->state->result_amount, amt );
+                  "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}",
+                  dot->state->action->id, dot->state->result_amount, amt );
             }
           }
         }
@@ -2185,9 +2177,8 @@ namespace monk
           am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
 
           am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
-
-          if ( p()->buff.blackout_reinforcement->check() )
-            am *= 1 + p()->buff.blackout_reinforcement->data().effectN( 1 ).percent();
+           
+          am *= 1 + p()->buff.blackout_reinforcement->check_value();
 
           return am;
         }
@@ -2260,7 +2251,7 @@ namespace monk
             for ( int i = 0; i < stacks; i++ )
               bok_totm_proc->execute();
 
-          // The initial hit along with each individual TotM hits has a chance to reset the cooldown
+            // The initial hit along with each individual TotM hits has a chance to reset the cooldown
             auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
 
             if ( p()->specialization() == MONK_MISTWEAVER )
@@ -2624,11 +2615,11 @@ namespace monk
         {
           monk_melee_attack_t::consume_resource();
 
+          double cost = base_costs[RESOURCE_CHI];
+
           // Register how much chi is saved without actually refunding the chi
           if ( p()->buff.serenity->up() )
           {
-            double cost = base_costs[RESOURCE_CHI];
-
             cost += p()->buff.dance_of_chiji_hidden->check_value();
 
             if ( cost < 0 )
@@ -2645,7 +2636,9 @@ namespace monk
           //===========
 
           int leverage_stacks = p()->buff.leverage->check();
+
           p()->buff.leverage_helper->expire();
+
           if ( leverage_stacks > 0 )
           {
             p()->buff.leverage->expire();
@@ -2658,10 +2651,7 @@ namespace monk
             {
               p()->buff.dance_of_chiji->expire();
               p()->buff.dance_of_chiji_hidden->trigger();
-              p()->buff.blackout_reinforcement->trigger();
             }
-            else if ( p()->buff.serenity->up() )
-              p()->buff.blackout_reinforcement->trigger();
           }
 
           monk_melee_attack_t::execute();
@@ -2677,8 +2667,8 @@ namespace monk
           if ( chi_x && p()->buff.chi_energy->up() )
             chi_x->execute();
 
-        // Bonedust Brew
-        // Chi refund is triggering once on the trigger spell and not from tick spells.
+          // Bonedust Brew
+          // Chi refund is triggering once on the trigger spell and not from tick spells.
           if ( get_td( execute_state->target )->debuff.bonedust_brew->up() )
             p()->resource_gain( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value(), p()->gain.bonedust_brew );
 
@@ -2686,6 +2676,13 @@ namespace monk
           {
             p()->active_actions.breath_of_fire->target = execute_state->target;
             p()->active_actions.breath_of_fire->execute();
+          }
+
+          // Was a free cast for WW
+          if ( current_resource() == RESOURCE_CHI && last_resource_cost == 0 )
+          {
+            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
+              p()->buff.blackout_reinforcement->trigger();
           }
         }
 
@@ -3233,9 +3230,6 @@ namespace monk
               p()->passive_actions.thunderfist->target = s->target;
               p()->passive_actions.thunderfist->schedule_execute();
             }
-
-            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) && p()->rppm.blackout_reinforcement->trigger() )
-              p()->buff.blackout_reinforcement->trigger();
           }
         }
       };
@@ -3889,7 +3883,7 @@ namespace monk
           : monk_melee_attack_t( "charred_dreams_dmg_2p", player, player->passives.charred_dreams_dmg )
         {
           background = true;
-          proc       = true;
+          proc = true;
         }
       };
 
@@ -3899,13 +3893,13 @@ namespace monk
           : monk_melee_attack_t( "charred_dreams_dmg_4p", player, player->passives.charred_dreams_dmg )
         {
           background = true;
-          proc       = true;
+          proc = true;
         }
       };
 
-      }  // namespace attacks
+    }  // namespace attacks
 
-      namespace spells
+    namespace spells
     {
 
     // ==========================================================================
@@ -4223,7 +4217,7 @@ namespace monk
             double amt = d->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
             p()->active_actions.charred_dreams_dmg_2p->target = d->state->target;
             p()->active_actions.charred_dreams_dmg_2p->base_dd_min =
-                p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
+              p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
             p()->active_actions.charred_dreams_dmg_2p->execute();
             p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
           }
@@ -4321,7 +4315,7 @@ namespace monk
             double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
             p()->active_actions.charred_dreams_dmg_2p->target = s->target;
             p()->active_actions.charred_dreams_dmg_2p->base_dd_min =
-                p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
+              p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
             p()->active_actions.charred_dreams_dmg_2p->execute();
             p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
           }
@@ -6407,8 +6401,8 @@ namespace monk
           : monk_heal_t( "charred_dreams_heal_2p", p, p.passives.charred_dreams_heal )
         {
           background = true;
-          proc       = true;
-          target     = player;
+          proc = true;
+          target = player;
         }
       };
 
@@ -8161,9 +8155,9 @@ namespace monk
     passives.shadowflame_spirit_summon = find_spell( 410153 );
 
     // Tier 31
-    passives.charred_dreams_dmg  = find_spell( 425299 );
+    passives.charred_dreams_dmg = find_spell( 425299 );
     passives.charred_dreams_heal = find_spell( 425298 );
-    passives.t31_celestial_brew  = find_spell( 425965 );
+    passives.t31_celestial_brew = find_spell( 425965 );
 
     // Mastery spells =========================================
     mastery.combo_strikes = find_mastery_spell( MONK_WINDWALKER );
@@ -8517,14 +8511,14 @@ namespace monk
     buff.leverage_helper = new buffs::leverage_helper_t( *this, "leverage_helper", spell_data_t::nil() );
 
     buff.brewmaster_t31_4p_accumulator =
-        make_buff( this, "brewmaster_t31_4p_accumulator", spell_data_t::nil() )->set_default_value( 0.0 );
+      make_buff( this, "brewmaster_t31_4p_accumulator", spell_data_t::nil() )->set_default_value( 0.0 );
     buff.brewmaster_t31_4p_fake_absorb =
-        make_buff( this, "brewmaster_t31_4p_fake_absorb", spell_data_t::nil() )
-            ->set_default_value( 0.0 )
-            ->set_duration( 8_s )
-            ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      make_buff( this, "brewmaster_t31_4p_fake_absorb", spell_data_t::nil() )
+      ->set_default_value( 0.0 )
+      ->set_duration( 8_s )
+      ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-    // Mistweaver
+// Mistweaver
     buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) )
       ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane );
 
@@ -8660,6 +8654,7 @@ namespace monk
     // Tier 31 Set Bonus
     buff.blackout_reinforcement = make_buff( this, "blackout_reinforcement", find_spell( 424454 ) )
       ->set_trigger_spell( sets->set( MONK_WINDWALKER, T31, B2 ) )
+      ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // ------------------------------
@@ -8729,6 +8724,7 @@ namespace monk
     proc.blackout_kick_cdr = get_proc( "Blackout Kick CDR" );
     proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
     proc.blackout_kick_cdr_serenity = get_proc( "Blackout Kick CDR with Serenity" );
+    proc.blackout_reinforcement = get_proc( "Blackout Reinforcement" );
     proc.bonedust_brew_reduction = get_proc( "Bonedust Brew SCK Reduction" );
     proc.bountiful_brew_proc = get_proc( "Bountiful Brew Trigger" );
     proc.charred_passions_bok = get_proc( "Charred Passions - Blackout Kick" );
@@ -8768,12 +8764,6 @@ namespace monk
 
     if ( talent.brewmaster.spirit_of_the_ox->ok() )
       rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
-
-    // Tier 30
-    rppm.shadowflame_spirit = get_rppm( "shadowflame_spirit", sets->set( MONK_WINDWALKER, T30, B4 ) );
-
-    // Tier 31
-    rppm.blackout_reinforcement = get_rppm( "blackout_reinforcement", sets->set( MONK_WINDWALKER, T31, B2 ) );
   }
 
   // monk_t::init_special_effects ===========================================
@@ -8904,7 +8894,7 @@ namespace monk
       {
         p->active_actions.resonant_fists->set_target( state->target );
 
-      return true;
+        return true;
       } );
     }
 
@@ -8918,14 +8908,14 @@ namespace monk
       {
         // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
         if ( !p->buff.exploding_keg->up() )
-        return false;
+          return false;
 
-      if ( state->action->id == p->passives.breath_of_fire_dot->id() )
-        return false;
+        if ( state->action->id == p->passives.breath_of_fire_dot->id() )
+          return false;
 
-      p->active_actions.exploding_keg->set_target( state->target );
+        p->active_actions.exploding_keg->set_target( state->target );
 
-      return true;
+        return true;
       } );
     }
 
@@ -8939,8 +8929,22 @@ namespace monk
       {
         p->active_actions.bountiful_brew->set_target( state->target );
 
-      return true;
+        return true;
       }, active_actions.bountiful_brew );
+    }
+
+    // ======================================
+    // Blackout Reinforcement ( Windwalker T31 Set Bonus )
+    // ======================================
+
+    if ( sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
+    {
+      create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ), [ ] ( monk_t *p, action_state_t *state )
+      {
+        p->buff.blackout_reinforcement->trigger();
+        p->proc.blackout_reinforcement->occur();
+        return true;
+       } );
     }
 
     // ======================================
@@ -10037,7 +10041,9 @@ namespace monk
           buff.brewmaster_t31_4p_fake_absorb->trigger( 1, t31_fake_absorb - stagger_dmg );
           stagger_dmg = 0;
           return;
-        } else if ( t31_fake_absorb > 0 ) {
+        }
+        else if ( t31_fake_absorb > 0 )
+        {
           sim->print_debug( "removing up to {} of {} candidate staggered damage with 4p fake absorb, adding {} to stagger pool", t31_fake_absorb, stagger_dmg, stagger_dmg - t31_fake_absorb );
           stagger_dmg -= t31_fake_absorb;
           buff.brewmaster_t31_4p_fake_absorb->expire();
