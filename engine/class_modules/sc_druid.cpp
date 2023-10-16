@@ -1976,8 +1976,6 @@ public:
       {
         form_mask |= form_e::BEAR_FORM;
       }
-
-      parse_passive_effects( p()->mastery.astral_invocation );
     }
   }
 
@@ -2081,6 +2079,7 @@ public:
     }
 
     // Balance
+    parse_passive_effects( p()->mastery.astral_invocation );
     parse_buff_effects( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
     parse_buff_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     // due to 4t31, we parse the damage effects (#1/#7) separately and use the current buff value instead of data value
@@ -2197,31 +2196,6 @@ public:
     parse_debuff_effect( [ dot ]( druid_td_t* t ) {
       return std::invoke( dot, t->dots )->is_ticking();
     }, spell, idx, true, mods... );
-  }
-
-  double get_debuff_effects_value( druid_td_t* t ) const override
-  {
-    double return_value = 1.0;
-
-    for ( const auto& i : target_multiplier_dotdebuffs )
-    {
-      if ( auto check = i.func( t ) )
-      {
-        auto eff_val = i.value;
-
-        if ( i.mastery )
-        {
-          if ( p()->specialization() == DRUID_BALANCE && p()->is_ptr() )
-            eff_val += p()->cache.mastery() * p()->mastery.astral_invocation->effectN( 5 ).mastery_value();
-          else
-            eff_val += p()->cache.mastery_value();
-        }
-
-        return_value *= 1.0 + eff_val * check;
-      }
-    }
-
-    return return_value;
   }
 
   double cost() const override
