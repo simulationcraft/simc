@@ -182,8 +182,19 @@ public:
     auto debug_message = [ & ]( std::string_view type ) {
       if ( buff )
       {
-        action_->sim->print_debug( "buff-effects: {} ({}) {} modified by {}{} with buff {} ({}#{})", action_->name(),
-                                   action_->id, type, val * val_mul, mastery ? "*mastery" : "", buff->name(),
+        std::string val_str;
+
+        if ( value_type == value_type_e::USE_CURRENT )
+          val_str = "current value";
+        else if ( value_type == value_type_e::USE_DEFAULT )
+          val_str = fmt::format( "default value ({})", val * val_mul );
+        else if ( mastery )
+          val_str = fmt::format( "{}*mastery", val * val_mul );
+        else
+          val_str = fmt::format( "{}", val * val_mul );
+
+        action_->sim->print_debug( "buff-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", action_->name(),
+                                   action_->id, type, val_str, use_stacks ? "per stack of" : "with", buff->name(),
                                    buff->data().id(), i );
       }
       else if ( mastery && !f )
