@@ -437,7 +437,8 @@ namespace monk
       propagate_const<proc_t *> blackout_kick_cdr;
       propagate_const<proc_t *> blackout_kick_cdr_serenity_with_woo;
       propagate_const<proc_t *> blackout_kick_cdr_serenity;
-      propagate_const<proc_t *> blackout_reinforcement;
+      propagate_const<proc_t *> blackout_reinforcement_melee;
+      propagate_const<proc_t *> blackout_reinforcement_sck;
       propagate_const<proc_t *> blackout_reinforcement_waste;
       propagate_const<proc_t *> bonedust_brew_reduction;
       propagate_const<proc_t *> bountiful_brew_proc;

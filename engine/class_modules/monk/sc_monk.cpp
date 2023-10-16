@@ -2653,6 +2653,14 @@ namespace monk
               p()->buff.dance_of_chiji_hidden->trigger();
             }
           }
+ 
+          // Is a free cast for WW
+          if ( current_resource() == RESOURCE_CHI && cost() == 0 )
+          {
+            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
+              if ( p()->buff.blackout_reinforcement->trigger() )
+                p()->proc.blackout_reinforcement_sck->occur();
+          }
 
           monk_melee_attack_t::execute();
 
@@ -2676,13 +2684,6 @@ namespace monk
           {
             p()->active_actions.breath_of_fire->target = execute_state->target;
             p()->active_actions.breath_of_fire->execute();
-          }
-
-          // Was a free cast for WW
-          if ( current_resource() == RESOURCE_CHI && last_resource_cost == 0 )
-          {
-            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
-              p()->buff.blackout_reinforcement->trigger();
           }
         }
 
@@ -3925,14 +3926,6 @@ namespace monk
 
           return am;
         }
-
-        void execute() override
-        {
-          p()->proc.resonant_fists->occur();
-
-          monk_spell_t::execute();
-        }
-
       };
 
       // ==========================================================================
@@ -7181,6 +7174,26 @@ namespace monk
     };
 
     // ===============================================================================
+    // Tier 31 Blackout Reinforcement
+    // ===============================================================================
+
+    struct blackout_reinforcement_t : public monk_buff_t<buff_t>
+    {
+      blackout_reinforcement_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+      {
+        set_default_value_from_effect( 1 );
+        add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      }
+
+      void refresh( int stacks, double value, timespan_t duration ) override
+      {
+        p().proc.blackout_reinforcement_waste->occur();
+
+        buff_t::refresh( stacks, value, duration );
+      }
+    };
+
+    // ===============================================================================
     // Expel Harm Helper
     // ===============================================================================
 
@@ -8652,17 +8665,7 @@ namespace monk
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // Tier 31 Set Bonus
-    buff.blackout_reinforcement = make_buff( this, "blackout_reinforcement", find_spell( 424454 ) )
-      ->set_trigger_spell( sets->set( MONK_WINDWALKER, T31, B2 ) )
-      ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-      ->set_stack_change_callback( [ this ] ( buff_t *, int _old, int _new )
-    {
-      if ( _new > _old )
-        proc.blackout_reinforcement->occur();
-      else
-        proc.blackout_reinforcement_waste->occur();
-    } );
+    buff.blackout_reinforcement = new buffs::blackout_reinforcement_t( *this, "blackout_reinforcement", find_spell( 424454 ) );
 
     // ------------------------------
     // Movement
@@ -8731,7 +8734,8 @@ namespace monk
     proc.blackout_kick_cdr = get_proc( "Blackout Kick CDR" );
     proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
     proc.blackout_kick_cdr_serenity = get_proc( "Blackout Kick CDR with Serenity" );
-    proc.blackout_reinforcement = get_proc( "Blackout Reinforcement" );
+    proc.blackout_reinforcement_melee = get_proc( "Blackout Reinforcement" );
+    proc.blackout_reinforcement_sck = get_proc( "Blackout Reinforcement (Free SCKs)" );
     proc.blackout_reinforcement_waste = get_proc( "Blackout Reinforcement Waste" );
     proc.bonedust_brew_reduction = get_proc( "Bonedust Brew SCK Reduction" );
     proc.bountiful_brew_proc = get_proc( "Bountiful Brew Trigger" );
@@ -8791,7 +8795,7 @@ namespace monk
       effect->proc_flags_ = effect_driver->proc_flags();
       effect->proc_chance_ = effect_driver->proc_chance();
       effect->ppm_ = effect_driver->_rppm;
-
+     
       if ( proc_action_override == nullptr )
       {
         // If we didn't define a custom action in initialization then
@@ -8847,6 +8851,26 @@ namespace monk
         }
       }
 
+      // We still haven't assigned a name, it is most likely a buff
+      // dynamically find buff
+      if ( effect->name_str == "" )
+      {
+        for ( auto e : effect_driver->effects() )
+        {
+          for ( auto t : buff_list )
+          {
+            if ( e.trigger()->ok() && e.trigger()->id() == t->data().id() )
+            {
+              effect->name_str = t->name_str;
+              effect->custom_buff = t;
+            }
+          }
+
+          if ( effect->create_buff() != nullptr )
+            break;
+        }
+      }
+
       struct monk_effect_callback : dbc_proc_callback_t
       {
         monk_t *p;
@@ -8885,12 +8909,26 @@ namespace monk
             }
           }
         }
+
+        void execute( action_t *a, action_state_t *state ) override
+        {
+          if ( !state->target->is_sleeping() )
+          {
+            // Dynamically find and execute proc tracking
+            auto proc = p->find_proc( effect.trigger()->_name );
+            if ( proc )
+              proc->occur();
+          }
+
+          dbc_proc_callback_t::execute( a, state );
+        }
       };
 
       special_effects.push_back( effect ); // Garbage collection
 
       new monk_effect_callback( *effect, this, trigger );
     };
+
 
     // ======================================
     // Resonant Fists Talent
@@ -8949,9 +8987,8 @@ namespace monk
     {
       create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ), [ ] ( monk_t *p, action_state_t *state )
       {
-        p->buff.blackout_reinforcement->trigger();
         return true;
-       } );
+      } );
     }
 
     // ======================================
