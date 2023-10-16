@@ -230,6 +230,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     if ( data().ok() )
     {
       apply_buff_effects();
+      apply_debuffs_effects();
     }
   }
 
@@ -250,11 +251,16 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
   {
     // using S = const spell_data_t*;
 
-    parse_buff_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
-    parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
-    parse_buff_effects( p().o().buffs.devoured_pride );
-    parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
+    
+    if ( p().o().specialization() == PRIEST_SHADOW )
+    {
+      parse_buff_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
+      parse_buff_effects( p().o().buffs.shadowform );
+      parse_buff_effects( p().o().buffs.devoured_pride );
+      parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false,
+                          USE_DATA );  // Buffs non-periodic spells - Skip E4
+    }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
     {
@@ -267,6 +273,25 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
       {
         parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
       }
+    }
+
+    // DISCIPLINE BUFF EFFECTS
+    if ( p().o().specialization() == PRIEST_DISCIPLINE )
+    {
+      parse_buff_effects( p().o().buffs.shadow_covenant, 0U, false, USE_DEFAULT );
+      // 280398 applies the buff to the correct spells, but does not contain the correct buff value
+      // (12% instead of 40%) So, override to use our provided default_value (40%) instead
+      parse_buff_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_DEFAULT );
+    }
+
+  }
+  void apply_debuffs_effects()
+  {
+    // using S = const spell_data_t*;
+    // DISCIPLINE DEBUFF EFFECTS
+    if ( p().o().specialization() == PRIEST_DISCIPLINE )
+    {
+      parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().o().talents.discipline.schism );
     }
   }
 
@@ -1041,6 +1066,7 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
     auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
     buffs.devoured_pride->extend_duration( this, extend );
     buffs.devoured_despair->extend_duration( this, extend );
+    buffs.shadow_covenant->extend_duration( this, extend );
 
     for ( auto a_pet : get_current_main_pet( *this ) )
     {

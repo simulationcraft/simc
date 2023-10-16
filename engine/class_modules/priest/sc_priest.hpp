@@ -99,7 +99,6 @@ public:
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
-    propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> psychic_horror;
   } buffs;
 
@@ -394,6 +393,7 @@ public:
       player_talent_t purge_the_wicked;
       player_talent_t rapture;
       player_talent_t shadow_covenant;
+      const spell_data_t* shadow_covenant_buff;
       const spell_data_t* dark_reprimand;
       // Row 6
       player_talent_t revel_in_purity;
@@ -542,6 +542,7 @@ public:
   {
     propagate_const<real_ppm_t*> idol_of_cthun;
     propagate_const<real_ppm_t*> deathspeaker;
+    propagate_const<real_ppm_t*> power_of_the_dark_side;
   } rppm;
 
   // Gains
@@ -572,6 +573,7 @@ public:
     // Discipline
     propagate_const<proc_t*> power_of_the_dark_side;
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
+    propagate_const<proc_t*> power_of_the_dark_side_dark_indulgence_overflow;
     propagate_const<proc_t*> expiation_lost_no_dot;
     // Shadow
     propagate_const<proc_t*> shadowy_apparition_vb;
@@ -830,9 +832,11 @@ public:
     if ( !priest().talents.discipline.power_of_the_dark_side.enabled() )
       return;
 
-    int stack = priest().buffs.power_of_the_dark_side->check();
-    if ( priest().buffs.power_of_the_dark_side->trigger() )
+    if ( priest().rppm.power_of_the_dark_side->trigger() )
     {
+      int stack = priest().buffs.power_of_the_dark_side->check();
+
+      priest().buffs.power_of_the_dark_side->trigger();
       if ( priest().buffs.power_of_the_dark_side->check() == stack )
       {
         priest().procs.power_of_the_dark_side_overflow->occur();

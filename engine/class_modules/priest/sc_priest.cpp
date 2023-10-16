@@ -199,6 +199,18 @@ public:
         priest().procs.mind_devourer->occur();
       }
 
+      if ( priest().talents.discipline.dark_indulgence.enabled() )
+      {
+        int stack = priest().buffs.power_of_the_dark_side->check();
+                
+        priest().buffs.power_of_the_dark_side->trigger();
+
+        if ( priest().buffs.power_of_the_dark_side->check() == stack )
+        {
+          priest().procs.power_of_the_dark_side_dark_indulgence_overflow->occur();
+        }
+      }
+
       if ( priest().talents.shadow.shadowy_apparitions.enabled() )
       {
         priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mb, s->result == RESULT_CRIT );
@@ -648,10 +660,6 @@ struct smite_t final : public priest_spell_t
         }
       }
     }
-    if ( priest().talents.discipline.harsh_discipline.enabled() )
-    {
-      priest().buffs.harsh_discipline->trigger();
-    }
 
     if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
     {
@@ -839,12 +847,20 @@ struct summon_fiend_t final : public priest_spell_t
 
     if ( spawner )
       spawner->spawn( default_duration );
+
+    if ( priest().talents.discipline.shadow_covenant.enabled() )
+    {
+      priest().buffs.shadow_covenant->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
+    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
+    {
+      make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
+    }
   }
 };
 
@@ -1886,8 +1902,10 @@ void priest_t::create_gains()
 void priest_t::create_procs()
 {
   // Discipline
-  procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
-  procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
+  procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side procs from dot ticks" );
+  procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side from dot ticks lost to overflow" );
+  procs.power_of_the_dark_side_dark_indulgence_overflow =
+      get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
   procs.expiation_lost_no_dot           = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
   procs.shadowy_apparition_vb          = get_proc( "Shadowy Apparition from Void Bolt" );
@@ -2052,7 +2070,13 @@ double priest_t::composite_spell_crit_chance() const
 double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+  
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
+  
+  if ( !guardian )
+    m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
+  else
+    m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
 
   // Auto parsing does not cover melee attacks, and other attacks double dip with this
   if ( buffs.devoured_pride->check() )

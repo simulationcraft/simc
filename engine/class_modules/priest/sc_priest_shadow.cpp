@@ -2263,6 +2263,7 @@ void priest_t::init_rng_shadow()
 {
   rppm.idol_of_cthun = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
   rppm.deathspeaker  = get_rppm( "deathspeaker", talents.shadow.deathspeaker );
+  rppm.power_of_the_dark_side = get_rppm( "power_of_the_dark_side", talents.discipline.power_of_the_dark_side );
 }
 
 void priest_t::init_spells_shadow()

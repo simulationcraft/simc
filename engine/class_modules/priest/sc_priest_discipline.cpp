@@ -344,6 +344,7 @@ struct penance_t : public priest_spell_t
     {
       channel->execute();
     }
+    
     if ( priest().talents.manipulation.enabled() )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
@@ -365,6 +366,8 @@ struct penance_t : public priest_spell_t
     {
       spread_purge_the_wicked( state, p() );
     }
+
+    priest().trigger_inescapable_torment( state->target );
   }
 
 private:
@@ -380,15 +383,29 @@ namespace buffs
 void priest_t::create_buffs_discipline()
 {
   buffs.power_of_the_dark_side =
-      make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
-          ->set_trigger_spell( talents.discipline.power_of_the_dark_side );
+      make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() );
 
-  buffs.shadow_covenant =
-      make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant->effectN( 4 ).trigger() )
-          ->set_default_value( talents.discipline.shadow_covenant->effectN( 4 ).trigger()->effectN( 1 ).percent() +
-                               talents.discipline.twilight_corruption->effectN( 1 ).percent() )
-          ->modify_duration( talents.discipline.shadow_covenant->duration() )
-          ->set_trigger_spell( talents.discipline.shadow_covenant );
+  buffs.shadow_covenant = make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant_buff );
+
+  if ( talents.discipline.shadow_covenant.enabled() )
+  {
+    // Twilight corruption doesnt work rn lmao
+    // double scov_amp = talents.discipline.twilight_corruption->effectN(1).percent();
+    double scov_amp          = 0.1;
+    timespan_t scov_duration = 15_s;
+    if ( talents.shared.mindbender.enabled() )
+    {
+      scov_amp += 0.1;
+      scov_duration = talents.shared.mindbender->duration();
+    }
+    else
+    {
+      scov_amp += 0.25;
+      scov_duration = talents.shadowfiend->duration();
+    }
+    buffs.shadow_covenant->set_default_value( scov_amp );
+    buffs.shadow_covenant->set_duration( scov_duration );
+  }
 
   // 280391 has the correct 40% damage increase value, but does not apply it to any spells.
   // 280398 applies the damage to the correct spells, but does not contain the correct value (12% instead of 40%).
@@ -454,17 +471,18 @@ void priest_t::init_spells_discipline()
   talents.discipline.painful_punishment    = ST( "Painful Punishment" );
   talents.discipline.malicious_intent      = ST( "Malicious Intent" );
   // Row 5
-  talents.discipline.purge_the_wicked = ST( "Purge the Wicked" );
-  talents.discipline.rapture          = ST( "Rapture" );
-  talents.discipline.shadow_covenant  = ST( "Shadow Covenant" );
-  talents.discipline.dark_reprimand   = find_spell( 373129 );
+  talents.discipline.purge_the_wicked     = ST( "Purge the Wicked" );
+  talents.discipline.rapture              = ST( "Rapture" );
+  talents.discipline.shadow_covenant      = ST( "Shadow Covenant" );
+  talents.discipline.shadow_covenant_buff = find_spell( 322105 );
+  talents.discipline.dark_reprimand       = find_spell( 373129 );
   // Row 6
   talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
   talents.discipline.contrition          = ST( "Contrition" );
   talents.discipline.exaltation          = ST( "Exaltation" );
   talents.discipline.indemnity           = ST( "Indemnity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
-  talents.discipline.twilight_corruption = ST( "Twilight Corruption" );
+  talents.discipline.twilight_corruption = ST( "Twilight Corruption" ); //373065
   // Row
   talents.discipline.borrowed_time   = ST( "Borrowed Time" );
   talents.discipline.castigation     = ST( "Castigation" );
