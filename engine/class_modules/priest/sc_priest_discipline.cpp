@@ -142,6 +142,7 @@ struct penance_damage_t : public priest_spell_t
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
     force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT );
+    force_buff_effect( p.buffs.shadow_covenant, 2, false, USE_DEFAULT );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -166,34 +167,30 @@ struct penance_damage_t : public priest_spell_t
 // Penance channeled spell
 struct penance_channel_t final : public priest_spell_t
 {
-  penance_channel_t( priest_t& p, util::string_view n, const spell_data_t* s )
-    : priest_spell_t( n, p, s ),
-      damage( new penance_damage_t( p, "penance_tick", p.specs.penance_tick ) ),
-      shadow_covenant_damage( new penance_damage_t( p, "dark_reprimand_tick",
-                                                    p.talents.discipline.dark_reprimand->effectN( 2 ).trigger() ) )
+private:
+  propagate_const<action_t*> damage;
+
+public:
+  penance_channel_t( priest_t& p, util::string_view n, const spell_data_t* s, const spell_data_t* s_tick )
+    : priest_spell_t( n, p, s ), damage( new penance_damage_t( p, std::string( n ) + "_tick", s_tick ) )
   {
-    dual = channeled = dynamic_tick_action = direct_tick = true;
+    channeled = true;
+    dual      = false;
     may_miss = may_crit = false;
+    cooldown->duration  = 0_s;
     add_child( damage );
-    add_child( shadow_covenant_damage );
   }
 
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
+
     if ( priest().talents.discipline.weal_and_woe.enabled() )
     {
       priest().buffs.weal_and_woe->trigger();
     }
 
-    if ( p().buffs.shadow_covenant->up() )
-    {
-      shadow_covenant_damage->execute();
-    }
-    else
-    {
-      damage->execute();
-    }
+    damage->execute();
   }
 
   void last_tick( dot_t* d ) override
@@ -231,10 +228,6 @@ struct penance_channel_t final : public priest_spell_t
     //dot_duration     = num_ticks * base_tick_time;
     priest_spell_t::execute();
   }
-
-private:
-  propagate_const<action_t*> damage;
-  propagate_const<action_t*> shadow_covenant_damage;
 };
 
 // Main penance action spell
@@ -245,17 +238,17 @@ struct penance_t : public priest_spell_t
   unsigned max_spread_targets;
 
   penance_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "penance", p, p.specs.penance ),
+    : priest_spell_t( "penance_cast", p, p.specs.penance ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
       max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) ),
-      channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
-      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) )
+      channel( new penance_channel_t( p, "penance", p.specs.penance_channel, p.specs.penance_tick ) ),
+      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand, p.talents.discipline.dark_reprimand->effectN( 2 ).trigger()  ) )
   {
     parse_options( options_str );
     cooldown->duration = p.specs.penance->cooldown();
-    add_child( channel );
-    add_child( shadow_covenant_channel );
+    name_str_reporting = "penance";
+
   }
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const

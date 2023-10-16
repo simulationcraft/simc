@@ -2148,6 +2148,11 @@ double priest_t::composite_leech() const
   return l;
 }
 
+void priest_t::pre_analyze_hook()
+{
+  player_t::pre_analyze_hook();
+}
+
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )

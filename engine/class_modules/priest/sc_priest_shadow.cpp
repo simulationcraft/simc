@@ -2192,7 +2192,6 @@ void priest_t::create_buffs_shadow()
   buffs.surge_of_insanity =
       make_buff( this, "surge_of_insanity", talents.shadow.surge_of_insanity )
           ->set_duration( 0_s )
-          ->set_max_stack( is_ptr() ? talents.shadow.surge_of_insanity->effectN( 3 ).base_value() : 1 )
           ->set_stack_change_callback( [ this ]( buff_t* b, int, int _new ) {
             if ( _new == b->max_stack() )
             {
@@ -2208,6 +2207,12 @@ void priest_t::create_buffs_shadow()
               }
             }
           } );
+
+  if ( talents.shadow.surge_of_insanity.enabled() )
+  {
+    buffs.surge_of_insanity->set_max_stack( is_ptr() ? talents.shadow.surge_of_insanity->effectN( 3 ).base_value()
+                                                     : 1 );
+  }
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
 
