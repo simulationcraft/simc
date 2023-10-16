@@ -7840,6 +7840,10 @@ struct starsurge_t : public astral_power_spender_t
 
       force_buff_effect( p->buff.eclipse_lunar, 1 );
       force_buff_effect( p->buff.eclipse_solar, 1 );
+
+      // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
+      // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
+      // forcing effect#1 modified by the talent.
       force_buff_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
       force_buff_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
 
@@ -8036,6 +8040,12 @@ struct orbital_strike_t : public druid_spell_t
 
     force_buff_effect( p->buff.eclipse_lunar, 1 );
     force_buff_effect( p->buff.eclipse_solar, 1 );
+
+    // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
+    // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
+    // forcing effect#1 modified by the talent.
+    force_buff_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
+    force_buff_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
 
     if ( !p->is_ptr() )
     {
