@@ -96,7 +96,7 @@ public:
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 ).time_value() ),
       child_expiation( nullptr )
   {
     parse_options( options_str );
@@ -127,7 +127,7 @@ public:
 
     if ( priest().talents.discipline.void_summoner.enabled() )
     {
-      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+      priest().cooldowns.fiend->adjust( void_summoner_cdr );
     }
 
     if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
@@ -551,7 +551,7 @@ struct smite_base_t : public priest_spell_t
                 util::string_view options_str = {} )
     : priest_spell_t( name, p, s ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 ).time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
       child_holy_fire( priest().background_actions.holy_fire ),
       child_searing_light( priest().background_actions.searing_light )
@@ -610,6 +610,8 @@ struct smite_base_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
+    priest().buffs.weal_and_woe->expire();
+
     if ( priest().talents.manipulation.enabled() &&
          ( priest().specialization() == PRIEST_HOLY || priest().specialization() == PRIEST_DISCIPLINE ) )
     {
@@ -618,7 +620,7 @@ struct smite_base_t : public priest_spell_t
 
     if ( priest().talents.discipline.void_summoner.enabled() )
     {
-      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+      priest().cooldowns.fiend->adjust( void_summoner_cdr );
     }
 
     if ( priest().talents.discipline.train_of_thought.enabled() )
@@ -666,11 +668,6 @@ struct smite_base_t : public priest_spell_t
           child_searing_light->execute();
         }
       }
-    }
-
-    if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
-    {
-      priest().buffs.weal_and_woe->expire();
     }
   }
 };
@@ -1910,6 +1907,7 @@ void priest_t::create_cooldowns()
   cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
   cooldowns.mindgames                     = get_cooldown( "mindgames" );
   cooldowns.mindbender                    = get_cooldown( "mindbender" );
+  cooldowns.shadowfiend                   = get_cooldown( "shadowfiend" );
   cooldowns.penance                       = get_cooldown( "penance" );
   cooldowns.maddening_touch_icd           = get_cooldown( "maddening_touch_icd" );
   cooldowns.maddening_touch_icd->duration = 1_s;
@@ -2380,6 +2378,7 @@ void priest_t::init_scaling()
 void priest_t::init_finished()
 {
   base_t::init_finished();
+  cooldowns.fiend = talents.shared.mindbender.enabled() ? cooldowns.mindbender : cooldowns.shadowfiend;
 }
 
 void priest_t::init_spells()

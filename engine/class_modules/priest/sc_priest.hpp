@@ -521,6 +521,8 @@ public:
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> mindgames;
     propagate_const<cooldown_t*> mindbender;
+    propagate_const<cooldown_t*> shadowfiend;
+    propagate_const<cooldown_t*> fiend;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;

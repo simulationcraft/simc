@@ -203,7 +203,7 @@ public:
   penance_channel_t( priest_t& p, util::string_view n, const spell_data_t* s, const spell_data_t* s_tick )
     : priest_spell_t( n, p, s ), damage( new penance_damage_t( p, std::string( n ) + "_tick", s_tick ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 ).time_value() ),
       max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) )
   {
     channeled = true;
@@ -371,7 +371,7 @@ public:
 
     if ( priest().talents.discipline.void_summoner.enabled() )
     {
-      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+      priest().cooldowns.fiend->adjust( void_summoner_cdr );
     }
 
     priest().buffs.power_of_the_dark_side->expire();
