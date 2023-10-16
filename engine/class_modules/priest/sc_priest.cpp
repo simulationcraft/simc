@@ -538,7 +538,8 @@ struct power_word_fortitude_t final : public priest_spell_t
 // ==========================================================================
 // Smite
 // ==========================================================================
-struct smite_t final : public priest_spell_t
+
+struct smite_base_t : public priest_spell_t
 {
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
@@ -546,18 +547,24 @@ struct smite_t final : public priest_spell_t
   propagate_const<action_t*> child_holy_fire;
   action_t* child_searing_light;
 
-  smite_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
+  smite_base_t( priest_t& p, util::string_view name, const spell_data_t* s, bool bg = false,
+                util::string_view options_str = {} )
+    : priest_spell_t( name, p, s ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
       child_holy_fire( priest().background_actions.holy_fire ),
       child_searing_light( priest().background_actions.searing_light )
+
   {
-    parse_options( options_str );
-    if ( priest().talents.holy.divine_word.enabled() )
+    background = bg;
+    if ( !background )
     {
-      child_holy_fire->background = true;
+      parse_options( options_str );
+      if ( priest().talents.holy.divine_word.enabled() )
+      {
+        child_holy_fire->background = true;
+      }
     }
   }
 
@@ -590,7 +597,7 @@ struct smite_t final : public priest_spell_t
   {
     timespan_t et = priest_spell_t::execute_time();
 
-    if ( priest().talents.unwavering_will.enabled() && priest().specialization() != PRIEST_SHADOW &&
+    if ( priest().talents.unwavering_will.enabled() &&
          priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
     {
       et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
@@ -664,6 +671,32 @@ struct smite_t final : public priest_spell_t
     if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
     {
       priest().buffs.weal_and_woe->expire();
+    }
+  }
+};
+
+struct smite_t final : public smite_base_t
+{
+  smite_base_t* shadow_smite;
+
+  smite_t( priest_t& p, util::string_view options_str )
+    : smite_base_t( p, "smite", p.find_class_spell( "Smite" ), false, options_str ), shadow_smite( nullptr )
+  {
+    if ( p.sets->has_set_bonus( PRIEST_DISCIPLINE, T31, B4 ) )
+    {
+      shadow_smite = new smite_base_t( p, "smite_t31", priest().specs.smite_t31, true );
+      add_child( shadow_smite );
+    }
+  }
+
+  
+  void impact( action_state_t* s ) override
+  {
+    smite_base_t::impact( s );
+
+    if ( shadow_smite && priest().buffs.shadow_covenant->up() )
+    {
+      make_event( sim, 200_ms, [ this, t = s->target ] { shadow_smite->execute_on_target( t ); } );
     }
   }
 };
@@ -2574,6 +2607,9 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Holy Talents
   action.apply_affecting_aura( talents.holy.miracle_worker );
+
+  // Disc T31 2pc
+  action.apply_affecting_aura( sets->set( PRIEST_DISCIPLINE, T31, B2 ) );
 }
 
 void priest_t::invalidate_cache( cache_e cache )

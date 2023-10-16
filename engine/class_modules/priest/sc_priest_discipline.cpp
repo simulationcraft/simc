@@ -177,6 +177,9 @@ protected:
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double d = priest_spell_t::composite_da_multiplier( s );
+
+      d *= cast_state( s )->potds_mult;
+
       return d;
     }
 
@@ -562,10 +565,11 @@ void priest_t::init_spells_discipline()
   // talents.discipline.mindbender                      = ST( "Mindbender" ); - Shared Talent
 
   // General Spells
-  specs.sins_of_the_many       = find_spell( 280398 );
-  specs.penance                = find_spell( 47540 );
-  specs.penance_channel        = find_spell( 47758 );  // Channel spell, triggered by 47540, executes 47666 every tick
-  specs.penance_tick           = find_spell( 47666 );  // Not triggered from 47540, only 47758
+  specs.sins_of_the_many = find_spell( 280398 );
+  specs.penance          = find_spell( 47540 );
+  specs.penance_channel  = find_spell( 47758 );  // Channel spell, triggered by 47540, executes 47666 every tick
+  specs.penance_tick     = find_spell( 47666 );  // Not triggered from 47540, only 47758
+  specs.smite_t31        = find_spell( 425529 ); // T31 Shadow Smite
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

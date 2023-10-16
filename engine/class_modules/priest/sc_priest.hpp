@@ -483,6 +483,7 @@ public:
     const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
     const spell_data_t* sins_of_the_many;
+    const spell_data_t* smite_t31;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -1083,14 +1084,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       // Mindbender (123040) and Shadowfiend (34433) don't apply this buff
       // Non-harmful actions don't apply this buff
-      if ( this->school == SCHOOL_SHADOW && this->id != 34433 && this->id != 123040 && this->harmful == true )
+      if ( school == SCHOOL_SHADOW && id != 34433 && id != 123040 && harmful && !background )
       {
         priest().buffs.twilight_equilibrium_holy_amp->trigger();
         priest().buffs.twilight_equilibrium_shadow_amp->expire();
       }
       // Holy and Radiant (SCHOOL_HOLYFIRE) applies this buff
       // Non-harmful actions don't apply this buff
-      if ( ( this->school == SCHOOL_HOLY || this->school == SCHOOL_HOLYFIRE ) && this->harmful == true )
+      if ( ( school == SCHOOL_HOLY || school == SCHOOL_HOLYFIRE ) && harmful && !background )
       {
         priest().buffs.twilight_equilibrium_shadow_amp->trigger();
         priest().buffs.twilight_equilibrium_holy_amp->expire();
