@@ -2682,7 +2682,10 @@ namespace monk
           if ( current_resource() == RESOURCE_CHI && last_resource_cost == 0 )
           {
             if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
+            {
               p()->buff.blackout_reinforcement->trigger();
+              p()->proc.blackout_reinforcement->occur();
+            }
           }
         }
 
