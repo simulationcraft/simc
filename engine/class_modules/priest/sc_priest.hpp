@@ -369,6 +369,7 @@ public:
     {
       // Row 1
       player_talent_t atonement;
+      const spell_data_t* atonement_buff;
       // Row 2
       player_talent_t power_word_radiance;
       player_talent_t pain_suppression;
@@ -380,6 +381,7 @@ public:
       player_talent_t protector_of_the_frail;
       player_talent_t dark_indulgence;
       player_talent_t schism;
+      const spell_data_t* schism_debuff;
       // Row 4
       player_talent_t bright_pupil;
       player_talent_t enduring_luminescence;

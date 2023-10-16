@@ -50,7 +50,7 @@ struct expiation_t final : public priest_spell_t
       const priest_td_t* td = priest().find_target_data( s->target );
       if ( td && td->buffs.schism->check() )
       {
-        auto adjust_percent = priest().talents.discipline.schism->effectN( 2 ).percent();
+        auto adjust_percent = priest().talents.discipline.schism_debuff->effectN( 1 ).percent();
         d *= 1.0 + adjust_percent;
         sim->print_debug( "schism modifies expiation damage by {} (new total: {})", adjust_percent, d );
       }
@@ -223,11 +223,6 @@ public:
         child_expiation->target = s->target;
         child_expiation->execute();
       }
-    }
-
-    if ( priest().talents.discipline.harsh_discipline.enabled() )
-    {
-      priest().buffs.harsh_discipline->trigger();
     }
   }
 
@@ -1761,7 +1756,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.purge_the_wicked   = target->get_dot( "purge_the_wicked", &p );
   dots.holy_fire          = target->get_dot( "holy_fire", &p );
 
-  buffs.schism = make_buff( *this, "schism", p.talents.discipline.schism )
+  buffs.schism = make_buff( *this, "schism", p.talents.discipline.schism_debuff )
                      ->apply_affecting_aura( p.talents.discipline.malicious_intent );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.echoing_void             = make_buff( *this, "echoing_void", p.find_spell( 373281 ) );

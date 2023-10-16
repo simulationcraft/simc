@@ -12,10 +12,44 @@ namespace priestspace
 {
 namespace actions::spells
 {
+
+struct power_word_radiance_t final : public priest_heal_t
+{
+  timespan_t atonement_duration;
+
+  power_word_radiance_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "power_word_radiance", p, p.talents.discipline.power_word_radiance )
+  {
+    parse_options( options_str );
+    harmful = false;
+
+    aoe = 1 + as<int>( data().effectN( 3 ).base_value() );
+
+    apply_affecting_aura( p.talents.discipline.lights_promise );
+    apply_affecting_aura( p.talents.discipline.bright_pupil );
+    apply_affecting_aura( p.talents.discipline.enduring_luminescence );
+
+    atonement_duration =
+        ( data().effectN( 3 ).percent() + p.talents.discipline.enduring_luminescence->effectN( 1 ).percent() ) *
+        p.talents.discipline.atonement_buff->duration();
+
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    if ( priest().talents.discipline.harsh_discipline.ok() )
+    {
+      priest().buffs.harsh_discipline->trigger();
+    }
+  }
+};
+
 struct pain_suppression_t final : public priest_spell_t
 {
   pain_suppression_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "pain_suppression", p, p.find_class_spell( "Pain Suppression" ) )
+    : priest_spell_t( "pain_suppression", p, p.talents.discipline.pain_suppression )
   {
     parse_options( options_str );
 
@@ -397,7 +431,8 @@ void priest_t::init_spells_discipline()
 
   // Talents
   // Row 1
-  talents.discipline.atonement = ST( "Atonement" );
+  talents.discipline.atonement      = ST( "Atonement" );
+  talents.discipline.atonement_buff = find_spell( 194384 );
   // Row 2
   talents.discipline.power_word_radiance    = ST( "Power Word: Radiance" );
   talents.discipline.pain_suppression       = ST( "Pain Suppression" );
@@ -409,6 +444,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.protector_of_the_frail = ST( "Protector of the Frail" );
   talents.discipline.dark_indulgence        = ST( "Dark Indulgence" );
   talents.discipline.schism                 = ST( "Schism" );
+  talents.discipline.schism_debuff          = find_spell( 214621 );
   // Row 4
   talents.discipline.bright_pupil          = ST( "Bright Pupil" );
   talents.discipline.enduring_luminescence = ST( "Enduring Luminescence" );
@@ -468,6 +504,10 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
 {
   using namespace actions::spells;
 
+  if ( name == "power_word_radiance" )
+  {
+    return new power_word_radiance_t( *this, options_str );
+  }
   if ( name == "pain_suppression" )
   {
     return new pain_suppression_t( *this, options_str );
