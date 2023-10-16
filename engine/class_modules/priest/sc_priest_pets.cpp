@@ -291,7 +291,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     // DISCIPLINE DEBUFF EFFECTS
     if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().o().talents.discipline.schism );
+        parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().o().talents.discipline.schism_debuff );
     }
   }
 
