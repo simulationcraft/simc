@@ -7842,8 +7842,12 @@ struct starsurge_t : public astral_power_spender_t
       force_buff_effect( p->buff.eclipse_solar, 1 );
       force_buff_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
       force_buff_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
-      force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
-      force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
+
+      if ( !p->is_ptr() )
+      {
+        force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
+        force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
+      }
     }
   };
 
@@ -8032,8 +8036,12 @@ struct orbital_strike_t : public druid_spell_t
 
     force_buff_effect( p->buff.eclipse_lunar, 1 );
     force_buff_effect( p->buff.eclipse_solar, 1 );
-    force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
-    force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
+
+    if ( !p->is_ptr() )
+    {
+      force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
+      force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
+    }
   }
 
   void impact( action_state_t* s ) override
