@@ -2241,6 +2241,7 @@ namespace monk
           if ( p()->buff.blackout_reinforcement->up() )
           {
             p()->buff.blackout_reinforcement->expire();
+
             timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
             p()->cooldown.fists_of_fury->adjust( cooldown_reduction );
             p()->cooldown.rising_sun_kick->adjust( cooldown_reduction );
@@ -7354,7 +7355,6 @@ namespace monk
     cooldown.blackout_kick = get_cooldown( "blackout_kick" );
     cooldown.black_ox_brew = get_cooldown( "black_ox_brew" );
     cooldown.bonedust_brew = get_cooldown( "bonedust_brew" );
-    cooldown.brewmaster_attack = get_cooldown( "brewmaster_attack" );
     cooldown.breath_of_fire = get_cooldown( "breath_of_fire" );
     cooldown.celestial_brew = get_cooldown( "celestial_brew" );
     cooldown.charred_passions = get_cooldown( "charred_passions" );
@@ -7362,12 +7362,13 @@ namespace monk
     cooldown.drinking_horn_cover = get_cooldown( "drinking_horn_cover" );
     cooldown.expel_harm = get_cooldown( "expel_harm" );
     cooldown.faeline_stomp = get_cooldown( "faeline_stomp" );
-    cooldown.fortifying_brew = get_cooldown( "fortifying_brew" );
     cooldown.fists_of_fury = get_cooldown( "fists_of_fury" );
-    cooldown.fury_of_xuen = get_cooldown( "fury_of_xuen" );
+    cooldown.flying_serpent_kick = get_cooldown( "flying_serpent_kick" );
+    cooldown.fortifying_brew = get_cooldown( "fortifying_brew" );
     cooldown.healing_elixir = get_cooldown( "healing_elixir" );
     cooldown.invoke_niuzao = get_cooldown( "invoke_niuzao_the_black_ox" );
     cooldown.invoke_xuen = get_cooldown( "invoke_xuen_the_white_tiger" );
+    cooldown.invoke_yulon = get_cooldown( "invoke_yulon_the_jade_serpent" );
     cooldown.keg_smash = get_cooldown( "keg_smash" );
     cooldown.purifying_brew = get_cooldown( "purifying_brew" );
     cooldown.resonant_fists = get_cooldown( "resonant_fists" );
@@ -7377,6 +7378,7 @@ namespace monk
     cooldown.rushing_jade_wind_brm = get_cooldown( "rushing_jade_wind" );
     cooldown.rushing_jade_wind_ww = get_cooldown( "rushing_jade_wind" );
     cooldown.storm_earth_and_fire = get_cooldown( "storm_earth_and_fire" );
+    cooldown.strike_of_the_windlord = get_cooldown( "strike_of_the_windlord" );
     cooldown.thunder_focus_tea = get_cooldown( "thunder_focus_tea" );
     cooldown.touch_of_death = get_cooldown( "touch_of_death" );
     cooldown.serenity = get_cooldown( "serenity" );
