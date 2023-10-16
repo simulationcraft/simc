@@ -407,6 +407,7 @@ public:
                                                       p.talents.discipline.dark_reprimand->effectN( 2 ).trigger() ) )
   {
     parse_options( options_str );
+    cooldown           = p.cooldowns.penance;
     cooldown->duration = p.specs.penance->cooldown();
   }
 
