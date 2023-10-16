@@ -1350,18 +1350,6 @@ struct holy_nova_t final : public priest_spell_t
     reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_da_multiplier( s );
-
-    if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
-    {
-      m *= 1 + ( priest().talents.rhapsody_buff->effectN( 1 ).percent() * priest().buffs.rhapsody->current_stack );
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     priest_spell_t::execute();

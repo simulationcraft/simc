@@ -871,6 +871,7 @@ public:
     // GENERAL PRIEST BUFF EFFECTS
     parse_buff_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
     parse_buff_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
+    parse_buff_effects( p().buffs.rhapsody, true, p().specs.discipline_priest );
 
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
