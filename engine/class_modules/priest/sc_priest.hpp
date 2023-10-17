@@ -1033,6 +1033,7 @@ public:
     may_crit      = true;
     tick_may_crit = false;
     may_miss      = false;
+    target        = &player;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1069,6 +1070,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ), disc_mastery( false )
   {
+    target = &player;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override

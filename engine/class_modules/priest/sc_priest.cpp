@@ -1438,8 +1438,11 @@ namespace heals
 // ==========================================================================
 struct flash_heal_t final : public priest_heal_t
 {
+  timespan_t atonement_duration;
+
   flash_heal_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
+    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) ),
+      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -1483,6 +1486,12 @@ struct flash_heal_t final : public priest_heal_t
     priest_heal_t::impact( s );
 
     priest().buffs.from_darkness_comes_light->expire();
+
+    if ( priest().talents.discipline.atonement.enabled() )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.atonement->trigger( atonement_duration );
+    }
   }
 };
 
@@ -1552,10 +1561,13 @@ struct desperate_prayer_t final : public priest_heal_t
 struct power_word_shield_t final : public priest_absorb_t
 {
   double insanity;
+  timespan_t atonement_duration;
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
+      insanity( priest().specs.hallucinations->effectN( 1 ).resource() ),
+      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() +
+                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
@@ -1597,6 +1609,13 @@ struct power_word_shield_t final : public priest_absorb_t
     {
       s->target->buffs.body_and_soul->trigger();
     }
+
+    if ( priest().talents.discipline.atonement.enabled() )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.atonement->trigger( atonement_duration );
+    }
+
     if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T29, B2 ) )
     {
       priest().buffs.light_weaving->trigger();

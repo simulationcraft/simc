@@ -165,6 +165,34 @@ struct pain_suppression_t final : public priest_spell_t
   }
 };
 
+
+struct evangelism_t final : public priest_spell_t
+{
+  timespan_t atonement_extend;
+  evangelism_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "evangelism", p, p.talents.discipline.evangelism ),
+      atonement_extend( timespan_t::from_seconds( p.talents.discipline.evangelism->effectN( 1 ).base_value() ) )
+  {
+    parse_options( options_str );
+
+    target = &p;
+
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    target->buffs.pain_suppression->trigger();
+
+    for ( auto ally : p().allies_with_atonement )
+    {
+      p().find_target_data( ally )->buffs.atonement->extend_duration( &p(), atonement_extend );
+    }
+  }
+};
+
 // Purge the wicked
 struct purge_the_wicked_t final : public priest_spell_t
 {
@@ -695,13 +723,25 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   {
     return new purge_the_wicked_t( *this, options_str );
   }
-
+  if ( name == "evangelism" )
+  {
+    return new evangelism_t( *this, options_str );
+  }
+  
   return nullptr;
 }
 
-std::unique_ptr<expr_t> priest_t::create_expression_discipline( action_t*, util::string_view /*name_str*/ )
+std::unique_ptr<expr_t> priest_t::create_expression_discipline( action_t*, util::string_view name_str )
 {
-  return {};
+  if ( name_str == "active_atonements" )
+  {
+    if ( !talents.discipline.atonement.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+
+    return make_fn_expr( name_str, [ this ]() { return allies_with_atonement.size(); } );
+  }
+
+  return nullptr;
 }
 
 }  // namespace priestspace
