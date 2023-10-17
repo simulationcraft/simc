@@ -1608,7 +1608,7 @@ action_t* dreadstalker_t::create_action( util::string_view name, util::string_vi
 /// Vilefiend Begin
 
 vilefiend_t::vilefiend_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "vilefiend", PET_VILEFIEND )
+  : warlock_simple_pet_t( owner, "vilefiend", PET_VILEFIEND ), caustic_presence( nullptr )
 {
   action_list_str = "bile_spit";
   action_list_str += "/travel";
@@ -1660,6 +1660,15 @@ struct headbutt_t : public warlock_pet_melee_attack_t
   }
 };
 
+struct caustic_presence_t : public warlock_pet_spell_t
+{
+  caustic_presence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Caustic Presence", p, p->find_spell( 428455 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
 void vilefiend_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
@@ -1669,11 +1678,32 @@ void vilefiend_t::init_base_stats()
   special_ability = new headbutt_t( this );
 }
 
+void vilefiend_t::create_buffs()
+{
+  warlock_simple_pet_t::create_buffs();
+
+  auto damage = new caustic_presence_t( this );
+
+  caustic_presence = make_buff<buff_t>( this, "caustic_presence", find_spell( 428453 ) )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                               ->set_tick_zero( true )
+                               ->set_period( 1_s )
+                               ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
+                                 if ( target )
+                                   damage->execute_on_target( target );
+                               } );
+
+  caustic_presence->quiet = true;
+}
+
 void vilefiend_t::arise()
 {
   warlock_simple_pet_t::arise();
 
   bile_spit_executes = 1;
+
+  if ( o()->talents.fel_invocation->ok() )
+    caustic_presence->trigger();
 }
 
 action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )

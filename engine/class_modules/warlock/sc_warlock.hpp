@@ -172,7 +172,7 @@ public:
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
-    spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends; // TODO: 10.2 has buffed Vilefiend damage by 15%
+    spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
