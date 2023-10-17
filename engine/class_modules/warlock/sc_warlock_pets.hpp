@@ -373,6 +373,7 @@ struct felguard_pet_t : public warlock_pet_t
     action_t* proc;
     player_t* target;
   } immutable_hatred;
+  action_t* hatred_proc; // New for 10.2 version, scrap previous struct when 10.2 goes live
   cooldown_t* felstorm_cd;
   cooldown_t* dstr_cd;
   int demonic_strength_executes;
