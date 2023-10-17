@@ -554,6 +554,10 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
     max_energy_threshold( 100 )
 {
   action_list_str = "travel";
+
+  if ( owner->min_version_check( VERSION_10_2_0 ) && owner->talents.soul_strike->ok() )
+    action_list_str += "/soul_strike";
+
   action_list_str += "/felstorm_demonic_strength";
   if ( !owner->disable_auto_felstorm )
     action_list_str += "/felstorm";
@@ -863,9 +867,11 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
   soul_cleave_t* soul_cleave;
 
-  soul_strike_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
+  soul_strike_t( warlock_pet_t* p, util::string_view options_str ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
   {
-    background = true;
+    parse_options( options_str );
+
+    background = !p->o()->min_version_check( VERSION_10_2_0 );
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );
@@ -1010,9 +1016,9 @@ void felguard_pet_t::init_base_stats()
 
   special_action = new axe_toss_t( this, "" );
 
-  if ( o()->talents.soul_strike->ok() )
+  if ( !o()->min_version_check( VERSION_10_2_0 ) && o()->talents.soul_strike->ok() )
   {
-    soul_strike = new soul_strike_t( this );
+    soul_strike = new soul_strike_t( this, "" );
   }
 
   if ( o()->talents.guillotine->ok() )
@@ -1037,6 +1043,8 @@ action_t* felguard_pet_t::create_action( util::string_view name, util::string_vi
     return new axe_toss_t( this, options_str );
   if ( name == "felstorm_demonic_strength" )
     return new demonic_strength_t( this, options_str );
+  if ( name == "soul_strike" )
+    return new soul_strike_t( this, options_str );
 
   return warlock_pet_t::create_action( name, options_str );
 }

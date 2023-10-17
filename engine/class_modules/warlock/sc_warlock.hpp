@@ -315,7 +315,7 @@ public:
 
     player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     player_talent_t summon_vilefiend;
-    player_talent_t soul_strike;
+    player_talent_t soul_strike; // TODO: Active player ability moved to pet in 10.2
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;

@@ -1449,7 +1449,7 @@ void warlock_t::init_spells_demonology()
 
   talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
 
-  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057
+  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057. NOTE: Updated to 428344 in 10.2
 
   talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
   talents.bilescourge_bombers_aoe = find_spell( 267213 );
