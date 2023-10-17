@@ -1697,7 +1697,7 @@ void demonic_tyrant_t::arise()
 
   if ( o()->talents.reign_of_tyranny->ok() && !o()->min_version_check( VERSION_10_2_0 ) )
   {
-    buffs.demonic_servitude->trigger( 1, ( ( o()->min_version_check( VERSION_10_2_0 ) ? 0 : 1 ) + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() ); // 2023-09-10: On 10.2 PTR, the stack cap is interfering with the previous 1 "permanent" stack value
+    buffs.demonic_servitude->trigger( 1, ( 1 + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() );
   }
 }
 
