@@ -84,19 +84,24 @@ void warlock_pet_t::create_buffs()
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
                              ->set_default_value_from_effect( 1 );
 
-  buffs.festering_hatred = make_buff( this, "festering_hatred" )
-                               ->set_max_stack( std::max( 1, as<int>( o()->talents.immutable_hatred->effectN( 2 ).base_value() ) ) )
-                               ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
-                                    {
-                                      if ( cur == b->max_stack() )
+  if ( !o()->min_version_check( VERSION_10_2_0 ) )
+  {
+    buffs.festering_hatred = make_buff( this, "festering_hatred" )
+                                 ->set_max_stack( std::max( 1, as<int>( o()->talents.immutable_hatred->effectN( 2 ).base_value() ) ) )
+                                 ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                       {
-                                        make_event( sim, 0_ms, [ this, b ] { 
-                                          auto fg = debug_cast<pets::demonology::felguard_pet_t*>( this );
-                                          fg->immutable_hatred.proc->execute_on_target( fg->immutable_hatred.target );
-                                          b->expire();
-                                        } );
-                                      }
-                                    } );
+                                        if ( cur == b->max_stack() )
+                                        {
+                                          make_event( sim, 0_ms, [ this, b ] { 
+                                            auto fg = debug_cast<pets::demonology::felguard_pet_t*>( this );
+                                            fg->immutable_hatred.proc->execute_on_target( fg->immutable_hatred.target );
+                                            b->expire();
+                                          } );
+                                        }
+                                      } );
+
+    buffs.festering_hatred->quiet = true;
+  }
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
                             ->set_default_value( o()->talents.demonic_power_buff->effectN( 1 ).percent() );
@@ -137,7 +142,6 @@ void warlock_pet_t::create_buffs()
   buffs.grimoire_of_service->quiet = true;
   buffs.annihilan_training->quiet = true;
   buffs.antoran_armaments->quiet = true;
-  buffs.festering_hatred->quiet = true;
   buffs.infernal_command->quiet = true;
   buffs.embers->quiet = true;
   buffs.fury_of_ruvaraad->quiet = true;
@@ -551,7 +555,8 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
     felguard_guillotine( nullptr ),
     demonic_strength_executes( 0 ),
     min_energy_threshold( find_spell( 89751 )->cost( POWER_ENERGY ) ),
-    max_energy_threshold( 100 )
+    max_energy_threshold( 100 ),
+    hatred_proc( nullptr )
 {
   action_list_str = "travel";
 
@@ -614,7 +619,7 @@ struct felguard_melee_t : public warlock_pet_melee_t
     if ( p()->buffs.fiendish_wrath->check() )
       fiendish_wrath->execute_on_target( s->target, amount );
 
-    if ( p()->o()->talents.immutable_hatred->ok() )
+    if ( p()->o()->talents.immutable_hatred->ok() && !p()->o()->min_version_check( VERSION_10_2_0 ) )
     {
       auto fg = debug_cast<felguard_pet_t*>( p() );
       if ( !( fg->immutable_hatred.target ) )
@@ -680,9 +685,6 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
     if ( main_pet && !p()->o()->min_version_check( VERSION_10_2_0 ) && p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
       m *= 1.0 + p()->o()->talents.immutable_hatred->effectN( 1 ).percent();
 
-    if ( main_pet && p()->o()->min_version_check( VERSION_10_2_0 ) && p()->o()->talents.immutable_hatred->ok() && s->chain_target == 0 )
-      m *= 1.0 + p()->o()->talents.immutable_hatred->effectN( 1 ).percent();
-
     return m;
   }
 };
@@ -701,7 +703,8 @@ struct immutable_hatred_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::execute();
 
-    debug_cast<felguard_pet_t*>( p() )->immutable_hatred.target = nullptr;
+    if ( !p()->o()->min_version_check( VERSION_10_2_0 ) )
+      debug_cast<felguard_pet_t*>( p() )->immutable_hatred.target = nullptr;
   }
 };
 
@@ -1041,10 +1044,15 @@ void felguard_pet_t::init_base_stats()
     felguard_guillotine = new felguard_guillotine_t( this );
   }
 
-  if ( o()->talents.immutable_hatred->ok() )
+  if ( o()->talents.immutable_hatred->ok() && !o()->min_version_check( VERSION_10_2_0 ) )
   {
     immutable_hatred.proc = new immutable_hatred_t( this );
     immutable_hatred.target = nullptr;
+  }
+
+  if ( o()->min_version_check( VERSION_10_2_0 ) && o()->talents.immutable_hatred->ok() )
+  {
+    hatred_proc = new immutable_hatred_t( this );
   }
 }
 

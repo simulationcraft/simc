@@ -348,11 +348,24 @@ struct demonbolt_t : public demonology_spell_t
 
     p()->buffs.demonic_core->up();  // benefit tracking
 
-    // TOCHECK: Once again the actual proc chance is missing from spell data, so we're just guessing with a hardcoded value...
-    if ( p()->talents.spiteful_reconstitution->ok() && p()->buffs.demonic_core->check() && rng().roll( 0.3 ) )
+    if ( p()->buffs.demonic_core->check() )
     {
-      p()->warlock_pet_list.wild_imps.spawn( 1u );
-      p()->procs.spiteful_reconstitution->occur();
+      // TOCHECK: Once again the actual proc chance is missing from spell data, so we're just guessing with a hardcoded value...
+      if ( p()->talents.spiteful_reconstitution->ok() && rng().roll( 0.3 ) )
+      {
+        p()->warlock_pet_list.wild_imps.spawn( 1u );
+        p()->procs.spiteful_reconstitution->occur();
+      }
+
+      if ( p()->talents.immutable_hatred->ok() && p()->min_version_check( VERSION_10_2_0 ) )
+      {
+        auto active_pet = p()->warlock_pet_list.active;
+
+        if ( active_pet->pet_type == PET_FELGUARD )
+        {
+          debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
+        }
+      }
     }
 
     p()->buffs.demonic_core->decrement();
