@@ -554,6 +554,10 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
     max_energy_threshold( 100 )
 {
   action_list_str = "travel";
+
+  if ( owner->min_version_check( VERSION_10_2_0 ) && owner->talents.soul_strike->ok() )
+    action_list_str += "/soul_strike";
+
   action_list_str += "/felstorm_demonic_strength";
   if ( !owner->disable_auto_felstorm )
     action_list_str += "/felstorm";
@@ -843,7 +847,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     {
       background = dual = true;
       aoe = -1;
-      base_multiplier *= p->o()->talents.antoran_armaments->effectN( 2 ).percent(); // Can only proc Soul Cleave with this talent, so this should be fine
+      ignores_armor = true;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -863,17 +867,34 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
   soul_cleave_t* soul_cleave;
 
-  soul_strike_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
+  soul_strike_t( warlock_pet_t* p, util::string_view options_str ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
   {
-    background = true;
+    parse_options( options_str );
+
+    background = !p->o()->min_version_check( VERSION_10_2_0 );
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );
+
+    // TOCHECK: As of 2023-10-16 PTR, Soul Cleave appears to be double-dipping on both Annihilan Training and Antoran Armaments multipliers. Not currently implemented
+    base_multiplier *= 1.0 + p->o()->talents.fel_invocation->effectN( 1 ).percent();
+  }
+
+  void execute() override
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    if ( p()->o()->talents.fel_invocation->ok() )
+    {
+      p()->o()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->o()->gains.soul_strike );
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     auto amount = s->result_raw;
+
+    amount *= p()->o()->talents.antoran_armaments->effectN( 2 ).percent();
 
     warlock_pet_melee_attack_t::impact( s );
     
@@ -1010,9 +1031,9 @@ void felguard_pet_t::init_base_stats()
 
   special_action = new axe_toss_t( this, "" );
 
-  if ( o()->talents.soul_strike->ok() )
+  if ( !o()->min_version_check( VERSION_10_2_0 ) && o()->talents.soul_strike->ok() )
   {
-    soul_strike = new soul_strike_t( this );
+    soul_strike = new soul_strike_t( this, "" );
   }
 
   if ( o()->talents.guillotine->ok() )
@@ -1037,6 +1058,8 @@ action_t* felguard_pet_t::create_action( util::string_view name, util::string_vi
     return new axe_toss_t( this, options_str );
   if ( name == "felstorm_demonic_strength" )
     return new demonic_strength_t( this, options_str );
+  if ( name == "soul_strike" )
+    return new soul_strike_t( this, options_str );
 
   return warlock_pet_t::create_action( name, options_str );
 }
@@ -1585,7 +1608,7 @@ action_t* dreadstalker_t::create_action( util::string_view name, util::string_vi
 /// Vilefiend Begin
 
 vilefiend_t::vilefiend_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "vilefiend", PET_VILEFIEND )
+  : warlock_simple_pet_t( owner, "vilefiend", PET_VILEFIEND ), caustic_presence( nullptr )
 {
   action_list_str = "bile_spit";
   action_list_str += "/travel";
@@ -1637,6 +1660,15 @@ struct headbutt_t : public warlock_pet_melee_attack_t
   }
 };
 
+struct caustic_presence_t : public warlock_pet_spell_t
+{
+  caustic_presence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Caustic Presence", p, p->find_spell( 428455 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
 void vilefiend_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
@@ -1646,11 +1678,32 @@ void vilefiend_t::init_base_stats()
   special_ability = new headbutt_t( this );
 }
 
+void vilefiend_t::create_buffs()
+{
+  warlock_simple_pet_t::create_buffs();
+
+  auto damage = new caustic_presence_t( this );
+
+  caustic_presence = make_buff<buff_t>( this, "caustic_presence", find_spell( 428453 ) )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                               ->set_tick_zero( true )
+                               ->set_period( 1_s )
+                               ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
+                                 if ( target )
+                                   damage->execute_on_target( target );
+                               } );
+
+  caustic_presence->quiet = true;
+}
+
 void vilefiend_t::arise()
 {
   warlock_simple_pet_t::arise();
 
   bile_spit_executes = 1;
+
+  if ( o()->talents.fel_invocation->ok() )
+    caustic_presence->trigger();
 }
 
 action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )

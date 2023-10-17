@@ -172,7 +172,7 @@ public:
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
-    spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends; // TODO: 10.2 has buffed Vilefiend damage by 15%
+    spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
@@ -315,7 +315,7 @@ public:
 
     player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     player_talent_t summon_vilefiend;
-    player_talent_t soul_strike;
+    player_talent_t soul_strike; // TODO: Active player ability moved to pet in 10.2
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
@@ -326,6 +326,7 @@ public:
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
+    player_talent_t fel_invocation; // New in 10.2. Buffs either Soul Strike or Summon Vilefiend
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t shadow_invocation; // New in 10.2 (previously called Volatile Fiends). Bilescourge Bomber damage and proc.
     player_talent_t fel_and_steel; // Increase's primary Felguard's Legion Strike and Felstorm damage
@@ -630,6 +631,7 @@ public:
     // Demonology
     gain_t* doom;
     gain_t* soulbound_tyrant;
+    gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 
   // Procs

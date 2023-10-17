@@ -449,9 +449,11 @@ struct dreadstalker_t : public warlock_pet_t
 struct vilefiend_t : public warlock_simple_pet_t
 {
   int bile_spit_executes;
+  buff_t* caustic_presence;
 
   vilefiend_t( warlock_t* );
   void init_base_stats() override;
+  void create_buffs() override;
   void arise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };

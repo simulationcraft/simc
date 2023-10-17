@@ -1023,7 +1023,7 @@ private:
 struct soul_strike_t : public demonology_spell_t
 {
   soul_strike_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "Soul Strike", p, p->talents.soul_strike )
+    : demonology_spell_t( "Soul Strike", p, p->min_version_check( VERSION_10_2_0 ) ? spell_data_t::not_found() : p->talents.soul_strike )
   {
     parse_options( options_str );
     energize_type = action_energize::ON_CAST;
@@ -1045,6 +1045,9 @@ struct soul_strike_t : public demonology_spell_t
 
   bool ready() override
   {
+    if ( p()->min_version_check( VERSION_10_2_0 ) )
+      return false;
+
     auto active_pet = p()->warlock_pet_list.active;
 
     if ( !active_pet )
@@ -1064,6 +1067,9 @@ struct summon_vilefiend_t : public demonology_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
+
+    if ( p->talents.fel_invocation->ok() )
+      base_execute_time += p->talents.fel_invocation->effectN( 2 ).time_value();
   }
 
   void execute() override
@@ -1446,7 +1452,7 @@ void warlock_t::init_spells_demonology()
 
   talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
 
-  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057
+  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057. NOTE: Updated to 428344 in 10.2
 
   talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
   talents.bilescourge_bombers_aoe = find_spell( 267213 );
@@ -1461,6 +1467,8 @@ void warlock_t::init_spells_demonology()
 
   talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
   talents.shadows_bite_buff = find_spell( 272945 );
+
+  talents.fel_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Invocation" ); // Should be ID 428351
 
   talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
@@ -1568,6 +1576,7 @@ void warlock_t::init_gains_demonology()
 {
   gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
   gains.doom = get_gain( "doom" );
+  gains.soul_strike = get_gain( "soul_strike" );
 }
 
 void warlock_t::init_rng_demonology()
