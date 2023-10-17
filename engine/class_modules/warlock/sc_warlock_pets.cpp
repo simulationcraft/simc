@@ -1668,7 +1668,7 @@ action_t* vilefiend_t::create_action( util::string_view name, util::string_view 
 /// Demonic Tyrant Begin
 
 demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant" )
+  : warlock_pet_t( owner, name, PET_DEMONIC_TYRANT, true )
 {
   resource_regeneration = regen_type::DISABLED;
   action_list_str += "/demonfire";
