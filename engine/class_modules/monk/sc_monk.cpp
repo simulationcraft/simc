@@ -865,6 +865,13 @@ namespace monk
         if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
           pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
 
+        if ( auto *td = this->find_td( target ) )
+        {
+          if ( p()->is_ptr() && td->debuff.fae_exposure->check() &&
+               base_t::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) )
+            pm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
+        }
+
         return pm;
       }
 
@@ -916,6 +923,17 @@ namespace monk
         return c;
       }
 
+      double composite_persistent_multiplier( const action_state_t *action_state ) const override
+      {
+        double pm = base_t::composite_persistent_multiplier( action_state );
+
+        if ( p()->is_ptr() && p()->buff.fae_exposure->check() &&
+             base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) )
+          pm *= 1 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
+
+        return pm;
+      }
+
       double action_multiplier() const override
       {
         double am = base_t::action_multiplier();
@@ -943,7 +961,7 @@ namespace monk
             if ( p()->buff.life_cocoon->check() )
               am *= 1.0 + p()->talent.mistweaver.life_cocoon->effectN( 2 ).percent();
 
-            if ( p()->buff.fae_exposure->check() )
+            if ( !p()->is_ptr() && p()->buff.fae_exposure->check() )
               am *= 1.0 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
 
             break;
@@ -9592,7 +9610,7 @@ namespace monk
     double multiplier = player_t::composite_player_target_multiplier( target, school );
 
     auto td = find_target_data( target );
-    if ( td && td->debuff.fae_exposure->check() )
+    if ( td && td->debuff.fae_exposure->check() && !is_ptr())
       multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
 
     return multiplier;
