@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51754 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3658,7 +3658,7 @@ Effects          :
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191044)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #5 (id=191045)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -5169,7 +5169,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Max Targets      : 1
 Labels           : 1616: Enduring Chill (377376 effect#2), Death Knight Frost 10.2 Class Set 2pc (422852 effect#1)
-Attributes       : ........ ...x.... .......x ...x....   .....x.x ..x..... ........ ....x... 
+Attributes       : ........ ...x.... ........ ...x....   .....x.x ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ..x...x. 
                  : ........ ........ ...xx... ........   .....x.. ........ ...x.... ..x..... 
                  : ..x..... ........ ........ ..x.....   ........ ........ ........ ......x. 
@@ -5177,7 +5177,7 @@ Attributes       : ........ ...x.... .......x ...x....   .....x.x ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Wearer Casts Proc Trigger (11), Allow Cast While Dead (23), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Aura Never Bounces (148), Limit N (165), AI Doesn't Face Target (179), Always AOE Line of Sight (186), Not an Attack (194), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Wearer Casts Proc Trigger (11), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Aura Never Bounces (148), Limit N (165), AI Doesn't Face Target (179), Always AOE Line of Sight (186), Not an Attack (194), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301314)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
@@ -5216,7 +5216,7 @@ Spell Level      : 10
 Range            : 50000 yards
 Duration         : 4 seconds
 Mechanic         : Snare
-Attributes       : ........ x....... ........ ........   ...x...x ........ ........ ........ 
+Attributes       : ........ x....... .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -5224,7 +5224,7 @@ Attributes       : ........ x....... ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Log (8), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Show Mechanic as Combat Text (213), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
+                 : Do Not Log (8), Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Show Mechanic as Combat Text (213), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301378)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -17262,7 +17262,7 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103767)  : Apply Aura (6) | Proc Trigger Spell (42): Ashen Decay
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 425719 | Target: Self (1)
-Description      : Soulreaper's execute damage and Abomination Limb's damage applies Ashen Decay to enemy targets, and Heart Strike and Blood Boil's direct damage extends Ashen Decay by ${$s1/1000}.1 sec. 
+Description      : Soul Reaper's execute damage and Abomination Limb's damage applies Ashen Decay to enemy targets, and Heart Strike and Blood Boil's direct damage extends Ashen Decay by ${$s1/1000}.1 sec. 
 
 Name             : Death Knight Frost 10.2 Class Set 2pc (id=422852) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
