@@ -1904,6 +1904,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                             {
                               p.allies_with_atonement.find_and_erase_unordered( target );
                             }
+                            size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
+                            p.buffs.sins_of_the_many->current_value = p.specs.sins_of_the_many_data[ idx ];
                           } );
 
   }

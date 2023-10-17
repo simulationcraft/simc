@@ -285,7 +285,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
       parse_buff_effects( p().o().buffs.shadow_covenant, 0U, false, USE_DEFAULT );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_buff_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_DEFAULT );
+      parse_buff_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
     }
 
   }

@@ -33,7 +33,6 @@ struct power_word_radiance_t final : public priest_heal_t
     atonement_duration =
         ( data().effectN( 4 ).percent() + p.talents.discipline.enduring_luminescence->effectN( 1 ).percent() ) *
         p.talents.discipline.atonement_buff->duration();
-
   }
 
   void execute() override
@@ -60,18 +59,85 @@ struct power_word_radiance_t final : public priest_heal_t
     target_list.push_back( target );
 
     for ( const auto& t : sim->healing_no_pet_list )
-    {
       if ( t != target )
         target_list.push_back( t );
-    }
 
-    for ( const auto& t : sim->healing_pet_list )
-    {
-      if ( t != target )
-        target_list.push_back( t );
-    }
+    rng().shuffle( target_list.begin() + 1, target_list.end() );
+
+    //if ( sim->healing_no_pet_list.size() <= n_targets() )
+    //{
+    //  for ( const auto& t : sim->healing_no_pet_list )
+    //    if ( t != target )
+    //      target_list.push_back( t );
+
+    //  auto idx = target_list.size();
+
+    //  for ( const auto& t : sim->healing_pet_list )
+    //  {
+    //    if ( t != target )
+    //      target_list.push_back( t );
+    //  }
+
+    //  rng().shuffle( target_list.begin() + idx, target_list.end() );
+
+    //  return target_list.size();
+    //}
+
+    //std::vector<player_t*> helper_list;
+
+    //for ( const auto& t : sim->healing_no_pet_list )
+    //{
+    //  if ( t != target )
+    //  {
+    //    if ( !p().find_target_data( t ) || !p().find_target_data( t )->buffs.atonement->check() )
+    //    {
+    //      target_list.push_back( t );
+    //    }
+    //    else
+    //    {
+    //      helper_list.push_back( t );
+    //    }
+    //  }
+    //}
+
+    //if ( target_list.size() > n_targets() )
+    //{
+    //  rng().shuffle( target_list.begin() + 1, target_list.end() );
+    //}
+
+    //auto idx = target_list.size();
+
+    //for ( const auto& t : helper_list )
+    //{
+    //  target_list.push_back( t );
+    //}
+
+    //if ( target_list.size() > n_targets() )
+    //{
+    //  rng().shuffle( target_list.begin() + idx, target_list.end() );
+    //}
+
+    //idx = target_list.size();
+
+    //for ( const auto& t : sim->healing_pet_list )
+    //{
+    //  if ( t != target )
+    //    target_list.push_back( t );
+    //}
+
+    //if ( sim->healing_pet_list.size() > 1 )
+    //{
+    //  rng().shuffle( target_list.begin() + idx, target_list.end() );
+    //}
 
     return target_list.size();
+  }
+
+  void activate() override
+  {
+    priest_heal_t::activate();
+
+    priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
   }
 };
 

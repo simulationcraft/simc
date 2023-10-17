@@ -486,6 +486,8 @@ public:
     const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
     const spell_data_t* sins_of_the_many;
+    double sins_of_the_many_data[ 19 ] = { 0.4,  0.4,  0.4,  0.4,  0.4,  0.35,  0.3,   0.25,   0.2, 0.15,
+                                           0.11, 0.08, 0.05, 0.04, 0.03, 0.025, 0.015, 0.0125, 0.01 };
     const spell_data_t* smite_t31;
 
     // Holy
@@ -926,7 +928,7 @@ public:
       parse_buff_effects( p().buffs.shadow_covenant, 0U, false, USE_DEFAULT );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
-      parse_buff_effects( p().buffs.sins_of_the_many, 0U, false, USE_DEFAULT );
+      parse_buff_effects( p().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
       parse_buff_effects( p().buffs.twilight_equilibrium_shadow_amp );
       parse_buff_effects( p().buffs.twilight_equilibrium_holy_amp );
       parse_buff_effects( p().buffs.light_weaving );
