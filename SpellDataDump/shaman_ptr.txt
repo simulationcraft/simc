@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51754 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -119,7 +119,7 @@ Talent Entry     : Generic [free=(Restoration), tree=class, row=1, col=1, max_ra
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 6% Base Mana (0) (id=111) w/ Restoration Shaman (id=137039)
+Resource         : 5.6% Base Mana (0) (id=111) w/ Restoration Shaman (id=137039)
 Resource         : 15% Base Mana (0) (id=305239) w/ Elemental Shaman (id=137040)
 Resource         : 15% Base Mana (0) (id=305240) w/ Enhancement Shaman (id=137041)
 Resource         : 15% Base Mana (0) (id=305241) w/ Initial Shaman (id=417374)
@@ -3472,7 +3472,7 @@ Effects          :
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191044)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #5 (id=191045)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3620,7 +3620,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2551 (Label) | Target: Self (1)
                    Affected Spells (Label): Swirling Currents (378094)
 #18 (id=1081070)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 37 | Scaled Value: 37 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #19 (id=1081071)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -14950,7 +14950,7 @@ Effects          :
 #2 (id=1013179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3500 | Scaled Value: 3500 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1108288)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Casting Earth Shock or Earthquake while Ascendance is active extends the duration of Ascendance by ${$s1/1000}.1 sec.
 
 Casting Elemental Blast while Ascendance is active extends the duration of Ascendance by ${$s2/1000}.1 sec.
@@ -18150,9 +18150,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098509)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1105163)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15000 | Scaled Value: 15000 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Primordial Wave also casts an Elemental Blast at the target at $s1% effectiveness, and grants you all three Elemental Blast bonus effects for ${$s2/1000}.1 sec.
 
 Name             : Shaman Elemental 10.2 Class Set 4pc (id=422912) [Spell Family (11), Passive, Hidden] 
@@ -18173,7 +18173,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098510)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Lava Burst burns your target for $426577s1% additional damage over $427729d, and after consuming Primordial Wave, your next $426578u casts of Lava Burst to also hit up to $426578s1 additional targets affected by your Flame Shock for $426578s2% of normal damage.
 
 Name             : Shaman Enhancement 10.2 Class Set 2pc (id=422913) [Spell Family (11), Passive, Hidden] 
@@ -18267,7 +18267,7 @@ Description      : Riptide's healing is increased by $s1%. If Riptide is active 
 
 Name             : Tidal Reservoir (id=424461) [Spell Family (11)] 
 Class            : Shaman
-School           : Physical
+School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
@@ -18306,7 +18306,7 @@ Effects          :
 #1 (id=1105169)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1105170)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc422912
 Tooltip          : Your next Lava Burst will hit up to $s1 additional targets affected by your Flame Shock for $s2% of normal damage.
 
@@ -18317,14 +18317,14 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 4 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ......x. 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ....x... ......x. 
+                 : ........ x....... .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ..x..... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Aura While Dead (116), Do Not Display Range (126), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Rolling Periodic (334)
+                 : Can't Crit (93), Allow Aura While Dead (116), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Disable Aura While Dead (226), Aura Points On Client (268), Rolling Periodic (334)
 Effects          :
 #1 (id=1107428)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)

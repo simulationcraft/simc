@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51754 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -717,12 +717,12 @@ Family Flags     : 16
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Allow Item Spell In PvP (13), Can't Crit (93), Visible only to caster (conversations only) (343)
+                 : Allow Item Spell In PvP (13), Can't Crit (93), Ignore Healing Modifiers (219), Visible only to caster (conversations only) (343), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=2157)     : Direct Heal% (136)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -17379,7 +17379,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098516)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Target: Self (1)
-#2 (id=1100069)  : Apply Aura (6) | Proc Trigger Spell (42): Umbrafire Kindling
+#2 (id=1100069)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 423765 | Target: Self (1)
 Description      : Soul Rot grants $423765u Umbrafire Kindling which increase the damage of your next Malefic Rapture to deal $423765s1% or your next Seed of Corruption by $423765s2%. Additionally, Umbrafire Kindling causes Malefic Rapture to extend the duration of your damage over time effects and Haunt by ${$s1/1000} sec.
 
@@ -17407,7 +17407,6 @@ Effects          :
 Description      : Consuming a Demonic Core applies a Doom Brand that explodes after $423583d, dealing $423584s1 Shadow damage to nearby enemies or ${$423584s1*(1+$s2/100)} Shadow damage to a single enemy. Hand of Gul'dan reduces the duration of your Doom Brands by ${$s1/1000} sec per Soul Shard spent.
 
 Name             : Warlock Demonology 10.2 Class Set 4pc (id=422920) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Variables
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17550,7 +17549,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1099963)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.55337 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (3.10674 -> 1.55337)
 #2 (id=1099964)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=1099965)  : Dummy (3)
