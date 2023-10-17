@@ -21,7 +21,8 @@ struct power_word_radiance_t final : public priest_heal_t
     : priest_heal_t( "power_word_radiance", p, p.talents.discipline.power_word_radiance )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful      = false;
+    disc_mastery = true;
 
     aoe = 1 + as<int>( data().effectN( 3 ).base_value() );
 
@@ -30,7 +31,7 @@ struct power_word_radiance_t final : public priest_heal_t
     apply_affecting_aura( p.talents.discipline.enduring_luminescence );
 
     atonement_duration =
-        ( data().effectN( 3 ).percent() + p.talents.discipline.enduring_luminescence->effectN( 1 ).percent() ) *
+        ( data().effectN( 4 ).percent() + p.talents.discipline.enduring_luminescence->effectN( 1 ).percent() ) *
         p.talents.discipline.atonement_buff->duration();
 
   }
@@ -43,6 +44,14 @@ struct power_word_radiance_t final : public priest_heal_t
     {
       priest().buffs.harsh_discipline->trigger();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    priest_td_t& td = get_td( s->target );
+    td.buffs.atonement->trigger( atonement_duration );
   }
 };
 
@@ -89,6 +98,8 @@ struct purge_the_wicked_t final : public priest_spell_t
       apply_affecting_aura( p.talents.discipline.revel_in_purity );
       // 8% / 15% damage increase
       apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
+
+      triggers_atonement = true;
     }
 
     void tick( dot_t* d ) override
@@ -119,6 +130,8 @@ struct purge_the_wicked_t final : public priest_spell_t
     {
       apply_affecting_aura( p.sets->set( PRIEST_DISCIPLINE, T30, B2 ) );
     }
+
+    triggers_atonement = true;
   }
 };
 
@@ -156,6 +169,8 @@ protected:
       // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
       force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT );
       force_buff_effect( p.buffs.shadow_covenant, 2, false, USE_DEFAULT );
+
+      triggers_atonement = true;
     }
 
     
@@ -502,8 +517,9 @@ void priest_t::init_spells_discipline()
 
   // Talents
   // Row 1
-  talents.discipline.atonement      = ST( "Atonement" );
-  talents.discipline.atonement_buff = find_spell( 194384 );
+  talents.discipline.atonement       = ST( "Atonement" );
+  talents.discipline.atonement_buff  = find_spell( 194384 );
+  talents.discipline.atonement_spell = find_spell( 94472 );
   // Row 2
   talents.discipline.power_word_radiance    = ST( "Power Word: Radiance" );
   talents.discipline.pain_suppression       = ST( "Pain Suppression" );

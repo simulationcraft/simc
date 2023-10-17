@@ -113,6 +113,8 @@ public:
 
     // Extra charge of Mind Blast
     apply_affecting_aura( p.talents.shadow.thought_harvester );
+
+    triggers_atonement = true;
   }
 
   void execute() override
@@ -306,6 +308,7 @@ struct divine_star_spell_t final : public priest_spell_t
 
     proc = background          = true;
     affected_by_shadow_weaving = true;
+    triggers_atonement         = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
     force_buff_effect( p.buffs.dark_ascension, 1 );
@@ -346,6 +349,7 @@ struct divine_star_heal_t final : public priest_heal_t
     reduced_aoe_targets = p.talents.divine_star->effectN( 1 ).base_value();
 
     proc = background = true;
+    disc_mastery      = true;
   }
 
   // Hits twice, but only if you are at the correct distance
@@ -430,6 +434,8 @@ struct halo_spell_t final : public priest_spell_t
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
     force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT );
+
+    triggers_atonement = true;
   }
 };
 
@@ -444,6 +450,7 @@ struct halo_heal_t final : public priest_heal_t
     travel_speed = 15;  // Rough estimate, 2021-01-03
 
     reduced_aoe_targets = p.talents.halo->effectN( 1 ).base_value();
+    disc_mastery        = true;
   }
 };
 
@@ -544,6 +551,7 @@ struct smite_base_t : public priest_spell_t
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
+  timespan_t t31_2pc_extend;
   propagate_const<action_t*> child_holy_fire;
   action_t* child_searing_light;
 
@@ -554,7 +562,8 @@ struct smite_base_t : public priest_spell_t
       void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 ).time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
       child_holy_fire( priest().background_actions.holy_fire ),
-      child_searing_light( priest().background_actions.searing_light )
+      child_searing_light( priest().background_actions.searing_light ),
+      t31_2pc_extend( priest().sets->set( PRIEST_DISCIPLINE, T31, B2 )->effectN( 1 ).time_value() )
 
   {
     background = bg;
@@ -566,6 +575,8 @@ struct smite_base_t : public priest_spell_t
         child_holy_fire->background = true;
       }
     }
+
+    triggers_atonement = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -635,6 +646,28 @@ struct smite_base_t : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T31, B2 ) )
+      {
+        if ( p().allies_with_atonement.size() > 0 )
+        {
+          /*auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
+                                         [ this ]( player_t* a, player_t* b ) {
+                                           return a->health_percentage() < b->health_percentage() &&
+                                                  priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
+                                         } ) );*/
+
+          auto idx = static_cast<unsigned>( rng().range( 0, p().allies_with_atonement.size() ) );
+
+          auto it = p().allies_with_atonement[ idx ];
+
+          auto atone = priest().find_target_data( it )->buffs.atonement;
+          if ( atone->remains() < 30_s )
+          {
+            atone->extend_duration( player, t31_2pc_extend );
+          }
+        }
+      }
+
       if ( priest().talents.holy.holy_word_chastise.enabled() )
       {
         timespan_t chastise_cdr =
@@ -779,6 +812,7 @@ struct mindgames_t final : public priest_spell_t
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
+    triggers_atonement         = true;
 
     if ( priest().options.mindgames_healing_reversal )
     {
@@ -1142,6 +1176,8 @@ public:
       energize_resource = RESOURCE_INSANITY;
       energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
     }
+
+    triggers_atonement = true;
   }
 
   shadow_word_death_t( priest_t& p, util::string_view options_str ) : shadow_word_death_t( p )
@@ -1348,6 +1384,7 @@ struct holy_nova_t final : public priest_spell_t
     aoe                 = -1;
     full_amount_targets = as<int>( priest().talents.holy_nova->effectN( 3 ).base_value() );
     reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
+    triggers_atonement  = true;
   }
 
   void execute() override
@@ -1408,6 +1445,7 @@ struct flash_heal_t final : public priest_heal_t
     harmful = false;
 
     apply_affecting_aura( priest().talents.improved_flash_heal );
+    disc_mastery = true;
   }
 
   timespan_t execute_time() const override
@@ -1522,6 +1560,8 @@ struct power_word_shield_t final : public priest_absorb_t
     parse_options( options_str );
     spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
     apply_affecting_aura( priest().talents.discipline.borrowed_time );
+    
+    disc_mastery = true;
   }
 
   // Manually create the buff so we can reference it with Void Shield
@@ -1578,7 +1618,8 @@ struct power_word_life_t final : public priest_heal_t
       execute_modifier( data().effectN( 3 ).percent() )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful      = false;
+    disc_mastery = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1617,6 +1658,48 @@ struct essence_devourer_t final : public priest_heal_t
                                                            : p.talents.essence_devourer_shadowfiend )
   {
     harmful = false;
+  }
+};
+
+struct atonement_t final : public priest_heal_t
+{
+  atonement_t( priest_t& p ) : priest_heal_t( "atonement", p, p.talents.discipline.atonement_spell )
+  {
+    aoe       = -1;
+    may_dodge = may_parry = may_block = harmful = false;
+    background                                  = true;
+    crit_bonus                                  = 0.0;
+    disc_mastery                                = true;
+  }
+
+  void init() override
+  {
+    priest_heal_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA | STATE_MUL_DA;
+  }
+
+  int num_targets() const override
+  {
+    return as<int>( p().allies_with_atonement.size() );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+
+    for ( auto t : p().allies_with_atonement )
+    {
+      target_list.push_back( t );
+    }
+
+    return target_list.size();
+  }
+
+  void activate() override
+  {
+    priest_heal_t::activate();
+
+    priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
   }
 };
 
@@ -1807,6 +1890,23 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.psychic_horror = make_buff( *this, "psychic_horror", p.talents.shadow.psychic_horror )->set_cooldown( 0_s );
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
+
+  if ( !target->is_enemy() )
+  {
+    buffs.atonement = make_buff( *this, "atonement", p.talents.discipline.atonement_buff )
+                          ->set_refresh_behavior( buff_refresh_behavior::MAX )
+                          ->set_stack_change_callback( [ this, &p, target ]( buff_t*, int, int n ) {
+                            if ( n )
+                            {
+                              p.allies_with_atonement.push_back( target );
+                            }
+                            else
+                            {
+                              p.allies_with_atonement.find_and_erase_unordered( target );
+                            }
+                          } );
+
+  }
 }
 
 void priest_td_t::reset()
@@ -1864,7 +1964,9 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     background_actions(),
     active_items(),
     pets( *this ),
-    options()
+    options(),
+    allies_with_atonement(),
+    fake_heal_targets()
 {
   create_cooldowns();
   create_gains();
@@ -2084,10 +2186,10 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
   
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
   
-  if ( !guardian )
-    m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
-  else
+  if ( guardian )
     m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
+  else
+    m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
 
   // Auto parsing does not cover melee attacks, and other attacks double dip with this
   if ( buffs.devoured_pride->check() )
@@ -2101,27 +2203,12 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
 {
   double m = player_t::composite_player_heal_multiplier( s );
 
-  if ( buffs.twist_of_fate->check() )
-  {
-    m *= 1.0 + buffs.twist_of_fate->current_value;
-  }
-
-  if ( mastery_spells.grace->ok() )
-  {
-    m *= 1 + cache.mastery_value();
-  }
-
   return m;
 }
 
 double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_absorb_multiplier( s );
-
-  if ( mastery_spells.grace->ok() )
-  {
-    m *= 1 + cache.mastery_value();
-  }
 
   return m;
 }
@@ -2280,6 +2367,38 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
 void priest_t::create_pets()
 {
   base_t::create_pets();
+
+  // not actually pets, but this stage is a good place to create these as all spells & actions have been created
+  if ( talents.discipline.atonement.ok() )
+  {
+    // swarm_targets.push_back( this );
+
+    size_t i = 0;
+    if ( sim->single_actor_batch )
+    {
+      i = 1;
+    }
+    else
+    {
+      for ( auto t : sim->target_list )
+      {
+        if ( t->is_player() )
+          i++;
+      }
+    }
+
+    while ( i < options.disc_minimum_allies )
+    {
+      auto t = fake_heal_targets.emplace_back(
+          module_t::heal_enemy()->create_player( sim, "disc_melee_target_" + util::to_string( ++i ), RACE_NONE ) );
+
+      t->quiet = false;
+      t->role  = ROLE_ATTACK;
+      sim->init_actor( t );
+      t->current.sleeping = true;
+      t->init_finished();
+    }
+  }
 }
 
 void priest_t::init_base_stats()
@@ -2547,6 +2666,7 @@ void priest_t::init_background_actions()
   background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
+  background_actions.atonement           = new actions::heals::atonement_t( *this );
 
   background_actions.shadow_word_death->background = true;
   background_actions.shadow_word_death->dual       = true;
@@ -2721,6 +2841,8 @@ void priest_t::reset()
       td->reset();
     }
   }
+
+  allies_with_atonement.clear_without_callbacks();
 }
 
 void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
@@ -2774,6 +2896,19 @@ void priest_t::copy_from( player_t* source )
 void priest_t::arise()
 {
   base_t::arise();
+  for ( auto p : fake_heal_targets )
+  {
+    p->arise();
+  }
+}
+
+void priest_t::demise()
+{
+  base_t::demise();
+  for ( auto p : fake_heal_targets )
+  {
+    p->demise();
+  }
 }
 
 // Idol of C'Thun Talent Trigger
@@ -2787,6 +2922,27 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
     spawn_idol_of_cthun( s );
   }
 }
+
+
+// Trigger Atonement
+void priest_t::trigger_atonement( action_state_t* s )
+{
+  if ( !talents.discipline.atonement.enabled() )
+    return;
+
+  if ( allies_with_atonement.empty() )
+    return;
+
+  if ( s->result_amount <= 0 )
+    return;
+
+  auto r = s->result_amount;
+  
+  r *= talents.discipline.atonement->effectN( 1 ).percent();
+
+  background_actions.atonement->execute_on_target( this, r );
+}
+
 
 void priest_t::trigger_essence_devourer()
 {

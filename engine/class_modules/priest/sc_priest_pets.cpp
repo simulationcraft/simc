@@ -221,9 +221,13 @@ struct priest_pet_melee_t : public melee_attack_t
 struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_td_t>
 {
   bool affected_by_shadow_weaving;
+  bool triggers_atonement;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
-    : spell_t( token, &p, s ), parse_buff_effects_t( this ), affected_by_shadow_weaving( false )
+    : spell_t( token, &p, s ),
+      parse_buff_effects_t( this ),
+      affected_by_shadow_weaving( false ),
+      triggers_atonement( false )
   {
     may_crit = true;
 
@@ -369,6 +373,17 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     }
 
     return ttm;
+  }
+
+  void impact( action_state_t* s )
+  {
+    spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( triggers_atonement && s->chain_target == 0 )
+        p().o().trigger_atonement( s );
+    }
   }
 };
 
@@ -615,6 +630,8 @@ struct fiend_melee_t : public priest_pet_melee_t
         p().o().trigger_shadow_weaving( s );
       }
 
+      p().o().trigger_atonement( s );
+
       p().o().trigger_essence_devourer();
 
       if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
@@ -651,6 +668,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
   {
     background                 = true;
     affected_by_shadow_weaving = true;
+    triggers_atonement         = true;
 
     // This is hard coded in the spell
     // spcoeff * $?a137032[${0.326139}][${0.442}]

@@ -600,6 +600,8 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       apply_affecting_aura( p.sets->set( PRIEST_DISCIPLINE, T30, B2 ) );
     }
+
+    triggers_atonement = true;
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )

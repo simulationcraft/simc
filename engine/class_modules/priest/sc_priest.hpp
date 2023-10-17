@@ -71,6 +71,7 @@ struct burning_vehemence_t;
 namespace actions::heals
 {
 struct essence_devourer_t;
+struct atonement_t;
 }  // namespace actions::heals
 
 /**
@@ -100,6 +101,7 @@ public:
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
     propagate_const<buff_t*> psychic_horror;
+    buff_t* atonement;
   } buffs;
 
   priest_t& priest()
@@ -369,6 +371,7 @@ public:
       // Row 1
       player_talent_t atonement;
       const spell_data_t* atonement_buff;
+      const spell_data_t* atonement_spell;
       // Row 2
       player_talent_t power_word_radiance;
       player_talent_t pain_suppression;
@@ -622,6 +625,7 @@ public:
     propagate_const<action_t*> light_eruption;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
     propagate_const<actions::heals::essence_devourer_t*> essence_devourer;
+    propagate_const<actions::heals::atonement_t*> atonement;
   } background_actions;
 
   // Items
@@ -659,7 +663,12 @@ public:
     // Option whether or not to start with higher than 0 Insanity based on talents
     // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
     bool init_insanity = true;
+
+    int disc_minimum_allies = 5;
   } options;
+
+  vector_with_callback<player_t*> allies_with_atonement;
+  std::vector<player_t*> fake_heal_targets;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -705,6 +714,7 @@ public:
   std::unique_ptr<expr_t> create_pet_expression( util::string_view expression_str,
                                                  util::span<util::string_view> splits );
   void arise() override;
+  void demise() override;
   void do_dynamic_regen( bool ) override;
   void apply_affecting_auras( action_t& ) override;
   void invalidate_cache( cache_e ) override;
@@ -744,11 +754,11 @@ public:
   void trigger_inescapable_torment( player_t* target, bool echo = false, double mod = 1.0 );
   void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
+  void trigger_atonement( action_state_t* );
   void spawn_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
   int number_of_echoing_voids_active();
   void trigger_psychic_link( action_state_t* );
-  void trigger_purge_the_wicked_spread( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
   void refresh_insidious_ire_buff( action_state_t* s );
@@ -1013,21 +1023,77 @@ private:
 
 struct priest_absorb_t : public priest_action_t<absorb_t>
 {
+  bool disc_mastery;
+
 public:
   priest_absorb_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+    : base_t( name, player, s ), disc_mastery( false )
   {
     may_crit      = true;
     tick_may_crit = false;
     may_miss      = false;
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto cdm = base_t::composite_da_multiplier( s );
+
+    if ( disc_mastery && p().mastery_spells.grace->ok() && p().find_target_data( s->target ) &&
+         p().find_target_data( s->target )->buffs.atonement->check() )
+    {
+      cdm *= 1 + p().cache.mastery_value();
+    }
+
+    return cdm;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    auto ctm = base_t::composite_ta_multiplier( s );
+
+    if ( disc_mastery && p().mastery_spells.grace->ok() && p().find_target_data( s->target ) &&
+         p().find_target_data( s->target )->buffs.atonement->check() )
+    {
+      ctm *= 1 + p().cache.mastery_value();
+    }
+
+    return ctm;
+  }
 };
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
+  bool disc_mastery;
+
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+    : base_t( name, player, s ), disc_mastery( false )
   {
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto cdm = base_t::composite_da_multiplier( s );
+
+    if ( disc_mastery && p().mastery_spells.grace->ok() && p().find_target_data( s->target ) &&
+         p().find_target_data( s->target )->buffs.atonement->check() )
+    {
+      cdm *= 1 + p().cache.mastery_value();
+    }
+
+    return cdm;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    auto ctm = base_t::composite_ta_multiplier( s );
+
+    if ( disc_mastery && p().mastery_spells.grace->ok() && p().find_target_data( s->target ) &&
+         p().find_target_data( s->target )->buffs.atonement->check() )
+    {
+      ctm *= 1 + p().cache.mastery_value();
+    }
+
+    return ctm;
   }
 
   void impact( action_state_t* s ) override
@@ -1051,10 +1117,14 @@ struct priest_heal_t : public priest_action_t<heal_t>
 struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
+  bool triggers_atonement;
   bool ignores_automatic_mastery;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
+    : base_t( name, player, s ),
+      affected_by_shadow_weaving( false ),
+      ignores_automatic_mastery( false ),
+      triggers_atonement( false )
   {
     weapon_multiplier = 0.0;
 
@@ -1117,6 +1187,19 @@ struct priest_spell_t : public priest_action_t<spell_t>
       {
         priest().buffs.twist_of_fate->trigger();
       }
+
+      if ( triggers_atonement && s->chain_target == 0 )
+        p().trigger_atonement( s );
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    base_t::tick( d );
+
+    if ( triggers_atonement && result_is_hit( d->state->result ) )
+    {
+      p().trigger_atonement( d->state );
     }
   }
 
