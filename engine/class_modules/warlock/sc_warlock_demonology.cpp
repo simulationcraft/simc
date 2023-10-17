@@ -1098,7 +1098,7 @@ struct nether_portal_t : public demonology_spell_t
 
   void execute() override
   {
-    p()->buffs.nether_portal->trigger();
+    p()->buffs.nether_portal->trigger(); // TODO: There is a SimC bug where using Nether Portal at time 0 is not triggering the summon from the shard spent casting itself.
     demonology_spell_t::execute();
   }
 };
