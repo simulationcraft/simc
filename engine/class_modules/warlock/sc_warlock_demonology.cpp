@@ -519,6 +519,9 @@ struct implosion_t : public demonology_spell_t
       if ( p()->min_version_check( VERSION_10_2_0 ) && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
         m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
 
+      if ( p()->talents.spiteful_reconstitution->ok() )
+        m *= 1.0 + p()->talents.spiteful_reconstitution->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -1488,6 +1491,8 @@ void warlock_t::init_spells_demonology()
   talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
 
   talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
+
+  talents.spiteful_reconstitution = find_talent_spell( talent_tree::SPECIALIZATION, "Spiteful Reconstitution" ); // Should be ID 428394
   
   talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 

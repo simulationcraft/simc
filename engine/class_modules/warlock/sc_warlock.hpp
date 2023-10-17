@@ -339,6 +339,7 @@ public:
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // TODO: REMOVED in 10.2
+    player_talent_t spiteful_reconstitution; // New in 10.2. Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
     player_talent_t inner_demons; // TODO: 10.2 has removed the "Summon Random Demon" proc
     player_talent_t doom;
     player_talent_t demonic_calling;
