@@ -2346,7 +2346,13 @@ struct eye_of_guldan_t : public warlock_pet_spell_t
 {
   eye_of_guldan_t( warlock_pet_t* p ) : warlock_pet_spell_t( "eye_of_guldan", p, p->find_spell( 272131 ) )
   {
-    hasted_ticks = false;
+    hasted_ticks = p->o()->min_version_check( VERSION_10_2_0 );
+    channeled = true;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration - 10_ms; // 2023-10-17: Since Eye of Gul'dan now benefits from haste like Pit Lord, fudge this duration slightly so that we can ensure it finishes the last tick before expiring
   }
 };
 
