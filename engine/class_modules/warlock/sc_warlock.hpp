@@ -663,6 +663,7 @@ public:
     proc_t* carnivorous_stalkers;
     proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
     proc_t* imp_gang_boss;
+    proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;

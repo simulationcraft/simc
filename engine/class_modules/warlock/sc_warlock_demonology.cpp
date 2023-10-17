@@ -347,6 +347,14 @@ struct demonbolt_t : public demonology_spell_t
     demonology_spell_t::execute();
 
     p()->buffs.demonic_core->up();  // benefit tracking
+
+    // TOCHECK: Once again the actual proc chance is missing from spell data, so we're just guessing with a hardcoded value...
+    if ( p()->talents.spiteful_reconstitution->ok() && p()->buffs.demonic_core->check() && rng().roll( 0.3 ) )
+    {
+      p()->warlock_pet_list.wild_imps.spawn( 1u );
+      p()->procs.spiteful_reconstitution->occur();
+    }
+
     p()->buffs.demonic_core->decrement();
 
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
@@ -1595,6 +1603,7 @@ void warlock_t::init_procs_demonology()
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
   procs.shadow_invocation = get_proc( "shadow_invocation" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
+  procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
   procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
