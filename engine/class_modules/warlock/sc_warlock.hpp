@@ -326,6 +326,7 @@ public:
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
+    player_talent_t fel_invocation; // New in 10.2. Buffs either Soul Strike or Summon Vilefiend
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t shadow_invocation; // New in 10.2 (previously called Volatile Fiends). Bilescourge Bomber damage and proc.
     player_talent_t fel_and_steel; // Increase's primary Felguard's Legion Strike and Felstorm damage
@@ -630,6 +631,7 @@ public:
     // Demonology
     gain_t* doom;
     gain_t* soulbound_tyrant;
+    gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 
   // Procs

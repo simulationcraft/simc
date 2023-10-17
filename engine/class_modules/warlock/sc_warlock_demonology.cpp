@@ -1465,6 +1465,8 @@ void warlock_t::init_spells_demonology()
   talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
   talents.shadows_bite_buff = find_spell( 272945 );
 
+  talents.fel_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Invocation" ); // Should be ID 428351
+
   talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
   talents.shadow_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Invocation" ); // Should be ID 422054
@@ -1571,6 +1573,7 @@ void warlock_t::init_gains_demonology()
 {
   gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
   gains.doom = get_gain( "doom" );
+  gains.soul_strike = get_gain( "soul_strike" );
 }
 
 void warlock_t::init_rng_demonology()

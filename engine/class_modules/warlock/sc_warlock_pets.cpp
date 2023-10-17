@@ -847,7 +847,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     {
       background = dual = true;
       aoe = -1;
-      base_multiplier *= p->o()->talents.antoran_armaments->effectN( 2 ).percent(); // Can only proc Soul Cleave with this talent, so this should be fine
+      ignores_armor = true;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -875,11 +875,26 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );
+
+    // TOCHECK: As of 2023-10-16 PTR, Soul Cleave appears to be double-dipping on both Annihilan Training and Antoran Armaments multipliers. Not currently implemented
+    base_multiplier *= 1.0 + p->o()->talents.fel_invocation->effectN( 1 ).percent();
+  }
+
+  void execute() override
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    if ( p()->o()->talents.fel_invocation->ok() )
+    {
+      p()->o()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->o()->gains.soul_strike );
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     auto amount = s->result_raw;
+
+    amount *= p()->o()->talents.antoran_armaments->effectN( 2 ).percent();
 
     warlock_pet_melee_attack_t::impact( s );
     
