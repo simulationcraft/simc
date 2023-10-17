@@ -2348,6 +2348,7 @@ struct eye_of_guldan_t : public warlock_pet_spell_t
   {
     hasted_ticks = p->o()->min_version_check( VERSION_10_2_0 );
     channeled = true;
+    cooldown->duration = dot_duration;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
