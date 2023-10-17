@@ -445,7 +445,9 @@ public:
     if ( mastery )
       val_mul = 1.0;
 
-    if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && action_->data().affected_by_all( eff ) ) &&
+    if ( !( ( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ||
+              eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS ) &&
+            action_->data().affected_by_all( eff ) ) &&
          !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && !action_->special ) && !force )
       return;
 
