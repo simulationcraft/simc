@@ -738,7 +738,7 @@ private:
   void init_background_actions_shadow();
   void init_background_actions_discipline();
   void init_background_actions_holy();
-  std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
+  std::unique_ptr<expr_t> create_expression_discipline( const util::string_view name_str );
   action_t* create_action_discipline( util::string_view name, util::string_view options_str );
 
   void create_buffs_holy();
@@ -1061,6 +1061,26 @@ public:
 
     return ctm;
   }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+    target_list.push_back( target );
+
+    for ( const auto& t : sim->healing_no_pet_list )
+    {
+      if ( t != target )
+        target_list.push_back( t );
+    }
+
+    for ( const auto& t : sim->healing_pet_list )
+    {
+      if ( t != target )
+        target_list.push_back( t );
+    }
+
+    return target_list.size();
+  }
 };
 
 struct priest_heal_t : public priest_action_t<heal_t>
@@ -1097,6 +1117,26 @@ struct priest_heal_t : public priest_action_t<heal_t>
     }
 
     return ctm;
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+    target_list.push_back( target );
+
+    for ( const auto& t : sim->healing_no_pet_list )
+    {
+      if ( t != target )
+        target_list.push_back( t );
+    }
+
+    for ( const auto& t : sim->healing_pet_list )
+    {
+      if ( t != target )
+        target_list.push_back( t );
+    }
+
+    return target_list.size();
   }
 
   void impact( action_state_t* s ) override

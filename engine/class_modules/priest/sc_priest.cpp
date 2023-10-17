@@ -1439,16 +1439,30 @@ namespace heals
 struct flash_heal_t final : public priest_heal_t
 {
   timespan_t atonement_duration;
+  flash_heal_t* binding_heals;
+  double binding_heal_percent;
 
-  flash_heal_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) ),
-      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() ) )
+  flash_heal_t( priest_t& p, util::string_view options_str ) : flash_heal_t( p, "flash_heal", options_str )
+  {
+  }
+
+  flash_heal_t( priest_t& p, util::string_view name, util::string_view options_str )
+    : priest_heal_t( name, p, p.find_class_spell( "Flash Heal" ) ),
+      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() ) ),
+      binding_heal_percent( p.talents.binding_heals->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     harmful = false;
 
     apply_affecting_aura( priest().talents.improved_flash_heal );
     disc_mastery = true;
+
+    if ( p.talents.binding_heals.enabled() && name != "flash_heal_binding" )
+    {
+      binding_heals = new flash_heal_t( p, "flash_heal_binding", {} );
+      binding_heals->spell_power_mod.direct = 0;
+      add_child( binding_heals );
+    }
   }
 
   timespan_t execute_time() const override
@@ -1487,10 +1501,57 @@ struct flash_heal_t final : public priest_heal_t
 
     priest().buffs.from_darkness_comes_light->expire();
 
-    if ( priest().talents.discipline.atonement.enabled() )
+    if ( result_is_hit( s->result ) )
     {
-      priest_td_t& td = get_td( s->target );
-      td.buffs.atonement->trigger( atonement_duration );
+      if ( priest().talents.discipline.atonement.enabled() )
+      {
+        priest_td_t& td = get_td( s->target );
+        td.buffs.atonement->trigger( atonement_duration );
+      }
+
+      if ( s->result_amount > 0 && priest().talents.binding_heals.enabled() && s->target != player )
+      {
+        binding_heals->execute_on_target( player, s->result_amount * binding_heal_percent );
+      }
+    }
+    
+  }
+};
+
+
+// ==========================================================================
+// Flash Heal
+// ==========================================================================
+struct renew_t final : public priest_heal_t
+{
+  timespan_t atonement_duration;
+
+  renew_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "renew", p, p.talents.renew ),
+      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+
+    disc_mastery = true;
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( priest().talents.discipline.atonement.enabled() )
+      {
+        priest_td_t& td = get_td( s->target );
+        td.buffs.atonement->trigger( atonement_duration );
+      }
     }
   }
 };
@@ -1910,24 +1971,20 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.psychic_horror = make_buff( *this, "psychic_horror", p.talents.shadow.psychic_horror )->set_cooldown( 0_s );
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 
-  if ( !target->is_enemy() )
-  {
-    buffs.atonement = make_buff( *this, "atonement", p.talents.discipline.atonement_buff )
-                          ->set_refresh_behavior( buff_refresh_behavior::MAX )
-                          ->set_stack_change_callback( [ this, &p, target ]( buff_t*, int, int n ) {
-                            if ( n )
-                            {
-                              p.allies_with_atonement.push_back( target );
-                            }
-                            else
-                            {
-                              p.allies_with_atonement.find_and_erase_unordered( target );
-                            }
-                            size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
-                            p.buffs.sins_of_the_many->current_value = p.specs.sins_of_the_many_data[ idx ];
-                          } );
-
-  }
+  buffs.atonement = make_buff( *this, "atonement", p.talents.discipline.atonement_buff )
+                        ->set_refresh_behavior( buff_refresh_behavior::MAX )
+                        ->set_stack_change_callback( [ this, &p, target ]( buff_t*, int, int n ) {
+                          if ( n )
+                          {
+                            p.allies_with_atonement.push_back( target );
+                          }
+                          else
+                          {
+                            p.allies_with_atonement.find_and_erase_unordered( target );
+                          }
+                          size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
+                          p.buffs.sins_of_the_many->current_value = p.specs.sins_of_the_many_data[ idx ];
+                        } );
 }
 
 void priest_td_t::reset()
@@ -2133,6 +2190,12 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
   if ( shadow_expression )
   {
     return shadow_expression;
+  }
+
+  auto disc_expression = create_expression_discipline( expression_str );
+  if ( disc_expression )
+  {
+    return disc_expression;
   }
 
   auto splits = util::string_split<util::string_view>( expression_str, "." );
@@ -2379,6 +2442,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   if ( name == "flash_heal" )
   {
     return new flash_heal_t( *this, options_str );
+  }
+  if ( name == "renew" )
+  {
+    return new renew_t( *this, options_str );
   }
 
   return base_t::create_action( name, options_str );

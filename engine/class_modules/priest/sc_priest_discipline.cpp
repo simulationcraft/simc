@@ -731,7 +731,7 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   return nullptr;
 }
 
-std::unique_ptr<expr_t> priest_t::create_expression_discipline( action_t*, util::string_view name_str )
+std::unique_ptr<expr_t> priest_t::create_expression_discipline( util::string_view name_str )
 {
   if ( name_str == "active_atonements" )
   {
