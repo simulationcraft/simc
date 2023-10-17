@@ -678,7 +678,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
       if ( p()->min_version_check( VERSION_10_2_0 ) )
       {
-        // Note: Wild Imp cap appears to be hardcoded
         if ( lock_pet->pet_type == PET_WILD_IMP && wild_imp_counter < imp_cap )
         {
           if ( lock_pet->expiration )
@@ -898,6 +897,15 @@ struct power_siphon_t : public demonology_spell_t
         imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
           double lv = imp1->resources.current[ RESOURCE_ENERGY ];
           double rv = imp2->resources.current[ RESOURCE_ENERGY ];
+
+          // Starting in 10.2, Power Siphon deprioritizes Wild Imps that are Gang Bosses or empowered by Summon Demonic Tyrant
+          // Pad them with a value larger than the energy cap so that they are still sorted against each other at the end of the list
+          // TOCHECK: A bug was observed on the PTR where a Gang Boss empowered by Tyrant was not benefitting from this. Not currently implemented here.
+          if ( imp1->o()->min_version_check( VERSION_10_2_0 ) )
+          {
+            lv += ( imp1->buffs.imp_gang_boss->check() || imp1->buffs.demonic_power->check() ) ? 200.0 : 0.0;
+            rv += ( imp2->buffs.imp_gang_boss->check() || imp2->buffs.demonic_power->check() ) ? 200.0 : 0.0;
+          }
 
           if ( lv == rv )
           {

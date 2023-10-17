@@ -1668,7 +1668,7 @@ action_t* vilefiend_t::create_action( util::string_view name, util::string_view 
 /// Demonic Tyrant Begin
 
 demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant" )
+  : warlock_pet_t( owner, name, PET_DEMONIC_TYRANT, true )
 {
   resource_regeneration = regen_type::DISABLED;
   action_list_str += "/demonfire";
@@ -1697,7 +1697,7 @@ void demonic_tyrant_t::arise()
 
   if ( o()->talents.reign_of_tyranny->ok() && !o()->min_version_check( VERSION_10_2_0 ) )
   {
-    buffs.demonic_servitude->trigger( 1, ( ( o()->min_version_check( VERSION_10_2_0 ) ? 0 : 1 ) + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() ); // 2023-09-10: On 10.2 PTR, the stack cap is interfering with the previous 1 "permanent" stack value
+    buffs.demonic_servitude->trigger( 1, ( 1 + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() );
   }
 }
 
