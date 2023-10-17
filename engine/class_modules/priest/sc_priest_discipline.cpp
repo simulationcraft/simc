@@ -53,6 +53,26 @@ struct power_word_radiance_t final : public priest_heal_t
     priest_td_t& td = get_td( s->target );
     td.buffs.atonement->trigger( atonement_duration );
   }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const
+  {
+    target_list.clear();
+    target_list.push_back( target );
+
+    for ( const auto& t : sim->healing_no_pet_list )
+    {
+      if ( t != target )
+        target_list.push_back( t );
+    }
+
+    for ( const auto& t : sim->healing_pet_list )
+    {
+      if ( t != target )
+        target_list.push_back( t );
+    }
+
+    return target_list.size();
+  }
 };
 
 struct pain_suppression_t final : public priest_spell_t
