@@ -1067,6 +1067,9 @@ struct summon_vilefiend_t : public demonology_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
+
+    if ( p->talents.fel_invocation->ok() )
+      base_execute_time += p->talents.fel_invocation->effectN( 2 ).time_value();
   }
 
   void execute() override
