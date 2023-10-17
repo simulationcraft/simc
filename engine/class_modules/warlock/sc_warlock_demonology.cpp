@@ -1023,7 +1023,7 @@ private:
 struct soul_strike_t : public demonology_spell_t
 {
   soul_strike_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "Soul Strike", p, p->talents.soul_strike )
+    : demonology_spell_t( "Soul Strike", p, p->min_version_check( VERSION_10_2_0 ) ? spell_data_t::not_found() : p->talents.soul_strike )
   {
     parse_options( options_str );
     energize_type = action_energize::ON_CAST;
@@ -1045,6 +1045,9 @@ struct soul_strike_t : public demonology_spell_t
 
   bool ready() override
   {
+    if ( p()->min_version_check( VERSION_10_2_0 ) )
+      return false;
+
     auto active_pet = p()->warlock_pet_list.active;
 
     if ( !active_pet )
