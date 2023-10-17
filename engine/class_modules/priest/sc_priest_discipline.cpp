@@ -58,77 +58,63 @@ struct power_word_radiance_t final : public priest_heal_t
     target_list.clear();
     target_list.push_back( target );
 
-    for ( const auto& t : sim->healing_no_pet_list )
+    /*for ( const auto& t : sim->healing_no_pet_list )
       if ( t != target )
         target_list.push_back( t );
 
-    rng().shuffle( target_list.begin() + 1, target_list.end() );
+    rng().shuffle( target_list.begin() + 1, target_list.end() );*/
 
-    //if ( sim->healing_no_pet_list.size() <= n_targets() )
-    //{
-    //  for ( const auto& t : sim->healing_no_pet_list )
-    //    if ( t != target )
-    //      target_list.push_back( t );
+    if ( sim->healing_no_pet_list.size() <= n_targets() )
+    {
+      for ( auto t : sim->healing_no_pet_list )
+        if ( t != target )
+          target_list.push_back( t );
 
-    //  auto idx = target_list.size();
+      auto offset = target_list.size();
 
-    //  for ( const auto& t : sim->healing_pet_list )
-    //  {
-    //    if ( t != target )
-    //      target_list.push_back( t );
-    //  }
+      for ( auto t : sim->healing_pet_list )
+      {
+        if ( t != target )
+          target_list.push_back( t );
+      }
+      
+      if ( std::next( target_list.begin(), offset ) < target_list.end() )
+        rng().shuffle( std::next( target_list.begin(), offset ), target_list.end() );
 
-    //  rng().shuffle( target_list.begin() + idx, target_list.end() );
+      return target_list.size();
+    }
 
-    //  return target_list.size();
-    //}
+    std::vector<player_t*> helper_list = {};
 
-    //std::vector<player_t*> helper_list;
+    for ( auto t : sim->healing_no_pet_list )
+    {
+      if ( t != target )
+      {
+        if ( !p().find_target_data( t ) || !p().find_target_data( t )->buffs.atonement->check() )
+        {
+          target_list.push_back( t );
+        }
+        else
+        {
+          helper_list.push_back( t );
+        }
+      }
+    }
 
-    //for ( const auto& t : sim->healing_no_pet_list )
-    //{
-    //  if ( t != target )
-    //  {
-    //    if ( !p().find_target_data( t ) || !p().find_target_data( t )->buffs.atonement->check() )
-    //    {
-    //      target_list.push_back( t );
-    //    }
-    //    else
-    //    {
-    //      helper_list.push_back( t );
-    //    }
-    //  }
-    //}
+    if ( target_list.size() > n_targets() )
+    {
+      rng().shuffle( target_list.begin() + 1, target_list.end() );
+    }
 
-    //if ( target_list.size() > n_targets() )
-    //{
-    //  rng().shuffle( target_list.begin() + 1, target_list.end() );
-    //}
+    auto offset = target_list.size();
 
-    //auto idx = target_list.size();
+    for ( auto t : helper_list )
+    {
+      target_list.push_back( t );
+    }
 
-    //for ( const auto& t : helper_list )
-    //{
-    //  target_list.push_back( t );
-    //}
-
-    //if ( target_list.size() > n_targets() )
-    //{
-    //  rng().shuffle( target_list.begin() + idx, target_list.end() );
-    //}
-
-    //idx = target_list.size();
-
-    //for ( const auto& t : sim->healing_pet_list )
-    //{
-    //  if ( t != target )
-    //    target_list.push_back( t );
-    //}
-
-    //if ( sim->healing_pet_list.size() > 1 )
-    //{
-    //  rng().shuffle( target_list.begin() + idx, target_list.end() );
-    //}
+    if ( std::next( target_list.begin(), offset ) < target_list.end() )
+      rng().shuffle( std::next( target_list.begin(), offset ), target_list.end() );
 
     return target_list.size();
   }
