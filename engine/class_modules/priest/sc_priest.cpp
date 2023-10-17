@@ -1965,8 +1965,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     active_items(),
     pets( *this ),
     options(),
-    allies_with_atonement(),
-    fake_heal_targets()
+    allies_with_atonement()
 {
   create_cooldowns();
   create_gains();
@@ -2367,38 +2366,6 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
 void priest_t::create_pets()
 {
   base_t::create_pets();
-
-  // not actually pets, but this stage is a good place to create these as all spells & actions have been created
-  if ( talents.discipline.atonement.ok() )
-  {
-    // swarm_targets.push_back( this );
-
-    size_t i = 0;
-    if ( sim->single_actor_batch )
-    {
-      i = 1;
-    }
-    else
-    {
-      for ( auto t : sim->target_list )
-      {
-        if ( t->is_player() )
-          i++;
-      }
-    }
-
-    while ( i < options.disc_minimum_allies )
-    {
-      auto t = fake_heal_targets.emplace_back(
-          module_t::heal_enemy()->create_player( sim, "disc_melee_target_" + util::to_string( ++i ), RACE_NONE ) );
-
-      t->quiet = false;
-      t->role  = ROLE_ATTACK;
-      sim->init_actor( t );
-      t->current.sleeping = true;
-      t->init_finished();
-    }
-  }
 }
 
 void priest_t::init_base_stats()
@@ -2896,19 +2863,11 @@ void priest_t::copy_from( player_t* source )
 void priest_t::arise()
 {
   base_t::arise();
-  for ( auto p : fake_heal_targets )
-  {
-    p->arise();
-  }
 }
 
 void priest_t::demise()
 {
   base_t::demise();
-  for ( auto p : fake_heal_targets )
-  {
-    p->demise();
-  }
 }
 
 // Idol of C'Thun Talent Trigger

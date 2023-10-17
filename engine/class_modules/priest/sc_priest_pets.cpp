@@ -293,10 +293,11 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
   {
     // using S = const spell_data_t*;
     // DISCIPLINE DEBUFF EFFECTS
-    if ( p().o().specialization() == PRIEST_DISCIPLINE )
+    // Doesn't work on the pet ayy lmao
+    /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
         parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().o().talents.discipline.schism_debuff );
-    }
+    }*/
   }
 
   priest_pet_t& p()
@@ -680,6 +681,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // Tuning modifier effect
     apply_affecting_aura( p.o().specs.shadow_priest );
+    apply_affecting_aura( p.o().specs.discipline_priest );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override

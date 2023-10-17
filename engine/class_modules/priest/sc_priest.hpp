@@ -668,7 +668,6 @@ public:
   } options;
 
   vector_with_callback<player_t*> allies_with_atonement;
-  std::vector<player_t*> fake_heal_targets;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
