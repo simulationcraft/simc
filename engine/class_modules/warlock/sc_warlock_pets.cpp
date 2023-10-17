@@ -1722,10 +1722,16 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 
 /// Pit Lord Begin
 
-pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_PIT_LORD, name != "pit_lord" )
+pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_PIT_LORD, true )
 {
   owner_coeff.ap_from_sp = 1.215;
   owner_coeff.sp_from_sp = 1.215;
+
+  if ( owner->min_version_check( VERSION_10_2_0 ) )
+  {
+    owner_coeff.ap_from_sp = 1.25;
+    owner_coeff.sp_from_sp = 1.25;
+  }
 
   soul_glutton_damage_bonus = owner->talents.soul_glutton->effectN( 1 ).percent();
 
@@ -1737,10 +1743,15 @@ struct felseeker_t : warlock_pet_spell_t
 {
   felseeker_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Felseeker", p, p->find_spell( 427688 ) )
   {
-    tick_may_crit = false;
-    hasted_ticks = false;
+    hasted_ticks = true;
 
     channeled = true;
+  }
+
+  // Pit Lord does a single channel for a fixed duration. The tick interval is hasted so that it still scales with haste.
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration ;
   }
 
   void last_tick( dot_t* d ) override
