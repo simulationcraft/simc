@@ -672,10 +672,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // This is hard coded in the spell
     // spcoeff * $?a137032[${0.326139}][${0.442}]
-    if ( p.fiend_type == base_fiend_pet_t::fiend_type::Mindbender )
-    {
-      spell_power_mod.direct *= 0.442;
-    }
+    spell_power_mod.direct *= p.direct_power_mod;
 
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
