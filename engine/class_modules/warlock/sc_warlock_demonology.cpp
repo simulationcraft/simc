@@ -678,7 +678,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
       if ( p()->min_version_check( VERSION_10_2_0 ) )
       {
-        // Note: Wild Imp cap appears to be hardcoded
         if ( lock_pet->pet_type == PET_WILD_IMP && wild_imp_counter < imp_cap )
         {
           if ( lock_pet->expiration )
