@@ -295,6 +295,7 @@ struct doom_brand_t : public demonology_spell_t
   doom_brand_t( warlock_t* p ) : demonology_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
   {
     aoe = -1;
+    reduced_aoe_targets = 8.0; // 2023-10-17: This is not seen in spell data but was mentioned in a PTR update note
     background = dual = true;
     callbacks = false;
   }
@@ -303,11 +304,38 @@ struct doom_brand_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) && p()->doomfiend_rppm->trigger() )
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) )
     {
-      p()->warlock_pet_list.doomfiends.spawn();
-      p()->procs.doomfiend->occur();
+      double increment_max = 0.5;
+
+      int debuff_count = 1; // This brand that is exploding counts as 1, but is already expired
+      for ( auto t : target_list() )
+      {
+        if ( td( t )->debuffs_doom_brand->check() )
+          debuff_count++;
+      }
+
+      increment_max *= std::pow( debuff_count, -1.0 / 2.0 );
+
+      p()->doom_brand_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->doom_brand_accumulator >= 1.0 )
+      {
+        p()->warlock_pet_list.doomfiends.spawn();
+        p()->procs.doomfiend->occur();
+        p()->doom_brand_accumulator -= 1.0;
+      }
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = demonology_spell_t::composite_da_multiplier( s );
+
+    if ( s->n_targets == 1 )
+      m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 2 ).percent();
+
+    return m;
   }
 };
 
@@ -366,6 +394,10 @@ struct demonbolt_t : public demonology_spell_t
           debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
         }
       }
+
+      // TODO: Technically the debuff is still applied on impact, and somehow "knows" that a core was consumed.
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
+        td( target )->debuffs_doom_brand->trigger();
     }
 
     p()->buffs.demonic_core->decrement();
@@ -391,14 +423,6 @@ struct demonbolt_t : public demonology_spell_t
       p()->buffs.blazing_meteor->trigger();
       p()->procs.blazing_meteor->occur();
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    demonology_spell_t::impact( s );
-
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
-      td( s->target )->debuffs_doom_brand->trigger();
   }
 
   double action_multiplier() const override
@@ -1607,7 +1631,6 @@ void warlock_t::init_gains_demonology()
 
 void warlock_t::init_rng_demonology()
 {
-  doomfiend_rppm = get_rppm( "doomfiend", sets->set( WARLOCK_DEMONOLOGY, T31, B4 )->real_ppm() );
 }
 
 void warlock_t::init_procs_demonology()

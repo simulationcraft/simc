@@ -1188,6 +1188,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     corruption_accumulator( 0.0 ),
     cdf_accumulator( 0.0 ),
     dimensional_accumulator( 0.0 ),
+    doom_brand_accumulator( 0.0 ),
     incinerate_last_target_count( 0 ),
     shadow_invocation_proc_chance( 0.0 ),
     active_pets( 0 ),
@@ -1201,8 +1202,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     procs(),
     initial_soul_shards( 3 ),
     default_pet(),
-    disable_auto_felstorm( false ),
-    doomfiend_rppm( nullptr )
+    disable_auto_felstorm( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.darkglare = get_cooldown( "summon_darkglare" );
@@ -1881,6 +1881,7 @@ void warlock_t::reset()
   corruption_accumulator             = rng().range( 0.0, 0.99 );
   cdf_accumulator                    = rng().range( 0.0, 0.99 );
   dimensional_accumulator            = rng().range( 0.0, 0.99 );
+  doom_brand_accumulator             = rng().range( 0.0, 0.99 );
   incinerate_last_target_count       = 0;
   shadow_invocation_proc_chance        = 0.2;
   wild_imp_spawns.clear();

@@ -1888,7 +1888,7 @@ double pit_lord_t::composite_melee_speed() const
 
 /// Doomfiend Begin
 
-doomfiend_t::doomfiend_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_DOOMFIEND, name != "doomfiend" )
+doomfiend_t::doomfiend_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_DOOMFIEND, true )
 {
   action_list_str = "doom_bolt_volley";
 
@@ -1908,6 +1908,16 @@ struct doom_bolt_volley_t : public warlock_pet_spell_t
     {
       make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = warlock_pet_spell_t::composite_da_multiplier( s );
+
+    if ( s->n_targets == 1 )
+      m *= 1.0 + p()->o()->sets->set( WARLOCK_DEMONOLOGY, T31, B4 )->effectN( 2 ).percent();
+
+    return m;
   }
 };
 
