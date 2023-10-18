@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51790
-static const std::array<spelltext_data_t, 20499> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20498,6 +20498,7 @@ static const std::array<spelltext_data_t, 20499> __ptr_spelltext_data { {
   { 429271, "Envelop an ally in ancient protection, absorbing up to $s1 damage. If the protection is fully consumed, the ally gains an ancient resurgence, increasing Versatility by $429272s1 for $429272d.", "Absorbs $w1 damage.", 0 },
   { 429272, "$@spelldesc429271", "Versatility increased by $s1.", 0 },
   { 429364, "Plant a banner representing your successes against the Dreaming.", 0, 0 },
+  { 429951, "$@spelldesc13877", 0, 0 },
   { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
 } };
 
