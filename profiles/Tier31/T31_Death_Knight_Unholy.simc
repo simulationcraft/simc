@@ -5,7 +5,7 @@ level=70
 race=troll
 role=attack
 position=back
-talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
+talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRiIRESSECJJJRAAAAAAAAAgSSSgIJAASSINRSSikA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -180,13 +180,13 @@ trinket2=mirror_of_fractured_tomorrows,id=207581,bonus_id=6536/1540/6646
 main_hand=incandescent_soulcleaver,id=207799,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=488.20
-# gear_strength=9730
-# gear_stamina=38619
-# gear_crit_rating=2301
-# gear_haste_rating=5517
-# gear_mastery_rating=5524
-# gear_versatility_rating=1715
-# gear_armor=11368
+# gear_ilvl=488.60
+# gear_strength=9758
+# gear_stamina=38769
+# gear_crit_rating=2305
+# gear_haste_rating=5521
+# gear_mastery_rating=5527
+# gear_versatility_rating=1718
+# gear_armor=11397
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1

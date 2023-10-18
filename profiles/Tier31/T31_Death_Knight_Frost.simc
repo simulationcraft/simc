@@ -224,14 +224,14 @@ main_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=ru
 off_hand=volcorosss_barbed_fang,id=207789,bonus_id=7187/1520,enchant=rune_of_hysteria
 
 # Gear Summary
-# gear_ilvl=488.25
-# gear_strength=9759
-# gear_stamina=38619
-# gear_crit_rating=5761
-# gear_haste_rating=4769
+# gear_ilvl=488.63
+# gear_strength=9773
+# gear_stamina=38769
+# gear_crit_rating=5778
+# gear_haste_rating=4786
 # gear_mastery_rating=4334
 # gear_versatility_rating=463
-# gear_armor=11384
+# gear_armor=11405
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
 deathknight.ams_absorb_percent=1
