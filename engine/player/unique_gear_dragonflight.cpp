@@ -6422,8 +6422,6 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   if ( !buff )
   {
     // Use the cap as the default value to be decremented as you trigger
-    // NOTE: Tooltip says total limit increased per enemy struck, up to 5.
-    //       Testing on a training dummy can't find any evidence to support that.
     buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
                ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   }
@@ -6466,7 +6464,11 @@ void augury_of_the_primal_flame( special_effect_t& effect )
         else
         {
           // If you hit enough to cap, expire the buff
-          // Any in-progress damage events are uninterrupted allowing you to go over the cap
+          // Only hit for the remaining amount left on the cap
+          effect.player->sim->print_debug(
+              "{} base hit was over annihilating_flame cap. Exhausting remaining damage of {}.", effect.player->name(),
+              buff->current_value );
+          damage->base_dd_min = damage->base_dd_max = buff->current_value;
           buff->expire();
         }
       }
