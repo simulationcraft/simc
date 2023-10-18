@@ -67,14 +67,14 @@ struct power_word_radiance_t final : public priest_heal_t
     if ( sim->healing_no_pet_list.size() <= n_targets() )
     {
       for ( auto t : sim->healing_no_pet_list )
-        if ( t != target )
+        if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
           target_list.push_back( t );
 
       auto offset = target_list.size();
 
       for ( auto t : sim->healing_pet_list )
       {
-        if ( t != target )
+        if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
           target_list.push_back( t );
       }
       
@@ -88,7 +88,7 @@ struct power_word_radiance_t final : public priest_heal_t
 
     for ( auto t : sim->healing_no_pet_list )
     {
-      if ( t != target )
+      if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
       {
         if ( !p().find_target_data( t ) || !p().find_target_data( t )->buffs.atonement->check() )
         {

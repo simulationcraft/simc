@@ -1069,13 +1069,13 @@ public:
 
     for ( const auto& t : sim->healing_no_pet_list )
     {
-      if ( t != target )
+      if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
         target_list.push_back( t );
     }
 
     for ( const auto& t : sim->healing_pet_list )
     {
-      if ( t != target )
+      if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
         target_list.push_back( t );
     }
 
@@ -1126,13 +1126,13 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     for ( const auto& t : sim->healing_no_pet_list )
     {
-      if ( t != target )
+      if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
         target_list.push_back( t );
     }
 
     for ( const auto& t : sim->healing_pet_list )
     {
-      if ( t != target )
+      if ( t != target && ( t->is_active() || t->type == HEALING_ENEMY && !t->is_sleeping() ) )
         target_list.push_back( t );
     }
 
