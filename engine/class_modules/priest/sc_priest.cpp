@@ -1442,16 +1442,18 @@ struct flash_heal_t final : public priest_heal_t
   timespan_t train_of_thought_cdr;
   flash_heal_t* binding_heals;
   double binding_heal_percent;
+  bool binding;
 
   flash_heal_t( priest_t& p, util::string_view options_str ) : flash_heal_t( p, "flash_heal", options_str )
   {
   }
 
-  flash_heal_t( priest_t& p, util::string_view name, util::string_view options_str )
+  flash_heal_t( priest_t& p, util::string_view name, util::string_view options_str, bool bind = false )
     : priest_heal_t( name, p, p.find_class_spell( "Flash Heal" ) ),
       atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() ) ),
       binding_heal_percent( p.talents.binding_heals->effectN( 1 ).percent() ),
-      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 1 ).time_value() )
+      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 1 ).time_value() ),
+      binding( bind )
   {
     parse_options( options_str );
     harmful = false;
@@ -1459,14 +1461,26 @@ struct flash_heal_t final : public priest_heal_t
     apply_affecting_aura( priest().talents.improved_flash_heal );
     disc_mastery = true;
 
-    if ( p.talents.binding_heals.enabled() && name != "flash_heal_binding" )
+    if ( binding )
     {
-      binding_heals                                                = new flash_heal_t( p, "flash_heal_binding", {} );
-      binding_heals->background                                    = true;
-      binding_heals->proc                                          = true;
-      binding_heals->spell_power_mod.direct                        = 0;
-      binding_heals->base_costs[ binding_heals->resource_current ] = 0.0;
+      background = proc = true;
+    }
+
+    if ( p.talents.binding_heals.enabled() && !binding )
+    {
+      binding_heals             = new flash_heal_t( p, name_str + "_binding", {}, true );
       add_child( binding_heals );
+    }
+  }
+
+  void init() override
+  {
+    priest_heal_t::init();
+
+    if ( binding )
+    {
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags &= ~( STATE_SP );
     }
   }
 
@@ -1485,9 +1499,6 @@ struct flash_heal_t final : public priest_heal_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    if ( background )
-      return 1;
-
     double m = priest_heal_t::composite_da_multiplier( s );
 
     // Value is stored as an int rather than a typical percent
@@ -1502,7 +1513,7 @@ struct flash_heal_t final : public priest_heal_t
 
     priest().buffs.protective_light->trigger();
 
-    if ( priest().talents.discipline.train_of_thought.enabled() && !background )
+    if ( priest().talents.discipline.train_of_thought.enabled() && !binding )
     {
       priest().cooldowns.power_word_shield->adjust( train_of_thought_cdr );
     }
@@ -1522,7 +1533,7 @@ struct flash_heal_t final : public priest_heal_t
         td.buffs.atonement->trigger( atonement_duration );
       }
 
-      if ( s->result_amount > 0 && priest().talents.binding_heals.enabled() && s->target != player )
+      if ( s->result_amount > 0 && priest().talents.binding_heals.enabled() && binding_heals && s->target != player )
       {
         binding_heals->execute_on_target( player, s->result_amount * binding_heal_percent );
       }
