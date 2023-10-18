@@ -524,6 +524,7 @@ public:
   {
     // Shared
     propagate_const<cooldown_t*> shadow_word_death;
+    propagate_const<cooldown_t*> power_word_shield;
     propagate_const<cooldown_t*> mindgames;
     propagate_const<cooldown_t*> mindbender;
     propagate_const<cooldown_t*> shadowfiend;
