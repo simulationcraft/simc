@@ -5212,8 +5212,8 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     // }
 
     if ( exec_type == execute_type::NORMAL && ( 
-        ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() ) )
-    {
+    ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() ) )
+        {
       m *= 1.0 + p()->buff.primordial_surge_lava_burst_buff->default_value;
     }
 
@@ -5641,8 +5641,8 @@ struct lava_burst_t : public shaman_spell_t
     //                  bonus echoes are affected by WLR.
     //                  Unknown: Ascendance/Deeply Rooted Elements
     if ( exec_type == execute_type::NORMAL && (
-        wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() ) )
-    {
+    wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() ) )
+        {
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
@@ -6146,7 +6146,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
     {
       m *= p()->spell.t31_2pc_ele->effectN( 1 ).percent();
     }
-
+    
     return m;
   }
 
@@ -10043,9 +10043,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
     auto lvb = debug_cast<lava_burst_t*>( state->action );
-    if ( lvb->exec_type != execute_type::NORMAL
-      && lvb->exec_type != execute_type::PRIMORDIAL_WAVE
-      && lvb->exec_type != execute_type::MOLTEN_CHARGE )
+    if ( lvb->exec_type != execute_type::NORMAL )
     {
       return;
     }
