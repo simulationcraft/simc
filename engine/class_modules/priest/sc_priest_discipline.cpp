@@ -267,8 +267,7 @@ protected:
 
       // This is not found in the affected spells for Shadow Covenant, overriding it manually
       // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-      force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT );
-      force_buff_effect( p.buffs.shadow_covenant, 2, false, USE_DEFAULT );
+      force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_CURRENT_DATA_OFFSET );
 
       triggers_atonement = true;
     }
@@ -559,7 +558,7 @@ void priest_t::create_buffs_discipline()
   {
     // Twilight corruption doesnt work rn lmao
     // double scov_amp = talents.discipline.twilight_corruption->effectN(1).percent();
-    double scov_amp          = 0.1;
+    double scov_amp          = 0;
     timespan_t scov_duration = 15_s;
     if ( talents.shared.mindbender.enabled() )
     {
