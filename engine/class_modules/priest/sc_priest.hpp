@@ -718,6 +718,7 @@ public:
   void demise() override;
   void do_dynamic_regen( bool ) override;
   void apply_affecting_auras( action_t& ) override;
+  void apply_affecting_auras_late( action_t& );
   void invalidate_cache( cache_e ) override;
 
 private:
@@ -768,6 +769,25 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
+  
+  unsigned int specialization_aura_id()
+  {
+    switch ( specialization() )
+    {
+      case PRIEST_SHADOW:
+        return specs.shadow_priest->id();
+        break;
+      case PRIEST_DISCIPLINE:
+        return specs.discipline_priest->id();
+        break;
+      case PRIEST_HOLY:
+        return specs.holy_priest->id();
+        break;
+      default:
+        return specs.priest->id();
+        break;
+    }
+  }
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -825,6 +845,52 @@ public:
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
+
+    if ( ab::data().ok() )
+    {
+      const auto spell_powers = ab::data().powers();
+      if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
+      {
+        ab::resource_current = spell_powers.front().resource();
+      }
+      else
+      {
+        // Find the first power entry without a aura id
+        auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
+        if ( it != spell_powers.end() )
+        {
+          ab::resource_current = it->resource();
+        }
+        else
+        {
+          auto it = range::find( spell_powers, p.specialization_aura_id(), &spellpower_data_t::aura_id );
+          if ( it != spell_powers.end() )
+          {
+            ab::resource_current = it->resource();
+          }
+        }
+      }
+
+      for ( const spellpower_data_t& pd : spell_powers )
+      {
+        if ( pd.aura_id() != 0 && pd.aura_id() != p.specialization_aura_id() )
+          continue;
+
+        if ( pd._cost != 0 )
+          ab::base_costs[ pd.resource() ] = pd.cost();
+        else
+          ab::base_costs[ pd.resource() ] = floor( pd.cost() * p.resources.base[ pd.resource() ] );
+
+        ab::secondary_costs[ pd.resource() ] = pd.max_cost();
+
+        if ( pd._cost_per_tick != 0 )
+          ab::base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
+        else
+          ab::base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * p.resources.base[ pd.resource() ] );
+      }
+
+      p.apply_affecting_auras_late( *this );
+    }
   }
 
   priest_td_t* td( player_t* t ) const

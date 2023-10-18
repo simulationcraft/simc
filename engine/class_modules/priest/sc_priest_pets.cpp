@@ -241,8 +241,8 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
   // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
-  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
-  //  value_type = optional, default USE_DATA, where the value comes from.
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore
+  //  parameters value_type = optional, default USE_DATA, where the value comes from.
   //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
   //  spell = optional list of spell with redirect effects that modify the effects on the buff
   //
@@ -256,7 +256,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     // using S = const spell_data_t*;
 
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
-    
+
     if ( p().o().specialization() == PRIEST_SHADOW )
     {
       parse_buff_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
@@ -287,7 +287,6 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
       parse_buff_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
     }
-
   }
   void apply_debuffs_effects()
   {
@@ -296,7 +295,8 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     // Doesn't work on the pet ayy lmao
     /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-        parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().o().talents.discipline.schism_debuff );
+        parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+    p().o().talents.discipline.schism_debuff );
     }*/
   }
 
@@ -476,10 +476,13 @@ struct base_fiend_pet_t : public priest_pet_t
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
   double power_leech_insanity;
+  double power_leech_mana;
 
   shadowfiend_pet_t( priest_t* owner, util::string_view name = "shadowfiend" )
     : base_fiend_pet_t( owner, name, fiend_type::Shadowfiend ),
-      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
+                                                              : o().talents.shadowfiend->effectN( 4 ).percent() / 10 )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -493,7 +496,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
 
   double mana_return_percent() const override
   {
-    return 0.0;
+    return power_leech_mana;
   }
   double insanity_gain() const override
   {
@@ -512,11 +515,14 @@ struct mindbender_pet_t final : public base_fiend_pet_t
 {
   const spell_data_t* mindbender_spell;
   double power_leech_insanity;
+  double power_leech_mana;
 
   mindbender_pet_t( priest_t* owner, util::string_view name = "mindbender" )
     : base_fiend_pet_t( owner, name, fiend_type::Mindbender ),
       mindbender_spell( owner->find_spell( 123051 ) ),
-      power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
+                                                              : o().find_spell( 200010 )->effectN( 1 ).percent() / 10 )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -534,8 +540,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
 
   double mana_return_percent() const override
   {
-    double m = mindbender_spell->effectN( 1 ).percent();
-    return m / 100;
+    return power_leech_mana;
   }
 
   double insanity_gain() const override
@@ -693,7 +698,6 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     return m;
   }
 
-
   void trigger( player_t* target, double mod_ )
   {
     mod = mod_;
@@ -739,7 +743,7 @@ struct inescapable_torment_t final : public priest_pet_spell_t
     {
       duration *= mod;
     }
-    
+
     set_target( target );
     execute();
 

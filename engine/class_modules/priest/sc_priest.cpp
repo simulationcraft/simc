@@ -1455,12 +1455,14 @@ struct flash_heal_t final : public priest_heal_t
     harmful = false;
 
     apply_affecting_aura( priest().talents.improved_flash_heal );
+    apply_affecting_aura( p.specs.discipline_priest );
     disc_mastery = true;
 
     if ( p.talents.binding_heals.enabled() && name != "flash_heal_binding" )
     {
       binding_heals = new flash_heal_t( p, "flash_heal_binding", {} );
       binding_heals->spell_power_mod.direct = 0;
+      binding_heals->base_costs[ binding_heals->resource_current ] = 0.0;
       add_child( binding_heals );
     }
   }
@@ -1534,6 +1536,7 @@ struct renew_t final : public priest_heal_t
     harmful = false;
 
     disc_mastery = true;
+    apply_affecting_aura( p.specs.discipline_priest );
   }
 
   void execute() override
@@ -1631,9 +1634,22 @@ struct power_word_shield_t final : public priest_absorb_t
                                                     p.talents.discipline.indemnity->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
-    spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
-    apply_affecting_aura( priest().talents.discipline.borrowed_time );
     
+    apply_affecting_aura( p.specs.priest );
+    apply_affecting_aura( p.specs.discipline_priest );
+    
+    switch ( p.specialization() )
+    {
+      case PRIEST_DISCIPLINE:
+        base_dd_multiplier *= 1.37;
+        break;
+      case PRIEST_SHADOW:
+        base_dd_multiplier *= 1.25;
+        break;
+      default:
+        break;
+    }
+
     disc_mastery = true;
   }
 
@@ -2740,7 +2756,10 @@ void priest_t::do_dynamic_regen( bool forced )
 void priest_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
+}
 
+void priest_t::apply_affecting_auras_late(action_t& action)
+{
   action.apply_affecting_aura( specs.shadow_priest );
   action.apply_affecting_aura( specs.holy_priest );
   action.apply_affecting_aura( specs.discipline_priest );
