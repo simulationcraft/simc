@@ -4107,28 +4107,12 @@ struct eviscerate_t : public rogue_attack_t
 {
   struct eviscerate_bonus_t : public rogue_attack_t
   {
-    int last_eviscerate_cp;
-
     eviscerate_bonus_t( util::string_view name, rogue_t* p ):
-      rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
-      last_eviscerate_cp( 1 )
+      rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack )
     {
-      if ( p->talent.subtlety.shadowed_finishers->ok() )
-      {
-        // Spell has the full damage coefficient and is modified via talent scripting
-        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
-      }
-    }
-
-    void reset() override
-    {
-      rogue_attack_t::reset();
-      last_eviscerate_cp = 1;
-    }
-
-    double combo_point_da_multiplier( const action_state_t* ) const override
-    {
-      return as<double>( last_eviscerate_cp );
+      callbacks = false;
+      dual = true;
+      base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
     }
   };
 
@@ -4172,15 +4156,9 @@ struct eviscerate_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
     p()->buffs.deeper_daggers->trigger();
 
-    if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
-    {
-      bonus_attack->last_eviscerate_cp = cast_state( execute_state )->get_combo_points();
-      bonus_attack->set_target( target );
-      bonus_attack->execute();
-    }
+    rogue_attack_t::execute();
 
     if ( p()->spec.finality_eviscerate_buff->ok() )
     {
@@ -4194,6 +4172,21 @@ struct eviscerate_t : public rogue_attack_t
     {
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    // TOCHECK -- With the new residual setup, is this applied before or after Deeper Daggers?
+    // Appears to use the raw, mitigated (but pre-crit) result since the residual spell can crit
+    if ( bonus_attack && td( target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
+    {
+      double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+      if ( state->result == RESULT_CRIT )
+        amount /= 1.0 + state->result_crit_bonus;
+      bonus_attack->execute_on_target( state->target, amount );
     }
   }
 
@@ -5528,32 +5521,13 @@ struct black_powder_t: public rogue_attack_t
 {
   struct black_powder_bonus_t : public rogue_attack_t
   {
-    int last_cp;
-
     black_powder_bonus_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.black_powder_shadow_attack ),
-      last_cp( 1 )
+      rogue_attack_t( name, p, p->spec.black_powder_shadow_attack )
     {
-      callbacks = false; // 2021-07-19-- Does not appear to trigger normal procs
+      callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
+      dual = true;
       aoe = -1;
-      reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
-
-      if ( p->talent.subtlety.shadowed_finishers->ok() )
-      {
-        // Spell has the full damage coefficient and is modified via talent scripting
-        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
-      }
-    }
-
-    void reset() override
-    {
-      rogue_attack_t::reset();
-      last_cp = 1;
-    }
-
-    double combo_point_da_multiplier( const action_state_t* ) const override
-    {
-      return as<double>( last_cp );
+      base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -5622,35 +5596,37 @@ struct black_powder_t: public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
-
-    // Deeper Daggers triggers before bonus damage which makes it self-affecting.
     p()->buffs.deeper_daggers->trigger();
 
-    // BUG: Finality BP seems to affect every instance of shadow damage due to, err, spaghetti with the bonus attack trigger order and travel time?
-    // See https://github.com/SimCMinMax/WoW-BugTracker/issues/747
-    bool triggered_finality = false;
-    if ( p()->spec.finality_black_powder_buff->ok() && !p()->buffs.finality_black_powder->check() )
-    {
-      p()->buffs.finality_black_powder->trigger();
-      triggered_finality = true;
-    }
+    rogue_attack_t::execute();
 
-    if ( bonus_attack )
+    if ( p()->spec.finality_black_powder_buff->ok() )
     {
-      bonus_attack->last_cp = cast_state( execute_state )->get_combo_points();
-      bonus_attack->set_target( execute_state->target );
-      bonus_attack->execute();
+      if ( p()->buffs.finality_black_powder->check() )
+        p()->buffs.finality_black_powder->expire();
+      else
+        p()->buffs.finality_black_powder->trigger();
     }
-
-    // See bug above.
-    if ( !triggered_finality )
-      p()->buffs.finality_black_powder->expire();
 
     if ( p()->set_bonuses.t29_subtlety_2pc->ok() )
     {
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    // TOCHECK -- With the new residual setup, is this applied before or after Deeper Daggers?
+    // Appears to use the raw, mitigated (but pre-crit) result since the residual spell can crit
+    if ( bonus_attack && state->chain_target == 0 )
+    {
+      double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+      if ( state->result == RESULT_CRIT )
+        amount /= 1.0 + state->result_crit_bonus;
+      bonus_attack->execute_on_target( state->target, amount );
     }
   }
 
@@ -6243,6 +6219,7 @@ struct vicious_venoms_t : public rogue_attack_t
   vicious_venoms_t( util::string_view name, rogue_t* p, const spell_data_t* s, bool from_multilate ) :
     rogue_attack_t( name, p, s ), triggers_doomblade( from_multilate )
   {
+    base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
   }
 
   void impact( action_state_t* state ) override
