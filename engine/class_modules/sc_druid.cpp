@@ -7847,6 +7847,10 @@ struct starsurge_t : public astral_power_spender_t
       force_buff_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
       force_buff_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
 
+      // mastery is applied via hidden script
+      force_passive_effect( p->mastery.astral_invocation, 1 );
+      force_passive_effect( p->mastery.astral_invocation, 3 );
+
       if ( !p->is_ptr() )
       {
         force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
@@ -8046,6 +8050,10 @@ struct orbital_strike_t : public druid_spell_t
     // forcing effect#1 modified by the talent.
     force_buff_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
     force_buff_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
+
+    // mastery is applied via hidden script
+    force_passive_effect( p->mastery.astral_invocation, 1 );
+    force_passive_effect( p->mastery.astral_invocation, 3 );
 
     if ( !p->is_ptr() )
     {
