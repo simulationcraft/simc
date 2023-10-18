@@ -2790,7 +2790,7 @@ void hunter_t::trigger_latent_poison( const action_state_t* s )
 // 24-3-23: Currently only applying Beast Cleave with the remaining Call of the Wild duration as the result of a Cobra Shot, Serpent Sting, Arcane Shot, or Multi-Shot.
 void hunter_t::trigger_bloody_frenzy()
 {
-  if ( !talents.bloody_frenzy.ok() || !buffs.call_of_the_wild -> check() )
+  if ( !talents.bloody_frenzy.ok() || !buffs.call_of_the_wild -> check() || is_ptr() )
     return;
 
   timespan_t duration = buffs.call_of_the_wild -> remains();
@@ -3835,7 +3835,11 @@ struct multishot_bm_t: public hunter_ranged_attack_t
       p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
     }
 
-    p() -> trigger_bloody_frenzy();
+    if ( !p() -> is_ptr() )
+    {
+      p() -> trigger_bloody_frenzy();
+    }
+
   }
 };
 
@@ -5837,6 +5841,16 @@ struct call_of_the_wild_t: public hunter_spell_t
 
     p() -> buffs.call_of_the_wild -> trigger();
     p() -> pets.cotw_stable_pet.spawn( data().duration(), as<int>( data().effectN( 1 ).base_value() ) );
+
+    if ( !p() -> is_ptr() || !p() -> talents.bloody_frenzy -> ok() )
+      return;
+
+    timespan_t duration = p() -> buffs.call_of_the_wild -> remains();
+    for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+      pet -> buffs.beast_cleave -> trigger( duration );
+
+    for ( auto pet : p() -> pets.cotw_stable_pet.active_pets() )
+      pet -> hunter_pet_t::buffs.beast_cleave -> trigger( duration );
   }
 };
 
@@ -7300,6 +7314,11 @@ void hunter_t::create_buffs()
               for ( auto pet : ( pets.cotw_stable_pet.active_pets() ) )
               {
                 pet -> active.stomp -> execute();
+              }
+              if ( !pets.cotw_stable_pet.active_pets().empty() )
+              {
+                timespan_t duration = buffs.call_of_the_wild -> remains();
+                pets.cotw_stable_pet.active_pets().back() -> buffs.beast_cleave -> trigger( duration );
               }
             }
           }
