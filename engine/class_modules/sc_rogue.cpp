@@ -2064,6 +2064,7 @@ public:
   void trigger_doomblade( const action_state_t* );
   void trigger_poison_bomb( const action_state_t* );
   void trigger_venomous_wounds( const action_state_t* );
+  void trigger_vicious_venoms( const action_state_t* state, rogue_attack_t* action );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_combo_point_gain( int, gain_t* gain = nullptr );
@@ -3332,10 +3333,7 @@ struct ambush_t : public rogue_attack_t
       trigger_opportunity( state, extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
     }
 
-    if ( p()->talent.assassination.vicious_venoms->ok() )
-    {
-      p()->active.vicious_venoms.ambush->trigger_secondary_action( state->target );
-    }
+    trigger_vicious_venoms( state, p()->active.vicious_venoms.ambush );
   }
 
   bool procs_main_gauche() const override
@@ -4775,8 +4773,10 @@ struct mutilate_t : public rogue_attack_t
 {
   struct mutilate_strike_t : public rogue_attack_t
   {
-    mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
-      rogue_attack_t( name, p, s )
+    rogue_attack_t* vicious_venoms_attack;
+
+    mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s, rogue_attack_t* vicious_venoms_attack ) :
+      rogue_attack_t( name, p, s ), vicious_venoms_attack( vicious_venoms_attack )
     {
     }
 
@@ -4784,6 +4784,7 @@ struct mutilate_t : public rogue_attack_t
     {
       rogue_attack_t::impact( state );
       trigger_doomblade( state );
+      trigger_vicious_venoms( state, vicious_venoms_attack );
     }
 
     bool procs_seal_fate() const override
@@ -4803,8 +4804,10 @@ struct mutilate_t : public rogue_attack_t
       background = true;
     }
 
-    mh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_mh", data().effectN( 3 ).trigger() );
-    oh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_oh", data().effectN( 4 ).trigger() );
+    mh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_mh", data().effectN( 3 ).trigger(),
+                                                             p->active.vicious_venoms.mutilate_mh );
+    oh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_oh", data().effectN( 4 ).trigger(),
+                                                             p->active.vicious_venoms.mutilate_oh );
     add_child( mh_strike );
     add_child( oh_strike );
 
@@ -4828,12 +4831,6 @@ struct mutilate_t : public rogue_attack_t
     {
       mh_strike->execute_on_target( execute_state->target );
       oh_strike->execute_on_target( execute_state->target );
-
-      if ( p()->talent.assassination.vicious_venoms->ok() )
-      {
-        p()->active.vicious_venoms.mutilate_mh->trigger_secondary_action( execute_state->target );
-        p()->active.vicious_venoms.mutilate_oh->trigger_secondary_action( execute_state->target );
-      }
 
       trigger_blindside( execute_state );
       trigger_venom_rush( execute_state );
@@ -6246,8 +6243,6 @@ struct vicious_venoms_t : public rogue_attack_t
   vicious_venoms_t( util::string_view name, rogue_t* p, const spell_data_t* s, bool from_multilate ) :
     rogue_attack_t( name, p, s ), triggers_doomblade( from_multilate )
   {
-    // Appears to be overridden by a scripted multiplier even though the base damage is identical
-    base_multiplier *= p->talent.assassination.vicious_venoms->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* state ) override
@@ -7880,6 +7875,24 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
 
   p()->resource_gain( RESOURCE_ENERGY, p()->talent.assassination.venomous_wounds->effectN( 2 ).base_value(),
                       p()->gains.venomous_wounds );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_vicious_venoms( const action_state_t* state, rogue_attack_t* action )
+{
+  if ( !p()->talent.assassination.vicious_venoms->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  if ( !action || action->secondary_trigger_type != secondary_trigger::VICIOUS_VENOMS )
+    return;
+
+  double damage_amount = state->result_amount * p()->talent.assassination.vicious_venoms->effectN( 1 ).percent();
+  action->base_dd_min = action->base_dd_max = damage_amount;
+  action->set_target( state->target );
+  auto damage_state = action->get_state();
+  damage_state->target = state->target;
+  action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+  action->trigger_secondary_action( damage_state );
 }
 
 template <typename Base>
@@ -10084,7 +10097,6 @@ void rogue_t::init_spells()
       secondary_trigger::VICIOUS_VENOMS, "mutilate_mh_vicious_venoms", spec.vicious_venoms_mutilate_mh, true );
     active.vicious_venoms.mutilate_oh = get_secondary_trigger_action<actions::vicious_venoms_t>(
       secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh, true );
-    active.vicious_venoms.mutilate_oh->weapon = &( off_hand_weapon ); // Flagged as MH in spell data
   }
 
   if ( talent.assassination.doomblade->ok() )
