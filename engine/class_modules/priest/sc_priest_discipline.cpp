@@ -250,7 +250,7 @@ protected:
   struct penance_data
   {
     int bolts = 3;
-    double potds_mult = 1.0;
+    double snapshot_mult = 1.0;
   };
 
   using state_t = priest_action_state_t<penance_data>;
@@ -293,7 +293,7 @@ protected:
     {
       double d = priest_spell_t::composite_da_multiplier( s );
 
-      d *= cast_state( s )->potds_mult;
+      d *= cast_state( s )->snapshot_mult;
 
       return d;
     }
@@ -354,7 +354,16 @@ public:
   {
     ab::snapshot_state( s, rt );
     cast_state( s )->bolts      = default_bolts + p().buffs.harsh_discipline->check_stack_value();
-    cast_state( s )->potds_mult = 1.0 + priest().buffs.power_of_the_dark_side->check_value();
+    cast_state( s )->snapshot_mult = 1.0 + priest().buffs.power_of_the_dark_side->check_value();
+
+    if ( ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
+    {
+      cast_state( s )->snapshot_mult *= 1.0 + priest().buffs.twilight_equilibrium_shadow_amp->check_value();
+    }
+    else if ( ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_HOLY ) == SCHOOL_MASK_HOLY )
+    {
+      cast_state( s )->snapshot_mult *= 1.0 + priest().buffs.twilight_equilibrium_holy_amp->check_value();
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -388,7 +397,7 @@ public:
 
       state_t* state                   = damage->cast_state( damage->get_state() );
       state->target                    = d->state->target;
-      state->potds_mult                = cast_state( d->state )->potds_mult;
+      state->snapshot_mult                = cast_state( d->state )->snapshot_mult;
       damage->snapshot_state( state, damage->amount_type( state ) );
 
       damage->schedule_execute( state );
@@ -524,6 +533,7 @@ public:
     parse_options( options_str );
     cooldown           = p.cooldowns.penance;
     cooldown->duration = p.specs.penance->cooldown();
+    school             = SCHOOL_NONE;
   }
 
   void execute() override
@@ -581,10 +591,12 @@ void priest_t::create_buffs_discipline()
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
 
   buffs.twilight_equilibrium_holy_amp =
-      make_buff( this, "twilight_equilibrium_holy_amp", talents.discipline.twilight_equilibrium_holy_amp );
+      make_buff( this, "twilight_equilibrium_holy_amp", talents.discipline.twilight_equilibrium_holy_amp )
+          ->set_default_value_from_effect( 1, 0.01 );
 
   buffs.twilight_equilibrium_shadow_amp =
-      make_buff( this, "twilight_equilibrium_shadow_amp", talents.discipline.twilight_equilibrium_shadow_amp );
+      make_buff( this, "twilight_equilibrium_shadow_amp", talents.discipline.twilight_equilibrium_shadow_amp )
+          ->set_default_value_from_effect( 1, 0.01 );
 
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) )
                                ->set_default_value( talents.discipline.harsh_discipline->effectN( 2 ).base_value() );
