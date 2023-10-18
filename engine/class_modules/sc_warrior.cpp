@@ -6236,7 +6236,10 @@ struct slam_t : public warrior_attack_t
     {
       energize_amount += p->talents.fury.storm_of_swords->effectN( 6 ).resource( RESOURCE_RAGE );
     }
-    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+    if ( player->specialization() == WARRIOR_FURY )
+    {
+      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+    }
   }
 
   int n_targets() const override
