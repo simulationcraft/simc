@@ -46,7 +46,7 @@ legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent
 feet=lavaforged_sollerets,id=207148,bonus_id=7187/1520
 finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
 finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
-trinket1=accelerating_sandglass,id=207566,bonus_id=6536/1540/6646
+trinket1=pips_emerald_friendship_badge,id=207168,bonus_id=7187/1520
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
 off_hand=volcorosss_barbed_fang,id=207789,bonus_id=7187/1520,enchant=rune_of_hysteria
@@ -75,7 +75,7 @@ legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent
 feet=rook_footmans_warboots,id=139241,bonus_id=3326/1514/6536/6646
 finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
 finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
-trinket1=accelerating_sandglass,id=207566,bonus_id=6536/1540/6646
+trinket1=branch_of_the_tormented_ancient,id=207169,bonus_id=7187/1520
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
 
