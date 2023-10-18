@@ -487,8 +487,8 @@ public:
     const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
     const spell_data_t* sins_of_the_many;
-    double sins_of_the_many_data[ 19 ] = { 0.4,  0.4,  0.4,  0.4,  0.4,  0.35,  0.3,   0.25,   0.2, 0.15,
-                                           0.11, 0.08, 0.05, 0.04, 0.03, 0.025, 0.015, 0.0125, 0.01 };
+    double sins_of_the_many_data[ 20 ] = { 0.4,  0.4,  0.4,  0.4,  0.4,  0.35,  0.3,  0.25,  0.2,    0.15,
+                                           0.11, 0.08, 0.05, 0.04, 0.03, 0.025, 0.02, 0.015, 0.0125, 0.01 };
     const spell_data_t* smite_t31;
 
     // Holy
