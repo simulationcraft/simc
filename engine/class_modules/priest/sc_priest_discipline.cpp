@@ -267,7 +267,8 @@ protected:
 
       // This is not found in the affected spells for Shadow Covenant, overriding it manually
       // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-      force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_CURRENT_DATA_OFFSET );
+      force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT_DATA_OFFSET,
+                         p.talents.discipline.twilight_corruption );
 
       triggers_atonement = true;
     }
@@ -556,18 +557,16 @@ void priest_t::create_buffs_discipline()
 
   if ( talents.discipline.shadow_covenant.enabled() )
   {
-    // Twilight corruption doesnt work rn lmao
-    // double scov_amp = talents.discipline.twilight_corruption->effectN(1).percent();
     double scov_amp          = 0;
     timespan_t scov_duration = 15_s;
     if ( talents.shared.mindbender.enabled() )
     {
-      scov_amp += 0.1;
+      scov_amp = 0.1;
       scov_duration = talents.shared.mindbender->duration();
     }
     else
     {
-      scov_amp += 0.25;
+      scov_amp = 0.25;
       scov_duration = talents.shadowfiend->duration();
     }
     buffs.shadow_covenant->set_default_value( scov_amp );
@@ -651,7 +650,9 @@ void priest_t::init_spells_discipline()
   talents.discipline.exaltation          = ST( "Exaltation" );
   talents.discipline.indemnity           = ST( "Indemnity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
-  talents.discipline.twilight_corruption = ST( "Twilight Corruption" ); //373065
+  //talents.discipline.twilight_corruption = ST( "Twilight Corruption" ); //373065
+  // Twilight Corruption doesn't work rn very cool
+  talents.discipline.twilight_corruption = find_spell( 373065 );
   // Row
   talents.discipline.borrowed_time   = ST( "Borrowed Time" );
   talents.discipline.castigation     = ST( "Castigation" );

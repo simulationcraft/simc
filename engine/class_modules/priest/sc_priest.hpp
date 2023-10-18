@@ -404,7 +404,8 @@ public:
       player_talent_t exaltation;
       player_talent_t indemnity;
       player_talent_t pain_and_suffering;
-      player_talent_t twilight_corruption;
+      // player_talent_t twilight_corruption;
+      const spell_data_t* twilight_corruption;
       // Row
       player_talent_t borrowed_time;
       player_talent_t castigation;
@@ -992,7 +993,8 @@ public:
     // DISCIPLINE BUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      force_buff_effect( p.buffs.shadow_covenant, 0U, false, USE_CURRENT_DATA_OFFSET );
+      parse_buff_effects( p().buffs.shadow_covenant, 0U, false, USE_DEFAULT_DATA_OFFSET,
+                          p().talents.discipline.twilight_corruption );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
       parse_buff_effects( p().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
