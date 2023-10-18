@@ -1024,10 +1024,44 @@ public:
     }
   }
 
+  // Reimplement base cost because I need to bypass the removal of precombat costs
   double cost() const override
   {
-    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
-                              get_buff_effects_value( cost_buffeffects, false, false ) );
+    resource_e cr = ab::current_resource();
+
+    double c;
+    if ( ab::secondary_costs[ cr ] == 0 )
+    {
+      c = ab::base_costs[ cr ];
+    }
+    // For now, treat secondary cost as "maximum of player current resource, min + max cost". Entirely
+    // possible we need to add some additional functionality (such as an overridable method) to
+    // determine the cost, if the default behavior is not universal.
+    else
+    {
+      if ( ab::player->resources.current[ cr ] >= ab::base_costs[ cr ] )
+      {
+        c = std::min( ab::base_cost(), ab::player->resources.current[ cr ] );
+      }
+      else
+      {
+        c = ab::base_costs[ cr ];
+      }
+    }
+
+    c -= ab::player->current.resource_reduction[ ab::get_school() ];
+
+    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
+    c *= get_buff_effects_value( cost_buffeffects, false, false );
+
+    if ( c < 0 )
+      c = 0;
+
+    if ( ab::sim->debug )
+      ab::sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
+                            ab::base_costs[ cr ], ab::secondary_costs[ cr ], c, cr );
+
+    return floor( c );
   }
 
   double composite_target_multiplier( player_t* t ) const override
