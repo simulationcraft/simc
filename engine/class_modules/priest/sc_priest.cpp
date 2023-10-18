@@ -1549,7 +1549,6 @@ struct renew_t final : public priest_heal_t
     harmful = false;
 
     disc_mastery = true;
-    apply_affecting_aura( p.specs.discipline_priest );
   }
 
   void execute() override
@@ -1653,8 +1652,7 @@ struct power_word_shield_t final : public priest_absorb_t
   {
     parse_options( options_str );
     
-    apply_affecting_aura( p.specs.priest );
-    apply_affecting_aura( p.specs.discipline_priest );
+    gcd_type = gcd_haste_type::SPELL_SPEED;
     
     switch ( p.specialization() )
     {
