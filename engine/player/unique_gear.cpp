@@ -1828,6 +1828,23 @@ void item::infallible_tracking_charm( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+void item::witherbarks_branch( special_effect_t& effect )
+{
+  auto data_spell = effect.player->find_spell( 429257 );
+  auto stat_buff  = make_buff<stat_buff_t>( effect.player, "aqueous_dowsing", effect.player->find_spell( 429257 ) )
+    ->add_stat( STAT_MASTERY_RATING, data_spell->effectN( 1 ).average( effect.item ) )
+
+  effect.custom_buff = make_buff( effect.player, "aqueous_dowsing_driver", effect.driver() )
+    ->set_quiet( true )
+    ->set_cooldown( 0_ms )
+      // TODO: add average time on collecting balls
+    ->set_tick_callback( [ stat_buff ]( buff_t*, int, timespan_t ) {
+      stat_buff->trigger();
+    } );
+}
+
+
+
 void item::orb_of_voidsight( special_effect_t& effect )
 {
   stat_buff_t* buff = make_buff<stat_buff_t>( effect.player, "voidsight", effect.driver() -> effectN( 1 ).trigger(), effect.item );
