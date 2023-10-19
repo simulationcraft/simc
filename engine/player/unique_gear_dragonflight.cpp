@@ -6636,6 +6636,8 @@ void branch_of_the_tormented_ancient( special_effect_t& e )
   e.player->special_effects.push_back( driver );
 
   auto cb = new branch_of_the_tormented_ancient_cb_t( *driver, damage, buff );
+  cb->initialize();
+  cb->deactivate();
 
   buff->set_initial_stack( as<int>( e.driver()->effectN( 7 ).base_value() ) );
   buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
