@@ -2086,6 +2086,7 @@ class SpellDataGenerator(DataGenerator):
           ( 347826, 0 ), # Venthyr Fallen Monk Specialization Duration
           ( 363041, 0 ), # Venthyr Fallen Monk Fallen Brew
           ( 364944, 0 ), # Venthyr Fallen Monk Windwalking
+	  ( 387179, 0 ), # Kyrian Monk Weapons of Order (Needed for Effect#1 Whitelist still)
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients

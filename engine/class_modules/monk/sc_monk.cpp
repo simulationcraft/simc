@@ -748,10 +748,18 @@ namespace monk
       double composite_target_multiplier( player_t *t ) const override
       {
         double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( get_td( t ) );
+
         auto td = find_td( t );
 
-        if ( td && td->debuff.weapons_of_order->check() )
-          tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
+        if ( td )
+        {
+          // Currently, whitelist for this spell is only found on the covenant ability (387179)
+          if ( ab::data().affected_by( p()->find_spell( 387179 )->effectN( 1 ) ) && td->debuff.weapons_of_order->check() )
+            tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
+
+          if ( ( !p()->is_ptr() || ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) ) && td->debuff.fae_exposure->check() )
+            tm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
+        }
 
         return tm;
       }
@@ -865,13 +873,6 @@ namespace monk
         if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
           pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
 
-        if ( auto *td = this->find_td( target ) )
-        {
-          if ( p()->is_ptr() && td->debuff.fae_exposure->check() &&
-               base_t::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) )
-            pm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
-        }
-
         return pm;
       }
 
@@ -886,7 +887,7 @@ namespace monk
         if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
           am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-      // Serenity
+        // Serenity
         if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
           am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
@@ -927,8 +928,7 @@ namespace monk
       {
         double pm = base_t::composite_persistent_multiplier( action_state );
 
-        if ( p()->is_ptr() && p()->buff.fae_exposure->check() &&
-             base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) )
+        if ( ( !p()->is_ptr() || base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) ) && p()->buff.fae_exposure->check() )
           pm *= 1 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
 
         return pm;
@@ -960,9 +960,6 @@ namespace monk
 
             if ( p()->buff.life_cocoon->check() )
               am *= 1.0 + p()->talent.mistweaver.life_cocoon->effectN( 2 ).percent();
-
-            if ( !p()->is_ptr() && p()->buff.fae_exposure->check() )
-              am *= 1.0 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
 
             break;
 
