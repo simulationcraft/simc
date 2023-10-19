@@ -99,6 +99,8 @@ namespace item
   void spellbound_runic_band( special_effect_t& );
   void spellbound_solium_band( special_effect_t& );
   void legendary_ring( special_effect_t& );
+  void witherbarks_branch( special_effect_t& );
+
 
   /* Warlords of Draenor 6.2 */
   void discordant_chorus( special_effect_t& );
@@ -1836,8 +1838,9 @@ void item::witherbarks_branch( special_effect_t& effect )
 
   effect.custom_buff = make_buff( effect.player, "aqueous_dowsing_driver", effect.driver() )
     ->set_quiet( true )
-    ->set_cooldown( 0_ms )
-      // TODO: add average time on collecting balls
+    // assumes an average of 1 seconds per ball
+    // TODO: make this confirgurable?
+    ->set_cooldown( timespan_t::from_seconds(1) )
     ->set_tick_callback( [ stat_buff ]( buff_t*, int, timespan_t ) {
       stat_buff->trigger();
     } );
@@ -4839,6 +4842,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 201407, item::infallible_tracking_charm      );
   register_special_effect( 201409, item::orb_of_voidsight               );
 
+
   /* Warlords of Draenor 6.0 */
   register_special_effect( 177085, item::blackiron_micro_crucible       );
   register_special_effect( 177071, item::humming_blackiron_trigger      );
@@ -4847,6 +4851,8 @@ void unique_gear::register_special_effects()
   register_special_effect( 177090, item::autorepairing_autoclave        );
   register_special_effect( 177171, item::spellbound_runic_band          );
   register_special_effect( 177163, item::spellbound_solium_band         );
+  register_special_effect( 429257, item::witherbarks_branch             );
+
 
   /* Mists of Pandaria: 5.4 */
   register_special_effect( 146195, item::flurry_of_xuen                 );
