@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#pragma once
+
 #include "action/action.hpp"
 #include "buff/buff.hpp"
 #include "player/player.hpp"
