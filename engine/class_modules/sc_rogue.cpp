@@ -4939,7 +4939,7 @@ struct rupture_t : public rogue_attack_t
     if ( p->talent.subtlety.replicating_shadows->ok() )
     {
       // Manually apply AoE count as Replicating Shadows as talent has workaround +30 chain target value
-      aoe = ( aoe == 0 ? 1 : 0 ) + p->talent.subtlety.replicating_shadows->effectN( 4 ).base_value();
+      aoe = ( aoe == 0 ? 1 : 0 ) + as<int>( p->talent.subtlety.replicating_shadows->effectN( 4 ).base_value() );
       replicating_shadows_tick = p->get_background_action<replicating_shadows_tick_t>( "rupture_replicating_shadows" );
       add_child( replicating_shadows_tick );
     }
@@ -9943,7 +9943,8 @@ void rogue_t::init_spells()
   // Outlaw
   spec.audacity_buff = talent.outlaw.audacity->ok() ? find_spell( 386270 ) : spell_data_t::not_found();
   spec.blade_flurry_attack = spec.blade_flurry->ok() ? find_spell( 22482 ) : spell_data_t::not_found();
-  spec.blade_flurry_instant_attack = spec.blade_flurry->ok() ? find_spell( 331850 ) : spell_data_t::not_found();
+  spec.blade_flurry_instant_attack = spec.blade_flurry->ok() ? 
+    ( talent.outlaw.deft_maneuvers->ok() ? find_spell( 429951 ) : find_spell( 331850 ) ) : spell_data_t::not_found();
   spec.blade_rush_attack = talent.outlaw.blade_rush->ok() ? find_spell( 271881 ) : spell_data_t::not_found();
   spec.blade_rush_energize = talent.outlaw.blade_rush->ok() ? find_spell( 271896 ) : spell_data_t::not_found();
   spec.greenskins_wickers = talent.outlaw.greenskins_wickers;
