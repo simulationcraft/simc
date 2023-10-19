@@ -754,10 +754,11 @@ namespace monk
         if ( td )
         {
           // Currently, whitelist for this spell is only found on the covenant ability (387179)
-          if ( ab::data().affected_by( p()->find_spell( 387179 )->effectN( 1 ) ) && td->debuff.weapons_of_order->check() )
+          // Need to check if this ability is actually whitelisted in game or not
+          if ( /* ab::data().affected_by(p()->find_spell(387179)->effectN(1)) &&*/ td->debuff.weapons_of_order->check() )
             tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
 
-          if ( ( !p()->is_ptr() || ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) ) && td->debuff.fae_exposure->check() )
+          if ( p()->is_ptr() && ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) && td->debuff.fae_exposure->check() )
             tm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
         }
 
@@ -9605,10 +9606,6 @@ namespace monk
   double monk_t::composite_player_target_multiplier( player_t *target, school_e school ) const
   {
     double multiplier = player_t::composite_player_target_multiplier( target, school );
-
-    auto td = find_target_data( target );
-    if ( td && td->debuff.fae_exposure->check() && !is_ptr())
-      multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
 
     return multiplier;
   }
