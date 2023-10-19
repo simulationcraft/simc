@@ -9607,6 +9607,10 @@ namespace monk
   {
     double multiplier = player_t::composite_player_target_multiplier( target, school );
 
+    auto td = find_target_data( target );
+    if ( td && td->debuff.fae_exposure->check() && !is_ptr())
+      multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
+
     return multiplier;
   }
 
