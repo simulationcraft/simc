@@ -753,9 +753,8 @@ namespace monk
 
         if ( td )
         {
-          // Currently, whitelist for this spell is only found on the covenant ability (387179)
           // Need to check if this ability is actually whitelisted in game or not
-          if ( /* ab::data().affected_by(p()->find_spell(387179)->effectN(1)) &&*/ td->debuff.weapons_of_order->check() )
+          if ( /*ab::data().affected_by(td->debuff.weapons_of_order->data().effectN(1)) &&*/ td->debuff.weapons_of_order->check() )
             tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
 
           if ( p()->is_ptr() && ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) && td->debuff.fae_exposure->check() )
@@ -7309,7 +7308,7 @@ namespace monk
     debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) )
       ->set_trigger_spell( p->shared.faeline_stomp );
 
-    debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )
+    debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 387179 ) )
       ->set_trigger_spell( p->talent.brewmaster.weapons_of_order )
       ->set_default_value_from_effect( 1 );
 
