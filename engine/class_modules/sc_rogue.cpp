@@ -1628,7 +1628,6 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.quick_decisions );
     ab::apply_affecting_aura( p->talent.subtlety.veiltouched );
     ab::apply_affecting_aura( p->talent.subtlety.swift_death );
-    ab::apply_affecting_aura( p->talent.subtlety.replicating_shadows );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
     ab::apply_affecting_aura( p->talent.subtlety.without_a_trace );
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
@@ -4895,6 +4894,9 @@ struct rupture_t : public rogue_attack_t
 
     bool procs_poison() const override
     { return false; }
+
+    result_amount_type amount_type( const action_state_t*, bool ) const override
+    { return result_amount_type::DMG_OVER_TIME; } // Treat as Periodic flag
   };
 
   struct poisoned_edges_t : public rogue_attack_t
@@ -4936,6 +4938,8 @@ struct rupture_t : public rogue_attack_t
 
     if ( p->talent.subtlety.replicating_shadows->ok() )
     {
+      // Manually apply AoE count as Replicating Shadows as talent has workaround +30 chain target value
+      aoe = ( aoe == 0 ? 1 : 0 ) + p->talent.subtlety.replicating_shadows->effectN( 4 ).base_value();
       replicating_shadows_tick = p->get_background_action<replicating_shadows_tick_t>( "rupture_replicating_shadows" );
       add_child( replicating_shadows_tick );
     }
@@ -5064,7 +5068,13 @@ struct rupture_t : public rogue_attack_t
 
     if ( replicating_shadows_tick )
     {
-      replicating_shadows_tick->execute_on_target( d->target );
+      // Affected by label modifiers after residual damage calculation is applied
+      double multiplier = p()->talent.subtlety.replicating_shadows->effectN( 1 ).percent();
+      multiplier *= 1.0 + p()->talent.subtlety.veiltouched->effectN( 4 ).percent();
+      multiplier *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 5 ).percent();
+      multiplier *= 1.0 + p()->buffs.deeper_daggers->stack_value();
+      double damage = d->state->result_total * multiplier;
+      replicating_shadows_tick->execute_on_target( d->target, damage );
     }
 
     if ( poisoned_edges_damage )
