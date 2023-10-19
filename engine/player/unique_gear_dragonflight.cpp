@@ -6618,9 +6618,11 @@ void branch_of_the_tormented_ancient( special_effect_t& e )
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
-      damage->execute_on_target( s->target );
-      buff->decrement();
+      if ( buff->check() )
+      {
+        damage->execute_on_target( s->target );
+        buff->decrement();
+      }
     }
   };
 
