@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51754 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -9804,11 +9804,12 @@ Effects          :
 Description      : Empower spells cast up to $s2 Living Flames at enemies or allies struck at $s1% effectiveness.
 
 Name             : Evoker Preservation 10.2 Class Set 4pc (id=422873) [Spell Family (224), Passive, Hidden] 
+Hotfixed         : Proc Chance (20 -> 33)
 Class            : Evoker
 School           : Physical
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Proc Chance      : 20%
+Proc Chance      : 33%
 Proc Flags       : ........ ......x. x....... ........   ........ ........ ........ ........   
                  : Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -9822,7 +9823,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098471)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (70 -> 50)
 Description      : Living Flame has a chance to apply Echo at $s1% effectiveness on allies healed, or a nearby ally who doesn't already have Echo.
 
 Name             : Emerald Trance (id=424155) [Spell Family (224)] 
@@ -9857,13 +9859,14 @@ Description      : $@spelldesc422870
 Tooltip          : Damage done increased by ${$w1}.1%.
 
 Name             : Trembling Earth (id=424368) [Spell Family (224)] 
+Hotfixed         : Max stacks (4 -> 5)
 Class            : Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Internal Cooldown: 0.2 seconds
-Stacks           : 4 maximum
+Stacks           : 5 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell

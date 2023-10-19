@@ -4,7 +4,7 @@ race=human
 spec=shadow
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIIREAAAAAAAAAAAAgkkSEJSJIJRkkIIFSSSkGBiIki0CJBFIB
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIkE5ABAAAAAAAAAAAAIJaRkIlgkERSig0IJJRaEkgQKSLkEASA
 
 temporary_enchant=main_hand:hissing_rune_3
 food=feisty_fish_sticks
@@ -127,6 +127,7 @@ actions.main=call_action_list,name=main_variables
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)
 # Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension
 actions.main+=/mindbender,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)
+actions.main+=/devouring_plague,target_if=!talent.distorted_reality|active_enemies=1|remains<=gcd.max,if=remains<=gcd.max|insanity.deficit<=16
 actions.main+=/shadow_word_death,if=(set_bonus.tier31_4pc|pet.fiend.active&talent.inescapable_torment&set_bonus.tier31_2pc)&dot.devouring_plague.ticking
 # High priority Mind Blast action when using Inescapable Torment
 actions.main+=/mind_blast,target_if=dot.devouring_plague.remains>execute_time&(cooldown.mind_blast.full_recharge_time<=gcd.max+execute_time)|pet.fiend.remains<=execute_time+gcd.max,if=pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>execute_time&active_enemies<=7
@@ -179,9 +180,9 @@ actions.trinkets+=/use_item,name=desperate_invokers_codex,if=equipped.desperate_
 head=crest_of_lunar_communion,id=207281,ilevel=489,gem_id=192925,enchant_id=7052
 neck=eye_of_the_rising_flame,id=207163,ilevel=489,gem_id=192985/192925/192925
 shoulders=shoulderguardians_of_lunar_communion,id=207279,ilevel=489
-back=undulating_sporecloak,id=205025,bonus_id=8836/8840/8902/8960/9405/9498/9500
+back=undulating_sporecloak,id=205025,bonus_id=8836/8840/8902/8960/9405/9498/9500,ilevel=486
 chest=vesture_of_the_smoldering_serpent,id=207121,ilevel=489,enchant=waking_stats_3
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/9405/9500/8793/8932/8960/9498/9600,crafted_stats=40/32,gem_id=192925
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/9405/9500/8793/8932/8960/9498/9600,crafted_stats=40/32,gem_id=192925,ilevel=486
 hands=touch_of_lunar_communion,id=207282,ilevel=489
 waist=blooming_redeemers_sash,id=207124,ilevel=489,gem_id=192925
 legs=leggings_of_lunar_communion,id=207280,ilevel=489,enchant=frozen_spellthread_3

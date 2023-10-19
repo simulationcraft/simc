@@ -11,15 +11,15 @@ using namespace actions;
 struct demonology_spell_t : public warlock_spell_t
 {
 
-bool procs_volatile_fiends_direct;
-bool procs_volatile_fiends_tick;
+bool procs_shadow_invocation_direct;
+bool procs_shadow_invocation_tick;
 
 public:
   demonology_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
     : warlock_spell_t( token, p, s )
   {
-    procs_volatile_fiends_direct = false;
-    procs_volatile_fiends_tick = false;
+    procs_shadow_invocation_direct = false;
+    procs_shadow_invocation_tick = false;
   }
 
   void consume_resource() override
@@ -74,10 +74,10 @@ public:
   {
     warlock_spell_t::execute();
 
-    if ( procs_volatile_fiends_direct && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+    if ( procs_shadow_invocation_direct && p()->talents.shadow_invocation->ok() && rng().roll( p()->shadow_invocation_proc_chance ) )
     {
       p()->proc_actions.bilescourge_bombers_proc->execute_on_target( target );
-      p()->procs.volatile_fiends->occur();
+      p()->procs.shadow_invocation->occur();
     }
   }
 
@@ -85,10 +85,10 @@ public:
   {
     warlock_spell_t::tick( d );
 
-    if ( procs_volatile_fiends_tick && p()->talents.volatile_fiends->ok() && rng().roll( p()->volatile_fiends_proc_chance ) )
+    if ( procs_shadow_invocation_tick && p()->talents.shadow_invocation->ok() && rng().roll( p()->shadow_invocation_proc_chance ) )
     {
       p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
-      p()->procs.volatile_fiends->occur();
+      p()->procs.shadow_invocation->occur();
     }
   }
 };
@@ -102,7 +102,7 @@ struct hand_of_guldan_t : public demonology_spell_t
       background = dual = true;
       hasted_ticks = false;
       base_td_multiplier = 1.0 + p->talents.umbral_blaze->effectN( 2 ).percent();
-      procs_volatile_fiends_tick = true;
+      procs_shadow_invocation_tick = true;
     }
   };
 
@@ -120,7 +120,7 @@ struct hand_of_guldan_t : public demonology_spell_t
       aoe = -1;
       dual = true;
 
-      procs_volatile_fiends_direct = true;
+      procs_shadow_invocation_direct = true;
 
       if ( p->talents.umbral_blaze->ok() )
       {
@@ -295,6 +295,7 @@ struct doom_brand_t : public demonology_spell_t
   doom_brand_t( warlock_t* p ) : demonology_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
   {
     aoe = -1;
+    reduced_aoe_targets = 8.0; // 2023-10-17: This is not seen in spell data but was mentioned in a PTR update note
     background = dual = true;
     callbacks = false;
   }
@@ -303,11 +304,38 @@ struct doom_brand_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) && p()->doomfiend_rppm->trigger() )
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) )
     {
-      p()->warlock_pet_list.doomfiends.spawn();
-      p()->procs.doomfiend->occur();
+      double increment_max = 0.5;
+
+      int debuff_count = 1; // This brand that is exploding counts as 1, but is already expired
+      for ( auto t : target_list() )
+      {
+        if ( td( t )->debuffs_doom_brand->check() )
+          debuff_count++;
+      }
+
+      increment_max *= std::pow( debuff_count, -1.0 / 2.0 );
+
+      p()->doom_brand_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->doom_brand_accumulator >= 1.0 )
+      {
+        p()->warlock_pet_list.doomfiends.spawn();
+        p()->procs.doomfiend->occur();
+        p()->doom_brand_accumulator -= 1.0;
+      }
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = demonology_spell_t::composite_da_multiplier( s );
+
+    if ( s->n_targets == 1 )
+      m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 2 ).percent();
+
+    return m;
   }
 };
 
@@ -320,7 +348,7 @@ struct demonbolt_t : public demonology_spell_t
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 2.0;
 
-    procs_volatile_fiends_direct = true;
+    procs_shadow_invocation_direct = true;
   }
 
   timespan_t execute_time() const override
@@ -347,6 +375,31 @@ struct demonbolt_t : public demonology_spell_t
     demonology_spell_t::execute();
 
     p()->buffs.demonic_core->up();  // benefit tracking
+
+    if ( p()->buffs.demonic_core->check() )
+    {
+      // TOCHECK: Once again the actual proc chance is missing from spell data, so we're just guessing with a hardcoded value...
+      if ( p()->talents.spiteful_reconstitution->ok() && rng().roll( 0.3 ) )
+      {
+        p()->warlock_pet_list.wild_imps.spawn( 1u );
+        p()->procs.spiteful_reconstitution->occur();
+      }
+
+      if ( p()->talents.immutable_hatred->ok() && p()->min_version_check( VERSION_10_2_0 ) )
+      {
+        auto active_pet = p()->warlock_pet_list.active;
+
+        if ( active_pet->pet_type == PET_FELGUARD )
+        {
+          debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
+        }
+      }
+
+      // TODO: Technically the debuff is still applied on impact, and somehow "knows" that a core was consumed.
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
+        td( target )->debuffs_doom_brand->trigger();
+    }
+
     p()->buffs.demonic_core->decrement();
 
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
@@ -370,14 +423,6 @@ struct demonbolt_t : public demonology_spell_t
       p()->buffs.blazing_meteor->trigger();
       p()->procs.blazing_meteor->occur();
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    demonology_spell_t::impact( s );
-
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
-      td( s->target )->debuffs_doom_brand->trigger();
   }
 
   double action_multiplier() const override
@@ -510,9 +555,6 @@ struct implosion_t : public demonology_spell_t
       aoe = -1;
       background = dual = true;
       callbacks = false;
-
-      if ( p->talents.volatile_fiends->ok() )
-        base_dd_multiplier *= 1.0 + p->talents.volatile_fiends->effectN( 1 ).percent();
     }
 
     double action_multiplier() const override
@@ -521,6 +563,9 @@ struct implosion_t : public demonology_spell_t
 
       if ( p()->min_version_check( VERSION_10_2_0 ) && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
         m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
+
+      if ( p()->talents.spiteful_reconstitution->ok() )
+        m *= 1.0 + p()->talents.spiteful_reconstitution->effectN( 1 ).percent();
 
       return m;
     }
@@ -681,7 +726,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
       if ( p()->min_version_check( VERSION_10_2_0 ) )
       {
-        // Note: Wild Imp cap appears to be hardcoded
         if ( lock_pet->pet_type == PET_WILD_IMP && wild_imp_counter < imp_cap )
         {
           if ( lock_pet->expiration )
@@ -799,7 +843,7 @@ struct bilescourge_bombers_proc_t : public demonology_spell_t
     callbacks = false;
     radius = p->find_spell( 267211 )->effectN( 1 ).radius();
 
-    base_dd_multiplier *= 1.0 + p->talents.volatile_fiends->effectN( 2 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.shadow_invocation->effectN( 1 ).percent();
   }
 };
 
@@ -815,7 +859,7 @@ struct bilescourge_bombers_t : public demonology_spell_t
       callbacks = false;
       radius = p->talents.bilescourge_bombers->effectN( 1 ).radius();
 
-      base_dd_multiplier *= 1.0 + p->talents.volatile_fiends->effectN( 2 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.shadow_invocation->effectN( 1 ).percent();
     }
   };
 
@@ -902,6 +946,15 @@ struct power_siphon_t : public demonology_spell_t
           double lv = imp1->resources.current[ RESOURCE_ENERGY ];
           double rv = imp2->resources.current[ RESOURCE_ENERGY ];
 
+          // Starting in 10.2, Power Siphon deprioritizes Wild Imps that are Gang Bosses or empowered by Summon Demonic Tyrant
+          // Pad them with a value larger than the energy cap so that they are still sorted against each other at the end of the list
+          // TOCHECK: A bug was observed on the PTR where a Gang Boss empowered by Tyrant was not benefitting from this. Not currently implemented here.
+          if ( imp1->o()->min_version_check( VERSION_10_2_0 ) )
+          {
+            lv += ( imp1->buffs.imp_gang_boss->check() || imp1->buffs.demonic_power->check() ) ? 200.0 : 0.0;
+            rv += ( imp2->buffs.imp_gang_boss->check() || imp2->buffs.demonic_power->check() ) ? 200.0 : 0.0;
+          }
+
           if ( lv == rv )
           {
             timespan_t lr = imp1->expiration->remains();
@@ -945,7 +998,7 @@ struct doom_t : public demonology_spell_t
 
     hasted_ticks = true;
 
-    procs_volatile_fiends_tick = true;
+    procs_shadow_invocation_tick = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -1018,7 +1071,7 @@ private:
 struct soul_strike_t : public demonology_spell_t
 {
   soul_strike_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "Soul Strike", p, p->talents.soul_strike )
+    : demonology_spell_t( "Soul Strike", p, p->min_version_check( VERSION_10_2_0 ) ? spell_data_t::not_found() : p->talents.soul_strike )
   {
     parse_options( options_str );
     energize_type = action_energize::ON_CAST;
@@ -1040,6 +1093,9 @@ struct soul_strike_t : public demonology_spell_t
 
   bool ready() override
   {
+    if ( p()->min_version_check( VERSION_10_2_0 ) )
+      return false;
+
     auto active_pet = p()->warlock_pet_list.active;
 
     if ( !active_pet )
@@ -1059,6 +1115,9 @@ struct summon_vilefiend_t : public demonology_spell_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
+
+    if ( p->talents.fel_invocation->ok() )
+      base_execute_time += p->talents.fel_invocation->effectN( 2 ).time_value();
   }
 
   void execute() override
@@ -1098,7 +1157,7 @@ struct nether_portal_t : public demonology_spell_t
 
   void execute() override
   {
-    p()->buffs.nether_portal->trigger();
+    p()->buffs.nether_portal->trigger(); // TODO: There is a SimC bug where using Nether Portal at time 0 is not triggering the summon from the shard spent casting itself.
     demonology_spell_t::execute();
   }
 };
@@ -1441,7 +1500,7 @@ void warlock_t::init_spells_demonology()
 
   talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
 
-  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057
+  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057. NOTE: Updated to 428344 in 10.2
 
   talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
   talents.bilescourge_bombers_aoe = find_spell( 267213 );
@@ -1457,7 +1516,11 @@ void warlock_t::init_spells_demonology()
   talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
   talents.shadows_bite_buff = find_spell( 272945 );
 
+  talents.fel_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Invocation" ); // Should be ID 428351
+
   talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
+
+  talents.shadow_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Invocation" ); // Should be ID 422054
 
   talents.fel_and_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Fel and Steel" ); // Should be ID 386200
 
@@ -1474,7 +1537,7 @@ void warlock_t::init_spells_demonology()
 
   talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
 
-  talents.volatile_fiends = find_talent_spell( talent_tree::SPECIALIZATION, "Volatile Fiends" ); // Should be ID 422054
+  talents.spiteful_reconstitution = find_talent_spell( talent_tree::SPECIALIZATION, "Spiteful Reconstitution" ); // Should be ID 428394
   
   talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 
@@ -1563,19 +1626,20 @@ void warlock_t::init_gains_demonology()
 {
   gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
   gains.doom = get_gain( "doom" );
+  gains.soul_strike = get_gain( "soul_strike" );
 }
 
 void warlock_t::init_rng_demonology()
 {
-  doomfiend_rppm = get_rppm( "doomfiend", sets->set( WARLOCK_DEMONOLOGY, T31, B4 )->real_ppm() );
 }
 
 void warlock_t::init_procs_demonology()
 {
   procs.summon_random_demon = get_proc( "summon_random_demon" );
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
-  procs.volatile_fiends = get_proc( "volatile_fiends" );
+  procs.shadow_invocation = get_proc( "shadow_invocation" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
+  procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
   procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );

@@ -50,7 +50,7 @@ struct expiation_t final : public priest_spell_t
       const priest_td_t* td = priest().find_target_data( s->target );
       if ( td && td->buffs.schism->check() )
       {
-        auto adjust_percent = priest().talents.discipline.schism->effectN( 2 ).percent();
+        auto adjust_percent = priest().talents.discipline.schism_debuff->effectN( 1 ).percent();
         d *= 1.0 + adjust_percent;
         sim->print_debug( "schism modifies expiation damage by {} (new total: {})", adjust_percent, d );
       }
@@ -96,11 +96,10 @@ public:
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 ).time_value() ),
       child_expiation( nullptr )
   {
     parse_options( options_str );
-
     affected_by_shadow_weaving = true;
     cooldown->hasted           = true;
 
@@ -114,6 +113,8 @@ public:
 
     // Extra charge of Mind Blast
     apply_affecting_aura( p.talents.shadow.thought_harvester );
+
+    triggers_atonement = true;
   }
 
   void execute() override
@@ -128,7 +129,7 @@ public:
 
     if ( priest().talents.discipline.void_summoner.enabled() )
     {
-      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+      priest().cooldowns.fiend->adjust( void_summoner_cdr );
     }
 
     if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
@@ -185,7 +186,12 @@ public:
         priest().buffs.insidious_ire->up();
       }
 
-      if ( priest().talents.shadow.inescapable_torment.enabled() )
+      if ( priest().talents.discipline.schism.enabled() )
+      {
+        td.buffs.schism->trigger();
+      }
+
+      if ( priest().talents.shared.inescapable_torment.enabled() )
       {
         priest().trigger_inescapable_torment( s->target );
       }
@@ -193,6 +199,18 @@ public:
       if ( priest().buffs.mind_devourer->trigger() )
       {
         priest().procs.mind_devourer->occur();
+      }
+
+      if ( priest().talents.discipline.dark_indulgence.enabled() )
+      {
+        int stack = priest().buffs.power_of_the_dark_side->check();
+                
+        priest().buffs.power_of_the_dark_side->trigger();
+
+        if ( priest().buffs.power_of_the_dark_side->check() == stack )
+        {
+          priest().procs.power_of_the_dark_side_dark_indulgence_overflow->occur();
+        }
       }
 
       if ( priest().talents.shadow.shadowy_apparitions.enabled() )
@@ -219,11 +237,6 @@ public:
         child_expiation->target = s->target;
         child_expiation->execute();
       }
-    }
-
-    if ( priest().talents.discipline.harsh_discipline.enabled() )
-    {
-      priest().buffs.harsh_discipline->trigger();
     }
   }
 
@@ -295,12 +308,14 @@ struct divine_star_spell_t final : public priest_spell_t
 
     proc = background          = true;
     affected_by_shadow_weaving = true;
+    triggers_atonement         = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
     force_buff_effect( p.buffs.dark_ascension, 1 );
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-    force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT );
+    force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT_DATA_OFFSET,
+                       p.talents.discipline.twilight_corruption );
   }
 
   // Hits twice, but only if you are at the correct distance
@@ -335,6 +350,7 @@ struct divine_star_heal_t final : public priest_heal_t
     reduced_aoe_targets = p.talents.divine_star->effectN( 1 ).base_value();
 
     proc = background = true;
+    disc_mastery      = true;
   }
 
   // Hits twice, but only if you are at the correct distance
@@ -418,7 +434,10 @@ struct halo_spell_t final : public priest_spell_t
     force_buff_effect( p.buffs.dark_ascension, 1 );
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-    force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT );
+    force_buff_effect( p.buffs.shadow_covenant, 1, false, USE_DEFAULT_DATA_OFFSET,
+                       p.talents.discipline.twilight_corruption );
+
+    triggers_atonement = true;
   }
 };
 
@@ -433,6 +452,7 @@ struct halo_heal_t final : public priest_heal_t
     travel_speed = 15;  // Rough estimate, 2021-01-03
 
     reduced_aoe_targets = p.talents.halo->effectN( 1 ).base_value();
+    disc_mastery        = true;
   }
 };
 
@@ -527,52 +547,43 @@ struct power_word_fortitude_t final : public priest_spell_t
 // ==========================================================================
 // Smite
 // ==========================================================================
-struct smite_t final : public priest_spell_t
+
+struct smite_base_t : public priest_spell_t
 {
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
+  timespan_t t31_2pc_extend;
   propagate_const<action_t*> child_holy_fire;
   action_t* child_searing_light;
 
-  smite_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
+  smite_base_t( priest_t& p, util::string_view name, const spell_data_t* s, bool bg = false,
+                util::string_view options_str = {} )
+    : priest_spell_t( name, p, s ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 ).time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
       child_holy_fire( priest().background_actions.holy_fire ),
-      child_searing_light( priest().background_actions.searing_light )
+      child_searing_light( priest().background_actions.searing_light ),
+      t31_2pc_extend( priest().sets->set( PRIEST_DISCIPLINE, T31, B2 )->effectN( 1 ).time_value() )
+
   {
-    parse_options( options_str );
-    if ( priest().talents.holy.divine_word.enabled() )
+    background = bg;
+    if ( !background )
     {
-      child_holy_fire->background = true;
+      parse_options( options_str );
+      if ( priest().talents.holy.divine_word.enabled() )
+      {
+        child_holy_fire->background = true;
+      }
     }
+
+    triggers_atonement = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( s );
-    if ( priest().buffs.wrath_unleashed->check() )
-    {
-      d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
-      sim->print_debug( "Smite damage modified by {} (new total: {}), from wrath_unleashed",
-                        priest().buffs.wrath_unleashed->data().effectN( 1 ).percent(), d );
-    }
-    if ( priest().buffs.weal_and_woe->check() )
-    {
-      d *= 1.0 +
-           ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
-      sim->print_debug(
-          "Smite damage modified by {} (new total: {}), from weal_and_woe",
-          priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack, d );
-    }
-    if ( priest().talents.discipline.blaze_of_light.enabled() )
-    {
-      d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
-      sim->print_debug( "Smite damage modified by {} (new total: {}), from blaze_of_light",
-                        priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
-    }
     if ( priest().talents.holy.searing_light.enabled() )
     {
       const priest_td_t* td = priest().find_target_data( s->target );
@@ -591,7 +602,7 @@ struct smite_t final : public priest_spell_t
   {
     timespan_t et = priest_spell_t::execute_time();
 
-    if ( priest().talents.unwavering_will.enabled() && priest().specialization() != PRIEST_SHADOW &&
+    if ( priest().talents.unwavering_will.enabled() &&
          priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
     {
       et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
@@ -604,6 +615,8 @@ struct smite_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
+    priest().buffs.weal_and_woe->expire();
+
     if ( priest().talents.manipulation.enabled() &&
          ( priest().specialization() == PRIEST_HOLY || priest().specialization() == PRIEST_DISCIPLINE ) )
     {
@@ -612,7 +625,7 @@ struct smite_t final : public priest_spell_t
 
     if ( priest().talents.discipline.void_summoner.enabled() )
     {
-      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+      priest().cooldowns.fiend->adjust( void_summoner_cdr );
     }
 
     if ( priest().talents.discipline.train_of_thought.enabled() )
@@ -635,6 +648,28 @@ struct smite_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T31, B2 ) )
+      {
+        if ( p().allies_with_atonement.size() > 0 )
+        {
+          /*auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
+                                         [ this ]( player_t* a, player_t* b ) {
+                                           return a->health_percentage() < b->health_percentage() &&
+                                                  priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
+                                         } ) );*/
+
+          auto idx = static_cast<unsigned>( rng().range( 0, p().allies_with_atonement.size() ) );
+
+          auto it = p().allies_with_atonement[ idx ];
+
+          auto atone = priest().find_target_data( it )->buffs.atonement;
+          if ( atone->remains() < 30_s )
+          {
+            atone->extend_duration( player, t31_2pc_extend );
+          }
+        }
+      }
+
       if ( priest().talents.holy.holy_word_chastise.enabled() )
       {
         timespan_t chastise_cdr =
@@ -661,14 +696,31 @@ struct smite_t final : public priest_spell_t
         }
       }
     }
-    if ( priest().talents.discipline.harsh_discipline.enabled() )
-    {
-      priest().buffs.harsh_discipline->trigger();
-    }
+  }
+};
 
-    if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
+struct smite_t final : public smite_base_t
+{
+  smite_base_t* shadow_smite;
+
+  smite_t( priest_t& p, util::string_view options_str )
+    : smite_base_t( p, "smite", p.find_class_spell( "Smite" ), false, options_str ), shadow_smite( nullptr )
+  {
+    if ( p.sets->has_set_bonus( PRIEST_DISCIPLINE, T31, B4 ) )
     {
-      priest().buffs.weal_and_woe->expire();
+      shadow_smite = new smite_base_t( p, "smite_t31", priest().specs.smite_t31, true );
+      add_child( shadow_smite );
+    }
+  }
+
+  
+  void impact( action_state_t* s ) override
+  {
+    smite_base_t::impact( s );
+
+    if ( shadow_smite && priest().buffs.shadow_covenant->up() )
+    {
+      make_event( sim, 200_ms, [ this, t = s->target ] { shadow_smite->execute_on_target( t ); } );
     }
   }
 };
@@ -762,6 +814,7 @@ struct mindgames_t final : public priest_spell_t
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
+    triggers_atonement         = true;
 
     if ( priest().options.mindgames_healing_reversal )
     {
@@ -837,10 +890,10 @@ struct summon_fiend_t final : public priest_spell_t
   spawner::pet_spawner_t<pet_t, priest_t>* spawner;
 
   summon_fiend_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( p.talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend", p,
-                      p.talents.shadow.mindbender.enabled() ? p.talents.shadow.mindbender : p.talents.shadowfiend ),
+    : priest_spell_t( p.talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend", p,
+                      p.talents.shared.mindbender.enabled() ? p.talents.shared.mindbender : p.talents.shadowfiend ),
       default_duration( data().duration() ),
-      spawner( p.talents.shadow.mindbender.enabled() ? &p.pets.mindbender : &p.pets.shadowfiend )
+      spawner( p.talents.shared.mindbender.enabled() ? &p.pets.mindbender : &p.pets.shadowfiend )
   {
     parse_options( options_str );
     harmful = false;
@@ -852,12 +905,20 @@ struct summon_fiend_t final : public priest_spell_t
 
     if ( spawner )
       spawner->spawn( default_duration );
+
+    if ( priest().talents.discipline.shadow_covenant.enabled() )
+    {
+      priest().buffs.shadow_covenant->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
+    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
+    {
+      make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
+    }
   }
 };
 
@@ -1117,6 +1178,8 @@ public:
       energize_resource = RESOURCE_INSANITY;
       energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
     }
+
+    triggers_atonement = true;
   }
 
   shadow_word_death_t( priest_t& p, util::string_view options_str ) : shadow_word_death_t( p )
@@ -1213,7 +1276,7 @@ public:
   {
     ab::impact( s );
 
-    if ( priest().talents.shadow.inescapable_torment.enabled() )
+    if ( priest().talents.shared.inescapable_torment.enabled() )
     {
       auto mod = 1.0;
       if ( cast_state( s )->chain_number > 0 )
@@ -1323,18 +1386,7 @@ struct holy_nova_t final : public priest_spell_t
     aoe                 = -1;
     full_amount_targets = as<int>( priest().talents.holy_nova->effectN( 3 ).base_value() );
     reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_da_multiplier( s );
-
-    if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
-    {
-      m *= 1 + ( priest().talents.rhapsody_buff->effectN( 1 ).percent() * priest().buffs.rhapsody->current_stack );
-    }
-
-    return m;
+    triggers_atonement  = true;
   }
 
   void execute() override
@@ -1388,13 +1440,50 @@ namespace heals
 // ==========================================================================
 struct flash_heal_t final : public priest_heal_t
 {
-  flash_heal_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
+  timespan_t atonement_duration;
+  timespan_t train_of_thought_cdr;
+  flash_heal_t* binding_heals;
+  double binding_heal_percent;
+  bool binding;
+
+  flash_heal_t( priest_t& p, util::string_view options_str ) : flash_heal_t( p, "flash_heal", options_str )
+  {
+  }
+
+  flash_heal_t( priest_t& p, util::string_view name, util::string_view options_str, bool bind = false )
+    : priest_heal_t( name, p, p.find_class_spell( "Flash Heal" ) ),
+      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() ) ),
+      binding_heal_percent( p.talents.binding_heals->effectN( 1 ).percent() ),
+      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 1 ).time_value() ),
+      binding( bind )
   {
     parse_options( options_str );
     harmful = false;
 
     apply_affecting_aura( priest().talents.improved_flash_heal );
+    disc_mastery = true;
+
+    if ( binding )
+    {
+      background = proc = true;
+    }
+
+    if ( p.talents.binding_heals.enabled() && !binding )
+    {
+      binding_heals             = new flash_heal_t( p, name_str + "_binding", {}, true );
+      add_child( binding_heals );
+    }
+  }
+
+  void init() override
+  {
+    priest_heal_t::init();
+
+    if ( binding )
+    {
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags &= ~( STATE_SP );
+    }
   }
 
   timespan_t execute_time() const override
@@ -1425,6 +1514,11 @@ struct flash_heal_t final : public priest_heal_t
     priest_heal_t::execute();
 
     priest().buffs.protective_light->trigger();
+
+    if ( priest().talents.discipline.train_of_thought.enabled() && !binding )
+    {
+      priest().cooldowns.power_word_shield->adjust( train_of_thought_cdr );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1432,6 +1526,66 @@ struct flash_heal_t final : public priest_heal_t
     priest_heal_t::impact( s );
 
     priest().buffs.from_darkness_comes_light->expire();
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( priest().talents.discipline.atonement.enabled() )
+      {
+        priest_td_t& td = get_td( s->target );
+        td.buffs.atonement->trigger( atonement_duration );
+      }
+
+      if ( s->result_amount > 0 && priest().talents.binding_heals.enabled() && binding_heals && s->target != player )
+      {
+        binding_heals->execute_on_target( player, s->result_amount * binding_heal_percent );
+      }
+    }
+    
+  }
+};
+
+
+// ==========================================================================
+// Flash Heal
+// ==========================================================================
+struct renew_t final : public priest_heal_t
+{
+  timespan_t atonement_duration;
+  timespan_t train_of_thought_cdr;
+
+  renew_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "renew", p, p.talents.renew ),
+      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() ) ),
+      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 1 ).time_value() )
+  {
+    parse_options( options_str );
+    harmful = false;
+
+    disc_mastery = true;
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    if ( priest().talents.discipline.train_of_thought.enabled() )
+    {
+      priest().cooldowns.power_word_shield->adjust( train_of_thought_cdr );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( priest().talents.discipline.atonement.enabled() )
+      {
+        priest_td_t& td = get_td( s->target );
+        td.buffs.atonement->trigger( atonement_duration );
+      }
+    }
   }
 };
 
@@ -1501,14 +1655,31 @@ struct desperate_prayer_t final : public priest_heal_t
 struct power_word_shield_t final : public priest_absorb_t
 {
   double insanity;
+  timespan_t atonement_duration;
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
+      insanity( priest().specs.hallucinations->effectN( 1 ).resource() ),
+      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() +
+                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
-    spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
-    apply_affecting_aura( priest().talents.discipline.borrowed_time );
+    
+    gcd_type = gcd_haste_type::SPELL_SPEED;
+    
+    switch ( p.specialization() )
+    {
+      case PRIEST_DISCIPLINE:
+        base_dd_multiplier *= 1.37;
+        break;
+      case PRIEST_SHADOW:
+        base_dd_multiplier *= 1.25;
+        break;
+      default:
+        break;
+    }
+
+    disc_mastery = true;
   }
 
   // Manually create the buff so we can reference it with Void Shield
@@ -1544,6 +1715,13 @@ struct power_word_shield_t final : public priest_absorb_t
     {
       s->target->buffs.body_and_soul->trigger();
     }
+
+    if ( priest().talents.discipline.atonement.enabled() )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.atonement->trigger( atonement_duration );
+    }
+
     if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T29, B2 ) )
     {
       priest().buffs.light_weaving->trigger();
@@ -1565,7 +1743,8 @@ struct power_word_life_t final : public priest_heal_t
       execute_modifier( data().effectN( 3 ).percent() )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful      = false;
+    disc_mastery = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1600,10 +1779,52 @@ struct essence_devourer_t final : public priest_heal_t
 {
   essence_devourer_t( priest_t& p )
     : priest_heal_t( "essence_devourer", p,
-                     p.talents.shadow.mindbender.enabled() ? p.talents.essence_devourer_mindbender
+                     p.talents.shared.mindbender.enabled() ? p.talents.essence_devourer_mindbender
                                                            : p.talents.essence_devourer_shadowfiend )
   {
     harmful = false;
+  }
+};
+
+struct atonement_t final : public priest_heal_t
+{
+  atonement_t( priest_t& p ) : priest_heal_t( "atonement", p, p.talents.discipline.atonement_spell )
+  {
+    aoe       = -1;
+    may_dodge = may_parry = may_block = harmful = false;
+    background                                  = true;
+    crit_bonus                                  = 0.0;
+    disc_mastery                                = true;
+  }
+
+  void init() override
+  {
+    priest_heal_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA | STATE_MUL_DA;
+  }
+
+  int num_targets() const override
+  {
+    return as<int>( p().allies_with_atonement.size() );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+
+    for ( auto t : p().allies_with_atonement )
+    {
+      target_list.push_back( t );
+    }
+
+    return target_list.size();
+  }
+
+  void activate() override
+  {
+    priest_heal_t::activate();
+
+    priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
   }
 };
 
@@ -1769,7 +1990,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.purge_the_wicked   = target->get_dot( "purge_the_wicked", &p );
   dots.holy_fire          = target->get_dot( "holy_fire", &p );
 
-  buffs.schism                   = make_buff( *this, "schism", p.talents.discipline.schism );
+  buffs.schism = make_buff( *this, "schism", p.talents.discipline.schism_debuff )
+                     ->apply_affecting_aura( p.talents.discipline.malicious_intent );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.echoing_void             = make_buff( *this, "echoing_void", p.find_spell( 373281 ) );
 
@@ -1793,6 +2015,21 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.psychic_horror = make_buff( *this, "psychic_horror", p.talents.shadow.psychic_horror )->set_cooldown( 0_s );
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
+
+  buffs.atonement = make_buff( *this, "atonement", p.talents.discipline.atonement_buff )
+                        ->set_refresh_behavior( buff_refresh_behavior::MAX )
+                        ->set_stack_change_callback( [ this, &p, target ]( buff_t*, int, int n ) {
+                          if ( n )
+                          {
+                            p.allies_with_atonement.push_back( target );
+                          }
+                          else
+                          {
+                            p.allies_with_atonement.find_and_erase_unordered( target );
+                          }
+                          size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
+                          p.buffs.sins_of_the_many->current_value = p.specs.sins_of_the_many_data[ idx ];
+                        } );
 }
 
 void priest_td_t::reset()
@@ -1850,7 +2087,8 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     background_actions(),
     active_items(),
     pets( *this ),
-    options()
+    options(),
+    allies_with_atonement()
 {
   create_cooldowns();
   create_gains();
@@ -1871,8 +2109,10 @@ void priest_t::create_cooldowns()
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
   cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
   cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
+  cooldowns.power_word_shield             = get_cooldown( "power_word_shield" );
   cooldowns.mindgames                     = get_cooldown( "mindgames" );
   cooldowns.mindbender                    = get_cooldown( "mindbender" );
+  cooldowns.shadowfiend                   = get_cooldown( "shadowfiend" );
   cooldowns.penance                       = get_cooldown( "penance" );
   cooldowns.maddening_touch_icd           = get_cooldown( "maddening_touch_icd" );
   cooldowns.maddening_touch_icd->duration = 1_s;
@@ -1898,8 +2138,10 @@ void priest_t::create_gains()
 void priest_t::create_procs()
 {
   // Discipline
-  procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
-  procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
+  procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side procs from dot ticks" );
+  procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side from dot ticks lost to overflow" );
+  procs.power_of_the_dark_side_dark_indulgence_overflow =
+      get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
   procs.expiation_lost_no_dot           = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
   procs.shadowy_apparition_vb          = get_proc( "Shadowy Apparition from Void Bolt" );
@@ -1996,6 +2238,12 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
     return shadow_expression;
   }
 
+  auto disc_expression = create_expression_discipline( expression_str );
+  if ( disc_expression )
+  {
+    return disc_expression;
+  }
+
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
   if ( auto pet_expr = create_pet_expression( expression_str, splits ) )
@@ -2064,7 +2312,13 @@ double priest_t::composite_spell_crit_chance() const
 double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+  
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
+  
+  if ( guardian )
+    m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
+  else
+    m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
 
   // Auto parsing does not cover melee attacks, and other attacks double dip with this
   if ( buffs.devoured_pride->check() )
@@ -2078,27 +2332,12 @@ double priest_t::composite_player_heal_multiplier( const action_state_t* s ) con
 {
   double m = player_t::composite_player_heal_multiplier( s );
 
-  if ( buffs.twist_of_fate->check() )
-  {
-    m *= 1.0 + buffs.twist_of_fate->current_value;
-  }
-
-  if ( mastery_spells.grace->ok() )
-  {
-    m *= 1 + cache.mastery_value();
-  }
-
   return m;
 }
 
 double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_absorb_multiplier( s );
-
-  if ( mastery_spells.grace->ok() )
-  {
-    m *= 1 + cache.mastery_value();
-  }
 
   return m;
 }
@@ -2134,6 +2373,11 @@ double priest_t::composite_leech() const
   }
 
   return l;
+}
+
+void priest_t::pre_analyze_hook()
+{
+  player_t::pre_analyze_hook();
 }
 
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
@@ -2245,6 +2489,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new flash_heal_t( *this, options_str );
   }
+  if ( name == "renew" )
+  {
+    return new renew_t( *this, options_str );
+  }
 
   return base_t::create_action( name, options_str );
 }
@@ -2330,6 +2578,7 @@ void priest_t::init_scaling()
 void priest_t::init_finished()
 {
   base_t::init_finished();
+  cooldowns.fiend = talents.shared.mindbender.enabled() ? cooldowns.mindbender : cooldowns.shadowfiend;
 }
 
 void priest_t::init_spells()
@@ -2337,10 +2586,15 @@ void priest_t::init_spells()
   base_t::init_spells();
 
   auto CT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::CLASS, n ); };
+  auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
 
   init_spells_shadow();
   init_spells_discipline();
   init_spells_holy();
+
+  // Shared Spells
+  talents.shared.mindbender          = ST( "Mindbender" );
+  talents.shared.inescapable_torment = ST( "Inescapable Torment" );
 
   // Generic Spells
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
@@ -2513,6 +2767,7 @@ void priest_t::init_background_actions()
   background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
+  background_actions.atonement           = new actions::heals::atonement_t( *this );
 
   background_actions.shadow_word_death->background = true;
   background_actions.shadow_word_death->dual       = true;
@@ -2531,7 +2786,10 @@ void priest_t::do_dynamic_regen( bool forced )
 void priest_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
+}
 
+void priest_t::apply_affecting_auras_late(action_t& action)
+{
   action.apply_affecting_aura( specs.shadow_priest );
   action.apply_affecting_aura( specs.holy_priest );
   action.apply_affecting_aura( specs.discipline_priest );
@@ -2548,9 +2806,13 @@ void priest_t::apply_affecting_auras( action_t& action )
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
   action.apply_affecting_aura( talents.discipline.expiation );
+  action.apply_affecting_aura( talents.discipline.blaze_of_light );
 
   // Holy Talents
   action.apply_affecting_aura( talents.holy.miracle_worker );
+
+  // Disc T31 2pc
+  action.apply_affecting_aura( sets->set( PRIEST_DISCIPLINE, T31, B2 ) );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
@@ -2683,6 +2945,8 @@ void priest_t::reset()
       td->reset();
     }
   }
+
+  allies_with_atonement.clear_without_callbacks();
 }
 
 void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
@@ -2738,6 +3002,11 @@ void priest_t::arise()
   base_t::arise();
 }
 
+void priest_t::demise()
+{
+  base_t::demise();
+}
+
 // Idol of C'Thun Talent Trigger
 void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
@@ -2749,6 +3018,31 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
     spawn_idol_of_cthun( s );
   }
 }
+
+
+// Trigger Atonement
+void priest_t::trigger_atonement( action_state_t* s )
+{
+  if ( !talents.discipline.atonement.enabled() )
+    return;
+
+  if ( allies_with_atonement.empty() )
+    return;
+
+  if ( s->result_amount <= 0 )
+    return;
+
+  auto r = s->result_amount;
+  
+  r *= talents.discipline.atonement->effectN( 1 ).percent();
+
+  if ( talents.discipline.abyssal_reverie.enabled() &&
+       ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
+    r *= 1 + talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+
+  background_actions.atonement->execute_on_target( this, r );
+}
+
 
 void priest_t::trigger_essence_devourer()
 {

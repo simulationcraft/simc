@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51754 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -538,7 +538,7 @@ Talent Entry     : Holy [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Resource         : 2.4% Base Mana (0) (id=836)
+Resource         : 2.8% Base Mana (0) (id=836)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -18612,13 +18612,13 @@ Proc Flags       : ........ ......x. x....... ........   ........ ........ .....
                  : Magic Heal, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : .......x ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Proc While Sitting (147)
+                 : Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1083062)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -18968,7 +18968,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1085255)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1085256)  : Apply Aura (6) | Modify Healing% Based on Target Health% (354)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Holy Shock (25914)
@@ -19219,7 +19219,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
-Stacks           : 3 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4)
 Family Flags     : 41, 46
@@ -19234,7 +19234,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : Allow While Sitting (27), Ignore Line of Sight (66), Aura Is Buff (140), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1099338)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | PvP Coefficient: 0.50000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13500 | PvP Coefficient: 0.50000 | Target: Friend (21)
 Description      : $@spelldesc422893
 Tooltip          : Healing $s1 every $t.
 
@@ -19244,7 +19244,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
-Stacks           : 3 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2)
 Family Flags     : 65

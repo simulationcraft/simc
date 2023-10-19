@@ -221,23 +221,28 @@ struct priest_pet_melee_t : public melee_attack_t
 struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_td_t>
 {
   bool affected_by_shadow_weaving;
+  bool triggers_atonement;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
-    : spell_t( token, &p, s ), parse_buff_effects_t( this ), affected_by_shadow_weaving( false )
+    : spell_t( token, &p, s ),
+      parse_buff_effects_t( this ),
+      affected_by_shadow_weaving( false ),
+      triggers_atonement( false )
   {
     may_crit = true;
 
     if ( data().ok() )
     {
       apply_buff_effects();
+      apply_debuffs_effects();
     }
   }
 
   // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, value_type]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
-  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
-  //  value_type = optional, default USE_DATA, where the value comes from.
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore
+  //  parameters value_type = optional, default USE_DATA, where the value comes from.
   //               USE_DATA = spell data, USE_DEFAULT = buff default value, USE_CURRENT = buff current value
   //  spell = optional list of spell with redirect effects that modify the effects on the buff
   //
@@ -250,11 +255,16 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
   {
     // using S = const spell_data_t*;
 
-    parse_buff_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
-    parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
-    parse_buff_effects( p().o().buffs.devoured_pride );
-    parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
+
+    if ( p().o().specialization() == PRIEST_SHADOW )
+    {
+      parse_buff_effects( p().o().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
+      parse_buff_effects( p().o().buffs.shadowform );
+      parse_buff_effects( p().o().buffs.devoured_pride );
+      parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false,
+                          USE_DATA );  // Buffs non-periodic spells - Skip E4
+    }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
     {
@@ -268,6 +278,27 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
         parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, USE_DEFAULT );  // Skip E1 and E2
       }
     }
+
+    // DISCIPLINE BUFF EFFECTS
+    if ( p().o().specialization() == PRIEST_DISCIPLINE )
+    {
+      parse_buff_effects( p().o().buffs.shadow_covenant, 0U, false, USE_DEFAULT_DATA_OFFSET,
+                          p().o().talents.discipline.twilight_corruption );
+      // 280398 applies the buff to the correct spells, but does not contain the correct buff value
+      // (12% instead of 40%) So, override to use our provided default_value (40%) instead
+      parse_buff_effects( p().o().buffs.sins_of_the_many, 0U, false, USE_CURRENT );
+    }
+  }
+  void apply_debuffs_effects()
+  {
+    // using S = const spell_data_t*;
+    // DISCIPLINE DEBUFF EFFECTS
+    // Doesn't work on the pet ayy lmao
+    /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
+    {
+        parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+    p().o().talents.discipline.schism_debuff );
+    }*/
   }
 
   priest_pet_t& p()
@@ -344,6 +375,17 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     }
 
     return ttm;
+  }
+
+  void impact( action_state_t* s )
+  {
+    spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( triggers_atonement && s->chain_target == 0 )
+        p().o().trigger_atonement( s );
+    }
   }
 };
 
@@ -435,10 +477,13 @@ struct base_fiend_pet_t : public priest_pet_t
 struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
   double power_leech_insanity;
+  double power_leech_mana;
 
   shadowfiend_pet_t( priest_t* owner, util::string_view name = "shadowfiend" )
     : base_fiend_pet_t( owner, name, fiend_type::Shadowfiend ),
-      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
+                                                              : o().talents.shadowfiend->effectN( 4 ).percent() / 10 )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -452,7 +497,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
 
   double mana_return_percent() const override
   {
-    return 0.0;
+    return power_leech_mana;
   }
   double insanity_gain() const override
   {
@@ -471,11 +516,14 @@ struct mindbender_pet_t final : public base_fiend_pet_t
 {
   const spell_data_t* mindbender_spell;
   double power_leech_insanity;
+  double power_leech_mana;
 
   mindbender_pet_t( priest_t* owner, util::string_view name = "mindbender" )
     : base_fiend_pet_t( owner, name, fiend_type::Mindbender ),
       mindbender_spell( owner->find_spell( 123051 ) ),
-      power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
+                                                              : o().find_spell( 200010 )->effectN( 1 ).percent() / 10 )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 
@@ -493,8 +541,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
 
   double mana_return_percent() const override
   {
-    double m = mindbender_spell->effectN( 1 ).percent();
-    return m / 100;
+    return power_leech_mana;
   }
 
   double insanity_gain() const override
@@ -506,7 +553,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   {
     base_fiend_pet_t::demise();
 
-    if ( o().talents.shadow.inescapable_torment.enabled() || o().talents.discipline.inescapable_torment.enabled() )
+    if ( o().talents.shared.inescapable_torment.enabled() )
     {
       if ( o().cooldowns.mind_blast->is_ready() )
       {
@@ -588,10 +635,13 @@ struct fiend_melee_t : public priest_pet_melee_t
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
         p().o().trigger_shadow_weaving( s );
-        p().o().trigger_essence_devourer();
       }
 
-      if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )
+      p().o().trigger_atonement( s );
+
+      p().o().trigger_essence_devourer();
+
+      if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shared.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {
@@ -625,20 +675,19 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
   {
     background                 = true;
     affected_by_shadow_weaving = true;
+    triggers_atonement         = true;
 
     // This is hard coded in the spell
     // spcoeff * $?a137032[${0.326139}][${0.442}]
-    if ( p.fiend_type == base_fiend_pet_t::fiend_type::Mindbender )
-    {
-      spell_power_mod.direct *= 0.442;
-    }
+    spell_power_mod.direct *= p.direct_power_mod;
 
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
-    spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 3 ).percent() );
+    spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
 
     // Tuning modifier effect
     apply_affecting_aura( p.o().specs.shadow_priest );
+    apply_affecting_aura( p.o().specs.discipline_priest );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -649,7 +698,6 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     return m;
   }
-
 
   void trigger( player_t* target, double mod_ )
   {
@@ -676,7 +724,7 @@ struct inescapable_torment_t final : public priest_pet_spell_t
   propagate_const<inescapable_torment_damage_t*> damage;
 
   inescapable_torment_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shadow.inescapable_torment ),
+    : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shared.inescapable_torment ),
       duration( data().effectN( 2 ).time_value() )
   {
     background = true;
@@ -696,7 +744,7 @@ struct inescapable_torment_t final : public priest_pet_spell_t
     {
       duration *= mod;
     }
-    
+
     set_target( target );
     execute();
 
@@ -1024,7 +1072,7 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 // summoned through the action list, so please check for null.
 spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest )
 {
-  return priest.talents.shadow.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
+  return priest.talents.shared.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
 }
 
 }  // namespace
@@ -1033,14 +1081,15 @@ namespace priestspace
 {
 void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double mod )
 {
-  if ( !talents.shadow.inescapable_torment.enabled() || !talents.discipline.inescapable_torment.enabled() )
+  if ( !talents.shared.inescapable_torment.enabled() )
     return;
 
   if ( get_current_main_pet( *this ).n_active_pets() > 0 )
   {
-    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value() * mod;
+    auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
     buffs.devoured_pride->extend_duration( this, extend );
     buffs.devoured_despair->extend_duration( this, extend );
+    buffs.shadow_covenant->extend_duration( this, extend );
 
     for ( auto a_pet : get_current_main_pet( *this ) )
     {
@@ -1109,12 +1158,12 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     if ( util::str_compare_ci( splits[ 1 ], "fiend" ) || util::str_compare_ci( splits[ 1 ], "shadowfiend" ) ||
          util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) )
     {
-      if ( cooldown_t* cooldown = get_cooldown( talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" ) )
+      if ( cooldown_t* cooldown = get_cooldown( talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) )
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
       throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.",
-                                                talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
+                                                talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
     }
   }
 

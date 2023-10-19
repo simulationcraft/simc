@@ -121,7 +121,8 @@ public:
   double cdf_accumulator; // For T30 Destruction tier set
   double dimensional_accumulator; // For T31 Destruction tier set
   int incinerate_last_target_count; // For use with T30 Destruction tier set
-  double volatile_fiends_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Volatile Fiends
+  double shadow_invocation_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Shadow Invocation
+  double doom_brand_accumulator;
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
 
   unsigned active_pets;
@@ -172,7 +173,7 @@ public:
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
-    spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends; // TODO: 10.2 has buffed Vilefiend damage by 15%
+    spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
@@ -315,7 +316,7 @@ public:
 
     player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     player_talent_t summon_vilefiend;
-    player_talent_t soul_strike;
+    player_talent_t soul_strike; // TODO: Active player ability moved to pet in 10.2
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
@@ -326,7 +327,9 @@ public:
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
+    player_talent_t fel_invocation; // New in 10.2. Buffs either Soul Strike or Summon Vilefiend
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
+    player_talent_t shadow_invocation; // New in 10.2 (previously called Volatile Fiends). Bilescourge Bomber damage and proc.
     player_talent_t fel_and_steel; // Increase's primary Felguard's Legion Strike and Felstorm damage
     player_talent_t heavy_handed; // Primary Felguard crit chance increase (additive)
 
@@ -337,7 +340,7 @@ public:
     player_talent_t grimoire_felguard;
 
     player_talent_t bloodbound_imps; // TODO: REMOVED in 10.2
-    player_talent_t volatile_fiends; // Increase Implosion and Bilescourge Bombers damage. Other spells may proc a BB
+    player_talent_t spiteful_reconstitution; // New in 10.2. Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
     player_talent_t inner_demons; // TODO: 10.2 has removed the "Summon Random Demon" proc
     player_talent_t doom;
     player_talent_t demonic_calling;
@@ -481,7 +484,7 @@ public:
     action_t* soul_flame_proc;
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
-    action_t* bilescourge_bombers_proc; // From Volatile Fiends talent
+    action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
     action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
     action_t* summon_nether_portal_demon; // Separate version for Nether Portal based summons due to Ner'zhul's Volition
     action_t* doom_brand_explosion; // Demonology T31 2pc
@@ -630,6 +633,7 @@ public:
     // Demonology
     gain_t* doom;
     gain_t* soulbound_tyrant;
+    gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 
   // Procs
@@ -658,8 +662,9 @@ public:
     proc_t* summon_random_demon;
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers;
-    proc_t* volatile_fiends; // Bilescourge Bomber proc on most spells
+    proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
     proc_t* imp_gang_boss;
+    proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
@@ -683,7 +688,6 @@ public:
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
-  real_ppm_t* doomfiend_rppm; // Demonology T31 4pc
   const spell_data_t* version_10_2_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );

@@ -223,14 +223,14 @@ trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=488.20
-# gear_strength=9759
-# gear_stamina=38619
-# gear_crit_rating=4566
-# gear_haste_rating=5342
-# gear_mastery_rating=4826
+# gear_ilvl=488.60
+# gear_strength=9773
+# gear_stamina=38769
+# gear_crit_rating=4583
+# gear_haste_rating=5355
+# gear_mastery_rating=4830
 # gear_versatility_rating=284
-# gear_armor=11384
+# gear_armor=11405
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
 deathknight.ams_absorb_percent=1

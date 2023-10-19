@@ -1650,6 +1650,7 @@ class SpellDataGenerator(DataGenerator):
             ( 426595, 0 ),          # Shadow Techniques delayed CP energize
             ( 423193, 0 ),          # Exsanguinate residual damage spell
             ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
+            ( 429951, 0 ),          # Deft Maneuvers alternative Blade Flurry instant attack spell
         ),
 
         # Priest:
@@ -2122,7 +2123,9 @@ class SpellDataGenerator(DataGenerator):
           ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
 
           # Tier 31
-          ( 425298, 1 ), # BrM 4-piece Charred Dreams Healing
+          ( 425298, 1 ), # BrM 2-piece Charred Dreams Healing
+          ( 425299, 1 ), # BrM 2-piece Charred Dreams Damage
+          ( 425965, 1 ), # BrM 4-piece Celestial Brew Guard
         ),
 
         # Druid:
@@ -4822,4 +4825,3 @@ class PermanentEnchantItemGenerator(DataGenerator):
             self.output_record(fields)
 
         self.output_footer()
-
