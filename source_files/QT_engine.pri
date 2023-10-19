@@ -29,6 +29,7 @@ HEADERS += engine/class_modules/apl/apl_warrior.hpp
 HEADERS += engine/class_modules/apl/mage.hpp
 HEADERS += engine/class_modules/apl/warlock.hpp
 HEADERS += engine/class_modules/class_module.hpp
+HEADERS += engine/class_modules/demonhunter/sc_demon_hunter.hpp
 HEADERS += engine/class_modules/monk/sc_monk.hpp
 HEADERS += engine/class_modules/paladin/sc_paladin.hpp
 HEADERS += engine/class_modules/priest/sc_priest.hpp
