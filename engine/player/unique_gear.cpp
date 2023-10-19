@@ -1834,7 +1834,7 @@ void item::witherbarks_branch( special_effect_t& effect )
 {
   auto data_spell = effect.player->find_spell( 429257 );
   auto stat_buff  = make_buff<stat_buff_t>( effect.player, "aqueous_dowsing", effect.player->find_spell( 429257 ) )
-    ->add_stat( STAT_MASTERY_RATING, data_spell->effectN( 1 ).average( effect.item ) )
+    ->add_stat( STAT_MASTERY_RATING, data_spell->effectN( 1 ).average( effect.item ) );
 
   effect.custom_buff = make_buff( effect.player, "aqueous_dowsing_driver", effect.driver() )
     ->set_quiet( true )
