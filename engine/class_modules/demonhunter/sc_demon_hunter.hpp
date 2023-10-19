@@ -162,8 +162,7 @@ public:
   double expected_max_health;
 
   // Soul Fragments
-  unsigned next_fragment_spawn;  // determines whether the next fragment spawn
-                                 // on the left or right
+  unsigned next_fragment_spawn;  // determines whether the next fragment spawn on the left or right
   auto_dispose<std::vector<soul_fragment_t*>> soul_fragments;
   event_t* soul_fragment_pick_up;
 
@@ -745,30 +744,266 @@ public:
     uptime_t* charred_flesh_sigil_of_flame;
   } uptime;
 
-  demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
+  // ==========================================================================
+  // Demon Hunter Definitions
+  // ==========================================================================
 
+  demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
+    : player_t( sim, DEMON_HUNTER, name, r ),
+      melee_main_hand( nullptr ),
+      melee_off_hand( nullptr ),
+      next_fragment_spawn( 0 ),
+      soul_fragments(),
+      frailty_accumulator( 0.0 ),
+      frailty_driver( nullptr ),
+      fodder_initiative( false ),
+      shattered_destiny_accumulator( 0.0 ),
+      darkglare_boon_cdr_roll( 0.0 ),
+      exit_melee_event( nullptr ),
+      buff(),
+      talent(),
+      spec(),
+      mastery(),
+      cooldown(),
+      gain(),
+      benefits(),
+      proc(),
+      active(),
+      pets(),
+      options(),
+      uptime()
+  {
+    create_cooldowns();
+    create_gains();
+    create_benefits();
+
+    resource_regeneration = regen_type::DISABLED;
+  }
   // overridden player_t init functions
-  stat_e convert_hybrid_stat( stat_e s ) const override;
-  void copy_from( player_t* source ) override;
   action_t* create_action( util::string_view name, util::string_view options ) override;
   void create_buffs() override;
   std::unique_ptr<expr_t> create_expression( util::string_view ) override;
-  void create_options() override;
-  pet_t* create_pet( util::string_view name, util::string_view type ) override;
-  std::string create_profile( save_e ) override;
-  void init_absorb_priority() override;
-  void init_action_list() override;
-  void init_base_stats() override;
-  void init_procs() override;
-  void init_uptimes() override;
-  void init_resources( bool force ) override;
-  void init_special_effects() override;
-  void init_rng() override;
-  void init_scaling() override;
   void init_spells() override;
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
+
+  stat_e convert_hybrid_stat( stat_e s ) const override
+  {
+    // this converts hybrid stats that either morph based on spec or only work
+    // for certain specs into the appropriate "basic" stats
+    switch ( s )
+    {
+      case STAT_STR_AGI_INT:
+      case STAT_AGI_INT:
+      case STAT_STR_AGI:
+        return STAT_AGILITY;
+      case STAT_STR_INT:
+        return STAT_NONE;
+      case STAT_SPIRIT:
+        return STAT_NONE;
+      case STAT_BONUS_ARMOR:
+        return specialization() == DEMON_HUNTER_VENGEANCE ? s : STAT_NONE;
+      default:
+        return s;
+    }
+  }
+
+  void copy_from( player_t* source ) override
+  {
+    base_t::copy_from( source );
+
+    auto source_p = debug_cast<demon_hunter_t*>( source );
+
+    options = source_p->options;
+  }
+
+  void create_options() override
+  {
+    player_t::create_options();
+
+    add_option( opt_float( "target_reach", options.target_reach ) );
+    add_option( opt_float( "movement_direction_factor", options.movement_direction_factor, 1.0, 2.0 ) );
+    add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
+    add_option(
+        opt_float( "fodder_to_the_flame_initiative_chance", options.fodder_to_the_flame_initiative_chance, 0, 1 ) );
+    add_option(
+        opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
+    add_option(
+        opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
+  }
+
+  pet_t* create_pet( util::string_view pet_name, util::string_view /* pet_type */ ) override
+  {
+    pet_t* p = find_pet( pet_name );
+
+    if ( p )
+      return p;
+
+    // Add pets here
+
+    return nullptr;
+  }
+
+  std::string create_profile( save_e type ) override
+  {
+    std::string profile_str = base_t::create_profile( type );
+
+    // Log all options here
+
+    return profile_str;
+  }
+
+  void init_action_list() override
+  {
+    if ( main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE )
+    {
+      if ( !quiet )
+      {
+        sim->errorf( "Player %s does not have a valid main-hand and off-hand weapon.", name() );
+      }
+      quiet = true;
+      return;
+    }
+
+    if ( !action_list_str.empty() )
+    {
+      player_t::init_action_list();
+      return;
+    }
+    clear_action_priority_lists();
+
+    if ( specialization() == DEMON_HUNTER_HAVOC )
+    {
+      demon_hunter_apl::havoc_ptr( this );
+    }
+    else if ( specialization() == DEMON_HUNTER_VENGEANCE )
+    {
+      demon_hunter_apl::vengeance_ptr( this );
+    }
+
+    use_default_action_list = true;
+
+    base_t::init_action_list();
+  }
+
+  void init_base_stats() override
+  {
+    if ( base.distance < 1 )
+      base.distance = 5.0;
+
+    base_t::init_base_stats();
+
+    resources.base[ RESOURCE_FURY ] = 100;
+    resources.base[ RESOURCE_FURY ] += talent.demon_hunter.unrestrained_fury->effectN( 1 ).base_value();
+
+    base.attack_power_per_strength = 0.0;
+    base.attack_power_per_agility  = 1.0;
+    base.spell_power_per_intellect = 1.0;
+
+    // Avoidance diminishing Returns constants/conversions now handled in
+    // player_t::init_base_stats().
+    // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
+    // Just need to add class- or spec-based modifiers here.
+
+    base_gcd = timespan_t::from_seconds( 1.5 );
+  }
+
+  void init_procs() override
+  {
+    base_t::init_procs();
+
+    // General
+    proc.delayed_aa_range              = get_proc( "delayed_aa_out_of_range" );
+    proc.soul_fragment_greater         = get_proc( "soul_fragment_greater" );
+    proc.soul_fragment_greater_demon   = get_proc( "soul_fragment_greater_demon" );
+    proc.soul_fragment_empowered_demon = get_proc( "soul_fragment_empowered_demon" );
+    proc.soul_fragment_lesser          = get_proc( "soul_fragment_lesser" );
+    proc.felblade_reset                = get_proc( "felblade_reset" );
+
+    // Havoc
+    proc.demonic_appetite                = get_proc( "demonic_appetite" );
+    proc.demons_bite_in_meta             = get_proc( "demons_bite_in_meta" );
+    proc.chaos_strike_in_essence_break   = get_proc( "chaos_strike_in_essence_break" );
+    proc.annihilation_in_essence_break   = get_proc( "annihilation_in_essence_break" );
+    proc.blade_dance_in_essence_break    = get_proc( "blade_dance_in_essence_break" );
+    proc.death_sweep_in_essence_break    = get_proc( "death_sweep_in_essence_break" );
+    proc.chaos_strike_in_serrated_glaive = get_proc( "chaos_strike_in_serrated_glaive" );
+    proc.annihilation_in_serrated_glaive = get_proc( "annihilation_in_serrated_glaive" );
+    proc.throw_glaive_in_serrated_glaive = get_proc( "throw_glaive_in_serrated_glaive" );
+    proc.shattered_destiny               = get_proc( "shattered_destiny" );
+    proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
+
+    // Vengeance
+    proc.soul_fragment_expire        = get_proc( "soul_fragment_expire" );
+    proc.soul_fragment_overflow      = get_proc( "soul_fragment_overflow" );
+    proc.soul_fragment_from_shear    = get_proc( "soul_fragment_from_shear" );
+    proc.soul_fragment_from_fracture = get_proc( "soul_fragment_from_fracture" );
+    proc.soul_fragment_from_fallout  = get_proc( "soul_fragment_from_fallout" );
+    proc.soul_fragment_from_meta     = get_proc( "soul_fragment_from_meta" );
+
+    // Set Bonuses
+    proc.soul_fragment_from_t29_2pc = get_proc( "soul_fragment_from_t29_2pc" );
+    proc.soul_fragment_from_t31_4pc = get_proc( "soul_fragment_from_t31_4pc" );
+  }
+
+  void init_uptimes() override
+  {
+    base_t::init_uptimes();
+
+    uptime.charred_flesh_fiery_brand    = get_uptime( "Charred Flesh (Fiery Brand)" )->collect_duration( *sim );
+    uptime.charred_flesh_sigil_of_flame = get_uptime( "Charred Flesh (Sigil of Flame)" )->collect_duration( *sim );
+  }
+
+  void init_resources( bool force ) override
+  {
+    base_t::init_resources( force );
+
+    resources.current[ RESOURCE_FURY ] = options.initial_fury;
+    expected_max_health                = calculate_expected_max_health();
+  }
+
+  void init_special_effects() override
+  {
+    base_t::init_special_effects();
+  }
+
+  void init_rng() override
+  {
+    // RPPM objects
+
+    // General
+    if ( specialization() == DEMON_HUNTER_HAVOC )
+    {
+      rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
+      rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
+    }
+    else  // DEMON_HUNTER_VENGEANCE
+    {
+      rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
+    }
+
+    player_t::init_rng();
+  }
+
+  void init_scaling() override
+  {
+    base_t::init_scaling();
+
+    scaling->enable( STAT_WEAPON_OFFHAND_DPS );
+
+    if ( specialization() == DEMON_HUNTER_VENGEANCE )
+      scaling->enable( STAT_BONUS_ARMOR );
+
+    scaling->disable( STAT_STRENGTH );
+  }
+
+  void init_absorb_priority() override
+  {
+    player_t::init_absorb_priority();
+
+    absorb_priority.push_back( 227225 );  // Soul Barrier
+  }
 
   // custom demon_hunter_t init functions
 private:
@@ -1898,6 +2133,78 @@ namespace spells
 }  // end namespace spells
 
 }  // end namespace actions
+
+namespace buffs
+{
+template <typename BuffBase>
+struct demon_hunter_buff_t : public BuffBase
+{
+  using base_t = demon_hunter_buff_t;
+
+  demon_hunter_buff_t( demon_hunter_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
+                       const item_t* item = nullptr )
+    : BuffBase( &p, name, s, item )
+  {
+  }
+  demon_hunter_buff_t( demon_hunter_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
+                       const item_t* item = nullptr )
+    : BuffBase( td, name, s, item )
+  {
+  }
+
+protected:
+  demon_hunter_t* p()
+  {
+    return static_cast<demon_hunter_t*>( BuffBase::source );
+  }
+
+  const demon_hunter_t* p() const
+  {
+    return static_cast<const demon_hunter_t*>( BuffBase::source );
+  }
+
+private:
+  using bb = BuffBase;
+};
+}  // namespace buffs
+
+// Frailty event ========================================================
+
+struct frailty_event_t : public event_t
+{
+  demon_hunter_t* dh;
+
+  frailty_event_t( demon_hunter_t* p, bool initial = false ) : event_t( *p ), dh( p )
+  {
+    timespan_t delta_time = timespan_t::from_seconds( 1.0 );
+    if ( initial )
+    {
+      delta_time *= rng().real();
+    }
+    schedule( delta_time );
+  }
+
+  const char* name() const override
+  {
+    return "frailty_driver";
+  }
+
+  void execute() override
+  {
+    assert( dh->frailty_accumulator >= 0.0 );
+
+    if ( dh->frailty_accumulator > 0 )
+    {
+      action_t* a    = dh->active.frailty_heal;
+      a->base_dd_min = a->base_dd_max = dh->frailty_accumulator;
+      a->execute();
+
+      dh->frailty_accumulator = 0.0;
+    }
+
+    dh->frailty_driver = make_event<frailty_event_t>( sim(), dh );
+  }
+};
 
 struct exit_melee_event_t : public event_t
 {

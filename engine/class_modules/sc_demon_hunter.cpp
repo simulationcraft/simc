@@ -43,7 +43,6 @@ namespace attacks
 {
 
 // Auto Attack ==============================================================
-
 struct auto_attack_damage_t : public demon_hunter_attack_t
 {
   enum class aa_contact
@@ -219,7 +218,6 @@ struct auto_attack_t : public demon_hunter_attack_t
 };
 
 // Blade Dance =============================================================
-
 struct blade_dance_base_t : public demon_hunter_attack_t
 {
   struct trail_of_ruin_dot_t : public demon_hunter_spell_t
@@ -502,7 +500,6 @@ struct blade_dance_t : public blade_dance_base_t
 };
 
 // Death Sweep ==============================================================
-
 struct death_sweep_t : public blade_dance_base_t
 {
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
@@ -564,7 +561,6 @@ struct death_sweep_t : public blade_dance_base_t
 };
 
 // Chaos Strike =============================================================
-
 struct chaos_strike_base_t : public demon_hunter_attack_t
 {
   struct chaos_strike_damage_t : public demon_hunter_attack_t
@@ -784,7 +780,6 @@ struct chaos_strike_t : public chaos_strike_base_t
 };
 
 // Annihilation =============================================================
-
 struct annihilation_t : public chaos_strike_base_t
 {
   annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {},
@@ -817,7 +812,6 @@ struct annihilation_t : public chaos_strike_base_t
 };
 
 // Burning Wound ============================================================
-
 struct burning_wound_t : public demon_hunter_spell_t
 {
   burning_wound_t( util::string_view name, demon_hunter_t* p )
@@ -874,7 +868,6 @@ struct burning_wound_t : public demon_hunter_spell_t
 };
 
 // Demon's Bite =============================================================
-
 struct demons_bite_t : public demon_hunter_attack_t
 {
   demons_bite_t( demon_hunter_t* p, util::string_view options_str )
@@ -927,7 +920,6 @@ struct demons_bite_t : public demon_hunter_attack_t
 };
 
 // Demon Blades =============================================================
-
 struct demon_blades_t : public demon_hunter_attack_t
 {
   demon_blades_t( demon_hunter_t* p ) : demon_hunter_attack_t( "demon_blades", p, p->spec.demon_blades_damage )
@@ -949,7 +941,6 @@ struct demon_blades_t : public demon_hunter_attack_t
 };
 
 // Essence Break ============================================================
-
 struct essence_break_t : public demon_hunter_attack_t
 {
   essence_break_t( demon_hunter_t* p, util::string_view options_str )
@@ -974,7 +965,6 @@ struct essence_break_t : public demon_hunter_attack_t
 
 // Felblade =================================================================
 // TODO: Real movement stuff.
-
 struct felblade_t : public demon_hunter_attack_t
 {
   struct felblade_damage_t : public demon_hunter_attack_t
@@ -1007,7 +997,6 @@ struct felblade_t : public demon_hunter_attack_t
 };
 
 // Fel Rush =================================================================
-
 struct fel_rush_t : public demon_hunter_attack_t
 {
   struct fel_rush_damage_t : public demon_hunter_spell_t
@@ -1115,7 +1104,6 @@ struct fel_rush_t : public demon_hunter_attack_t
 };
 
 // Fracture =================================================================
-
 struct fracture_t : public demon_hunter_attack_t
 {
   struct fracture_damage_t : public demon_hunter_attack_t
@@ -1265,7 +1253,6 @@ struct fracture_t : public demon_hunter_attack_t
 };
 
 // Ragefire Talent ==========================================================
-
 struct ragefire_t : public demon_hunter_spell_t
 {
   ragefire_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.ragefire_damage )
@@ -1275,7 +1262,6 @@ struct ragefire_t : public demon_hunter_spell_t
 };
 
 // Inner Demon Talent =======================================================
-
 struct inner_demon_t : public demon_hunter_spell_t
 {
   inner_demon_t( util::string_view name, demon_hunter_t* p )
@@ -1286,7 +1272,6 @@ struct inner_demon_t : public demon_hunter_spell_t
 };
 
 // Shear ====================================================================
-
 struct shear_t : public demon_hunter_attack_t
 {
   shear_t( demon_hunter_t* p, util::string_view options_str )
@@ -1360,7 +1345,6 @@ struct shear_t : public demon_hunter_attack_t
 };
 
 // Soul Cleave ==============================================================
-
 struct soul_cleave_t : public demon_hunter_attack_t
 {
   struct soul_cleave_state_t : public action_state_t
@@ -1510,7 +1494,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
 };
 
 // Throw Glaive =============================================================
-
 struct throw_glaive_t : public demon_hunter_attack_t
 {
   enum class glaive_source
@@ -1711,7 +1694,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
 };
 
 // Vengeful Retreat =========================================================
-
 struct vengeful_retreat_t : public demon_hunter_spell_t
 {
   struct vengeful_retreat_damage_t : public demon_hunter_spell_t
@@ -1826,7 +1808,6 @@ namespace spells
 {
 
 // Blur =====================================================================
-
 struct blur_t : public demon_hunter_spell_t
 {
   blur_t( demon_hunter_t* p, util::string_view options_str )
@@ -1844,7 +1825,6 @@ struct blur_t : public demon_hunter_spell_t
 };
 
 // Bulk Extraction ==========================================================
-
 struct bulk_extraction_t : public demon_hunter_spell_t
 {
   bulk_extraction_t( demon_hunter_t* p, util::string_view options_str )
@@ -1863,7 +1843,6 @@ struct bulk_extraction_t : public demon_hunter_spell_t
 };
 
 // Chaos Nova ===============================================================
-
 struct chaos_nova_t : public demon_hunter_spell_t
 {
   chaos_nova_t( demon_hunter_t* p, util::string_view options_str )
@@ -1963,7 +1942,6 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
 };
 
 // Consume Magic ============================================================
-
 struct consume_magic_t : public demon_hunter_spell_t
 {
   consume_magic_t( demon_hunter_t* p, util::string_view options_str )
@@ -1993,7 +1971,6 @@ struct consume_magic_t : public demon_hunter_spell_t
 };
 
 // Demon Spikes =============================================================
-
 struct demon_spikes_t : public demon_hunter_spell_t
 {
   demon_spikes_t( demon_hunter_t* p, util::string_view options_str )
@@ -2011,7 +1988,6 @@ struct demon_spikes_t : public demon_hunter_spell_t
 };
 
 // Retaliation ==============================================================
-
 struct retaliation_t : public demon_hunter_spell_t
 {
   retaliation_t( util::string_view name, demon_hunter_t* p )
@@ -2021,7 +1997,6 @@ struct retaliation_t : public demon_hunter_spell_t
 };
 
 // Disrupt ==================================================================
-
 struct disrupt_t : public demon_hunter_spell_t
 {
   disrupt_t( demon_hunter_t* p, util::string_view options_str )
@@ -2049,7 +2024,6 @@ struct disrupt_t : public demon_hunter_spell_t
 };
 
 // Eye Beam =================================================================
-
 struct eye_beam_t : public demon_hunter_spell_t
 {
   struct eye_beam_tick_t : public demon_hunter_spell_t
@@ -2184,7 +2158,6 @@ struct eye_beam_t : public demon_hunter_spell_t
 };
 
 // Fel Barrage ==============================================================
-
 struct fel_barrage_t : public demon_hunter_spell_t
 {
   struct fel_barrage_tick_t : public demon_hunter_spell_t
@@ -2222,7 +2195,6 @@ struct fel_barrage_t : public demon_hunter_spell_t
 };
 
 // Fel Devastation ==========================================================
-
 struct fel_devastation_t : public demon_hunter_spell_t
 {
   struct fel_devastation_tick_t : public demon_hunter_spell_t
@@ -2319,7 +2291,6 @@ struct fel_devastation_t : public demon_hunter_spell_t
 };
 
 // Fel Eruption =============================================================
-
 struct fel_eruption_t : public demon_hunter_spell_t
 {
   fel_eruption_t( demon_hunter_t* p, util::string_view options_str )
@@ -2329,7 +2300,6 @@ struct fel_eruption_t : public demon_hunter_spell_t
 };
 
 // Fiery Brand ==============================================================
-
 struct fiery_brand_t : public demon_hunter_spell_t
 {
   struct fiery_brand_state_t : public action_state_t
@@ -2507,7 +2477,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
 };
 
 // Glaive Tempest ===========================================================
-
 struct glaive_tempest_t : public demon_hunter_spell_t
 {
   struct glaive_tempest_damage_t : public demon_hunter_attack_t
@@ -2561,7 +2530,6 @@ struct glaive_tempest_t : public demon_hunter_spell_t
 };
 
 // Sigil of Flame ===========================================================
-
 struct sigil_of_flame_t31_t : public demon_hunter_spell_t
 {
   sigil_of_flame_t31_t( util::string_view name, demon_hunter_t* p )
@@ -2702,7 +2670,6 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
 };
 
 // Collective Anguish =======================================================
-
 struct collective_anguish_t : public demon_hunter_spell_t
 {
   struct collective_anguish_tick_t : public demon_hunter_spell_t
@@ -2752,7 +2719,6 @@ struct collective_anguish_t : public demon_hunter_spell_t
 };
 
 // Infernal Strike ==========================================================
-
 struct infernal_strike_t : public demon_hunter_spell_t
 {
   struct infernal_strike_impact_t : public demon_hunter_spell_t
@@ -2806,7 +2772,6 @@ struct infernal_strike_t : public demon_hunter_spell_t
 };
 
 // Immolation Aura ==========================================================
-
 struct immolation_aura_state_t : public action_state_t
 {
   double growing_inferno_multiplier;
@@ -3056,7 +3021,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
 };
 
 // Metamorphosis ============================================================
-
 struct metamorphosis_t : public demon_hunter_spell_t
 {
   struct metamorphosis_impact_t : public demon_hunter_spell_t
@@ -3169,7 +3133,6 @@ struct metamorphosis_t : public demon_hunter_spell_t
 };
 
 // Pick up Soul Fragment ====================================================
-
 struct pick_up_fragment_t : public demon_hunter_spell_t
 {
   enum class soul_fragment_select_mode
@@ -3388,7 +3351,6 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 };
 
 // Spirit Bomb ==============================================================
-
 struct spirit_bomb_t : public demon_hunter_spell_t
 {
   struct spirit_bomb_state_t : public action_state_t
@@ -3530,7 +3492,6 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 };
 
 // Elysian Decree ===========================================================
-
 struct elysian_decree_t : public demon_hunter_spell_t
 {
   struct elysian_decree_sigil_t : public demon_hunter_sigil_t
@@ -3585,7 +3546,6 @@ struct elysian_decree_t : public demon_hunter_spell_t
 };
 
 // The Hunt =================================================================
-
 struct the_hunt_t : public demon_hunter_spell_t
 {
   struct the_hunt_damage_t : public demon_hunter_spell_t
@@ -3648,7 +3608,6 @@ struct the_hunt_t : public demon_hunter_spell_t
 };
 
 // Spectral Sight ===========================================================
-
 struct spectral_sight_t : public demon_hunter_spell_t
 {
   struct fodder_to_the_flame_damage_t : public demon_hunter_spell_t
@@ -3822,41 +3781,10 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   }
 };
 }  // namespace spells
-
 }  // namespace actions
 
 namespace buffs
 {
-template <typename BuffBase>
-struct demon_hunter_buff_t : public BuffBase
-{
-  using base_t = demon_hunter_buff_t;
-
-  demon_hunter_buff_t( demon_hunter_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
-                       const item_t* item = nullptr )
-    : BuffBase( &p, name, s, item )
-  {
-  }
-  demon_hunter_buff_t( demon_hunter_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
-                       const item_t* item = nullptr )
-    : BuffBase( td, name, s, item )
-  {
-  }
-
-protected:
-  demon_hunter_t* p()
-  {
-    return static_cast<demon_hunter_t*>( BuffBase::source );
-  }
-
-  const demon_hunter_t* p() const
-  {
-    return static_cast<const demon_hunter_t*>( BuffBase::source );
-  }
-
-private:
-  using bb = BuffBase;
-};
 // Immolation Aura ==========================================================
 struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 {
@@ -4058,7 +3986,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 };
 
 // Metamorphosis Buff =======================================================
-
 struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 {
   metamorphosis_buff_t( demon_hunter_t* p ) : base_t( *p, "metamorphosis", p->spec.metamorphosis_buff )
@@ -4122,7 +4049,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 };
 
 // Demon Spikes buff ========================================================
-
 struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
 {
   const timespan_t max_duration;
@@ -4233,48 +4159,9 @@ void immolation_aura_t::immolation_aura_damage_t::accumulate_ragefire( immolatio
 // Misc. Events and Structs
 // ==========================================================================
 
-// Frailty event ========================================================
-
-struct frailty_event_t : public event_t
-{
-  demon_hunter_t* dh;
-
-  frailty_event_t( demon_hunter_t* p, bool initial = false ) : event_t( *p ), dh( p )
-  {
-    timespan_t delta_time = timespan_t::from_seconds( 1.0 );
-    if ( initial )
-    {
-      delta_time *= rng().real();
-    }
-    schedule( delta_time );
-  }
-
-  const char* name() const override
-  {
-    return "frailty_driver";
-  }
-
-  void execute() override
-  {
-    assert( dh->frailty_accumulator >= 0.0 );
-
-    if ( dh->frailty_accumulator > 0 )
-    {
-      action_t* a    = dh->active.frailty_heal;
-      a->base_dd_min = a->base_dd_max = dh->frailty_accumulator;
-      a->execute();
-
-      dh->frailty_accumulator = 0.0;
-    }
-
-    dh->frailty_driver = make_event<frailty_event_t>( sim(), dh );
-  }
-};
-
 // ==========================================================================
 // Targetdata Definitions
 // ==========================================================================
-
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
@@ -4316,82 +4203,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
 }
-
-// ==========================================================================
-// Demon Hunter Definitions
-// ==========================================================================
-
-demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
-  : player_t( sim, DEMON_HUNTER, name, r ),
-    melee_main_hand( nullptr ),
-    melee_off_hand( nullptr ),
-    next_fragment_spawn( 0 ),
-    soul_fragments(),
-    frailty_accumulator( 0.0 ),
-    frailty_driver( nullptr ),
-    fodder_initiative( false ),
-    shattered_destiny_accumulator( 0.0 ),
-    darkglare_boon_cdr_roll( 0.0 ),
-    exit_melee_event( nullptr ),
-    buff(),
-    talent(),
-    spec(),
-    mastery(),
-    cooldown(),
-    gain(),
-    benefits(),
-    proc(),
-    active(),
-    pets(),
-    options(),
-    uptime()
-{
-  create_cooldowns();
-  create_gains();
-  create_benefits();
-
-  resource_regeneration = regen_type::DISABLED;
-}
-
-// ==========================================================================
-// overridden player_t init functions
-// ==========================================================================
-
-// demon_hunter_t::convert_hybrid_stat ======================================
-
-stat_e demon_hunter_t::convert_hybrid_stat( stat_e s ) const
-{
-  // this converts hybrid stats that either morph based on spec or only work
-  // for certain specs into the appropriate "basic" stats
-  switch ( s )
-  {
-    case STAT_STR_AGI_INT:
-    case STAT_AGI_INT:
-    case STAT_STR_AGI:
-      return STAT_AGILITY;
-    case STAT_STR_INT:
-      return STAT_NONE;
-    case STAT_SPIRIT:
-      return STAT_NONE;
-    case STAT_BONUS_ARMOR:
-      return specialization() == DEMON_HUNTER_VENGEANCE ? s : STAT_NONE;
-    default:
-      return s;
-  }
-}
-
-// demon_hunter_t::copy_from ================================================
-
-void demon_hunter_t::copy_from( player_t* source )
-{
-  base_t::copy_from( source );
-
-  auto source_p = debug_cast<demon_hunter_t*>( source );
-
-  options = source_p->options;
-}
-
-// demon_hunter_t::create_action ============================================
 
 action_t* demon_hunter_t::create_action( util::string_view name, util::string_view options_str )
 {
@@ -4486,8 +4297,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
 
   return base_t::create_action( name, options_str );
 }
-
-// demon_hunter_t::create_buffs =============================================
 
 void demon_hunter_t::create_buffs()
 {
@@ -4894,220 +4703,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
   return player_t::create_expression( name_str );
 }
 
-// demon_hunter_t::create_options
-// ==================================================
-
-void demon_hunter_t::create_options()
-{
-  player_t::create_options();
-
-  add_option( opt_float( "target_reach", options.target_reach ) );
-  add_option( opt_float( "movement_direction_factor", options.movement_direction_factor, 1.0, 2.0 ) );
-  add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
-  add_option(
-      opt_float( "fodder_to_the_flame_initiative_chance", options.fodder_to_the_flame_initiative_chance, 0, 1 ) );
-  add_option(
-      opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
-  add_option(
-      opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
-}
-
-// demon_hunter_t::create_pet ===============================================
-
-pet_t* demon_hunter_t::create_pet( util::string_view pet_name, util::string_view /* pet_type */ )
-{
-  pet_t* p = find_pet( pet_name );
-
-  if ( p )
-    return p;
-
-  // Add pets here
-
-  return nullptr;
-}
-
-// demon_hunter_t::create_profile ===========================================
-
-std::string demon_hunter_t::create_profile( save_e type )
-{
-  std::string profile_str = base_t::create_profile( type );
-
-  // Log all options here
-
-  return profile_str;
-}
-
-// demon_hunter_t::init_absorb_priority =====================================
-
-void demon_hunter_t::init_absorb_priority()
-{
-  player_t::init_absorb_priority();
-
-  absorb_priority.push_back( 227225 );  // Soul Barrier
-}
-
-// demon_hunter_t::init_action_list =========================================
-
-void demon_hunter_t::init_action_list()
-{
-  if ( main_hand_weapon.type == WEAPON_NONE || off_hand_weapon.type == WEAPON_NONE )
-  {
-    if ( !quiet )
-    {
-      sim->errorf( "Player %s does not have a valid main-hand and off-hand weapon.", name() );
-    }
-    quiet = true;
-    return;
-  }
-
-  if ( !action_list_str.empty() )
-  {
-    player_t::init_action_list();
-    return;
-  }
-  clear_action_priority_lists();
-
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    demon_hunter_apl::havoc_ptr( this );
-  }
-  else if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    demon_hunter_apl::vengeance_ptr( this );
-  }
-
-  use_default_action_list = true;
-
-  base_t::init_action_list();
-}
-
-// demon_hunter_t::init_base_stats ==========================================
-
-void demon_hunter_t::init_base_stats()
-{
-  if ( base.distance < 1 )
-    base.distance = 5.0;
-
-  base_t::init_base_stats();
-
-  resources.base[ RESOURCE_FURY ] = 100;
-  resources.base[ RESOURCE_FURY ] += talent.demon_hunter.unrestrained_fury->effectN( 1 ).base_value();
-
-  base.attack_power_per_strength = 0.0;
-  base.attack_power_per_agility  = 1.0;
-  base.spell_power_per_intellect = 1.0;
-
-  // Avoidance diminishing Returns constants/conversions now handled in
-  // player_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
-  // Just need to add class- or spec-based modifiers here.
-
-  base_gcd = timespan_t::from_seconds( 1.5 );
-}
-
-// demon_hunter_t::init_procs ===============================================
-
-void demon_hunter_t::init_procs()
-{
-  base_t::init_procs();
-
-  // General
-  proc.delayed_aa_range              = get_proc( "delayed_aa_out_of_range" );
-  proc.soul_fragment_greater         = get_proc( "soul_fragment_greater" );
-  proc.soul_fragment_greater_demon   = get_proc( "soul_fragment_greater_demon" );
-  proc.soul_fragment_empowered_demon = get_proc( "soul_fragment_empowered_demon" );
-  proc.soul_fragment_lesser          = get_proc( "soul_fragment_lesser" );
-  proc.felblade_reset                = get_proc( "felblade_reset" );
-
-  // Havoc
-  proc.demonic_appetite                = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta             = get_proc( "demons_bite_in_meta" );
-  proc.chaos_strike_in_essence_break   = get_proc( "chaos_strike_in_essence_break" );
-  proc.annihilation_in_essence_break   = get_proc( "annihilation_in_essence_break" );
-  proc.blade_dance_in_essence_break    = get_proc( "blade_dance_in_essence_break" );
-  proc.death_sweep_in_essence_break    = get_proc( "death_sweep_in_essence_break" );
-  proc.chaos_strike_in_serrated_glaive = get_proc( "chaos_strike_in_serrated_glaive" );
-  proc.annihilation_in_serrated_glaive = get_proc( "annihilation_in_serrated_glaive" );
-  proc.throw_glaive_in_serrated_glaive = get_proc( "throw_glaive_in_serrated_glaive" );
-  proc.shattered_destiny               = get_proc( "shattered_destiny" );
-  proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
-
-  // Vengeance
-  proc.soul_fragment_expire        = get_proc( "soul_fragment_expire" );
-  proc.soul_fragment_overflow      = get_proc( "soul_fragment_overflow" );
-  proc.soul_fragment_from_shear    = get_proc( "soul_fragment_from_shear" );
-  proc.soul_fragment_from_fracture = get_proc( "soul_fragment_from_fracture" );
-  proc.soul_fragment_from_fallout  = get_proc( "soul_fragment_from_fallout" );
-  proc.soul_fragment_from_meta     = get_proc( "soul_fragment_from_meta" );
-
-  // Set Bonuses
-  proc.soul_fragment_from_t29_2pc = get_proc( "soul_fragment_from_t29_2pc" );
-  proc.soul_fragment_from_t31_4pc = get_proc( "soul_fragment_from_t31_4pc" );
-}
-
-// demon_hunter_t::init_uptimes =============================================
-
-void demon_hunter_t::init_uptimes()
-{
-  base_t::init_uptimes();
-
-  uptime.charred_flesh_fiery_brand    = get_uptime( "Charred Flesh (Fiery Brand)" )->collect_duration( *sim );
-  uptime.charred_flesh_sigil_of_flame = get_uptime( "Charred Flesh (Sigil of Flame)" )->collect_duration( *sim );
-}
-
-// demon_hunter_t::init_resources ===========================================
-
-void demon_hunter_t::init_resources( bool force )
-{
-  base_t::init_resources( force );
-
-  resources.current[ RESOURCE_FURY ] = options.initial_fury;
-  expected_max_health                = calculate_expected_max_health();
-}
-
-// demon_hunter_t::init_special_effects =====================================
-
-void demon_hunter_t::init_special_effects()
-{
-  base_t::init_special_effects();
-}
-
-// demon_hunter_t::init_rng =================================================
-
-void demon_hunter_t::init_rng()
-{
-  // RPPM objects
-
-  // General
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
-    rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
-  }
-  else  // DEMON_HUNTER_VENGEANCE
-  {
-    rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
-  }
-
-  player_t::init_rng();
-}
-
-// demon_hunter_t::init_scaling =============================================
-
-void demon_hunter_t::init_scaling()
-{
-  base_t::init_scaling();
-
-  scaling->enable( STAT_WEAPON_OFFHAND_DPS );
-
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
-    scaling->enable( STAT_BONUS_ARMOR );
-
-  scaling->disable( STAT_STRENGTH );
-}
-
 // demon_hunter_t::init_spells ==============================================
-
 void demon_hunter_t::init_spells()
 {
   base_t::init_spells();
