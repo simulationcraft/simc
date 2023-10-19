@@ -2027,6 +2027,7 @@ class SpellDataGenerator(DataGenerator):
           ( 383733, 1 ), # Training of Niuzao Mastery % Buff
           ( 386959, 1 ), # Charred Passions Damage
           ( 395267, 1 ), # Call to Arms Invoke Niuzao
+	  ( 387179, 0 ), # Weapons of Order Debuff
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
@@ -2086,7 +2087,6 @@ class SpellDataGenerator(DataGenerator):
           ( 347826, 0 ), # Venthyr Fallen Monk Specialization Duration
           ( 363041, 0 ), # Venthyr Fallen Monk Fallen Brew
           ( 364944, 0 ), # Venthyr Fallen Monk Windwalking
-	  ( 387179, 0 ), # Kyrian Monk Weapons of Order (Needed for Effect#1 Whitelist still)
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
