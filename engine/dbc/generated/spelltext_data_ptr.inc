@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.0.51790
+// Spell text, wow build 10.2.0.51825
 static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -17779,6 +17779,7 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 387174, "Releases a blinding flash from your shield, causing $s2 Holy damage to all nearby enemies within $A1 yds and reducing all damage they deal to you by $s1% for $d.", "Dealing $s1% less damage to the Paladin.", 0 },
   { 387176, "Your Incinerate and Conflagrate casts on targets that have $s2% or less health reduce the cooldown of Soulfire by ${$s1/-1000} sec.", 0, 0 },
   { 387178, "$@spelldesc387170", "Your next $?c3[Single target Holy Power ability automatically triggers Divine Storm][Word of Glory automatically triggers Light of Dawn] with $387170s2% increased effectiveness.", 0 },
+  { 387179, "$@spelldesc310454", "Damage taken increased by $s1%.", "Kyrian" },
   { 387184, "For the next $d, your Mastery is increased by $?c1[${$117906bc1*$s1}]?c2[${$117907bc1*$s1}][${$115636bc1*$s1}.1]%. Additionally, $?a137025[Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.][]$?a137023 [Keg Smash cooldown is reset instantly and enemies hit by Keg Smash or Rising Sun Kick take $312106s1% increased damage from you for $312106d, stacking up to $312106u times.][]$?a137024[Essence Font cooldown is reset instantly and heals up to $311123s2 nearby allies for $311123s1 health on channel start and end.][]", "Increases your Mastery by $?c1[${$117906bc1*$w1}]?c2[${$117907bc1*$w1}][${$115636bc1*$w1}]%$?a137025[, Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.]?a137023 [ and your Keg Smash increases the damage you deal to those enemies by $312106s1%, up to ${$312106s1*$312106u}% for $312106d.]?a137024[ and your Essence Font heals nearby allies for $311123s1 health on channel start and end.][ and your abilities are enhanced.]", 0 },
   { 387198, "Boon of the Covenants passively increases your damage and healing by an additional |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 387201, "Increases critical strike chance by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
@@ -20091,7 +20092,6 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 418562, "$@spelldesc418410", "Embracing the power of the Dream. $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", 0 },
   { 418588, "Cleaves nearby enemies, dealing Physical damage.", 0, 0 },
   { 418605, "Pelts the target in sand, dealing Nature damage.", 0, 0 },
-  { 418607, "$@spelldesc418605", 0, 0 },
   { 418733, "Ray of Frost deals $s1% of its damage to ${$384685i} nearby enemies.", 0, 0 },
   { 418735, "$@spelldesc418733", 0, 0 },
   { 418773, "$@spelldesc418527", 0, 0 },
@@ -20502,11 +20502,11 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.51790
+// spelltext hotfix entries, wow build 10.2.0.51825
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.0.51790
+// Spell description variables, wow build 10.2.0.51825
 static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20698,7 +20698,7 @@ static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { 
   {  260331, "$duration= ${$s1/1000}.1" },
   {  260364, "$damage=${$cond($gt($SP,$AP),$SP*0.25,$AP*0.5)}" },
   {  260798, "$damage=${2.0*$260798s1}" },
-  {  263648, "$baseAbsorb=${8*$AP*$pctH}\r\n$fragmentAbsorb=${1.6*$AP*$pctH}" },
+  {  263648, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}" },
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
   {  267964, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
@@ -20921,7 +20921,7 @@ static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { 
   {  427688, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${((0.690899398201283*($SP*1.25)*$<demoMastery>*(1+$@versadmg))*1.18)\r\n}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.51790
+// spelldesc_vars hotfix entries, wow build 10.2.0.51825
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

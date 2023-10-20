@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.2.0.51790
-static const std::array<item_name_description_t, 817> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.2.0.51825
+static const std::array<item_name_description_t, 818> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -756,6 +756,7 @@ static const std::array<item_name_description_t, 817> __ptr_item_name_descriptio
   { 14029, "Dawn of the Infinite"                        },
   { 14030, "Soridormi"                                   },
   { 14031, "Dragonflight Season 3"                       },
+  { 14033, "Heritage"                                    },
   { 14034, "Emerald Bounty"                              },
   { 14035, "|nShadowflame Suffused"                      },
   { 14037, "Unique Creatures"                            },
