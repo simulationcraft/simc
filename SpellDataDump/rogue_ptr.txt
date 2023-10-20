@@ -2519,7 +2519,7 @@ Effects          :
 #1 (id=68387)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 #2 (id=86614)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : You regain $s2 Energy each time your Garrote or Rupture deal Bleed damage to a poisoned target.
 
 If an enemy dies while afflicted by your Rupture, you regain energy based on its remaining duration.
@@ -10093,15 +10093,15 @@ Family Flags     : 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=819933)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22346 | PvP Coefficient: 0.00000 | Target: Enemy (6)
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
@@ -13178,7 +13178,7 @@ Description      : Garrote deals $s1% increased damage and has no cooldown when 
 
 Name             : Vicious Venoms (id=381634) [Spell Family (8), Passive] 
 Talent Entry     : Assassination [tree=spec, row=6, col=2, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(35, 75)]
+                 : Effect#1 [op=set, values=(35, 70)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Rogue
 School           : Physical
@@ -15526,7 +15526,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Treat As Periodic (121), No Helpful Threat (131), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033358)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04771 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc382506
 
 Name             : Serrated Bone Spike (id=394036) [Spell Family (8)] 

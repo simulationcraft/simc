@@ -6775,13 +6775,13 @@ Cooldown         : 300 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ x....... ........ ........ 
+                 : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Not In Arena or Rated Battleground (144), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1027169)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid Members (56)
@@ -9804,7 +9804,6 @@ Effects          :
 Description      : Empower spells cast up to $s2 Living Flames at enemies or allies struck at $s1% effectiveness.
 
 Name             : Evoker Preservation 10.2 Class Set 4pc (id=422873) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Proc Chance (20 -> 33)
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -9824,7 +9823,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098471)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (70 -> 50)
 Description      : Living Flame has a chance to apply Echo at $s1% effectiveness on allies healed, or a nearby ally who doesn't already have Echo.
 
 Name             : Emerald Trance (id=424155) [Spell Family (224)] 
@@ -9859,7 +9857,6 @@ Description      : $@spelldesc422870
 Tooltip          : Damage done increased by ${$w1}.1%.
 
 Name             : Trembling Earth (id=424368) [Spell Family (224)] 
-Hotfixed         : Max stacks (4 -> 5)
 Class            : Evoker
 School           : Physical
 Spell Type       : None
