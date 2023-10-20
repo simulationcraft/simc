@@ -5820,6 +5820,24 @@ void pips_emerald_friendship_badge( special_effect_t& e )
   urctos_static->set_stat_from_effect( 1, buff_value );
   urctos_static->set_duration( 0_ms );
 
+  e.player->register_combat_begin( [ pips_static, aerwynn_static, urctos_static ]( player_t* p ) 
+  {
+    double chance = p->rng().real();
+
+    if ( chance < 0.3333 )
+    {
+      pips_static->trigger();
+    }
+    else if ( chance < 0.6666 )
+    {
+      aerwynn_static->trigger();
+    }
+    else
+    {
+      urctos_static->trigger();
+    }
+  } );
+
   struct pips_cb_t : public dbc_proc_callback_t
   {
     buff_t* pips;
