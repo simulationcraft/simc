@@ -10398,6 +10398,7 @@ namespace monk
     * 1.) The spells that contribute to ETL change based on which buff(s) are up
     * 2.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
     * 3.) The spells that FoX contribute to ETL change after the first tick of damage
+    * 4.) SEF does not contribute to ETL while FoX is up
     */
 
     if ( specialization() != MONK_WINDWALKER || !talent.windwalker.empowered_tiger_lightning->ok() )
@@ -10463,6 +10464,9 @@ namespace monk
 
       if ( bugs )
       {
+        if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
+          return;
+
         auto blacklist = ( mode == 2 && buff.fury_of_xuen_haste->remains() > buff.fury_of_xuen_haste->tick_time() )
           ? etl_blacklist_fox : etl_blacklist_fox_2;
 
