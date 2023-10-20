@@ -5834,12 +5834,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
         damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage", false );
     }
 
-    // 08/10/2023 Death Sweep does not throw the primary throw glaive at the target.
-    if ( !p->bugs || source != glaive_source::DEATH_SWEEP_THROW )
-    {
-      execute_action        = damage;
-      execute_action->stats = stats;
-    }
+    execute_action        = damage;
+    execute_action->stats = stats;
 
     if ( source == glaive_source::THROWN && !p->sets->has_set_bonus( DEMON_HUNTER_HAVOC, T31, B2 ) )
     {
@@ -5921,7 +5917,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
       p()->cooldown.the_hunt->adjust( t31_4pc_adjust_seconds );
     }
 
-    if ( ( hit_any_target || p()->bugs && source == glaive_source::DEATH_SWEEP_THROW ) && furious_throws )
+    if ( hit_any_target && furious_throws )
     {
       make_event<delayed_execute_event_t>( *sim, p(), furious_throws, target, 400_ms );
     }
