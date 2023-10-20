@@ -5121,13 +5121,20 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       else
         proxy->add_child( this );
 
-      auto damage =
+      if ( data().effectN( 1 ).trigger_spell_id() == 418607 )
+      {
+        auto damage =
           create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
-      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      damage->stats = stats;
-      damage->dual = true;
-
-      impact_action = damage;
+        damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+        damage->stats = stats;
+        damage->dual = true;
+        
+        impact_action = damage;
+      }
+      else
+      {
+        base_dd_min = base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+      }
     }
 
     void execute() override
