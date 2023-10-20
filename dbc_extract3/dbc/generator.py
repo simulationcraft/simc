@@ -2027,7 +2027,11 @@ class SpellDataGenerator(DataGenerator):
           ( 383733, 1 ), # Training of Niuzao Mastery % Buff
           ( 386959, 1 ), # Charred Passions Damage
           ( 395267, 1 ), # Call to Arms Invoke Niuzao
+<<<<<<< HEAD
 	  ( 387179, 0 ), # Weapons of Order Debuff
+=======
+	      ( 387179, 0 ), # Weapons of Order Debuff
+>>>>>>> upstream/dragonflight
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
