@@ -3539,7 +3539,8 @@ namespace monk
         bool target_ready( player_t *target ) override
         {
           // Deals damage equal to 35% of your maximum health against players and stronger creatures under 15% health
-          if ( target->true_level > p()->true_level && p()->talent.general.improved_touch_of_death->ok() &&
+          // 2023-10-19 Tooltip lies and the 15% health works on all non-player targets.
+          if ( p()->talent.general.improved_touch_of_death->ok() &&
             ( target->health_percentage() < p()->talent.general.improved_touch_of_death->effectN( 1 ).base_value() ) )
             return monk_melee_attack_t::target_ready( target );
 
