@@ -753,8 +753,7 @@ namespace monk
 
         if ( td )
         {
-          // Need to check if this ability is actually whitelisted in game or not
-          if ( /*ab::data().affected_by(td->debuff.weapons_of_order->data().effectN(1)) &&*/ td->debuff.weapons_of_order->check() )
+          if ( ab::data().affected_by( td->debuff.weapons_of_order->data().effectN( 1 ) ) && td->debuff.weapons_of_order->check() )
             tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
 
           if ( p()->is_ptr() && ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) && td->debuff.fae_exposure->check() )
@@ -3570,16 +3569,17 @@ namespace monk
 
         void impact( action_state_t *s ) override
         {
-          // In execute range ToD deals the target health in damage
-          double amount = target->current_health();
+
+          double max_hp, amount;
+
+          // In execute range ToD deals player's max HP
+          amount = max_hp = p()->resources.max[RESOURCE_HEALTH];
 
           // Not in execute range
           // or not a health-based fight style
           // or a secondary target... these always get hit for the 35% from Improved Touch of Death regardless if you're talented into it or not
-          if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > p()->resources.max[RESOURCE_HEALTH] )
+          if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > max_hp )
           {
-            amount = p()->resources.max[RESOURCE_HEALTH];
-
             amount *= p()->passives.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
 
             amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
