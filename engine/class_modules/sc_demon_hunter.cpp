@@ -377,7 +377,7 @@ public:
 
       player_talent_t perfectly_balanced_glaive;
       player_talent_t deflecting_spikes;
-      player_talent_t meteoric_strikes;
+      player_talent_t ascending_flame;
 
       player_talent_t shear_fury;
       player_talent_t fracture;
@@ -385,7 +385,7 @@ public:
       player_talent_t roaring_fire;      // NYI
       player_talent_t sigil_of_silence;  // Partial Implementation
       player_talent_t retaliation;
-      player_talent_t fel_flame_fortification;  // NYI
+      player_talent_t meteoric_strikes;
 
       player_talent_t spirit_bomb;
       player_talent_t feast_of_souls;  // NYI
@@ -394,13 +394,13 @@ public:
       player_talent_t burning_blood;
       player_talent_t soul_barrier;     // NYI
       player_talent_t bulk_extraction;  // NYI
-      player_talent_t ascending_flame;
+      player_talent_t revel_in_pain;    // NYI
 
       player_talent_t void_reaver;
       player_talent_t fallout;
       player_talent_t ruinous_bulwark;  // NYI
       player_talent_t volatile_flameblood;
-      player_talent_t revel_in_pain;  // NYI
+      player_talent_t fel_flame_fortification;  // NYI
 
       player_talent_t soul_furnace;
       player_talent_t painbringer;
@@ -7537,7 +7537,7 @@ void demon_hunter_t::init_spells()
   talent.vengeance.perfectly_balanced_glaive =
       find_talent_spell( talent_tree::SPECIALIZATION, "Perfectly Balanced Glaive" );
   talent.vengeance.deflecting_spikes = find_talent_spell( talent_tree::SPECIALIZATION, "Deflecting Spikes" );
-  talent.vengeance.meteoric_strikes  = find_talent_spell( talent_tree::SPECIALIZATION, "Meteoric Strikes" );
+  talent.vengeance.ascending_flame   = find_talent_spell( talent_tree::SPECIALIZATION, "Ascending Flame" );
 
   talent.vengeance.shear_fury       = find_talent_spell( talent_tree::SPECIALIZATION, "Shear Fury" );
   talent.vengeance.fracture         = find_talent_spell( talent_tree::SPECIALIZATION, "Fracture" );
@@ -7545,8 +7545,7 @@ void demon_hunter_t::init_spells()
   talent.vengeance.roaring_fire     = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Fire" );
   talent.vengeance.sigil_of_silence = find_talent_spell( talent_tree::SPECIALIZATION, "Sigil of Silence" );
   talent.vengeance.retaliation      = find_talent_spell( talent_tree::SPECIALIZATION, "Retaliation" );
-  talent.vengeance.fel_flame_fortification =
-      find_talent_spell( talent_tree::SPECIALIZATION, "Fel Flame Fortification" );
+  talent.vengeance.meteoric_strikes = find_talent_spell( talent_tree::SPECIALIZATION, "Meteoric Strikes" );
 
   talent.vengeance.spirit_bomb      = find_talent_spell( talent_tree::SPECIALIZATION, "Spirit Bomb" );
   talent.vengeance.feast_of_souls   = find_talent_spell( talent_tree::SPECIALIZATION, "Feast of Souls" );
@@ -7555,13 +7554,14 @@ void demon_hunter_t::init_spells()
   talent.vengeance.burning_blood    = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Blood" );
   talent.vengeance.soul_barrier     = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Barrier" );
   talent.vengeance.bulk_extraction  = find_talent_spell( talent_tree::SPECIALIZATION, "Bulk Extraction" );
-  talent.vengeance.ascending_flame  = find_talent_spell( talent_tree::SPECIALIZATION, "Ascending Flame" );
+  talent.vengeance.revel_in_pain    = find_talent_spell( talent_tree::SPECIALIZATION, "Revel in Pain" );
 
   talent.vengeance.void_reaver         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Reaver" );
   talent.vengeance.fallout             = find_talent_spell( talent_tree::SPECIALIZATION, "Fallout" );
   talent.vengeance.ruinous_bulwark     = find_talent_spell( talent_tree::SPECIALIZATION, "Ruinous Bulwark" );
   talent.vengeance.volatile_flameblood = find_talent_spell( talent_tree::SPECIALIZATION, "Volatile Flameblood" );
-  talent.vengeance.revel_in_pain       = find_talent_spell( talent_tree::SPECIALIZATION, "Revel in Pain" );
+  talent.vengeance.fel_flame_fortification =
+      find_talent_spell( talent_tree::SPECIALIZATION, "Fel Flame Fortification" );
 
   talent.vengeance.soul_furnace    = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Furnace" );
   talent.vengeance.painbringer     = find_talent_spell( talent_tree::SPECIALIZATION, "Painbringer" );
