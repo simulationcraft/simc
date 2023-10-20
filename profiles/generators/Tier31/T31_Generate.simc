@@ -10,7 +10,7 @@ ptr=1
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (489).
 # * Honor PvP gear is permitted up to the item level cap (?). ["bonus_id=?"]
 # * Conquest PvP gear is permitted up to the item level cap (Duelist, 463). ["bonus_id=?"]
-# * Crafted gear is permitted up to the item level cap (483), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=9500/9405"]
+# * Crafted gear is permitted up to the item level cap (486), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=9500/9405"]
 #   * NOTE: You may use however many crafted pieces you wish, just as long as its possible to wear it all in-game.
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.

@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#pragma once
+
 #include "action/action.hpp"
 #include "buff/buff.hpp"
 #include "player/player.hpp"
@@ -50,6 +52,7 @@ enum value_type_e
 {
   USE_DATA,
   USE_DEFAULT,
+  USE_DEFAULT_DATA_OFFSET,
   USE_CURRENT
 };
 
@@ -109,6 +112,14 @@ public:
   template <typename T>
   void parse_spell_effects_mods( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
   {
+    bool mod_is_mastery = false;
+
+    if ( mod->effect_count() && action_->player->find_mastery_spell( action_->player->specialization() ) == mod )
+    {
+      mastery = true;
+      mod_is_mastery = true;
+    }
+
     for ( size_t i = 1; i <= mod->effect_count(); i++ )
     {
       const auto& eff = mod->effectN( i );
@@ -122,7 +133,7 @@ public:
                ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
            ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
       {
-        double pct = mod_spell_effects_value( mod, eff );
+        double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
 
         if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
           val += pct;
@@ -130,11 +141,6 @@ public:
           val *= 1.0 + pct / 100;
         else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
           val = pct;
-        else
-          continue;
-
-        if ( action_->player->find_mastery_spell( action_->player->specialization() ) == mod )
-          mastery = true;
       }
     }
   }
@@ -166,9 +172,9 @@ public:
                            value_type_e value_type, bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
-    double val      = eff.base_value();
-    double val_mul  = 0.01;
     bool mastery    = action_->player->find_mastery_spell( action_->player->specialization() ) == s_data;
+    double val      = value_type == USE_DEFAULT_DATA_OFFSET ? 0.0 : ( mastery ? eff.mastery_value() : eff.base_value() );
+    double val_mul  = 0.01;
 
     // TODO: more robust logic around 'party' buffs with radius
     if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() ) return;
@@ -179,13 +185,26 @@ public:
     auto debug_message = [ & ]( std::string_view type ) {
       if ( buff )
       {
-        action_->sim->print_debug( "buff-effects: {} ({}) {} modified by {}{} with buff {} ({}#{})", action_->name(),
-                                   action_->id, type, val * val_mul, mastery ? "+mastery" : "", buff->name(),
+        std::string val_str;
+
+        if ( value_type == value_type_e::USE_CURRENT )
+          val_str = "current value";
+        else if ( value_type == value_type_e::USE_DEFAULT )
+          val_str = fmt::format( "default value ({})", val * val_mul );
+        else if ( value_type == value_type_e::USE_DEFAULT_DATA_OFFSET )
+          val_str = fmt::format( "default value and offset ({})", val * val_mul );
+        else if ( mastery )
+          val_str = fmt::format( "{}*mastery", val * val_mul );
+        else
+          val_str = fmt::format( "{}", val * val_mul );
+
+        action_->sim->print_debug( "buff-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", action_->name(),
+                                   action_->id, type, val_str, use_stacks ? "per stack of" : "with", buff->name(),
                                    buff->data().id(), i );
       }
       else if ( mastery && !f )
       {
-        action_->sim->print_debug( "mastery-effects: {} ({}) {} modified by {}+mastery from {} ({}#{})",
+        action_->sim->print_debug( "mastery-effects: {} ({}) {} modified by {}*mastery from {} ({}#{})",
                                    action_->name(), action_->id, type, val * val_mul, s_data->name_cstr(), s_data->id(),
                                    i );
       }
@@ -212,14 +231,24 @@ public:
     if ( !action_->data().affected_by_all( eff ) && !force )
       return;
 
-    if ( value_type == USE_DEFAULT && buff)
+    if ( value_type == USE_DEFAULT && buff )
     {
-      val = buff->default_value;
+      val     = buff->default_value;
       val_mul = 1.0;
     }
 
-    if ( !mastery && !val )
+    if ( value_type == USE_DEFAULT_DATA_OFFSET && buff )
+    {
+      val *= val_mul;
+      val += buff->default_value;
+      val_mul = 1.0;
+    }
+
+    if ( !val )
       return;
+
+    if ( mastery )
+      val_mul = 1.0;
 
     if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
@@ -357,6 +386,15 @@ public:
     parse_conditional_effects( spell, nullptr, ignore_mask );
   }
 
+  void force_passive_effect( const spell_data_t* spell, unsigned idx, bool use_stack = true,
+                             value_type_e value_type = USE_DATA )
+  {
+    if ( action_->data().affected_by_all( spell->effectN( idx ) ) )
+      return;
+
+    parse_buff_effect( nullptr, nullptr, spell, idx, use_stack, value_type, true );
+  }
+
   double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
                                  bool benefit = true ) const
   {
@@ -384,7 +422,7 @@ public:
       }
 
       if ( i.mastery )
-        eff_val += action_->player->cache.mastery_value();
+        eff_val *= action_->player->cache.mastery();
 
       if ( flat )
         return_value += eff_val * mod;
@@ -403,9 +441,9 @@ public:
   void parse_debuff_effect( const dfun& func, const spell_data_t* s_data, size_t i, bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
-    double val = eff.base_value();
-    double val_mul = 0.01;
-    bool mastery = false;
+    bool mastery    = action_->player->find_mastery_spell( action_->player->specialization() ) == s_data;
+    double val      = mastery ? eff.mastery_value() : eff.base_value();
+    double val_mul  = 0.01;
 
     if ( eff.type() != E_APPLY_AURA )
       return;
@@ -413,16 +451,21 @@ public:
     if ( i <= 5 )
       parse_spell_effects_mods( val, mastery, s_data, i, mods... );
 
-    if ( !mastery && !val )
+    if ( !val )
       return;
 
-    if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && action_->data().affected_by_all( eff ) ) &&
+    if ( mastery )
+      val_mul = 1.0;
+
+    if ( !( ( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ||
+              eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS ) &&
+            action_->data().affected_by_all( eff ) ) &&
          !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && !action_->special ) && !force )
       return;
 
     target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery );
     action_->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})",
-                               action_->name(), action_->id, val * val_mul, mastery ? "+mastery" : "",
+                               action_->name(), action_->id, val * val_mul, mastery ? "*mastery" : "",
                                s_data->name_cstr(), s_data->id(), i );
 
   }
@@ -459,7 +502,7 @@ public:
         auto eff_val = i.value;
 
         if ( i.mastery )
-          eff_val += action_->player->cache.mastery_value();
+          eff_val *= action_->player->cache.mastery();
 
         return_value *= 1.0 + eff_val * check;
       }

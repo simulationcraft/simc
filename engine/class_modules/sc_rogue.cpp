@@ -1628,7 +1628,6 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.quick_decisions );
     ab::apply_affecting_aura( p->talent.subtlety.veiltouched );
     ab::apply_affecting_aura( p->talent.subtlety.swift_death );
-    ab::apply_affecting_aura( p->talent.subtlety.replicating_shadows );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
     ab::apply_affecting_aura( p->talent.subtlety.without_a_trace );
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
@@ -2064,6 +2063,7 @@ public:
   void trigger_doomblade( const action_state_t* );
   void trigger_poison_bomb( const action_state_t* );
   void trigger_venomous_wounds( const action_state_t* );
+  void trigger_vicious_venoms( const action_state_t* state, rogue_attack_t* action );
   void trigger_blade_flurry( const action_state_t* );
   void trigger_ruthlessness_cp( const action_state_t* );
   void trigger_combo_point_gain( int, gain_t* gain = nullptr );
@@ -2443,7 +2443,10 @@ public:
     // Expire On-Cast Fading Buffs
     for ( consume_buff_t& consume_buff : consume_buffs )
     {
-      if ( !ab::background || consume_buff.on_background )
+      if ( !ab::background || consume_buff.on_background ||
+           secondary_trigger_type == secondary_trigger::SHURIKEN_TORNADO ||
+           secondary_trigger_type == secondary_trigger::CRACKSHOT ||
+           secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
       {
         if ( consume_buff.buff->check() )
         {
@@ -3332,10 +3335,7 @@ struct ambush_t : public rogue_attack_t
       trigger_opportunity( state, extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
     }
 
-    if ( p()->talent.assassination.vicious_venoms->ok() )
-    {
-      p()->active.vicious_venoms.ambush->trigger_secondary_action( state->target );
-    }
+    trigger_vicious_venoms( state, p()->active.vicious_venoms.ambush );
   }
 
   bool procs_main_gauche() const override
@@ -4109,28 +4109,12 @@ struct eviscerate_t : public rogue_attack_t
 {
   struct eviscerate_bonus_t : public rogue_attack_t
   {
-    int last_eviscerate_cp;
-
     eviscerate_bonus_t( util::string_view name, rogue_t* p ):
-      rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
-      last_eviscerate_cp( 1 )
+      rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack )
     {
-      if ( p->talent.subtlety.shadowed_finishers->ok() )
-      {
-        // Spell has the full damage coefficient and is modified via talent scripting
-        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
-      }
-    }
-
-    void reset() override
-    {
-      rogue_attack_t::reset();
-      last_eviscerate_cp = 1;
-    }
-
-    double combo_point_da_multiplier( const action_state_t* ) const override
-    {
-      return as<double>( last_eviscerate_cp );
+      callbacks = false;
+      dual = true;
+      base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
     }
   };
 
@@ -4174,15 +4158,9 @@ struct eviscerate_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
     p()->buffs.deeper_daggers->trigger();
 
-    if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
-    {
-      bonus_attack->last_eviscerate_cp = cast_state( execute_state )->get_combo_points();
-      bonus_attack->set_target( target );
-      bonus_attack->execute();
-    }
+    rogue_attack_t::execute();
 
     if ( p()->spec.finality_eviscerate_buff->ok() )
     {
@@ -4196,6 +4174,21 @@ struct eviscerate_t : public rogue_attack_t
     {
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    // TOCHECK -- With the new residual setup, is this applied before or after Deeper Daggers?
+    // Appears to use the raw, mitigated (but pre-crit) result since the residual spell can crit
+    if ( bonus_attack && td( target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
+    {
+      double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+      if ( state->result == RESULT_CRIT )
+        amount /= 1.0 + state->result_crit_bonus;
+      bonus_attack->execute_on_target( state->target, amount );
     }
   }
 
@@ -4775,8 +4768,10 @@ struct mutilate_t : public rogue_attack_t
 {
   struct mutilate_strike_t : public rogue_attack_t
   {
-    mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
-      rogue_attack_t( name, p, s )
+    rogue_attack_t* vicious_venoms_attack;
+
+    mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s, rogue_attack_t* vicious_venoms_attack ) :
+      rogue_attack_t( name, p, s ), vicious_venoms_attack( vicious_venoms_attack )
     {
     }
 
@@ -4784,6 +4779,7 @@ struct mutilate_t : public rogue_attack_t
     {
       rogue_attack_t::impact( state );
       trigger_doomblade( state );
+      trigger_vicious_venoms( state, vicious_venoms_attack );
     }
 
     bool procs_seal_fate() const override
@@ -4803,8 +4799,10 @@ struct mutilate_t : public rogue_attack_t
       background = true;
     }
 
-    mh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_mh", data().effectN( 3 ).trigger() );
-    oh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_oh", data().effectN( 4 ).trigger() );
+    mh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_mh", data().effectN( 3 ).trigger(),
+                                                             p->active.vicious_venoms.mutilate_mh );
+    oh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_oh", data().effectN( 4 ).trigger(),
+                                                             p->active.vicious_venoms.mutilate_oh );
     add_child( mh_strike );
     add_child( oh_strike );
 
@@ -4828,12 +4826,6 @@ struct mutilate_t : public rogue_attack_t
     {
       mh_strike->execute_on_target( execute_state->target );
       oh_strike->execute_on_target( execute_state->target );
-
-      if ( p()->talent.assassination.vicious_venoms->ok() )
-      {
-        p()->active.vicious_venoms.mutilate_mh->trigger_secondary_action( execute_state->target );
-        p()->active.vicious_venoms.mutilate_oh->trigger_secondary_action( execute_state->target );
-      }
 
       trigger_blindside( execute_state );
       trigger_venom_rush( execute_state );
@@ -4905,6 +4897,9 @@ struct rupture_t : public rogue_attack_t
 
     bool procs_poison() const override
     { return false; }
+
+    result_amount_type amount_type( const action_state_t*, bool ) const override
+    { return result_amount_type::DMG_OVER_TIME; } // Treat as Periodic flag
   };
 
   struct poisoned_edges_t : public rogue_attack_t
@@ -4946,6 +4941,8 @@ struct rupture_t : public rogue_attack_t
 
     if ( p->talent.subtlety.replicating_shadows->ok() )
     {
+      // Manually apply AoE count as Replicating Shadows as talent has workaround +30 chain target value
+      aoe = ( aoe == 0 ? 1 : 0 ) + as<int>( p->talent.subtlety.replicating_shadows->effectN( 4 ).base_value() );
       replicating_shadows_tick = p->get_background_action<replicating_shadows_tick_t>( "rupture_replicating_shadows" );
       add_child( replicating_shadows_tick );
     }
@@ -5074,7 +5071,13 @@ struct rupture_t : public rogue_attack_t
 
     if ( replicating_shadows_tick )
     {
-      replicating_shadows_tick->execute_on_target( d->target );
+      // Affected by label modifiers after residual damage calculation is applied
+      double multiplier = p()->talent.subtlety.replicating_shadows->effectN( 1 ).percent();
+      multiplier *= 1.0 + p()->talent.subtlety.veiltouched->effectN( 4 ).percent();
+      multiplier *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 5 ).percent();
+      multiplier *= 1.0 + p()->buffs.deeper_daggers->stack_value();
+      double damage = d->state->result_total * multiplier;
+      replicating_shadows_tick->execute_on_target( d->target, damage );
     }
 
     if ( poisoned_edges_damage )
@@ -5531,32 +5534,13 @@ struct black_powder_t: public rogue_attack_t
 {
   struct black_powder_bonus_t : public rogue_attack_t
   {
-    int last_cp;
-
     black_powder_bonus_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.black_powder_shadow_attack ),
-      last_cp( 1 )
+      rogue_attack_t( name, p, p->spec.black_powder_shadow_attack )
     {
-      callbacks = false; // 2021-07-19-- Does not appear to trigger normal procs
+      callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
+      dual = true;
       aoe = -1;
-      reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
-
-      if ( p->talent.subtlety.shadowed_finishers->ok() )
-      {
-        // Spell has the full damage coefficient and is modified via talent scripting
-        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
-      }
-    }
-
-    void reset() override
-    {
-      rogue_attack_t::reset();
-      last_cp = 1;
-    }
-
-    double combo_point_da_multiplier( const action_state_t* ) const override
-    {
-      return as<double>( last_cp );
+      base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -5625,35 +5609,37 @@ struct black_powder_t: public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
-
-    // Deeper Daggers triggers before bonus damage which makes it self-affecting.
     p()->buffs.deeper_daggers->trigger();
 
-    // BUG: Finality BP seems to affect every instance of shadow damage due to, err, spaghetti with the bonus attack trigger order and travel time?
-    // See https://github.com/SimCMinMax/WoW-BugTracker/issues/747
-    bool triggered_finality = false;
-    if ( p()->spec.finality_black_powder_buff->ok() && !p()->buffs.finality_black_powder->check() )
-    {
-      p()->buffs.finality_black_powder->trigger();
-      triggered_finality = true;
-    }
+    rogue_attack_t::execute();
 
-    if ( bonus_attack )
+    if ( p()->spec.finality_black_powder_buff->ok() )
     {
-      bonus_attack->last_cp = cast_state( execute_state )->get_combo_points();
-      bonus_attack->set_target( execute_state->target );
-      bonus_attack->execute();
+      if ( p()->buffs.finality_black_powder->check() )
+        p()->buffs.finality_black_powder->expire();
+      else
+        p()->buffs.finality_black_powder->trigger();
     }
-
-    // See bug above.
-    if ( !triggered_finality )
-      p()->buffs.finality_black_powder->expire();
 
     if ( p()->set_bonuses.t29_subtlety_2pc->ok() )
     {
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    // TOCHECK -- With the new residual setup, is this applied before or after Deeper Daggers?
+    // Appears to use the raw, mitigated (but pre-crit) result since the residual spell can crit
+    if ( bonus_attack && state->chain_target == 0 )
+    {
+      double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+      if ( state->result == RESULT_CRIT )
+        amount /= 1.0 + state->result_crit_bonus;
+      bonus_attack->execute_on_target( state->target, amount );
     }
   }
 
@@ -5741,6 +5727,7 @@ struct shuriken_storm_t: public rogue_attack_t
     }
 
     // 2023-01-31 -- Tornado-triggered Shuriken Storms do not activate 4pc
+    // TOCHECK with the new foreground behavior on the PTR
     if ( p()->set_bonuses.t29_subtlety_4pc->ok() && state->result == RESULT_CRIT &&
          secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO )
     {
@@ -5749,9 +5736,8 @@ struct shuriken_storm_t: public rogue_attack_t
     }
   }
 
-  // 2021-07-12-- Shuriken Tornado triggers the damage directly without a cast, so cast triggers don't happen
   bool procs_poison() const override
-  { return secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO; }
+  { return true; }
 };
 
 // Shuriken Tornado =========================================================
@@ -6246,8 +6232,7 @@ struct vicious_venoms_t : public rogue_attack_t
   vicious_venoms_t( util::string_view name, rogue_t* p, const spell_data_t* s, bool from_multilate ) :
     rogue_attack_t( name, p, s ), triggers_doomblade( from_multilate )
   {
-    // Appears to be overridden by a scripted multiplier even though the base damage is identical
-    base_multiplier *= p->talent.assassination.vicious_venoms->effectN( 1 ).percent();
+    base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
   }
 
   void impact( action_state_t* state ) override
@@ -7295,7 +7280,7 @@ struct shuriken_tornado_t : public buff_t
 
     shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>(
       secondary_trigger::SHURIKEN_TORNADO, "shuriken_storm_tornado" );
-    shuriken_storm_action->callbacks = false; // 2021-07-19 -- Damage triggered directly, doesn't appear to proc anything
+    shuriken_storm_action->not_a_proc = true; // 2023-10-19 -- Now appears to be a scripted foreground cast
     shuriken_storm_action->affected_by.shadow_blades_cp = false; // 2023-10-11 -- No longer generates increased CP
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       shuriken_storm_action->trigger_secondary_action( rogue->target );
@@ -7883,6 +7868,24 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_vicious_venoms( const action_state_t* state, rogue_attack_t* action )
+{
+  if ( !p()->talent.assassination.vicious_venoms->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  if ( !action || action->secondary_trigger_type != secondary_trigger::VICIOUS_VENOMS )
+    return;
+
+  double damage_amount = state->result_amount * p()->talent.assassination.vicious_venoms->effectN( 1 ).percent();
+  action->base_dd_min = action->base_dd_max = damage_amount;
+  action->set_target( state->target );
+  auto damage_state = action->get_state();
+  damage_state->target = state->target;
+  action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+  action->trigger_secondary_action( damage_state );
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* state )
 {
   if ( !procs_blade_flurry() )
@@ -8384,7 +8387,9 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
   if ( !p()->talent.subtlety.danse_macabre->ok() )
     return;
 
-  if ( ab::background || ab::trigger_gcd == 0_ms || !affected_by.danse_macabre )
+  // 2023-10-19 -- Shuriken Tornado can now trigger DM stacks as a Shuriken Storm
+  if ( ( ab::background || ab::trigger_gcd == 0_ms || !affected_by.danse_macabre ) &&
+       secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO )
     return;
 
   if ( !p()->stealthed( STEALTH_SHADOW_DANCE ) )
@@ -9943,7 +9948,8 @@ void rogue_t::init_spells()
   // Outlaw
   spec.audacity_buff = talent.outlaw.audacity->ok() ? find_spell( 386270 ) : spell_data_t::not_found();
   spec.blade_flurry_attack = spec.blade_flurry->ok() ? find_spell( 22482 ) : spell_data_t::not_found();
-  spec.blade_flurry_instant_attack = spec.blade_flurry->ok() ? find_spell( 331850 ) : spell_data_t::not_found();
+  spec.blade_flurry_instant_attack = spec.blade_flurry->ok() ? 
+    ( talent.outlaw.deft_maneuvers->ok() ? find_spell( 429951 ) : find_spell( 331850 ) ) : spell_data_t::not_found();
   spec.blade_rush_attack = talent.outlaw.blade_rush->ok() ? find_spell( 271881 ) : spell_data_t::not_found();
   spec.blade_rush_energize = talent.outlaw.blade_rush->ok() ? find_spell( 271896 ) : spell_data_t::not_found();
   spec.greenskins_wickers = talent.outlaw.greenskins_wickers;
@@ -10084,7 +10090,6 @@ void rogue_t::init_spells()
       secondary_trigger::VICIOUS_VENOMS, "mutilate_mh_vicious_venoms", spec.vicious_venoms_mutilate_mh, true );
     active.vicious_venoms.mutilate_oh = get_secondary_trigger_action<actions::vicious_venoms_t>(
       secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh, true );
-    active.vicious_venoms.mutilate_oh->weapon = &( off_hand_weapon ); // Flagged as MH in spell data
   }
 
   if ( talent.assassination.doomblade->ok() )
@@ -10602,7 +10607,8 @@ void rogue_t::create_buffs()
         resource_gain( RESOURCE_ENERGY, b->data().effectN( 2 ).resource(), gains.master_of_shadows );
     } );
 
-  buffs.premeditation = make_buff( this, "premeditation", spec.premeditation_buff );
+  buffs.premeditation = make_buff( this, "premeditation", spec.premeditation_buff )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.shadow_techniques = make_buff( this, "shadow_techniques", spec.shadow_techniques_energize )
     ->apply_affecting_aura( talent.rogue.deeper_stratagem )     // Max stack increase
@@ -10625,7 +10631,8 @@ void rogue_t::create_buffs()
 
   buffs.shuriken_tornado = new buffs::shuriken_tornado_t( this );
 
-  buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", talent.subtlety.the_rotten->effectN( 1 ).trigger() );
+  buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", talent.subtlety.the_rotten->effectN( 1 ).trigger() )
+    ->set_is_stacking_mod( false );
 
   buffs.flagellation = make_buff( this, "flagellation_buff", spec.flagellation_buff )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )

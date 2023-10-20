@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.0.51685
+// Spell text, wow build 10.2.0.51825
 static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -10704,7 +10704,7 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 279387, "$@spelldesc278609", 0, 0 },
   { 279397, "$@spelldesc278609", "Strength increased by $w1.", 0 },
   { 279406, "$@spelldesc278594", 0, 0 },
-  { 279416, "Your melee attacks have a chance to strike your enemy with a powerful blow, dealing ${$s1*4} Physical damage over $d.", 0, 0 },
+  { 279416, "Your melee attacks have a chance to strike your enemy with a powerful blow, dealing ${$s1*4} Physical damage over $d.", "Bleeding for $w1 Physical damage every $t1 sec.", 0 },
   { 279423, "Your auto attack critical strikes generate $s1% more Rage and damage taken from area of effect attacks reduced by $s2%.", 0, 0 },
   { 279426, "$@spelldesc279416", 0, 0 },
   { 279442, "$@spelldesc278500", 0, 0 },
@@ -17664,7 +17664,7 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 386624, "Use: Deal $386623s2 Frost damage and apply Awakening Rime to your target for 4-12s. If the target dies while Awakening Rime is active, it explodes for $370880s Frost damage split between enemies in a 10 yard radius. Duration is determined by the top-most card of the deck.\r\n", 0, 0 },
   { 386625, "Slowing afflicted targets by $386625s1%. ", "Slowing afflicted targets by $386625s1%.", 0 },
   { 386628, "While $?s152277[Ravager][Bladestorm] is active, you automatically cast a total of $?s152277[$s2 Mortal Strike][$s1 Mortal Strikes] at random nearby enemies$?a134735[, dealing $s3% of normal damage][.]\r\n", 0, 0 },
-  { 386630, "Overpower deals $s1% increased damage, has a $h% chance to reset the cooldown of Mortal Strike and Cleave and reduces their Rage costs by ${$386631s1/-10}.", 0, 0 },
+  { 386630, "Overpower deals $s1% increased damage and has a $h% chance to reset the cooldown of Mortal Strike and Cleave and generate ${$386631s1/-10} Rage.", 0, 0 },
   { 386631, "$@spelldesc386630", "Your next Mortal Strike or Cleave costs ${$w1/10} less Rage.", 0 },
   { 386632, "$@spelldesc386630", 0, 0 },
   { 386633, "$@spelldesc386634", "Damage from $@auracaster's next Mortal Strike increased by $w1%.", 0 },
@@ -17779,6 +17779,7 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 387174, "Releases a blinding flash from your shield, causing $s2 Holy damage to all nearby enemies within $A1 yds and reducing all damage they deal to you by $s1% for $d.", "Dealing $s1% less damage to the Paladin.", 0 },
   { 387176, "Your Incinerate and Conflagrate casts on targets that have $s2% or less health reduce the cooldown of Soulfire by ${$s1/-1000} sec.", 0, 0 },
   { 387178, "$@spelldesc387170", "Your next $?c3[Single target Holy Power ability automatically triggers Divine Storm][Word of Glory automatically triggers Light of Dawn] with $387170s2% increased effectiveness.", 0 },
+  { 387179, "$@spelldesc310454", "Damage taken increased by $s1%.", "Kyrian" },
   { 387184, "For the next $d, your Mastery is increased by $?c1[${$117906bc1*$s1}]?c2[${$117907bc1*$s1}][${$115636bc1*$s1}.1]%. Additionally, $?a137025[Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.][]$?a137023 [Keg Smash cooldown is reset instantly and enemies hit by Keg Smash or Rising Sun Kick take $312106s1% increased damage from you for $312106d, stacking up to $312106u times.][]$?a137024[Essence Font cooldown is reset instantly and heals up to $311123s2 nearby allies for $311123s1 health on channel start and end.][]", "Increases your Mastery by $?c1[${$117906bc1*$w1}]?c2[${$117907bc1*$w1}][${$115636bc1*$w1}]%$?a137025[, Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.]?a137023 [ and your Keg Smash increases the damage you deal to those enemies by $312106s1%, up to ${$312106s1*$312106u}% for $312106d.]?a137024[ and your Essence Font heals nearby allies for $311123s1 health on channel start and end.][ and your abilities are enhanced.]", 0 },
   { 387198, "Boon of the Covenants passively increases your damage and healing by an additional |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 387201, "Increases critical strike chance by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
@@ -20091,7 +20092,6 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 418562, "$@spelldesc418410", "Embracing the power of the Dream. $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", 0 },
   { 418588, "Cleaves nearby enemies, dealing Physical damage.", 0, 0 },
   { 418605, "Pelts the target in sand, dealing Nature damage.", 0, 0 },
-  { 418607, "$@spelldesc418605", 0, 0 },
   { 418733, "Ray of Frost deals $s1% of its damage to ${$384685i} nearby enemies.", 0, 0 },
   { 418735, "$@spelldesc418733", 0, 0 },
   { 418773, "$@spelldesc418527", 0, 0 },
@@ -20170,7 +20170,7 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 422751, "$@spelldesc422747", "Damage dealt increased by $s1%.", 0 },
   { 422779, "$@spelldesc422748", "Deals $w1 Fire damage every $t1 sec.", 0 },
   { 422850, "Consuming Runic Power has a chance to cause your next Heart Strike to apply Ashen Decay, reducing damage dealt to you by $425719s1% and increasing your damage dealt to afflicted targets by $425719s2% for $425719d.", 0, 0 },
-  { 422851, "Soulreaper's execute damage and Abomination Limb's damage applies Ashen Decay to enemy targets, and Heart Strike and Blood Boil's direct damage extends Ashen Decay by ${$s1/1000}.1 sec. ", 0, 0 },
+  { 422851, "Soul Reaper's execute damage and Abomination Limb's damage applies Ashen Decay to enemy targets, and Heart Strike and Blood Boil's direct damage extends Ashen Decay by ${$s1/1000}.1 sec. ", 0, 0 },
   { 422852, "Chill Streak's range is increased by $s1 yds and can bounce off of you. Each time Chill Streak bounces your damage is increased by $424165s2% for $424165d, stacking up to $424165u times.", 0, 0 },
   { 422853, "Chill Streak can bounce $s1 additional times and each time it bounces, you have a $s4% chance to gain a Rune, reduce Chill Streak cooldown by ${$s2/1000} sec, or reduce the cooldown of Empower Rune Weapon by ${$s3/1000} sec.", 0, 0 },
   { 422854, "Apocalypse summons an additional Magus of the Dead. Your Magus of the Dead Shadow Bolt now fires a volley of Shadow Bolts at up to $s2 nearby enemies.", 0, 0 },
@@ -20240,7 +20240,7 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 422922, "Dimensional Rift can now summon a powerful Flame Rift which blasts $s1 Searing Bolts that deal $423886s1 Fire damage and an additional $423886o2 Fire damage over $423886d.", 0, 0 },
   { 422923, "Rend damage increased by $s1% and Sudden Death can be triggered by Rend's bleed damage.", 0, 0 },
   { 422924, "Sudden Death also makes your next Execute powerfully slam the ground, causing a Thunder Clap that deals $s2% increased damage. In addition, the Execute target bleeds for $s1% of Execute's damage over $426284d. If this bleed is reapplied, remaining damage is added to the new bleed.", 0, 0 },
-  { 422925, "Odyn's Fury deals $s2% increased damage and causes your next $423211u Bloodthirsts to deal $423211s1% additional damage and have $423211s2% increased critical strike chance against its primary target.", 0, 0 },
+  { 422925, "Odyn's Fury deals $s2% increased damage and causes your next $423211s3 Bloodthirsts to deal $423211s1% additional damage and have $423211s2% increased critical strike chance against its primary target.", 0, 0 },
   { 422926, "Bloodthirst critical strikes reduce the cooldown of Odyn's Fury by ${$s3/1000}.1 sec.", 0, 0 },
   { 422927, "Spending Rage has a chance to cause your next Shield Slam to consume your bleeds on a target, instantly dealing $s1% of the remaining damage of your Deep Wounds and Rend and $s4% of Thunderous Roar's, and reducing your damage taken by $s2% for $427413d.", 0, 0 },
   { 422928, "For each bleed effect consumed from a target, your damage taken is reduced by an additional $s1%. When Shield Slam consumes a bleed, the cooldown of Thunder Clap is reset and the cooldown of Thunderous Roar is reduced by ${$s2/1000}.1 sec.", 0, 0 },
@@ -20368,7 +20368,6 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 425701, "$@spelldesc422750", 0, 0 },
   { 425719, "$@spelldesc422850", "Dealing $w1% reduced damage to you. Taking $w2% increased damage from you.", 0 },
   { 425721, "$@spelldesc422850", "Your next Heart Strike will apply $@spellname425719.", 0 },
-  { 425748, "Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt. Lasts $d.", "Garrote, Rupture, and Crimson Tempest will consume Energy to duplicate damage.", 0 },
   { 425830, "$@spelldesc422878", "Critical strike chance for you and your pet increased by $s2%.\r\nCritical damage dealt for you and your pet increased by $s1%.", 0 },
   { 425838, "$?a426288[Smolderon's Delusions of Grandeur]?a426262[Larodar's Fiery Reverie]?a426341[Tindral's Fowl Fantasia]?a426339[Igira's Cruel Nightmare][]", 0, 0 },
   { 425914, "Attune yourself to the energies of the targeted Amirdrassil, the Dream's Hope raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
@@ -20390,7 +20389,7 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 426339, "Your attacks have a low chance to draw torment from your victim to manifest a cruel blade based on the number of nearby enemies, dealing ${$425838s8*($426527d/$426527t1)} Shadowflame damage over $426527d to solitary foes or ${$425838s9} Fire damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.\r\n", "Your attacks have a low chance to draw torment from your victim to manifest a cruel blade based on the number of nearby enemies, dealing ${$425838w8*($426527d/$426527t1)} Shadowflame damage over $426527d to solitary foes or ${$425838w9} Fire damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.", 0 },
   { 426341, "Your harmful spells and abilities have a chance to summon a parliament of blazing spirit owls to divebomb your target, dealing ${$425838w6*2+$425838w8} Fire damage split between all nearby targets.\r\nDamage increased per enemy struck, up to 5.", "Your harmful spells and abilities have a chance to summon a parliament of blazing spirit owls to divebomb your target, dealing ${$425838w6*2+$425838w8} Fire damage split between all nearby targets.\r\nDamage increased per enemy struck, up to 5.", 0 },
   { 426344, "$@spelldesc422879", "Wildfire Bomb deals $s1% increased damage to the primary target.", 0 },
-  { 426386, "Taking damage has a chance to cause a |CFFffffffSlumbering Dream|R to flourish, shielding you for $s2 over $426388d and causing a |CFFffffffFlourishing Dream|R to mark a friendly ally within $426388a2 yards.\r\n\r\nMoving within 5 yards of an ally marked with a |CFFffffffFlourishing Dream|R causes it to awaken, shielding you and your ally for $s3 over $426388d sec. ", 0, 0 },
+  { 426386, "Taking damage has a chance to cause a |CFFffffffSlumbering Dream|R to flourish, shielding you for $s2 over $426388d and causing a |CFFffffffFlourishing Dream|R to mark a friendly ally within $426388a2 yards.\r\n\r\nMoving within 5 yards of an ally marked with a |CFFffffffFlourishing Dream|R causes it to awaken, shielding you and your ally for $s3 over $426388d. ", 0, 0 },
   { 426388, "$@spelldesc426386", "Slumbering Dream grants an absorb shield for $w1 damage.", 0 },
   { 426401, "$@spelldesc45243", "All magical damage taken reduced by $w1%.\r\n\r\nAll physical damage taken reduced by $w2%.", 0 },
   { 426431, "$@spelldesc426341", 0, 0 },
@@ -20499,15 +20498,15 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 429271, "Envelop an ally in ancient protection, absorbing up to $s1 damage. If the protection is fully consumed, the ally gains an ancient resurgence, increasing Versatility by $429272s1 for $429272d.", "Absorbs $w1 damage.", 0 },
   { 429272, "$@spelldesc429271", "Versatility increased by $s1.", 0 },
   { 429364, "Plant a banner representing your successes against the Dreaming.", 0, 0 },
+  { 429951, "$@spelldesc13877", 0, 0 },
   { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.51685
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
-  {  396749,  0, "Recklessness generates ${$s1/10} Rage and Rampage greatly empowers your next $s3 Bloodthirsts or Raging Blows.", "Recklessness generates ${$s1/10} Rage and Rampage greatly empowers your next Bloodthirst or Raging Blow." },
+// spelltext hotfix entries, wow build 10.2.0.51825
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.0.51685
+// Spell description variables, wow build 10.2.0.51825
 static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20699,7 +20698,7 @@ static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { 
   {  260331, "$duration= ${$s1/1000}.1" },
   {  260364, "$damage=${$cond($gt($SP,$AP),$SP*0.25,$AP*0.5)}" },
   {  260798, "$damage=${2.0*$260798s1}" },
-  {  263648, "$baseAbsorb=${8*$AP*$pctH}\r\n$fragmentAbsorb=${1.6*$AP*$pctH}" },
+  {  263648, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}" },
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
   {  267964, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
@@ -20922,8 +20921,7 @@ static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { 
   {  427688, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${((0.690899398201283*($SP*1.25)*$<demoMastery>*(1+$@versadmg))*1.18)\r\n}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.51685
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelldesc_vars_hotfix_data { {
-  {  422920,  0, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${(2.773875*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}", "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${(1.553369999\r\n*($SP*1)*$<demoMastery>*(1+$@versadmg))*1.169617819}" },
+// spelldesc_vars hotfix entries, wow build 10.2.0.51825
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

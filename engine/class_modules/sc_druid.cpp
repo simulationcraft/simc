@@ -1976,8 +1976,6 @@ public:
       {
         form_mask |= form_e::BEAR_FORM;
       }
-
-      parse_passive_effects( p()->mastery.astral_invocation );
     }
   }
 
@@ -2081,6 +2079,7 @@ public:
     }
 
     // Balance
+    parse_passive_effects( p()->mastery.astral_invocation );
     parse_buff_effects( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
     parse_buff_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     // due to 4t31, we parse the damage effects (#1/#7) separately and use the current buff value instead of data value
@@ -2197,31 +2196,6 @@ public:
     parse_debuff_effect( [ dot ]( druid_td_t* t ) {
       return std::invoke( dot, t->dots )->is_ticking();
     }, spell, idx, true, mods... );
-  }
-
-  double get_debuff_effects_value( druid_td_t* t ) const override
-  {
-    double return_value = 1.0;
-
-    for ( const auto& i : target_multiplier_dotdebuffs )
-    {
-      if ( auto check = i.func( t ) )
-      {
-        auto eff_val = i.value;
-
-        if ( i.mastery )
-        {
-          if ( p()->specialization() == DRUID_BALANCE && p()->is_ptr() )
-            eff_val += p()->cache.mastery() * p()->mastery.astral_invocation->effectN( 5 ).mastery_value();
-          else
-            eff_val += p()->cache.mastery_value();
-        }
-
-        return_value *= 1.0 + eff_val * check;
-      }
-    }
-
-    return return_value;
   }
 
   double cost() const override
@@ -7864,12 +7838,27 @@ struct starsurge_t : public astral_power_spender_t
       background = true;
       name_str_reporting = "goldrinns_fang";
 
-      force_buff_effect( p->buff.eclipse_lunar, 1 );
-      force_buff_effect( p->buff.eclipse_solar, 1 );
+      force_buff_effect( p->buff.eclipse_lunar, 1, true, USE_CURRENT );
+      force_buff_effect( p->buff.eclipse_solar, 1, true, USE_CURRENT );
+
+      // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
+      // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
+      // forcing effect#1 modified by the talent.
       force_buff_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
       force_buff_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
-      force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
-      force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
+
+      // mastery is applied via hidden script
+      if ( p->is_ptr() )
+      {
+        force_passive_effect( p->mastery.astral_invocation, 1 );
+        force_passive_effect( p->mastery.astral_invocation, 3 );
+      }
+
+      if ( !p->is_ptr() )
+      {
+        force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
+        force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
+      }
     }
   };
 
@@ -8056,10 +8045,27 @@ struct orbital_strike_t : public druid_spell_t
     flare->name_str_reporting = "stellar_flare";
     add_child( flare );
 
-    force_buff_effect( p->buff.eclipse_lunar, 1 );
-    force_buff_effect( p->buff.eclipse_solar, 1 );
-    force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
-    force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
+    force_buff_effect( p->buff.eclipse_lunar, 1, true, USE_CURRENT );
+    force_buff_effect( p->buff.eclipse_solar, 1, true, USE_CURRENT );
+
+    // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
+    // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
+    // forcing effect#1 modified by the talent.
+    force_buff_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
+    force_buff_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
+
+    // mastery is applied via hidden script
+    if ( p->is_ptr() )
+    {
+      force_passive_effect( p->mastery.astral_invocation, 1 );
+      force_passive_effect( p->mastery.astral_invocation, 3 );
+    }
+
+    if ( !p->is_ptr() )
+    {
+      force_dot_effect( &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg, 5, p->mastery.astral_invocation );
+      force_dot_effect( &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg, 4, p->mastery.astral_invocation );
+    }
   }
 
   void impact( action_state_t* s ) override

@@ -5121,13 +5121,20 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       else
         proxy->add_child( this );
 
-      auto damage =
+      if ( data().effectN( 1 ).trigger_spell_id() == 418607 )
+      {
+        auto damage =
           create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
-      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      damage->stats = stats;
-      damage->dual = true;
-
-      impact_action = damage;
+        damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+        damage->stats = stats;
+        damage->dual = true;
+        
+        impact_action = damage;
+      }
+      else
+      {
+        base_dd_min = base_dd_max = e.driver()->effectN( 6 ).average( e.item );
+      }
     }
 
     void execute() override
@@ -6422,8 +6429,6 @@ void augury_of_the_primal_flame( special_effect_t& effect )
   if ( !buff )
   {
     // Use the cap as the default value to be decremented as you trigger
-    // NOTE: Tooltip says total limit increased per enemy struck, up to 5.
-    //       Testing on a training dummy can't find any evidence to support that.
     buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
                ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   }
@@ -6466,7 +6471,11 @@ void augury_of_the_primal_flame( special_effect_t& effect )
         else
         {
           // If you hit enough to cap, expire the buff
-          // Any in-progress damage events are uninterrupted allowing you to go over the cap
+          // Only hit for the remaining amount left on the cap
+          effect.player->sim->print_debug(
+              "{} base hit was over annihilating_flame cap. Exhausting remaining damage of {}.", effect.player->name(),
+              buff->current_value );
+          damage->base_dd_min = damage->base_dd_max = buff->current_value;
           buff->expire();
         }
       }
@@ -6604,36 +6613,36 @@ void time_thiefs_gambit( special_effect_t& effect )
 // TODO: Implement Slow? 
 void branch_of_the_tormented_ancient( special_effect_t& e )
 {
-  struct branch_of_the_tormented_ancient_cb_t : public dbc_proc_callback_t
+  struct severed_embers_t : public generic_aoe_proc_t
   {
-    action_t* damage;
     buff_t* buff;
 
-    branch_of_the_tormented_ancient_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
-      : dbc_proc_callback_t( effect.player, effect ), damage( d ), buff( b )
+    severed_embers_t( const special_effect_t& effect, buff_t* b )
+      : generic_aoe_proc_t( effect, "severed_embers", effect.player->find_spell( 425509 ), true ), buff( b )
     {
+      base_dd_min = base_dd_max = effect.player->find_spell( 422440 )->effectN( 1 ).average( effect.item );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute() override
     {
-      dbc_proc_callback_t::execute( a, s );
-      damage->execute_on_target( s->target );
+      generic_aoe_proc_t::execute();
       buff->decrement();
     }
   };
 
-  auto damage         = create_proc_action<generic_aoe_proc_t>( "severed_embers", e, "severed_embers",
-                                                        e.player->find_spell( 425509 ), true );
-  damage->base_dd_min = damage->base_dd_max = e.player->find_spell( 422440 )->effectN( 1 ).average( e.item );
-
   auto buff = create_buff<buff_t>( e.player, e.driver() );
+  auto damage = create_proc_action<severed_embers_t>( "severed_embers", e, buff );
 
-  const auto driver = new special_effect_t( e.player );
-  driver->cooldown_ = 0_ms;
-  driver->spell_id = e.driver()->id();
+  const auto driver      = new special_effect_t( e.player );
+  driver->name_str       = "roots_of_the_tormented_ancient_proc";
+  driver->spell_id       = e.driver()->id();
+  driver->cooldown_      = e.driver()->internal_cooldown();
+  driver->execute_action = damage;
   e.player->special_effects.push_back( driver );
 
-  auto cb = new branch_of_the_tormented_ancient_cb_t( *driver, damage, buff );
+  auto cb = new dbc_proc_callback_t( e.player, *driver );
+  cb->initialize();
+  cb->deactivate();
 
   buff->set_initial_stack( as<int>( e.driver()->effectN( 7 ).base_value() ) );
   buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
@@ -6712,7 +6721,7 @@ void infernal_signet_brand( special_effect_t& e )
       : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ),
         e( effect ),
         buff( b ),
-        current_mod( current_mod )
+        current_mod( 0 )
     {
       double player_mod = e.driver()->effectN( 4 ).percent();
       base_td           = base_damage * player_mod;
@@ -6818,6 +6827,8 @@ void infernal_signet_brand( special_effect_t& e )
   auto buff               = make_buff<buff_t>( e.player, "firestarter", e.player->find_spell( 425153 ) );
   auto out_of_combat_buff = make_buff<firestarter_no_combat_t>( e, buff );
 
+  buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  buff->set_freeze_stacks( true ); // Prevents incrementing on tick
   buff->set_tick_callback( [ out_of_combat_buff ]( buff_t* b, int /* total_ticks */, timespan_t /* tick_time */ ) {
     if ( out_of_combat_buff->check() )
     {

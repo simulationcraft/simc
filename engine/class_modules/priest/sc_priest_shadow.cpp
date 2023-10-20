@@ -600,6 +600,8 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       apply_affecting_aura( p.sets->set( PRIEST_DISCIPLINE, T30, B2 ) );
     }
+
+    triggers_atonement = true;
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
@@ -2192,7 +2194,6 @@ void priest_t::create_buffs_shadow()
   buffs.surge_of_insanity =
       make_buff( this, "surge_of_insanity", talents.shadow.surge_of_insanity )
           ->set_duration( 0_s )
-          ->set_max_stack( is_ptr() ? talents.shadow.surge_of_insanity->effectN( 3 ).base_value() : 1 )
           ->set_stack_change_callback( [ this ]( buff_t* b, int, int _new ) {
             if ( _new == b->max_stack() )
             {
@@ -2208,6 +2209,12 @@ void priest_t::create_buffs_shadow()
               }
             }
           } );
+
+  if ( talents.shadow.surge_of_insanity.enabled() )
+  {
+    buffs.surge_of_insanity->set_max_stack( is_ptr() ? talents.shadow.surge_of_insanity->effectN( 3 ).base_value()
+                                                     : 1 );
+  }
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
 
@@ -2263,6 +2270,7 @@ void priest_t::init_rng_shadow()
 {
   rppm.idol_of_cthun = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
   rppm.deathspeaker  = get_rppm( "deathspeaker", talents.shadow.deathspeaker );
+  rppm.power_of_the_dark_side = get_rppm( "power_of_the_dark_side", talents.discipline.power_of_the_dark_side );
 }
 
 void priest_t::init_spells_shadow()
@@ -2310,12 +2318,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.minds_eye                = ST( "Mind's Eye" );
   talents.shadow.distorted_reality        = ST( "Distorted Reality" );
   // Row 8
-  talents.shadow.mindbender         = ST( "Mindbender" );
+  // talents.shadow.mindbender         = ST( "Mindbender" ); - Shared Talent
   talents.shadow.deathspeaker       = ST( "Deathspeaker" );
   talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
   talents.shadow.void_torrent       = ST( "Void Torrent" );
   // Row 9
-  talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
+  // talents.shadow.inescapable_torment = ST( "Inescapable Torment" ); - Shared Talent
   talents.shadow.mastermind          = ST( "Mastermind" );
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.tormented_spirits   = ST( "Tormented Spirits" );

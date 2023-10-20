@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51754 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1498,7 +1498,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1608: Quickened Sigils (209281 effect#5), Illuminated Sigils (428557 effect#4)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32, 75
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1528,7 +1528,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1606: Quickened Sigils (209281 effect#2), Illuminated Sigils (428557 effect#2)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1557,7 +1557,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1), Illuminated Sigils (428557 effect#3)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1927,7 +1927,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300625)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55345 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=300626)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Shears an enemy for $s1 Physical damage, and shatters $?a187827[two Lesser Soul Fragments][a Lesser Soul Fragment] from your target.
@@ -1992,7 +1992,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Family Flags     : 81
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ....x... 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
@@ -2020,7 +2020,7 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effects: #2, #3), Chaotic Transformation (288754 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effects: #2, #3), Chaotic Transformation (288754 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : Demon Blades (203555)
 Family Flags     : 16, 32, 42, 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2206,7 +2206,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effect#1)
+Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effect#1)
 Family Flags     : 33
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ....x...   ........ ........ ........ ......x. 
@@ -2255,7 +2255,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2285,7 +2285,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2316,12 +2316,9 @@ Range            : 100 yards
 Duration         : 6 seconds
 Labels           : 2381: Ascending Flame (428603 effect#1), Ascending Flame (428603 effect#2)
                  : 3036: Illuminated Sigils (428557 effect#6)
-Internal Cooldown: 0.75 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Proc Flags       : .....x.. .x...x.. .x...... ........   ........ ........ ........ ........   
-                 : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Flames of Fury (389694 effects: #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Flames of Fury (389694 effects: #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Family Flags     : 16, 33, 65, 70, 72
 Attributes       : ........ ........ ........ x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ....x.x.   ........ ........ ........ ......x. 
@@ -2352,7 +2349,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
 Mechanic         : Snare
-Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effect#1)
+Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effect#1)
 Family Flags     : 33
 Attributes       : ........ ........ ........ x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ....x...   ........ ........ ........ ......x. 
@@ -2688,7 +2685,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1606: Quickened Sigils (209281 effect#2), Illuminated Sigils (428557 effect#2)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2746,7 +2743,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1608: Quickened Sigils (209281 effect#5), Illuminated Sigils (428557 effect#4)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2774,7 +2771,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1), Illuminated Sigils (428557 effect#3)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2804,7 +2801,7 @@ Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effect#1)
+Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effect#1)
 Family Flags     : 33
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ....x...   ........ ........ ........ ......x. 
@@ -2885,7 +2882,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 12 seconds
 Labels           : 2308: Fiery Demise (389220 effect#1)
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........   ........ ........ ........ ........   
@@ -2942,7 +2939,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 12 seconds
 Labels           : 2308: Fiery Demise (389220 effect#1)
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........   ........ ........ ........ ........   
@@ -3174,7 +3171,6 @@ Effects          :
 Description      : All Sigils activate ${$s1/-1000} second faster.
 
 Name             : Darkness (id=209426) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -3455,7 +3451,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : Fel Devastation (212084), Fel Devastation (393831)
 Family Flags     : 16, 67, 70, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3469,7 +3465,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Reflection Only Defends (253), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=314431)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.17633 | PvP Coefficient: 1.00000 | Radius: 13 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22923 | PvP Coefficient: 1.00000 | Radius: 13 yards | Target: Cone Front (104)
 Description      : $@spelldesc212084
 
 Name             : Fel Devastation (id=212106) [Spell Family (107)] 
@@ -3756,7 +3752,7 @@ Spell Type       : Melee
 Spell Level      : 50
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #7), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #7), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Family Flags     : 16, 30, 42, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4102,7 +4098,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Always Hit (114), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=338878)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.54837 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60321 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=338879)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc263642
@@ -4128,7 +4124,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Always Hit (114), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=338881)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.09674 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20641 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=338882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc263642
@@ -4275,7 +4271,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Active Threat (94), Not a Proc (105), No Cast Log (128), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=344032)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.61000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=819792)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $@spelldesc228477
@@ -4334,7 +4330,7 @@ Range            : 15 yards
 GCD              : 0.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 15 seconds
-Affecting spells : Havoc Demon Hunter (212612 effect#4), Vengeance Demon Hunter (212613 effects: #4, #7), Any Means Necessary (388114 effects: #2, #3)
+Affecting spells : Havoc Demon Hunter (212612 effect#4), Vengeance Demon Hunter (212613 effects: #4, #7), Any Means Necessary (388114 effects: #3, #4)
 Family Flags     : 30, 85
 Attributes       : ....x... ........ x.x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -4473,7 +4469,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=377040)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32445 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35041 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc247454
 
 Name             : Frailty (id=247456) [Spell Family (107)] 
@@ -4930,7 +4926,7 @@ Name             : Immolation Aura (id=258921) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Family Flags     : 11, 16, 49, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4952,7 +4948,7 @@ Name             : Immolation Aura (id=258922) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : Immolation Aura (258920)
 Family Flags     : 11, 16, 61, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
@@ -5087,7 +5083,7 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
 GCD              : 1.5 seconds
-Duration         : 12 seconds
+Duration         : 15 seconds
 Cooldown         : 30 seconds
 Triggered by     : Soul Fragments (203981)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -5104,13 +5100,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=706548)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 160 | Scaled Value: 160 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shield yourself for $d, absorbing $<baseAbsorb> damage.
 
 Consumes all available Soul Fragments to add $<fragmentAbsorb> to the shield per fragment.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $baseAbsorb=${8*$AP*$pctH}
-$fragmentAbsorb=${1.6*$AP*$pctH}
+Variables        : $baseAbsorb=${10*$AP*$pctH}
+$fragmentAbsorb=${2*$AP*$pctH}
 
 Name             : Resounding Protection (id=263962) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7396,7 +7392,7 @@ Cooldown         : 60 seconds
 Category         : 1887: Illuminated Sigils (428557 effect#5)
 Labels           : 976
 Category Cooldown: 60 seconds
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7424,7 +7420,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Family Flags     : 16, 33, 42, 70, 92
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ....x.x.   ........ ........ ........ ......x. 
@@ -7437,7 +7433,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Active Threat (94), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=785367)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.78000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.40000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #2 (id=839432)   : Trigger Spell (64): Elysian Decree
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 339893 | Target: Unknown(87)
 Description      : $@spelldesc306830
@@ -7453,7 +7449,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 45 seconds
 Labels           : 976
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Increased Scrutiny (340028 effect#1), Demon Soul (347765 effects: #1, #2), Agony Gaze (355886 effect#1), Any Means Necessary (388114 effects: #1, #2, #3), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Increased Scrutiny (340028 effect#1), Demon Soul (347765 effects: #1, #2), Agony Gaze (355886 effect#1), Any Means Necessary (388114 effects: #1, #3, #4), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Family Flags     : 16, 32, 70, 83
 Attributes       : ....x... ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -8218,7 +8214,7 @@ Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Labels           : 976
-Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Family Flags     : 32, 82
 Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -8355,7 +8351,7 @@ Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1887: Illuminated Sigils (428557 effect#5)
 Labels           : 976
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8457,7 +8453,7 @@ Cooldown         : 120 seconds
 Category         : 1888
 Labels           : 976
 Category Cooldown: 120 seconds
-Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Triggered by     : Fodder to the Flame (350570)
 Family Flags     : 32, 81
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -8522,7 +8518,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : Fel Devastation (333105)
 Family Flags     : 16, 67, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8958,13 +8954,13 @@ Triggered by     : Throw Glaive (185123)
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ........ ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ .......x ........ ........ 
+                 : .......x ........ ..x..... ........   ........ .......x ........ ........ 
                  : ........ x....... .....x.. ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x..x.... ........ ........ ........ 
+                 : ........ .x...... ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419)
+                 : Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Casting (135), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Allow Cast While Channeling (308), Enforce Facing on Primary Target Only (351), Active Passive (393), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=836037)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.43571 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
@@ -9366,7 +9362,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : Elysian Decree (307046), Elysian Decree (389860)
 Family Flags     : 16, 33, 42, 70
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -9392,7 +9388,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Labels           : 1074: Repeat Decree (339895 effect#1)
-Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : Elysian Decree (339893)
 Family Flags     : 16, 33, 42, 70, 92
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -9611,7 +9607,7 @@ Description      : $@spelldesc343010
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Revel in Pain (id=343014) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Vengeance [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -9835,7 +9831,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Unnatural Malice (344358 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Seething Chaos (394934 effects: #1, #2), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Unnatural Malice (344358 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Seething Chaos (394934 effects: #1, #2), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : The Hunt (323639)
 Family Flags     : 16, 70, 87
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9860,7 +9856,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 50 yards
 Duration         : 1.5 seconds
-Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Triggered by     : The Hunt (323639)
 Family Flags     : 82
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -9885,7 +9881,7 @@ Duration         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Triggered by     : The Hunt (323639)
 Family Flags     : 82
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -10017,7 +10013,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : Fel Devastation (346502)
 Family Flags     : 16, 67, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10204,7 +10200,7 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Family Flags     : 81
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10323,7 +10319,7 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 20 seconds
-Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effect#1)
+Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effect#1)
 Family Flags     : 33
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -10607,7 +10603,7 @@ Range            : 50 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Family Flags     : 32, 82
 Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -10636,7 +10632,7 @@ Spell Type       : Melee
 Spell Level      : 48
 Range            : 100 yards
 Duration         : 20 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : The Hunt (370965)
 Family Flags     : 16, 70, 82
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -10667,7 +10663,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 50 yards
 Duration         : 1.5 seconds
-Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Triggered by     : The Hunt (370965)
 Family Flags     : 82
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -10692,7 +10688,7 @@ Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Triggered by     : The Hunt (370965)
 Family Flags     : 82
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -10718,7 +10714,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Unnatural Malice (344358 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Seething Chaos (394934 effects: #1, #2), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Unnatural Malice (344358 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Seething Chaos (394934 effects: #1, #2), Demon Hunter Havoc 10.2 Class Set 4pc (422859 effect#2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Triggered by     : The Hunt (370966)
 Family Flags     : 16, 70, 87
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10942,15 +10938,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
                    Affected Spells: Disrupt (183752), Infernal Strike (189112), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Elysian Decree (390163), Ragefire (390197), Fodder to the Flame (391430), Fel Devastation (393834), Elysian Decree (394985)
                    Family Flags: 11, 24, 33, 44, 49, 61, 72, 81, 82, 83, 86, 87, 92
-#2 (id=1031483)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=1031483)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1114555)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Soul Fragment (203795), Demon Blades (203796), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213243), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Elysian Decree (389860), Fodder to the Flame (391430), Fel Devastation (393834)
                    Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
-#3 (id=1031484)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#4 (id=1114556)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soul Fragment (203795), Demon Blades (203796), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213243), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Elysian Decree (389860), Fodder to the Flame (391430), Fel Devastation (393834)
                    Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
-#4 (id=1034378)  : Apply Aura (6) | Unknown(285)
+#5 (id=1114558)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394486 | Target: Self (1)
 Description      : Mastery: Demonic Presence now also causes your Arcane, Fire, Frost, Nature, and Shadow damage to be dealt as Chaos instead, and increases that damage by ${$s2*((100+$394486s1)/100)}.1%.
 
@@ -11163,7 +11161,7 @@ Effects          :
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Fel Flame Fortification (id=389705) [Spell Family (107), Passive] 
-Talent Entry     : Vengeance [tree=spec, row=5, col=7, max_rank=1, req_points=8]
+Talent Entry     : Vengeance [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11245,8 +11243,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026137)  : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
-                   Family Flags: 33
+                   Affected Spells: Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Elysian Decree (306830), Elysian Decree (307046), Elysian Decree (327839), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Elysian Decree (390163), Elysian Decree (394985)
+                   Family Flags: 24, 33
 #2 (id=1109561)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
@@ -11505,7 +11503,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1606: Quickened Sigils (209281 effect#2), Illuminated Sigils (428557 effect#2)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11535,7 +11533,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1608: Quickened Sigils (209281 effect#5), Illuminated Sigils (428557 effect#4)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32, 75
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11565,7 +11563,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11597,7 +11595,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1), Illuminated Sigils (428557 effect#3)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11627,7 +11625,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1887: Illuminated Sigils (428557 effect#5)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11642,7 +11640,7 @@ Effects          :
 #1 (id=1026304)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=1026305)  : Create Area Trigger (179)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 26743 | Target: Unknown(63) -> Unknown(138)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 26752 | Target: Unknown(63) -> Unknown(138)
 #3 (id=1026306)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : Place a Kyrian Sigil at the target location that activates after $d.
@@ -11743,7 +11741,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1887: Illuminated Sigils (428557 effect#5)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11771,7 +11769,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Family Flags     : 16, 33, 42, 70, 92
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ....x.x.   ........ ........ ........ ......x. 
@@ -12126,7 +12124,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1887: Illuminated Sigils (428557 effect#5)
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12159,12 +12157,12 @@ Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ x....... ....x... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Aura Never Bounces (148), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
+                 : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Aura Never Bounces (148), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026811)  : Apply Aura (6) | Periodic Damage (3): chromatic every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -12368,7 +12366,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1028481)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc389729
 Tooltip          : Deals $w1 Physical damage back to attackers.
 
@@ -12744,7 +12742,7 @@ Duration         : 25 seconds
 Cooldown         : 120 seconds
 Category         : 1888
 Category Cooldown: 120 seconds
-Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #2, #3), Demon Hide (428241 effect#1)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
 Triggered by     : Fodder to the Flame (391429)
 Family Flags     : 32, 81
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -13007,11 +13005,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1033000)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Fel Devastation (212105), Fel Devastation (333110), Fel Devastation (346503), Fel Devastation (393834)
                    Family Flags: 67
 #2 (id=1033027)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fel Devastation (212105), Fel Devastation (333110), Fel Devastation (346503), Fel Devastation (393834)
                    Family Flags: 67
 Description      : Fel Devastation damage increased by $s1%.
@@ -13043,7 +13041,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Inertia (427641 effects: #1, #2), Demon Hide (428241 effect#1)
 Family Flags     : 16, 67, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -13074,17 +13072,17 @@ Attributes       : ......xx x....... ........ .....x.x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Immunities (29), No Aura Cancel (31), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1034170)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2356 (Label) | Target: Self (1)
-                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
-#2 (id=1034379)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+#1 (id=1034170)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2356 (Label) | Target: Self (1)
                    Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
-#3 (id=1035202)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2356 (Label) | Target: Self (1)
+#2 (id=1034379)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 4 (32)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 2356 (Label) | Target: Self (1)
                    Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
-#4 (id=1035203)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+#3 (id=1035202)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2356 (Label) | Target: Self (1)
+                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
+#4 (id=1035203)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 4 (32)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 2356 (Label) | Target: Self (1)
                    Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
 Description      : $@spelldesc388114
 
@@ -13170,7 +13168,7 @@ Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1887: Illuminated Sigils (428557 effect#5)
 Labels           : 976
-Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Demon Hide (428241 effect#1)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effect#1)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13536,10 +13534,14 @@ Effects          :
                    Family Flags: 87
 Description      : Throw Glaive reduces the remaining cooldown of The Hunt by ${$s1/1000}.1 sec, and The Hunt's damage over time effect lasts ${$s2/1000} sec longer.
 
-Name             : Demon Hunter Vengeance 10.2 Class Set 2pc (id=422860) [Passive, Hidden] 
+Name             : Demon Hunter Vengeance 10.2 Class Set 2pc (id=422860) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Internal Cooldown: 0.75 seconds
+Proc Chance      : 101%
+Proc Flags       : ..x.x... x...x... x.x..... ........   ........ ........ ........ ........   
+                 : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -14001,14 +14003,14 @@ School           : Physical
 Spell Type       : None
 Triggered by     : Live by the Glaive (428607)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Can't Crit (93), Not In Spellbook (143), Ignore Healing Modifiers (219), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1109570)  : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)

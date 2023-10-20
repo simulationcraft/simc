@@ -1650,6 +1650,7 @@ class SpellDataGenerator(DataGenerator):
             ( 426595, 0 ),          # Shadow Techniques delayed CP energize
             ( 423193, 0 ),          # Exsanguinate residual damage spell
             ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
+            ( 429951, 0 ),          # Deft Maneuvers alternative Blade Flurry instant attack spell
         ),
 
         # Priest:
@@ -2026,6 +2027,7 @@ class SpellDataGenerator(DataGenerator):
           ( 383733, 1 ), # Training of Niuzao Mastery % Buff
           ( 386959, 1 ), # Charred Passions Damage
           ( 395267, 1 ), # Call to Arms Invoke Niuzao
+	  ( 387179, 0 ), # Weapons of Order (Debuff)
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc

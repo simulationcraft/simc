@@ -89,12 +89,12 @@ main_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant=sophic_devotion_
 off_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=488.63
+# gear_ilvl=488.81
 # gear_strength=469
 # gear_agility=8215
-# gear_stamina=38769
-# gear_crit_rating=5739
-# gear_haste_rating=5752
+# gear_stamina=38844
+# gear_crit_rating=5752
+# gear_haste_rating=5765
 # gear_mastery_rating=1199
 # gear_versatility_rating=3089
 # gear_armor=5351
