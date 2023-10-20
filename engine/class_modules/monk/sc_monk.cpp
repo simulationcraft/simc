@@ -748,10 +748,17 @@ namespace monk
       double composite_target_multiplier( player_t *t ) const override
       {
         double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( get_td( t ) );
+
         auto td = find_td( t );
 
-        if ( td && td->debuff.weapons_of_order->check() )
-          tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
+        if ( td )
+        {
+          if ( ab::data().affected_by( td->debuff.weapons_of_order->data().effectN( 1 ) ) && td->debuff.weapons_of_order->check() )
+            tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
+
+          if ( p()->is_ptr() && ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) && td->debuff.fae_exposure->check() )
+            tm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
+        }
 
         return tm;
       }
@@ -865,13 +872,6 @@ namespace monk
         if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
           pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
 
-        if ( auto *td = this->find_td( target ) )
-        {
-          if ( p()->is_ptr() && td->debuff.fae_exposure->check() &&
-               base_t::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) )
-            pm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
-        }
-
         return pm;
       }
 
@@ -886,7 +886,7 @@ namespace monk
         if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
           am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-      // Serenity
+        // Serenity
         if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
           am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
@@ -927,8 +927,7 @@ namespace monk
       {
         double pm = base_t::composite_persistent_multiplier( action_state );
 
-        if ( p()->is_ptr() && p()->buff.fae_exposure->check() &&
-             base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) )
+        if ( ( !p()->is_ptr() || base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) ) && p()->buff.fae_exposure->check() )
           pm *= 1 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
 
         return pm;
@@ -960,9 +959,6 @@ namespace monk
 
             if ( p()->buff.life_cocoon->check() )
               am *= 1.0 + p()->talent.mistweaver.life_cocoon->effectN( 2 ).percent();
-
-            if ( !p()->is_ptr() && p()->buff.fae_exposure->check() )
-              am *= 1.0 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
 
             break;
 
@@ -3574,16 +3570,17 @@ namespace monk
 
         void impact( action_state_t *s ) override
         {
-          // In execute range ToD deals the target health in damage
-          double amount = target->current_health();
+
+          double max_hp, amount;
+
+          // In execute range ToD deals player's max HP
+          amount = max_hp = p()->resources.max[RESOURCE_HEALTH];
 
           // Not in execute range
           // or not a health-based fight style
           // or a secondary target... these always get hit for the 35% from Improved Touch of Death regardless if you're talented into it or not
-          if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > p()->resources.max[RESOURCE_HEALTH] )
+          if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > max_hp )
           {
-            amount = p()->resources.max[RESOURCE_HEALTH];
-
             amount *= p()->passives.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
 
             amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
@@ -7312,7 +7309,7 @@ namespace monk
     debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) )
       ->set_trigger_spell( p->shared.faeline_stomp );
 
-    debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 312106 ) )
+    debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 387179 ) )
       ->set_trigger_spell( p->talent.brewmaster.weapons_of_order )
       ->set_default_value_from_effect( 1 );
 
@@ -10402,6 +10399,7 @@ namespace monk
     * 1.) The spells that contribute to ETL change based on which buff(s) are up
     * 2.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
     * 3.) The spells that FoX contribute to ETL change after the first tick of damage
+    * 4.) SEF does not contribute to ETL while FoX is up
     */
 
     if ( specialization() != MONK_WINDWALKER || !talent.windwalker.empowered_tiger_lightning->ok() )
@@ -10467,6 +10465,9 @@ namespace monk
 
       if ( bugs )
       {
+        if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
+          return;
+
         auto blacklist = ( mode == 2 && buff.fury_of_xuen_haste->remains() > buff.fury_of_xuen_haste->tick_time() )
           ? etl_blacklist_fox : etl_blacklist_fox_2;
 
