@@ -6828,7 +6828,7 @@ void infernal_signet_brand( special_effect_t& e )
   auto out_of_combat_buff = make_buff<firestarter_no_combat_t>( e, buff );
 
   buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  buff->freeze_stacks = true; // Prevents incrementing on tick
+  buff->set_freeze_stacks( true ); // Prevents incrementing on tick
   buff->set_tick_callback( [ out_of_combat_buff ]( buff_t* b, int /* total_ticks */, timespan_t /* tick_time */ ) {
     if ( out_of_combat_buff->check() )
     {
