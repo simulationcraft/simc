@@ -5485,10 +5485,10 @@ struct lava_burst_t : public shaman_spell_t
       switch ( exec_type )
       {
         case execute_type::MOLTEN_CHARGE:
-          if ( auto mc_action = p()->find_action( "molten_charge" ) )
+          if ( auto pw_action = p()->find_action( "primordial_wave" ) )
           {
-            aoe = p()->spell.t31_4pc_ele->effectN( 1 ).default_value();
-            mc_action->add_child( this );
+            aoe   = as<int>( p()->spell.t31_4pc_ele->effectN( 1 ).base_value() );
+            pw_action->add_child( this );
           }
         case execute_type::PRIMORDIAL_WAVE:
           if ( auto pw_action = p()->find_action( "primordial_wave" ) )
