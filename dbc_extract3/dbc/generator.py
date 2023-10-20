@@ -2122,7 +2122,9 @@ class SpellDataGenerator(DataGenerator):
           ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
 
           # Tier 31
-          ( 425298, 1 ), # BrM 4-piece Charred Dreams Healing
+          ( 425298, 1 ), # BrM 2-piece Charred Dreams Healing
+          ( 425299, 1 ), # BrM 2-piece Charred Dreams Damage
+          ( 425965, 1 ), # BrM 4-piece Celestial Brew Guard
         ),
 
         # Druid:
@@ -4822,4 +4824,3 @@ class PermanentEnchantItemGenerator(DataGenerator):
             self.output_record(fields)
 
         self.output_footer()
-

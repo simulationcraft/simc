@@ -235,7 +235,6 @@ public:
     buff_t* soul_furnace_damage_amp;
     buff_t* soul_furnace_stack;
     buff_t* soul_fragments;
-    buff_t* charred_flesh;
 
     // Set Bonuses
     damage_buff_t* t29_havoc_4pc;
@@ -275,8 +274,8 @@ public:
       player_talent_t master_of_the_glaive;
       player_talent_t champion_of_the_glaive;
       player_talent_t aura_of_pain;
-      player_talent_t precise_sigils;       // Partial NYI (debuff Sigils)
-      player_talent_t lost_in_darkness;     // No Implementation
+      player_talent_t precise_sigils;    // Partial NYI (debuff Sigils)
+      player_talent_t lost_in_darkness;  // No Implementation
 
       player_talent_t chaos_nova;
       player_talent_t soul_rending;
@@ -534,7 +533,6 @@ public:
     const spell_data_t* demonic_wards_3;
     const spell_data_t* fiery_brand_debuff;
     const spell_data_t* frailty_debuff;
-    const spell_data_t* charred_flesh_buff;
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
@@ -762,6 +760,12 @@ public:
     double soul_fragment_movement_consume_chance = 0.85;
   } options;
 
+  struct uptimes_t
+  {
+    uptime_t* charred_flesh_fiery_brand;
+    uptime_t* charred_flesh_sigil_of_flame;
+  } uptime;
+
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
 
   // overridden player_t init functions
@@ -777,6 +781,7 @@ public:
   void init_action_list() override;
   void init_base_stats() override;
   void init_procs() override;
+  void init_uptimes() override;
   void init_resources( bool force ) override;
   void init_special_effects() override;
   void init_rng() override;
@@ -2032,15 +2037,14 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
 
   void place_sigil( player_t* target )
   {
-    make_event<ground_aoe_event_t>(
-        *sim, p(),
-        ground_aoe_params_t()
-            .target( target )
-            .x( target->x_position )
-            .y( target->y_position )
-            .pulse_time( sigil_delay )
-            .duration( sigil_delay )
-            .action( this ) );
+    make_event<ground_aoe_event_t>( *sim, p(),
+                                    ground_aoe_params_t()
+                                        .target( target )
+                                        .x( target->x_position )
+                                        .y( target->y_position )
+                                        .pulse_time( sigil_delay )
+                                        .duration( sigil_delay )
+                                        .action( this ) );
 
     sigil_activates = sim->current_time() + sigil_delay;
   }
@@ -2586,7 +2590,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     p()->buff.t30_havoc_4pc->expire();
 
-    // Since Demonic triggers Meta with 6s + hasted duration, need to extend by the hasted duration after have an
+    // Since Demonic triggers Meta with 5s + hasted duration, need to extend by the hasted duration after have an
     // execute_state
     if ( p()->talent.demon_hunter.demonic->ok() )
     {
@@ -2675,13 +2679,6 @@ struct fel_devastation_t : public demon_hunter_spell_t
 
     tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
 
-    /* NYI
-    if ( p->spec.fel_devastation_rank_2->ok() )
-    {
-      heal = p->get_background_action<heals::fel_devastation_heal_t>( "fel_devastation_heal" );
-    }
-    */
-
     if ( p->active.collective_anguish )
     {
       add_child( p->active.collective_anguish );
@@ -2693,7 +2690,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     p()->trigger_demonic();
     demon_hunter_spell_t::execute();
 
-    // Since Demonic triggers Meta with 6s + hasted duration, need to extend by the hasted duration after have an
+    // Since Demonic triggers Meta with 5s + duration, need to extend by the duration after have an
     // execute_state
     if ( p()->talent.demon_hunter.demonic->ok() )
     {
@@ -2706,6 +2703,12 @@ struct fel_devastation_t : public demon_hunter_spell_t
       p()->active.collective_anguish->set_target( target );
       p()->active.collective_anguish->execute();
     }
+  }
+
+  // Fel Devastation is always a 2s channel
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration;
   }
 
   void last_tick( dot_t* d ) override
@@ -2919,11 +2922,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     if ( result_is_miss( s->result ) )
       return;
-
-    if ( p()->talent.vengeance.charred_flesh->ok() )
-    {
-      p()->buff.charred_flesh->trigger();
-    }
 
     // Trigger the initial DoT action and set the primary flag for use with Burning Alive
     dot_action->set_target( s->target );
@@ -3165,6 +3163,7 @@ struct collective_anguish_t : public demon_hunter_spell_t
   {
     may_miss = channeled = false;
     dual                 = true;
+    tick_on_application  = false;
 
     tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick" );
   }
@@ -3372,13 +3371,27 @@ struct immolation_aura_t : public demon_hunter_spell_t
           p()->proc.soul_fragment_from_fallout->occur();
         }
 
-        if ( p()->talent.vengeance.charred_flesh->ok() && p()->buff.charred_flesh->up() )
+        if ( p()->talent.vengeance.charred_flesh->ok() )
         {
+          auto cdr                       = p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value();
           demon_hunter_td_t* target_data = td( s->target );
           if ( target_data->dots.fiery_brand->is_ticking() )
           {
-            target_data->dots.fiery_brand->adjust_duration(
-                p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value() );
+            target_data->dots.fiery_brand->adjust_duration( cdr );
+            p()->uptime.charred_flesh_fiery_brand->update( true, p()->sim->current_time() );
+          }
+          else
+          {
+            p()->uptime.charred_flesh_fiery_brand->update( false, p()->sim->current_time() );
+          }
+          if ( target_data->dots.sigil_of_flame->is_ticking() )
+          {
+            target_data->dots.sigil_of_flame->adjust_duration( cdr );
+            p()->uptime.charred_flesh_sigil_of_flame->update( true, p()->sim->current_time() );
+          }
+          else
+          {
+            p()->uptime.charred_flesh_sigil_of_flame->update( false, p()->sim->current_time() );
           }
         }
 
@@ -6557,7 +6570,8 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     proc(),
     active(),
     pets(),
-    options()
+    options(),
+    uptime()
 {
   create_cooldowns();
   create_gains();
@@ -6817,8 +6831,6 @@ void demon_hunter_t::create_buffs()
   buff.soul_furnace_stack = make_buff( this, "soul_furnace_stack", spec.soul_furnace_stack );
 
   buff.soul_fragments = make_buff( this, "soul_fragments", spec.soul_fragments_buff )->set_max_stack( 10 );
-
-  buff.charred_flesh = make_buff( this, "charred_flesh", spec.charred_flesh_buff )->set_quiet( true );
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
@@ -7260,6 +7272,16 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_t31_4pc = get_proc( "soul_fragment_from_t31_4pc" );
 }
 
+// demon_hunter_t::init_uptimes =============================================
+
+void demon_hunter_t::init_uptimes()
+{
+  base_t::init_uptimes();
+
+  uptime.charred_flesh_fiery_brand    = get_uptime( "Charred Flesh (Fiery Brand)" )->collect_duration( *sim );
+  uptime.charred_flesh_sigil_of_flame = get_uptime( "Charred Flesh (Sigil of Flame)" )->collect_duration( *sim );
+}
+
 // demon_hunter_t::init_resources ===========================================
 
 void demon_hunter_t::init_resources( bool force )
@@ -7621,7 +7643,6 @@ void demon_hunter_t::init_spells()
 
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
   spec.frailty_debuff     = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
-  spec.charred_flesh_buff = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
   spec.painbringer_buff   = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
   spec.calcified_spikes_buff =
       talent.vengeance.calcified_spikes->ok() ? find_spell( 391171 ) : spell_data_t::not_found();
@@ -7889,7 +7910,7 @@ std::string demon_hunter_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::temporary_enchant_vengeance( this );
+      return demon_hunter_apl::temporary_enchant_vengeance_ptr( this );
     default:
       return demon_hunter_apl::temporary_enchant_havoc( this );
   }

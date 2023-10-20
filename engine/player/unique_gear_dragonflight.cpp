@@ -5980,6 +5980,7 @@ struct lava_bolt_initializer_t : public item_targetdata_initializer_t
     td->debuff.lava_bolt->set_quiet( true );
     td->debuff.lava_bolt->set_period( timespan_t::max() );  // Ticking handled by the DoT in the main effect
     td->debuff.lava_bolt->set_max_stack( 20 ); // Setting to an unreasonably high number to handle the number of explosion events
+    td->debuff.lava_bolt->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS ); // Model getting pets procs at different times properly
   }
 };
 
@@ -6016,7 +6017,6 @@ void coiled_serpent_idol( special_effect_t& e )
         damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
     {
       hasted_ticks = false;
-      stats = damage->stats;
     }
 
     void tick( dot_t* d ) override
@@ -6024,7 +6024,7 @@ void coiled_serpent_idol( special_effect_t& e )
       generic_proc_t::tick( d );
       for (int stacks = 0; player->get_target_data( d->target )->debuff.lava_bolt->check() > stacks; ++stacks)
       {
-        damage->execute();
+        damage->execute_on_target( d->target );
       }
     }
   };
@@ -6076,6 +6076,8 @@ void coiled_serpent_idol( special_effect_t& e )
       }
     } );
   } );
+
+  e.proc_flags2_ = PF2_CRIT;
 
   new serpent_cb_t( e );
 }
@@ -6710,11 +6712,13 @@ void infernal_signet_brand( special_effect_t& e )
       : generic_proc_t( effect, "vicious_brand_self", effect.player->find_spell( 425180 ) ),
         e( effect ),
         buff( b ),
-        current_mod( 0 )
+        current_mod( current_mod )
     {
       double player_mod = e.driver()->effectN( 4 ).percent();
       base_td           = base_damage * player_mod;
       target            = effect.player;
+      hasted_ticks      = false;
+      dot_behavior      = DOT_REFRESH_PANDEMIC;
       stats->type       = stats_e::STATS_NEUTRAL;
     }
 
@@ -6730,14 +6734,10 @@ void infernal_signet_brand( special_effect_t& e )
       return m;
     }
 
-    void last_tick( dot_t* d ) override
+    void execute() override
     {
-      generic_proc_t::last_tick( d );
-      // Damage mod doesnt seem to update til the next application
-      if ( buff->stack() != current_mod )
-      {
-        current_mod = buff->stack();
-      }
+      current_mod = buff->check();
+      generic_proc_t::execute();
     }
 
     void reset() override
@@ -6763,7 +6763,9 @@ void infernal_signet_brand( special_effect_t& e )
         e( effect ),
         current_mod( 0 )
     {
-      base_td = base_damage;
+      base_td      = base_damage;
+      hasted_ticks = false;
+      dot_behavior = DOT_REFRESH_PANDEMIC;
       add_child( aoe_damage );
     }
 
@@ -6791,16 +6793,6 @@ void infernal_signet_brand( special_effect_t& e )
       }
     }
 
-    void last_tick( dot_t* d ) override
-    {
-      generic_proc_t::last_tick( d );
-      // Damage mod doesnt seem to update til the next application
-      if ( buff->stack() != current_mod )
-      {
-        current_mod = buff->stack();
-      }
-    }
-
     void reset() override
     {
       generic_proc_t::reset();
@@ -6809,12 +6801,17 @@ void infernal_signet_brand( special_effect_t& e )
 
     void execute() override
     {
-      generic_proc_t::execute();
-      buff->trigger();
+      // Damage mod doesnt seem to update until the next application
+      if ( buff->stack() != current_mod )
+      {
+        current_mod = buff->stack();
+      }
       if ( buff->check() > ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
       {
         self_damage->execute();
       }
+      generic_proc_t::execute();
+      buff->trigger();
     }
   };
 
@@ -7301,22 +7298,37 @@ void iridal_the_earths_master( special_effect_t& e )
   e.execute_action = damage;
 }
 
-// [PH] Fyrakk Cantrip 1H Axe STR
-// [PH] Fyrakk Cantrip 1H Mace INT
+// Gholak, the Final Conflagration
+// Rashon, the Immortal Blaze
+// Vakash, the Shadowed Inferno
 // TODO: Check both weapons after they are no longer placeholder
 // Hungering Shadowflame
 // 424320 Driver / Values
 // 424324 Damage
 void hungering_shadowflame( special_effect_t& e )
 {
+  struct hungering_shadowflame_self_t : public generic_proc_t
+  {
+    hungering_shadowflame_self_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "hungering_shadowflame_self", effect.player->find_spell( 424324 ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      target                    = effect.player;
+      stats->type               = stats_e::STATS_NEUTRAL;
+    }
+  };
+
   struct hungering_shadowflame_t : public generic_proc_t
   {
     double damage_mult;
     double hp_percent;
+    action_t* self_damage;
+
     hungering_shadowflame_t( const special_effect_t& effect )
       : generic_proc_t( effect, "hungering_shadowflame", effect.player->find_spell( 424324 ) ),
         damage_mult( effect.driver()->effectN( 2 ).percent() ),
-        hp_percent( effect.driver()->effectN( 3 ).base_value() )
+        hp_percent( effect.driver()->effectN( 3 ).base_value() ),
+        self_damage( create_proc_action<hungering_shadowflame_self_t>( "hungering_shadowflame_self", effect ) )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
     }
@@ -7332,40 +7344,17 @@ void hungering_shadowflame( special_effect_t& e )
 
       return m;
     }
-  };
 
-  struct hungering_shadowflame_self_t : public generic_proc_t
-  {
-    hungering_shadowflame_self_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "hungering_shadowflame_self", effect.player->find_spell( 424324 ) )
+    void execute() override
     {
-      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-      target                    = effect.player;
-      stats->type               = stats_e::STATS_NEUTRAL;
+      generic_proc_t::execute();
+      self_damage->execute_on_target( player );
     }
   };
 
-  struct hungering_shadowflame_cb_t : public dbc_proc_callback_t
-  {
-    action_t* damage;
-    action_t* self_damage;
+  e.execute_action = create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e );
 
-    hungering_shadowflame_cb_t( const special_effect_t& e, player_t* p )
-      : dbc_proc_callback_t( p, e ),
-        damage( create_proc_action<hungering_shadowflame_t>( "hungering_shadowflame", e ) ),
-        self_damage( create_proc_action<hungering_shadowflame_self_t>( "hungering_shadowflame_self", e ) )
-    {
-    }
-
-    void execute( action_t* a, action_state_t* s ) override
-    {
-      dbc_proc_callback_t::execute( a, s );
-      damage->execute();
-      self_damage->execute();
-    }
-  };
-
-  new hungering_shadowflame_cb_t( e, e.player );
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Dreambinder, Loom of the Great Cycle
@@ -7439,6 +7428,94 @@ void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<dreambinder_loom_of_the_great_cycle_t>( "web_of_dreams", effect );
 }
+
+// Thorncaller Claw
+// 424406 Driver/Values
+// 424965 Thorn Spirit DoT
+// 425177 Thorn Burst ICD + Proc Flags
+// 425181 Thorn Burst Damage
+// TODO: Implement on-death effect
+void thorncaller_claw( special_effect_t& effect ) {
+  struct thorn_spirit_t : public generic_proc_t
+  {
+    thorn_spirit_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "thorn_spirit", effect.player->find_spell( 424965 ) )
+    {
+      base_td = effect.driver()->effectN( 2 ).average( effect.item );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      player->get_target_data( s->target )->debuff.thorn_spirit->trigger();
+    }
+  };
+
+  // 2023-10-13: Split damage has generic AOE scaling, confirmed via testing
+  auto thorn_burst_damage = create_proc_action<generic_aoe_proc_t>( "thorn_burst", effect, "thorn_burst", effect.player->find_spell( 425181 ), true );
+  thorn_burst_damage->base_dd_min = thorn_burst_damage->base_dd_max = effect.driver()->effectN( 3 ).average( effect.item );
+
+  auto thorn_burst            = new special_effect_t( effect.player );
+  thorn_burst->name_str       = "thorn_burst";
+  thorn_burst->type           = SPECIAL_EFFECT_EQUIP;
+  thorn_burst->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+  thorn_burst->spell_id       = 425177;
+  thorn_burst->execute_action = thorn_burst_damage;
+  effect.player->special_effects.push_back( thorn_burst );
+
+  auto thorn_burst_proc = new dbc_proc_callback_t( effect.player, *thorn_burst );
+  thorn_burst_proc->initialize();
+  thorn_burst_proc->activate();
+
+  effect.player->callbacks.register_callback_trigger_function(
+      425177, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        auto td = effect.player->get_target_data( s->target )->debuff.thorn_spirit;
+        return td->check();
+      } );
+
+  auto thorn_spirit = create_proc_action<thorn_spirit_t>( "thorn_spirit", effect );
+  thorn_spirit->add_child( thorn_burst_damage );
+
+  // 2023-10-14: When Thorn Spirit spreads to a new target on demise it is applied with full duration.
+  // Can spread to a target with an existing Thorn Spirit even if other targets are in range, refreshes normally.
+  range::for_each( effect.player->sim->actor_list, [ effect, thorn_spirit ]( player_t* target ) {
+    target->register_on_demise_callback( effect.player, [ effect, thorn_spirit ]( player_t* t ) {
+      if ( effect.player->get_target_data( t )->debuff.thorn_spirit->check() )
+      {
+        thorn_spirit->target_cache.is_valid = false;
+        std::vector<player_t*> targets      = thorn_spirit->target_list();
+        if ( targets.size() != 0 )
+        {
+          // Choose a random new target to spread to
+          player_t* new_target =
+              targets[ static_cast<int>( effect.player->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+          effect.player->sim->print_debug( "{} demised with Thorn Spirit active. Spreading to new target {}.", t->name(), new_target->name() );
+          thorn_spirit->execute_on_target( new_target );
+        }
+      }
+    } );
+  } );
+
+  effect.execute_action = thorn_spirit;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+struct thorn_spirit_initializer_t : public item_targetdata_initializer_t
+{
+  thorn_spirit_initializer_t() : item_targetdata_initializer_t( 424406, 424965 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    bool active = init( td->source );
+
+    td->debuff.thorn_spirit = make_buff_fallback( active, *td, "thorn_spirit", debuffs[ td->source ] );
+    td->debuff.thorn_spirit->reset();
+  }
+};
 
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
@@ -9532,6 +9609,7 @@ void register_special_effects()
   register_special_effect( 419278, items::iridal_the_earths_master );           // Iridal, the Earth's Master
   register_special_effect( 424320, items::hungering_shadowflame );              // Hungering Shadowflame - Unnamed 1h axe
   register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
+  register_special_effect( 424406, items::thorncaller_claw );                   // Thorncaller Claw
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
@@ -9608,6 +9686,7 @@ void register_special_effects()
   register_special_effect( 415006, DISABLED_EFFECT );  // Paracausal Fragment of Frostmourne lost soul generator (NYI)
   register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
   register_special_effect( 417545, DISABLED_EFFECT );  // Time-Thief's Gambit unused effect
+  register_special_effect( 425177, DISABLED_EFFECT );  // Thorncaller Claw secondary proc data
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -9625,6 +9704,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::embed_blade_initializer_t() );
   sim.register_target_data_initializer( items::web_of_dreams_initializer_t() );
   sim.register_target_data_initializer( items::dream_shackles_initializer_t() );
+  sim.register_target_data_initializer( items::thorn_spirit_initializer_t() );
 }
 
 void register_hotfixes()
