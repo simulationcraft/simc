@@ -7838,8 +7838,8 @@ struct starsurge_t : public astral_power_spender_t
       background = true;
       name_str_reporting = "goldrinns_fang";
 
-      force_buff_effect( p->buff.eclipse_lunar, 1 );
-      force_buff_effect( p->buff.eclipse_solar, 1 );
+      force_buff_effect( p->buff.eclipse_lunar, 1, true, USE_CURRENT );
+      force_buff_effect( p->buff.eclipse_solar, 1, true, USE_CURRENT );
 
       // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
       // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
@@ -8045,8 +8045,8 @@ struct orbital_strike_t : public druid_spell_t
     flare->name_str_reporting = "stellar_flare";
     add_child( flare );
 
-    force_buff_effect( p->buff.eclipse_lunar, 1 );
-    force_buff_effect( p->buff.eclipse_solar, 1 );
+    force_buff_effect( p->buff.eclipse_lunar, 1, true, USE_CURRENT );
+    force_buff_effect( p->buff.eclipse_solar, 1, true, USE_CURRENT );
 
     // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
     // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
