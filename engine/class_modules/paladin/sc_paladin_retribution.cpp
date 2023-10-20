@@ -399,7 +399,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 struct divine_storm_echo_tempest_t : public paladin_melee_attack_t
 {
   divine_storm_echo_tempest_t( paladin_t* p )
-    : paladin_melee_attack_t( "divine_storm_echo_tempest", p, p->find_spell( 224239 ) )  // ToDo: Change spell id to 423593
+    : paladin_melee_attack_t( "divine_storm_echo_tempest", p, p->find_spell( 423593 ) )
   {
     background = true;
 
