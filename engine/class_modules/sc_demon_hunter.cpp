@@ -75,6 +75,9 @@ public:
 
   struct debuffs_t
   {
+    // Shared
+    buff_t* sigil_of_flame;
+
     // Havoc
     buff_t* burning_wound;
     buff_t* essence_break;
@@ -759,12 +762,6 @@ public:
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
   } options;
-
-  struct uptimes_t
-  {
-    uptime_t* charred_flesh_fiery_brand;
-    uptime_t* charred_flesh_sigil_of_flame;
-  } uptime;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -3008,6 +3005,9 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
   sigil_of_flame_damage_t( util::string_view name, demon_hunter_t* p, timespan_t delay )
     : demon_hunter_sigil_t( name, p, p->spell.sigil_of_flame_damage, delay )
   {
+    dot_behavior = DOT_CLIP;
+    tick_on_application = false;
+
     if ( p->talent.demon_hunter.flames_of_fury->ok() )
     {
       energize_type     = action_energize::ON_HIT;
@@ -3035,6 +3035,11 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     if ( result_is_hit( s->result ) && p()->talent.vengeance.frailty->ok() )
     {
       td( s->target )->debuffs.frailty->trigger();
+    }
+
+    if ( result_is_hit( s->result ) )
+    {
+      td( s->target )->debuffs.sigil_of_flame->trigger();
     }
 
     demon_hunter_sigil_t::impact( s );
@@ -3373,25 +3378,25 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
         if ( p()->talent.vengeance.charred_flesh->ok() )
         {
-          auto cdr                       = p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value();
+          auto duration_extension        = p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value();
           demon_hunter_td_t* target_data = td( s->target );
           if ( target_data->dots.fiery_brand->is_ticking() )
           {
-            target_data->dots.fiery_brand->adjust_duration( cdr );
-            p()->uptime.charred_flesh_fiery_brand->update( true, p()->sim->current_time() );
-          }
-          else
-          {
-            p()->uptime.charred_flesh_fiery_brand->update( false, p()->sim->current_time() );
+            target_data->dots.fiery_brand->adjust_duration( duration_extension );
           }
           if ( target_data->dots.sigil_of_flame->is_ticking() )
           {
-            target_data->dots.sigil_of_flame->adjust_duration( cdr );
-            p()->uptime.charred_flesh_sigil_of_flame->update( true, p()->sim->current_time() );
-          }
-          else
-          {
-            p()->uptime.charred_flesh_sigil_of_flame->update( false, p()->sim->current_time() );
+            target_data->dots.sigil_of_flame->adjust_duration( duration_extension );
+            if ( duration_extension > timespan_t::zero() )
+            {
+              auto expiration = target_data->debuffs.sigil_of_flame->expiration;
+              for (auto& i : expiration)
+              {
+                i->reschedule(i->remains() + duration_extension );
+                sim->print_log( "{} extends {} by {}. New expiration time: {}, remains={}", *p(),
+                                *target_data->debuffs.sigil_of_flame, duration_extension, i->occurs(), i->remains() );
+              }
+            }
           }
         }
 
@@ -6534,6 +6539,24 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.the_hunt       = target->get_dot( "the_hunt_dot", &p );
 
+  debuffs.sigil_of_flame =
+      make_buff( *this, "sigil_of_flame", p.spell.sigil_of_flame_damage )
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_stack_behavior( p.talent.vengeance.ascending_flame->ok() ? buff_stack_behavior::ASYNCHRONOUS
+                                                                         : buff_stack_behavior::DEFAULT )
+          ->apply_affecting_aura( p.talent.vengeance.ascending_flame )
+          ->apply_affecting_aura( p.talent.vengeance.chains_of_anger )
+          ->set_stack_change_callback( [ this ]( buff_t*, int old, int new_ ) {
+            if ( old > new_ )
+            {
+              this->dots.sigil_of_flame->decrement( old - new_ );
+            }
+            else
+            {
+              this->dots.sigil_of_flame->increment( new_ - old );
+            }
+          } );
+
   debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
@@ -6565,8 +6588,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     proc(),
     active(),
     pets(),
-    options(),
-    uptime()
+    options()
 {
   create_cooldowns();
   create_gains();
@@ -7272,9 +7294,6 @@ void demon_hunter_t::init_procs()
 void demon_hunter_t::init_uptimes()
 {
   base_t::init_uptimes();
-
-  uptime.charred_flesh_fiery_brand    = get_uptime( "Charred Flesh (Fiery Brand)" )->collect_duration( *sim );
-  uptime.charred_flesh_sigil_of_flame = get_uptime( "Charred Flesh (Sigil of Flame)" )->collect_duration( *sim );
 }
 
 // demon_hunter_t::init_resources ===========================================
