@@ -6655,6 +6655,9 @@ Effects          :
 #7 (id=1072313)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 2595 (Label) | Target: Self (1)
                    Affected Spells (Label): Thorns of Iron (400222), Thorns of Iron (400223)
+#8 (id=1115655)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 3060 (Label) | Target: Self (1)
+                   Affected Spells (Label): Invigorate (392160)
 Description      : Increases the range of all of your abilities by $?a16949[${$s1+$137011s6}]?a137010[${$s1+$137010s5}][$s1] yards.
 
 Name             : Moonkin Form (id=197625) [Spell Family (7)] 
@@ -17877,6 +17880,7 @@ Resource         : 0.4% Base Mana (0) (id=265630)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
+Labels           : 3060: Astral Influence (197524 effect#8)
 Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2)
 Family Flags     : 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 

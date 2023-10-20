@@ -2443,7 +2443,10 @@ public:
     // Expire On-Cast Fading Buffs
     for ( consume_buff_t& consume_buff : consume_buffs )
     {
-      if ( !ab::background || consume_buff.on_background )
+      if ( !ab::background || consume_buff.on_background ||
+           secondary_trigger_type == secondary_trigger::SHURIKEN_TORNADO ||
+           secondary_trigger_type == secondary_trigger::CRACKSHOT ||
+           secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
       {
         if ( consume_buff.buff->check() )
         {
@@ -5724,6 +5727,7 @@ struct shuriken_storm_t: public rogue_attack_t
     }
 
     // 2023-01-31 -- Tornado-triggered Shuriken Storms do not activate 4pc
+    // TOCHECK with the new foreground behavior on the PTR
     if ( p()->set_bonuses.t29_subtlety_4pc->ok() && state->result == RESULT_CRIT &&
          secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO )
     {
@@ -5732,9 +5736,8 @@ struct shuriken_storm_t: public rogue_attack_t
     }
   }
 
-  // 2021-07-12-- Shuriken Tornado triggers the damage directly without a cast, so cast triggers don't happen
   bool procs_poison() const override
-  { return secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO; }
+  { return true; }
 };
 
 // Shuriken Tornado =========================================================
@@ -7277,7 +7280,7 @@ struct shuriken_tornado_t : public buff_t
 
     shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>(
       secondary_trigger::SHURIKEN_TORNADO, "shuriken_storm_tornado" );
-    shuriken_storm_action->callbacks = false; // 2021-07-19 -- Damage triggered directly, doesn't appear to proc anything
+    shuriken_storm_action->not_a_proc = true; // 2023-10-19 -- Now appears to be a scripted foreground cast
     shuriken_storm_action->affected_by.shadow_blades_cp = false; // 2023-10-11 -- No longer generates increased CP
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       shuriken_storm_action->trigger_secondary_action( rogue->target );
@@ -8384,7 +8387,9 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
   if ( !p()->talent.subtlety.danse_macabre->ok() )
     return;
 
-  if ( ab::background || ab::trigger_gcd == 0_ms || !affected_by.danse_macabre )
+  // 2023-10-19 -- Shuriken Tornado can now trigger DM stacks as a Shuriken Storm
+  if ( ( ab::background || ab::trigger_gcd == 0_ms || !affected_by.danse_macabre ) &&
+       secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO )
     return;
 
   if ( !p()->stealthed( STEALTH_SHADOW_DANCE ) )
@@ -10602,7 +10607,8 @@ void rogue_t::create_buffs()
         resource_gain( RESOURCE_ENERGY, b->data().effectN( 2 ).resource(), gains.master_of_shadows );
     } );
 
-  buffs.premeditation = make_buff( this, "premeditation", spec.premeditation_buff );
+  buffs.premeditation = make_buff( this, "premeditation", spec.premeditation_buff )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.shadow_techniques = make_buff( this, "shadow_techniques", spec.shadow_techniques_energize )
     ->apply_affecting_aura( talent.rogue.deeper_stratagem )     // Max stack increase
@@ -10625,7 +10631,8 @@ void rogue_t::create_buffs()
 
   buffs.shuriken_tornado = new buffs::shuriken_tornado_t( this );
 
-  buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", talent.subtlety.the_rotten->effectN( 1 ).trigger() );
+  buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", talent.subtlety.the_rotten->effectN( 1 ).trigger() )
+    ->set_is_stacking_mod( false );
 
   buffs.flagellation = make_buff( this, "flagellation_buff", spec.flagellation_buff )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
