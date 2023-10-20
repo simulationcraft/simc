@@ -1519,6 +1519,8 @@ public:
       // Set Bonus Passives
       ab::apply_affecting_aura( p->set_bonuses.t30_vengeance_4pc );
 
+      // Affect Flags
+
       // Talents
       if ( p->talent.vengeance.vulnerability->ok() )
       {
@@ -3005,7 +3007,6 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
   sigil_of_flame_damage_t( util::string_view name, demon_hunter_t* p, timespan_t delay )
     : demon_hunter_sigil_t( name, p, p->spell.sigil_of_flame_damage, delay )
   {
-    dot_behavior = DOT_CLIP;
     tick_on_application = false;
 
     if ( p->talent.demon_hunter.flames_of_fury->ok() )
@@ -3031,6 +3032,8 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
 
   void impact( action_state_t* s ) override
   {
+    demon_hunter_sigil_t::impact( s );
+
     // Sigil of Flame can apply Frailty if Frailty is talented
     if ( result_is_hit( s->result ) && p()->talent.vengeance.frailty->ok() )
     {
@@ -3041,8 +3044,6 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     {
       td( s->target )->debuffs.sigil_of_flame->trigger();
     }
-
-    demon_hunter_sigil_t::impact( s );
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -3052,6 +3053,16 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     if ( !t )
       return nullptr;
     return td( t )->dots.sigil_of_flame;
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // 2023-10-21 -- Ascending Flame Sigil of Flame refreshes use normal DoT REFRESH_DURATION dot_behavior.
+    if (p()->talent.vengeance.ascending_flame->ok()) {
+      return action_t::calculate_dot_refresh_duration( dot, triggered_duration );
+    }
+    // 2023-10-21 -- Non-Ascending Flame Sigil of Flame refreshes _truncate_ the existing DoT and apply a fresh DoT.
+    return triggered_duration - dot->time_to_next_full_tick();
   }
 
   void tick( dot_t* d ) override
@@ -3390,9 +3401,9 @@ struct immolation_aura_t : public demon_hunter_spell_t
             if ( duration_extension > timespan_t::zero() )
             {
               auto expiration = target_data->debuffs.sigil_of_flame->expiration;
-              for (auto& i : expiration)
+              for ( auto& i : expiration )
               {
-                i->reschedule(i->remains() + duration_extension );
+                i->reschedule( i->remains() + duration_extension );
                 sim->print_log( "{} extends {} by {}. New expiration time: {}, remains={}", *p(),
                                 *target_data->debuffs.sigil_of_flame, duration_extension, i->occurs(), i->remains() );
               }
@@ -6546,14 +6557,16 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                                                                          : buff_stack_behavior::DEFAULT )
           ->apply_affecting_aura( p.talent.vengeance.ascending_flame )
           ->apply_affecting_aura( p.talent.vengeance.chains_of_anger )
-          ->set_stack_change_callback( [ this ]( buff_t*, int old, int new_ ) {
-            if ( old > new_ )
+          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+            auto current_stacks = this->dots.sigil_of_flame->current_stack();
+            auto difference = new_ - current_stacks;
+            if ( difference > 0 )
             {
-              this->dots.sigil_of_flame->decrement( old - new_ );
+              this->dots.sigil_of_flame->increment( difference );
             }
-            else
+            else if (difference < 0)
             {
-              this->dots.sigil_of_flame->increment( new_ - old );
+              this->dots.sigil_of_flame->decrement( abs(difference) );
             }
           } );
 
