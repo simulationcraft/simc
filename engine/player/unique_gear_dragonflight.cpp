@@ -6613,38 +6613,34 @@ void time_thiefs_gambit( special_effect_t& effect )
 // TODO: Implement Slow? 
 void branch_of_the_tormented_ancient( special_effect_t& e )
 {
-  struct branch_of_the_tormented_ancient_cb_t : public dbc_proc_callback_t
+  struct severed_embers_t : public generic_aoe_proc_t
   {
-    action_t* damage;
     buff_t* buff;
 
-    branch_of_the_tormented_ancient_cb_t( const special_effect_t& effect, action_t* d, buff_t* b )
-      : dbc_proc_callback_t( effect.player, effect ), damage( d ), buff( b )
+    severed_embers_t( const special_effect_t& effect, buff_t* b )
+      : generic_aoe_proc_t( effect, "severed_embers", effect.player->find_spell( 425509 ), true ), buff( b )
     {
+      base_dd_min = base_dd_max = effect.player->find_spell( 422440 )->effectN( 1 ).average( effect.item );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute() override
     {
-      if ( buff->check() )
-      {
-        damage->execute_on_target( s->target );
-        buff->decrement();
-      }
+      generic_aoe_proc_t::execute();
+      buff->decrement();
     }
   };
 
-  auto damage         = create_proc_action<generic_aoe_proc_t>( "severed_embers", e, "severed_embers",
-                                                        e.player->find_spell( 425509 ), true );
-  damage->base_dd_min = damage->base_dd_max = e.player->find_spell( 422440 )->effectN( 1 ).average( e.item );
-
   auto buff = create_buff<buff_t>( e.player, e.driver() );
+  auto damage = create_proc_action<severed_embers_t>( "severed_embers", e, buff );
 
-  const auto driver = new special_effect_t( e.player );
-  driver->cooldown_ = 0_ms;
-  driver->spell_id = e.driver()->id();
+  const auto driver      = new special_effect_t( e.player );
+  driver->name_str       = "roots_of_the_tormented_ancient_proc";
+  driver->spell_id       = e.driver()->id();
+  driver->cooldown_      = e.driver()->internal_cooldown();
+  driver->execute_action = damage;
   e.player->special_effects.push_back( driver );
 
-  auto cb = new branch_of_the_tormented_ancient_cb_t( *driver, damage, buff );
+  auto cb = new dbc_proc_callback_t( e.player, *driver );
   cb->initialize();
   cb->deactivate();
 
