@@ -1,30 +1,29 @@
-# shaman="T31_Shaman_Elemental"
-# level=70
-# race=tauren
-# role=spell
-# spec=elemental
-# talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoVSSLJUSSLRDRJQiEAAAAAgSAikgiog0SSapEoEJBgA
-# # https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFBFBISKJREIRBDAUAOVVFFQVCoQCIhEQDUUA
-# dragonflight.ominous_chromatic_essence_dragonflight=emerald
-# dragonflight.ominous_chromatic_essence_allies=azure/bronze/obsidian/ruby
+shaman="T31_Shaman_Elemental"
+level=70
+race=tauren
+role=spell
+spec=elemental
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSrUSCgDkUSShSgkkEBAAAAAoFAlkAiCSLJplSACJBI
+# https://www.wowhead.com/talent-calc/shaman/elemental/DAORFUVBRBASqJBUJCUUNVRRRVFSJVBoAUDBAA
 
-# head=,id=202470,bonus_id=8780/7187,gem_id=192985,ilevel=447
-# neck=,id=206182,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948,ilevel=447
-# shoulder=,id=202468,bonus_id=7187,ilevel=450
-# back=,id=204465,bonus_id=4800/1498
-# chest=,id=202473,bonus_id=7187,enchant_id=6625,ilevel=447
-# wrist=,id=193812,bonus_id=8780/7359/6646,gem_id=192948,ilevel=447
-# hands=,id=193465,bonus_id=8836/8840/8902/8960/8802/8846,ilevel=447
-# waist=,id=193463,bonus_id=8836/8840/8902/8960/7936/8802/8846,gem_id=192945,ilevel=447
-# legs=,id=202469,bonus_id=7187,enchant_id=6541,ilevel=450
-# feet=,id=204424,bonus_id=4800/1498
-# finger1=,id=204398,bonus_id=8780/4800/1498,enchant_id=6550,gem_id=192948
-# finger2=,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/8780/1498,enchant_id=6556,gem_id=192948,ilevel=421
-# trinket1=,id=203996,bonus_id=4800/1498
-# trinket2=,id=203729,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,ilevel=444
-# main_hand=,id=202565,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643,ilevel=450
+head=,id=109984,bonus_id=4795/1808,enchant_id=7052,gem_id=192985,ilevel=489
+neck=,id=207163,bonus_id=4795/8782,gem_id=192964/192964/192964,ilevel=489
+shoulder=,id=207207,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
+back=,id=205025,bonus_id=8960/8840/8836/8902/1537,enchant_id=6592,ilevel=486
+chest=,id=207212,bonus_id=6652/7979/9562/9515/1491/8767,enchant_id=6625,ilevel=489
+wrist=,id=210203,bonus_id=4795/1808,gem_id=192964,ilevel=489
+hands=,id=207210,bonus_id=6652/7979/9560/9514/1485/8767,ilevel=489
+waist=,id=207146,bonus_id=4795/1808,enchant_id=6904,gem_id=192964,ilevel=489
+legs=,id=207208,bonus_id=6652/7979/9562/9512/1491/8767,enchant_id=6541,ilevel=489
+feet=,id=193466,bonus_id=8836/8840/8902/8960/9405/9500/9498,enchant_id=6607
+finger1=,id=207159,bonus_id=4795/1808,enchant_id=6562,gem_id=192964,ilevel=489
+finger2=,id=134487,bonus_id=4795/1808,enchant_id=6556,gem_id=192964,ilevel=489
+trinket1=,id=133201,bonus_id=4795,ilevel=489
+trinket2=,id=159630,bonus_id=4795,ilevel=489
+main_hand=,id=207788,bonus_id=4795,enchant_id=6655,ilevel=489
+off_hand=,id=207798,bonus_id=4795,ilevel=489
 
-# save=T31_Shaman_Elemental.simc
+save=T31_Shaman_Elemental.simc
 
 # shaman="T31_Shaman_Enhancement_Ele"
 # level=70
