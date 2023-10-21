@@ -467,6 +467,7 @@ public:
     cooldown_t* shadow_dance;
     cooldown_t* shadowstep;
     cooldown_t* shiv;
+    cooldown_t* shuriken_tornado;
     cooldown_t* sprint;
     cooldown_t* symbols_of_death;
     cooldown_t* thistle_tea;
@@ -1086,6 +1087,7 @@ public:
     cooldowns.shadow_dance              = get_cooldown( "shadow_dance" );
     cooldowns.shadowstep                = get_cooldown( "shadowstep" );
     cooldowns.shiv                      = get_cooldown( "shiv" );
+    cooldowns.shuriken_tornado          = get_cooldown( "shuriken_tornado" );
     cooldowns.sprint                    = get_cooldown( "sprint" );   
     cooldowns.symbols_of_death          = get_cooldown( "symbols_of_death" );
     cooldowns.thistle_tea               = get_cooldown( "thistle_tea" );
@@ -3519,7 +3521,7 @@ struct between_the_eyes_t : public rogue_attack_t
     if ( p->talent.outlaw.crackshot->ok() )
     {
       dispatch = p->get_secondary_trigger_action<dispatch_t>( secondary_trigger::CRACKSHOT, "dispatch_crackshot" );
-      dispatch->not_a_proc = true; // Scripted foreground cast, can trigger cast procs (? investigate - definitely procs summarily dispatched, but maybe not cto?)
+      dispatch->not_a_proc = true; // Scripted foreground cast, can trigger cast procs
       add_child( dispatch );
     }
   }
@@ -7134,6 +7136,12 @@ struct stealth_like_buff_t : public BuffBase
       rogue->buffs.master_assassin_aura->expire();
       rogue->buffs.indiscriminate_carnage_aura->expire();
       rogue->buffs.take_em_by_surprise_aura->expire();
+
+      // 2023-10-21 -- Premeditation does not persist into Subterfuge when Stealth expires
+      if ( rogue->bugs )
+      {
+        rogue->buffs.premeditation->expire();
+      }
     }
 
     if ( rogue->talent.outlaw.underhanded_upper_hand->ok() && !rogue->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
@@ -7181,8 +7189,8 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     {
       shadowdust_cooldowns = { r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.cold_blood, r->cooldowns.echoing_reprimand,
         r->cooldowns.flagellation, r->cooldowns.goremaws_bite, r->cooldowns.gouge, r->cooldowns.secret_technique, r->cooldowns.sepsis,
-        r->cooldowns.shadow_blades, r->cooldowns.shadow_dance, r->cooldowns.shadowstep, r->cooldowns.shiv, r->cooldowns.sprint,
-        r->cooldowns.symbols_of_death, r->cooldowns.thistle_tea };
+        r->cooldowns.shadow_blades, r->cooldowns.shadow_dance, r->cooldowns.shadowstep, r->cooldowns.shiv, r->cooldowns.shuriken_tornado,
+        r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.thistle_tea };
     }
   }
 
