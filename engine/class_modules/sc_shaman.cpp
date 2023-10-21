@@ -6674,6 +6674,7 @@ struct earthquake_t : public earthquake_base_t
 
     rumble = new earthquake_damage_t( player, this );
     add_child( rumble );
+    affected_by_master_of_the_elements = true;
 
     if ( player->talent.mountains_will_fall.ok() )
     {
