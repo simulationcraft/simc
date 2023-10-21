@@ -48,6 +48,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_exploiter;
   buff_t* debuffs_fatal_mark;
   buff_t* debuffs_siegebreaker;
+  buff_t* debuffs_skullsplitter;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
   buff_t* debuffs_punish;
@@ -2240,6 +2241,34 @@ struct rend_dot_t : public warrior_attack_t
       p()->cooldown.execute->reset( true );
     }
   }
+
+  timespan_t tick_time ( const action_state_t* s ) const override
+  {
+    auto base_tick_time = warrior_attack_t::tick_time( s );
+
+    if ( p() -> dbc -> ptr )
+    {
+      auto td = p() -> get_target_data( s -> target );
+      if ( p() -> talents.arms.tide_of_blood -> ok() && td -> debuffs_skullsplitter -> up() )
+        base_tick_time *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
+    }
+
+    return base_tick_time;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto dot_duration = warrior_attack_t::composite_dot_duration( s );
+
+    if ( p() -> dbc -> ptr )
+    {
+      auto td = p() -> get_target_data( s -> target );
+      if ( p() -> talents.arms.tide_of_blood -> ok() && td -> debuffs_skullsplitter -> up() )
+        dot_duration *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
+    }
+
+    return dot_duration;
+  }
 };
 
 struct rend_t : public warrior_attack_t
@@ -3604,6 +3633,34 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
     {
       p()->buff.crushing_advance->trigger();
     }
+  }
+
+  timespan_t tick_time ( const action_state_t* s ) const override
+  {
+    auto base_tick_time = warrior_attack_t::tick_time( s );
+
+    if ( p() -> dbc -> ptr )
+    {
+      auto td = p() -> get_target_data( s -> target );
+      if ( td -> debuffs_skullsplitter -> up() )
+        base_tick_time *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
+    }
+
+    return base_tick_time;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto dot_duration = warrior_attack_t::composite_dot_duration( s );
+
+    if ( p() -> dbc -> ptr )
+    {
+      auto td = p() -> get_target_data( s -> target );
+      if ( td -> debuffs_skullsplitter -> up() )
+        dot_duration *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
+    }
+
+    return dot_duration;
   }
 };
 
@@ -4990,11 +5047,18 @@ struct skullsplitter_t : public warrior_attack_t
     warrior_attack_t::impact( s );
 
     warrior_td_t* td = p()->get_target_data( target );
-    trigger_tide_of_blood( td->dots_deep_wounds );
-
-    if ( p()->talents.arms.tide_of_blood->ok() )
+    if ( !p() -> dbc -> ptr )
     {
-      trigger_tide_of_blood( td->dots_rend );
+      trigger_tide_of_blood( td->dots_deep_wounds );
+
+      if ( p()->talents.arms.tide_of_blood->ok() )
+      {
+        trigger_tide_of_blood( td->dots_rend );
+      }
+    }
+    else
+    {
+      td->debuffs_skullsplitter->trigger();
     }
   }
 };
@@ -9283,6 +9347,29 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
     ->set_default_value( p.spell.siegebreaker_debuff->effectN( 2 ).percent() )
     ->set_duration( p.spell.siegebreaker_debuff->duration() )
     ->set_cooldown( timespan_t::zero() );
+
+  debuffs_skullsplitter = make_buff( *this, "skullsplitter",  p.find_spell( 427040 ) )
+                            ->set_default_value( p.find_spell( 427040 ) -> effectN( 1 ).percent() )
+                            ->set_stack_change_callback( [ this, &p ]( buff_t* buff_, int old_, int new_ )
+                            {
+                              // Dot ticks twice as fast, for half the time with skullsplitter up
+                              if ( old_ == 0 )
+                              {
+                                auto coeff = 1.0 / ( 1.0 + buff_ -> default_value );
+                                if ( dots_deep_wounds -> is_ticking() )
+                                  dots_deep_wounds -> adjust( coeff );
+                                if ( p.talents.arms.tide_of_blood -> ok() && dots_rend -> is_ticking() )
+                                  dots_rend -> adjust( coeff );
+                              }
+                              else if ( new_ == 0 )
+                              {
+                                auto coeff = 1.0 + buff_ -> default_value;
+                                if ( dots_deep_wounds -> is_ticking() )
+                                  dots_deep_wounds -> adjust( coeff );
+                                if ( p.talents.arms.tide_of_blood -> ok() && dots_rend -> is_ticking() )
+                                  dots_rend -> adjust( coeff );
+                              }
+                            } );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, &p );
 
