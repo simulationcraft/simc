@@ -11211,10 +11211,13 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action(
         "earthquake,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&!talent.echoes_of_great_sundering.enabled&!talent.elemental_blast.enabled",
         "Use Earthquake against two enemies unless you have to alternate because of Echoes of Great Sundering." );
-    single_target->add_action( "elemental_blast" );
-    single_target->add_action( "earth_shock" );
+    single_target->add_action( "elemental_blast,if=!set_bonus.tier31_2pc&!set_bonus.tier31_4pc" );
+    single_target->add_action( "earth_shock,if=!set_bonus.tier31_2pc&!set_bonus.tier31_4pc" );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.flux_melting.up&active_enemies>1", "Utilize present buffs." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=enemies=1&talent.deeply_rooted_elements.enabled", "Single target Lava Burst is stronk." );
+    single_target->add_action( "lava_burst,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc" );
+    single_target->add_action( "elemental_blast,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc" );
+    single_target->add_action( "earth_shock,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled&!buff.flux_melting.up",
                                "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&debuff.electrified_shocks.remains<2|buff.icefury.remains<6)",
