@@ -5986,21 +5986,27 @@ void ashes_of_the_embersoul( special_effect_t& e )
   struct blazing_soul_t : public generic_proc_t
   {
     stat_buff_t* buff;
+    bool available;
 
     blazing_soul_t( const special_effect_t& e )
       : generic_proc_t( e, "blazing_soul_proc", e.player->find_spell( 426898 ) ),
-        buff( make_buff<stat_buff_t>( e.player, "blazing_soul", e.player->find_spell( 426898 ) ) )
+        buff( make_buff<stat_buff_t>( e.player, "blazing_soul", e.player->find_spell( 426898 ) ) ),
+        available( true )
     {
       buff->set_stat_from_effect( 1, e.player->find_spell( 423021 )->effectN( 1 ).average( e.item ) );
-      // Setting to an unreasonably high number to prevent multiple procs per combat
-      // timespan_t::max() seems to fail here for an unknown reason.
-      cooldown->duration = 99999999_s;
     }
 
     void execute() override
     {
       generic_proc_t::execute();
       buff->trigger();
+      available = false;
+    }
+
+    bool ready() override
+    {
+      return available;
+      generic_proc_t::ready();
     }
   };
 
@@ -6015,6 +6021,14 @@ void ashes_of_the_embersoul( special_effect_t& e )
           dire_buff->execute();
         }
       } );
+    } );
+
+    e.player->register_on_combat_state_callback( [ dire_buff ]( player_t* p, bool c ) {
+      if ( !c )
+      {
+        p->sim->print_debug( "{} leaves combat, resetting Blazing Soul", p->name(), c );
+        debug_cast<blazing_soul_t*>( dire_buff ) -> available = true;
+      }
     } );
   }
 
