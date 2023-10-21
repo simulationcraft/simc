@@ -17,6 +17,8 @@ ptr=1
 # * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
 # * Use sockets on the slots head, neck (x3 with jewelcrafting), wrist, waist, finger1, finger2.
 # * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
+#    * 192985: Primary Stat & Haste
+#    * 192964: Mastery > Vers
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
 # * Must use enchant name (ex: ",enchant=devotion_of_haste_3") instead of ids/hardcoded stats if possible. Rank 3 enchants are permitted.
@@ -53,7 +55,7 @@ T31_Generate_Priest.simc
 # T31_Generate_Rogue.simc
 
 # Shaman
-# T31_Generate_Shaman.simc
+T31_Generate_Shaman.simc
 
 # Warlock
 # T31_Generate_Warlock.simc
