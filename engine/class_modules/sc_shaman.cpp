@@ -5490,6 +5490,7 @@ struct lava_burst_t : public shaman_spell_t
             aoe   = as<int>( p()->spell.t31_4pc_ele->effectN( 1 ).base_value() );
             pw_action->add_child( this );
           }
+          break;
         case execute_type::PRIMORDIAL_WAVE:
           if ( auto pw_action = p()->find_action( "primordial_wave" ) )
           {
