@@ -2547,6 +2547,37 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 // Base Shaman Pet Method Definitions
 // ==========================================================================
 
+template <typename T>
+struct spirit_bomb_t : public pet_melee_attack_t<T>
+{
+  spirit_bomb_t( T* player ) :
+    pet_melee_attack_t<T>( player, player->dbc->ptr ? "alpha_wolf" : "spirit_bomb", player -> find_spell( 198455 ) )
+  {
+    this -> background = true;
+    this -> aoe = -1;
+  }
+
+  double composite_target_armor( player_t* ) const override
+  { return 0.0; }
+
+  double action_da_multiplier() const override
+  {
+    double m = pet_melee_attack_t<T>::action_da_multiplier();
+
+    m *= 1.0 + this->o()->buff.legacy_of_the_frost_witch->value();
+
+    for ( int x = 1; x <= this->o()->buff.earthen_weapon->check(); x++ )
+    {
+      m *= 1.0 + this->o()->buff.earthen_weapon->value();
+    }
+
+    m *= 1.0 + this->o()->buff.t30_4pc_enh_damage->value();
+
+    return m;
+  }
+
+};
+
 action_t* shaman_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "auto_attack" )
@@ -2583,6 +2614,16 @@ struct base_wolf_t : public shaman_pet_t
                         alpha_wolf->set_target( o() -> target );
                         alpha_wolf->schedule_execute();
                       } );
+  }
+
+  void create_actions() override
+  {
+    shaman_pet_t::create_actions();
+
+    if ( o()->talent.alpha_wolf.ok() )
+    {
+      alpha_wolf = new spirit_bomb_t<base_wolf_t>( this );
+    }
   }
 
   void trigger_alpha_wolf() const
@@ -2642,54 +2683,11 @@ struct spirit_wolf_t : public base_wolf_t
     dynamic = true;
   }
 
-  void create_actions() override;
-
   attack_t* create_auto_attack() override
   {
     return new fs_melee_t( this );
   }
 };
-
-template <typename T>
-struct spirit_bomb_t : public pet_melee_attack_t<T>
-{
-  spirit_bomb_t( T* player ) :
-    pet_melee_attack_t<T>( player, player->dbc->ptr ? "alpha_wolf" : "spirit_bomb", player -> find_spell( 198455 ) )
-  {
-    this -> background = true;
-    this -> aoe = -1;
-  }
-
-  double composite_target_armor( player_t* ) const override
-  { return 0.0; }
-
-  double action_da_multiplier() const override
-  {
-    double m = pet_melee_attack_t<T>::action_da_multiplier();
-
-    m *= 1.0 + this->o()->buff.legacy_of_the_frost_witch->value();
-
-    for ( int x = 1; x <= this->o()->buff.earthen_weapon->check(); x++ )
-    {
-      m *= 1.0 + this->o()->buff.earthen_weapon->value();
-    }
-
-    m *= 1.0 + this->o()->buff.t30_4pc_enh_damage->value();
-
-    return m;
-  }
-
-};
-
-void spirit_wolf_t::create_actions()
-{
-  shaman_pet_t::create_actions();
-
-  if ( o()->talent.alpha_wolf.ok() )
-  {
-    alpha_wolf = new spirit_bomb_t<spirit_wolf_t>( this );
-  }
-}
 
 // ==========================================================================
 // DOOM WOLVES OF NOT REALLY DOOM ANYMORE
@@ -4402,9 +4400,27 @@ struct crash_lightning_t : public shaman_attack_t
       }
     }
 
-    for ( auto pet : p()->pet.spirit_wolves )
+    if ( p()->talent.alpha_wolf.ok() )
     {
-      debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
+      for ( auto pet : p()->pet.spirit_wolves )
+      {
+        debug_cast<pet::base_wolf_t*>( pet )->trigger_alpha_wolf();
+      }
+
+      for ( auto pet : p()->pet.fire_wolves )
+      {
+        debug_cast<pet::base_wolf_t*>( pet )->trigger_alpha_wolf();
+      }
+
+      for ( auto pet : p()->pet.frost_wolves )
+      {
+        debug_cast<pet::base_wolf_t*>( pet )->trigger_alpha_wolf();
+      }
+
+      for ( auto pet : p()->pet.lightning_wolves )
+      {
+        debug_cast<pet::base_wolf_t*>( pet )->trigger_alpha_wolf();
+      }
     }
 
     p()->buff.cl_crash_lightning->expire();
@@ -4949,9 +4965,27 @@ struct chain_lightning_t : public chained_base_t
     p()->trigger_flash_of_lightning();
     p()->buff.surge_of_power->decrement();
 
-    for ( auto pet : p()->pet.spirit_wolves )
+    if ( p()->talent.alpha_wolf.ok() )
     {
-      debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
+      for ( auto pet : p()->pet.spirit_wolves )
+      {
+        debug_cast<pet::base_wolf_t*>( pet )->trigger_alpha_wolf();
+      }
+
+      for ( auto pet : p()->pet.fire_wolves )
+      {
+        debug_cast<pet::base_wolf_t*>( pet )->trigger_alpha_wolf();
+      }
+
+      for ( auto pet : p()->pet.frost_wolves )
+      {
+        debug_cast<pet::base_wolf_t*>( pet )->trigger_alpha_wolf();
+      }
+
+      for ( auto pet : p()->pet.lightning_wolves )
+      {
+        debug_cast<pet::base_wolf_t*>( pet )->trigger_alpha_wolf();
+      }
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
