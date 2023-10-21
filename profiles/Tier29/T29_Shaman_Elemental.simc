@@ -190,12 +190,15 @@ actions.single_target+=/lava_burst,if=talent.master_of_the_elements.enabled&!buf
 actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering.up&(!talent.elemental_blast.enabled&active_enemies<2|active_enemies>1)
 # Use Earthquake against two enemies unless you have to alternate because of Echoes of Great Sundering.
 actions.single_target+=/earthquake,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&!talent.echoes_of_great_sundering.enabled&!talent.elemental_blast.enabled
-actions.single_target+=/elemental_blast
-actions.single_target+=/earth_shock
+actions.single_target+=/elemental_blast,if=!set_bonus.tier31_2pc&!set_bonus.tier31_4pc
+actions.single_target+=/earth_shock,if=!set_bonus.tier31_2pc&!set_bonus.tier31_4pc
 # Utilize present buffs.
 actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=buff.flux_melting.up&active_enemies>1
 # Single target Lava Burst is stronk.
 actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=enemies=1&talent.deeply_rooted_elements.enabled
+actions.single_target+=/lava_burst,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc
+actions.single_target+=/elemental_blast,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc
+actions.single_target+=/earth_shock,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc
 # Spread out your Icefury usage if you can get more use out of accompanied buffs.
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.flux_melting.enabled&!buff.flux_melting.up
 # Spread out your Icefury usage if you can get more use out of accompanied buffs.
