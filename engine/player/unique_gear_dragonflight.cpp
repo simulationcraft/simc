@@ -5889,6 +5889,7 @@ void pips_emerald_friendship_badge( special_effect_t& e )
 
 // Ashes of the Embersoul
 // 423611 Use Driver/Main Buff
+// 426898 "Dire circumstances" Buff
 // 423021 Values
 // 426911 Unknown
 // 426906 Unknown
@@ -5916,15 +5917,13 @@ void ashes_of_the_embersoul( special_effect_t& e )
       set_stat_from_effect( 1, base_buff_value );
       set_default_value( base_buff_value );
 
-      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        recalculate();
-      } );
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
     }
 
     double current_value()
     {
-      double base_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item );
-      double ticks = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
+      double base_value     = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item );
+      double ticks          = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
       double decrease_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item ) / ticks;
 
       double value = base_value - ( decrease_value * current_tick );
@@ -5935,34 +5934,36 @@ void ashes_of_the_embersoul( special_effect_t& e )
     void recalculate()
     {
       current_tick++;
-      for (auto& buff_stat : stats)
+      for ( auto& buff_stat : stats )
       {
-        double delta = buff_stat.current_value - current_value();
-        double ticks = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
+        double delta          = buff_stat.current_value - current_value();
+        double ticks          = effect.driver()->duration() / effect.driver()->effectN( 3 ).period();
         double decrease_value = effect.player->find_spell( 423021 )->effectN( 1 ).average( effect.item ) / ticks;
-        if (delta > 0)
+        if ( delta > 0 )
         {
           player->stat_loss( buff_stat.stat, decrease_value, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
         }
-        else if (delta < 0)
+        else if ( delta < 0 )
         {
-          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
+                             buff_duration() > timespan_t::zero() );
         }
       }
     }
 
     void recalculate_expiry()
     {
-      for (auto& buff_stat : stats)
+      for ( auto& buff_stat : stats )
       {
         double delta = current_value();
-        if (delta > 0)
+        if ( delta > 0 )
         {
           player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
         }
-        else if (delta < 0)
+        else if ( delta < 0 )
         {
-          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
+                             buff_duration() > timespan_t::zero() );
         }
         buff_stat.current_value = 0;
       }
@@ -5981,6 +5982,41 @@ void ashes_of_the_embersoul( special_effect_t& e )
       current_tick = 0;
     }
   };
+
+  struct blazing_soul_t : public generic_proc_t
+  {
+    stat_buff_t* buff;
+
+    blazing_soul_t( const special_effect_t& e )
+      : generic_proc_t( e, "blazing_soul_proc", e.player->find_spell( 426898 ) ),
+        buff( make_buff<stat_buff_t>( e.player, "blazing_soul", e.player->find_spell( 426898 ) ) )
+    {
+      buff->set_stat_from_effect( 1, e.player->find_spell( 423021 )->effectN( 1 ).average( e.item ) );
+      // Setting to an unreasonably high number to prevent multiple procs per combat
+      // timespan_t::max() seems to fail here for an unknown reason.
+      cooldown->duration = 99999999_s;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buff->trigger();
+    }
+  };
+
+  if ( e.player->sim->dragonflight_opts.embersoul_dire_chance > 0 )
+  {
+    auto dire_buff = create_proc_action<blazing_soul_t>( "blazing_soul_proc", e );
+
+    e.player->register_combat_begin( [ dire_buff ]( player_t* p ) {
+      make_repeating_event( *p->sim, p->sim->dragonflight_opts.embersoul_dire_interval, [ dire_buff, p ] {
+        if ( dire_buff->ready() && p->rng().roll(p->sim->dragonflight_opts.embersoul_dire_chance))
+        {
+          dire_buff->execute();
+        }
+      } );
+    } );
+  }
 
   e.custom_buff = make_buff<soul_ignition_buff_t>( e, haste_debuff );
 }
