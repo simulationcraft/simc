@@ -5132,6 +5132,17 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
   {
     hunter_melee_attack_t::tick( dot );
     fote_tick -> execute_on_target( dot -> target );
+    
+    if ( p() -> tier_set.t31_sv_2pc.ok() )
+    {
+      p() -> buffs.fury_strikes -> trigger();
+    }
+
+    if ( p() -> tier_set.t31_sv_4pc.ok() )
+    {
+      p() -> buffs.contained_explosion -> trigger();
+      p() -> buffs.light_the_fuse -> trigger();
+    }
   }
 };
 
