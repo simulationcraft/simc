@@ -2848,7 +2848,10 @@ struct fire_elemental_t : public primal_elemental_t
   fire_elemental_t( shaman_t* owner, bool guardian )
     : primal_elemental_t( owner, ( guardian ) ? "greater_fire_elemental" : "primal_fire_elemental", guardian, false )
   {
-    owner_coeff.sp_from_sp = 1.0 + o()->talent.call_of_fire->effectN(3).percent();
+    owner_coeff.sp_from_sp = 1.0 + o()->talent.call_of_fire->effectN( 3 ).percent();
+    if ( o()->talent.fire_and_ice.ok() ) {
+      owner_coeff.sp_from_sp *= 1.0 + o()->talent.fire_and_ice->effectN( 3 ).percent();
+    }
   }
 
   struct meteor_t : public pet_spell_t<fire_elemental_t>
