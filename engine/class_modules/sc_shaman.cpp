@@ -1622,7 +1622,7 @@ public:
   {
     auto et = ab::execute_time();
 
-    if ( affected_by_ns_cast_time && p()->buff.natures_swiftness->check() )
+    if ( affected_by_ns_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
     {
       et *= 1.0 + p()->talent.natures_swiftness->effectN( 2 ).percent();
     }
@@ -1666,7 +1666,7 @@ public:
       p()->buff.flurry->trigger( p()->buff.flurry->max_stack() );
     }
 
-    if ( ( affected_by_ns_cast_time || affected_by_ns_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()))
+    if ( ( affected_by_ns_cast_time || affected_by_ns_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
     {
       p()->buff.natures_swiftness->decrement();
     }
