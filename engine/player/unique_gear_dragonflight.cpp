@@ -687,7 +687,7 @@ void incandescent_essence( special_effect_t& e )
   {
     // buff_t* absorb;
     blazing_rage_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "blazing_rage", 426306 )/*,
+      : generic_aoe_proc_t( e, "blazing_rage", 426306, true )/*,
         absorb( make_buff<absorb_buff_t>( e.player, "protective_flames", e.player->find_spell( 426313 ) ) )*/
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
