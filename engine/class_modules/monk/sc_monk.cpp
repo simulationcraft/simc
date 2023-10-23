@@ -639,56 +639,52 @@ namespace monk
 
           p()->trigger_spirit_of_forged_vermillion( s );
 
-          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 )
+          if ( !ab::result_is_miss( s->result ) && s->result_amount > 0 )
           {
-            if ( s->action->school == SCHOOL_SHADOWFLAME )
+            if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
             {
-              double current_value = p()->buff.brewmaster_t31_4p_accumulator->check_value();
-              double result = s->result_amount;
-              double increase = std::fmin( current_value + result, p()->max_health() ); // accumulator is capped at the player's current max hp
-              p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
-              p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+              if ( s->action->school == SCHOOL_SHADOWFLAME )
+              {
+                double current_value = p()->buff.brewmaster_t31_4p_accumulator->check_value();
+                double result = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+                double increase =
+                    std::fmin( current_value + result,
+                               p()->max_health() );  // accumulator is capped at the player's current max hp
+                p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
+                p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+              }
+
+              switch ( s->action->id )
+              {
+                // Blacklist
+                case 425299:  // charred dreams
+                case 325217:  // bonedust brew
+                  break;
+                default:
+                  // This value is not presented in any spell data and was found via logs.
+                  if ( p()->rng().roll( 0.5 ) )
+                  {
+                    double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
+                    p()->active_actions.charred_dreams_dmg_4p->target = s->target;
+                    p()->active_actions.charred_dreams_dmg_4p->base_dd_min =
+                        p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
+                    p()->active_actions.charred_dreams_dmg_4p->execute();
+                    p()->sim->print_debug(
+                        "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
+                        s->action->id, s->result_amount, amt );
+                  }
+              }
             }
 
-            switch ( s->action->id )
+            if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && s->action->school == SCHOOL_FIRE )
             {
-              // Blacklist
-              case 425299: // charred dreams
-              case 386959: // charred passions
-              case 325217: // bonedust brew
-              case 387621: // dragonfire brew puffs
-              case 385941: // claw of the white tiger
-              case 227291: // invoke niuzao stomp
-                break;
-              default:
-                if ( p()->rng().roll( 0.5 ) )
-                {
-                  double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
-                  p()->active_actions.charred_dreams_dmg_4p->target = s->target;
-                  p()->active_actions.charred_dreams_dmg_4p->base_dd_min =
-                    p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
-                  p()->active_actions.charred_dreams_dmg_4p->execute();
-                  p()->sim->print_debug( "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}", s->action->id, s->result_amount, amt );
-                }
-            }
-          }
-
-          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !ab::result_is_miss( s->result ) && s->result_amount > 0 &&
-            s->action->school == SCHOOL_FIRE )
-          {
-            switch ( s->action->id )
-            {
-              // Blacklist
-              case 387621: // dragonfire brew puffs
-                break;
-              default:
-                double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
-                p()->active_actions.charred_dreams_heal->base_dd_min =
+              double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
+              p()->active_actions.charred_dreams_heal->base_dd_min =
                   p()->active_actions.charred_dreams_heal->base_dd_max = amt;
-                p()->active_actions.charred_dreams_heal->execute();
-                p()->sim->print_debug(
-                  "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}",
-                  s->action->id, s->result_amount, amt );
+              p()->active_actions.charred_dreams_heal->execute();
+              p()->sim->print_debug(
+                  "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}", s->action->id,
+                  s->result_amount, amt );
             }
           }
         }
@@ -705,28 +701,44 @@ namespace monk
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
 
-          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && dot->state->result_amount > 0 && dot->state->action->school == SCHOOL_FIRE )
+          // Currently bugged and not occurring.
+          if ( !p()->bugs && !ab::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 )
           {
-            if ( dot->state->action->school == SCHOOL_SHADOWFLAME )
+            if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
             {
-              double current_value = p()->buff.brewmaster_t31_4p_accumulator->check_value();
-              double result = dot->state->result_amount;
-              double increase = std::fmin( current_value + result, p()->max_health() ); // accumulator is capped at the player's current max hp
-              p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
-              p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+              if ( dot->state->action->school == SCHOOL_SHADOWFLAME )
+              {
+                double current_value = p()->buff.brewmaster_t31_4p_accumulator->check_value();
+                double result        = dot->state->result_amount;
+                double increase =
+                    std::fmin( current_value + result,
+                               p()->max_health() );  // accumulator is capped at the player's current max hp
+                p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
+                p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+              }
+
+              // This value is not presented in any spell data and was found via logs.
+              if ( p()->rng().roll( 0.5 ) )
+              {
+                double amt = dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
+                p()->active_actions.charred_dreams_dmg_4p->target = dot->state->target;
+                p()->active_actions.charred_dreams_dmg_4p->base_dd_min =
+                    p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
+                p()->active_actions.charred_dreams_dmg_4p->execute();
+                p()->sim->print_debug(
+                    "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
+                    dot->state->action->id, dot->state->result_amount, amt );
+              }
             }
 
-            switch ( dot->state->action->id )
+            if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && dot->state->action->school == SCHOOL_FIRE )
             {
-              // Blacklist
-              case 387621:  // dragonfire brew puffs
-                break;
-              default:
-                double amt = dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
-                p()->active_actions.charred_dreams_heal->base_dd_min =
+              double amt =
+                  dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
+              p()->active_actions.charred_dreams_heal->base_dd_min =
                   p()->active_actions.charred_dreams_heal->base_dd_max = amt;
-                p()->active_actions.charred_dreams_heal->execute();
-                p()->sim->print_debug(
+              p()->active_actions.charred_dreams_heal->execute();
+              p()->sim->print_debug(
                   "triggering charred dreams heal from id {}, base damage: {}, charred dreams heal: {}",
                   dot->state->action->id, dot->state->result_amount, amt );
             }
@@ -2191,7 +2203,7 @@ namespace monk
           am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
 
           am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
-           
+
           am *= 1 + p()->buff.blackout_reinforcement->check_value();
 
           return am;
@@ -2667,7 +2679,7 @@ namespace monk
               p()->buff.dance_of_chiji_hidden->trigger();
             }
           }
- 
+
           // Is a free cast for WW
           if ( current_resource() == RESOURCE_CHI && cost() == 0 )
           {
@@ -4185,6 +4197,19 @@ namespace monk
           background = true;
           aoe = -1;
         }
+
+        void impact( action_state_t *s ) override
+        {
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
+          {
+            double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
+            p()->active_actions.charred_dreams_dmg_2p->target = s->target;
+            p()->active_actions.charred_dreams_dmg_2p->base_dd_min =
+                p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
+            p()->active_actions.charred_dreams_dmg_2p->execute();
+            p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
+          }
+        }
       };
 
       struct breath_of_fire_dot_t : public monk_spell_t
@@ -4221,12 +4246,13 @@ namespace monk
         {
           monk_spell_t::tick( d );
 
-          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( d->state->result ) )
+          if ( !p()->bugs && p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) &&
+               !result_is_miss( d->state->result ) )
           {
             double amt = d->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
             p()->active_actions.charred_dreams_dmg_2p->target = d->state->target;
             p()->active_actions.charred_dreams_dmg_2p->base_dd_min =
-              p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
+                p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
             p()->active_actions.charred_dreams_dmg_2p->execute();
             p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
           }
@@ -4324,7 +4350,7 @@ namespace monk
             double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
             p()->active_actions.charred_dreams_dmg_2p->target = s->target;
             p()->active_actions.charred_dreams_dmg_2p->base_dd_min =
-              p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
+                p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
             p()->active_actions.charred_dreams_dmg_2p->execute();
             p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
           }
@@ -8811,7 +8837,8 @@ namespace monk
       effect->proc_flags_ = effect_driver->proc_flags();
       effect->proc_chance_ = effect_driver->proc_chance();
       effect->ppm_ = effect_driver->_rppm;
-     
+
+
       if ( proc_action_override == nullptr )
       {
         // If we didn't define a custom action in initialization then
