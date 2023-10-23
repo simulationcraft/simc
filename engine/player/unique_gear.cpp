@@ -1832,15 +1832,12 @@ void item::infallible_tracking_charm( special_effect_t& effect )
 
 void item::witherbarks_branch( special_effect_t& effect )
 {
-  auto data_spell = effect.player->find_spell( 429257 );
   auto stat_buff  = make_buff<stat_buff_t>( effect.player, "aqueous_enrichment", effect.player->find_spell( 429262 ) )
-    ->add_stat( STAT_MASTERY_RATING, data_spell->effectN( 1 ).average( effect.item ) );
 
   effect.custom_buff = make_buff( effect.player, "aqueous_enrichment_driver", effect.driver() )
     ->set_quiet( true )
-    // assumes an average of 1 seconds per ball
     // TODO: make this confirgurable?
-    ->set_cooldown( timespan_t::from_seconds(1) )
+    ->set_period( 1_s )
     ->set_tick_callback( [ stat_buff ]( buff_t*, int, timespan_t ) {
       stat_buff->trigger();
     } );
