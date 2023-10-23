@@ -9141,6 +9141,12 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 25.0 )
         .verification_value( 0.0 );
+
+    hotfix::register_spell( "Demon Hunter", "2023-10-23", "Manually set secondary Felblade level requirement.", 213243 )
+        .field( "spell_level" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 16.0 )
+        .verification_value( 50.0 );
   }
 
   void combat_begin( sim_t* ) const override
