@@ -665,6 +665,7 @@ void shadowflame_wreathe( special_effect_t& effect )
 // https://www.warcraftlogs.com/reports/RpDBKMy8TzN3Pw4n#fight=last&type=damage-done&source=12&ability=-426341
 // 426288 Tank Driver
 // 426289 Tank Buff
+// 426313 Tank Absorb Buff
 // 426306 Tank Damage
 // 426262 Healer Driver
 // 426269 Healer Buff
@@ -673,13 +674,78 @@ void shadowflame_wreathe( special_effect_t& effect )
 // 426322 Healer Stat Buff
 // 426382 Healer Unknown
 // TODO : Double check the right effects are mapped to the right spells
-// Implement Tank/Healer versions
+// Implement Healer version
+// Implement Tank absorb
 void incandescent_essence( special_effect_t& e )
 {
-  auto melee_driver = e.player->find_spell( 426339 );
+  auto melee_driver  = e.player->find_spell( 426339 );
   auto ranged_driver = e.player->find_spell( 426341 );
-  auto tank_driver = e.player->find_spell( 426288 );
+  auto tank_driver   = e.player->find_spell( 426288 );
   auto healer_driver = e.player->find_spell( 426262 );
+
+  struct blazing_rage_t : public generic_aoe_proc_t
+  {
+    // buff_t* absorb;
+    blazing_rage_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "blazing_rage", 426306, true )/*,
+        absorb( make_buff<absorb_buff_t>( e.player, "protective_flames", e.player->find_spell( 426313 ) ) )*/
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_aoe_proc_t::impact( s );
+      /*
+      if (!absorb->check())
+      {
+        absorb->trigger( 1, s->result_amount );
+      }
+      */
+    }
+  };
+
+  struct smolderons_delusions_of_grandeur_t : public generic_proc_t
+  {
+    action_t* damage;
+    buff_t* buff;
+    smolderons_delusions_of_grandeur_t( const special_effect_t& e, action_t* d, buff_t* b )
+      : generic_proc_t( e, "smolderons_delusions_of_grandeur", 426288 ),
+        damage( d ),
+        buff( b )
+    {
+      add_child( damage );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buff->trigger();
+    }
+  };
+
+  auto tank_damage = create_proc_action<blazing_rage_t>( "blazing_rage", e );
+  auto tank_buff   = create_buff<buff_t>( e.player, "blazing_rage_buff", e.player->find_spell( 426289 ) );
+
+  auto blazing_rage            = new special_effect_t( e.player );
+  blazing_rage->spell_id       = 426289;
+  blazing_rage->execute_action = tank_damage;
+  e.player->special_effects.push_back( blazing_rage );
+
+  auto tank_cb = new dbc_proc_callback_t( e.player, *blazing_rage );
+  tank_cb->initialize();
+  tank_cb->deactivate();
+
+  tank_buff->set_stack_change_callback( [ tank_cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      tank_cb->activate();
+    }
+    else
+    {
+      tank_cb->deactivate();
+    }
+  } );
 
   struct ingras_cruel_nightmare_t : public generic_proc_t
   {
@@ -687,12 +753,13 @@ void incandescent_essence( special_effect_t& e )
     action_t* st_damage;
     ingras_cruel_nightmare_t( const special_effect_t& e )
       : generic_proc_t( e, "igiras_cruel_nightmare", 426339 ),
-      aoe_damage( create_proc_action<generic_aoe_proc_t>( "scorching_torment", e, "scorching_torment",
-                  e.player->find_spell( 426535 ), true ) ),
-      st_damage( create_proc_action<generic_proc_t>( "flaying_torment", e, "flaying_torment",
-                 e.player->find_spell( 426527 ) ) )
+        aoe_damage( create_proc_action<generic_aoe_proc_t>( "scorching_torment", e, "scorching_torment",
+                                                            e.player->find_spell( 426535 ), true ) ),
+        st_damage( create_proc_action<generic_proc_t>( "flaying_torment", e, "flaying_torment",
+                                                       e.player->find_spell( 426527 ) ) )
     {
-      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 9 ).average( e.item );
+      aoe_damage->base_dd_min = aoe_damage->base_dd_max =
+          e.player->find_spell( 425838 )->effectN( 9 ).average( e.item );
       st_damage->base_td = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
 
       add_child( aoe_damage );
@@ -701,7 +768,7 @@ void incandescent_essence( special_effect_t& e )
 
     void execute() override
     {
-      if (sim->target_non_sleeping_list.size() == 1)
+      if ( sim->target_non_sleeping_list.size() == 1 )
       {
         st_damage->execute_on_target( target );
       }
@@ -770,6 +837,7 @@ void incandescent_essence( special_effect_t& e )
     case DRUID_GUARDIAN:
     case DEMON_HUNTER_VENGEANCE:
       e.spell_id = tank_driver->id();
+      e.execute_action = create_proc_action<smolderons_delusions_of_grandeur_t>( "smolderons_delusions_of_grandeur", e, tank_damage, tank_buff );
       break;
     case PALADIN_HOLY:
     case PRIEST_DISCIPLINE:
