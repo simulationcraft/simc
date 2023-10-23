@@ -1651,6 +1651,9 @@ public:
 
   virtual void tactician()
   {
+    if ( p() -> is_ptr() && p()->specialization() == WARRIOR_ARMS && ab::id == 190456 ) // Ignore pain can not trigger tactician for arms
+      return;
+
     double tact_rage = tactician_cost();  // Tactician resets based on cost before things make it cost less.
     double tactician_chance = tactician_per_rage;
 
@@ -1681,6 +1684,9 @@ public:
 
       else if ( p()->specialization() == WARRIOR_ARMS )
       {
+        if ( p() -> is_ptr() && ab::id == 190456 )  // Ignore pain can not trigger anger management for arms
+          return;
+
         cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();  
                                                                                                                                                                        
         p()->cooldown.colossus_smash->adjust( timespan_t::from_seconds( cd_time_reduction ) );
