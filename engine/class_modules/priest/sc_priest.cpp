@@ -193,7 +193,17 @@ public:
 
       if ( priest().talents.shared.inescapable_torment.enabled() )
       {
-        priest().trigger_inescapable_torment( s->target );
+        // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1151
+        if ( priest().is_ptr() && priest().options.t31_2set_bug &&
+             priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B2 ) )
+        {
+          priest().trigger_inescapable_torment( s->target, true,
+                                                priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent() );
+        }
+        else
+        {
+          priest().trigger_inescapable_torment( s->target );
+        }
       }
 
       if ( priest().buffs.mind_devourer->trigger() )
@@ -2979,6 +2989,7 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
+  add_option( opt_bool( "priest.t31_2set_bug", options.t31_2set_bug ) );
 }
 
 std::string priest_t::create_profile( save_e type )

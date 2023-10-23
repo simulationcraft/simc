@@ -669,6 +669,10 @@ public:
     bool init_insanity = true;
 
     int disc_minimum_allies = 5;
+
+    // Enable the bugged behavior with the T31 2-set
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1151
+    bool t31_2set_bug = false;
   } options;
 
   vector_with_callback<player_t*> allies_with_atonement;
