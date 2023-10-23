@@ -12642,6 +12642,18 @@ void player_t::create_options()
   add_option( opt_float( "dragonflight.igneous_flowstone_double_lava_wave_chance", dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) );
   add_option( opt_bool( "dragonflight.voice_of_the_silent_star_enable", dragonflight_opts.voice_of_the_silent_star_enable ) );
   add_option( opt_bool( "dragonflight.nymue_forced_immobilized", dragonflight_opts.nymue_forced_immobilized ) );
+  add_option( opt_func( "dragonflight.witherbarks_branch_timing", [ this ]( sim_t*, util::string_view,
+                                                                            util::string_view value ) {
+    auto splits = util::string_split<std::string>( value, "/" );
+    if ( splits.size() != 3 )
+      throw std::invalid_argument( fmt::format( "Invalid 'dragonflight.witherbarks_branch_timing' option: '{}'", value ) );
+
+    for ( size_t i = 0; i < 3; i++ )
+    {
+      dragonflight_opts.witherbarks_branch_timing[ i ] = timespan_t::from_seconds( util::to_double( splits[ i ] ) );
+    }
+    return true;
+  } ) );
 
   // Obsolete options
 

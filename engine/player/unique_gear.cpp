@@ -113,6 +113,7 @@ namespace item
   void gronntooth_war_horn( special_effect_t& );
   void orb_of_voidsight( special_effect_t& );
   void infallible_tracking_charm( special_effect_t& );
+  void witherbarks_branch( special_effect_t& );
 
   /* Timewalking Trinkets */
   void necromantic_focus( special_effect_t& );
@@ -1836,6 +1837,53 @@ void item::orb_of_voidsight( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.item, effect );
 }
+
+
+void item::witherbarks_branch( special_effect_t& effect )
+{
+
+  struct aqueous_dowsing_t : public buff_t
+  {
+    int custom_tick;
+    stat_buff_t* stat_buff;
+
+    aqueous_dowsing_t( const actor_pair_t& p, const special_effect_t& e )
+      : buff_t( p, "aqueous_dowsing", e.driver() ), custom_tick( 0 )
+    {
+      set_quiet( true );
+      set_cooldown( 0_ms );
+      set_can_cancel( false );
+
+      stat_buff = make_buff<stat_buff_t>( e.player, "aqueous_enrichment", e.player->find_spell( 429262 ), e.item );
+
+      set_stack_change_callback( [ this ]( buff_t*, int, int n ) {
+        if ( n )
+        {
+          custom_tick = 0;
+          make_event( player->sim, player->dragonflight_opts.witherbarks_branch_timing[ custom_tick ],
+                      [ this ]() { custom_tick_callback(); } );
+        }
+      } );
+    }
+
+    void custom_tick_callback()
+    {
+      if ( !check() )
+        return;
+
+      stat_buff->trigger();
+
+      if ( custom_tick < 2 )
+        make_event( player->sim, player->dragonflight_opts.witherbarks_branch_timing[ ++custom_tick ],
+                    [ this ]() { custom_tick_callback(); } );
+    }
+  };
+
+  effect.custom_buff = new aqueous_dowsing_t( effect.player, effect );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 
 void item::black_blood_of_yshaarj( special_effect_t& effect )
 {
@@ -4821,6 +4869,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 201404, item::gronntooth_war_horn            );
   register_special_effect( 201407, item::infallible_tracking_charm      );
   register_special_effect( 201409, item::orb_of_voidsight               );
+  register_special_effect( 429257, item::witherbarks_branch             );
 
   /* Warlords of Draenor 6.0 */
   register_special_effect( 177085, item::blackiron_micro_crucible       );

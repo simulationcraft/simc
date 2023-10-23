@@ -754,6 +754,8 @@ struct player_t : public actor_t
     player_option_t<bool> voice_of_the_silent_star_enable = true;
     // Force the extra damage from Nymue's Unraveling Spindle against Immobilized targets
     player_option_t<bool> nymue_forced_immobilized = false;
+    // Option to control the timing to pick up each orb for the Witherbarks Branch Trinket.
+    timespan_t witherbarks_branch_timing[ 3 ]      = { 1_s, 1_s, 1_s };
   } dragonflight_opts;
 
 private:
