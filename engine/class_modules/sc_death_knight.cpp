@@ -1871,32 +1871,32 @@ struct death_knight_pet_t : public pet_t
     {
       m *= 1.0 + dk()->pet_spell.commander_of_the_dead->effectN( 1 ).percent();
     }
-
-    if ( dk()->mastery.dreadblade->ok() )
+    /*
+    if (dk()->mastery.dreadblade->ok())
     {
       m *= 1.0 + dk()->cache.mastery_value();
     }
 
-    if ( dk()->talent.unholy.unholy_aura.ok() )
+    if (dk()->talent.unholy.unholy_aura.ok())
     {
-      if ( guardian )
+      if (guardian)
         m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 4 ).percent();
       else  // Pets
         m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 3 ).percent();
     }
 
-    if ( is_ptr() )
+    if (is_ptr())
     {
-      if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.amplify_damage->check() )
+      if (dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.amplify_damage->check())
       {
         m *= 1.0 + dk()->buffs.amplify_damage->check_value();
       }
 
-      if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.unholy_assault->check() )
+      if (dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.unholy_assault->check())
       {
         m *= 1.0 + dk()->buffs.unholy_assault->check_value();
       }
-    }
+    }*/
 
     return m;
   }
@@ -11070,6 +11070,32 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.vigorous_lifeblood_4pc -> check() )
   {
     m *= 1.0 + spell.vigorous_lifeblood_4pc -> effectN( 4 ).percent();
+  }
+
+  if ( mastery.dreadblade->ok() )
+  {
+    m *= 1.0 + cache.mastery_value();
+  }
+
+  if ( talent.unholy.unholy_aura.ok() )
+  {
+    if ( guardian )
+      m *= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
+    else  // Pets
+      m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
+  }
+
+  if ( is_ptr() )
+  {
+    if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.amplify_damage->check() )
+    {
+      m *= 1.0 + buffs.amplify_damage->check_value();
+    }
+
+    if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.unholy_assault->check() )
+    {
+      m *= 1.0 + buffs.unholy_assault->check_value();
+    }
   }
 
   return m;
