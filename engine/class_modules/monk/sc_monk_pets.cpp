@@ -715,6 +715,15 @@ namespace monk
           aoe = 1 + ( int )o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
         }
 
+        double composite_crit_chance() const override
+        {
+          double c = sef_melee_attack_t::composite_crit_chance();
+
+          c += o()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+
+          return c;
+        }
+
         void impact( action_state_t *state ) override
         {
           sef_melee_attack_t::impact( state );
@@ -739,6 +748,15 @@ namespace monk
 
             add_child( bok_totm_proc );
           }
+        }
+
+        double composite_crit_chance() const override
+        {
+          double c = sef_melee_attack_t::composite_crit_chance();
+
+          c += o()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+
+          return c;
         }
 
         void impact( action_state_t *state ) override
@@ -784,7 +802,7 @@ namespace monk
         double composite_crit_chance() const override
         {
           double c = sef_melee_attack_t::composite_crit_chance();
-
+         
           c += o()->buff.pressure_point->check_value();
 
           return c;
