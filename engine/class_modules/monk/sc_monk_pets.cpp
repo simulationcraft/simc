@@ -872,7 +872,8 @@ namespace monk
         {
           double m = sef_melee_attack_t::composite_target_multiplier( target );
 
-          if ( target != p()->target )
+          // SEF also have reduced AoE from Effect #6 but it's based on the player's target not theirs 
+          if ( target != o()->target )
             m *= o()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
           else
             m *= 1 + o()->sets->set( MONK_WINDWALKER, T30, B4 )->effectN( 1 ).percent();
