@@ -702,7 +702,7 @@ namespace monk
             p()->bonedust_brew_assessor( dot->state );
 
           // Currently bugged and not occurring.
-          if ( !p()->bugs && !ab::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 && )
+          if ( !p()->bugs && !ab::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 )
           {
             if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
             {
@@ -720,18 +720,18 @@ namespace monk
               // This value is not presented in any spell data and was found via logs.
               if ( p()->rng().roll( 0.5 ) )
               {
-                double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
-                p()->active_actions.charred_dreams_dmg_4p->target = s->target;
+                double amt = dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
+                p()->active_actions.charred_dreams_dmg_4p->target = dot->state->target;
                 p()->active_actions.charred_dreams_dmg_4p->base_dd_min =
                     p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
                 p()->active_actions.charred_dreams_dmg_4p->execute();
                 p()->sim->print_debug(
                     "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
-                    s->action->id, s->result_amount, amt );
+                    dot->state->action->id, dot->state->result_amount, amt );
               }
             }
 
-            if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && s->action->school == SCHOOL_FIRE )
+            if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && dot->state->action->school == SCHOOL_FIRE )
             {
               double amt =
                   dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 2 ).percent();
