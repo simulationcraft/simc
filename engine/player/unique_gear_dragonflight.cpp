@@ -770,11 +770,11 @@ void incandescent_essence( special_effect_t& e )
     {
       if ( sim->target_non_sleeping_list.size() == 1 )
       {
-      st_damage->execute_on_target( target );
+        st_damage->execute_on_target( target );
       }
       else
       {
-      aoe_damage->execute();
+        aoe_damage->execute();
       }
       generic_proc_t::execute();
     }
