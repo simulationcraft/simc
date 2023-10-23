@@ -709,8 +709,10 @@ namespace monk
         sef_blackout_kick_totm_proc_t( storm_earth_and_fire_pet_t *player )
           : sef_melee_attack_t( "blackout_kick_totm_proc", player, player->o()->passives.totm_bok_proc )
         {
-          background = true;
+          background = dual = true;
           trigger_gcd = timespan_t::zero();
+
+          aoe = 1 + ( int )o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
         }
 
         void impact( action_state_t *state ) override
@@ -728,6 +730,9 @@ namespace monk
         sef_blackout_kick_t( storm_earth_and_fire_pet_t *player )
           : sef_melee_attack_t( "blackout_kick", player, player->o()->spec.blackout_kick )
         {
+    
+          aoe = 1 + ( int )o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
+
           if ( player->o()->talent.windwalker.teachings_of_the_monastery->ok() )
           {
             bok_totm_proc = new sef_blackout_kick_totm_proc_t( player );
@@ -839,6 +844,22 @@ namespace monk
           reduced_aoe_targets = p->o()->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
           full_amount_targets = 1;
           base_dd_min = base_dd_max = 1.0;  // parse state flags
+
+          dot_duration = timespan_t::zero();
+          trigger_gcd = timespan_t::zero();
+        }
+
+        
+        double composite_target_multiplier( player_t *target ) const override
+        {
+          double m = sef_melee_attack_t::composite_target_multiplier( target );
+
+          if ( target != p()->target )
+            m *= o()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
+          else
+            m *= 1 + o()->sets->set( MONK_WINDWALKER, T30, B4 )->effectN( 1 ).percent();
+
+          return m;
         }
       };
 
@@ -855,6 +876,7 @@ namespace monk
           // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
           base_tick_time = ( dot_duration / 4 );
 
+          attack_power_mod.direct = 0;
           weapon_power_mod = 0;
 
           tick_action = new sef_fists_of_fury_tick_t( player );

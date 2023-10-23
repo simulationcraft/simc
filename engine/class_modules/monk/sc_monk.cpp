@@ -2153,7 +2153,7 @@ namespace monk
           if ( p()->buff.serenity->up() )
             p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
 
-        // Register how much chi is saved without actually refunding the chi
+          // Register how much chi is saved without actually refunding the chi
           if ( p()->buff.bok_proc->up() )
           {
             p()->buff.bok_proc->expire();
@@ -7629,8 +7629,8 @@ namespace monk
       // Have the SEF converge onto the the cleave target if there are only 2 targets
       if ( targets.size() == 2 )
         return targets[1];
-      // Don't move the SEF if there is only 3 targets
-      if ( targets.size() == 3 )
+      // SEF do not change targets if you have max Mark of the Crane stacks or if they are unfixated and there's only 3 targets.
+      if ( targets.size() == 3 || mark_of_the_crane_counter() == passives.cyclone_strikes->max_stacks() )
         return state->target;
 
       // First of all find targets that do not have the cyclone strike debuff applied and send the SEF to those targets
@@ -7665,6 +7665,7 @@ namespace monk
       get_target_data( state->target )->debuff.storm_earth_and_fire->expire();
       // make the new target show that a SEF is on the target
       get_target_data( lowest_duration )->debuff.storm_earth_and_fire->trigger();
+
       return lowest_duration;
     }
     // otherwise, target the same as the player
