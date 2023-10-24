@@ -19330,11 +19330,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1101532)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 2901 (Label) | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value: 22 | Misc Value 2: 2901 (Label) | Target: Self (1)
                    Affected Spells (Label): Expurgation (383346)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1101533)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 2901 (Label) | Target: Self (1)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Misc Value 2: 2901 (Label) | Target: Self (1)
                    Affected Spells (Label): Expurgation (383346)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1101887)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Expurgation lasts an additional ${$s2/1000} sec and deals $s1% increased damage. Casting Judgment or Divine Toll on a target with Expurgation causes Wrathful Sanction, damaging the target for $424590s1 Holy damage and resonating ${$424590s1/$424590s2} Holy damage to up to $s3 nearby enemies.
@@ -19354,7 +19356,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1101645)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Wrathful Sanction grants you Echoes of Wrath, causing your next Templar's Verdict or Divine Storm to deal damage a second time at $s1% effectiveness. This effect does not consume Judgment.
 
 Name             : Wrathful Sanction (id=424590) [Spell Family (10)] 
@@ -19377,7 +19380,8 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Allow Dead Target (64), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), No Aura Log (202), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1101687)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1101693)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1106597)  : Dummy (3)
