@@ -997,7 +997,7 @@ public:
     // DISCIPLINE BUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_buff_effects( p().buffs.shadow_covenant, 0U, false, USE_DEFAULT_DATA_OFFSET,
+      parse_buff_effects( p().buffs.shadow_covenant, 0U, false, USE_DEFAULT,
                           p().talents.discipline.twilight_corruption );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
