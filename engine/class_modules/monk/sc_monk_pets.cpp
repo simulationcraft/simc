@@ -445,23 +445,16 @@ namespace monk
           }
         }
 
-        // Use SEF-specific override methods for target related multipliers as the
-        // pets seem to have their own functionality relating to it. The rest of
-        // the state-related stuff is actually mapped to the source (owner) action
-        // below.
-
-        double composite_target_multiplier( player_t *t ) const override
-        {
-          double m = super_t::composite_target_multiplier( t );
-
-          return m;
-        }
-
         // Map the rest of the relevant state-related stuff into the source
         // action's methods. In other words, use the owner's data. Note that attack
         // power is not included here, as we will want to (just in case) snapshot
         // AP through the pet's own AP system. This allows us to override the
         // inheritance coefficient if need be in an easy way.
+
+        double composite_target_multiplier( player_t *t ) const override
+        {
+          return source_action->composite_target_multiplier( t );
+        }
 
         double attack_direct_power_coefficient( const action_state_t *state ) const override
         {
@@ -506,6 +499,11 @@ namespace monk
         double composite_target_crit_chance( player_t *target ) const override
         {
           return source_action->composite_target_crit_chance( target );
+        }
+
+        double composite_crit_chance() const override
+        {
+          return source_action->composite_crit_chance();
         }
 
         double composite_haste() const override
@@ -711,17 +709,6 @@ namespace monk
         {
           background = dual = true;
           trigger_gcd = timespan_t::zero();
-
-          aoe = 1 + ( int )o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
-        }
-
-        double composite_crit_chance() const override
-        {
-          double c = sef_melee_attack_t::composite_crit_chance();
-
-          c += o()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
-
-          return c;
         }
 
         void impact( action_state_t *state ) override
@@ -748,15 +735,6 @@ namespace monk
 
             add_child( bok_totm_proc );
           }
-        }
-
-        double composite_crit_chance() const override
-        {
-          double c = sef_melee_attack_t::composite_crit_chance();
-
-          c += o()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
-
-          return c;
         }
 
         void impact( action_state_t *state ) override
@@ -797,15 +775,6 @@ namespace monk
 
             add_child( glory_of_the_dawn );
           }
-        }
-
-        double composite_crit_chance() const override
-        {
-          double c = sef_melee_attack_t::composite_crit_chance();
-         
-          c += o()->buff.pressure_point->check_value();
-
-          return c;
         }
 
         void impact( action_state_t *state ) override
@@ -865,20 +834,6 @@ namespace monk
 
           dot_duration = timespan_t::zero();
           trigger_gcd = timespan_t::zero();
-        }
-
-        
-        double composite_target_multiplier( player_t *target ) const override
-        {
-          double m = sef_melee_attack_t::composite_target_multiplier( target );
-
-          // SEF also have reduced AoE from Effect #6 but it's based on the player's target not theirs 
-          if ( target != o()->target )
-            m *= o()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
-          else
-            m *= 1 + o()->sets->set( MONK_WINDWALKER, T30, B4 )->effectN( 1 ).percent();
-
-          return m;
         }
       };
 
