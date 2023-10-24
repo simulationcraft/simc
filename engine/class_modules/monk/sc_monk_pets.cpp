@@ -711,8 +711,6 @@ namespace monk
         {
           background = dual = true;
           trigger_gcd = timespan_t::zero();
-
-          aoe = 1 + ( int )o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
         }
 
         double composite_crit_chance() const override

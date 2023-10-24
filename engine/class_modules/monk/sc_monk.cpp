@@ -2001,8 +2001,6 @@ namespace monk
           background = dual = true;
           trigger_chiji = true;
           trigger_gcd = timespan_t::zero();
-
-          aoe = 1 + ( int )p->shared.shadowboxing_treads->effectN( 1 ).base_value();
         }
 
         void init_finished() override
