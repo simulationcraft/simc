@@ -2313,7 +2313,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 8 seconds
 Labels           : 2381: Ascending Flame (428603 effect#1), Ascending Flame (428603 effect#2)
                  : 3036: Illuminated Sigils (428557 effect#6)
 Stacks           : 1 maximum
