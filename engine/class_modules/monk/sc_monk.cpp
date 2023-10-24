@@ -2245,6 +2245,8 @@ namespace monk
 
           if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
             p()->buff.gift_of_the_ox->trigger();
+
+          p()->buff.teachings_of_the_monastery->expire();
         }
 
         void impact( action_state_t *s ) override
@@ -2287,7 +2289,6 @@ namespace monk
               p()->proc.rsk_reset_totm->occur();
             }
 
-            p()->buff.teachings_of_the_monastery->expire();
           }
 
           p()->trigger_mark_of_the_crane( s );
@@ -5946,15 +5947,13 @@ namespace monk
         {
           double am = monk_heal_t::action_multiplier();
 
-          if ( p()->specialization() == MONK_BREWMASTER )
+          if ( p()->talent.general.strength_of_spirit->ok() )
           {
-            if ( p()->talent.general.strength_of_spirit->ok() )
-            {
-              double health_percent = std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 ) / p()->resources.max[RESOURCE_HEALTH];
-              am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
-            }
-            am *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
+            double health_percent = std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 ) / p()->resources.max[RESOURCE_HEALTH];
+            am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
           }
+
+          am *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
 
           return am;
         }
@@ -5982,33 +5981,8 @@ namespace monk
         {
           monk_heal_t::impact( s );
 
+          // Expel Harm is based on raw healign instead of effective healing as of Shadowlands
           double result = s->result_total;
-
-          if ( p()->specialization() == MONK_WINDWALKER )
-          {
-            double health_difference = p()->resources.max[RESOURCE_HEALTH] - std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 );
-            // Have to manually set the combo strike mastery multiplier
-            if ( p()->buff.combo_strikes->up() )
-              result *= 1 + p()->cache.mastery_value();
-
-            // Windwalker health difference will almost always be zero. So using the Expel Harm Effectiveness
-            // option to simulate the amount of time that the results will use the full amount.
-            if ( health_difference < result || !rng().roll( p()->user_options.expel_harm_effectiveness ) )
-            {
-              double min_amount = 1 / p()->spec.expel_harm->effectN( 2 ).percent();
-              // Normally this would be using health_difference, but since Windwalkers will almost always be set
-              // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
-              result = rng().range( min_amount, result );
-            }
-
-            if ( p()->talent.general.strength_of_spirit->ok() )
-            {
-              double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
-              s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
-            }
-
-            result *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
-          }
 
           if ( p()->specialization() == MONK_BREWMASTER )
           {
@@ -7442,7 +7416,6 @@ namespace monk
       regen_caches[CACHE_ATTACK_HASTE] = true;
     }
     user_options.initial_chi = 1;
-    user_options.expel_harm_effectiveness = 0.25;
     user_options.faeline_stomp_uptime = 1.0;
     user_options.chi_burst_healing_targets = 8;
     user_options.motc_override = 0;
@@ -9727,7 +9700,6 @@ namespace monk
     base_t::create_options();
 
     add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-    add_option( opt_float( "monk.expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
     add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
     add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
     add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
