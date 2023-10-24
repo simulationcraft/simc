@@ -7655,8 +7655,8 @@ namespace monk
       // Have the SEF converge onto the the cleave target if there are only 2 targets
       if ( targets.size() == 2 )
         return targets[1];
-      // SEF do not change targets if you have max Mark of the Crane stacks or if they are unfixated and there's only 3 targets.
-      if ( targets.size() == 3 || mark_of_the_crane_counter() == passives.cyclone_strikes->max_stacks() )
+      // SEF do not change targets if they are unfixated and there's only 3 targets.
+      if ( targets.size() == 3 )
         return state->target;
 
       // First of all find targets that do not have the cyclone strike debuff applied and send the SEF to those targets
