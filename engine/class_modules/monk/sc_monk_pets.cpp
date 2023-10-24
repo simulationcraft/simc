@@ -453,7 +453,7 @@ namespace monk
 
         double composite_target_multiplier( player_t *t ) const override
         {
-          return source_action->composite_target_multiplier( target )
+          return source_action->composite_target_multiplier( t );
         }
 
         double attack_direct_power_coefficient( const action_state_t *state ) const override
