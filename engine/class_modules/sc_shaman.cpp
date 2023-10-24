@@ -10559,17 +10559,20 @@ void shaman_t::create_buffs()
   buff.elemental_blast_crit = make_buff<buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
     ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
     ->apply_affecting_aura(spec.elemental_shaman)
-    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+    ->set_refresh_behavior( dbc->ptr ? buff_refresh_behavior::PANDEMIC : buff_refresh_behavior::DURATION );
 
   buff.elemental_blast_haste = make_buff<buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) )
     ->set_default_value_from_effect_type(A_HASTE_ALL)
     ->apply_affecting_aura(spec.elemental_shaman)
-    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )    
+    ->set_refresh_behavior( dbc->ptr ? buff_refresh_behavior::PANDEMIC : buff_refresh_behavior::DURATION );
 
   buff.elemental_blast_mastery = make_buff<buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
     ->apply_affecting_aura(spec.elemental_shaman)
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+    ->set_refresh_behavior( dbc->ptr ? buff_refresh_behavior::PANDEMIC : buff_refresh_behavior::DURATION );
 
   buff.stormkeeper = make_buff( this, "stormkeeper", find_spell( 191634 ) )
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
