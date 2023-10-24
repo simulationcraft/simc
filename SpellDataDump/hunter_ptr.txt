@@ -13439,7 +13439,7 @@ Duration         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Affecting spells : Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effect#1)
+Affecting spells : Any Means Necessary (388114 effects: #1, #3, #4), Demon Hide (428241 effects: #1, #3)
 Triggered by     : The Hunt (323639)
 Family Flags     : 82
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 

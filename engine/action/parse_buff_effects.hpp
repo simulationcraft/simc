@@ -52,7 +52,6 @@ enum value_type_e
 {
   USE_DATA,
   USE_DEFAULT,
-  USE_DEFAULT_DATA_OFFSET,
   USE_CURRENT
 };
 
@@ -173,7 +172,8 @@ public:
   {
     const auto& eff = s_data->effectN( i );
     bool mastery    = action_->player->find_mastery_spell( action_->player->specialization() ) == s_data;
-    double val      = value_type == USE_DEFAULT_DATA_OFFSET ? 0.0 : ( mastery ? eff.mastery_value() : eff.base_value() );
+    double val      = ( buff && value_type == USE_DEFAULT ) ? ( buff->default_value * 100 )
+                                                            : ( mastery ? eff.mastery_value() : eff.base_value() );
     double val_mul  = 0.01;
 
     // TODO: more robust logic around 'party' buffs with radius
@@ -191,10 +191,8 @@ public:
           val_str = "current value";
         else if ( value_type == value_type_e::USE_DEFAULT )
           val_str = fmt::format( "default value ({})", val * val_mul );
-        else if ( value_type == value_type_e::USE_DEFAULT_DATA_OFFSET )
-          val_str = fmt::format( "default value and offset ({})", val * val_mul );
         else if ( mastery )
-          val_str = fmt::format( "{}*mastery", val * val_mul );
+          val_str = fmt::format( "{}*mastery", val * val_mul * 100 );
         else
           val_str = fmt::format( "{}", val * val_mul );
 
@@ -205,8 +203,8 @@ public:
       else if ( mastery && !f )
       {
         action_->sim->print_debug( "mastery-effects: {} ({}) {} modified by {}*mastery from {} ({}#{})",
-                                   action_->name(), action_->id, type, val * val_mul, s_data->name_cstr(), s_data->id(),
-                                   i );
+                                   action_->name(), action_->id, type, val * val_mul * 100, s_data->name_cstr(),
+                                   s_data->id(), i );
       }
       else if ( f )
       {
@@ -230,19 +228,6 @@ public:
 
     if ( !action_->data().affected_by_all( eff ) && !force )
       return;
-
-    if ( value_type == USE_DEFAULT && buff )
-    {
-      val     = buff->default_value;
-      val_mul = 1.0;
-    }
-
-    if ( value_type == USE_DEFAULT_DATA_OFFSET && buff )
-    {
-      val *= val_mul;
-      val += buff->default_value;
-      val_mul = 1.0;
-    }
 
     if ( !val )
       return;
