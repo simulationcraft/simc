@@ -13368,9 +13368,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053843)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 60)
 #2 (id=1074772)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 3)
 #3 (id=1074773)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
                    Affected Spells: Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
