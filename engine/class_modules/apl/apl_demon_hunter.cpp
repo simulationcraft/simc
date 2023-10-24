@@ -392,7 +392,7 @@ void vengeance_ptr( player_t* p )
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
-  precombat->add_action( "sigil_of_flame" );
+  precombat->add_action( "sigil_of_flame,if=!talent.fiery_demise" );
   precombat->add_action( "immolation_aura,if=active_enemies=1|!talent.fallout" );
 
   default_->add_action( "auto_attack" );
@@ -401,19 +401,19 @@ void vengeance_ptr( player_t* p )
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
   default_->add_action( "metamorphosis" );
   default_->add_action( "fel_devastation,if=!talent.fiery_demise.enabled" );
+  default_->add_action( "fiery_brand,if=((remains<tick_time|!ticking)&talent.fiery_demise)" );
   default_->add_action( "fiery_brand,if=!talent.fiery_demise.enabled&!ticking" );
   default_->add_action( "bulk_extraction" );
   default_->add_action( "potion" );
   default_->add_action( "invoke_external_buff,name=power_infusion" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=racials" );
+  default_->add_action( "sigil_of_flame" );
+  default_->add_action( "fel_devastation" );
   default_->add_action( "the_hunt" );
   default_->add_action( "elysian_decree" );
   default_->add_action( "soul_carver,if=(!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking))&soul_fragments<=2" );
-  default_->add_action( "sigil_of_flame" );
-  default_->add_action( "fel_devastation" );
-  default_->add_action( "fiery_brand,if=((remains<tick_time|!ticking)&talent.fiery_demise)" );
-  default_->add_action( "immolation_aura,if=dot.fiery_brand.ticking&talent.charred_flesh" );
+  default_->add_action( "immolation_aura,if=(dot.fiery_brand.ticking|dot.sigil_of_flame.ticking)&talent.charred_flesh" );
   default_->add_action( "felblade,if=fury.deficit>=40" );
   default_->add_action( "spirit_bomb,if=(soul_fragments>=5&spell_targets=1)|(soul_fragments>=4&spell_targets>1)" );
   default_->add_action( "soul_cleave" );

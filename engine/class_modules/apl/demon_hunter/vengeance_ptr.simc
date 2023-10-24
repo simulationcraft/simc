@@ -7,29 +7,29 @@ actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(
 actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)
 actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
 actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
-actions.precombat+=/sigil_of_flame
+actions.precombat+=/sigil_of_flame,if=!talent.fiery_demise
 actions.precombat+=/immolation_aura,if=active_enemies=1|!talent.fallout
 
-actions=/auto_attack
+# Executed every time the actor is available.
+actions=auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
 actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
 actions+=/metamorphosis
 actions+=/fel_devastation,if=!talent.fiery_demise.enabled
+actions+=/fiery_brand,if=((remains<tick_time|!ticking)&talent.fiery_demise)
 actions+=/fiery_brand,if=!talent.fiery_demise.enabled&!ticking
 actions+=/bulk_extraction
 actions+=/potion
 actions+=/invoke_external_buff,name=power_infusion
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=racials
-
+actions+=/sigil_of_flame
+actions+=/fel_devastation
 actions+=/the_hunt
 actions+=/elysian_decree
 actions+=/soul_carver,if=(!talent.fiery_demise|(talent.fiery_demise&dot.fiery_brand.ticking))&soul_fragments<=2
-actions+=/sigil_of_flame
-actions+=/fel_devastation
-actions+=/fiery_brand,if=((remains<tick_time|!ticking)&talent.fiery_demise)
-actions+=/immolation_aura,if=dot.fiery_brand.ticking&talent.charred_flesh
+actions+=/immolation_aura,if=(dot.fiery_brand.ticking|dot.sigil_of_flame.ticking)&talent.charred_flesh
 actions+=/felblade,if=fury.deficit>=40
 actions+=/spirit_bomb,if=(soul_fragments>=5&spell_targets=1)|(soul_fragments>=4&spell_targets>1)
 actions+=/soul_cleave
