@@ -20384,7 +20384,7 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   { 426289, "$@spelldesc426288", "Your abilities deal $425838w1 additional Fire damage split between nearby enemies and shield you for the damage dealt by this effect.", 0 },
   { 426293, "Create a soulbound Mythic+ Dungeon item appropriate for your loot specialization ($@lootspec) during Dragonflight Season 3.", 0, 0 },
   { 426306, "$@spelldesc426288", 0, 0 },
-  { 426321, "@$spelldesc426262", "Healing for $w1 every second.", 0 },
+  { 426321, "$@spelldesc426262", "Healing for $w1 every second.", 0 },
   { 426322, "@$spelldesc426262", "Versatility increased by $w1.", 0 },
   { 426339, "Your attacks have a low chance to draw torment from your victim to manifest a cruel blade based on the number of nearby enemies, dealing ${$425838s8*($426527d/$426527t1)} Shadowflame damage over $426527d to solitary foes or ${$425838s9} Fire damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.\r\n", "Your attacks have a low chance to draw torment from your victim to manifest a cruel blade based on the number of nearby enemies, dealing ${$425838w8*($426527d/$426527t1)} Shadowflame damage over $426527d to solitary foes or ${$425838w9} Fire damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.", 0 },
   { 426341, "Your harmful spells and abilities have a chance to summon a parliament of blazing spirit owls to divebomb your target, dealing ${$425838w6*2+$425838w8} Fire damage split between all nearby targets.\r\nDamage increased per enemy struck, up to 5.", "Your harmful spells and abilities have a chance to summon a parliament of blazing spirit owls to divebomb your target, dealing ${$425838w6*2+$425838w8} Fire damage split between all nearby targets.\r\nDamage increased per enemy struck, up to 5.", 0 },
@@ -20503,7 +20503,8 @@ static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.51851
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  426321,  0, "@$spelldesc426262", "$@spelldesc426262" },
 } };
 
 // Spell description variables, wow build 10.2.0.51851
