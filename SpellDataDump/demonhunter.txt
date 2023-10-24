@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51754 Live
+SimulationCraft 1015-01 for World of Warcraft 10.1.7.51886 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3735,7 +3735,7 @@ Name             : Felblade (id=213243) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Melee
-Spell Level      : 50
+Spell Level      : 16
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #7), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
