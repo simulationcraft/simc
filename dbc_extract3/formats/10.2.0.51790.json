@@ -957,12 +957,12 @@
       { "data_type": "f", "field": "corpse", "elements": 2 },
       { "data_type": "B", "field": "map_type" },
       { "data_type": "b", "field": "instance_type" },
-      { "data_type": "i", "field": "id_expansion" },
+      { "data_type": "B", "field": "id_expansion" },
       { "data_type": "H", "field": "id_area_table" },
       { "data_type": "h", "field": "id_loading_screen" },
       { "data_type": "h", "field": "time_of_day_override" },
       { "data_type": "h", "field": "id_parent_map", "ref": "Map" },
-      { "data_type": "H", "field": "id_cosmetic_parent_map" },
+      { "data_type": "h", "field": "id_cosmetic_parent_map" },
       { "data_type": "B", "field": "time_offset" },
       { "data_type": "f", "field": "minimap_icon_scale" },
       { "data_type": "h", "field": "id_corpse_map" },
@@ -971,7 +971,7 @@
       { "data_type": "i", "field": "id_zmp_file_data" },
       { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "unk_2" },
-      { "data_type": "I", "field": "flags", "elements": 2 }
+      { "data_type": "i", "field": "flags", "elements": 3 }
     ]
   },
   "MapDifficulty": {
