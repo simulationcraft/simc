@@ -2245,6 +2245,8 @@ namespace monk
 
           if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
             p()->buff.gift_of_the_ox->trigger();
+
+          p()->buff.teachings_of_the_monastery->expire();
         }
 
         void impact( action_state_t *s ) override
@@ -2287,7 +2289,6 @@ namespace monk
               p()->proc.rsk_reset_totm->occur();
             }
 
-            p()->buff.teachings_of_the_monastery->expire();
           }
 
           p()->trigger_mark_of_the_crane( s );
