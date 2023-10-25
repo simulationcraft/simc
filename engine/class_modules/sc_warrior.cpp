@@ -2483,7 +2483,6 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
-    td->debuffs_executioners_precision->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2508,6 +2507,10 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
     {  // does this eat RPPM when switching from low -> high health target?
       td( s->target )->debuffs_fatal_mark->trigger();
+    }
+    if ( td( s->target )->debuffs_executioners_precision->up() )
+    {
+      td( s->target )->debuffs_executioners_precision->expire();
     }
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
     {
@@ -2640,7 +2643,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
-    td->debuffs_executioners_precision->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2665,6 +2667,10 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
     { // does this eat RPPM when switching from low -> high health target?
       td( s->target )->debuffs_fatal_mark->trigger();
+    }
+    if ( td( s->target )->debuffs_executioners_precision->up() )
+    {
+      td( s->target )->debuffs_executioners_precision->expire();
     }
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
     {
@@ -3595,6 +3601,16 @@ struct colossus_smash_t : public warrior_attack_t
     return b;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      td( s->target )->debuffs_colossus_smash->trigger();
+    }
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3606,7 +3622,7 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      td( execute_state->target )->debuffs_colossus_smash->trigger();
+      //td( execute_state->target )->debuffs_colossus_smash->trigger();
       p()->buff.test_of_might_tracker->trigger();
 
       if ( p()->talents.arms.in_for_the_kill->ok() )
@@ -4035,6 +4051,11 @@ struct execute_damage_t : public warrior_attack_t
         residual_action::trigger( finishing_wound, state->target, amount );
       }
     }
+
+    if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( state->result ) ) )
+    {
+      td( state->target )->debuffs_executioners_precision->trigger();
+    }
   }
 };
 
@@ -4131,10 +4152,6 @@ struct execute_arms_t : public warrior_attack_t
         t31_thunder_clap->execute();
       }
       p()->buff.sudden_death->expire();
-    }
-    if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
-    {
-      td( execute_state->target )->debuffs_executioners_precision->trigger();
     }
     if ( p()->legendary.exploiter.ok() && !p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
     {
@@ -5059,9 +5076,9 @@ struct skullsplitter_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    warrior_td_t* td = p()->get_target_data( target );
     if ( !p() -> dbc -> ptr )
     {
+      warrior_td_t* td = p()->get_target_data( target );
       trigger_tide_of_blood( td->dots_deep_wounds );
 
       if ( p()->talents.arms.tide_of_blood->ok() )
@@ -5071,7 +5088,10 @@ struct skullsplitter_t : public warrior_attack_t
     }
     else
     {
-      td->debuffs_skullsplitter->trigger();
+      if ( result_is_hit( s->result ) )
+      {
+        td( s->target )->debuffs_skullsplitter->trigger();
+      }
     }
   }
 };
@@ -7038,10 +7058,6 @@ struct condemn_arms_t : public warrior_attack_t
     if (p()->buff.sudden_death->up())
     {
       p()->buff.sudden_death->expire();
-    }
-    if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
-    {
-      td( execute_state->target )->debuffs_executioners_precision->trigger();
     }
     if ( p()->legendary.exploiter.ok() && !p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
     {
@@ -9369,17 +9385,15 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                               if ( old_ == 0 )
                               {
                                 auto coeff = 1.0 / ( 1.0 + buff_ -> default_value );
-                                if ( dots_deep_wounds -> is_ticking() )
-                                  dots_deep_wounds -> adjust( coeff );
-                                if ( p.talents.arms.tide_of_blood -> ok() && dots_rend -> is_ticking() )
+                                dots_deep_wounds -> adjust( coeff );
+                                if ( p.talents.arms.tide_of_blood -> ok() )
                                   dots_rend -> adjust( coeff );
                               }
                               else if ( new_ == 0 )
                               {
                                 auto coeff = 1.0 + buff_ -> default_value;
-                                if ( dots_deep_wounds -> is_ticking() )
-                                  dots_deep_wounds -> adjust( coeff );
-                                if ( p.talents.arms.tide_of_blood -> ok() && dots_rend -> is_ticking() )
+                                dots_deep_wounds -> adjust( coeff );
+                                if ( p.talents.arms.tide_of_blood -> ok() )
                                   dots_rend -> adjust( coeff );
                               }
                             } );
