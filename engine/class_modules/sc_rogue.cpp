@@ -2445,10 +2445,7 @@ public:
     // Expire On-Cast Fading Buffs
     for ( consume_buff_t& consume_buff : consume_buffs )
     {
-      if ( !ab::background || consume_buff.on_background ||
-           secondary_trigger_type == secondary_trigger::SHURIKEN_TORNADO ||
-           secondary_trigger_type == secondary_trigger::CRACKSHOT ||
-           secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
+      if ( consume_buff.on_background || !ab::background || ( is_secondary_action() && ab::not_a_proc ) )
       {
         if ( consume_buff.buff->check() )
         {
@@ -3841,8 +3838,9 @@ struct crimson_tempest_t : public rogue_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
+    // 2023-10-24 -- Base duration was changed to 4s, scaling by 2s per CP (not in spell data)
     const auto rs = cast_state( s );
-    timespan_t duration = data().duration() * ( 1 + rs->get_combo_points() );
+    timespan_t duration = data().duration() + ( 2_s * rs->get_combo_points() );
     duration *= 1.0 / rs->get_exsanguinated_rate();
 
     return duration;
