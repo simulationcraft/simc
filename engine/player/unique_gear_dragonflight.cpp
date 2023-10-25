@@ -8045,7 +8045,6 @@ void rallied_to_victory( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
   buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
-  buff->set_max_stack( 1 );
 
   struct rallied_to_victory_cb_t : public dbc_proc_callback_t
   {
@@ -8056,11 +8055,11 @@ void rallied_to_victory( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      int allies = 0;
-      if( effect.player -> dragonflight_opts.rallied_to_victory_ally_estimate )
+      if ( effect.player->dragonflight_opts.rallied_to_victory_ally_estimate )
       {
-        allies = effect.player->rng().range( effect.player->dragonflight_opts.rallied_to_victory_min_allies,
-                                                    as<int>( effect.trigger()->effectN( 2 ).base_value() - 1 ) );
+        int allies = 0;
+        allies = effect.player->rng().range( as<int>( effect.player->dragonflight_opts.rallied_to_victory_min_allies ),
+                                             as<int>( effect.trigger()->effectN( 2 ).base_value() ) );
         buff->set_max_stack( 1 + allies );
         buff->set_initial_stack( 1 + allies );
       }
