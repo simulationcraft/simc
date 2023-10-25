@@ -2476,7 +2476,6 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
-    //td->debuffs_executioners_precision->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2637,7 +2636,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
-    //td->debuffs_executioners_precision->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -4148,10 +4146,6 @@ struct execute_arms_t : public warrior_attack_t
       }
       p()->buff.sudden_death->expire();
     }
-    //if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
-    //{
-    //  td( execute_state->target )->debuffs_executioners_precision->trigger();
-    //}
     if ( p()->legendary.exploiter.ok() && !p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
     {
       td( execute_state->target )->debuffs_exploiter->trigger();
@@ -5087,9 +5081,6 @@ struct skullsplitter_t : public warrior_attack_t
     }
     else
     {
-      //warrior_td_t* cur_target = p()->get_target_data( target );
-      //warrior_td_t* impact_target = td( s->target );
-      //td->debuffs_skullsplitter->trigger();
       if ( result_is_hit( s->result ) )
       {
         td( s->target )->debuffs_skullsplitter->trigger();
@@ -7061,10 +7052,6 @@ struct condemn_arms_t : public warrior_attack_t
     {
       p()->buff.sudden_death->expire();
     }
-    //if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
-    //{
-    //  td( execute_state->target )->debuffs_executioners_precision->trigger();
-    //}
     if ( p()->legendary.exploiter.ok() && !p()->talents.arms.executioners_precision->ok() && ( result_is_hit( execute_state->result ) ) )
     {
       td( execute_state->target )->debuffs_exploiter->trigger();
