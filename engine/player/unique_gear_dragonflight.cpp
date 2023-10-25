@@ -8045,12 +8045,31 @@ void rallied_to_victory( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
   buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
-  buff->set_max_stack( effect.player->sim->dragonflight_opts.rallied_to_victory_ally_estimate ? as<int>( effect.trigger()->effectN( 2 ).base_value() ) : 1 );
-  buff->set_initial_stack( effect.player->sim->dragonflight_opts.rallied_to_victory_ally_estimate ? as<int>( effect.trigger()->effectN( 2 ).base_value() ) : 1 );
+  buff->set_max_stack( 1 );
 
-  effect.custom_buff = buff;
+  struct rallied_to_victory_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    rallied_to_victory_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
+    {
+    }
 
-  new dbc_proc_callback_t( effect.player, effect );
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      int allies = 0;
+      if( effect.player -> dragonflight_opts.rallied_to_victory_ally_estimate )
+      {
+        allies = effect.player->rng().range( effect.player->dragonflight_opts.rallied_to_victory_min_allies,
+                                                    as<int>( effect.trigger()->effectN( 2 ).base_value() ) );
+        buff->set_max_stack( 1 + allies );
+        buff->set_initial_stack( 1 + allies );
+      }
+
+      buff->trigger();
+    }
+  };
+
+  new rallied_to_victory_cb_t( effect, buff );
 }
 
 // 406219 Damage Taken Driver

@@ -756,6 +756,10 @@ struct player_t : public actor_t
     player_option_t<bool> nymue_forced_immobilized = false;
     // Option to control the timing to pick up each orb for the Witherbarks Branch Trinket.
     timespan_t witherbarks_branch_timing[ 3 ]      = { 1_s, 1_s, 1_s };
+    // Enable Rallied to Victory Ally estimation
+    bool rallied_to_victory_ally_estimate = false;
+    // Set the minimum number of allies buffed by Rallied to Victory
+    double rallied_to_victory_min_allies = 0;
   } dragonflight_opts;
 
 private:

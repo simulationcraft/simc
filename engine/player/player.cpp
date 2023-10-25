@@ -11441,7 +11441,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       if ( splits[ 1 ] == "rallied_to_victory_ally_estimate" )
       {
         return make_fn_expr( expression_str, [ this ] { 
-          return sim->dragonflight_opts.rallied_to_victory_ally_estimate; 
+          return dragonflight_opts.rallied_to_victory_ally_estimate; 
         } );
       }
 
@@ -12661,6 +12661,8 @@ void player_t::create_options()
     }
     return true;
   } ) );
+  add_option( opt_bool( "dragonflight.rallied_to_victory_ally_estimate", dragonflight_opts.rallied_to_victory_ally_estimate ) );
+  add_option( opt_float( "dragonflight.rallied_to_victory_min_allies", dragonflight_opts.rallied_to_victory_min_allies, 0.0, 4 ) );
 
   // Obsolete options
 
