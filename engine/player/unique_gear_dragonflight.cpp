@@ -8060,7 +8060,7 @@ void rallied_to_victory( special_effect_t& effect )
       if( effect.player -> dragonflight_opts.rallied_to_victory_ally_estimate )
       {
         allies = effect.player->rng().range( effect.player->dragonflight_opts.rallied_to_victory_min_allies,
-                                                    1 - as<int>( effect.trigger()->effectN( 2 ).base_value() ) );
+                                                    as<int>( effect.trigger()->effectN( 2 ).base_value() - 1 ) );
         buff->set_max_stack( 1 + allies );
         buff->set_initial_stack( 1 + allies );
       }
