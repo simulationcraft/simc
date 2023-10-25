@@ -1566,8 +1566,11 @@ public:
 
     if ( p()->buff.test_of_might_tracker->check() )
     {
-      if ( p() -> is_ptr() && ab::id != 190456)  // Test of might ignores rage used for ignore pain
-        p()->buff.test_of_might_tracker->current_value += rage;  // Uses rage cost before anything makes it cheaper.
+      if ( p() -> is_ptr() )
+      {
+        if ( ab::id != 190456)  // Test of might ignores rage used for ignore pain
+          p()->buff.test_of_might_tracker->current_value += rage;  // Uses rage cost before anything makes it cheaper.
+      }
       else
         p()->buff.test_of_might_tracker->current_value += rage;  // Uses rage cost before anything makes it cheaper.
     }
