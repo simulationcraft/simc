@@ -5241,13 +5241,6 @@ struct frenzied_regeneration_t : public druid_heal_t
     ir_mul = p->talent.innate_resolve->effectN( 1 ).percent();
   }
 
-  void init() override
-  {
-    druid_heal_t::init();
-
-    snapshot_flags = STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_TA;
-  }
-
   void execute() override
   {
     if ( p()->talent.layered_mane.ok() && rng().roll( p()->talent.layered_mane->effectN( 2 ).percent() ) )
