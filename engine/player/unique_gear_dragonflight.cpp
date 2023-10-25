@@ -7945,14 +7945,6 @@ void amice_of_the_blue( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void rallied_to_victory( special_effect_t& effect )
-{
-  effect.custom_buff = create_buff<stat_buff_t>(effect.player, effect.trigger())
-    ->add_stat(STAT_VERSATILITY_RATING, effect.driver()->effectN(1).average(effect.item));
-
-  new dbc_proc_callback_t(effect.player, effect);
-}
-
 void deep_chill( special_effect_t& effect )
 {
   effect.trigger_spell_id = 381006;
@@ -8044,13 +8036,17 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
 }
 
 // Allied Chestplate of Generosity
+// Allied Heartwarming Fur Coat
+// Allied Legguards of Sansok Kahn
+// Allied Wristguards of Time Dilation
 // 378134 Driver
 // 378139 Buff
-// TODO: Potentially model allies recieving the buff as well?
-void allied_chestplate_of_generosity(special_effect_t& effect)
+void rallied_to_victory( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-  buff -> set_default_value( effect.driver() -> effectN( 1 ).average( effect.item ) );
+  buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_max_stack( effect.player->sim->dragonflight_opts.rallied_to_victory_ally_estimate ? as<int>( effect.trigger()->effectN( 2 ).base_value() ) : 1 );
+  buff->set_initial_stack( effect.player->sim->dragonflight_opts.rallied_to_victory_ally_estimate ? as<int>( effect.trigger()->effectN( 2 ).base_value() ) : 1 );
 
   effect.custom_buff = buff;
 
@@ -9769,11 +9765,10 @@ void register_special_effects()
   register_special_effect( 379396, items::thriving_thorns );
   register_special_effect( 394452, items::broodkeepers_blaze );
   register_special_effect( 387144, items::amice_of_the_blue );
-  register_special_effect( 378134, items::rallied_to_victory );
   register_special_effect( 380717, items::deep_chill );
   register_special_effect( 379985, items::potent_venom );
   register_special_effect( 395959, items::allied_wristguards_of_companionship );
-  register_special_effect( 378134, items::allied_chestplate_of_generosity );
+  register_special_effect( 378134, items::rallied_to_victory );
   register_special_effect( 395601, items::hood_of_surging_time, true );
   register_special_effect( 409434, items::voice_of_the_silent_star, true );
   register_special_effect( 406254, items::roiling_shadowflame );

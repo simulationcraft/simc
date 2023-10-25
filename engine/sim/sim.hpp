@@ -525,6 +525,8 @@ struct sim_t : private sc_thread_t
     double embersoul_dire_chance = 0.0;
     // Sets the interval for ashes of the embersouls "dire" condition to attempt to proc
     timespan_t embersoul_dire_interval = 5_s;
+    // Rallied to Victory Ally estimation
+    bool rallied_to_victory_ally_estimate = false;
   } dragonflight_opts;
 
   // Auras and De-Buffs

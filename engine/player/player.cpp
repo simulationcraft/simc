@@ -11438,6 +11438,13 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         } );
       }
 
+      if ( splits[ 1 ] == "rallied_to_victory_ally_estimate" )
+      {
+        return make_fn_expr( expression_str, [ this ] { 
+          return sim->dragonflight_opts.rallied_to_victory_ally_estimate; 
+        } );
+      }
+
       throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
     }
   } // splits.size() == 2

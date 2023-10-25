@@ -4070,6 +4070,7 @@ void sim_t::create_options()
   add_option( opt_uint( "dragonflight.verdant_embrace_allies", dragonflight_opts.verdant_embrace_allies, 0, 2 ) );
   add_option( opt_float( "dragonflight.embersoul_dire_chance", dragonflight_opts.embersoul_dire_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.embersoul_dire_interval", dragonflight_opts.embersoul_dire_interval, 0_s, timespan_t::max() ) );
+  add_option( opt_bool( "dragonflight.rallied_to_victory_ally_estimate", dragonflight_opts.rallied_to_victory_ally_estimate ) );
 }
 
 // sim_t::parse_option ======================================================
