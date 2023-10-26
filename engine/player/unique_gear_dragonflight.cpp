@@ -7041,14 +7041,14 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     gift_buffs_t( const special_effect_t& e )
       : proc_spell_t( "gift_of_ursine_vengeance", e.player, e.player->find_spell( 421990 ), e.item ),
         rising_rage_cooldown( e.player->get_cooldown( "rising_rage" ) ),
-        fury_of_urctos_cooldown( e.player->get_cooldown( "fury_of_urctos" ) )
+        fury_of_urctos_cooldown( e.player->get_cooldown( "fury_of_urctos" ) ),
+        rising_rage_buff( create_buff<stat_buff_t>( e.player, e.player->find_spell( 421994 ) ) ),
+        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) )
     {
       auto ursine_reprisal         = create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e );
       ursine_reprisal->base_dd_min = ursine_reprisal->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
 
-      rising_rage_buff =
-          create_buff<stat_buff_t>( e.player, e.player->find_spell( 421994 ) )
-              ->add_stat( e.player->convert_hybrid_stat( STAT_STR_AGI ), e.driver()->effectN( 2 ).average( e.item ) );
+      rising_rage_buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
       rising_rage_buff->set_cooldown( 0_ms );
       rising_rage_buff->set_stack_change_callback( [ this, ursine_reprisal ]( buff_t* buff, int old, int new_ ) {
         if ( buff->at_max_stacks() && !fury_of_urctos_buff->up() )
@@ -7067,21 +7067,21 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       fury_of_urctos_heal->name_str_reporting = "Heal";
       fury_of_urctos_heal->background = fury_of_urctos_heal->dual = true;
       fury_of_urctos_heal->base_dd_min = fury_of_urctos_heal->base_dd_max = e.driver()->effectN( 3 ).average( e.item );
-      fury_of_urctos_buff = create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) )
-                                ->set_stack_change_callback( [ this ]( buff_t* /* buff */, int /* old */, int new_ ) {
-                                  if ( !new_ )
-                                  {
-                                    rising_rage_buff->expire();
-                                  }
-                                } )
-                                ->set_period( 1_s )
-                                ->set_tick_callback( [ this, fury_of_urctos_heal ]( buff_t* /* buff */, int /* tick */,
-                                                                                    timespan_t /* tick_time */ ) {
-                                  fury_of_urctos_heal->execute_on_target( player );
-                                } );
+
+      fury_of_urctos_buff->set_stack_change_callback( [ this ]( buff_t* /* buff */, int /* old */, int new_ ) {
+        if ( !new_ )
+        {
+          rising_rage_buff->expire();
+        }
+      } );
+      fury_of_urctos_buff->set_period( 1_s );
+      fury_of_urctos_buff->set_tick_callback(
+          [ this, fury_of_urctos_heal ]( buff_t* /* buff */, int /* tick */, timespan_t /* tick_time */ ) {
+            fury_of_urctos_heal->execute_on_target( player );
+          } );
 
       rising_rage_cooldown->duration    = e.driver()->internal_cooldown();
-      fury_of_urctos_cooldown->duration = e.player->find_spell( 422016 )->internal_cooldown();
+      fury_of_urctos_cooldown->duration = fury_of_urctos_buff->data().internal_cooldown();
     }
 
     void execute() override
