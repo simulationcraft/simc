@@ -7021,8 +7021,6 @@ void rezans_gleaming_eye( special_effect_t& e )
 // 422016 Max stacks buff / heal
 void gift_of_ursine_vengeance( special_effect_t& effect )
 {
-  effect.type = SPECIAL_EFFECT_NONE;
-
   struct ursine_reprisal_t : public proc_spell_t
   {
     ursine_reprisal_t( const special_effect_t& e )
@@ -7104,15 +7102,14 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 
   action_t* action = create_proc_action<gift_buffs_t>( "gift_of_ursine_vengeance", effect );
 
+  // Overriding Proc Flags to damage to more properly emulate other players taking damage
   if ( effect.player->role == ROLE_TANK )
   {
-    effect.player->register_combat_begin( [ &effect, action ]( player_t* ) {
-      timespan_t base_period = effect.player->find_spell( 422016 )->internal_cooldown();
-      timespan_t period      = base_period + ( effect.player->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
-                                          effect.player->rng().range( 0_s, 400_ms ) /
-                                              ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
-      make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
-    } );
+    effect.proc_flags_    = PF_ALL_DAMAGE;
+    effect.proc_flags2_   = PF2_ALL_HIT;
+    effect.execute_action = action;
+
+    new dbc_proc_callback_t( effect.player, effect );
   }
 }
 

@@ -525,8 +525,6 @@ struct sim_t : private sc_thread_t
     double embersoul_dire_chance = 0.0;
     // Sets the interval for ashes of the embersouls "dire" condition to attempt to proc
     timespan_t embersoul_dire_interval = 5_s;
-    // Minimum time after gift of ursine vengeance comes off cooldown that it will trigger again
-    timespan_t gift_of_ursine_vengeance_period = 400_ms;
   } dragonflight_opts;
 
   // Auras and De-Buffs
