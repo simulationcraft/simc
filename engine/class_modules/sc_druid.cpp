@@ -675,6 +675,7 @@ public:
     // Multiple Specs / Forms
     gain_t* clearcasting;        // Feral & Restoration
     gain_t* soul_of_the_forest;  // Feral & Guardian
+    gain_t* heart_of_the_wild;   // Balance, Guardian, Restoration
 
     // Balance
     gain_t* natures_balance;
@@ -2101,10 +2102,10 @@ public:
 
     switch( p()->specialization() )
     {
-      case DRUID_BALANCE:     parse_buff_effects( p()->buff.heart_of_the_wild, 0b000000000111U ); break;
-      case DRUID_FERAL:       parse_buff_effects( p()->buff.heart_of_the_wild, 0b000000111000U ); break;
-      case DRUID_GUARDIAN:    parse_buff_effects( p()->buff.heart_of_the_wild, 0b000111000000U ); break;
-      case DRUID_RESTORATION: parse_buff_effects( p()->buff.heart_of_the_wild, 0b111000000000U ); break;
+      case DRUID_BALANCE:     parse_buff_effects( p()->buff.heart_of_the_wild, 0b01000000000111U ); break;
+      case DRUID_FERAL:       parse_buff_effects( p()->buff.heart_of_the_wild, 0b10000000111000U ); break;
+      case DRUID_GUARDIAN:    parse_buff_effects( p()->buff.heart_of_the_wild, 0b00000111000000U ); break;
+      case DRUID_RESTORATION: parse_buff_effects( p()->buff.heart_of_the_wild, 0b00111000000000U ); break;
       default: break;
     }
 
@@ -9934,6 +9935,16 @@ void druid_t::create_buffs()
   buff.heart_of_the_wild =
       make_buff_fallback( talent.heart_of_the_wild.ok(), this, "heart_of_the_wild", talent.heart_of_the_wild )
           ->set_cooldown( 0_ms );
+  if ( specialization() == DRUID_FERAL )
+  {
+    buff.heart_of_the_wild->set_period( 0_ms );
+  }
+  else if ( is_ptr() )
+  {
+    buff.heart_of_the_wild->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      resource_gain( RESOURCE_COMBO_POINT, 1, gain.heart_of_the_wild );
+    } );
+  }
 
   buff.ironfur = make_buff_fallback( talent.ironfur.ok(), this, "ironfur", talent.ironfur )
     ->set_default_value_from_effect_type( A_MOD_ARMOR_BY_PRIMARY_STAT_PCT )
@@ -11008,13 +11019,13 @@ void druid_t::init_gains()
   }
   // Multi-spec
   if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
-  {
     gain.clearcasting = get_gain( "Clearcasting" );  // Feral & Restoration
-  }
+
   if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
-  {
     gain.soul_of_the_forest = get_gain( "Soul of the Forest" );  // Feral & Guardian
-  }
+
+  if ( specialization() != DRUID_FERAL )
+    gain.heart_of_the_wild = get_gain( "Heart of the Wild" );  // Balance, Guardian, Restoration
 }
 
 // druid_t::init_procs ======================================================
