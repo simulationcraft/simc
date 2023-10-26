@@ -9941,7 +9941,7 @@ std::string warrior_t::default_flask() const
     return "phial_of_static_empowerment_3";
 
   return ( true_level > 60 )
-             ? "phial_of_tepid_versatility_3"
+             ? "iced_phial_of_corrupting_rage_3"
              : ( true_level > 50 )
                    ? "spectral_flask_of_power"
                    : "disabled";
@@ -10044,10 +10044,16 @@ void warrior_t::init_action_list()
   switch ( specialization() )
   {
     case WARRIOR_FURY:
-      warrior_apl::fury( this );
+      if ( sim->dbc->ptr )
+        warrior_apl::fury_ptr( this );
+      else
+        warrior_apl::fury( this );
       break;
     case WARRIOR_ARMS:
-      warrior_apl::arms( this );
+      if ( sim->dbc->ptr )
+        warrior_apl::arms_ptr( this );
+      else
+        warrior_apl::arms( this );
       break;
     case WARRIOR_PROTECTION:
       warrior_apl::protection( this );
