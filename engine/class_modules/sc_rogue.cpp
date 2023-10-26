@@ -3658,6 +3658,7 @@ struct blade_flurry_t : public rogue_attack_t
         energize_type = action_energize::PER_HIT;
         energize_resource = RESOURCE_COMBO_POINT;
         energize_amount = 1;
+        affected_by.broadside_cp = true; // 2023-10-25 -- Not in the whitelist but confirmed as working in-game
       }
     }
 
@@ -8562,7 +8563,10 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.amplifying_poison = make_buff( *this, "amplifying_poison", source->spec.amplifying_poison_debuff );
   debuffs.amplifying_poison_deathmark = make_buff( *this, "amplifying_poison_deathmark", source->spec.deathmark_amplifying_poison );
   
-  debuffs.deathmark = make_buff<damage_buff_t>( *this, "deathmark", source->spec.deathmark_debuff );
+  // 2023-10-25 -- Effects 3 and 4 are PvP-only, not in spell data
+  debuffs.deathmark = make_buff<damage_buff_t>( *this, "deathmark", source->spec.deathmark_debuff, false )
+    ->set_direct_mod( source->spec.deathmark_debuff, 1 )
+    ->set_periodic_mod( source->spec.deathmark_debuff, 2 );
   debuffs.deathmark->set_cooldown( timespan_t::zero() );
 
   debuffs.caustic_spatter = make_buff( *this, "caustic_spatter", source->spec.caustic_spatter_buff )
@@ -11386,6 +11390,11 @@ public:
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Rogue", "2023-10-25", "Manually set charge cooldown value", 185313 )
+      .field( "charge_cooldown" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 60000 )
+      .verification_value( 1610612736 );
   }
 
   void init( player_t* ) const override {}

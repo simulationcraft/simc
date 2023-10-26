@@ -7991,7 +7991,10 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.amplifying_poison = make_buff( *this, "amplifying_poison", source->spec.amplifying_poison_debuff );
   debuffs.amplifying_poison_deathmark = make_buff( *this, "amplifying_poison_deathmark", source->spec.deathmark_amplifying_poison );
   
-  debuffs.deathmark = make_buff<damage_buff_t>( *this, "deathmark", source->spec.deathmark_debuff );
+// 2023-10-25 -- Effects 3 and 4 are PvP-only, not in spell data
+  debuffs.deathmark = make_buff<damage_buff_t>( *this, "deathmark", source->spec.deathmark_debuff, false )
+    ->set_direct_mod( source->spec.deathmark_debuff, 1 )
+    ->set_periodic_mod( source->spec.deathmark_debuff, 2 );
   debuffs.deathmark->set_cooldown( timespan_t::zero() );
   
   debuffs.marked_for_death = make_buff( *this, "marked_for_death", source->talent.rogue.marked_for_death )
