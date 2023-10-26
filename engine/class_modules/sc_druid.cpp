@@ -682,7 +682,7 @@ public:
     gain_t* stellar_innervation;
 
     // Feral (Cat)
-    gain_t* cats_curiosity;
+    gain_t* cats_curiosity;  // TODO remove in 10.2
     gain_t* energy_refund;
     gain_t* incessant_hunter;
     gain_t* overflowing_power;
@@ -716,7 +716,7 @@ public:
     proc_t* pulsar;
 
     // Feral
-    proc_t* ashamanes_guidance; // remove in 10.2
+    proc_t* ashamanes_guidance; // TODO remove in 10.2
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
     proc_t* predator;
@@ -847,7 +847,7 @@ public:
     player_talent_t bloodtalons;
     player_talent_t brutal_slash;
     player_talent_t carnivorous_instinct;
-    player_talent_t cats_curiosity;
+    player_talent_t cats_curiosity;  // TODO remove in 10.2
     player_talent_t dire_fixation;
     player_talent_t doubleclawed_rake;
     player_talent_t dreadful_bleeding;
@@ -1654,6 +1654,7 @@ struct berserk_cat_buff_t : public druid_buff_t
     if ( inc )
     {
       p()->uptime.incarnation_cat->update( true, sim->current_time() );
+
       if ( p()->talent.ashamanes_guidance.ok() && p()->is_ptr() )
         p()->buff.ashamanes_guidance->trigger();
     }
@@ -9765,13 +9766,13 @@ void druid_t::init_spells()
   spec.starfall                 = check( talent.starfall, 191034 );
 
   // Feral Abilities
-  spec.feral_overrides = find_specialization_spell( "Feral Overrides Passive" );
+  spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
   if ( is_ptr() )
-    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421440 );
+    spec.ashamanes_guidance     = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 421440 );
   else
-    spec.ashamanes_guidance = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
-  spec.ashamanes_guidance_buff = check( talent.ashamanes_guidance, 421442 );
-  spec.berserk_cat             = talent.berserk.find_override_spell();
+    spec.ashamanes_guidance     = check( talent.ashamanes_guidance, talent.convoke_the_spirits.ok() ? 391538 : 391475 );
+  spec.ashamanes_guidance_buff  = check( talent.ashamanes_guidance, 421442 );
+  spec.berserk_cat              = talent.berserk.find_override_spell();
 
   // Guardian Abilities
   spec.bear_form_2              = find_rank_spell( "Bear Form", "Rank 2" );
