@@ -522,6 +522,7 @@ struct damage_buff_t : public buff_t
     const spell_data_t* s_data = nullptr;
     size_t effect_idx = 0;
     double multiplier = 1.0;
+    std::vector<int> labels;
   };
 
   bool is_stacking;

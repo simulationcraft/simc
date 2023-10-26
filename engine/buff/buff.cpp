@@ -3661,6 +3661,39 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
       sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
       sim->print_debug( "{} damage buff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
     }
+    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+    {
+      if ( e.property_type() == P_GENERIC )
+      {
+        if ( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
+          set_direct_mod( spell, idx, multiplier );
+
+        assert( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) 
+                && "Additional label modifiers do not match the existing direct effect value" );
+
+        direct_mod.labels.push_back( e.misc_value2() );
+      }
+      else if ( e.property_type() == P_TICK_DAMAGE )
+      {
+        if ( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 )
+          set_periodic_mod( spell, idx, multiplier );
+
+        assert( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier )
+                && "Additional label modifiers do not match the existing periodic effect value" );
+
+        periodic_mod.labels.push_back( e.misc_value2() );
+      }
+    }
+    else if ( e.subtype() == A_ADD_FLAT_LABEL_MODIFIER && e.property_type() == P_CRIT )
+    {
+      if ( crit_chance_mod.multiplier == 1.0 && crit_chance_mod.effect_idx == 0 )
+        set_crit_chance_mod( spell, idx, multiplier );
+
+      assert( crit_chance_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier )
+              && "Additional label modifiers do not match the existing crit chance effect value" );
+
+      crit_chance_mod.labels.push_back( e.misc_value2() );
+    }
   }
 
   return this;
@@ -3689,6 +3722,10 @@ damage_buff_t* damage_buff_t::apply_mod_affecting_effect( damage_buff_modifier_t
       }
     }
   }
+
+  // TODO -- Need to post-validate that modifiers are correctly applied to label effects as well
+  // As Blizzard has started mixing whitelist and label modifiers in the same buffs, these may go out of sync
+  // For now, just assume the side-by-side label modifiers are correct. May need to split out in the future
 
   return this;
 }
@@ -3768,6 +3805,12 @@ bool damage_buff_t::is_affecting_direct( const spell_data_t* s )
   if ( s->affected_by_label( direct_mod.s_data->effectN( direct_mod.effect_idx ) ) )
     return true;
 
+  for ( int label : direct_mod.labels )
+  {
+    if ( s->affected_by_label( label ) )
+      return true;
+  }
+
   return false;
 }
 
@@ -3782,6 +3825,12 @@ bool damage_buff_t::is_affecting_periodic( const spell_data_t* s )
   if ( s->affected_by_label( periodic_mod.s_data->effectN( periodic_mod.effect_idx ) ) )
     return true;
 
+  for ( int label : periodic_mod.labels )
+  {
+    if ( s->affected_by_label( label ) )
+      return true;
+  }
+
   return false;
 }
 
@@ -3795,6 +3844,12 @@ bool damage_buff_t::is_affecting_crit_chance( const spell_data_t* s )
 
   if ( s->affected_by_label( crit_chance_mod.s_data->effectN( crit_chance_mod.effect_idx ) ) )
     return true;
+
+  for ( int label : crit_chance_mod.labels )
+  {
+    if ( s->affected_by_label( label ) )
+      return true;
+  }
 
   return false;
 }
