@@ -9037,11 +9037,10 @@ double brambles_handler( const action_state_t* s )
 
   double attack_power = ( p->cache.attack_power() + weapon_ap ) * p->composite_attack_power_multiplier();
 
-  // Brambles coefficient is not in spelldata :(
-  double absorb_cap = attack_power * 0.075;
+  double coeff = p->is_ptr() ? p->talent.brambles->effectN( 1 ).ap_coeff() : 0.075;
 
   // Calculate actual amount absorbed.
-  double amount_absorbed = std::min( s->result_mitigated, absorb_cap );
+  double amount_absorbed = std::min( s->result_mitigated, coeff * attack_power );
 
   // Prevent self-harm
   if ( s->action->player != p )
