@@ -4779,6 +4779,20 @@ void evoker_t::init_finished()
       } );
     } );
   }
+
+  register_combat_begin( [ this ]( player_t* ) {
+    while ( !allies_with_my_prescience.empty() )
+    {
+      find_target_data( *allies_with_my_prescience.begin() )->buffs.prescience->cancel();
+    }
+
+    while ( !allies_with_my_ebon.empty() )
+    {
+      find_target_data( *allies_with_my_ebon.begin() )->buffs.prescience->cancel();
+    }
+
+    buff.ebon_might_self_buff->cancel();
+  } );
 }
 
 role_e evoker_t::primary_role() const
