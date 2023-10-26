@@ -574,7 +574,7 @@ public:
     buff_t* sundered_firmament;  // AP ticks
     buff_t* touch_the_cosmos;  // 4t29
     buff_t* touch_the_cosmos_starfall;  // hidden buff to track buffed starfall
-    buff_t* rattled_stars;
+    buff_t* rattled_stars;  // TODO remove in 10.2
     buff_t* umbral_embrace;
     buff_t* warrior_of_elune;
     buff_t* balance_t31_4pc_buff_solar; // buff to track t31 4pc value
