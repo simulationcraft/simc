@@ -38,6 +38,7 @@ actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_p
 actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
 actions.precombat+=/variable,name=rw_buffs,value=talent.gathering_storm|talent.everfrost
 actions.precombat+=/variable,name=2h_check,value=main_hand.2h
+# Protects Breath from starving itself on ERW charges depending on anticipated resource gains.  More resources enable more aggressive use.
 actions.precombat+=/variable,name=erw_pooling_time,op=setif,value=25,value_else=45,condition=death_knight.ams_absorb_percent>0.59
 
 # Executed every time the actor is available.
@@ -56,8 +57,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=single_target,if=active_enemies=1
 
 # AoE Action List
-actions.aoe=remorseless_winter
-actions.aoe+=/howling_blast,if=buff.rime.react|!dot.frost_fever.ticking
+actions.aoe=howling_blast,if=buff.rime.react|!dot.frost_fever.ticking
 actions.aoe+=/glacial_advance,if=!variable.pooling_runic_power&variable.rp_buffs
 actions.aoe+=/obliterate,if=buff.killing_machine.react&talent.cleaving_strikes&death_and_decay.ticking&!variable.frostscythe_priority
 actions.aoe+=/glacial_advance,if=!variable.pooling_runic_power
@@ -68,8 +68,7 @@ actions.aoe+=/horn_of_winter,if=rune<2&runic_power.deficit>25
 actions.aoe+=/arcane_torrent,if=runic_power.deficit>25
 
 # Breath Active Rotation
-actions.breath=remorseless_winter,if=variable.rw_buffs|variable.adds_remain
-actions.breath+=/howling_blast,if=variable.rime_buffs&runic_power>(45-talent.rage_of_the_frozen_champion*8)
+actions.breath=howling_blast,if=variable.rime_buffs&runic_power>(45-talent.rage_of_the_frozen_champion*8)
 actions.breath+=/horn_of_winter,if=rune<2&runic_power.deficit>25
 actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.breath+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
@@ -124,7 +123,7 @@ actions.high_prio_actions=invoke_external_buff,name=power_infusion,if=(buff.pill
 # Interrupt
 actions.high_prio_actions+=/mind_freeze,if=target.debuff.casting.react
 actions.high_prio_actions+=/antimagic_shell,if=runic_power.deficit>40
-actions.high_prio_actions+=/antimagic_zone,if=!death_knight.amz_specified&(death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(buff.breath_of_sindragosa.up&cooldown.empower_rune_weapon.charges<2|!talent.breath_of_sindragosa&!buff.pillar_of_frost.up))
+actions.high_prio_actions+=/antimagic_zone,if=!death_knight.amz_specified&(death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.ready|!talent.breath_of_sindragosa&!buff.pillar_of_frost.up))
 actions.high_prio_actions+=/antimagic_zone,if=death_knight.amz_specified&buff.amz_timing.up
 # Maintain Frost Fever, Icy Talons and Unleashed Frenzy
 actions.high_prio_actions+=/howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&(!talent.obliteration|talent.obliteration&(!cooldown.pillar_of_frost.ready|buff.pillar_of_frost.up&!buff.killing_machine.react))
@@ -134,14 +133,12 @@ actions.high_prio_actions+=/glacial_advance,if=active_enemies>=2&variable.rp_buf
 actions.high_prio_actions+=/frost_strike,if=active_enemies=1&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
 actions.high_prio_actions+=/frost_strike,if=active_enemies=1&variable.rp_buffs&talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
 actions.high_prio_actions+=/frost_strike,if=active_enemies=1&variable.rp_buffs&!talent.breath_of_sindragosa&talent.obliteration&!buff.pillar_of_frost.up
-actions.high_prio_actions+=/remorseless_winter,if=!talent.breath_of_sindragosa&!talent.obliteration&variable.rw_buffs
-actions.high_prio_actions+=/remorseless_winter,if=talent.obliteration&active_enemies>=3&variable.adds_remain
+actions.high_prio_actions+=/remorseless_winter,if=variable.rw_buffs|variable.rw_buffs
 
 # Obliteration Active Rotation
-actions.obliteration=remorseless_winter,if=active_enemies>3|talent.gathering_storm
-actions.obliteration+=/howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react
-actions.obliteration+=/frost_strike,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
-actions.obliteration+=/glacial_advance,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
+actions.obliteration=howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react
+actions.obliteration+=/frost_strike,if=(active_enemies<=1|!talent.glacial_advance)&buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
+actions.obliteration+=/glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
 actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.obliteration+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
 actions.obliteration+=/howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking|buff.rime.react&set_bonus.tier30_2pc&!variable.rp_buffs)
@@ -168,8 +165,7 @@ actions.racials+=/bag_of_tricks,if=talent.obliteration&!buff.pillar_of_frost.up&
 actions.racials+=/bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&(buff.unholy_strength.up&buff.unholy_strength.remains<gcd*3|buff.pillar_of_frost.remains<gcd*3)
 
 # Single Target Rotation
-actions.single_target=remorseless_winter,if=variable.rw_buffs|variable.adds_remain
-actions.single_target+=/frost_strike,if=buff.killing_machine.stack<2&runic_power.deficit<20&!variable.2h_check
+actions.single_target=frost_strike,if=buff.killing_machine.react<2&runic_power.deficit<20&!variable.2h_check
 actions.single_target+=/howling_blast,if=buff.rime.react&set_bonus.tier30_2pc&buff.killing_machine.stack<2
 actions.single_target+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
 actions.single_target+=/obliterate,if=buff.killing_machine.react
@@ -218,7 +214,7 @@ legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent
 feet=rook_footmans_warboots,id=139241,bonus_id=3326/1514/6536/6646
 finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
 finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
-trinket1=branch_of_the_tormented_ancient,id=207169,bonus_id=7187/1520
+trinket1=accelerating_sandglass,id=207566,bonus_id=6536/1540/6646
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
 
