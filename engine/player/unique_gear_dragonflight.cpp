@@ -7011,6 +7011,111 @@ void rezans_gleaming_eye( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Gift of Ursine Vengeance
+// 421990 Driver and values
+// Effect 1 - Ursine Reprisal damage
+// Effect 2 - Rising Rage stat value
+// Effect 2 - Fury of Urctos heal value
+// 421996 Damage proc
+// 421994 Stacking buff
+// 422016 Max stacks buff / heal
+void gift_of_ursine_vengeance( special_effect_t& effect )
+{
+  effect.type = SPECIAL_EFFECT_NONE;
+
+  struct ursine_reprisal_t : public proc_spell_t
+  {
+    ursine_reprisal_t( const special_effect_t& e )
+      : proc_spell_t( "ursine_reprisal", e.player, e.player->find_spell( 421996 ), e.item )
+    {
+      background = dual = may_crit = true;
+      may_miss                     = false;
+    }
+  };
+
+  struct gift_buffs_t : public proc_spell_t
+  {
+    cooldown_t* rising_rage_cooldown;
+    cooldown_t* fury_of_urctos_cooldown;
+    stat_buff_t* rising_rage_buff;
+    buff_t* fury_of_urctos_buff;
+
+    gift_buffs_t( const special_effect_t& e )
+      : proc_spell_t( "gift_of_ursine_vengeance", e.player, e.player->find_spell( 421990 ), e.item ),
+        rising_rage_cooldown( e.player->get_cooldown( "rising_rage" ) ),
+        fury_of_urctos_cooldown( e.player->get_cooldown( "fury_of_urctos" ) )
+    {
+      auto ursine_reprisal         = create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e );
+      ursine_reprisal->base_dd_min = ursine_reprisal->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+
+      rising_rage_buff =
+          create_buff<stat_buff_t>( e.player, e.player->find_spell( 421994 ) )
+              ->add_stat( e.player->convert_hybrid_stat( STAT_STR_AGI ), e.driver()->effectN( 2 ).average( e.item ) );
+      rising_rage_buff->set_cooldown( 0_ms );
+      rising_rage_buff->set_stack_change_callback( [ this, ursine_reprisal ]( buff_t* buff, int old, int new_ ) {
+        if ( buff->at_max_stacks() && !fury_of_urctos_buff->up() )
+        {
+          fury_of_urctos_buff->trigger();
+        }
+        // This should be "closest target" but we'll just pick whoever the player is targeting for now.
+        if ( player->target && new_ >= old )
+        {
+          ursine_reprisal->execute_on_target( player->target );
+        }
+      } );
+
+      auto fury_of_urctos_heal = create_proc_action<base_generic_proc_t<proc_heal_t>>( "fury_of_urctos_heal", e,
+                                                                                       "fury_of_urctos_heal", 422016 );
+      fury_of_urctos_heal->name_str_reporting = "Heal";
+      fury_of_urctos_heal->background = fury_of_urctos_heal->dual = true;
+      fury_of_urctos_heal->base_dd_min = fury_of_urctos_heal->base_dd_max = e.driver()->effectN( 3 ).average( e.item );
+      fury_of_urctos_buff = create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) )
+                                ->set_stack_change_callback( [ this ]( buff_t* /* buff */, int /* old */, int new_ ) {
+                                  if ( !new_ )
+                                  {
+                                    rising_rage_buff->expire();
+                                  }
+                                } )
+                                ->set_period( 1_s )
+                                ->set_tick_callback( [ this, fury_of_urctos_heal ]( buff_t* /* buff */, int /* tick */,
+                                                                                    timespan_t /* tick_time */ ) {
+                                  fury_of_urctos_heal->execute_on_target( player );
+                                } );
+
+      rising_rage_cooldown->duration    = e.driver()->internal_cooldown();
+      fury_of_urctos_cooldown->duration = e.player->find_spell( 422016 )->internal_cooldown();
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      if ( fury_of_urctos_buff->up() && fury_of_urctos_cooldown->up() )
+      {
+        fury_of_urctos_cooldown->start();
+        rising_rage_buff->trigger();
+      }
+      else if ( rising_rage_cooldown->up() )
+      {
+        rising_rage_cooldown->start();
+        rising_rage_buff->trigger();
+      }
+    }
+  };
+
+  action_t* action = create_proc_action<gift_buffs_t>( "gift_of_ursine_vengeance", effect );
+
+  if ( effect.player->role == ROLE_TANK )
+  {
+    effect.player->register_combat_begin( [ &effect, action ]( player_t* ) {
+      timespan_t base_period = effect.player->find_spell( 422016 )->internal_cooldown();
+      timespan_t period      = base_period + ( effect.player->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
+                                          effect.player->rng().range( 0_s, 400_ms ) /
+                                              ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
+      make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
+    } );
+  }
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -9757,6 +9862,7 @@ void register_special_effects()
   register_special_effect( 422441, items::branch_of_the_tormented_ancient );
   register_special_effect( 422479, items::infernal_signet_brand );
   register_special_effect( 429228, items::rezans_gleaming_eye );
+  register_special_effect( 421990, items::gift_of_ursine_vengeance );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
