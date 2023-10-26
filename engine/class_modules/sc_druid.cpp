@@ -4022,11 +4022,14 @@ struct rip_t : public trigger_deep_focus_t<trigger_waning_twilight_t<cat_finishe
   };
 
   tear_t* tear;
+  double apex_pct;
 
   rip_t( druid_t* p, std::string_view opt ) : rip_t( p, "rip", p->talent.rip, opt ) {}
 
   rip_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : base_t( n, p, s, opt ), tear( nullptr )
+    : base_t( n, p, s, opt ),
+      tear( nullptr ),
+      apex_pct( find_trigger( p->talent.apex_predators_craving ).percent() * 0.1 )
   {
     dot_name = "rip";
 
@@ -4073,7 +4076,10 @@ struct rip_t : public trigger_deep_focus_t<trigger_waning_twilight_t<cat_finishe
   {
     base_t::tick( d );
 
-    p()->buff.apex_predators_craving->trigger();
+    auto c = !p()->is_ptr() ? 1.0 : apex_pct / std::sqrt( p()->get_active_dots( d ) );
+
+    if ( rng().roll( c ) )
+      p()->buff.apex_predators_craving->trigger();
   }
 };
 
@@ -10254,9 +10260,9 @@ void druid_t::create_buffs()
                           "ashamanes_guidance", spec.ashamanes_guidance_buff );
 
   buff.apex_predators_craving = make_buff_fallback( talent.apex_predators_craving.ok(),
-      this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() )
-          // TODO: move to rip_t and add target DR
-          ->set_chance( find_trigger( talent.apex_predators_craving ).percent() * ( is_ptr() ? 0.1 : 1 ) );
+      this, "apex_predators_craving", find_trigger( talent.apex_predators_craving ).trigger() );
+  if ( !is_ptr() )
+    buff.apex_predators_craving->set_chance( find_trigger( talent.apex_predators_craving ).percent() );
 
   buff.berserk_cat = make_buff_fallback<berserk_cat_buff_t>( talent.berserk.ok(),
       this, "berserk_cat", spec.berserk_cat );
