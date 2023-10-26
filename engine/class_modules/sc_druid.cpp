@@ -8282,7 +8282,9 @@ struct wild_mushroom_t : public druid_spell_t
     damage = p->get_secondary_action<wild_mushroom_damage_t>( "wild_mushroom_damage" );
     damage->stats = stats;
     damage->gain = gain;
-    add_child( damage->fungal );
+
+    if ( damage->fungal )
+      add_child( damage->fungal );
   }
 
   void execute() override
