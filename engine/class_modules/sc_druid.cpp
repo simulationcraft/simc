@@ -604,7 +604,7 @@ public:
     buff_t* sabertooth;
     buff_t* shadows_of_the_predator;  // 2t30
     buff_t* sharpened_claws;  // 4t29
-    buff_t* smoldering_frenzy; //t31
+    buff_t* smoldering_frenzy;  // 2t31
     buff_t* sudden_ambush;
     buff_t* tigers_fury;
     buff_t* tigers_tenacity;
@@ -2108,10 +2108,7 @@ public:
     parse_buff_effects( p()->buff.predatory_swiftness );
     parse_buff_effects( p()->buff.sabertooth, USE_DEFAULT );
     parse_buff_effects( p()->buff.sharpened_claws );
-    if ( p()->is_ptr() )
-    {
-      parse_buff_effects( p()->buff.smoldering_frenzy );
-    }
+    parse_buff_effects( p()->buff.smoldering_frenzy );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -3566,10 +3563,7 @@ struct feral_frenzy_t : public cat_attack_t
       cat_attack_t::execute();
       is_direct_damage = false;
 
-      if ( p()->is_ptr() && p()->sets->has_set_bonus( DRUID_FERAL, T31, B2 ) )
-      {
-        p()->buff.smoldering_frenzy->trigger();
-      }
+      p()->buff.smoldering_frenzy->trigger();
     }
 
     void trigger_primal_fury() override {}
@@ -11330,8 +11324,7 @@ void druid_t::init_special_effects()
 
       smoldering_frenzy_cb_t( druid_t* p, const special_effect_t& e )
         : druid_cb_t( p, e ), mul( p->buff.smoldering_frenzy->data().effectN( 6 ).percent() )
-      {
-      }
+      {}
 
       void execute( action_t*, action_state_t* s ) override
       {
