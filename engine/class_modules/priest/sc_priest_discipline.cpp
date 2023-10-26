@@ -550,6 +550,71 @@ public:
   }
 };
 
+struct ultimate_penitence_t : public priest_spell_t
+{
+protected:
+  struct ultimate_penitence_damage_t : public priest_spell_t
+  {
+    timespan_t dot_extension;
+
+    ultimate_penitence_damage_t( priest_t& p )
+      : priest_spell_t( "ultimate_penitence_damage", p, p.find_spell( 421543 ) )
+    {
+      dot_extension      = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
+      triggers_atonement = true;
+    }
+  };
+
+  struct ultimate_penitence_channel_t : public priest_spell_t
+  {
+    // ultimate_penitence_damage_t
+    propagate_const<ultimate_penitence_damage_t*> damage;
+
+    ultimate_penitence_channel_t( priest_t& p )
+      : priest_spell_t( "ultimate_penitence_channel", p, p.find_spell( 421434 ) )
+    {
+      damage = new ultimate_penitence_damage_t( p );
+      channeled = true;
+      tick_zero = true;
+
+    }
+
+    void tick( dot_t* d ) override
+    {
+      priest_spell_t::tick( d );
+
+      if ( damage && d->get_tick_factor() >= 1.0 )
+      {
+        damage->execute_on_target( d->target );
+      }
+    }
+  };
+
+  propagate_const<ultimate_penitence_channel_t*> channel;
+
+public:
+  ultimate_penitence_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penance )
+  {
+    // Channel = 421434
+    // Damage bolt = 421543
+
+    channel = new ultimate_penitence_channel_t( p );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    channel->execute_on_target( s->target );
+  }
+};
+
 }  // namespace actions::spells
 
 namespace buffs
@@ -723,6 +788,10 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   if ( name == "evangelism" )
   {
     return new evangelism_t( *this, options_str );
+  }
+  if ( name == "ultimate_penitence" or name == "uppies" )
+  {
+    return new ultimate_penitence_t( *this, options_str );
   }
   
   return nullptr;
