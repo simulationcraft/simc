@@ -7485,37 +7485,13 @@ struct solar_beam_t : public druid_interrupt_t
 // Stampeding Roar ==========================================================
 struct stampeding_roar_t : public druid_spell_t
 {
-  timespan_t form_gcd;  // lower gcd for roar while in bear/cat form
-  timespan_t cast_gcd;  // gcd for caster->bear roar
-
   stampeding_roar_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "stampeding_roar", p, p->talent.stampeding_roar, opt ),
-      form_gcd( p->find_spell( 77764 )->gcd() ),
-      cast_gcd( trigger_gcd )
+    : druid_spell_t( "stampeding_roar", p, p->talent.stampeding_roar, opt )
   {
     harmful = false;
 
     form_mask = BEAR_FORM | CAT_FORM;
     autoshift = p->active.shift_to_bear;
-  }
-
-  // form->form stampeding roar (id=77764) is properly given hasted gcd via the druid aura (id=137009 eff#4), but the
-  // caster->form stampeding roar (id=106898) is missing from the whitelist and does not have a hasted gcd.
-  // find_class_spell() returns 106898, so we need to adjust the gcd_type before schedule_execute()
-  void schedule_execute( action_state_t* s ) override
-  {
-    if ( p()->get_form() == form_e::BEAR_FORM || p()->get_form() == form_e::CAT_FORM )
-    {
-      gcd_type = gcd_haste_type::ATTACK_HASTE;
-      trigger_gcd = form_gcd;
-    }
-    else
-    {
-      gcd_type = gcd_haste_type::NONE;
-      trigger_gcd = cast_gcd;
-    }
-
-    druid_spell_t::schedule_execute( s );
   }
 
   void execute() override
