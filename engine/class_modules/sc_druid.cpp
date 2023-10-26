@@ -1202,41 +1202,6 @@ public:
     return a;
   }
 
-  template <typename T>
-  bool match_dot_id( action_t* a, std::vector<int>& ids, std::vector<T*>& actions )
-  {
-    if ( auto matched = dynamic_cast<T*>( a ) )
-    {
-      actions.push_back( matched );
-      if ( !range::contains( ids, matched->internal_id ) )
-        ids.push_back( matched->internal_id );
-      return true;
-    }
-    return false;
-  }
-
-  template <typename T, typename U = T>
-  void setup_dot_ids()
-  {
-    std::vector<int> ids;
-    std::tuple<std::vector<T*>, std::vector<U*>> actions;
-    for ( const auto& a : action_list )
-    {
-      if ( match_dot_id( a, ids, std::get<0>( actions ) ) )
-        continue;
-      if ( !std::is_same_v<T, U> )
-        match_dot_id( a, ids, std::get<1>( actions ) );
-    }
-    if ( !ids.empty() )
-    {
-      for ( const auto& a : std::get<0>( actions ) )
-        a->dot_ids = ids;
-      if ( !std::is_same_v<T, U> )
-        for ( const auto& a : std::get<1>( actions ) )
-          a->dot_ids = ids;
-    }
-  }
-
 private:
   void apl_precombat();
   void apl_default();
@@ -1970,8 +1935,6 @@ private:
 public:
   using base_t = druid_action_t<Base>;
 
-  // list of action_ids that triggers the same dot as this action
-  std::vector<int> dot_ids;
   // Name to be used by get_dot() instead of action name
   std::string dot_name;
   // form spell to automatically cast
@@ -10742,14 +10705,6 @@ void druid_t::create_actions()
   find_parent( active.starsurge_starweaver, "starsurge" );
   find_parent( active.starfall_starweaver, "starfall" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
-
-  // setup dot_ids used by druid_action_t::get_dot_count()
-  setup_dot_ids<sunfire_t::sunfire_damage_t>();
-  setup_dot_ids<moonfire_t::moonfire_damage_t>();
-  setup_dot_ids<lunar_inspiration_t>();
-  setup_dot_ids<stellar_flare_t>();
-  setup_dot_ids<rake_t::rake_bleed_t>();
-  setup_dot_ids<rip_t>();
 }
 
 // Default Consumables ======================================================
