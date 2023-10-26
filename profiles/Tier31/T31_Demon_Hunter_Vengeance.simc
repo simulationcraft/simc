@@ -71,33 +71,33 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(variable.trinket_1_
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_2_exclude|trinket.2.cooldown.remains|!trinket.2.has_cooldown|variable.trinket_2_buffs)
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_1_exclude|trinket.1.cooldown.remains|!trinket.1.has_cooldown|variable.trinket_1_buffs)
 
-head=flaring_cowl,id=193494,bonus_id=9500/9498/9405/8960/6935,gem_id=192919
-neck=torc_of_passed_time,id=201759,bonus_id=9500/9498/9405/8782,gem_id=192919/192919/192919,crafted_stats=36/32
+head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=7187/6935/1520,gem_id=192919
+neck=elemental_lariat,id=193001,bonus_id=9500/9498/9405/8782/8960,gem_id=192919/192919/192919,crafted_stats=36/32
 shoulders=screaming_torchfiends_horned_memento,id=207261,bonus_id=7187/1520
-back=screaming_torchfiends_shawl,id=207258,bonus_id=7187/1520
+back=undulating_sporecloak,id=205025,bonus_id=9500/9498/9405/8960
 chest=screaming_torchfiends_binding,id=207266,bonus_id=7187/1520,enchant_id=6625
-wrists=verdant_sanctuary_bands,id=210206,bonus_id=7187/1520,gem_id=192919
+wrists=verdant_sanctuary_bands,id=210206,bonus_id=7187/6935/1520,gem_id=192919
 hands=screaming_torchfiends_grasp,id=207264,bonus_id=7187/1520
-waist=screaming_torchfiends_clasp,id=207260,bonus_id=7187/1520,gem_id=192985
-legs=screaming_torchfiends_blazewraps,id=207262,bonus_id=7187/1520,enchant=frosted_armor_kit_3
+waist=belt_of_the_eternal_struggle,id=207874,bonus_id=9576/6935/1582,gem_id=192985
+legs=galakronds_voracious_hide,id=207820,bonus_id=9576/1579,enchant=frosted_armor_kit_3
 feet=slimy_expulsion_boots,id=193451,bonus_id=9500/9498/9405/8960
 finger1=band_of_burning_thorns,id=207159,bonus_id=7187/6935/1520,gem_id=192922,enchant=devotion_of_critical_strike_3
 finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/6935/1520,gem_id=192922,enchant=devotion_of_critical_strike_3
 trinket1=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant=sophic_devotion_3
-off_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=wafting_devotion_3
+off_hand=double_time,id=207991,bonus_id=9576/1611,enchant=wafting_devotion_3
 
 # Gear Summary
 # gear_ilvl=488.88
-# gear_strength=469
-# gear_agility=8170
-# gear_stamina=38611
-# gear_crit_rating=5265
-# gear_haste_rating=5203
-# gear_mastery_rating=2221
-# gear_versatility_rating=3050
-# gear_armor=5323
+# gear_agility=8649
+# gear_stamina=38669
+# gear_crit_rating=5675
+# gear_haste_rating=6012
+# gear_mastery_rating=1057
+# gear_versatility_rating=3010
+# gear_leech_rating=443
+# gear_armor=5330
 # gear_bonus_armor=141
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
