@@ -2082,7 +2082,15 @@ public:
     parse_buff_effects( p()->buff.eclipse_lunar, 0b0111110U, false, USE_CURRENT );
     // due to 4t31, we parse the damage effects (#1/#8) separately and use the current buff value instead of data value
     parse_buff_effects( p()->buff.eclipse_solar, 0b10000001U, p()->talent.umbral_intensity );
-    parse_buff_effects( p()->buff.eclipse_solar, 0b01111110U, false, USE_CURRENT );
+    if ( p()->bugs )  // 4t31 is bugged and does not apply to dots
+    {
+      parse_buff_effects( p()->buff.eclipse_solar, 0b11111110U, false, USE_CURRENT );
+      parse_buff_effects( p()->buff.eclipse_solar, 0b01111111U, false, USE_DEFAULT );
+    }
+    else
+    {
+      parse_buff_effects( p()->buff.eclipse_solar, 0b01111110U, false, USE_CURRENT );
+    }
     parse_buff_effects( p()->buff.friend_of_the_fae );
     parse_buff_effects( p()->buff.gathering_starstuff );
     parse_buff_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
@@ -2688,6 +2696,7 @@ public:
     {
       if ( p()->buff.eclipse_lunar->check() )
         p()->buff.balance_t31_4pc_buff_lunar->trigger();
+
       if ( p()->buff.eclipse_solar->check() )
         p()->buff.balance_t31_4pc_buff_solar->trigger();
     }
