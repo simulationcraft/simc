@@ -2102,7 +2102,6 @@ public:
     parse_buff_effects( p()->buff.warrior_of_elune, false );
 
     // Feral
-    parse_buff_effects( p()->buff.ashamanes_guidance );  //10.2 ashamanes guidance for incarn
     parse_buff_effects( p()->buff.apex_predators_craving );
     parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
