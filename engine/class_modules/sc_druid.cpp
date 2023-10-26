@@ -392,6 +392,7 @@ public:
   {
     std::vector<dot_t*> moonfire;
     std::vector<dot_t*> sunfire;
+    std::vector<dot_t*> thrash_bear;
   } dot_list;
   player_t* dire_fixation_target;
   // !!!==========================================================================!!!
@@ -611,6 +612,7 @@ public:
     // Guardian
     buff_t* after_the_wildfire;
     buff_t* berserk_bear;
+    buff_t* blood_frenzy;
     buff_t* bristling_fur;
     buff_t* dream_of_cenarius;
     buff_t* earthwarden;
@@ -1676,6 +1678,34 @@ struct berserk_cat_buff_t : public druid_buff_t
   }
 };
 
+// Blood Frenzy =============================================================
+struct blood_frenzy_buff_t : public druid_buff_t
+{
+  double rage;
+  size_t cap;
+
+  blood_frenzy_buff_t( druid_t* p )
+    : base_t( p, "blood_frenzy_buff", p->talent.blood_frenzy ),
+      rage( find_effect( p->find_spell( 203961 ), E_ENERGIZE ).resource( RESOURCE_RAGE ) ),
+      cap( as<size_t>( p->talent.blood_frenzy->effectN( 1 ).base_value() ) )
+  {
+    //set_quiet( true );
+    set_tick_zero( true );
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      trigger_blood_frenzy();
+    } );
+  }
+
+  void trigger_blood_frenzy()
+  {
+    auto n = p()->dot_list.thrash_bear.size();
+    if ( !n )
+      return;
+
+    p()->resource_gain( RESOURCE_RAGE, std::min( cap, n ) * rage, p()->gain.blood_frenzy );
+  }
+};
+
 // Bloodtalons Tracking Buff ================================================
 struct bt_dummy_buff_t : public druid_buff_t
 {
@@ -2390,6 +2420,49 @@ public:
   }
 };
 
+template <typename BASE>
+struct use_dot_list_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = use_dot_list_t<BASE>;
+
+  std::vector<dot_t*>* dot_list = nullptr;
+
+  use_dot_list_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
+    : BASE( n, p, s, o ), p_( p )
+  {}
+
+  void init() override
+  {
+    assert( dot_list );
+
+    BASE::init();
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    dot_t* d = BASE::get_dot( s->target );
+    if( !d->is_ticking() )
+    {
+      assert( !range::contains( *dot_list, d ) );
+      dot_list->push_back( d );
+    }
+
+    BASE::trigger_dot( s );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    assert( range::contains( *dot_list, d ) );
+    dot_list->erase( std::remove( dot_list->begin(), dot_list->end(), d ), dot_list->end() );
+
+    BASE::last_tick( d );
+  }
+};
+
 // Druid melee attack base for cat_attack_t and bear_attack_t
 template <class Base>
 struct druid_attack_t : public druid_action_t<Base>
@@ -2757,49 +2830,6 @@ public:
       amount *= 1.0 + p_->cache.mastery_value();
 
     residual_action::trigger( p_->active.astral_smolder, s->target, amount );
-  }
-};
-
-template <typename BASE>
-struct trigger_shooting_stars_t : public BASE
-{
-private:
-  druid_t* p_;
-
-public:
-  using base_t = trigger_shooting_stars_t<BASE>;
-
-  std::vector<dot_t*>* dot_list = nullptr;
-
-  trigger_shooting_stars_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
-    : BASE( n, p, s, o ), p_( p )
-  {}
-
-  void init() override
-  {
-    assert( dot_list );
-
-    BASE::init();
-  }
-
-  void trigger_dot( action_state_t* s ) override
-  {
-    dot_t* d = BASE::get_dot( s->target );
-    if( !d->is_ticking() )
-    {
-      assert( !range::contains( *dot_list, d ) );
-      dot_list->push_back( d );
-    }
-
-    BASE::trigger_dot( s );
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    assert( range::contains( *dot_list, d ) );
-    dot_list->erase( std::remove( dot_list->begin(), dot_list->end(), d ), dot_list->end() );
-
-    BASE::last_tick( d );
   }
 };
 
@@ -4976,7 +5006,7 @@ struct thorns_of_iron_t : public bear_attack_t
 // Thrash (Bear) ============================================================
 struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>
 {
-  struct thrash_bear_dot_t : public trigger_ursocs_fury_t<trigger_waning_twilight_t<bear_attack_t>>
+  struct thrash_bear_dot_t : public trigger_ursocs_fury_t<use_dot_list_t<trigger_waning_twilight_t<bear_attack_t>>>
   {
     double bf_energize = 0.0;
 
@@ -4985,9 +5015,10 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
       dual = background = true;
 
       dot_name = "thrash_bear";
+      dot_list = &p->dot_list.thrash_bear;
 
       // energize amount is not stored in talent spell
-      if ( p->talent.blood_frenzy.ok() )
+      if ( p->talent.blood_frenzy.ok() && !p->is_ptr() )
         bf_energize = find_effect( p->find_spell( 203961 ), E_ENERGIZE ).resource( RESOURCE_RAGE );
     }
 
@@ -5003,7 +5034,8 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
 
     void tick( dot_t* d ) override
     {
-      p()->resource_gain( RESOURCE_RAGE, bf_energize, p()->gain.blood_frenzy );
+      if ( !p()->is_ptr() )
+        p()->resource_gain( RESOURCE_RAGE, bf_energize, p()->gain.blood_frenzy );
 
       // if both cat thrash and bear thrash is up (due to cat thrash having a longer duration) then bear thrash damage
       // is suppressed
@@ -6958,7 +6990,7 @@ struct moon_proxy_t : public druid_spell_t
 struct moonfire_t : public druid_spell_t
 {
   struct moonfire_damage_t
-    : public trigger_deep_focus_t<trigger_gore_t<trigger_shooting_stars_t<trigger_waning_twilight_t<druid_spell_t>>>>
+    : public trigger_deep_focus_t<trigger_gore_t<use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>>>
   {
     struct protector_of_the_pack_moonfire_t : public druid_spell_t
     {
@@ -7927,7 +7959,7 @@ struct stellar_flare_t : public trigger_waning_twilight_t<druid_spell_t>
 // Sunfire Spell ============================================================
 struct sunfire_t : public druid_spell_t
 {
-  struct sunfire_damage_t : public trigger_shooting_stars_t<trigger_waning_twilight_t<druid_spell_t>>
+  struct sunfire_damage_t : public use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>
   {
     sunfire_damage_t( druid_t* p ) : base_t( "sunfire_dmg", p, p->spec.sunfire_dmg )
     {
@@ -10304,6 +10336,8 @@ void druid_t::create_buffs()
   buff.berserk_bear = make_buff_fallback<berserk_bear_buff_t>(
       talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear );
 
+  buff.blood_frenzy = make_buff_fallback<blood_frenzy_buff_t>( talent.blood_frenzy.ok(), this, "blood_frenzy_buff" );
+
   buff.incarnation_bear = make_buff_fallback<berserk_bear_buff_t>(
       talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear, true );
 
@@ -11536,6 +11570,7 @@ void druid_t::reset()
   astral_power_decay = nullptr;
   dot_list.moonfire.clear();
   dot_list.sunfire.clear();
+  dot_list.thrash_bear.clear();
   dire_fixation_target = nullptr;
 }
 
@@ -11648,6 +11683,9 @@ void druid_t::arise()
     buff.rising_light_falling_night_day->trigger();
   else
     buff.rising_light_falling_night_night->trigger();
+
+  if ( talent.blood_frenzy.ok() && is_ptr() )
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.blood_frenzy ) );
 
   buff.elunes_favored->trigger();
   buff.natures_balance->trigger();
