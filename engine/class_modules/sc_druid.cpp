@@ -806,7 +806,7 @@ public:
     player_talent_t elunes_guidance;
     player_talent_t force_of_nature;
     player_talent_t friend_of_the_fae;
-    player_talent_t fungal_growth;
+    player_talent_t fungal_growth;  // TODO remove in 10.2
     player_talent_t fury_of_elune;
     player_talent_t incarnation_moonkin;
     player_talent_t light_of_the_sun;
