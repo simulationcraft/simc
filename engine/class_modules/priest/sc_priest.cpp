@@ -96,7 +96,10 @@ public:
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 ).time_value() ),
+      void_summoner_cdr(
+          priest()
+              .talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 )
+              .time_value() ),
       child_expiation( nullptr )
   {
     parse_options( options_str );
@@ -193,17 +196,7 @@ public:
 
       if ( priest().talents.shared.inescapable_torment.enabled() )
       {
-        // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1151
-        if ( priest().is_ptr() && priest().options.t31_2set_bug &&
-             priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B2 ) )
-        {
-          priest().trigger_inescapable_torment( s->target, true,
-                                                priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent() );
-        }
-        else
-        {
-          priest().trigger_inescapable_torment( s->target );
-        }
+        priest().trigger_inescapable_torment( s->target );
       }
 
       if ( priest().buffs.mind_devourer->trigger() )
@@ -214,7 +207,7 @@ public:
       if ( priest().talents.discipline.dark_indulgence.enabled() )
       {
         int stack = priest().buffs.power_of_the_dark_side->check();
-                
+
         priest().buffs.power_of_the_dark_side->trigger();
 
         if ( priest().buffs.power_of_the_dark_side->check() == stack )
@@ -569,7 +562,10 @@ struct smite_base_t : public priest_spell_t
                 util::string_view options_str = {} )
     : priest_spell_t( name, p, s ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 ).time_value() ),
+      void_summoner_cdr(
+          priest()
+              .talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 )
+              .time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
       child_holy_fire( priest().background_actions.holy_fire ),
       child_searing_light( priest().background_actions.searing_light ),
@@ -721,7 +717,6 @@ struct smite_t final : public smite_base_t
     }
   }
 
-  
   void impact( action_state_t* s ) override
   {
     smite_base_t::impact( s );
@@ -1478,7 +1473,7 @@ struct flash_heal_t final : public priest_heal_t
 
     if ( p.talents.binding_heals.enabled() && !binding )
     {
-      binding_heals             = new flash_heal_t( p, name_str + "_binding", {}, true );
+      binding_heals = new flash_heal_t( p, name_str + "_binding", {}, true );
       add_child( binding_heals );
     }
   }
@@ -1548,10 +1543,8 @@ struct flash_heal_t final : public priest_heal_t
         binding_heals->execute_on_target( player, s->result_amount * binding_heal_percent );
       }
     }
-    
   }
 };
-
 
 // ==========================================================================
 // Flash Heal
@@ -1672,9 +1665,9 @@ struct power_word_shield_t final : public priest_absorb_t
                                                     p.talents.discipline.indemnity->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
-    
+
     gcd_type = gcd_haste_type::SPELL_SPEED;
-    
+
     switch ( p.specialization() )
     {
       case PRIEST_DISCIPLINE:
@@ -2150,7 +2143,7 @@ void priest_t::create_procs()
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side from dot ticks lost to overflow" );
   procs.power_of_the_dark_side_dark_indulgence_overflow =
       get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
-  procs.expiation_lost_no_dot           = get_proc( "Missed chance for expiation to consume a DoT" );
+  procs.expiation_lost_no_dot = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
   procs.shadowy_apparition_vb          = get_proc( "Shadowy Apparition from Void Bolt" );
   procs.shadowy_apparition_swp         = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
@@ -2320,9 +2313,9 @@ double priest_t::composite_spell_crit_chance() const
 double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
-  
+
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
-  
+
   if ( guardian )
     m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
   else
@@ -2796,7 +2789,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   player_t::apply_affecting_auras( action );
 }
 
-void priest_t::apply_affecting_auras_late(action_t& action)
+void priest_t::apply_affecting_auras_late( action_t& action )
 {
   action.apply_affecting_aura( specs.shadow_priest );
   action.apply_affecting_aura( specs.holy_priest );
@@ -2987,7 +2980,6 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
-  add_option( opt_bool( "priest.t31_2set_bug", options.t31_2set_bug ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -3028,7 +3020,6 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
   }
 }
 
-
 // Trigger Atonement
 void priest_t::trigger_atonement( action_state_t* s )
 {
@@ -3042,7 +3033,7 @@ void priest_t::trigger_atonement( action_state_t* s )
     return;
 
   auto r = s->result_amount;
-  
+
   r *= talents.discipline.atonement->effectN( 1 ).percent();
 
   if ( talents.discipline.abyssal_reverie.enabled() &&
@@ -3051,7 +3042,6 @@ void priest_t::trigger_atonement( action_state_t* s )
 
   background_actions.atonement->execute_on_target( this, r );
 }
-
 
 void priest_t::trigger_essence_devourer()
 {

@@ -359,7 +359,7 @@ public:
       player_talent_t idol_of_yoggsaron;
       player_talent_t idol_of_cthun;
     } shadow;
-    
+
     struct
     {
       player_talent_t mindbender;
@@ -669,10 +669,6 @@ public:
     bool init_insanity = true;
 
     int disc_minimum_allies = 5;
-
-    // Enable the bugged behavior with the T31 2-set
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1151
-    bool t31_2set_bug = false;
   } options;
 
   vector_with_callback<player_t*> allies_with_atonement;
@@ -775,7 +771,7 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
-  
+
   unsigned int specialization_aura_id()
   {
     switch ( specialization() )
@@ -1026,7 +1022,8 @@ public:
     // DISCIPLINE DEBUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().talents.discipline.schism_debuff );
+      parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); },
+                            p().talents.discipline.schism_debuff );
     }
   }
 
@@ -1065,7 +1062,7 @@ public:
 
     if ( ab::sim->debug )
       ab::sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
-                            ab::base_costs[ cr ], ab::secondary_costs[ cr ], c, cr );
+                                ab::base_costs[ cr ], ab::secondary_costs[ cr ], c, cr );
 
     return floor( c );
   }
