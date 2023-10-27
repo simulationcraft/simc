@@ -258,6 +258,18 @@ public:
     return as<int>( range::count_if( poison_dots, []( dot_t* d ) { return d->is_ticking(); } ) +
                     range::count_if( poison_debuffs, []( buff_t* b ) { return b->check(); } ) );
   }
+
+  // Total count of active DoT effects that contribute towards the Lethal Dose talent
+  int lethal_dose_count() const
+  {
+    int count = total_bleeds() + total_poisons();
+    if ( source->bugs )
+    {
+      count -= ( dots.serrated_bone_spike->is_ticking() +
+                 dots.crimson_tempest->is_ticking() );
+    }
+    return count;
+  }
 };
 
 // ==========================================================================
@@ -1672,9 +1684,10 @@ public:
 
     if ( p->talent.assassination.zoldyck_recipe->ok() )
     {
-      // Not in spell data. Using the mastery whitelist as a baseline, most seem to apply
+      // Not in spell data. Using the mastery whitelist as a baseline, most seem to apply (including VV)
       affected_by.zoldyck_insignia = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
-                                     ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
+                                     ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) ) ||
+                                     ab::data().affected_by( p->mastery.potent_assassin->effectN( 3 ) );
     }
 
     if ( p->talent.assassination.lethal_dose->ok() )
@@ -2235,14 +2248,7 @@ public:
 
     if ( affected_by.lethal_dose )
     {
-      int lethal_dose_count = tdata->total_bleeds() + tdata->total_poisons();
-      // DFALPHA TOCHECK -- What does and doesn't trigger this for retail?
-      if ( p()->bugs )
-      {
-        lethal_dose_count -= ( tdata->dots.serrated_bone_spike->is_ticking() +
-                               tdata->dots.crimson_tempest->is_ticking() );
-      }
-      m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() * lethal_dose_count );
+      m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() * tdata->lethal_dose_count() );
     }
 
     if ( affected_by.deathmark )
@@ -4020,7 +4026,6 @@ struct envenom_t : public rogue_attack_t
   {
     dot_duration = timespan_t::zero();
     affected_by.lethal_dose = false;
-    affected_by.zoldyck_insignia = false;
 
     if ( p->set_bonuses.t31_assassination_4pc->ok() )
     {
@@ -8447,7 +8452,19 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_
   double multiplier = p()->spec.caustic_spatter_buff->effectN( 1 ).percent();
 
   // Target multipliers do not replicate to secondary targets, need to reverse them out
-  const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
+  // However, scripted faux target multipliers still work, so need to manually apply them
+  double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
+
+  if ( affected_by.lethal_dose )
+  {
+    target_da_multiplier *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() *
+                                    td( state->target )->lethal_dose_count() );
+  }
+  if ( affected_by.zoldyck_insignia &&
+       state->target->health_percentage() < p()->spec.zoldyck_insignia->effectN( 2 ).base_value() )
+  {
+    target_da_multiplier *= 1.0 + p()->spec.zoldyck_insignia->effectN( 1 ).percent();
+  }
 
   // Note: Unmitigated damage as target mitigation is handled on each impact
   double damage = state->result_total * multiplier * target_da_multiplier;
