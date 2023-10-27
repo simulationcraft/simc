@@ -12,8 +12,6 @@ food=feisty_fish_sticks
 # TODO: use default when it goes live
 default_actions=0
 
-initial_resource=insanity=24
-
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -83,11 +81,11 @@ actions.cds+=/berserking,if=buff.power_infusion.up|fight_remains<=12
 actions.cds+=/blood_fury,if=buff.power_infusion.up|fight_remains<=15
 actions.cds+=/ancestral_call,if=buff.power_infusion.up|fight_remains<=15
 # Use Nymue's before we go into our cooldowns
-actions.cds+=/use_item,name=nymues_unraveling_spindle,use_off_gcd=1,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)&(gcd.remains>0|!talent.divine_star|!cooldown.divine_star.up)
+actions.cds+=/use_item,name=nymues_unraveling_spindle,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)
 # Use Belor'relos, the Suncaller before we go into our cooldowns
 actions.cds+=/use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=gcd.remains>0&(!raid_event.adds.exists&!prev_gcd.1.mindbender|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)|fight_remains<20
 # Fit in a Divine Star as you cast Nymue's for the "free" GCD or Belor on AOE
-actions.cds+=/divine_star,if=equipped.nymues_unraveling_spindle&trinket.nymues_unraveling_spindle.cooldown.remains<=gcd.max&variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)|(raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)&equipped.belorrelos_the_suncaller&trinket.belorrelos_the_suncaller.cooldown.remains<=gcd.max
+actions.cds+=/divine_star,if=(raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)&equipped.belorrelos_the_suncaller&trinket.belorrelos_the_suncaller.cooldown.remains<=gcd.max
 # Sync Power Infusion with Voidform or Dark Ascension
 actions.cds+=/power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)
 # Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>.
@@ -166,6 +164,8 @@ actions.pl_torrent+=/mind_blast,if=!prev_gcd.1.mind_blast
 actions.pl_torrent+=/void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking|buff.voidform.up
 
 actions.trinkets=use_item,name=voidmenders_shadowgem,if=(buff.power_infusion.up|fight_remains<20)&equipped.voidmenders_shadowgem
+actions.trinkets+=/use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains>0|fight_remains<20
+actions.trinkets+=/use_item,name=dreambinder_loom_of_the_great_cycle,use_off_gcd=1,if=gcd.remains>0|fight_remains<20
 actions.trinkets+=/use_item,name=darkmoon_deck_box_inferno,if=equipped.darkmoon_deck_box_inferno
 actions.trinkets+=/use_item,name=darkmoon_deck_box_rime,if=equipped.darkmoon_deck_box_rime
 actions.trinkets+=/use_item,name=darkmoon_deck_box_dance,if=equipped.darkmoon_deck_box_dance

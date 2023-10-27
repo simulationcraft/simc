@@ -14,8 +14,6 @@ food=feisty_fish_sticks
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:hissing_rune_3
 
-initial_resource=insanity=24
-
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
 actions.precombat+=/food
@@ -63,9 +61,9 @@ actions.cds+=/fireblood,if=buff.power_infusion.up|fight_remains<=8
 actions.cds+=/berserking,if=buff.power_infusion.up|fight_remains<=12
 actions.cds+=/blood_fury,if=buff.power_infusion.up|fight_remains<=15
 actions.cds+=/ancestral_call,if=buff.power_infusion.up|fight_remains<=15
-actions.cds+=/use_item,name=nymues_unraveling_spindle,use_off_gcd=1,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)&(gcd.remains>0|!talent.divine_star|!cooldown.divine_star.up)
+actions.cds+=/use_item,name=nymues_unraveling_spindle,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)
 actions.cds+=/use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=gcd.remains>0&(!raid_event.adds.exists&!prev_gcd.1.mindbender|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)|fight_remains<20
-actions.cds+=/divine_star,if=equipped.nymues_unraveling_spindle&trinket.nymues_unraveling_spindle.cooldown.remains<=gcd.max&variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)|(raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)&equipped.belorrelos_the_suncaller&trinket.belorrelos_the_suncaller.cooldown.remains<=gcd.max
+actions.cds+=/divine_star,if=(raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)&equipped.belorrelos_the_suncaller&trinket.belorrelos_the_suncaller.cooldown.remains<=gcd.max
 actions.cds+=/power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)
 actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up
 actions.cds+=/void_eruption,if=!cooldown.fiend.up&(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender|active_enemies>2&!talent.inescapable_torment.rank)&(cooldown.mind_blast.charges=0|time>15)
@@ -119,6 +117,8 @@ actions.pl_torrent+=/mind_blast,if=!prev_gcd.1.mind_blast
 actions.pl_torrent+=/void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking|buff.voidform.up
 
 actions.trinkets=use_item,name=voidmenders_shadowgem,if=(buff.power_infusion.up|fight_remains<20)&equipped.voidmenders_shadowgem
+actions.trinkets+=/use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains>0|fight_remains<20
+actions.trinkets+=/use_item,name=dreambinder_loom_of_the_great_cycle,use_off_gcd=1,if=gcd.remains>0|fight_remains<20
 actions.trinkets+=/use_item,name=darkmoon_deck_box_inferno,if=equipped.darkmoon_deck_box_inferno
 actions.trinkets+=/use_item,name=darkmoon_deck_box_rime,if=equipped.darkmoon_deck_box_rime
 actions.trinkets+=/use_item,name=darkmoon_deck_box_dance,if=equipped.darkmoon_deck_box_dance
