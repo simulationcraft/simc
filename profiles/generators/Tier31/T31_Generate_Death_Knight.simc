@@ -11,7 +11,7 @@ neck=ouroboreal_necklet,id=210214,bonus_id=6652/8783/8784/9599/9600/10244/10245/
 shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
 back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,crafted_stats=32/36
 chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
-wrist=primal_molten_vambraces,id=190502,ilevel=486,bonus_id=9500/9405/8932/6935/8960,gem_id=192935,crafted_stats=40/36,ilevel=486
+wrist=primal_molten_vambraces,id=190502,ilevel=486,bonus_id=9500/9405/9379/6935/8960,gem_id=192935,crafted_stats=40/36,ilevel=486
 hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
 waist=smoldering_chevaliers_greatbelt,id=207157,ilevel=489,gem_id=192935,bonus_id=523,enchant=shadowed_belt_clasp_3
 legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=fierce_armor_kit_3
