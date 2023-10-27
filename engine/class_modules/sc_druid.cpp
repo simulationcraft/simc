@@ -2622,17 +2622,17 @@ public:
   }
 };  // end druid_spell_t
 
-struct astral_power_spender_t : public druid_spell_t
+struct ap_spender_t : public druid_spell_t
 {
 protected:
-  using base_t = astral_power_spender_t;
+  using base_t = ap_spender_t;
 
 public:
   buff_t* p_buff;
   timespan_t p_time;
   double p_cap;
 
-  astral_power_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
+  ap_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
     : druid_spell_t( n, p, s, o ),
       p_buff( p->buff.primordial_arcanic_pulsar ),
       p_time( timespan_t::from_seconds( p->talent.primordial_arcanic_pulsar->effectN( 2 ).base_value() ) ),
@@ -2703,6 +2703,54 @@ public:
     p()->buff.starlord->trigger();
     p()->buff.rattled_stars->trigger();
   }
+};
+
+template <typename BASE>
+struct consume_dreamstate_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  using base_t = consume_dreamstate_t<BASE>;
+
+  double dreamstate_gcd;
+  bool dreamstate = false;
+
+  consume_dreamstate_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
+    : BASE( n, p, s, o ), p_( p ),
+      dreamstate_gcd( find_effect( &p->buff.dreamstate->data(), this, A_ADD_PCT_MODIFIER, P_GCD ).percent() )
+  {
+    BASE::parse_conditional_effects( &p->buff.dreamstate->data(), [ this ]() { return dreamstate; }, 0U, false );
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    dreamstate = p_->buff.dreamstate->up();
+
+    if ( dreamstate )
+      p_->buff.dreamstate->decrement();
+
+    BASE::schedule_execute( s );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = BASE::gcd();
+
+    if ( dreamstate )
+      g *= 1.0 + dreamstate_gcd;
+
+    return std::max( BASE::min_gcd, g );
+  }
+
+  void execute() override { BASE::execute(); dreamstate = false; }
+
+  void reset() override { BASE::reset(); dreamstate = false; }
+
+  void cancel() override { BASE::cancel(); dreamstate = false; }
+
+  void interrupt_action() override { BASE::interrupt_action(); dreamstate = false; }
 };
 
 template <typename BASE>
@@ -7510,7 +7558,7 @@ struct stampeding_roar_t : public druid_spell_t
 };
 
 // Starfall Spell ===========================================================
-struct starfall_t : public astral_power_spender_t
+struct starfall_t : public ap_spender_t
 {
   struct starfall_damage_t : public druid_spell_t
   {
@@ -7624,7 +7672,7 @@ struct starfall_t : public astral_power_spender_t
 };
 
 // Starfire =============================================================
-struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_spell_t>>
+struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consume_dreamstate_t<druid_spell_t>>>
 {
   size_t aoe_idx;
   double aoe_base;
@@ -7634,7 +7682,6 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
   double smolder_mul;
   double sotf_mul;
   unsigned sotf_cap;
-  bool dreamstate = false;
 
   starfire_t( druid_t* p, std::string_view opt )
     : base_t( "starfire", p, p->talent.starfire, opt ),
@@ -7670,35 +7717,6 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
       energize_type = action_energize::NONE;
   }
 
-  void schedule_execute( action_state_t* execute_state ) override
-  {
-    dreamstate = p()->buff.dreamstate->up();
-
-    druid_spell_t::schedule_execute( execute_state );
-  }
-
-  timespan_t execute_time() const override
-  {
-    auto et = druid_spell_t::execute_time();
-
-    if ( p()->buff.dreamstate->check() )
-      et *= 1 + p()->buff.dreamstate->data().effectN( 1 ).percent();
-
-    return et;
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = druid_spell_t::gcd();
-
-    if ( p()->buff.dreamstate->check() )
-      g *= 1 + p()->buff.dreamstate->data().effectN( 2 ).percent();
-
-    g = std::max( min_gcd, g );
-
-    return g;
-  }
-
   double sotf_multiplier( const action_state_t* s ) const
   {
     auto mul = 1.0;
@@ -7724,16 +7742,6 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
     return da;
   }
 
-  double action_multiplier() const override
-  {
-    auto am = base_t::action_multiplier();
-
-    if ( dreamstate && p()->buff.dreamstate->check() )
-      am *= 1.0 + p()->buff.dreamstate->data().effectN( 3 ).percent();
-
-    return am;
-  }
-
   void execute() override
   {
     // Piggy back the start combat cast onto the last precombat cast to work around the difference of when you enter
@@ -7743,14 +7751,11 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
          p()->sets->has_set_bonus( DRUID_BALANCE, T31, B2 ) )
     {
       p()->buff.dreamstate->trigger();
+      p()->buff.dreamstate->decrement();
       dreamstate = true;
     }
 
     base_t::execute();
-
-    if ( dreamstate )
-      p()->buff.dreamstate->decrement();
-    dreamstate = false;
 
     // for precombat we hack it to advance eclipse and manually energize 100ms later to get around the eclipse stack
     // reset & AP capping on combat start
@@ -7802,7 +7807,7 @@ struct starsurge_offspec_t : public druid_spell_t
   }
 };
 
-struct starsurge_t : public astral_power_spender_t
+struct starsurge_t : public ap_spender_t
 {
   struct goldrinns_fang_t : public druid_spell_t
   {
@@ -8283,14 +8288,13 @@ struct wild_mushroom_t : public druid_spell_t
 };
 
 // Wrath ====================================================================
-struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_spell_t>>
+struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consume_dreamstate_t<druid_spell_t>>>
 {
   double ap_base;
   double ap_eclipse;
   double gcd_mul;
   double smolder_mul;
   unsigned count = 0;
-  bool dreamstate = false;
 
   wrath_t( druid_t* p, std::string_view opt ) : wrath_t( p, "wrath", opt ) {}
 
@@ -8318,13 +8322,6 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     return p()->buff.eclipse_solar->check() ? ap_eclipse : ap_base;
   }
 
-  void schedule_execute( action_state_t* execute_state ) override
-  {
-    dreamstate = p()->buff.dreamstate->up();
-
-    druid_spell_t::schedule_execute( execute_state );
-  }
-
   timespan_t travel_time() const override
   {
     if ( !count )
@@ -8335,16 +8332,6 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     return std::max( 1_ms, base_t::travel_time() - base_execute_time * composite_haste() * count );
   }
 
-  timespan_t execute_time() const override
-  {
-    auto et = druid_spell_t::execute_time();
-
-    if ( p()->buff.dreamstate->check() )
-      et *= 1 + p()->buff.dreamstate->data().effectN( 1 ).percent();
-
-    return et;
-  }
-
   timespan_t gcd() const override
   {
     timespan_t g = base_t::gcd();
@@ -8353,12 +8340,7 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     if ( p()->buff.eclipse_solar->up() )
       g *= 1.0 + gcd_mul;
 
-    if ( p()->buff.dreamstate->check() )
-      g *= 1 + p()->buff.dreamstate->data().effectN( 2 ).percent();
-
-    g = std::max( min_gcd, g );
-
-    return g;
+    return std::max( min_gcd, g );
   }
 
   // return false on invulnerable targets as this action is !harmful to allow for self-healing, thus will pass the
@@ -8371,25 +8353,11 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<druid_
     return base_t::target_ready( t );
   }
 
-  double action_multiplier() const override
-  {
-    auto am = base_t::action_multiplier();
-
-    if ( dreamstate && p()->buff.dreamstate->check() )
-      am *= 1.0 + p()->buff.dreamstate->data().effectN( 3 ).percent();
-
-    return am;
-  }
-
   void execute() override
   {
     base_t::execute();
 
     p()->buff.gathering_starstuff->expire();
-
-    if ( dreamstate )
-      p()->buff.dreamstate->decrement();
-    dreamstate = false;
 
     if ( is_free_proc() )
       return;
