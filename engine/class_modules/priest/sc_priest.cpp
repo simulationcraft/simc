@@ -2897,7 +2897,14 @@ void priest_t::init_action_list()
   switch ( specialization() )
   {
     case PRIEST_SHADOW:
-      priest_apl::shadow( this );
+      if ( is_ptr() )
+      {
+        priest_apl::shadow_ptr( this );
+      }
+      else
+      {
+        priest_apl::shadow( this );
+      }
       break;
     case PRIEST_DISCIPLINE:
       priest_apl::discipline( this );
