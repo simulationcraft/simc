@@ -5,7 +5,7 @@ level=70
 race=human
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIkERAAAAAAAAAAAAASiWEJSJOgkERSig0IJJRaEkgQKSLkEASA
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIIREAAAAAAAAAAAAgkoFkIl0OgkERSSBShkkEpRgICpItQSQBSA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3

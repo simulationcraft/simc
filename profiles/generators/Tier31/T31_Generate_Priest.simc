@@ -4,7 +4,7 @@ race=human
 spec=shadow
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIkERAAAAAAAAAAAAASiWEJSJOgkERSig0IJJRaEkgQKSLkEASA
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIIREAAAAAAAAAAAAgkoFkIl0OgkERSSBShkkEpRgICpItQSQBSA
 
 temporary_enchant=main_hand:hissing_rune_3
 food=feisty_fish_sticks

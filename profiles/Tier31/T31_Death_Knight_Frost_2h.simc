@@ -203,11 +203,11 @@ actions.variables+=/variable,name=pooling_runes,value=rune<4&talent.obliteration
 actions.variables+=/variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<variable.breath_pooling_time|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time
 
 head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192988,enchant_id=7052
-neck=elemental_lariat,id=193001,bonus_id=9500/9405/8782/8960,gem_id=192922/192922/192922,crafted_stats=32/36
+neck=elemental_lariat,id=193001,bonus_id=9500/9405/8782/8960,gem_id=192922/192922/192922,crafted_stats=32/49
 shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
-back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
+back=undulating_sporecloak,id=205025,bonus_id=9500/9405/8960
 chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
-wrists=primal_molten_vambraces,id=190502,bonus_id=9500/9405/8932/6935/8960,gem_id=192945,crafted_stats=32/49
+wrists=agonizing_manacles,id=207150,bonus_id=7187/1520/6935,gem_id=192922
 hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
 waist=unwinding_eon_girdle,id=207858,bonus_id=1582/6536/6646/6935,gem_id=192922
 legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent_armor_kit_3
@@ -222,11 +222,11 @@ main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=rune_of_th
 # gear_ilvl=488.60
 # gear_strength=9773
 # gear_stamina=38769
-# gear_crit_rating=4583
-# gear_haste_rating=5355
-# gear_mastery_rating=4830
-# gear_versatility_rating=284
-# gear_armor=11405
+# gear_crit_rating=4335
+# gear_haste_rating=4813
+# gear_mastery_rating=5315
+# gear_versatility_rating=588
+# gear_armor=11419
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
 deathknight.ams_absorb_percent=1
