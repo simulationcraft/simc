@@ -9801,9 +9801,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098470)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (40 -> 50)
 #2 (id=1104181)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (5 -> 3)
 Description      : Empower spells cast up to $s2 Living Flames at enemies or allies struck at $s1% effectiveness.
 
 Name             : Evoker Preservation 10.2 Class Set 4pc (id=422873) [Spell Family (224), Passive, Hidden] 
@@ -9825,7 +9827,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098471)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 70)
 Description      : Living Flame has a chance to apply Echo at $s1% effectiveness on allies healed, or a nearby ally who doesn't already have Echo.
 
 Name             : Emerald Trance (id=424155) [Spell Family (224)] 
