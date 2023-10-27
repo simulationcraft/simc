@@ -4073,7 +4073,7 @@ Spell Type       : None
 Spell Level      : 22
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Charges          : 0 (1.61061e+06 seconds cooldown)
+Charges          : 0 (60 seconds cooldown)
 Category         : 1615: Enveloping Shadows (238104 effect#2), Shadow Dance (394929 effect#1), Shadow Dance (394930 effect#1)
 Affecting spells : Soothing Darkness (200759 effect#2), Dark Shadow (245687 effects: #1, #2, #3), Improved Shadow Dance (393972 effects: #1, #2)
 Family Flags     : 103
