@@ -504,7 +504,7 @@ struct sim_t : private sc_thread_t
     // A list of context-aware procs for Ruby Whelp Shell
     std::string ruby_whelp_shell_context = "";
     // Uptime of the mastery buff(Zone of Focus) of Blue Silken Lining (>90% HP)
-    double blue_silken_lining_uptime = 0.7;
+    double blue_silken_lining_uptime = 0.4;
     // Interval between checking blue_silken_lining_uptime
     timespan_t blue_silken_lining_update_interval = 5_s;
     // Enable or Disable Seething Black Dragonscale's damage
