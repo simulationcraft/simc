@@ -4199,6 +4199,7 @@ namespace monk
 
         void impact( action_state_t *s ) override
         {
+          monk_spell_t::impact( s );
           if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
           {
             double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
