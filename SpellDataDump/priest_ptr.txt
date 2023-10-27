@@ -9272,7 +9272,7 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Do Not Display Range (126), Not In Spellbook (143), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=812814)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -10 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)
                    Affected School(s): All
 Description      : $@spelldesc323673
 
@@ -13872,7 +13872,7 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Do Not Display Range (126), Not In Spellbook (143), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=1002585)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -10 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE Custom (8)
                    Affected School(s): All
 Description      : $@spelldesc375901
 

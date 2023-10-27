@@ -3180,7 +3180,7 @@ Attributes       : ........ x....... ........ .......x   .....x.. ..x..... .....
                  : Do Not Log (8), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No School Immunities (90), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=309959)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffd8 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -40 | Target: Unknown(25)
                    Affected School(s): All
 #2 (id=727831)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2.50000 | Misc Value: 127 | Target: Unknown(25)

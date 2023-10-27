@@ -1507,6 +1507,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value2() );
     }
+    else if ( e->subtype() == A_SCHOOL_ABSORB )
+    {
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value2() );
+    }
     else
     {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value2() );

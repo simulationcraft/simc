@@ -935,7 +935,7 @@ Effects          :
 #1 (id=891504)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=891505)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -10 | Target: Friend (21)
                    Affected School(s): All
 Description      : Stretch time around an ally for the next $d, causing $s1% of damage they would take to instead be dealt over $d.$?s363899[
 
@@ -4163,7 +4163,7 @@ Effects          :
 #1 (id=1000163)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1000164)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -10 | Target: Self (1)
                    Affected School(s): All
 Description      : The flames of life surround you for $d. While this effect is active, $s1% of damage you take is healed back over $374349d.
 Tooltip          : $w1% of damage taken is being healed over time.
@@ -9063,7 +9063,7 @@ Effects          :
 #1 (id=1075936)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1075937)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -10 | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc410352
 Tooltip          : $w1% of damage is being delayed and dealt to you over time.

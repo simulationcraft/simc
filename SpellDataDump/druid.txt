@@ -7568,7 +7568,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Suppress Caster Procs (112), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300960)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffd8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -40 | Target: Self (1)
                    Affected School(s): All
 Description      : Sharp brambles protect you, absorbing and reflecting up to $<shield> damage from each attack.
 
@@ -7724,7 +7724,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300992)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xffffffec | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -20 | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc203974
 Tooltip          : Damage of the next autoattack you take will be reduced by $203974s1~%.
@@ -13051,7 +13051,7 @@ Effects          :
 #1 (id=818347)   : Apply Aura (6) | Transfer Damage% (81)
                    Base Value: 40 | Scaled Value: 40 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Friend (21)
 #2 (id=818424)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xa | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 10 | Target: Self (1)
                    Affected School(s): All
 #3 (id=818425)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
