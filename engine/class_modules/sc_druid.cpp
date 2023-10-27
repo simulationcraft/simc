@@ -3470,7 +3470,7 @@ public:
   {
     cat_attack_t::execute();
 
-    if ( !consumes_combo_points || !is_free() )
+    if ( !consumes_combo_points || is_free() )
       return;
 
     p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
