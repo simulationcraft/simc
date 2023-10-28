@@ -2824,12 +2824,10 @@ void reactive_defense_matrix( special_effect_t& effect )
       set_absorb_source( e.player->get_stats( "reactive_defense_matrix_absorb" ) );
     }
 
-    void absorb_used( double amount ) override
+    void absorb_used( double amount, player_t* attacker ) override
     {
-      // TODO: This should be the target that dealt the damage instead of the players target.
-      // This would also need to be tested to see in which cases the damage is not done at all.
-      if ( player->target )
-        damage_action->execute_on_target( player->target, amount );
+      if ( attacker )
+        damage_action->execute_on_target( attacker, amount );
     }
   };
 

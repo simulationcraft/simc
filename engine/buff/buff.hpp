@@ -475,14 +475,14 @@ protected:
 
   // Hook for derived classes to recieve notification when some of the absorb is consumed.
   // Called after the adjustment to current_value.
-  virtual void absorb_used( double /* amount */ ) {}
+  virtual void absorb_used( double, player_t* ) {}
 
 public:
   void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
   void refresh( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
-  virtual double consume( double amount );
+  virtual double consume( double amount, player_t* attacker = nullptr );
   absorb_buff_t* set_absorb_gain( gain_t* );
   absorb_buff_t* set_absorb_source( stats_t* );
   absorb_buff_t* set_absorb_school( school_e );

@@ -3448,7 +3448,7 @@ void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining
     player->absorb_buff_list.erase( it );
 }
 
-double absorb_buff_t::consume( double amount )
+double absorb_buff_t::consume( double amount, player_t* attacker )
 {
   // Limit the consumption to the current size of the buff.
   amount = std::min( amount, current_value );
@@ -3463,7 +3463,7 @@ double absorb_buff_t::consume( double amount )
 
   sim->print_debug( "{} {} absorbs {} (remaining: {})", *player, *this, amount, current_value );
 
-  absorb_used( amount );
+  absorb_used( amount, attacker );
 
   if ( current_value <= 0 )
     expire();
