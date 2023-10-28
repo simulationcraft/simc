@@ -355,6 +355,7 @@ public:
     spell_data_ptr_t t31_bm_4pc;
     spell_data_ptr_t t31_mm_2pc;
     spell_data_ptr_t t31_mm_4pc;
+    spell_data_ptr_t t31_mm_4pc_buff;
     spell_data_ptr_t t31_sv_2pc;
     spell_data_ptr_t t31_sv_2pc_buff;
     spell_data_ptr_t t31_sv_4pc;
@@ -426,6 +427,7 @@ public:
     buff_t* fury_strikes;
     buff_t* contained_explosion;
     buff_t* light_the_fuse;
+    buff_t* rapid_reload; 
   } buffs;
 
   // Cooldowns
@@ -729,6 +731,8 @@ public:
     unsigned lotw_counter = 0;
     unsigned windrunners_guidance_counter = 0;
     event_t* current_volley = nullptr;
+    // Focus used for T31 MM 4pc buff Rapid Reload (431156)
+    double focus_used_rapid_reload = 0; 
   } state;
 
   struct options_t {
@@ -867,6 +871,7 @@ public:
   void trigger_latent_poison( const action_state_t* s );
   void trigger_bloody_frenzy();
   void consume_trick_shots();
+  void trigger_rapid_reload( action_t* action, double cost );
 };
 
 // Template for common hunter action code.
@@ -880,6 +885,7 @@ public:
   bool track_cd_waste;
   maybe_bool triggers_calling_the_shots;
   maybe_bool triggers_t30_sv_4p; 
+  maybe_bool triggers_rapid_reload;
 
   struct {
     bool serrated_shots = false;
@@ -977,6 +983,8 @@ public:
     ab::apply_affecting_aura( p -> tier_set.t30_mm_2pc );
     ab::apply_affecting_aura( p -> tier_set.t30_mm_4pc );
     ab::apply_affecting_aura( p -> tier_set.t30_sv_2pc );
+
+    ab::apply_affecting_aura( p -> tier_set.t31_mm_2pc );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -1020,6 +1028,21 @@ public:
 
     if ( triggers_t30_sv_4p )
       ab::sim -> print_debug( "{} action {} set to proc T30 SV 4P", ab::player -> name(), ab::name() );
+
+    if ( p() -> tier_set.t31_mm_4pc.ok() )
+    {
+      if ( triggers_rapid_reload.is_none() )
+      {
+        triggers_rapid_reload = !ab::background && !ab::proc && ab::base_cost() > 0;
+      }
+    }
+    else
+    {
+      triggers_rapid_reload = false;
+    }
+
+    if ( triggers_rapid_reload )
+      ab::sim -> print_debug( "{} action {} set to proc Rapid Reload", ab::player -> name(), ab::name() );
   }
 
   timespan_t gcd() const override
@@ -1047,6 +1070,9 @@ public:
     
     if ( triggers_t30_sv_4p )
       p() -> trigger_t30_sv_4p( this, ab::cost() );
+
+    if ( triggers_rapid_reload )
+      p() -> trigger_rapid_reload( this, ab::cost() );
   }
 
   void impact( action_state_t* s ) override
@@ -2801,6 +2827,27 @@ void hunter_t::trigger_bloody_frenzy()
     pet -> hunter_pet_t::buffs.beast_cleave -> trigger( duration );
 }
 
+void hunter_t::trigger_rapid_reload( action_t* action, double cost )
+{
+  if ( !tier_set.t31_mm_4pc.ok() )
+    return; 
+  
+  state.focus_used_rapid_reload += cost; 
+  sim -> print_debug( "{} action {} spent {} focus, rapid reload now at {}", name(), action->name(), cost, state.focus_used_rapid_reload );
+
+  const double rapid_reload_chance = tier_set.t31_mm_4pc -> effectN( 2 ).percent() / 10;
+  const double rapid_reload_value = tier_set.t31_mm_4pc -> effectN( 1 ).base_value();
+  while ( state.focus_used_rapid_reload >= rapid_reload_value )
+  {
+    state.focus_used_rapid_reload -= rapid_reload_value;
+    if ( rng().roll( rapid_reload_chance ) )
+    {
+      buffs.rapid_reload -> trigger();
+      cooldowns.rapid_fire -> reset( true );
+    }
+  }
+}
+
 namespace attacks
 {
 
@@ -2941,6 +2988,8 @@ struct barrage_t: public hunter_spell_t
     channeled = true;
     // 19-9-22 TODO: barrage is the only ability not counting toward cts
     triggers_calling_the_shots = false;
+    // 28/10/2023 TODO: barrage is the only ability not counting toward rapid reload
+    triggers_rapid_reload = false;
 
     tick_action = p -> get_background_action<damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
@@ -4154,6 +4203,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       + p -> talents.heavy_ammo -> effectN( 3 ).percent();
 
     triggers_calling_the_shots = false;
+    triggers_rapid_reload = false; 
 
     if ( p -> talents.careful_aim.ok() )
     {
@@ -4224,6 +4274,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
   void execute() override
   {
     p() -> trigger_calling_the_shots( this, cost() );
+    p() -> trigger_rapid_reload( this, cost() );
 
     if ( is_aoe() )
       target_cache.is_valid = false;
@@ -4437,7 +4488,7 @@ struct rapid_fire_t: public hunter_spell_t
     p() -> buffs.streamline -> trigger();
     p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 1 ).percent() );
 
-    if ( p() -> actions.volley_t31 )
+    if ( p() -> actions.volley_t31 && p() -> buffs.trick_shots -> up() )
       p() ->  actions.volley_t31 -> execute_on_target( execute_state -> target );
   }
 
@@ -4459,12 +4510,32 @@ struct rapid_fire_t: public hunter_spell_t
     p() -> consume_trick_shots();
 
     p() -> buffs.in_the_rhythm -> trigger();
+
+    if( p() -> tier_set.t31_mm_4pc -> ok() )
+    {
+      p() -> buffs.rapid_reload -> expire(); 
+    }
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    timespan_t t = hunter_spell_t::tick_time( s );
+
+    if ( p() -> buffs.rapid_reload -> up() )
+    {
+      t *= 1.0 + p() -> tier_set.t31_mm_4pc_buff -> effectN( 2 ).percent();
+    }
+
+    return t;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     // substract 1 here because RF has a tick at zero
-    return ( base_num_ticks - 1 ) * tick_time( s );
+    timespan_t base_duration = ( base_num_ticks - 1 ) * tick_time( s ); 
+    timespan_t extra_duration_from_rr = base_num_ticks * tick_time( s ) * p() -> buffs.rapid_reload -> check_value();
+    
+    return base_duration + extra_duration_from_rr; 
   }
 
   double energize_cast_regen( const action_state_t* ) const override
@@ -5992,11 +6063,6 @@ struct volley_t : public hunter_spell_t
   struct damage_t final : hunter_ranged_attack_t
   {
     attacks::explosive_shot_background_t* explosive = nullptr;
-    struct
-    {
-      double chance = 0;
-      attacks::wind_arrow_t* wind_arrow = nullptr;
-    } t31;
 
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
@@ -6008,20 +6074,6 @@ struct volley_t : public hunter_spell_t
         explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
         explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
       }
-
-      if ( p -> tier_set.t31_mm_4pc.ok() )
-      {
-        t31.chance = p -> tier_set.t31_mm_4pc -> proc_chance();
-        t31.wind_arrow = p -> get_background_action<attacks::wind_arrow_t>( "wind_arrow_t31" );
-      }
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      hunter_ranged_attack_t::impact( s );
-
-      if ( rng().roll( t31.chance ) )
-        t31.wind_arrow -> execute_on_target( s -> target );
     }
 
     void execute() override
@@ -6057,9 +6109,6 @@ struct volley_t : public hunter_spell_t
 
     may_hit = false;
     damage -> stats = stats;
-
-    if ( damage -> t31.wind_arrow )
-      add_child( damage -> t31.wind_arrow );
 
     tick_duration = data().duration();
   }
@@ -6106,7 +6155,7 @@ struct volley_background_t : public volley_t
   volley_background_t( hunter_t* p ) : volley_t( p, "" )
   {
     background = dual = true;
-    tick_duration = p -> find_spell( 257044 ) -> duration();
+    tick_duration = p -> tier_set.t31_mm_2pc -> effectN( 2 ).time_value();
   }
 };
 
@@ -7049,6 +7098,7 @@ void hunter_t::init_spells()
   tier_set.t31_sv_4pc = sets -> set( HUNTER_SURVIVAL, T31, B4 );
   tier_set.t31_sv_4pc_buff = find_spell( 426344 );
   tier_set.t31_sv_4pc_buff2 = find_spell( 428464 );
+  tier_set.t31_mm_4pc_buff = find_spell( 431156 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
@@ -7105,6 +7155,7 @@ void hunter_t::create_actions()
   if ( talents.windrunners_guidance.ok() )
     actions.windrunners_guidance_background = new attacks::windrunners_guidance_background_t( this );
 
+  //TODO Have the damage this does be based on the effect #3 off 431168 (effect id 1118759), as long as it is 100% it doesn't matter
   if ( tier_set.t31_mm_2pc.ok() )
     actions.volley_t31 = new spells::volley_background_t( this );
 
@@ -7448,6 +7499,10 @@ void hunter_t::create_buffs()
 
   buffs.light_the_fuse =
     make_buff( this, "light_the_fuse", tier_set.t31_sv_4pc_buff2 );
+
+  buffs.rapid_reload = 
+    make_buff( this, "rapid_reload", tier_set.t31_mm_4pc_buff )
+      -> set_default_value( tier_set.t31_mm_4pc_buff -> effectN( 1 ).percent() );
 }
 
 // hunter_t::init_gains =====================================================
