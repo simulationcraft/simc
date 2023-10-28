@@ -7568,8 +7568,9 @@ void hungering_shadowflame( special_effect_t& e )
       : generic_proc_t( effect, "hungering_shadowflame_self", effect.player->find_spell( 424324 ) )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-      target                    = effect.player;
-      stats->type               = stats_e::STATS_NEUTRAL;
+      target      = effect.player;
+      stats->type = stats_e::STATS_NEUTRAL;
+      callbacks   = false;  // TODO: confirm if this triggers any proc flags
     }
   };
 
