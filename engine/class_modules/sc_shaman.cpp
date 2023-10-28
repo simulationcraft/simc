@@ -8539,6 +8539,7 @@ struct primordial_wave_t : public shaman_spell_t
     parse_options( options_str );
 
     impact_action = new primordial_wave_damage_t( player );
+    add_child( impact_action );
   }
 
   void init() override
