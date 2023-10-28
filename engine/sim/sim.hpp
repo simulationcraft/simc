@@ -512,7 +512,7 @@ struct sim_t : private sc_thread_t
     // Period in which to try to trigger adapative Stonescales. Based on spell data, does not trigger on periodic damage.
     timespan_t adaptive_stonescales_period = 3_s;
     // Uptime of the vers buff of Undulating Sporecloak (>70% HP)
-    double undulating_sporecloak_uptime = 0.9;
+    double undulating_sporecloak_uptime = 0.75;
     // Interval between checking undulating_sporecloak_uptime
     timespan_t undulating_sporecloak_update_interval = 5_s;
     // Uptime of the mastery buff (Dreaming Trance) of Dreamtender's Charm (>70% HP), does not include lockout time
