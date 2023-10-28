@@ -483,6 +483,8 @@ public:
     buff_t* witch_doctors_ancestry;
     buff_t* legacy_of_the_frost_witch;
 
+    buff_t* windfury_totem_proxy; // Fake Windfury Totem buff
+
     // Restoration
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
@@ -7879,7 +7881,7 @@ struct windfury_totem_t : public shaman_spell_t
     shaman_spell_t( "windfury_totem", player, player->talent.windfury_totem )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = may_crit = may_miss = false;
 
     // If the Shaman has the Doom Winds legendary equipped or the simulator environment
     // does not enable the "global" windfury totem, we need to ensure the global
@@ -7890,14 +7892,22 @@ struct windfury_totem_t : public shaman_spell_t
     {
       wft_buff->set_duration( data().duration() );
 
-      // Need to also create the effect since the core sim won't do it when
-      // sim->overrides.windfury_totem is not set
-      special_effect_t effect( player );
+      const auto has_effect = range::any_of( player->special_effects,
+                                            []( const special_effect_t* e ) {
+                                              return e->driver()->id() == 327942;
+                                            } );
 
-      unique_gear::initialize_special_effect( effect, 327942 );
-      if ( !effect.custom_init_object.empty() )
+      if ( !has_effect )
       {
-        player->special_effects.push_back( new special_effect_t( effect ) );
+        // Need to also create the effect since the core sim won't do it when
+        // sim->overrides.windfury_totem is not set
+        special_effect_t effect( player );
+
+        unique_gear::initialize_special_effect( effect, 327942 );
+        if ( !effect.custom_init_object.empty() )
+        {
+          player->special_effects.push_back( new special_effect_t( effect ) );
+        }
       }
     }
 
@@ -7909,19 +7919,14 @@ struct windfury_totem_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buffs.windfury_totem->trigger();
-  }
-
-  bool ready() override
-  {
-    // If the shaman does not have Doom Winds legendary equipped, and the global windfury
-    // totem is enabled, don't waste GCDs casting the shaman's own Windfury Totem
-    if ( sim->overrides.windfury_totem && !p()->talent.doom_winds.ok() )
+    if ( !sim->overrides.windfury_totem )
     {
-      return false;
+      p()->buffs.windfury_totem->trigger();
     }
-
-    return shaman_spell_t::ready();
+    else
+    {
+      p()->buff.windfury_totem_proxy->trigger();
+    }
   }
 };
 
@@ -9161,6 +9166,14 @@ if ( util::str_compare_ci( name, "fb_extension_possible" ) )
     }
 
     return expr_t::create_constant( name, rotation_type == options.rotation );
+  }
+
+  // Override windfury_totem expressions to use the proxy buff as the object when the Sim-wide
+  // windfury totem override is in use.  This will allow the shaman to still expend GCDs to cast
+  // Windfury Totem, even when the sim-wide override is in use.
+  if ( util::str_in_str_ci( name, "buff.windfury_totem" ) && sim->overrides.windfury_totem )
+  {
+    return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff.windfury_totem_proxy );
   }
 
   return player_t::create_expression( name );
@@ -10768,6 +10781,10 @@ void shaman_t::create_buffs()
   buff.doom_winds = make_buff( this, "doom_winds", talent.doom_winds );
   buff.ice_strike = make_buff( this, "ice_strike", talent.ice_strike->effectN( 3 ).trigger() )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER );
+
+  buff.windfury_totem_proxy = make_buff( this, "windfury_totem_proxy", find_spell( 327942 ) )
+    ->set_chance( 1.0 )
+    ->set_quiet( true );
 
   //
   // Restoration
