@@ -6867,6 +6867,12 @@ void infernal_signet_brand( special_effect_t& e )
       stats->type       = stats_e::STATS_NEUTRAL;
     }
 
+    // TODO: assumption based on previous self-dot trinkets, confirm if true/false
+    result_amount_type amount_type( const action_state_t*, bool ) const override
+    {
+      return result_amount_type::HEAL_OVER_TIME;
+    }
+
     double composite_ta_multiplier( const action_state_t* state ) const override
     {
       double m        = generic_proc_t::composite_ta_multiplier( state );
