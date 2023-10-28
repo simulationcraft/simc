@@ -6155,7 +6155,7 @@ struct volley_background_t : public volley_t
   volley_background_t( hunter_t* p ) : volley_t( p, "" )
   {
     background = dual = true;
-    tick_duration = p -> tier_set.t31_mm_2pc -> effectN( 2 ).time_value();
+    tick_duration = timespan_t::from_seconds( p -> tier_set.t31_mm_2pc -> effectN( 2 ).base_value() );
   }
 };
 
@@ -7913,7 +7913,7 @@ double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target
 
   m *= 1 + get_target_data( target ) -> debuffs.death_chakram -> value();
 
-  if( is_ptr() )
+  if( is_ptr() && !guardian )
   {
     auto td = get_target_data( target ); 
     auto wi_debuff = td -> debuffs.wild_instincts;
