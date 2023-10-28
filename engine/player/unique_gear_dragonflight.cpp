@@ -7237,7 +7237,7 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
   wall_of_hate = create_buff<absorb_buff_t>( effect.player, effect.player->find_spell( 425571 ) );
 
   effect.player->register_combat_begin( [ tainted_heart ]( player_t* ) { tainted_heart->trigger(); } );
-  effect.custom_buff = wall_of_hate;
+  effect.custom_buff = shadowflame_rage;
 }
 
 // Weapons

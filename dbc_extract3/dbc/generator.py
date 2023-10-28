@@ -1446,7 +1446,8 @@ class SpellDataGenerator(DataGenerator):
          427209, 427212, # Dreambinder, Loom of the Great Cycle Damage Spell and Slowed Debuff
          425509, # Branch of the Tormented Ancient
          425180, 425156, # Infernal Signet Brand
-         421990, 421996, 421994, 422016 # Gift of Ursine Vengeance
+         421990, 421996, 421994, 422016,  # Gift of Ursine Vengeance
+         422652, 422750, 425571, 425750, 425701, 425703, 425461 # Fyrakks Tainted Rageheart
         ),
 
         # Warrior:
