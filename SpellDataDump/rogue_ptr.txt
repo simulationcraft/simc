@@ -4066,7 +4066,6 @@ Description      : Drink an alchemical concoction that heals you for $?a354425&a
 Tooltip          : Healing for $?a354425|a193546[${$W1}.2][$w1]% of maximum health every $t1 sec.
 
 Name             : Shadow Dance (id=185313) [Spell Family (8)] 
-Hotfixed         : Charge Cooldown (60000 -> 1610612736)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
