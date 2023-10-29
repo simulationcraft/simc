@@ -2229,6 +2229,7 @@ class SpellDataGenerator(DataGenerator):
           ( 279555, 3 ), # Layered Mane buff
           ( 395942, 3 ), # 2t29 Mangle AoE
           ( 400360, 3 ), # Moonless Night
+          ( 425441, 3 ), ( 425448, 3 ), # Blazing Thorns (4t31)
           # Restoration
         ),
         # Demon Hunter:

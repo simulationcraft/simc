@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51851
-static const std::array<spelltext_data_t, 20501> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20503> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20354,6 +20354,8 @@ static const std::array<spelltext_data_t, 20501> __ptr_spelltext_data { {
   { 425299, "$@spelldesc422886", 0, 0 },
   { 425407, "$@spelldesc422864", "Absorbing up to $w1 damage.", 0 },
   { 425417, "$@spelldesc422146", "Scorched by the sun for $w1 Fire damage every $t sec.", 0 },
+  { 425441, "$@spelldesc422865", "Absorbing up to $w1 damage.", 0 },
+  { 425448, "$@spelldesc422865", 0, 0 },
   { 425461, "$@spelldesc422652", 0, 0 },
   { 425509, "$@spelldesc422441", 0, 0 },
   { 425517, "$@spelldesc422927", "Your next Shield Slam will consume active bleeds on its target.", 0 },

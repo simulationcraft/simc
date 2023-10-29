@@ -472,13 +472,14 @@ public:
     action_t* orbital_strike;
 
     // Feral
-    action_t* burning_frenzy; // 4t31
+    action_t* burning_frenzy;       // 4t31
     action_t* ferocious_bite_apex;  // free bite from apex predator's crazing
     action_t* frenzied_assault;
     action_t* thrashing_claws;
 
     // Guardian
     action_t* after_the_wildfire_heal;
+    action_t* blazing_thorns;  // 4t31
     action_t* brambles;
     action_t* elunes_favored_heal;
     action_t* galactic_guardian;
@@ -615,6 +616,7 @@ public:
     buff_t* blood_frenzy;
     buff_t* bristling_fur;
     buff_t* dream_of_cenarius;
+    buff_t* dream_thorns;  // 2t31
     buff_t* earthwarden;
     buff_t* elunes_favored;
     buff_t* furious_regeneration;  // 2t30
@@ -1760,7 +1762,51 @@ struct celestial_alignment_buff_t : public druid_buff_t
     p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
     p()->uptime.combined_ca_inc->update( false, sim->current_time() );
   }
+};
 
+// Dream Thorns (Guardian Tier 31) ==========================================
+struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
+{
+  action_t*& thorns;
+  double absorb_pct;
+  double rage_spent;
+  double coeff;
+  double thorn_pct;
+
+  dream_thorns_buff_t( druid_t* p, bool has_4pc )
+    : base_t( p, has_4pc ? "blazing_thorns" : "dream_thorns", p->find_spell( has_4pc ? 425441 : 425407 ) ),
+      thorns( p->active.blazing_thorns ),
+      absorb_pct( data().effectN( 2 ).percent() ),
+      rage_spent( p->sets->set( DRUID_GUARDIAN, T31, B2 )->effectN( 1 ).base_value() ),
+      coeff( p->sets->set( DRUID_GUARDIAN, T31, B2 )->effectN( 2 ).percent() ),
+      thorn_pct( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 2 ).percent() )
+  {
+    set_absorb_source( p->get_stats( has_4pc ? "Blazing Thorns" : "Dream Thorns" ) );
+    set_absorb_high_priority( true );
+  }
+
+  // triggered with rage spent as value
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    v *= p()->composite_melee_attack_power_by_type( attack_power_type::DEFAULT ) *
+         p()->composite_attack_power_multiplier() * coeff / rage_spent;
+
+    return base_t::trigger( s, v, c, d );    
+  }
+
+  double consume( double a, player_t* t ) override
+  {
+    return base_t::consume( a * absorb_pct, t );
+  }
+
+  void absorb_used( double a, player_t* t ) override
+  {
+    if ( thorns && t->is_enemy() )
+    {
+      thorns->base_dd_min = thorns->base_dd_max = a * thorn_pct;
+      thorns->execute_on_target( t );
+    }
+  }
 };
 
 // Fury of Elune AP =========================================================
@@ -1796,9 +1842,36 @@ struct matted_fur_buff_t : public druid_buff_base_t<absorb_buff_t>
 
   bool trigger( int s, double v, double c, timespan_t d ) override
   {
-    v = p()->composite_melee_attack_power() * mul * ( 1.0 + p()->composite_heal_versatility() );
+    v = p()->composite_melee_attack_power_by_type( attack_power_type::DEFAULT ) *
+        p()->composite_attack_power_multiplier() * mul * ( 1.0 + p()->composite_heal_versatility() );
 
     return base_t::trigger( s, v, c, d );
+  }
+};
+
+// Rage of the Sleeper =======================================================
+struct rage_of_the_sleeper_buff_t : public druid_buff_t
+{
+  double rage_spent = 0;
+  timespan_t extensions = 0_ms;
+
+  rage_of_the_sleeper_buff_t( druid_t* p ) : base_t( p, "rage_of_the_sleeper", p->talent.rage_of_the_sleeper )
+  {
+    set_cooldown( 0_ms );
+    add_invalidate( CACHE_LEECH );
+    set_stack_change_callback( [ p, this ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+      {
+        rage_spent = 0;
+        extensions = 0_ms;
+      }
+      else
+      {
+        p->buff.dream_thorns->trigger( 1, rage_spent );
+        rage_spent = 0;
+        extensions = 0_ms;
+      }
+    } );
   }
 };
 
@@ -3337,16 +3410,16 @@ struct cat_finisher_data_t
 };
 
 template <class Data = cat_finisher_data_t>
-struct combo_point_spender_t : public cat_attack_t
+struct cp_spender_t : public cat_attack_t
 {
 protected:
-  using base_t = combo_point_spender_t<Data>;
+  using base_t = cp_spender_t<Data>;
   using state_t = druid_action_state_t<Data>;
 
 public:
   bool consumes_combo_points = true;
 
-  combo_point_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
+  cp_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
     : cat_attack_t( n, p, s, opt )
   {}
 
@@ -3470,7 +3543,7 @@ public:
   }
 };
 
-using cat_finisher_t = combo_point_spender_t<>;
+using cat_finisher_t = cp_spender_t<>;
 
 template <typename BASE>
 struct trigger_thrashing_claws_t : public BASE
@@ -3836,7 +3909,7 @@ struct frenzied_assault_t : public residual_action::residual_periodic_action_t<c
   }
 };
 
-// t31 4p feral =============================================================
+// Burning Frenzy (Feral T31) =================================================
 struct burning_frenzy_t : public residual_action::residual_periodic_action_t<cat_attack_t>
 {
   burning_frenzy_t( druid_t* p ) : residual_action_t( "burning_frenzy", p, p->find_spell( 422779 ) )
@@ -4404,45 +4477,74 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   }
 };  // end bear_attack_t
 
-struct rage_spender_t : public bear_attack_t
+template <typename BASE = bear_attack_t>
+struct rage_spender_t : public BASE
 {
+private:
+  druid_t* p_;
+
 protected:
-  using base_t = rage_spender_t;
+  using base_t = rage_spender_t<BASE>;
 
 public:
   buff_t* atw_buff;
+  buffs::rage_of_the_sleeper_buff_t* rots_buff;
   double ug_cdr;
+  double t31_rage_per;
+  timespan_t t31_max_ext;
+  timespan_t t31_ext;
 
-  rage_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o= {} )
-    : bear_attack_t( n, p, s, o ),
+  rage_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
+    : BASE( n, p, s, o ),
+      p_( p ),
       atw_buff( p->buff.after_the_wildfire ),
-      ug_cdr( p->talent.ursocs_guidance->effectN( 5 ).base_value() )
+      rots_buff( debug_cast<buffs::rage_of_the_sleeper_buff_t*>( p->buff.rage_of_the_sleeper ) ),
+      ug_cdr( p->talent.ursocs_guidance->effectN( 5 ).base_value() ),
+      t31_rage_per( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 1 ).base_value() ),
+      t31_max_ext( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 3 ).time_value() ),
+      t31_ext( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 4 ).time_value() )
   {}
 
   void consume_resource() override
   {
-    bear_attack_t::consume_resource();
+    BASE::consume_resource();
 
-    if ( is_free() || !last_resource_cost )
+    if ( BASE::is_free() || !BASE::last_resource_cost )
       return;
 
-    if ( p()->talent.after_the_wildfire.ok() )
+    if ( p_->talent.after_the_wildfire.ok() )
     {
       if ( !atw_buff->check() )
         atw_buff->trigger();
 
-      atw_buff->current_value -= last_resource_cost;
+      atw_buff->current_value -= BASE::last_resource_cost;
 
       if ( atw_buff->current_value <= 0 )
       {
         atw_buff->current_value += atw_buff->default_value;
 
-        p()->active.after_the_wildfire_heal->execute();
+        p_->active.after_the_wildfire_heal->execute();
       }
     }
 
-    if ( p()->talent.ursocs_guidance.ok() && p()->talent.incarnation_bear.ok() )
-      p()->cooldown.incarnation_bear->adjust( timespan_t::from_seconds( last_resource_cost / -ug_cdr ) );
+    if ( p_->talent.ursocs_guidance.ok() && p_->talent.incarnation_bear.ok() )
+      p_->cooldown.incarnation_bear->adjust( timespan_t::from_seconds( BASE::last_resource_cost / -ug_cdr ) );
+
+    if ( rots_buff->check() )
+    {
+      if ( p_->sets->has_set_bonus( DRUID_GUARDIAN, T31, B2 ) )
+        rots_buff->rage_spent += BASE::last_resource_cost;
+
+      if ( p_->sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) )
+      {
+        if ( rots_buff->extensions < t31_max_ext &&
+             rots_buff->extensions < t31_ext * static_cast<int>( rots_buff->rage_spent / t31_rage_per ) )
+        {
+          rots_buff->extend_duration( p_, t31_ext );
+          rots_buff->extensions += t31_ext;
+        }
+      }
+    }
   }
 };
 
@@ -4560,6 +4662,16 @@ struct incarnation_bear_t : public berserk_bear_base_t
   }
 };
 
+// Blazing Thorns (Guardian T31) ============================================
+struct blazing_thorns_t : public bear_attack_t
+{
+  blazing_thorns_t( druid_t* p ) : bear_attack_t( "blazing_thorns", p, p->find_spell( 425448 ) )
+  {
+    base_dd_min = base_dd_max = 1.0;
+    proc = true;
+  }
+};
+
 // Brambles =================================================================
 struct brambles_t : public bear_attack_t
 {
@@ -4631,7 +4743,7 @@ struct incapacitating_roar_t : public bear_attack_t
 };
 
 // Ironfur ==================================================================
-struct ironfur_t : public trigger_indomitable_guardian_t<rage_spender_t>
+struct ironfur_t : public trigger_indomitable_guardian_t<rage_spender_t<>>
 {
   timespan_t goe_ext;
   double lm_chance;
@@ -4812,7 +4924,7 @@ struct mangle_t : public bear_attack_t
 };
 
 // Maul =====================================================================
-struct maul_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t>>>
+struct maul_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
 {
   maul_t( druid_t* p, std::string_view opt ) : maul_t( p, "maul", opt ) {}
 
@@ -4921,7 +5033,7 @@ struct rage_of_the_sleeper_t : public bear_attack_t
 };
 
 // Raze =====================================================================
-struct raze_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t>>>
+struct raze_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
 {
   raze_t( druid_t* p, std::string_view opt ) : raze_t( p, "raze", opt ) {}
 
@@ -5266,7 +5378,7 @@ struct elunes_favored_heal_t : public druid_heal_t
 };
 
 // Frenzied Regeneration ====================================================
-struct frenzied_regeneration_t : public druid_heal_t
+struct frenzied_regeneration_t : public bear_attacks::rage_spender_t<druid_heal_t>
 {
   cooldown_t* dummy_cd;
   cooldown_t* orig_cd;
@@ -5274,7 +5386,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   double ir_mul = 0.0;
 
   frenzied_regeneration_t( druid_t* p, std::string_view opt )
-    : druid_heal_t( "frenzied_regeneration", p, p->talent.frenzied_regeneration, opt ),
+    : base_t( "frenzied_regeneration", p, p->talent.frenzied_regeneration, opt ),
       dummy_cd( p->get_cooldown( "dummy_cd" ) ),
       orig_cd( cooldown )
   {
@@ -5291,7 +5403,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     if ( p()->talent.layered_mane.ok() && rng().roll( p()->talent.layered_mane->effectN( 2 ).percent() ) )
       cooldown = dummy_cd;
 
-    druid_heal_t::execute();
+    base_t::execute();
 
     cooldown = orig_cd;
 
@@ -5300,7 +5412,7 @@ struct frenzied_regeneration_t : public druid_heal_t
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double pm = druid_heal_t::composite_persistent_multiplier( s );
+    double pm = base_t::composite_persistent_multiplier( s );
 
     if ( p()->buff.guardian_of_elune->check() )
       pm *= 1.0 + goe_mul;
@@ -8989,18 +9101,8 @@ double brambles_handler( const action_state_t* s )
   auto p = static_cast<druid_t*>( s->target );
   assert( p->talent.brambles.ok() );
 
-  /* Calculate the maximum amount absorbed. This is not affected by
-     versatility (and likely other player modifiers). */
-  double weapon_ap = 0.0;
-
-  if ( p->buff.cat_form->check() )
-    weapon_ap = p->cat_weapon.dps * WEAPON_POWER_COEFFICIENT;
-  else if ( p->buff.bear_form->check() )
-    weapon_ap = p->bear_weapon.dps * WEAPON_POWER_COEFFICIENT;
-  else
-    weapon_ap = p->main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
-
-  double attack_power = ( p->cache.attack_power() + weapon_ap ) * p->composite_attack_power_multiplier();
+  double attack_power =
+      p->composite_melee_attack_power_by_type( attack_power_type::DEFAULT ) * p->composite_attack_power_multiplier();
 
   double coeff = p->is_ptr() ? p->talent.brambles->effectN( 1 ).ap_coeff() : 0.075;
 
@@ -10291,6 +10393,10 @@ void druid_t::create_buffs()
       this, "dream_of_cenarius", talent.dream_of_cenarius->effectN( 1 ).trigger() )
           ->set_cooldown( find_spell( 372523 )->duration() );
 
+  buff.dream_thorns =
+      make_buff_fallback<dream_thorns_buff_t>( sets->has_set_bonus( DRUID_GUARDIAN, T31, B2 ), this, "dream_thorns",
+                                               sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) );
+
   buff.earthwarden = make_buff_fallback( talent.earthwarden.ok(), this, "earthwarden", find_spell( 203975 ) )
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
 
@@ -10349,9 +10455,7 @@ void druid_t::create_buffs()
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.rage_of_the_sleeper =
-      make_buff_fallback( talent.rage_of_the_sleeper.ok(), this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
-          ->set_cooldown( 0_ms )
-          ->add_invalidate( CACHE_LEECH );
+      make_buff_fallback<rage_of_the_sleeper_buff_t>( talent.rage_of_the_sleeper.ok(), this, "rage_of_the_sleeper" );
 
   buff.tooth_and_claw = make_buff_fallback( talent.tooth_and_claw.ok(),
       this, "tooth_and_claw", find_trigger( talent.tooth_and_claw ).trigger() )
@@ -10569,6 +10673,9 @@ void druid_t::create_actions()
   // Guardian
   if ( talent.after_the_wildfire.ok() )
     active.after_the_wildfire_heal = get_secondary_action<after_the_wildfire_heal_t>( "after_the_wildfire" );
+
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) )
+    active.blazing_thorns = get_secondary_action<blazing_thorns_t>( "blazing_thorns" );
 
   if ( talent.brambles.ok() )
     active.brambles = get_secondary_action<brambles_t>( "brambles" );
@@ -12481,8 +12588,9 @@ void druid_t::init_absorb_priority()
 
   player_t::init_absorb_priority();
 
+  absorb_priority.push_back( buff.dream_thorns->data().id() );
+  absorb_priority.push_back( talent.rage_of_the_sleeper->id() );
   absorb_priority.push_back( talent.earthwarden->id() );
-  absorb_priority.push_back( talent.rage_of_the_sleeper->id() );  // TODO confirm priority
   absorb_priority.push_back( talent.brambles->id() );
 }
 
