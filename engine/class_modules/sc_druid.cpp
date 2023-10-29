@@ -4488,7 +4488,6 @@ protected:
 
 public:
   buff_t* atw_buff;
-  buffs::rage_of_the_sleeper_buff_t* rots_buff;
   double ug_cdr;
   double t31_rage_per;
   timespan_t t31_max_ext;
@@ -4498,7 +4497,6 @@ public:
     : BASE( n, p, s, o ),
       p_( p ),
       atw_buff( p->buff.after_the_wildfire ),
-      rots_buff( static_cast<buffs::rage_of_the_sleeper_buff_t*>( p->buff.rage_of_the_sleeper ) ),
       ug_cdr( p->talent.ursocs_guidance->effectN( 5 ).base_value() ),
       t31_rage_per( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 1 ).base_value() ),
       t31_max_ext( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 3 ).time_value() ),
@@ -4530,18 +4528,23 @@ public:
     if ( p_->talent.ursocs_guidance.ok() && p_->talent.incarnation_bear.ok() )
       p_->cooldown.incarnation_bear->adjust( timespan_t::from_seconds( BASE::last_resource_cost / -ug_cdr ) );
 
-    if ( rots_buff->check() )
+    if ( p_->talent.rage_of_the_sleeper.ok() )
     {
-      if ( p_->sets->has_set_bonus( DRUID_GUARDIAN, T31, B2 ) )
-        rots_buff->rage_spent += BASE::last_resource_cost;
+      auto rots_buff = debug_cast<buffs::rage_of_the_sleeper_buff_t*>( p_->buff.rage_of_the_sleeper );
 
-      if ( p_->sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) )
+      if ( rots_buff->check() )
       {
-        if ( rots_buff->extensions < t31_max_ext &&
-             rots_buff->extensions < t31_ext * static_cast<int>( rots_buff->rage_spent / t31_rage_per ) )
+        if ( p_->sets->has_set_bonus( DRUID_GUARDIAN, T31, B2 ) )
+          rots_buff->rage_spent += BASE::last_resource_cost;
+
+        if ( p_->sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) )
         {
-          rots_buff->extend_duration( p_, t31_ext );
-          rots_buff->extensions += t31_ext;
+          if ( rots_buff->extensions < t31_max_ext &&
+               rots_buff->extensions < t31_ext * static_cast<int>( rots_buff->rage_spent / t31_rage_per ) )
+          {
+            rots_buff->extend_duration( p_, t31_ext );
+            rots_buff->extensions += t31_ext;
+          }
         }
       }
     }
