@@ -1447,7 +1447,7 @@ class SpellDataGenerator(DataGenerator):
          425509, # Branch of the Tormented Ancient
          425180, 425156, # Infernal Signet Brand
          421990, 421996, 421994, 422016,  # Gift of Ursine Vengeance
-         422651, 422652, 422750, 425571, 425750, 425701, 425703, 425461 # Fyrakks Tainted Rageheart
+         422651, 422652, 422750, 425571, 425701, 425703, 425461 # Fyrakks Tainted Rageheart
         ),
 
         # Warrior:
