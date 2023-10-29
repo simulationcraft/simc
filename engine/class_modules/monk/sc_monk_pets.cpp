@@ -115,6 +115,43 @@ namespace monk
           if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() )
             o()->bonedust_brew_assessor( s );
         }
+
+        if ( !super_t::result_is_miss( s->result ) && s->result_amount > 0 )
+        {
+          if ( o()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
+          {
+            if ( s->action->school == SCHOOL_SHADOWFLAME )
+            {
+              double current_value = o()->buff.brewmaster_t31_4p_accumulator->check_value();
+              double result   = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+              double increase = std::fmin( current_value + result,
+                                           o()->max_health() );  // accumulator is capped at the player's current max hp
+              o()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
+              o()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+            }
+
+            switch ( s->action->id )
+            {
+              // Blacklist
+              case 425299:  // charred dreams
+              case 325217:  // bonedust brew
+                break;
+              default:
+                // This value is not presented in any spell data and was found via logs.
+                if ( o()->rng().roll( 0.5 ) )
+                {
+                  double amt = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
+                  o()->active_actions.charred_dreams_dmg_4p->target = s->target;
+                  o()->active_actions.charred_dreams_dmg_4p->base_dd_min =
+                      o()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
+                  o()->active_actions.charred_dreams_dmg_4p->execute();
+                  o()->sim->print_debug(
+                      "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
+                      s->action->id, s->result_amount, amt );
+                }
+            }
+          }
+        }
       }
 
       void tick( dot_t *dot ) override
@@ -726,7 +763,7 @@ namespace monk
         sef_blackout_kick_t( storm_earth_and_fire_pet_t *player )
           : sef_melee_attack_t( "blackout_kick", player, player->o()->spec.blackout_kick )
         {
-    
+
           aoe = 1 + ( int )o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
 
           if ( player->o()->talent.windwalker.teachings_of_the_monastery->ok() )
@@ -1300,7 +1337,7 @@ namespace monk
       {
         if ( channeling )
         {
-// the only time we're not cancellign is if we use something instant 
+// the only time we're not cancellign is if we use something instant
 // and we're channeling spinning crane kick
           if ( dynamic_cast< sef_spinning_crane_kick_t * >( channeling ) == nullptr ||
             ability == sef_ability_e::SEF_FISTS_OF_FURY ||
@@ -1431,74 +1468,71 @@ namespace monk
     // ==========================================================================
     struct niuzao_pet_t : public monk_pet_t
     {
-      private:
       struct melee_t : public pet_melee_t
       {
-        melee_t( util::string_view n, niuzao_pet_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
-        {
-        }
+        melee_t( niuzao_pet_t* pet, weapon_t* weapon )
+          : pet_melee_t( "melee_main_hand", pet, weapon )
+        {}
       };
 
       struct stomp_t : public pet_melee_attack_t
       {
-        stomp_t( niuzao_pet_t *p, util::string_view options_str ) : pet_melee_attack_t( "stomp", p, p->o()->passives.stomp )
+        stomp_t( niuzao_pet_t *pet, std::string_view options_str )
+          : pet_melee_attack_t( "stomp", pet, pet->o()->passives.stomp )
         {
           parse_options( options_str );
-
-          aoe = -1;
+          aoe      = -1;
           may_crit = true;
-          // technically the base damage doesn't split. practically, the base damage
-          // is ass and totally irrelevant. the r2 hot trub effect (which does
-          // split) is by far the dominating factor in any aoe sim.
-          //
-          // if i knew more about simc, i'd implement a separate effect for that,
-          // but i'm not breaking something that (mostly) works in pursuit of that
-          // goal.
-          //
-          //  - emallson
-          // As a temporary measure only split all damage while the talent is active.
-          if ( p->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
+          if ( pet->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
             split_aoe_damage = true;
         }
 
-        double bonus_da( const action_state_t *s ) const override
+        double bonus_da( const action_state_t *state ) const override
         {
+          double base_da = pet_melee_attack_t::bonus_da( state );
           if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
           {
-            auto b = pet_melee_attack_t::bonus_da( s );
-            auto purify_amount = o()->buff.recent_purifies->check_value();
-            auto actual_damage = purify_amount;
-            actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
-            o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
-              purify_amount, actual_damage );
-            return b + actual_damage;
+            // close enough, not exact though
+            // the base damage from stomp is not split, but the added damage from recent purification is split
+            double base_stomp = sim->averaged_range( base_da_min( state ), base_da_max( state ) );
+            double purify     = o()->buff.recent_purifies->check_value();
+            double added_damage =
+                purify * o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
+            o()->sim->print_debug(
+                "applying bonus purify damage (base da: {}, purify: {}, added: {}, final: {})",
+                base_da, purify, added_damage, base_da + added_damage );
+            return base_stomp * ( state->n_targets - 1 ) + base_da + added_damage;
           }
-          return 0;
+          return base_da;
+        }
+
+        double action_multiplier() const override
+        {
+          double am = pet_melee_attack_t::action_multiplier();
+          am *= 1.0 + o()->talent.brewmaster.walk_with_the_ox->effectN( 1 ).percent();
+          return am;
         }
 
         void execute() override
         {
           pet_melee_attack_t::execute();
-          // canceling the purify buff goes here so that in aoe all hits see the
-          // purified damage that needs to be split. this occurs after all damage
-          // has been dealt
           o()->buff.recent_purifies->cancel();
         }
       };
 
       struct auto_attack_t : public pet_auto_attack_t
       {
-        auto_attack_t( niuzao_pet_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
+        auto_attack_t( niuzao_pet_t* pet, std::string_view options_str )
+          : pet_auto_attack_t( pet )
         {
           parse_options( options_str );
-
-          player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
+          player->main_hand_attack = new melee_t( pet, &( pet->main_hand_weapon ));
           player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
         }
       };
 
-      public:
-      niuzao_pet_t( monk_t *owner ) : monk_pet_t( owner, "niuzao_the_black_ox", PET_NIUZAO, false, true )
+      niuzao_pet_t( std::string_view name, monk_t* player )
+        : monk_pet_t( player, name, PET_NIUZAO, false, true )
       {
         npc_id = ( int )o()->find_spell( 132578 )->effectN( 1 ).misc_value1();
         main_hand_weapon.type = WEAPON_BEAST;
@@ -1529,109 +1563,18 @@ namespace monk
       }
     };
 
-    // ==========================================================================
-    // Call to Arms Niuzao Pet
-    // ==========================================================================
-    struct call_to_arms_niuzao_pet_t : public monk_pet_t
+    struct invoke_niuzao_pet_t : public niuzao_pet_t
     {
-      private:
-      struct melee_t : public pet_melee_t
-      {
-        melee_t( util::string_view n, call_to_arms_niuzao_pet_t *player, weapon_t *weapon )
-          : pet_melee_t( n, player, weapon )
-        {
-        }
-      };
+      invoke_niuzao_pet_t( monk_t* player )
+        : niuzao_pet_t( "invoke_niuzao_the_black_ox", player )
+      {}
+    };
 
-      struct stomp_t : public pet_melee_attack_t
-      {
-        stomp_t( call_to_arms_niuzao_pet_t *p, util::string_view options_str )
-          : pet_melee_attack_t( "stomp", p, p->o()->passives.stomp )
-        {
-          parse_options( options_str );
-
-          aoe = -1;
-          may_crit = true;
-          // technically the base damage doesn't split. practically, the base damage
-          // is ass and totally irrelevant. the r2 hot trub effect (which does
-          // split) is by far the dominating factor in any aoe sim.
-          //
-          // if i knew more about simc, i'd implement a separate effect for that,
-          // but i'm not breaking something that (mostly) works in pursuit of that
-          // goal.
-          //
-          //  - emallson
-          // As a temporary measure only split all damage while the talent is active.
-          if ( p->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-            split_aoe_damage = true;
-        }
-
-        double bonus_da( const action_state_t *s ) const override
-        {
-          if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-          {
-            auto b = pet_melee_attack_t::bonus_da( s );
-            auto purify_amount = o()->buff.recent_purifies->check_value();
-            auto actual_damage = purify_amount;
-            actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
-            o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
-              purify_amount, actual_damage );
-            return b + actual_damage;
-          }
-          return 0;
-        }
-
-        void execute() override
-        {
-          pet_melee_attack_t::execute();
-          // canceling the purify buff goes here so that in aoe all hits see the
-          // purified damage that needs to be split. this occurs after all damage
-          // has been dealt
-          o()->buff.recent_purifies->cancel();
-        }
-      };
-
-      struct auto_attack_t : public pet_auto_attack_t
-      {
-        auto_attack_t( call_to_arms_niuzao_pet_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
-        {
-          parse_options( options_str );
-
-          player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
-          player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-        }
-      };
-
-      public:
-      call_to_arms_niuzao_pet_t( monk_t *owner ) : monk_pet_t( owner, "call_to_arms_niuzao_the_black_ox", PET_NIUZAO, false, true )
-      {
-        npc_id = ( int )o()->passives.call_to_arms_invoke_niuzao->effectN( 1 ).misc_value1();
-        main_hand_weapon.type = WEAPON_BEAST;
-        main_hand_weapon.min_dmg = dbc->spell_scaling( o()->type, level() );
-        main_hand_weapon.max_dmg = dbc->spell_scaling( o()->type, level() );
-        main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-        main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-        owner_coeff.ap_from_ap = 1;
-      }
-
-      void init_action_list() override
-      {
-        action_list_str = "auto_attack";
-        action_list_str += "/stomp";
-
-        pet_t::init_action_list();
-      }
-
-      action_t *create_action( util::string_view name, util::string_view options_str ) override
-      {
-        if ( name == "stomp" )
-          return new stomp_t( this, options_str );
-
-        if ( name == "auto_attack" )
-          return new auto_attack_t( this, options_str );
-
-        return pet_t::create_action( name, options_str );
-      }
+    struct call_to_arms_niuzao_pet_t : public niuzao_pet_t
+    {
+      call_to_arms_niuzao_pet_t( monk_t* player )
+        : niuzao_pet_t( "call_to_arms_niuzao_the_black_ox", player )
+      {}
     };
 
     // ==========================================================================
@@ -1980,38 +1923,16 @@ namespace monk
 
   monk_t::pets_t::pets_t( monk_t *p )
     : sef(),
-    xuen( "xuen_the_white_tiger", p, [ ] ( monk_t *p )
-  {
-    return new pets::xuen_pet_t( p );
-  } ),
-    niuzao( "niuzao_the_black_ox", p, [ ] ( monk_t *p )
-  {
-    return new pets::niuzao_pet_t( p );
-  } ),
-    yulon( "yulon_the_jade_serpent", p, [ ] ( monk_t *p )
-  {
-    return new pets::yulon_pet_t( p );
-  } ),
-    chiji( "chiji_the_red_crane", p, [ ] ( monk_t *p )
-  {
-    return new pets::chiji_pet_t( p );
-  } ),
-    white_tiger_statue( "white_tiger_statue", p, [ ] ( monk_t *p )
-  {
-    return new pets::white_tiger_statue_t( p );
-  } ),
-    fury_of_xuen_tiger( "fury_of_xuen_tiger", p, [ ] ( monk_t *p )
-  {
-    return new pets::fury_of_xuen_pet_t( p );
-  } ),
-    call_to_arms_niuzao( "call_to_arms_niuzao", p, [ ] ( monk_t *p )
-  {
-    return new pets::call_to_arms_niuzao_pet_t( p );
-  } ),
-    spirit_of_forged_vermillion( "spirit_of_forged_vermillion", p, [ ] ( monk_t *p )
-  {
-    return new pets::spirit_of_forged_vermillion_t( p );
-  } )
+      xuen( "xuen_the_white_tiger", p, []( monk_t *p ) { return new pets::xuen_pet_t( p ); } ),
+      niuzao( "niuzao_the_black_ox", p, []( monk_t *p ) { return new pets::invoke_niuzao_pet_t( p ); } ),
+      yulon( "yulon_the_jade_serpent", p, []( monk_t *p ) { return new pets::yulon_pet_t( p ); } ),
+      chiji( "chiji_the_red_crane", p, []( monk_t *p ) { return new pets::chiji_pet_t( p ); } ),
+      white_tiger_statue( "white_tiger_statue", p, []( monk_t *p ) { return new pets::white_tiger_statue_t( p ); } ),
+      fury_of_xuen_tiger( "fury_of_xuen_tiger", p, []( monk_t *p ) { return new pets::fury_of_xuen_pet_t( p ); } ),
+      call_to_arms_niuzao( "call_to_arms_niuzao", p,
+                           []( monk_t *p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } ),
+      spirit_of_forged_vermillion( "spirit_of_forged_vermillion", p,
+                                   []( monk_t *p ) { return new pets::spirit_of_forged_vermillion_t( p ); } )
   {
   }
 

@@ -7891,7 +7891,7 @@ namespace monk
     talent.brewmaster.dragonfire_brew = _ST( "Dragonfire Brew" );
     talent.brewmaster.charred_passions = _ST( "Charred Passions" );
     talent.brewmaster.high_tolerance = _ST( "High Tolerance" );
-    talent.brewmaster.walk_with_the_ox = _ST( "Walk with the Ox" );
+    talent.brewmaster.walk_with_the_ox = _STID( 387219 );
     talent.brewmaster.elusive_footwork = _ST( "Elusive Footwork" );
     talent.brewmaster.anvil_and_stave = _ST( "Anvil & Stave" );
     talent.brewmaster.counterstrike = _ST( "Counterstrike" );
