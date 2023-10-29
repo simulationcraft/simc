@@ -3641,6 +3641,11 @@ struct prescience_t : public evoker_augment_t
       p()->buff.t31_2pc_proc->expire();
       p()->buff.t31_2pc_stacks->trigger();
     }
+
+    if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
+    {
+      p()->buff.trembling_earth->trigger( p()->allies_with_my_prescience.size() );
+    }
   }
 
   bool ready() override
@@ -4360,10 +4365,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
           {
             fate_mirror_cb->activate();
             evoker->allies_with_my_prescience.push_back( target );
-            if ( evoker->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
-            {
-              evoker->buff.trembling_earth->trigger( evoker->allies_with_my_prescience.size() );
-            }
           }
           else
           {
@@ -4378,10 +4379,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
           if ( new_stack )
           {
             evoker->allies_with_my_prescience.push_back( target );
-            if ( evoker->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
-            {
-              evoker->buff.trembling_earth->trigger( evoker->allies_with_my_prescience.size() );
-            }
           }
           else
           {
