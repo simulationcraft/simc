@@ -7246,6 +7246,7 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
 
       wall_of_hate =
           create_buff<absorb_buff_t>( effect.player, effect.player->find_spell( 425571 ) )
+              ->set_absorb_source( effect.player->get_stats( "wall_of_hate" ) )
               ->set_default_value( effect.player->find_spell( 422652 )->effectN( 3 ).average( effect.item ) );
     }
 
