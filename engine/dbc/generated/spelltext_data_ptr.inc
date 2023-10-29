@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.51851
-static const std::array<spelltext_data_t, 20501> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20500> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20194,6 +20194,8 @@ static const std::array<spelltext_data_t, 20501> __ptr_spelltext_data { {
   { 422873, "Living Flame has a chance to apply Echo at $s1% effectiveness on allies healed, or a nearby ally who doesn't already have Echo.", 0, 0 },
   { 422874, "Bestial Wrath summons a Dire Beast for $s1 sec.", 0, 0 },
   { 422875, "Your most recently summoned Dire Beast now obeys your Kill Command and can benefit from Beast Cleave.", 0, 0 },
+  { 422876, "Rapid Fire rains a Volley at the target's location for $257044d.", 0, 0 },
+  { 422877, "Legacy of the Windrunners now has a $s1% chance to fire a Wind Arrow at targets damaged by Volley.", 0, 0 },
   { 422878, "Fury of the Eagle increases you and your pet's critical strike chance by $425830s2% and critical damage dealt by $425830s1% for $425830d.", 0, 0 },
   { 422879, "Fury of the Eagle throws a free Wildfire Bomb at your current target at $s2% effectiveness, causes your next Wildfire Bomb to not incur a cooldown, and increases the damage Wildfire Bomb deals to your primary target by $426344s1% for $426344d.", 0, 0 },
   { 422880, "Consuming Clearcasting grants increased spell damage by $424293s1% for $424293d, stacking up to ${$424293u*$s1}%.\r\n", 0, 0 },
@@ -20498,9 +20500,6 @@ static const std::array<spelltext_data_t, 20501> __ptr_spelltext_data { {
   { 429364, "Plant a banner representing your successes against the Dreaming.", 0, 0 },
   { 429951, "$@spelldesc13877", 0, 0 },
   { 430023, "Ambush the target, causing $s1 Physical damage.$?s383281[\r\n\r\nHas a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;$?s383281[ each time it strikes][].|r", 0, 0 },
-  { 431156, "Your next Rapid Fire will shoot $s1% additional shots during its channel.", "Your next Rapid Fire will shoot $s1% additional shots during its channel.", 0 },
-  { 431168, "Rapid Fire deals $s1% additional damage. Trick Shots causes Rapid Fire to launch a Volley for $s2 sec, dealing $s3% of normal damage.", 0, 0 },
-  { 431172, "Every $s1 Focus you spend has a ${$m2/10}.1% chance to reset the cooldown of Rapid Fire and cause your next Rapid Fire to shoot $431156s1% additional shots during its channel.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.51851

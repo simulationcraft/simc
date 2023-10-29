@@ -7768,7 +7768,7 @@ Name             : Clearcasting (id=277726) [Spell Family (3), Hidden]
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Duration         : 20 seconds
+Duration         : 18 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1), Amplification (236628 effect#1), Clearcasting (321758 effect#1), Foresight (384865 effect#1), Concentrated Power (414379 effect#2)
 Family Flags     : 19
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 

@@ -7140,7 +7140,7 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
         target      = e.player;
         stats->type = stats_e::STATS_NEUTRAL;
         callbacks   = false;  // TODO: confirm if this triggers any proc flags.
-        base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 1 ).average( e.item );
       }
     };
 
@@ -7150,8 +7150,9 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
         : proc_spell_t( "tainted_heart_enemy_damage", e.player, e.player->find_spell( 425461 ), e.item )
       {
         // TODO: Add split/aoe behaviour.
+        aoe         = 8;
         background  = true;
-        base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 1 ).average( e.item );
       }
     };
 
@@ -7186,7 +7187,7 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
         target      = e.player;
         stats->type = stats_e::STATS_NEUTRAL;
         callbacks   = false;  // TODO: confirm if this triggers any proc flags.
-        base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 2 ).average( e.item );
       }
     };
 
@@ -7195,9 +7196,9 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
       enemy_damage_t( const special_effect_t& e )
         : proc_spell_t( "shadowflame_lash_enemy", e.player, e.player->find_spell( 425701 ), e.item )
       {
-        background = true;
-        // TODO: Add split/aoe behaviour.
-        base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
+        background  = true;
+        aoe         = -1;
+        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 4 ).average( e.item );
       }
     };
 
@@ -7226,7 +7227,7 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
   {
     action_t* shadowflame_rage_action;
     buff_t* shadowflame_rage;
-    absorb_buff_t* wall_of_hate;
+    buff_t* wall_of_hate;
 
     on_use_t( const special_effect_t& effect )
       : proc_spell_t( "shadowflame_rage_use", effect.player, spell_data_t::nil(), effect.item )
@@ -7236,7 +7237,9 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
           make_buff( effect.player, "shadowflame_rage", effect.player->find_spell( 422750 ) )
               ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { shadowflame_rage_action->execute(); } );
 
-      wall_of_hate = create_buff<absorb_buff_t>( effect.player, effect.player->find_spell( 425571 ) );
+      wall_of_hate =
+          create_buff<absorb_buff_t>( effect.player, effect.player->find_spell( 425571 ) )
+              ->set_default_value( effect.player->find_spell( 422652 )->effectN( 3 ).average( effect.item ) );
     }
 
     void execute() override
