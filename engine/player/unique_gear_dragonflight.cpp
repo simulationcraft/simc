@@ -7131,12 +7131,13 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
 {
   struct tainted_heart_t : public proc_spell_t
   {
-    struct self_damage_t : public proc_spell_t
+    struct self_damage_t : public generic_aoe_proc_t
     {
       self_damage_t( const special_effect_t& e )
-        : proc_spell_t( "tainted_heart_self_damage", e.player, e.player->find_spell( 425461 ), e.item )
+        : generic_aoe_proc_t( e, "tainted_heart_self_damage", e.player->find_spell( 425461 ) )
       {
         background  = true;
+        aoe = 1;
         target      = e.player;
         stats->type = stats_e::STATS_NEUTRAL;
         callbacks   = false;  // TODO: confirm if this triggers any proc flags.
@@ -7144,14 +7145,16 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
       }
     };
 
-    struct enemy_damage_t : public proc_spell_t
+    struct enemy_damage_t : public generic_aoe_proc_t
     {
       enemy_damage_t( const special_effect_t& e )
-        : proc_spell_t( "tainted_heart_enemy_damage", e.player, e.player->find_spell( 425461 ), e.item )
+        : generic_aoe_proc_t( e, "tainted_heart_enemy_damage", e.player->find_spell( 425461 ) )
       {
         // TODO: Add split/aoe behaviour.
-        aoe         = 8;
-        background  = true;
+        aoe              = 8;
+        split_aoe_damage = false;
+        aoe_damage_increase = false;
+        background       = true;
         base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 1 ).average( e.item );
       }
     };
@@ -7178,12 +7181,15 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
 
   struct shadowflame_rage_t : public proc_spell_t
   {
-    struct self_damage_t : public proc_spell_t
+    struct self_damage_t : public generic_aoe_proc_t
     {
       self_damage_t( const special_effect_t& e )
-        : proc_spell_t( "shadowflame_rage_self_damage", e.player, e.player->find_spell( 425703 ), e.item )
+        : generic_aoe_proc_t( e, "shadowflame_rage_self_damage", e.player->find_spell( 425703 ) )
       {
         background  = true;
+        aoe = 0;
+        split_aoe_damage = false;
+        aoe_damage_increase = false;
         target      = e.player;
         stats->type = stats_e::STATS_NEUTRAL;
         callbacks   = false;  // TODO: confirm if this triggers any proc flags.
@@ -7191,13 +7197,14 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
       }
     };
 
-    struct enemy_damage_t : public proc_spell_t
+    struct enemy_damage_t : public generic_aoe_proc_t
     {
       enemy_damage_t( const special_effect_t& e )
-        : proc_spell_t( "shadowflame_lash_enemy", e.player, e.player->find_spell( 425701 ), e.item )
+        : generic_aoe_proc_t( e, "shadowflame_lash_enemy", e.player->find_spell( 425701 ) )
       {
-        background  = true;
-        aoe         = -1;
+        background          = true;
+        aoe                 = -1;
+        aoe_damage_increase = true;
         base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 4 ).average( e.item );
       }
     };
