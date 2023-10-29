@@ -935,13 +935,13 @@ public:
     player_talent_t cenarion_ward;
     player_talent_t cenarius_guidance;
     player_talent_t cultivation;
-    player_talent_t deep_focus;
     player_talent_t dreamstate;
     player_talent_t efflorescence;
     player_talent_t embrace_of_the_dream;
     player_talent_t flash_of_clarity;
     player_talent_t flourish;
     player_talent_t germination;
+    player_talent_t grove_guardians;
     player_talent_t grove_tending;
     player_talent_t harmonious_blooming;
     player_talent_t improved_ironbark;
@@ -952,31 +952,36 @@ public:
     player_talent_t invigorate;
     player_talent_t ironbark;
     player_talent_t lifebloom;
+    player_talent_t liveliness;
     player_talent_t luxuriant_soil;
+    player_talent_t master_shapeshifter;
     player_talent_t natures_splendor;
     player_talent_t natures_swiftness;
     player_talent_t nourish;
     player_talent_t nurturing_dormancy;
     player_talent_t omen_of_clarity_tree;
     player_talent_t overgrowth;
+    player_talent_t passing_seasons;
+    player_talent_t photosynthesis;
+    player_talent_t power_of_the_archdruid;
     player_talent_t rampant_growth;
     player_talent_t reforestation;
     player_talent_t regenerative_heartwood;
     player_talent_t regenesis;
-    player_talent_t passing_seasons;
-    player_talent_t photosynthesis;
-    player_talent_t power_of_the_archdruid;
     player_talent_t soul_of_the_forest_tree;
     player_talent_t spring_blossoms;
     player_talent_t stonebark;
-    player_talent_t tranquility;
     player_talent_t tranquil_mind;
+    player_talent_t tranquility;
     player_talent_t undergrowth;
     player_talent_t unstoppable_growth;
     player_talent_t verdancy;
     player_talent_t verdant_infusion;
     player_talent_t waking_dream;
+    player_talent_t wild_synthesis;
     player_talent_t yseras_gift;
+
+    player_talent_t deep_focus;  // TODO remove in 10.2
   } talent;
 
   // Class Specializations
@@ -7901,6 +7906,14 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<con
 
     return cam;
   }
+
+  double action_multiplier() const override
+  {
+    if ( p()->talent.master_shapeshifter.ok() && p()->get_form() == MOONKIN_FORM )
+      return druid_spell_t::action_multiplier() * ( 1.0 + p()->talent.master_shapeshifter->effectN( 2 ).percent() );
+    else
+      return druid_spell_t::action_multiplier();
+  }
 };
 
 // Starsurge Spell ==========================================================
@@ -7911,6 +7924,14 @@ struct starsurge_offspec_t : public druid_spell_t
     form_mask = NO_FORM | MOONKIN_FORM;
     base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
     may_autounshift = true;
+  }
+
+  double action_multiplier() const override
+  {
+    if ( p()->talent.master_shapeshifter.ok() && p()->get_form() == MOONKIN_FORM )
+      return druid_spell_t::action_multiplier() * ( 1.0 + p()->talent.master_shapeshifter->effectN( 2 ).percent() );
+    else
+      return druid_spell_t::action_multiplier();
   }
 };
 
@@ -8024,6 +8045,14 @@ struct starsurge_t : public ap_spender_t
       p()->buff.starweavers_warp->trigger();
       p()->eclipse_handler.cast_starsurge();
     }
+  }
+
+  double action_multiplier() const override
+  {
+    if ( p()->talent.master_shapeshifter.ok() )
+      return druid_spell_t::action_multiplier() * ( 1.0 + p()->talent.master_shapeshifter->effectN( 2 ).percent() );
+    else
+      return druid_spell_t::action_multiplier();
   }
 };
 
@@ -8483,6 +8512,14 @@ struct wrath_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<consum
     {
       p()->eclipse_handler.cast_wrath();
     }
+  }
+
+  double action_multiplier() const override
+  {
+    if ( p()->talent.master_shapeshifter.ok() && p()->get_form() == MOONKIN_FORM )
+      return druid_spell_t::action_multiplier() * ( 1.0 + p()->talent.master_shapeshifter->effectN( 2 ).percent() );
+    else
+      return druid_spell_t::action_multiplier();
   }
 };
 
@@ -9722,6 +9759,7 @@ void druid_t::init_spells()
   talent.flash_of_clarity               = ST( "Flash of Clarity" );
   talent.flourish                       = ST( "Flourish" );
   talent.germination                    = ST( "Germination" );
+  talent.grove_guardians                = ST( "Grove Guardians" );  // TODO: NYI
   talent.grove_tending                  = ST( "Grove Tending" );
   talent.harmonious_blooming            = ST( "Harmonious Blooming" );
   talent.improved_ironbark              = ST( "Improved Ironbark" );
@@ -9732,7 +9770,9 @@ void druid_t::init_spells()
   talent.invigorate                     = ST( "Invigorate" );  // TODO: NYI
   talent.ironbark                       = ST( "Ironbark" );
   talent.lifebloom                      = ST( "Lifebloom" );
+  talent.liveliness                     = ST( "Liveliness" );
   talent.luxuriant_soil                 = ST( "Luxuriant Soil" );  // TODO: NYI
+  talent.master_shapeshifter            = ST( "Master Shapeshifter" );
   talent.natures_splendor               = ST( "Nature's Splendor" );
   talent.natures_swiftness              = ST( "Nature's Swiftness" );
   talent.nourish                        = ST( "Nourish" );
@@ -9756,6 +9796,7 @@ void druid_t::init_spells()
   talent.verdancy                       = ST( "Verdancy" );  // TODO: NYI
   talent.verdant_infusion               = ST( "Verdant Infusion" );  // TODO: NYI
   talent.waking_dream                   = ST( "Waking Dream" );  // TODO: increased healing per rejuv NYI
+  talent.wild_synthesis                 = ST( "Wild Synthesis" );  // TODO: NYI
   talent.yseras_gift                    = ST( "Ysera's Gift" );
 
   // Passive Auras
@@ -9987,6 +10028,7 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_ARMOR_BY_PRIMARY_STAT_PCT )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_cooldown( 0_ms )
+    ->apply_affecting_aura( talent.master_shapeshifter )
     ->apply_affecting_aura( talent.reinforced_fur )
     ->apply_affecting_aura( spec.ursine_adept )
     ->apply_affecting_aura( talent.ursocs_endurance )
@@ -13280,6 +13322,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.germination );
   action.apply_affecting_aura( talent.improved_ironbark );
   action.apply_affecting_aura( talent.inner_peace );
+  action.apply_affecting_aura( talent.liveliness );
+  action.apply_affecting_aura( talent.master_shapeshifter );
   action.apply_affecting_aura( talent.natural_recovery );
   action.apply_affecting_aura( talent.passing_seasons );
   action.apply_affecting_aura( talent.rampant_growth );
