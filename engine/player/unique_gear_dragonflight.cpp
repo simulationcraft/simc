@@ -10080,6 +10080,7 @@ void register_special_effects()
   register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
   register_special_effect( 417545, DISABLED_EFFECT );  // Time-Thief's Gambit unused effect
   register_special_effect( 425177, DISABLED_EFFECT );  // Thorncaller Claw secondary proc data
+  register_special_effect( 422652, DISABLED_EFFECT );  // Fyrakk's Tainted Rageheart secondary effect
 }
 
 void register_target_data_initializers( sim_t& sim )
