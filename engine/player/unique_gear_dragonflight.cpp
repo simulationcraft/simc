@@ -7200,10 +7200,9 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
     struct enemy_damage_t : public generic_aoe_proc_t
     {
       enemy_damage_t( const special_effect_t& e )
-        : generic_aoe_proc_t( e, "shadowflame_lash_enemy", e.player->find_spell( 425701 ) )
+        : generic_aoe_proc_t( e, "shadowflame_lash_enemy", e.player->find_spell( 425701 ), true )
       {
         background          = true;
-        aoe                 = -1;
         aoe_damage_increase = true;
         base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 4 ).average( e.item );
       }
@@ -7245,7 +7244,7 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
               ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { shadowflame_rage_action->execute(); } );
 
       wall_of_hate =
-          create_buff<absorb_buff_t>( effect.player, effect.player->find_spell( 425571 ) )
+          create_buff<absorb_buff_t>( effect.player, "wall_of_hate", effect.player->find_spell( 425571 ) )
               ->set_absorb_source( effect.player->get_stats( "wall_of_hate" ) )
               ->set_default_value( effect.player->find_spell( 422652 )->effectN( 3 ).average( effect.item ) );
     }
