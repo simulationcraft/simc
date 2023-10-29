@@ -1463,6 +1463,9 @@ namespace monk
       }
     };
 
+    // ==========================================================================
+    // Niuzao Pet
+    // ==========================================================================
     struct niuzao_pet_t : public monk_pet_t
     {
       struct melee_t : public pet_melee_t
@@ -1490,6 +1493,7 @@ namespace monk
           if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
           {
             // close enough, not exact though
+            // the base damage from stomp is not split, but the added damage from recent purification is split
             double base_stomp = sim->averaged_range( base_da_min( state ), base_da_max( state ) );
             double purify     = o()->buff.recent_purifies->check_value();
             double added_damage =
@@ -1505,25 +1509,12 @@ namespace monk
         double action_multiplier() const override
         {
           double am = pet_melee_attack_t::action_multiplier();
-          double am_base = am;
           am *= 1.0 + o()->talent.brewmaster.walk_with_the_ox->effectN( 1 ).percent();
-          am *= 1.0 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
-          o()->sim->print_debug( "zxc base: {}, final: {}", am_base, am );
           return am;
         }
 
         void execute() override
         {
-          // if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-          // {
-          //   double purify = o()->buff.recent_purifies->check_value();
-          //   double added_damage =
-          //       purify * o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
-          //   o()->sim->print_debug( "applying bonus purify damage (purify: {}, added: {})", purify, added_damage );
-          //   base_dd_min += added_damage;
-          //   base_dd_max += added_damage;
-          // }
-
           pet_melee_attack_t::execute();
           o()->buff.recent_purifies->cancel();
         }
@@ -1585,214 +1576,6 @@ namespace monk
         : niuzao_pet_t( "call_to_arms_niuzao_the_black_ox", player )
       {}
     };
-
-    // ==========================================================================
-    // Niuzao Pet
-    // ==========================================================================
-    // struct niuzao_pet_t : public monk_pet_t
-    // {
-    //   private:
-    //   struct melee_t : public pet_melee_t
-    //   {
-    //     melee_t( util::string_view n, niuzao_pet_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
-    //     {
-    //     }
-    //   };
-
-    //   struct stomp_t : public pet_melee_attack_t
-    //   {
-    //     stomp_t( niuzao_pet_t *p, util::string_view options_str ) : pet_melee_attack_t( "stomp", p, p->o()->passives.stomp )
-    //     {
-    //       parse_options( options_str );
-
-    //       aoe = -1;
-    //       may_crit = true;
-    //       // technically the base damage doesn't split. practically, the base damage
-    //       // is ass and totally irrelevant. the r2 hot trub effect (which does
-    //       // split) is by far the dominating factor in any aoe sim.
-    //       //
-    //       // if i knew more about simc, i'd implement a separate effect for that,
-    //       // but i'm not breaking something that (mostly) works in pursuit of that
-    //       // goal.
-    //       //
-    //       //  - emallson
-    //       // As a temporary measure only split all damage while the talent is active.
-    //       if ( p->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-    //         split_aoe_damage = true;
-    //     }
-
-    //     double bonus_da( const action_state_t *s ) const override
-    //     {
-    //       if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-    //       {
-    //         auto b = pet_melee_attack_t::bonus_da( s );
-    //         auto purify_amount = o()->buff.recent_purifies->check_value();
-    //         auto actual_damage = purify_amount;
-    //         actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
-    //         o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {}, final: {})", b,
-    //                                purify_amount, actual_damage, b + actual_damage );
-    //         return b + actual_damage;
-    //       }
-    //       return 0;
-    //     }
-
-    //     void execute() override
-    //     {
-    //       pet_melee_attack_t::execute();
-    //       // canceling the purify buff goes here so that in aoe all hits see the
-    //       // purified damage that needs to be split. this occurs after all damage
-    //       // has been dealt
-    //       o()->buff.recent_purifies->cancel();
-    //     }
-    //   };
-
-    //   struct auto_attack_t : public pet_auto_attack_t
-    //   {
-    //     auto_attack_t( niuzao_pet_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
-    //     {
-    //       parse_options( options_str );
-
-    //       player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
-    //       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-    //     }
-    //   };
-
-    //   public:
-    //   niuzao_pet_t( monk_t *owner ) : monk_pet_t( owner, "niuzao_the_black_ox", PET_NIUZAO, false, true )
-    //   {
-    //     npc_id = ( int )o()->find_spell( 132578 )->effectN( 1 ).misc_value1();
-    //     main_hand_weapon.type = WEAPON_BEAST;
-    //     main_hand_weapon.min_dmg = dbc->spell_scaling( o()->type, level() );
-    //     main_hand_weapon.max_dmg = dbc->spell_scaling( o()->type, level() );
-    //     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    //     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    //     owner_coeff.ap_from_ap = 1;
-    //   }
-
-    //   void init_action_list() override
-    //   {
-    //     action_list_str = "auto_attack";
-    //     action_list_str += "/stomp";
-
-    //     pet_t::init_action_list();
-    //   }
-
-    //   action_t *create_action( util::string_view name, util::string_view options_str ) override
-    //   {
-    //     if ( name == "stomp" )
-    //       return new stomp_t( this, options_str );
-
-    //     if ( name == "auto_attack" )
-    //       return new auto_attack_t( this, options_str );
-
-    //     return pet_t::create_action( name, options_str );
-    //   }
-    // };
-
-    // ==========================================================================
-    // Call to Arms Niuzao Pet
-    // ==========================================================================
-    // struct call_to_arms_niuzao_pet_t : public monk_pet_t
-    // {
-    //   private:
-    //   struct melee_t : public pet_melee_t
-    //   {
-    //     melee_t( util::string_view n, call_to_arms_niuzao_pet_t *player, weapon_t *weapon )
-    //       : pet_melee_t( n, player, weapon )
-    //     {
-    //     }
-    //   };
-
-    //   struct stomp_t : public pet_melee_attack_t
-    //   {
-    //     stomp_t( call_to_arms_niuzao_pet_t *p, util::string_view options_str )
-    //       : pet_melee_attack_t( "stomp", p, p->o()->passives.stomp )
-    //     {
-    //       parse_options( options_str );
-
-    //       aoe = -1;
-    //       may_crit = true;
-    //       // technically the base damage doesn't split. practically, the base damage
-    //       // is ass and totally irrelevant. the r2 hot trub effect (which does
-    //       // split) is by far the dominating factor in any aoe sim.
-    //       //
-    //       // if i knew more about simc, i'd implement a separate effect for that,
-    //       // but i'm not breaking something that (mostly) works in pursuit of that
-    //       // goal.
-    //       //
-    //       //  - emallson
-    //       // As a temporary measure only split all damage while the talent is active.
-    //       if ( p->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-    //         split_aoe_damage = true;
-    //     }
-
-    //     double bonus_da( const action_state_t *s ) const override
-    //     {
-    //       if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-    //       {
-    //         auto b = pet_melee_attack_t::bonus_da( s );
-    //         auto purify_amount = o()->buff.recent_purifies->check_value();
-    //         auto actual_damage = purify_amount;
-    //         actual_damage *= o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
-    //         o()->sim->print_debug( "applying bonus purify damage (base stomp: {}, original: {}, reduced: {})", b,
-    //           purify_amount, actual_damage );
-    //         return b + actual_damage;
-    //       }
-    //       return 0;
-    //     }
-
-    //     void execute() override
-    //     {
-    //       pet_melee_attack_t::execute();
-    //       // canceling the purify buff goes here so that in aoe all hits see the
-    //       // purified damage that needs to be split. this occurs after all damage
-    //       // has been dealt
-    //       o()->buff.recent_purifies->cancel();
-    //     }
-    //   };
-
-    //   struct auto_attack_t : public pet_auto_attack_t
-    //   {
-    //     auto_attack_t( call_to_arms_niuzao_pet_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
-    //     {
-    //       parse_options( options_str );
-
-    //       player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
-    //       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-    //     }
-    //   };
-
-    //   public:
-    //   call_to_arms_niuzao_pet_t( monk_t *owner ) : monk_pet_t( owner, "call_to_arms_niuzao_the_black_ox", PET_NIUZAO, false, true )
-    //   {
-    //     npc_id = ( int )o()->passives.call_to_arms_invoke_niuzao->effectN( 1 ).misc_value1();
-    //     main_hand_weapon.type = WEAPON_BEAST;
-    //     main_hand_weapon.min_dmg = dbc->spell_scaling( o()->type, level() );
-    //     main_hand_weapon.max_dmg = dbc->spell_scaling( o()->type, level() );
-    //     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    //     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    //     owner_coeff.ap_from_ap = 1;
-    //   }
-
-    //   void init_action_list() override
-    //   {
-    //     action_list_str = "auto_attack";
-    //     action_list_str += "/stomp";
-
-    //     pet_t::init_action_list();
-    //   }
-
-    //   action_t *create_action( util::string_view name, util::string_view options_str ) override
-    //   {
-    //     if ( name == "stomp" )
-    //       return new stomp_t( this, options_str );
-
-    //     if ( name == "auto_attack" )
-    //       return new auto_attack_t( this, options_str );
-
-    //     return pet_t::create_action( name, options_str );
-    //   }
-    // };
 
     // ==========================================================================
     // Chi-Ji Pet
