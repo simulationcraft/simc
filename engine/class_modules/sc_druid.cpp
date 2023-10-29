@@ -4498,7 +4498,7 @@ public:
     : BASE( n, p, s, o ),
       p_( p ),
       atw_buff( p->buff.after_the_wildfire ),
-      rots_buff( debug_cast<buffs::rage_of_the_sleeper_buff_t*>( p->buff.rage_of_the_sleeper ) ),
+      rots_buff( static_cast<buffs::rage_of_the_sleeper_buff_t*>( p->buff.rage_of_the_sleeper ) ),
       ug_cdr( p->talent.ursocs_guidance->effectN( 5 ).base_value() ),
       t31_rage_per( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 1 ).base_value() ),
       t31_max_ext( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 3 ).time_value() ),
