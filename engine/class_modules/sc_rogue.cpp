@@ -4121,7 +4121,10 @@ struct eviscerate_t : public rogue_attack_t
     {
       callbacks = false;
       dual = true;
-      base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
+      if ( !p->bugs )
+      {
+        base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
+      }
     }
   };
 
@@ -4208,10 +4211,18 @@ struct eviscerate_t : public rogue_attack_t
     // Appears to use the raw, mitigated (but pre-crit) result since the residual spell can crit
     if ( bonus_attack && td( target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
     {
-      double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
-      if ( state->result == RESULT_CRIT )
-        amount /= 1.0 + state->result_crit_bonus;
-      bonus_attack->execute_on_target( state->target, amount );
+      if ( p()->bugs )
+      {
+        // 2023-10-28 -- Currently bugged on latest PTR build
+        bonus_attack->execute_on_target( state->target );
+      }
+      else
+      {
+        double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+        if ( state->result == RESULT_CRIT )
+          amount /= 1.0 + state->result_crit_bonus;
+        bonus_attack->execute_on_target( state->target, amount );
+      }
     }
   }
 
@@ -5567,7 +5578,10 @@ struct black_powder_t: public rogue_attack_t
       callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
       dual = true;
       aoe = -1;
-      base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
+      if ( !p->bugs )
+      {
+        base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
+      }
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -5680,10 +5694,18 @@ struct black_powder_t: public rogue_attack_t
     // Appears to use the raw, mitigated (but pre-crit) result since the residual spell can crit
     if ( bonus_attack && state->chain_target == 0 )
     {
-      double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
-      if ( state->result == RESULT_CRIT )
-        amount /= 1.0 + state->result_crit_bonus;
-      bonus_attack->execute_on_target( state->target, amount );
+      if ( p()->bugs )
+      {
+        // 2023-10-28 -- Currently bugged on latest PTR build
+        bonus_attack->execute_on_target( state->target );
+      }
+      else
+      {
+        double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+        if ( state->result == RESULT_CRIT )
+          amount /= 1.0 + state->result_crit_bonus;
+        bonus_attack->execute_on_target( state->target, amount );
+      }
     }
   }
 
