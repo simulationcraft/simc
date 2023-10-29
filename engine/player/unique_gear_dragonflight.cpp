@@ -7116,6 +7116,11 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 // Fyrakk's Tainted Rageheart
 
 // 422652 Tainted Heart
+// Effect 1 Self / Enemy Tick Passive
+// Effect 2 On-Use Self Tick
+// Effect 3 On-Use Absorb
+// Effect 4 On-Use Enemy Tick
+
 // 425461 Self Damage
 // 425461 Enemy Damage
 // 422750 On-Use Debuff
@@ -7126,39 +7131,40 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
 {
   struct tainted_heart_t : public proc_spell_t
   {
-    struct base_t : public proc_spell_t
+    struct self_damage_t : public proc_spell_t
     {
-      base_t( const special_effect_t& e, std::string_view name )
-        : proc_spell_t( name, e.player, e.player->find_spell( 425461 ), e.item )
+      self_damage_t( const special_effect_t& e )
+        : proc_spell_t( "tainted_heart_self_damage", e.player, e.player->find_spell( 425461 ), e.item )
       {
-        background = true;
-      }
-    };
-
-    struct self_damage_t : public base_t
-    {
-      self_damage_t( const special_effect_t& e ) : base_t( e, "tainted_heart_self_damage" )
-      {
+        background  = true;
         target      = e.player;
         stats->type = stats_e::STATS_NEUTRAL;
+        callbacks   = false;  // TODO: confirm if this triggers any proc flags.
+        base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
       }
     };
 
-    struct enemy_damage_t : public base_t
+    struct enemy_damage_t : public proc_spell_t
     {
-      enemy_damage_t( const special_effect_t& e ) : base_t( e, "tainted_heart_enemy_damage" )
+      enemy_damage_t( const special_effect_t& e )
+        : proc_spell_t( "tainted_heart_enemy_damage", e.player, e.player->find_spell( 425461 ), e.item )
       {
+        // TODO: Add split/aoe behaviour.
+        background  = true;
+        base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
       }
     };
 
     self_damage_t* self_damage;
     enemy_damage_t* enemy_damage;
 
-    tainted_heart_t( const special_effect_t& e )
-      : proc_spell_t( "tainted_heart", e.player, e.player->find_spell( 422652 ), e.item )
+    tainted_heart_t( const special_effect_t& e ) : proc_spell_t( "tainted_heart", e.player, e.driver(), e.item )
     {
       self_damage  = new self_damage_t( e );
       enemy_damage = new enemy_damage_t( e );
+
+      add_child( self_damage );
+      add_child( enemy_damage );
     }
 
     void execute() override
@@ -7171,30 +7177,27 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
 
   struct shadowflame_rage_t : public proc_spell_t
   {
-    struct base_t : public proc_spell_t
-    {
-      base_t( const special_effect_t& e, std::string_view name, const spell_data_t* spell )
-        : proc_spell_t( name, e.player, spell, e.item )
-      {
-        background = true;
-      }
-    };
-
-    struct self_damage_t : public base_t
+    struct self_damage_t : public proc_spell_t
     {
       self_damage_t( const special_effect_t& e )
-        : base_t( e, "shadowflame_rage_self_damage", e.player->find_spell( 425703 ) )
+        : proc_spell_t( "shadowflame_rage_self_damage", e.player, e.player->find_spell( 425703 ), e.item )
       {
+        background  = true;
         target      = e.player;
         stats->type = stats_e::STATS_NEUTRAL;
+        callbacks   = false;  // TODO: confirm if this triggers any proc flags.
+        base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
       }
     };
 
-    struct enemy_damage_t : public base_t
+    struct enemy_damage_t : public proc_spell_t
     {
       enemy_damage_t( const special_effect_t& e )
-        : base_t( e, "shadowflame_lash_enemy_damage", e.player->find_spell( 425701 ) )
+        : proc_spell_t( "shadowflame_lash_enemy", e.player, e.player->find_spell( 425701 ), e.item )
       {
+        background = true;
+        // TODO: Add split/aoe behaviour.
+        base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
       }
     };
 
@@ -7206,6 +7209,9 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
     {
       self_damage  = new self_damage_t( e );
       enemy_damage = new enemy_damage_t( e );
+
+      add_child( self_damage );
+      add_child( enemy_damage );
     }
 
     void execute() override
@@ -7216,28 +7222,45 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
     }
   };
 
+  struct on_use_t : public proc_spell_t
+  {
+    action_t* shadowflame_rage_action;
+    buff_t* shadowflame_rage;
+    absorb_buff_t* wall_of_hate;
+
+    on_use_t( const special_effect_t& effect )
+      : proc_spell_t( "shadowflame_rage_use", effect.player, spell_data_t::nil(), effect.item )
+    {
+      shadowflame_rage_action = create_proc_action<shadowflame_rage_t>( "shadowflame_rage", effect );
+      shadowflame_rage =
+          make_buff( effect.player, "shadowflame_rage", effect.player->find_spell( 422750 ) )
+              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { shadowflame_rage_action->execute(); } );
+
+      wall_of_hate = create_buff<absorb_buff_t>( effect.player, effect.player->find_spell( 425571 ) );
+    }
+
+    void execute() override
+    {
+      shadowflame_rage->trigger();
+      wall_of_hate->trigger();
+      proc_spell_t::execute();
+    }
+  };
+
   action_t* tainted_heart_action;
   buff_t* tainted_heart;
-  action_t* shadowflame_rage_action;
-  buff_t* shadowflame_rage;
-  absorb_buff_t* wall_of_hate;
 
   tainted_heart_action = create_proc_action<tainted_heart_t>( "tainted_heart", effect );
   tainted_heart        = make_buff( effect.player, "tainted_heart", effect.player->find_spell( 422652 ) )
                       ->set_tick_callback( [ tainted_heart_action, effect ]( buff_t*, int, timespan_t ) {
                         tainted_heart_action->execute();
                       } );
-
-  shadowflame_rage_action = create_proc_action<shadowflame_rage_t>( "shadowflame_rage", effect );
-  shadowflame_rage        = make_buff( effect.player, "shadowflame_rage", effect.player->find_spell( 422750 ) )
-                         ->set_tick_callback( [ shadowflame_rage_action, effect ]( buff_t*, int, timespan_t ) {
-                           shadowflame_rage_action->execute();
-                         } );
-
-  wall_of_hate = create_buff<absorb_buff_t>( effect.player, effect.player->find_spell( 425571 ) );
-
   effect.player->register_combat_begin( [ tainted_heart ]( player_t* ) { tainted_heart->trigger(); } );
-  effect.custom_buff = shadowflame_rage;
+
+  action_t* on_use;
+
+  on_use                = create_proc_action<on_use_t>( "shadowflame_rage_use", effect );
+  effect.execute_action = on_use;
 }
 
 // Weapons
@@ -9956,6 +9979,7 @@ void register_special_effects()
   register_special_effect( 422479, items::infernal_signet_brand );
   register_special_effect( 429228, items::rezans_gleaming_eye );
   register_special_effect( 421990, items::gift_of_ursine_vengeance );
+  register_special_effect( 422750, items::fyrakks_tainted_rageheart );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
