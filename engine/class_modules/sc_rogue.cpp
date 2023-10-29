@@ -2732,11 +2732,6 @@ struct instant_poison_t : public rogue_poison_t
     instant_poison_dd_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_poison_t( name, p, s, true, true )
     {
-      // 2023-10-09 -- Instant Poison currently double-dips the Dark Brew bonus
-      if ( p->bugs && p->talent.subtlety.dark_brew->ok() )
-      {
-        base_multiplier *= 1.0 + p->talent.subtlety.dark_brew->effectN( 2 ).percent();
-      }
     }
   };
 
@@ -11449,7 +11444,8 @@ public:
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Rogue", "2023-10-25", "Manually set charge cooldown value", 185313 )
+    hotfix::register_spell( "Rogue", "2023-10-25", "Manually set charge cooldown value",
+                            185313, hotfix::HOTFIX_FLAG_PTR )
       .field( "charge_cooldown" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 60000 )
