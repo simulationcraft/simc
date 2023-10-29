@@ -4047,7 +4047,7 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
       : generic_aoe_proc_t( e, "anshuul_the_cosmic_wanderer", e.driver(), true )
     {
       base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item );
-      base_execute_time = 0_ms; // Overriding execute time, this is handled by the main action. 
+      base_execute_time = 0_ms; // Overriding execute time, this is handled by the main action.
       not_a_proc = true; // Due to cast time on the primary ability
     }
   };
@@ -5067,7 +5067,7 @@ void firecallers_focus( special_effect_t& e )
 // Effect 10, Auto Attack value
 // Melee DPS:
 // 208957 NPC ID
-// 419591 Auto Attack 
+// 419591 Auto Attack
 // 418588 Sand Cleave
 // 418774 Summon Driver
 // Ranged DPS:
@@ -5085,7 +5085,7 @@ void firecallers_focus( special_effect_t& e )
 // 418607 Sand Bolt Damage
 // 419052 Restorative Sands
 // 418776 Summon Driver
-// TODO: 
+// TODO:
 // Check Tank Pet Auto Attack, as of 29-6-2023 was using default pet autos, scaling with player attack power.
 // Re-evaluate healer pet APL logic, may need to be adjusted up/down based on log data for raid.
 // Implement the cast start delay for Sand Bolt.
@@ -5110,7 +5110,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
-      trigger_gcd = 1.5_s; // Currently bugged and has a 1.5s swing time. 
+      trigger_gcd = 1.5_s; // Currently bugged and has a 1.5s swing time.
     }
   };
 
@@ -5196,7 +5196,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
         damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
         damage->stats = stats;
         damage->dual = true;
-        
+
         impact_action = damage;
       }
       else
@@ -5771,8 +5771,8 @@ void paracausal_fragment_of_azzinoth( special_effect_t& e )
 // TODO:
 // Check MANY more classes/specs to see if this differs much
 // All 3 DK specs do what is programmed below, no difference with dps/tank roles. Unsure about healers or other classes.
-// Potentially implement the soul consuming mechanic somehow? if the mastery buff/mana referenced in 415006 is actually used anywhere 
-// Skipping the soul consuming mechanic for now, since the absorb buff wont matter for DPS 
+// Potentially implement the soul consuming mechanic somehow? if the mastery buff/mana referenced in 415006 is actually used anywhere
+// Skipping the soul consuming mechanic for now, since the absorb buff wont matter for DPS
 // Impelemt Fear mechanic? not sure this actually matters at all for sims
 void paracausal_fragment_of_frostmourne( special_effect_t& e )
 {
@@ -5802,7 +5802,7 @@ void paracausal_fragment_of_frostmourne( special_effect_t& e )
 // 414936 Active driver
 // 414951 Warstrikes damage
 // 414935 Passive damage
-void paracausal_fragment_of_doomhammer( special_effect_t& e ) 
+void paracausal_fragment_of_doomhammer( special_effect_t& e )
 {
   bool is_horde = util::is_horde( e.player->race );
   std::string passive_damage_name = is_horde ? "doomstrike" : "kingstrike";
@@ -5853,7 +5853,7 @@ void pips_emerald_friendship_badge( special_effect_t& e )
 {
   // Buffs value is equal to drvier effect 1 value / duration in seconds
   // Emulating in game behavior by creating 2 buffs for each, a static one that stays until the next procs
-  // and one with 11 stacks, that decrement every 1s as it does in game. 
+  // and one with 11 stacks, that decrement every 1s as it does in game.
   auto pips = make_buff<stat_buff_t>( e.player, "best_friends_with_pip", e.player->find_spell( 426647 ) );
   auto pips_static = make_buff<stat_buff_t>( e.player, "best_friends_with_pip_static", e.player->find_spell( 426647 ) );
   auto aerwynn = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn", e.player->find_spell( 426676 ) );
@@ -5888,7 +5888,7 @@ void pips_emerald_friendship_badge( special_effect_t& e )
   urctos_static->set_stat_from_effect( 1, buff_value );
   urctos_static->set_duration( 0_ms );
 
-  e.player->register_combat_begin( [ pips_static, aerwynn_static, urctos_static ]( player_t* p ) 
+  e.player->register_combat_begin( [ pips_static, aerwynn_static, urctos_static ]( player_t* p )
   {
     double chance = p->rng().real();
 
@@ -5919,7 +5919,7 @@ void pips_emerald_friendship_badge( special_effect_t& e )
     pips_cb_t( const special_effect_t& e, buff_t* pips, buff_t* pips_static, buff_t* aerwynn, buff_t* aerwynn_static, buff_t* urctos, buff_t* urctos_static, int i )
       : dbc_proc_callback_t( e.player, e ),
         pips( pips ), pips_static( pips_static ),
-        aerwynn( aerwynn ), aerwynn_static( aerwynn_static ), 
+        aerwynn( aerwynn ), aerwynn_static( aerwynn_static ),
         urctos( urctos ), urctos_static( urctos_static ),
         max_stacks( i )
     {}
@@ -6286,7 +6286,7 @@ void bandolier_of_twisted_blades( special_effect_t& effect )
     void impact( action_state_t* state ) override
     {
       generic_proc_t::impact( state );
-      
+
       actor_target_data_t* td = player -> get_target_data( state -> target );
 
       if ( td )
@@ -6416,7 +6416,7 @@ void belorrelos_the_sunstone( special_effect_t& effect )
       ability_lag        = sim->queue_lag;
       ability_lag_stddev = sim->queue_lag_stddev;
       // Child action handles travel time
-      min_travel_time = travel_speed = travel_delay = 0; 
+      min_travel_time = travel_speed = travel_delay = 0;
     }
 
     void execute() override
@@ -6746,7 +6746,7 @@ void time_thiefs_gambit( special_effect_t& effect )
 // 422441 Driver/Buff
 // 422440 Damage Value
 // 425509 Damage
-// TODO: Implement Slow? 
+// TODO: Implement Slow?
 void branch_of_the_tormented_ancient( special_effect_t& e )
 {
   struct severed_embers_t : public generic_aoe_proc_t
@@ -7123,6 +7123,166 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
                                             ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
     make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
   }
+}
+
+// Fyrakk's Tainted Rageheart
+
+// 422652 Tainted Heart
+// Effect 1 Self / Enemy Tick Passive
+// Effect 2 On-Use Self Tick
+// Effect 3 On-Use Absorb
+// Effect 4 On-Use Enemy Tick
+
+// 425461 Self Damage
+// 425461 Enemy Damage
+// 422750 On-Use Debuff
+// 425571 On-Use Absorb
+// 425703 Self Damage (On-Use)
+// 425701 Enemy Damage (On-Use)
+void fyrakks_tainted_rageheart( special_effect_t& effect )
+{
+  struct tainted_heart_t : public proc_spell_t
+  {
+    struct self_damage_t : public generic_aoe_proc_t
+    {
+      self_damage_t( const special_effect_t& e )
+        : generic_aoe_proc_t( e, "tainted_heart_self_damage", e.player->find_spell( 425461 ) )
+      {
+        background  = true;
+        aoe = 1;
+        target      = e.player;
+        stats->type = stats_e::STATS_NEUTRAL;
+        callbacks   = false;  // TODO: confirm if this triggers any proc flags.
+        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 1 ).average( e.item );
+      }
+    };
+
+    struct enemy_damage_t : public generic_aoe_proc_t
+    {
+      enemy_damage_t( const special_effect_t& e )
+        : generic_aoe_proc_t( e, "tainted_heart_enemy_damage", e.player->find_spell( 425461 ) )
+      {
+        // TODO: Add split/aoe behaviour.
+        aoe              = 8;
+        split_aoe_damage = false;
+        aoe_damage_increase = false;
+        background       = true;
+        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 1 ).average( e.item );
+      }
+    };
+
+    self_damage_t* self_damage;
+    enemy_damage_t* enemy_damage;
+
+    tainted_heart_t( const special_effect_t& e ) : proc_spell_t( "tainted_heart", e.player, e.driver(), e.item )
+    {
+      self_damage  = new self_damage_t( e );
+      enemy_damage = new enemy_damage_t( e );
+
+      add_child( self_damage );
+      add_child( enemy_damage );
+    }
+
+    void execute() override
+    {
+      self_damage->execute();
+      enemy_damage->execute();
+      proc_spell_t::execute();
+    }
+  };
+
+  struct shadowflame_rage_t : public proc_spell_t
+  {
+    struct self_damage_t : public generic_aoe_proc_t
+    {
+      self_damage_t( const special_effect_t& e )
+        : generic_aoe_proc_t( e, "shadowflame_rage_self_damage", e.player->find_spell( 425703 ) )
+      {
+        background  = true;
+        aoe = 0;
+        split_aoe_damage = false;
+        aoe_damage_increase = false;
+        target      = e.player;
+        stats->type = stats_e::STATS_NEUTRAL;
+        callbacks   = false;  // TODO: confirm if this triggers any proc flags.
+        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 2 ).average( e.item );
+      }
+    };
+
+    struct enemy_damage_t : public generic_aoe_proc_t
+    {
+      enemy_damage_t( const special_effect_t& e )
+        : generic_aoe_proc_t( e, "shadowflame_lash_enemy", e.player->find_spell( 425701 ), true )
+      {
+        background          = true;
+        aoe_damage_increase = true;
+        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 4 ).average( e.item );
+      }
+    };
+
+    self_damage_t* self_damage;
+    enemy_damage_t* enemy_damage;
+
+    shadowflame_rage_t( const special_effect_t& e )
+      : proc_spell_t( "shadowflame_rage", e.player, e.player->find_spell( 422750 ), e.item )
+    {
+      self_damage  = new self_damage_t( e );
+      enemy_damage = new enemy_damage_t( e );
+
+      add_child( self_damage );
+      add_child( enemy_damage );
+    }
+
+    void execute() override
+    {
+      self_damage->execute();
+      enemy_damage->execute();
+      proc_spell_t::execute();
+    }
+  };
+
+  struct on_use_t : public proc_spell_t
+  {
+    action_t* shadowflame_rage_action;
+    buff_t* shadowflame_rage;
+    buff_t* wall_of_hate;
+
+    on_use_t( const special_effect_t& effect )
+      : proc_spell_t( "shadowflame_rage_use", effect.player, spell_data_t::nil(), effect.item )
+    {
+      shadowflame_rage_action = create_proc_action<shadowflame_rage_t>( "shadowflame_rage", effect );
+      shadowflame_rage =
+          make_buff( effect.player, "shadowflame_rage", effect.player->find_spell( 422750 ) )
+              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { shadowflame_rage_action->execute(); } );
+
+      wall_of_hate =
+          create_buff<absorb_buff_t>( effect.player, "wall_of_hate", effect.player->find_spell( 425571 ) )
+              ->set_absorb_source( effect.player->get_stats( "wall_of_hate" ) )
+              ->set_default_value( effect.player->find_spell( 422652 )->effectN( 3 ).average( effect.item ) );
+    }
+
+    void execute() override
+    {
+      shadowflame_rage->trigger();
+      wall_of_hate->trigger();
+      proc_spell_t::execute();
+    }
+  };
+
+  action_t* tainted_heart_action;
+  buff_t* tainted_heart;
+
+  tainted_heart_action = create_proc_action<tainted_heart_t>( "tainted_heart", effect );
+  tainted_heart        = make_buff( effect.player, "tainted_heart", effect.player->find_spell( 422652 ) )
+                      ->set_tick_callback( [ tainted_heart_action, effect ]( buff_t*, int, timespan_t ) {
+                        tainted_heart_action->execute();
+                      } );
+  effect.player->register_combat_begin( [ tainted_heart ]( player_t* ) { tainted_heart->trigger(); } );
+
+  action_t* on_use;
+
+  on_use                = create_proc_action<on_use_t>( "shadowflame_rage_use", effect );
+  effect.execute_action = on_use;
 }
 
 // Weapons
@@ -7712,7 +7872,7 @@ void thorncaller_claw( special_effect_t& effect ) {
   auto thorn_burst_proc = new dbc_proc_callback_t( effect.player, *thorn_burst );
   thorn_burst_proc->initialize();
   thorn_burst_proc->activate();
-  
+
   auto thorn_spirit = create_proc_action<generic_proc_t>( "thorn_spirit", effect, "thorn_spirit", effect.player->find_spell( 424965 ) );
   thorn_spirit->base_td = effect.driver()->effectN( 2 ).average( effect.item );
   thorn_spirit->add_child( thorn_burst_damage );
@@ -9842,6 +10002,7 @@ void register_special_effects()
   register_special_effect( 422479, items::infernal_signet_brand );
   register_special_effect( 429228, items::rezans_gleaming_eye );
   register_special_effect( 421990, items::gift_of_ursine_vengeance );
+  register_special_effect( 422750, items::fyrakks_tainted_rageheart );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -9932,6 +10093,7 @@ void register_special_effects()
   register_special_effect( 427110, DISABLED_EFFECT );  // Dreambinder, Loom of the Great Cycle unused effect
   register_special_effect( 417545, DISABLED_EFFECT );  // Time-Thief's Gambit unused effect
   register_special_effect( 425177, DISABLED_EFFECT );  // Thorncaller Claw secondary proc data
+  register_special_effect( 422652, DISABLED_EFFECT );  // Fyrakk's Tainted Rageheart secondary effect
 }
 
 void register_target_data_initializers( sim_t& sim )
