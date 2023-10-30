@@ -6112,13 +6112,13 @@ void ashes_of_the_embersoul( special_effect_t& e )
 // 427057 AoE Range Check
 struct lava_bolt_initializer_t : public item_targetdata_initializer_t
 {
-  lava_bolt_initializer_t() : item_targetdata_initializer_t( 426827, 426834 ) {}
+  lava_bolt_initializer_t() : item_targetdata_initializer_t( 426827, 427056 ) {}
 
   void operator()( actor_target_data_t* td ) const override
   {
     bool active = init( td->source );
 
-    td->debuff.lava_bolt = make_buff_fallback( active, *td, "lava_bolt", debuffs[ td->source ] );
+    td->debuff.lava_bolt = make_buff_fallback( active, *td, "coiled_serpent_idol", debuffs[ td->source ] );
     td->debuff.lava_bolt->reset();
     td->debuff.lava_bolt->set_duration( td->source->find_spell( 426834 )->duration() );
     td->debuff.lava_bolt->set_initial_stack( td->debuff.lava_bolt->max_stack() );
