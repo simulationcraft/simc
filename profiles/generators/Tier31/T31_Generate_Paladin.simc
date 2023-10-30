@@ -13,13 +13,13 @@ back=shadowfeather_shawl,id=136977,bonus_id=9882
 chest=zealous_pyreknights_warplate,id=207194,bonus_id=1520,enchant=waking_stats_3
 wrists=primal_molten_vambraces,id=190502,bonus_id=8790/9379/9405/9500,gem_id=192935
 hands=zealous_pyreknights_jeweled_gauntlets,id=207192,bonus_id=1520
-waist=phlegethic_girdle,id=207149,bonus_id=1520,gem_id=192935
+waist=zealous_pyreknights_emblem,id=207188,bonus_id=1520,gem_id=192935
 legs=greaves_of_parallel_lives,id=207824,bonus_id=1579,enchant=fierce_armor_kit_3
 feet=primal_molten_sabatons,id=190496,bonus_id=8790/9379/9405/9500
 finger1=band_of_burning_thorns,id=207159,bonus_id=1520,enchant=devotion_of_haste_3,gem_id=192935
 finger2=thornwoven_band,id=162548,bonus_id=9853,enchant=devotion_of_haste_3,gem_id=192935
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=1520
-trinket2=branch_of_the_tormented_ancient,id=207169,bonus_id=1520
+trinket2=fyrakks_tainted_rageheart,id=207174,bonus_id=1527
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=1520,enchant=shadowflame_wreathe_3
 off_hand=defender_of_the_ancient,id=207797,bonus_id=1520
 
