@@ -1191,8 +1191,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
 {
   struct shifting_sands_t : public evoker_augment_t
   {
-    shifting_sands_t( evoker_t* p )
-      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) )
+    shifting_sands_t( evoker_t* p ) : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) )
     {
       background   = true;
       dot_duration = base_tick_time = 0_ms;
@@ -1228,7 +1227,10 @@ struct empowered_release_t : public empowered_base_t<BASE>
         if ( t != player )
         {
           if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
-               p()->get_target_data( t )->buffs.ebon_might->check() && !p()->get_target_data( t )->buffs.shifting_sands->check() )
+               t->specialization() != EVOKER_AUGMENTATION && p()->get_target_data( t )->buffs.ebon_might->check() &&
+               !p()->get_target_data( t )->buffs.shifting_sands->check() &&
+               std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } ) )
           {
             target_list.push_back( t );
           }
@@ -1247,18 +1249,30 @@ struct empowered_release_t : public empowered_base_t<BASE>
         }
         return target_list.size();
       }
-      
+
       std::vector<std::function<bool( player_t* )>> lambdas = {
           [ this ]( player_t* t ) {
             return p()->get_target_data( t )->buffs.ebon_might->check() &&
-                   !p()->get_target_data( t )->buffs.shifting_sands->check();
+                   !p()->get_target_data( t )->buffs.shifting_sands->check() &&
+                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
           },
           [ this ]( player_t* t ) {
             return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
-                   !p()->get_target_data( t )->buffs.shifting_sands->check();
+                   t->specialization() != EVOKER_AUGMENTATION &&
+                   !p()->get_target_data( t )->buffs.shifting_sands->check() &&
+                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
           },
-          [ this ]( player_t* t ) { return !p()->get_target_data( t )->buffs.shifting_sands->check(); },
-          []( player_t* t ) { return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK; },
+          [ this ]( player_t* t ) {
+            return !p()->get_target_data( t )->buffs.shifting_sands->check() &&
+                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
+          },
+          []( player_t* t ) {
+            return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                   t->specialization() != EVOKER_AUGMENTATION;
+          },
           []( player_t* ) { return true; } };
 
       for ( auto& fn : lambdas )
@@ -2200,8 +2214,8 @@ public:
 
     evoker_augment_t::execute();
 
-    sim->print_debug( "{} casts {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
-                      p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets() );
+    sim->print_debug("{} casts {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
+        p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets());
   }
 
   void impact( action_state_t* s ) override
@@ -2242,10 +2256,15 @@ public:
     // Player must always be the first target.
     target_list.push_back( player );
 
-    for ( auto& p : p()->allies_with_my_prescience )
+    for ( auto& t : p()->allies_with_my_prescience )
     {
-      if ( p != player )
-        target_list.push_back( p );
+      if ( t != player &&
+           ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                            [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) +
+             p()->get_target_data( t )->buffs.ebon_might->up() ) <= 2 )
+      {
+        target_list.push_back( t );
+      }
     }
 
     // Clear helper vectors used to process in a single pass.
@@ -2261,7 +2280,8 @@ public:
           if ( std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
                              [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) )
           {
-            if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK )
+            if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                 t->specialization() != EVOKER_AUGMENTATION )
               target_list.push_back( t );
             else
               secondary_list.push_back( t );
@@ -2288,9 +2308,14 @@ public:
     {
       for ( auto& t : tertiary_list )
       {
-        target_list.push_back( t );
-        if ( target_list.size() >= n_targets() )
-          break;
+        if ( ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                              [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) +
+               p()->get_target_data( t )->buffs.ebon_might->up() ) <= 2 )
+        {
+          target_list.push_back( t );
+          if ( target_list.size() >= n_targets() )
+            break;
+        }
       }
     }
 
