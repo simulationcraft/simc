@@ -42,6 +42,12 @@ struct spelleffect_data_t;
 struct stats_t;
 struct travel_event_t;
 struct weapon_t;
+namespace io {
+  class ofstream;
+}
+namespace report {
+  using sc_html_stream = io::ofstream;
+}
 
 // Action ===================================================================
 
@@ -1047,6 +1053,8 @@ public:
   virtual player_t* get_expression_target();
 
   virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain );
+
+  virtual void html_customsection( report::sc_html_stream& ) {}
 
   // ================
   // Static functions
