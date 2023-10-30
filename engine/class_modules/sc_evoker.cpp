@@ -488,6 +488,7 @@ struct evoker_t : public player_t
   evoker_td_t* get_target_data( player_t* target ) const override;
 
   void apply_affecting_auras( action_t& action ) override;
+  void apply_affecting_auras_late( action_t& action );
   action_t* create_action( std::string_view name, std::string_view options_str ) override;
   std::unique_ptr<expr_t> create_expression( std::string_view expr_str ) override;
 
@@ -852,9 +853,6 @@ public:
           spell_color = SPELL_RED;
       }
 
-      apply_buff_effects();
-      apply_debuffs_effects();
-
       move_during_hover =
           player->find_spelleffect( player->find_class_spell( "Hover" ), A_CAST_WHILE_MOVING_WHITELIST, 0, &ab::data() )
               ->ok();
@@ -899,6 +897,11 @@ public:
         else
           ab::base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * p()->resources.base[ pd.resource() ] );
       }
+
+      p()->apply_affecting_auras_late( *this );
+
+      apply_buff_effects();
+      apply_debuffs_effects();
     }
   }
 
@@ -5044,19 +5047,19 @@ void evoker_t::init_spells()
   }
 
   // Evoker Specialization Spells
-  spec.evoker               = find_spell( 353167 );  // TODO: confirm this is the class aura
-  spec.devastation          = find_specialization_spell( "Devastation Evoker" );
-  spec.preservation         = find_specialization_spell( "Preservation Evoker" );
-  spec.augmentation         = find_specialization_spell( "Augmentation Evoker" );
-  spec.mastery              = find_mastery_spell( specialization() );
-  spec.living_flame_damage  = find_spell( 361500 );
-  spec.living_flame_heal    = find_spell( 361509 );
-  spec.energizing_flame     = find_spell( 400006 );
-  spec.tempered_scales      = find_spell( 396571 );
-  spec.emerald_blossom      = find_spell( 355913 );
-  spec.emerald_blossom_heal = find_spell( 355916 );
-  spec.emerald_blossom_spec = find_specialization_spell( 365261, specialization() );
-  spec.close_as_clutchmates = find_specialization_spell( 396043, specialization() );
+  spec.evoker                  = find_spell( 353167 );  // TODO: confirm this is the class aura
+  spec.devastation             = find_specialization_spell( "Devastation Evoker" );
+  spec.preservation            = find_specialization_spell( "Preservation Evoker" );
+  spec.augmentation            = find_specialization_spell( "Augmentation Evoker" );
+  spec.mastery                 = find_mastery_spell( specialization() );
+  spec.living_flame_damage     = find_spell( 361500 );
+  spec.living_flame_heal       = find_spell( 361509 );
+  spec.energizing_flame        = find_spell( 400006 );
+  spec.tempered_scales         = find_spell( 396571 );
+  spec.emerald_blossom         = find_spell( 355913 );
+  spec.emerald_blossom_heal    = find_spell( 355916 );
+  spec.emerald_blossom_spec    = find_specialization_spell( 365261, specialization() );
+  spec.close_as_clutchmates    = find_specialization_spell( 396043, specialization() );
 }
 
 void evoker_t::init_special_effects()
@@ -5411,7 +5414,10 @@ evoker_td_t* evoker_t::get_target_data( player_t* target ) const
 void evoker_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
+}
 
+void evoker_t::apply_affecting_auras_late( action_t& action )
+{
   // Baseline Auras
   action.apply_affecting_aura( spec.evoker );
   action.apply_affecting_aura( spec.devastation );
