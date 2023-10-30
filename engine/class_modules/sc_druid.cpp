@@ -1806,8 +1806,11 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
 
   void absorb_used( double a, player_t* t ) override
   {
-    if ( thorns && t->is_enemy() )
+    if ( thorns )
     {
+      if ( !t || !t->is_enemy() )
+        t = p()->target;
+
       thorns->base_dd_min = thorns->base_dd_max = a * thorn_pct;
       thorns->execute_on_target( t );
     }
