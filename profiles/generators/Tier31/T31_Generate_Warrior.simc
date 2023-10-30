@@ -83,6 +83,6 @@ finger2=seal_of_the_regal_loa,id=159458,bonus_id=3317/1514/6935,gem_id=192945,en
 trinket1=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=wafting_devotion_3
-off_hand=defender_of_the_ancient,id=207797,bonus_id=4800/4786/1520/9576,ilevel=489
+off_hand=defender_of_the_ancient,id=207797,bonus_id=4800/4786/1520/9576
 
 save=T31_Warrior_Protection.simc
