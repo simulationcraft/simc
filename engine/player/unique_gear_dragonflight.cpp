@@ -6120,24 +6120,13 @@ struct lava_bolt_initializer_t : public item_targetdata_initializer_t
 
     td->debuff.lava_bolt = make_buff_fallback( active, *td, "lava_bolt", debuffs[ td->source ] );
     td->debuff.lava_bolt->reset();
-    td->debuff.lava_bolt->set_quiet( true );
-    td->debuff.lava_bolt->set_period( timespan_t::max() );  // Ticking handled by the DoT in the main effect
-    td->debuff.lava_bolt->set_max_stack( 20 ); // Setting to an unreasonably high number to handle the number of explosion events
-    td->debuff.lava_bolt->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS ); // Model getting pets procs at different times properly
+    td->debuff.lava_bolt->set_duration( td->source->find_spell( 426834 )->duration() );
+    td->debuff.lava_bolt->set_initial_stack( td->debuff.lava_bolt->max_stack() );
   }
 };
 
 void coiled_serpent_idol( special_effect_t& e )
 {
-  struct lava_bolt_t : public generic_proc_t
-  {
-    lava_bolt_t( const special_effect_t& e, util::string_view n )
-      : generic_proc_t( e, n, e.player->find_spell( 427037 ) )
-    {
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-    }
-  };
-
   struct molten_rain_t : public generic_proc_t
   {
     molten_rain_t( const special_effect_t& e ) : generic_proc_t( e, "molten_rain", e.player->find_spell( 427047 ) )
@@ -6152,20 +6141,42 @@ void coiled_serpent_idol( special_effect_t& e )
     }
   };
 
+  struct lava_bolt_t : public generic_proc_t
+  {
+    lava_bolt_t( const special_effect_t& e, util::string_view n )
+      : generic_proc_t( e, n, e.player->find_spell( 427037 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+  };
+
   struct serpent_t : public generic_proc_t
   {
     action_t* damage;
-    serpent_t( const special_effect_t& e )
+    action_t* molten_rain;
+
+    serpent_t( const special_effect_t& e, action_t* d ) 
       : generic_proc_t( e, "lava_bolt_dot", e.player->find_spell( 427059 ) ),
-        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) )
+        damage( create_proc_action<lava_bolt_t>( "lava_bolt", e, "lava_bolt" ) ), 
+        molten_rain( d )
     {
-      hasted_ticks = false;
+      hasted_ticks = tick_zero = false;
+      damage->add_child( molten_rain );
+      dot_max_stack = e.driver()->max_stacks();
     }
 
     void tick( dot_t* d ) override
     {
       generic_proc_t::tick( d );
-      for (int stacks = 0; player->get_target_data( d->target )->debuff.lava_bolt->check() > stacks; ++stacks)
+      auto debuff = player->get_target_data( d->target )->debuff.lava_bolt;
+      if( debuff -> check() )
+      {
+        for (int stacks = 0; debuff->check() > stacks; ++stacks )
+        {
+          damage->execute_on_target( d->target );
+        }
+      }
+      else if( !debuff -> check() )
       {
         damage->execute_on_target( d->target );
       }
@@ -6178,10 +6189,10 @@ void coiled_serpent_idol( special_effect_t& e )
     action_t* serpent;
     const special_effect_t& effect;
 
-    serpent_cb_t( const special_effect_t& e )
+    serpent_cb_t( const special_effect_t& e, action_t* d )
       : dbc_proc_callback_t( e.player, e ),
         counter( 0 ),
-        serpent( create_proc_action<serpent_t>( "lava_bolt_single", e ) ),
+        serpent( d ),
         effect( e )
     {}
 
@@ -6190,13 +6201,9 @@ void coiled_serpent_idol( special_effect_t& e )
       counter++;
       serpent->execute_on_target( s->target );
       auto debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt;
-      if ( counter < 3 )
+      if ( counter == 3 )
       {
         debuff->trigger();
-      }
-      else if ( counter == 3 )
-      {
-        debuff->trigger( 3 );
 
         counter = 0;
       }
@@ -6210,10 +6217,19 @@ void coiled_serpent_idol( special_effect_t& e )
   };
 
   auto molten_rain = create_proc_action<molten_rain_t>( "molten_rain", e );
+  auto dot = create_proc_action<serpent_t>( "lava_bolt_dot", e, molten_rain );
 
-  range::for_each( e.player->sim->actor_list, [ e, molten_rain ]( player_t* target ) {
-    target->register_on_demise_callback( e.player, [ e, molten_rain ]( player_t* t ) {
-      for (int stacks = 0; e.player->get_target_data( t )->debuff.lava_bolt->check() > stacks; ++stacks)
+  range::for_each( e.player->sim->actor_list, [ e, molten_rain, dot ]( player_t* target ) {
+    target->register_on_demise_callback( e.player, [ e, molten_rain, dot ]( player_t* t ) {
+      auto debuff = e.player->get_target_data( t )->debuff.lava_bolt;
+      if( debuff->check() )
+      {
+        for (int stacks = 0; debuff->check() > stacks; ++stacks)
+        {
+          molten_rain->execute_on_target( t );
+        }
+      }
+      else if( !debuff->check() && dot->get_dot( t ) -> is_ticking() )
       {
         molten_rain->execute_on_target( t );
       }
@@ -6222,7 +6238,7 @@ void coiled_serpent_idol( special_effect_t& e )
 
   e.proc_flags2_ = PF2_CRIT;
 
-  new serpent_cb_t( e );
+  new serpent_cb_t( e, dot );
 }
 
 // Bandolier of Twisted Blades
