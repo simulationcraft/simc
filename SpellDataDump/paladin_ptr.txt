@@ -16124,11 +16124,14 @@ Effects          :
 Description      : Templar's Verdict, Final Verdict and Justicar's Vengeance have a $h% chance to reset the cooldown of Blade of Justice.
 
 Name             : Righteous Cause (id=402916) [Spell Family (10)] 
+Hotfixed         : Proc Flags 2 (0 -> 4)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
 Duration         : 2 seconds
 Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Triggered by     : Righteous Cause (402912)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -17399,11 +17402,14 @@ Effects          :
 Description      : Your auto attacks have a $h% chance to reset the cooldown of Blade of Justice.
 
 Name             : Art of War (id=406086) [Spell Family (10)] 
+Hotfixed         : Proc Flags 2 (0 -> 4)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
 Duration         : 2 seconds
 Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Triggered by     : Art of War (406064)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
