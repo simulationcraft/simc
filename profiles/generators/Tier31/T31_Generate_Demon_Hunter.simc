@@ -44,7 +44,7 @@ wrists=lifebound_bindings,id=193419,bonus_id=9500/9405/8960/8932/6935,gem_id=192
 hands=screaming_torchfiends_grasp,id=207264,bonus_id=7187/1520
 waist=bloody_dragonhide_belt,id=207131,bonus_id=7187/1520/6935,gem_id=192919,enchant_id=6904
 legs=screaming_torchfiends_blazewraps,id=207262,bonus_id=7187/1520,enchant_id=6830
-feet=tasseted_emberwalkers,id=207134,bonus_id=7187/1520
+feet=screaming_torchfiends_clutches,id=207265,bonus_id=7187/1520
 finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/6935,gem_id=192919,enchant_id=6556
 finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192919,enchant_id=6556
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
