@@ -9938,7 +9938,7 @@ std::string warrior_t::default_potion() const
 std::string warrior_t::default_flask() const
 {
   if ( specialization() == WARRIOR_PROTECTION && true_level > 60 )
-    return "phial_of_static_empowerment_3";
+    return "phial_of_corrupting_rage_3";
 
   return ( true_level > 60 )
              ? "iced_phial_of_corrupting_rage_3"
@@ -9964,7 +9964,7 @@ std::string warrior_t::default_food() const
                                     : "disabled";
 
   std::string protection_food = ( true_level > 60 )
-                              ? "fated_fortune_cookie"
+                              ? "feisty_fish_sticks"
                               : ( true_level > 50 )
                                     ? "feast_of_gluttonous_hedonism"
                                     : "disabled";
