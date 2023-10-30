@@ -1,31 +1,29 @@
-# paladin="T31_Paladin_Protection"
-# level=70
-# race=tauren
-# region=us
-# server=valdrakken
-# role=tank
-# spec=protection
+paladin="T31_Paladin_Protection"
+level=70
+race=human
+role=tank
+spec=protection
+position=front
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAASEJNBSQSKCJJAACIAEIAB
 
-# talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAASEJNBSQSKCJJAACIAEIAB
+head=zealous_pyreknights_barbute,id=207191,bonus_id=1520,enchant_id=7052,gem_id=192935
+neck=amulet_of_eonars_chosen,id=208445,bonus_id=1520,gem_id=192985/192935/192935
+shoulders=zealous_pyreknights_ailettes,bonus_id=1520,id=207189
+back=shadowfeather_shawl,id=136977,bonus_id=9882
+chest=zealous_pyreknights_warplate,id=207194,bonus_id=1520,enchant=waking_stats_3
+wrists=primal_molten_vambraces,id=190502,bonus_id=8790/9379/9405/9500,gem_id=192935
+hands=zealous_pyreknights_jeweled_gauntlets,id=207192,bonus_id=1520
+waist=phlegethic_girdle,id=207149,bonus_id=1520,gem_id=192935
+legs=greaves_of_parallel_lives,id=207824,bonus_id=1579,enchant=fierce_armor_kit_3
+feet=primal_molten_sabatons,id=190496,bonus_id=8790/9379/9405/9500
+finger1=band_of_burning_thorns,id=207159,bonus_id=1520,enchant=devotion_of_haste_3,gem_id=192935
+finger2=thornwoven_band,id=162548,bonus_id=9853,enchant=devotion_of_haste_3,gem_id=192935
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=1520
+trinket2=branch_of_the_tormented_ancient,id=207169,bonus_id=1520
+main_hand=gholak_the_final_conflagration,id=207786,bonus_id=1520,enchant=shadowflame_wreathe_3
+off_hand=defender_of_the_ancient,id=207797,bonus_id=1520
 
-# head=heartfire_sentinels_forgehelm,gem_id=192945,id=202452,bonus_id=4800/4786/1504/8780
-# neck=torc_of_passed_time,id=201759,gem_id=192985/192945/192945,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,crafted_stats=32/49
-# shoulder=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
-# chest=breastplate_of_arterial_protection,id=206197,bonus_id=4800/4786/1669,enchant=waking_stats_3
-# waist=unstable_frostfire_belt,id=191623,gem_id=192945,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501
-# legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
-# feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/9405/8790/9379/8960/9366/1495,crafted_stats=36/32
-# wrist=bonds_of_desperate_ascension,id=204390,gem_id=192945,bonus_id=6652/7981/8095/1498/8780/4786
-# hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1501/8767
-# finger1=onyx_impostors_birthright,id=204398,gem_id=192945,bonus_id=6652/7981/1498/8767/8780,enchant=devotion_of_haste_3
-# finger2=seal_of_diurnas_chosen,id=195480,gem_id=192945,bonus_id=6652/7981/1498/8767/8780,enchant=devotion_of_haste_3
-# trinket1=elementium_pocket_anvil,id=202617,bonus_id=9410/9380/6652/1498/8767
-# trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
-# back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-# main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=shadowflame_wreathe_3
-# off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
-
-# save=T31_Paladin_Protection.simc
+save=T31_Paladin_Protection.simc
 
 # paladin="T31_Paladin_Retribution"
 # spec=retribution
