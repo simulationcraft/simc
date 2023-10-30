@@ -75,7 +75,7 @@ back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,ilevel=486
 chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
 wrist=primal_molten_vambraces,id=190502,bonus_id=9500/9405/9379/6935/8960,gem_id=192945,crafted_stats=36/40
 hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520
-waist=girdle_of_burgeoning_apathy,id=159450,bonus_id=6935,gem_id=192945,ilevel=489,enchant=shadowed_belt_clasp_3
+waist=girdle_of_burgeoning_apathy,id=159450,bonus_id=3317/1514/6935,gem_id=192945,enchant=shadowed_belt_clasp_3
 legs=molten_vanguards_steel_tassets,id=207181,bonus_id=7187/1520,enchant=frosted_armor_kit_3
 feet=goldsteel_sabatons,id=109795,ilevel=489
 finger1=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192945,enchant=devotion_of_versatility_3
