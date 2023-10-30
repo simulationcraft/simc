@@ -71,7 +71,7 @@ talents=BkEAAAAAAAAAAAAAAAAAAAAAAIEBAAAASSCJJItkSSSaNEBCFJQJJBgIJJ0QSCAOQkAAAAAA
 head=molten_vanguards_domeplate,id=207182,bonus_id=7187/1520/6935,gem_id=192991,enchant_id=7052
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/1520/8782,gem_id=192945/192945/192945
 shoulder=molten_vanguards_shouldervents,id=207180,bonus_id=7187/1520
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,ilevel=486,crafted_stats=32/36
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,crafted_stats=32/36
 chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
 wrist=primal_molten_vambraces,id=190502,bonus_id=9500/9405/9379/6935/8960,gem_id=192945,crafted_stats=36/40
 hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520

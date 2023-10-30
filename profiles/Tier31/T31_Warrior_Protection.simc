@@ -77,19 +77,19 @@ actions.generic+=/devastate
 head=molten_vanguards_domeplate,id=207182,bonus_id=7187/1520/6935,gem_id=192991,enchant_id=7052
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/1520/8782,gem_id=192945/192945/192945
 shoulders=molten_vanguards_shouldervents,id=207180,bonus_id=7187/1520
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,ilevel=486,crafted_stats=32/36
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,crafted_stats=32/36
 chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
 wrists=primal_molten_vambraces,id=190502,bonus_id=9500/9405/9379/6935/8960,gem_id=192945,crafted_stats=36/40
 hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520
-waist=girdle_of_burgeoning_apathy,id=159450,bonus_id=6935,ilevel=489,gem_id=192945,enchant=shadowed_belt_clasp_3
+waist=girdle_of_burgeoning_apathy,id=159450,bonus_id=3317/1514/6935,gem_id=192945,enchant=shadowed_belt_clasp_3
 legs=molten_vanguards_steel_tassets,id=207181,bonus_id=7187/1520,enchant=frosted_armor_kit_3
-feet=goldsteel_sabatons,id=109795,ilevel=489
+feet=goldsteel_sabatons,id=109795,bonus_id=6808/4786/9888
 finger1=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192945,enchant=devotion_of_versatility_3
-finger2=seal_of_the_regal_loa,id=159458,bonus_id=6935,ilevel=489,gem_id=192945,enchant=devotion_of_versatility_3
+finger2=seal_of_the_regal_loa,id=159458,bonus_id=3317/1514/6935,gem_id=192945,enchant=devotion_of_versatility_3
 trinket1=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=wafting_devotion_3
-off_hand=defender_of_the_ancient,id=207797,bonus_id=4800/4786/1520/9576,ilevel=489
+off_hand=defender_of_the_ancient,id=207797,bonus_id=4800/4786/1520/9576
 
 # Gear Summary
 # gear_ilvl=489.06
