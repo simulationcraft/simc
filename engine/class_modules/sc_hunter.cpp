@@ -6692,6 +6692,10 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
   {
     return make_fn_expr( expression_str, [ this ] { return state.dire_pack_counter; });
   }
+  else if ( splits.size() == 1 && splits[ 0 ] == "lotw_count" )
+  {
+    return make_fn_expr( expression_str, [ this ] { return state.lotw_counter; } );
+  }
   else if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
   {
     return make_fn_expr( expression_str, [ this ] { return state.steady_focus_counter; } );
