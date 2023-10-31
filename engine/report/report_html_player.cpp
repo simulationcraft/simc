@@ -1191,7 +1191,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       os << "</div>\n";
     }
 
-    s.action_list.back()->html_customsection( os );
+    if ( s.action_list.size() )
+      s.action_list.back()->html_customsection( os );
 
     os << "</td>\n"
        << "</tr>\n";
