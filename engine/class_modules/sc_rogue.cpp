@@ -4008,6 +4008,7 @@ struct envenom_t : public rogue_attack_t
     {
       aoe = -1;
       affected_by.lethal_dose = false;
+      affected_by.zoldyck_insignia = false;
       reduced_aoe_targets = p->set_bonuses.t31_assassination_4pc->effectN( 2 ).base_value();
     }
 
