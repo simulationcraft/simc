@@ -2169,6 +2169,19 @@ public:
       m *= 1.0 + p()->buffs.deeper_daggers->stack_value();
     }
 
+    // Due to being scripted, Zoldyck and Lethal Dose are not affected by things that ignore target modifiers
+    if ( affected_by.zoldyck_insignia &&
+         state->target->health_percentage() < p()->spec.zoldyck_insignia->effectN( 2 ).base_value() )
+    {
+      m *= 1.0 + p()->spec.zoldyck_insignia->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.lethal_dose )
+    {
+      m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() *
+                   td( state->target )->lethal_dose_count() );
+    }
+
     // Set Bonuses
     if ( affected_by.t29_assassination_2pc && p()->buffs.envenom->check() )
     {
@@ -2215,6 +2228,19 @@ public:
       m *= 1.0 + p()->cache.mastery() * p()->mastery.potent_assassin->effectN( 2 ).mastery_value();
     }
 
+    // Due to being scripted, Zoldyck and Lethal Dose are not affected by things that ignore target modifiers
+    if ( affected_by.zoldyck_insignia &&
+         state->target->health_percentage() < p()->spec.zoldyck_insignia->effectN( 2 ).base_value() )
+    {
+      m *= 1.0 + p()->spec.zoldyck_insignia->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.lethal_dose )
+    {
+      m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() *
+                   td( state->target )->lethal_dose_count() );
+    }
+
     // Set Bonuses
     if ( affected_by.t30_assassination_4pc.periodic && p()->buffs.t30_assassination_4pc->up() )
     {
@@ -2235,20 +2261,9 @@ public:
       m *= tdata->debuffs.shiv->value_direct();
     }
 
-    if ( affected_by.zoldyck_insignia &&
-         target->health_percentage() < p()->spec.zoldyck_insignia->effectN( 2 ).base_value() )
-    {
-      m *= 1.0 + p()->spec.zoldyck_insignia->effectN( 1 ).percent();
-    }
-
     if ( affected_by.maim_mangle && tdata->dots.garrote->is_ticking() )
     {
       m *= 1.0 + p()->talent.assassination.systemic_failure->effectN( 1 ).percent();
-    }
-
-    if ( affected_by.lethal_dose )
-    {
-      m *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() * tdata->lethal_dose_count() );
     }
 
     if ( affected_by.deathmark )
@@ -3992,6 +4007,7 @@ struct envenom_t : public rogue_attack_t
       rogue_attack_t( name, p, p->spec.t31_assassination_4pc_attack )
     {
       aoe = -1;
+      affected_by.lethal_dose = false;
       reduced_aoe_targets = p->set_bonuses.t31_assassination_4pc->effectN( 2 ).base_value();
     }
 
@@ -6131,6 +6147,7 @@ struct internal_bleeding_t : public rogue_attack_t
   internal_bleeding_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spec.internal_bleeding_debuff )
   {
+    affected_by.lethal_dose = false; // 2023-10-31 -- Testing shows this is not affected
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -6267,7 +6284,6 @@ struct sanguine_blades_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.sanguine_blades_damage )
   {
     ignores_armor = true;           // Not in spell data
-    affected_by.lethal_dose = true; // Matches the reversed target modifier for bleeds
     base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
   }
 };
@@ -8471,7 +8487,7 @@ void actions::rogue_action_t<Base>::trigger_sanguine_blades( const action_state_
                        *action, p()->resources.current[ RESOURCE_ENERGY ] );
 
   // Target multipliers do not replicate to secondary targets, need to reverse them out
-  const double target_ta_multiplier = ( 1.0 / state->target_ta_multiplier );
+  double target_ta_multiplier = ( 1.0 / state->target_ta_multiplier );
 
   double amount = state->result_amount * target_ta_multiplier * p()->talent.assassination.sanguine_blades->effectN( 3 ).percent();
   action->execute_on_target( state->target, amount );
@@ -8495,19 +8511,7 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_
   double multiplier = p()->spec.caustic_spatter_buff->effectN( 1 ).percent();
 
   // Target multipliers do not replicate to secondary targets, need to reverse them out
-  // However, scripted faux target multipliers still work, so need to manually apply them
   double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
-
-  if ( affected_by.lethal_dose )
-  {
-    target_da_multiplier *= 1.0 + ( p()->talent.assassination.lethal_dose->effectN( 1 ).percent() *
-                                    td( state->target )->lethal_dose_count() );
-  }
-  if ( affected_by.zoldyck_insignia &&
-       state->target->health_percentage() < p()->spec.zoldyck_insignia->effectN( 2 ).base_value() )
-  {
-    target_da_multiplier *= 1.0 + p()->spec.zoldyck_insignia->effectN( 1 ).percent();
-  }
 
   // Note: Unmitigated damage as target mitigation is handled on each impact
   double damage = state->result_total * multiplier * target_da_multiplier;
@@ -11444,12 +11448,6 @@ public:
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Rogue", "2023-10-25", "Manually set charge cooldown value",
-                            185313, hotfix::HOTFIX_FLAG_PTR )
-      .field( "charge_cooldown" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 60000 )
-      .verification_value( 1610612736 );
   }
 
   void init( player_t* ) const override {}
