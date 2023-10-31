@@ -126,22 +126,22 @@ actions.single_target+=/whirlwind
 actions.single_target+=/wrecking_throw
 actions.single_target+=/storm_bolt
 
-head=molten_vanguards_domeplate,id=207182,bonus_id=6935,ilevel=489,gem_id=192988,enchant_id=7052
-neck=raven_filigree_pendant,id=134499,bonus_id=8782,ilevel=489,gem_id=192964/192964/192964
-shoulders=molten_vanguards_shouldervents,id=207180,ilevel=489
-back=undulating_sporecloak,id=205025,ilevel=486,enchant=graceful_avoidance_3
-chest=molten_vanguards_plackart,id=207185,ilevel=489,enchant=waking_stats_3
-wrists=allied_wristguard_of_companionship,id=190526,bonus_id=8960/6935,ilevel=486,gem_id=192919,enchant=devotion_of_avoidance_3
-hands=molten_vanguards_crushers,id=207183,ilevel=489
-waist=greatbelt_of_disruption,id=137310,bonus_id=6935,ilevel=489,gem_id=192964,enchant_id=6904
-legs=greaves_of_parallel_lives,id=207824,ilevel=489,enchant=lambent_armor_kit_3
-feet=fatty_hooves_of_gory_comfort,id=159452,ilevel=489
-finger1=signet_of_the_last_elder,id=207162,bonus_id=6935,ilevel=489,gem_id=192964,enchant=devotion_of_mastery_3
-finger2=archdruids_tainted_seal,id=134487,bonus_id=6935,ilevel=489,gem_id=192964,enchant=devotion_of_mastery_3
-trinket1=cataclysmic_signet_brand,id=207166,ilevel=489
-trinket2=coiled_serpent_idol,id=207175,ilevel=489
-main_hand=gorehowl_might_of_the_warchief,id=208193,ilevel=489,enchant=wafting_devotion_3
-off_hand=gnarlroots_bonecrusher,id=207800,ilevel=489,enchant=wafting_devotion_3
+head=molten_vanguards_domeplate,id=207182,bonus_id=7187/1520/6935,gem_id=192988,enchant_id=7052
+neck=raven_filigree_pendant,id=134499,bonus_id=1514/3326/6646/8782,gem_id=192964/192964/192964
+shoulders=molten_vanguards_shouldervents,id=207180,bonus_id=7187/1520
+back=undulating_sporecloak,id=205025,bonus_id=9500/9405/8960,enchant=graceful_avoidance_3
+chest=molten_vanguards_plackart,id=207185,bonus_id=7187/1520,enchant=waking_stats_3
+wrists=allied_wristguard_of_companionship,id=190526,bonus_id=9500/9405/8960/6935,gem_id=192919,enchant=devotion_of_avoidance_3
+hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520
+waist=greatbelt_of_disruption,id=137310,bonus_id=1514/3326/6646/6935,gem_id=192964,enchant=shadowed_belt_clasp_3
+legs=greaves_of_parallel_lives,id=207824,bonus_id=1579,enchant=lambent_armor_kit_3
+feet=fatty_hooves_of_gory_comfort,id=159452,bonus_id=3317/1514/6646
+finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/6935,gem_id=192964,enchant=devotion_of_mastery_3
+finger2=archdruids_tainted_seal,id=134487,bonus_id=1514/3326/6646/6935,gem_id=192964,enchant=devotion_of_mastery_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+trinket2=coiled_serpent_idol,id=207175,bonus_id=7187/1520
+main_hand=gorehowl_might_of_the_warchief,id=208193,bonus_id=1611,enchant=wafting_devotion_3
+off_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 # Gear Summary
 # gear_ilvl=488.63
