@@ -1091,6 +1091,11 @@ public:
       }
     }
   }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    parsed_html_report( os );
+  }
 };
 
 // Essence base template
@@ -3209,7 +3214,7 @@ struct pyre_t : public essence_spell_t
       if ( p->talent.raging_inferno->ok() )
         target_multiplier_dotdebuffs.emplace_back(
             []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
-            p->talent.raging_inferno->effectN( 2 ).percent(), false );
+            p->talent.raging_inferno->effectN( 2 ).percent(), false, p->talent.raging_inferno );
     }
 
     action_state_t* new_state() override

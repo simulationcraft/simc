@@ -997,7 +997,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       if ( found )
         continue;
 
-      processed_actions.emplace_back(a->name() );
+      processed_actions.emplace_back( a->name() );
 
       os << "<div class=\"flex\">\n";  // Wrap details, damage/weapon, spell_data
 
@@ -1191,8 +1191,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       os << "</div>\n";
     }
 
-    for ( const auto& a : s.action_list )
-      a->html_customsection( os );
+    s.action_list.back()->html_customsection( os );
 
     os << "</td>\n"
        << "</tr>\n";

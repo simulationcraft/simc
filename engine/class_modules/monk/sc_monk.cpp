@@ -848,6 +848,10 @@ namespace monk
         }
       }
 
+      void html_customsection( report::sc_html_stream& os ) override
+      {
+        parsed_html_report( os );
+      }
     };
 
     struct monk_spell_t : public monk_action_t<spell_t>

@@ -1121,6 +1121,11 @@ public:
     }
   }
 
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    parsed_html_report( os );
+  }
+
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
   using ab = Base;

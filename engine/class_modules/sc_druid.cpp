@@ -2091,7 +2091,7 @@ public:
     return dot;
   }
 
-  unsigned get_dot_count() const
+  unsigned get_dot_count() const  // TODO remove in 10.2
   {
     const dot_t* dot = ab::find_dot( ab::target );
     if ( !dot )
@@ -2358,6 +2358,11 @@ public:
 #endif
 
     return ab::verify_actor_spec();
+  }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    parsed_html_report( os );
   }
 };
 
@@ -2843,8 +2848,9 @@ public:
     // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
     if ( p_->talent.umbral_embrace.ok() )
     {
-      BASE::da_multiplier_buffeffects.emplace_back( nullptr, p_->buff.umbral_embrace->default_value, USE_DATA, false,
-                                                    false, [ this ] { return umbral_embrace_check(); } );
+      BASE::da_multiplier_buffeffects.emplace_back(
+          nullptr, p_->buff.umbral_embrace->default_value, USE_DEFAULT, false, false,
+          [ this ] { return umbral_embrace_check(); }, &p_->buff.umbral_embrace->data() );
 
       BASE::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", BASE::name(),
                               BASE::id, p_->buff.umbral_embrace->default_value, p_->buff.umbral_embrace->name(),
@@ -2852,9 +2858,9 @@ public:
 
       BASE::force_conditional_effect( ecl, [ this ] { return umbral_embrace_check(); }, 1 );
 
-      BASE::force_debuff_effect( [ this, dot ]( druid_td_t* t ) {
-        return umbral_embrace_check() && std::invoke( dot, t->dots )->is_ticking();
-      }, dmg, as<unsigned>( dmg->effect_count() ), p_->mastery.astral_invocation );
+      BASE::force_debuff_effect(
+          [ this, dot ]( druid_td_t* t ) { return umbral_embrace_check() && std::invoke( dot, t->dots )->is_ticking(); },
+          dmg, as<unsigned>( dmg->effect_count() ), p_->mastery.astral_invocation );
     }
   }
 
@@ -3699,10 +3705,7 @@ struct feral_frenzy_t : public cat_attack_t
     track_cd_waste = true;
 
     if ( data().ok() )
-    {
       tick_action = p->get_secondary_action_n<feral_frenzy_tick_t>( name_str + "_tick" );
-      tick_action->stats = stats;
-    }
   }
 
   void init() override
@@ -4007,6 +4010,7 @@ struct rake_t : public trigger_deep_focus_t<cat_attack_t>
 
     bleed = p->get_secondary_action_n<rake_bleed_t>( name_str + "_bleed", find_trigger( this ).trigger() );
     bleed->stats = stats;
+    stats->action_list.push_back( bleed );
 
     dot_name = "rake";
   }
@@ -4251,6 +4255,7 @@ struct primal_wrath_t : public cat_finisher_t
     rip->dot_duration = timespan_t::from_seconds( modified_effect( 2 ).base_value() );
     rip->dual = rip->background = true;
     rip->stats = stats;
+    stats->action_list.push_back( rip );
     rip->base_costs[ RESOURCE_ENERGY ] = 0;
     rip->consumes_combo_points = false;
     // mods are parsed on construction so set to false so the rip execute doesn't decrement
@@ -4451,6 +4456,7 @@ struct thrash_cat_t : public cat_attack_t
 
     impact_action = p->get_secondary_action_n<thrash_cat_dot_t>( name_str + "_dot" );
     impact_action->stats = stats;
+    stats->action_list.push_back( impact_action );
 
     dot_name = "thrash_cat";
 
@@ -5032,7 +5038,10 @@ struct rage_of_the_sleeper_t : public bear_attack_t
     harmful = may_miss = may_parry = may_dodge = false;
 
     if ( p->active.rage_of_the_sleeper_reflect )
+    {
       p->active.rage_of_the_sleeper_reflect->stats = stats;
+      stats->action_list.push_back( p->active.rage_of_the_sleeper_reflect );
+    }
   }
 
   void execute() override
@@ -5192,6 +5201,7 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
     aoe = -1;
     impact_action = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
     impact_action->stats = stats;
+    stats->action_list.push_back( impact_action );
     track_cd_waste = true;
 
     dot_name = "thrash_bear";
@@ -5349,6 +5359,7 @@ struct efflorescence_t : public druid_heal_t
 
     heal = p->get_secondary_action<efflorescence_tick_t>( "efflorescence_tick" );
     heal->stats = stats;
+    stats->action_list.push_back( heal );
   }
 
   void execute() override
@@ -5507,6 +5518,7 @@ struct lifebloom_t : public druid_heal_t
   {
     bloom = p->get_secondary_action<lifebloom_bloom_t>( "lifebloom_bloom" );
     bloom->stats = stats;
+    stats->action_list.push_back( bloom );
   }
 
   void impact( action_state_t* s ) override
@@ -5934,7 +5946,6 @@ struct tranquility_t : public druid_heal_t
     channeled = true;
 
     tick_action = p->get_secondary_action<tranquility_tick_t>( "tranquility_tick" );
-    tick_action->stats = stats;
   }
 
   void init() override
@@ -6442,6 +6453,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
     damage->other = heal;
     damage->stats = stats;
+    stats->action_list.push_back( damage );
     heal->other = damage;
     add_child( damage );
   }
@@ -6526,6 +6538,7 @@ struct barkskin_t : public druid_spell_t
       brambles = p->get_secondary_action_n<bear_attacks::brambles_pulse_t>( name_str + "brambles" );
       name_str += "+brambles";
       brambles->stats = stats;
+      stats->action_list.push_back( brambles );
     }
   }
 
@@ -6767,6 +6780,7 @@ struct fury_of_elune_t : public druid_spell_t
 
     damage = p->get_secondary_action_n<fury_of_elune_tick_t>( name_str + "_tick", s_damage );
     damage->stats = stats;
+    stats->action_list.push_back( damage );
   }
 
   // needed to allow on-cast procs
@@ -6871,6 +6885,7 @@ struct lunar_beam_t : public druid_spell_t
   {
     damage = p->get_secondary_action<lunar_beam_tick_t>( "lunar_beam_tick" );
     damage->stats = stats;
+    stats->action_list.push_back( damage );
   }
 
   // needed to allow on-cast procs
@@ -7302,6 +7317,7 @@ struct moonfire_t : public druid_spell_t
   {
     damage = p->get_secondary_action_n<moonfire_damage_t>( name_str + "_dmg" );
     damage->stats = stats;
+    stats->action_list.push_back( damage );
 
     if ( p->spec.astral_power->ok() )
     {
@@ -7747,6 +7763,7 @@ struct starfall_t : public ap_spender_t
     assert( driver->damage );
     driver->stats = stats;
     driver->damage->stats = stats;
+    stats->action_list.push_back( driver->damage );
   }
 
   void execute() override
@@ -8097,6 +8114,7 @@ struct sunfire_t : public druid_spell_t
 
     damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg" );
     damage->stats = stats;
+    stats->action_list.push_back( damage );
 
     if ( p->spec.astral_power->ok() )
     {
@@ -8406,6 +8424,7 @@ struct wild_mushroom_t : public druid_spell_t
 
     damage = p->get_secondary_action<wild_mushroom_damage_t>( "wild_mushroom_damage" );
     damage->stats = stats;
+    stats->action_list.push_back( damage );
     damage->gain = gain;
 
     if ( damage->fungal )

@@ -387,6 +387,11 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
         p().o().trigger_atonement( s );
     }
   }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    parsed_html_report( os );
+  }
 };
 
 namespace fiend

@@ -9,6 +9,7 @@
 #include "buff/buff.hpp"
 #include "player/player.hpp"
 #include "sim/sim.hpp"
+#include "util/io.hpp"
 
 #include <functional>
 
@@ -67,9 +68,11 @@ struct parse_buff_effects_t
     bool use_stacks;
     bool mastery;
     bfun func;
+    const spell_data_t* s_data;
 
-    buff_effect_t( buff_t* b, double v, value_type_e t = USE_DATA, bool s = true, bool m = false, bfun f = nullptr )
-      : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) )
+    buff_effect_t( buff_t* b, double v, value_type_e t = USE_DATA, bool s = true, bool m = false, bfun f = nullptr,
+                   const spell_data_t* d = spell_data_t::nil() )
+      : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), s_data( d )
     {}
   };
 
@@ -80,9 +83,10 @@ struct parse_buff_effects_t
     dfun func;
     double value;
     bool mastery;
+    const spell_data_t* s_data;
 
-    dot_debuff_t( dfun f, double v, bool m = false )
-      : func( std::move( f ) ), value( v ), mastery( m )
+    dot_debuff_t( dfun f, double v, bool m = false, const spell_data_t* d = spell_data_t::nil() )
+      : func( std::move( f ) ), value( v ), mastery( m ), s_data( d )
     {}
   };
 
@@ -240,27 +244,27 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
-          da_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f );
+          da_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, s_data );
           debug_message( "direct damage" );
           break;
         case P_DURATION:
-          dot_duration_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f );
+          dot_duration_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, s_data );
           debug_message( "duration" );
           break;
         case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f );
+          ta_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, s_data );
           debug_message( "tick damage" );
           break;
         case P_CAST_TIME:
-          execute_time_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
+          execute_time_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
           debug_message( "cast time" );
           break;
         case P_COOLDOWN:
-          recharge_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
+          recharge_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
           debug_message( "cooldown" );
           break;
         case P_RESOURCE_COST:
-          cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
+          cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
           debug_message( "cost percent" );
           break;
         default:
@@ -272,12 +276,12 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_CRIT:
-          crit_chance_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
+          crit_chance_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
           debug_message( "crit chance" );
           break;
         case P_RESOURCE_COST:
           val_mul = eff.resource_multiplier( action_->current_resource() );
-          flat_cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f );
+          flat_cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
           debug_message( "flat cost" );
           break;
         default:
@@ -448,7 +452,7 @@ public:
          !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && !action_->special ) && !force )
       return;
 
-    target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery );
+    target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, s_data );
     action_->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})",
                                action_->name(), action_->id, val * val_mul, mastery ? "*mastery" : "",
                                s_data->name_cstr(), s_data->id(), i );
@@ -575,5 +579,100 @@ public:
         temp._base_value *= 1.0 + v;
 
     return temp;
+  }
+
+  void parsed_html_report( report::sc_html_stream& os )
+  {
+    auto ta_mul_c = ta_multiplier_buffeffects.size();
+    auto da_mul_c = da_multiplier_buffeffects.size();
+    auto exec_time_c = execute_time_buffeffects.size();
+    auto dot_dur_c = dot_duration_buffeffects.size();
+    auto recharge_c = recharge_multiplier_buffeffects.size();
+    auto cost_c = cost_buffeffects.size();
+    auto flat_cost_c = flat_cost_buffeffects.size();
+    auto crit_c = crit_chance_buffeffects.size();
+    auto tgt_mul_c = target_multiplier_dotdebuffs.size();
+
+    if ( ta_mul_c + da_mul_c + exec_time_c + dot_dur_c + recharge_c + cost_c + flat_cost_c + crit_c + tgt_mul_c == 0 )
+      return;
+
+    os << "<div>\n"
+       << "<h4>Affected By</h4>\n"
+       << "<table class=\"details\">\n";
+
+    os << "<tr>\n"
+       << "<th class=\"small\">Type</th>\n"
+       << "<th class=\"small\">Spell</th>\n"
+       << "<th class=\"small\">ID</th>\n"
+       << "<th class=\"small\">Value</th>\n"
+       << "<th class=\"small\">Source</th>\n"
+       << "<th class=\"small\">Stacks</th>\n"
+       << "<th class=\"small\">Mastery</th>\n"
+       << "<th class=\"small\">Conditional</th>\n"
+       << "</tr>\n";
+
+    print_parsed_type( os, da_multiplier_buffeffects, da_mul_c, "Direct Damage" );
+    print_parsed_type( os, ta_multiplier_buffeffects, ta_mul_c, "Periodic Damage" );
+    print_parsed_type( os, crit_chance_buffeffects, crit_c, "Critical Strike Chance" );
+    print_parsed_type( os, execute_time_buffeffects, exec_time_c, "Execute Time" );
+    print_parsed_type( os, dot_duration_buffeffects, dot_dur_c, "Dot Duration" );
+    print_parsed_type( os, recharge_multiplier_buffeffects, recharge_c, "Recharge Multiplier" );
+    print_parsed_type( os, flat_cost_buffeffects, flat_cost_c, "Flat Cost" );
+    print_parsed_type( os, cost_buffeffects, cost_c, "Percent Cost" );
+    print_parsed_type( os, target_multiplier_dotdebuffs, tgt_mul_c, "Dot / Debuff on Target" );
+
+    os << "</table>\n"
+       << "</div>\n";
+  }
+
+  template <typename V>
+  void print_parsed_type( report::sc_html_stream& os, const V& entries, size_t c, std::string_view n )
+  {
+    if ( !c )
+      return;
+
+    os.format( "<tr><td class=\"nowrap label\" rowspan=\"{}\">{}</td>\n", c, n );
+
+    for ( size_t i = 0; i < c; i++ )
+    {
+      if ( i > 0 )
+        os << "<tr>";
+
+      print_parsed_line( os, entries[ i ] );
+    }
+  }
+
+  std::string value_type_name( value_type_e t )
+  {
+    switch ( t )
+    {
+      case USE_DEFAULT: return "Default Value";
+      case USE_CURRENT: return "Current Value";
+      default:          return "Spell Data";
+    }
+  }
+
+  void print_parsed_line( report::sc_html_stream& os, const buff_effect_t& entry )
+  {
+    os.format( "<td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
+               entry.s_data->name_cstr(),
+               entry.s_data->id(),
+               entry.value * ( entry.mastery ? 100 : 1 ),
+               value_type_name( entry.type ),
+               entry.use_stacks ? "Y" : "N",
+               entry.mastery ? "Y" : "N",
+               entry.func ? "Y" : "N" );
+  }
+
+  void print_parsed_line( report::sc_html_stream& os, const dot_debuff_t& entry )
+  {
+    os.format( "<td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
+               entry.s_data->name_cstr(),
+               entry.s_data->id(),
+               entry.value * ( entry.mastery ? 100 : 1 ),
+               "",
+               "",
+               entry.mastery ? "Y" : "N",
+               "" );
   }
 };
