@@ -488,6 +488,7 @@ struct evoker_t : public player_t
   evoker_td_t* get_target_data( player_t* target ) const override;
 
   void apply_affecting_auras( action_t& action ) override;
+  void apply_affecting_auras_late( action_t& action );
   action_t* create_action( std::string_view name, std::string_view options_str ) override;
   std::unique_ptr<expr_t> create_expression( std::string_view expr_str ) override;
 
@@ -852,9 +853,6 @@ public:
           spell_color = SPELL_RED;
       }
 
-      apply_buff_effects();
-      apply_debuffs_effects();
-
       move_during_hover =
           player->find_spelleffect( player->find_class_spell( "Hover" ), A_CAST_WHILE_MOVING_WHITELIST, 0, &ab::data() )
               ->ok();
@@ -899,6 +897,11 @@ public:
         else
           ab::base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * p()->resources.base[ pd.resource() ] );
       }
+
+      p()->apply_affecting_auras_late( *this );
+
+      apply_buff_effects();
+      apply_debuffs_effects();
     }
   }
 
@@ -1188,8 +1191,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
 {
   struct shifting_sands_t : public evoker_augment_t
   {
-    shifting_sands_t( evoker_t* p )
-      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) )
+    shifting_sands_t( evoker_t* p ) : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) )
     {
       background   = true;
       dot_duration = base_tick_time = 0_ms;
@@ -1225,7 +1227,10 @@ struct empowered_release_t : public empowered_base_t<BASE>
         if ( t != player )
         {
           if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
-               p()->get_target_data( t )->buffs.ebon_might->check() && !p()->get_target_data( t )->buffs.shifting_sands->check() )
+               t->specialization() != EVOKER_AUGMENTATION && p()->get_target_data( t )->buffs.ebon_might->check() &&
+               !p()->get_target_data( t )->buffs.shifting_sands->check() &&
+               std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } ) )
           {
             target_list.push_back( t );
           }
@@ -1244,18 +1249,30 @@ struct empowered_release_t : public empowered_base_t<BASE>
         }
         return target_list.size();
       }
-      
+
       std::vector<std::function<bool( player_t* )>> lambdas = {
           [ this ]( player_t* t ) {
             return p()->get_target_data( t )->buffs.ebon_might->check() &&
-                   !p()->get_target_data( t )->buffs.shifting_sands->check();
+                   !p()->get_target_data( t )->buffs.shifting_sands->check() &&
+                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
           },
           [ this ]( player_t* t ) {
             return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
-                   !p()->get_target_data( t )->buffs.shifting_sands->check();
+                   t->specialization() != EVOKER_AUGMENTATION &&
+                   !p()->get_target_data( t )->buffs.shifting_sands->check() &&
+                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
           },
-          [ this ]( player_t* t ) { return !p()->get_target_data( t )->buffs.shifting_sands->check(); },
-          []( player_t* t ) { return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK; },
+          [ this ]( player_t* t ) {
+            return !p()->get_target_data( t )->buffs.shifting_sands->check() &&
+                   std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                                 [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
+          },
+          []( player_t* t ) {
+            return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                   t->specialization() != EVOKER_AUGMENTATION;
+          },
           []( player_t* ) { return true; } };
 
       for ( auto& fn : lambdas )
@@ -2197,8 +2214,8 @@ public:
 
     evoker_augment_t::execute();
 
-    sim->print_debug( "{} casts {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
-                      p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets() );
+    sim->print_debug("{} casts {} allies with prescience: {} allies with ebon: {} n_targets: {}", *p(), *this,
+        p()->allies_with_my_prescience.size(), p()->allies_with_my_ebon.size(), n_targets());
   }
 
   void impact( action_state_t* s ) override
@@ -2239,10 +2256,15 @@ public:
     // Player must always be the first target.
     target_list.push_back( player );
 
-    for ( auto& p : p()->allies_with_my_prescience )
+    for ( auto& t : p()->allies_with_my_prescience )
     {
-      if ( p != player )
-        target_list.push_back( p );
+      if ( t != player &&
+           ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                            [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) +
+             p()->get_target_data( t )->buffs.ebon_might->up() ) <= 2 )
+      {
+        target_list.push_back( t );
+      }
     }
 
     // Clear helper vectors used to process in a single pass.
@@ -2258,7 +2280,8 @@ public:
           if ( std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
                              [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) )
           {
-            if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK )
+            if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                 t->specialization() != EVOKER_AUGMENTATION )
               target_list.push_back( t );
             else
               secondary_list.push_back( t );
@@ -2285,9 +2308,14 @@ public:
     {
       for ( auto& t : tertiary_list )
       {
-        target_list.push_back( t );
-        if ( target_list.size() >= n_targets() )
-          break;
+        if ( ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                              [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) +
+               p()->get_target_data( t )->buffs.ebon_might->up() ) <= 2 )
+        {
+          target_list.push_back( t );
+          if ( target_list.size() >= n_targets() )
+            break;
+        }
       }
     }
 
@@ -5044,19 +5072,19 @@ void evoker_t::init_spells()
   }
 
   // Evoker Specialization Spells
-  spec.evoker               = find_spell( 353167 );  // TODO: confirm this is the class aura
-  spec.devastation          = find_specialization_spell( "Devastation Evoker" );
-  spec.preservation         = find_specialization_spell( "Preservation Evoker" );
-  spec.augmentation         = find_specialization_spell( "Augmentation Evoker" );
-  spec.mastery              = find_mastery_spell( specialization() );
-  spec.living_flame_damage  = find_spell( 361500 );
-  spec.living_flame_heal    = find_spell( 361509 );
-  spec.energizing_flame     = find_spell( 400006 );
-  spec.tempered_scales      = find_spell( 396571 );
-  spec.emerald_blossom      = find_spell( 355913 );
-  spec.emerald_blossom_heal = find_spell( 355916 );
-  spec.emerald_blossom_spec = find_specialization_spell( 365261, specialization() );
-  spec.close_as_clutchmates = find_specialization_spell( 396043, specialization() );
+  spec.evoker                  = find_spell( 353167 );  // TODO: confirm this is the class aura
+  spec.devastation             = find_specialization_spell( "Devastation Evoker" );
+  spec.preservation            = find_specialization_spell( "Preservation Evoker" );
+  spec.augmentation            = find_specialization_spell( "Augmentation Evoker" );
+  spec.mastery                 = find_mastery_spell( specialization() );
+  spec.living_flame_damage     = find_spell( 361500 );
+  spec.living_flame_heal       = find_spell( 361509 );
+  spec.energizing_flame        = find_spell( 400006 );
+  spec.tempered_scales         = find_spell( 396571 );
+  spec.emerald_blossom         = find_spell( 355913 );
+  spec.emerald_blossom_heal    = find_spell( 355916 );
+  spec.emerald_blossom_spec    = find_specialization_spell( 365261, specialization() );
+  spec.close_as_clutchmates    = find_specialization_spell( 396043, specialization() );
 }
 
 void evoker_t::init_special_effects()
@@ -5411,7 +5439,10 @@ evoker_td_t* evoker_t::get_target_data( player_t* target ) const
 void evoker_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
+}
 
+void evoker_t::apply_affecting_auras_late( action_t& action )
+{
   // Baseline Auras
   action.apply_affecting_aura( spec.evoker );
   action.apply_affecting_aura( spec.devastation );
