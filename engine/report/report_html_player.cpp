@@ -3,24 +3,25 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
-#include "player/covenant.hpp"
-#include "player/unique_gear_shadowlands.hpp"
-#include "dbc/temporary_enchant.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "dbc/sc_spell_info.hpp"
+#include "dbc/temporary_enchant.hpp"
 #include "dbc/trait_data.hpp"
-#include "reports.hpp"
-#include "report/report_helper.hpp"
-#include "report/decorators.hpp"
-#include "report/charts.hpp"
-#include "report/highchart.hpp"
+#include "player/covenant.hpp"
 #include "player/player_talent_points.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
-#include "sim/scale_factor_control.hpp"
+#include "player/unique_gear_shadowlands.hpp"
+#include "report/charts.hpp"
+#include "report/decorators.hpp"
+#include "report/highchart.hpp"
+#include "report/report_helper.hpp"
+#include "reports.hpp"
 #include "sim/profileset.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "util/util.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -1192,7 +1193,62 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     }
 
     if ( s.action_list.size() )
+    {
+      os << "<div class=\"flex\">\n";
+
+      if ( s.action_list.back()->affecting_list.size() )
+      {
+        os << "<div>\n"
+           << "<h4>Affected By (Passive)</h4>\n"
+           << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+
+        os << "<tr>\n"
+           << "<th class=\"small\">Type</th>\n"
+           << "<th class=\"small\">Spell</th>\n"
+           << "<th class=\"small\">ID</th>\n"
+           << "<th class=\"small\">+/%</th>\n"
+           << "<th class=\"small\">Value</th>\n"
+           << "</tr>\n";
+
+        for ( auto [ eff, val ] : s.action_list.back()->affecting_list )
+        {
+          std::string op_str;
+          std::string type_str;
+
+          switch ( eff->subtype() )
+          {
+            case A_ADD_FLAT_LABEL_MODIFIER:
+            case A_ADD_FLAT_MODIFIER:
+              op_str = "ADD";
+              type_str = spell_info::effect_property_str( eff );
+              break;
+            case A_ADD_PCT_LABEL_MODIFIER:
+            case A_ADD_PCT_MODIFIER:
+              op_str = "PCT";
+              type_str = spell_info::effect_property_str( eff );
+              break;
+            default:
+              op_str = "SET";
+              type_str = spell_info::effect_subtype_str( eff );
+              break;
+          }
+
+          os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td></tr>",
+            type_str,
+            eff->spell()->name_cstr(),
+            eff->spell()->id(),
+            op_str,
+            val );
+        }
+
+        os << "</table>\n"
+           << "</div>\n";
+      }
+
       s.action_list.back()->html_customsection( os );
+
+      os << "</div>";
+    }
 
     os << "</td>\n"
        << "</tr>\n";

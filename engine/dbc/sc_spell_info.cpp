@@ -2905,3 +2905,27 @@ void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_
   }
   node->add_parm( "spell_id", set_bonus->spell_id );
 }
+
+std::string_view spell_info::effect_type_str( const spelleffect_data_t* effect )
+{
+  auto it = _effect_type_strings.find( effect->type() );
+  if ( it != _effect_type_strings.end() )
+    return it->second;
+  return {};
+}
+
+std::string_view spell_info::effect_subtype_str( const spelleffect_data_t* effect )
+{
+  auto it = _effect_subtype_strings.find( effect->subtype() );
+  if ( it != _effect_subtype_strings.end() )
+    return it->second;
+  return {};
+}
+
+std::string_view spell_info::effect_property_str( const spelleffect_data_t* effect )
+{
+  auto it = _property_type_strings.find( effect->property_type() );
+  if ( it != _property_type_strings.end() )
+    return it->second;
+  return {};
+}

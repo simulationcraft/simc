@@ -460,6 +460,9 @@ public:
   /* The last time the action was executed */
   timespan_t last_used;
 
+  // Effects which affect this action applied via apply_affecting_auras()
+  std::vector<std::pair<const spelleffect_data_t*, double>> affecting_list;
+
   // Options
   struct options_t {
     /**

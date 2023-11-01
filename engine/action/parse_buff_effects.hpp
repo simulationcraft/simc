@@ -597,8 +597,8 @@ public:
       return;
 
     os << "<div>\n"
-       << "<h4>Affected By</h4>\n"
-       << "<table class=\"details\">\n";
+       << "<h4>Affected By (Dynamic)</h4>\n"
+       << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
 
     os << "<tr>\n"
        << "<th class=\"small\">Type</th>\n"
@@ -631,7 +631,7 @@ public:
     if ( !c )
       return;
 
-    os.format( "<tr><td class=\"nowrap label\" rowspan=\"{}\">{}</td>\n", c, n );
+    os.format( "<tr><td class=\"label\" rowspan=\"{}\">{}</td>\n", c, n );
 
     for ( size_t i = 0; i < c; i++ )
     {
