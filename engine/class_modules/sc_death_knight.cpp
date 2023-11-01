@@ -10258,7 +10258,7 @@ void death_knight_t::create_buffs()
         -> set_period( spell.empower_rune_weapon_main -> effectN( 1 ).period() )
         -> set_default_value_from_effect( 3 )
         -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        -> set_refresh_behavior( buff_refresh_behavior::EXTEND )
+        -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
         -> set_tick_behavior( buff_tick_behavior::REFRESH )
         -> set_tick_callback( [ this ] ( buff_t* b, int, timespan_t ) 
           {
