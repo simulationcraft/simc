@@ -5277,7 +5277,7 @@ struct unholy_pact_buff_t final : public buff_t
     } );
   }
 private:
-    action_t* damage;
+  action_t*& damage;
 };
 
 struct dark_transformation_damage_t final : public death_knight_spell_t
