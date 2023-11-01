@@ -3496,6 +3496,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     // Blood
     parse_buff_effects( p()->buffs.sanguine_ground );
     parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
+    parse_passive_effects( p()->talent.merciless_strikes );
 
     // Frost
     parse_buff_effects( p()->buffs.chilling_rage );
@@ -3513,7 +3514,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_dot_effects( &death_knight_td_t::dots_t::frost_fever, p()->spell.frost_fever, p()->talent.unholy.morbidity );
     parse_dot_effects( &death_knight_td_t::dots_t::blood_plague, p()->spell.blood_plague, p()->specialization() == DEATH_KNIGHT_UNHOLY ? p()->talent.unholy.morbidity : p()->talent.blood.coagulopathy );
     parse_dot_effects( &death_knight_td_t::dots_t::unholy_blight, p()->spell.unholy_blight_dot, false, p()->talent.unholy.morbidity );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.apocalypse_war->check(); }, p()->spell.apocalypse_war_debuff );
+    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.apocalypse_war->check(); }, p()->spell.apocalypse_war_debuff, p()->talent.unholy_bond );
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.razorice->check(); }, p()->spell.razorice_debuff, p()->talent.unholy_bond );
 
     // Blood
@@ -5336,7 +5337,6 @@ struct dark_transformation_t final : public death_knight_spell_t
     if ( ! precombat_frenzy )
     {
       execute_action = get_action<dark_transformation_damage_t>( "dark_transformation_damage", p );
-      execute_action -> stats = stats;
     }
 
     if ( p -> talent.unholy.unholy_command.ok() )
