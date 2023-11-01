@@ -4945,7 +4945,7 @@ struct breath_of_sindragosa_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     base_tick_time = 0_ms; // Handled by the buff
-    add_child( p->active_spells.breath_of_sindragosa_tick );
+    add_child( get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_damage", p ) );
     track_cd_waste = true;
   }
 
@@ -9363,7 +9363,9 @@ void death_knight_t::create_actions()
 {
   // Class talents
   if ( talent.blood_draw.ok() )
+  {
     active_spells.blood_draw = new blood_draw_t( "blood_draw", this );
+  }
 
   if ( talent.abomination_limb.ok() )
   {
@@ -9400,7 +9402,8 @@ void death_knight_t::create_actions()
     {
       active_spells.unholy_pact_damage = new unholy_pact_damage_t( "unholy_pact_damage", this );
     }
-    if (talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok())
+
+    if ( talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok() )
     {
       active_spells.virulent_eruption = new virulent_eruption_t( this );
     }
