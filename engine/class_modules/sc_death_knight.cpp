@@ -684,6 +684,7 @@ public:
     propagate_const<action_t*> runeforge_pestilence;
     propagate_const<action_t*> runeforge_razorice;
     propagate_const<action_t*> runeforge_sanguination;
+    action_t* abomination_limb_damage;
 
     // Class Tree
     propagate_const<action_t*> blood_draw;
@@ -692,11 +693,16 @@ public:
     propagate_const<action_t*> mark_of_blood_heal;
     action_t* shattering_bone;
 
+    // Frost
+    action_t* breath_of_sindragosa_tick;
+    action_t* remorseless_winter_tick;
+
     // Unholy
     propagate_const<action_t*> bursting_sores;
     propagate_const<action_t*> festering_wound;
     propagate_const<action_t*> virulent_eruption;
     propagate_const<action_t*> ruptured_viscera;
+    action_t* unholy_pact_damage;
 
   } active_spells;
 
@@ -4326,9 +4332,9 @@ struct abomination_limb_damage_t final : public death_knight_spell_t
 struct abomination_limb_buff_t final : public buff_t
 {
   abomination_limb_buff_t( death_knight_t* p )
-    : buff_t( p, "abomination_limb", p->talent.abomination_limb ), 
-      damage( get_action<abomination_limb_damage_t>( "abomination_limb_damage", p ) )
+    : buff_t( p, "abomination_limb", p->talent.abomination_limb )
   {
+    damage = p->active_spells.abomination_limb_damage;
     cooldown->duration = 0_ms;  // Controlled by the action
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) 
     { 
@@ -4344,7 +4350,7 @@ struct abomination_limb_t : public death_knight_spell_t
 {
   abomination_limb_t( death_knight_t* p, util::string_view options_str )
     : death_knight_spell_t( "abomination_limb", p, p->talent.abomination_limb ), 
-      damage( get_action<abomination_limb_damage_t>( "abomination_limb_damage", p ) )
+      damage( get_action<abomination_limb_damage_t>("abomination_limb_damage", p ) )
   {
     may_crit = may_miss = may_dodge = may_parry = false;
 
@@ -4366,7 +4372,7 @@ struct abomination_limb_t : public death_knight_spell_t
     p() -> buffs.abomination_limb -> trigger();
   }
 private:
-    action_t* damage;
+    propagate_const<action_t*> damage;
 };
 
 // Apocalypse ===============================================================
@@ -4800,14 +4806,25 @@ struct bonestorm_t final : public death_knight_spell_t
 
 struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
 {
-  breath_of_sindragosa_tick_t( util::string_view name, death_knight_t* p ):
-    death_knight_spell_t( name, p, p -> talent.frost.breath_of_sindragosa -> effectN( 1 ).trigger() )
+  double ticking_cost;
+  breath_of_sindragosa_tick_t( util::string_view n, death_knight_t* p ):
+    death_knight_spell_t( n, p, p -> talent.frost.breath_of_sindragosa -> effectN( 1 ).trigger() ),
+    ticking_cost( 0.0 )
   {
     aoe = -1;
     background = true;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
-
+    // Extract the cost per tick from spelldata
+    for (size_t idx = 1; idx <= p->buffs.breath_of_sindragosa->data().power_count(); idx++)
+    {
+      const spellpower_data_t& power = p->buffs.breath_of_sindragosa->data().powerN( idx );
+      if (power.aura_id() == 0 || player->dbc->spec_by_spell( power.aura_id() ) == player->specialization())
+      {
+        ticking_cost = power.cost_per_tick();
+      }
+    }
+    base_costs[ RESOURCE_RUNIC_POWER ] = ticking_cost;
     ap_type = attack_power_type::WEAPON_BOTH;
 
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
@@ -4834,12 +4851,13 @@ struct breath_of_sindragosa_buff_t : public buff_t
   breath_of_sindragosa_buff_t( death_knight_t* p ) :
     buff_t( p, "breath_of_sindragosa", p -> talent.frost.breath_of_sindragosa ),
     ticking_cost( 0.0 ), tick_period( p -> talent.frost.breath_of_sindragosa -> effectN( 1 ).period() ),
-    rune_gen( as<int>( p -> spell.breath_of_sindragosa_rune_gen -> effectN( 1 ).base_value() ) )
+    rune_gen( as<int>( p -> spell.breath_of_sindragosa_rune_gen -> effectN( 1 ).base_value() ) ),
+    bos_damage( p->active_spells.breath_of_sindragosa_tick )
   {
     tick_zero = true;
     cooldown -> duration = 0_ms; // Handled by the action
 
-                                 // Extract the cost per tick from spelldata
+    // Extract the cost per tick from spelldata
     for ( size_t idx = 1; idx <= data().power_count(); idx++ )
     {
       const spellpower_data_t& power = data().powerN( idx );
@@ -4848,11 +4866,6 @@ struct breath_of_sindragosa_buff_t : public buff_t
         ticking_cost = power.cost_per_tick();
       }
     }
-
-    bos_damage = get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_damage", p );
-    // Store the ticking cost in bos_damage too so resource_loss can fetch the base ability cost
-    // cost() is overriden because the actual cost and resources spent are handled by the buff
-    bos_damage -> base_costs[ RESOURCE_RUNIC_POWER ] =  ticking_cost;
 
     set_tick_callback( [ this ] ( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
     {
@@ -4924,7 +4937,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
     }
   }
 private:
-    propagate_const<action_t*> bos_damage;
+  action_t*& bos_damage;
 };
 
 struct breath_of_sindragosa_t final : public death_knight_spell_t
@@ -4934,7 +4947,7 @@ struct breath_of_sindragosa_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     base_tick_time = 0_ms; // Handled by the buff
-    add_child( get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_damage", p ) );
+    add_child( p->active_spells.breath_of_sindragosa_tick );
     track_cd_waste = true;
   }
 
@@ -5245,7 +5258,7 @@ struct unholy_pact_buff_t final : public buff_t
   unholy_pact_buff_t( death_knight_t* p ) :
     buff_t( p, "unholy_pact",
       p -> talent.unholy.unholy_pact -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
-    damage( get_action<unholy_pact_damage_t>( "unholy_pact", p ) )
+    damage( p->active_spells.unholy_pact_damage )
   {
     tick_zero = true;
     buff_period = 1.0_s;
@@ -5266,7 +5279,7 @@ struct unholy_pact_buff_t final : public buff_t
     } );
   }
 private:
-    propagate_const<action_t*> damage;
+    action_t* damage;
 };
 
 struct dark_transformation_damage_t final : public death_knight_spell_t
@@ -7608,11 +7621,9 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
 
 struct remorseless_winter_buff_t final : public buff_t
 {
-  remorseless_winter_damage_t* damage; // (AOE) damage that ticks every second
-
   remorseless_winter_buff_t( death_knight_t* p ) :
     buff_t( p, "remorseless_winter", p -> spec.remorseless_winter ),
-    damage( new remorseless_winter_damage_t( p ) )
+    damage( p->active_spells.remorseless_winter_tick )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
     set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -7621,11 +7632,15 @@ struct remorseless_winter_buff_t final : public buff_t
       damage -> execute();
     } );
     set_partial_tick( true );
-    set_stack_change_callback( [ p ] ( buff_t*, int, int new_ ) 
+    set_stack_change_callback( [ p, this ] ( buff_t*, int, int new_ ) 
     {
       if ( !new_ )
       {
         p -> buffs.gathering_storm -> expire();
+      }
+      else
+      {
+        debug_cast< remorseless_winter_damage_t* >( p->active_spells.remorseless_winter_tick )->triggered_biting_cold = false;
       }
     } );
   }
@@ -7634,9 +7649,11 @@ struct remorseless_winter_buff_t final : public buff_t
   {
     // TODO: check whether refreshing RW (with GS and high haste) lets you trigger biting cold again
     // Move to expire override if necessary
-    debug_cast<remorseless_winter_damage_t*>( damage ) -> triggered_biting_cold = false;
+    
     return buff_t::trigger( s, v, c, d );
   }
+private:
+  action_t*& damage;
 };
 
 struct remorseless_winter_t final : public death_knight_spell_t
@@ -9351,6 +9368,11 @@ void death_knight_t::create_actions()
   if ( talent.blood_draw.ok() )
     active_spells.blood_draw = new blood_draw_t( "blood_draw", this );
 
+  if ( talent.abomination_limb.ok() )
+  {
+    active_spells.abomination_limb_damage = new abomination_limb_damage_t( "abomination_limb_damage", this );
+  }
+
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
@@ -9367,7 +9389,7 @@ void death_knight_t::create_actions()
   // Unholy
   else if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    if ( spec.festering_wound -> ok() )
+    if ( spec.festering_wound->ok() )
     {
       active_spells.festering_wound = new festering_wound_t( this );
     }
@@ -9376,10 +9398,29 @@ void death_knight_t::create_actions()
     {
       active_spells.bursting_sores = new bursting_sores_t( this );
     }
+
+    if ( talent.unholy.unholy_pact.ok() )
+    {
+      active_spells.unholy_pact_damage = new unholy_pact_damage_t( "unholy_pact_damage", this );
+    }
+    if (talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok())
+    {
+      active_spells.virulent_eruption = new virulent_eruption_t( this );
+    }
   }
 
-  if ( talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok() )
-    active_spells.virulent_eruption = new virulent_eruption_t( this );
+  else if ( specialization() == DEATH_KNIGHT_FROST )
+  {
+    if ( talent.frost.breath_of_sindragosa.ok() )
+    {
+      active_spells.breath_of_sindragosa_tick = new breath_of_sindragosa_tick_t( "breath_of_sindragosa_damage", this );
+    }
+
+    if ( spec.remorseless_winter->ok() )
+    {
+      active_spells.remorseless_winter_tick = new remorseless_winter_damage_t( this );
+    }
+  }
 
   player_t::create_actions();
 }
