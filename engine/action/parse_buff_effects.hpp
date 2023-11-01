@@ -606,9 +606,7 @@ public:
        << "<th class=\"small\">ID</th>\n"
        << "<th class=\"small\">Value</th>\n"
        << "<th class=\"small\">Source</th>\n"
-       << "<th class=\"small\">Stacks</th>\n"
-       << "<th class=\"small\">Mastery</th>\n"
-       << "<th class=\"small\">Conditional</th>\n"
+       << "<th class=\"small\">Notes</th>\n"
        << "</tr>\n";
 
     print_parsed_type( os, da_multiplier_buffeffects, da_mul_c, "Direct Damage" );
@@ -654,25 +652,32 @@ public:
 
   void print_parsed_line( report::sc_html_stream& os, const buff_effect_t& entry )
   {
-    os.format( "<td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
+    std::vector<std::string> notes;
+
+    if ( !entry.use_stacks )
+      notes.push_back( "No-stacks" );
+
+    if ( entry.mastery )
+      notes.push_back( "Mastery" );
+
+    if ( entry.func )
+      notes.push_back( "Conditional" );
+
+    os.format( "<td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
                entry.s_data->name_cstr(),
                entry.s_data->id(),
                entry.value * ( entry.mastery ? 100 : 1 ),
                value_type_name( entry.type ),
-               entry.use_stacks ? "Y" : "N",
-               entry.mastery ? "Y" : "N",
-               entry.func ? "Y" : "N" );
+               util::string_join( notes ) );
   }
 
   void print_parsed_line( report::sc_html_stream& os, const dot_debuff_t& entry )
   {
-    os.format( "<td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>\n",
+    os.format( "<td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
                entry.s_data->name_cstr(),
                entry.s_data->id(),
                entry.value * ( entry.mastery ? 100 : 1 ),
                "",
-               "",
-               entry.mastery ? "Y" : "N",
-               "" );
+               entry.mastery ? "Mastery" : "" );
   }
 };
