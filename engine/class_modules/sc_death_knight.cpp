@@ -44,100 +44,100 @@ namespace { // UNNAMED NAMESPACE
 // Use this with secondary background actions to ensure the player only has
 // one copy of the action.
 // Shamelessly borrowed from the mage module
-template <typename Action, typename Actor, typename... Args>
-action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
-{
-  action_t* a = actor->find_action( name );
+  template <typename Action, typename Actor, typename... Args>
+  action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
+  {
+    action_t* a = actor->find_action( name );
   if ( !a )
-    a = new Action( name, actor, std::forward<Args>( args )... );
+      a = new Action( name, actor, std::forward<Args>( args )... );
   assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
-  return a;
-}
+    return a;
+  }
 
-template <typename V>
-static const spell_data_t* resolve_spell_data( V data )
-{
-  if constexpr (std::is_invocable_v<decltype( &spell_data_t::ok ), V>)
-    return data;
-  else if constexpr (std::is_invocable_v<decltype( &buff_t::data ), V>)
-    return &data->data();
-  else if constexpr (std::is_invocable_v<decltype( &action_t::data ), V>)
-    return &data->data();
-
-  assert( false && "Could not resolve find_effect argument to spell data." );
-  return nullptr;
-}
-
-// finds a spell effect
-// 1) first argument can be either player_talent_t, spell_data_t*, buff_t*, action_t*
-// 2) if the second argument is player_talent_t, spell_data_t*, buff_t*, or action_t* then only effects that affect it are returned
-// 3) if the third (or second if the above does not apply) argument is effect subtype, then the type is assumed to be E_APPLY_AURA
-// further arguments can be given to filter for full type + subtype + property
-template <typename T, typename U, typename... Ts>
-static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
-{
-  const spell_data_t* data = resolve_spell_data<T>( val );
-
-  if constexpr (std::is_same_v<U, effect_subtype_t>)
-    return spell_data_t::find_spelleffect( *data, E_APPLY_AURA, type, std::forward<Ts>( args )... );
-  else if constexpr (std::is_same_v<U, effect_type_t>)
-    return spell_data_t::find_spelleffect( *data, type, std::forward<Ts>( args )... );
-  else
+  template <typename V>
+  static const spell_data_t* resolve_spell_data( V data )
   {
-    const spell_data_t* affected = resolve_spell_data<U>( type );
+    if constexpr (std::is_invocable_v<decltype( &spell_data_t::ok ), V>)
+      return data;
+    else if constexpr (std::is_invocable_v<decltype( &buff_t::data ), V>)
+      return &data->data();
+    else if constexpr (std::is_invocable_v<decltype( &action_t::data ), V>)
+      return &data->data();
 
-    if constexpr (std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_subtype_t>)
-      return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA, std::forward<Ts>( args )... );
-    else if constexpr (std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_type_t>)
-      return spell_data_t::find_spelleffect( *data, *affected, std::forward<Ts>( args )... );
+    assert( false && "Could not resolve find_effect argument to spell data." );
+    return nullptr;
+  }
+
+  // finds a spell effect
+  // 1) first argument can be either player_talent_t, spell_data_t*, buff_t*, action_t*
+  // 2) if the second argument is player_talent_t, spell_data_t*, buff_t*, or action_t* then only effects that affect it are returned
+  // 3) if the third (or second if the above does not apply) argument is effect subtype, then the type is assumed to be E_APPLY_AURA
+  // further arguments can be given to filter for full type + subtype + property
+  template <typename T, typename U, typename... Ts>
+  static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
+  {
+    const spell_data_t* data = resolve_spell_data<T>( val );
+
+    if constexpr (std::is_same_v<U, effect_subtype_t>)
+      return spell_data_t::find_spelleffect( *data, E_APPLY_AURA, type, std::forward<Ts>( args )... );
+    else if constexpr (std::is_same_v<U, effect_type_t>)
+      return spell_data_t::find_spelleffect( *data, type, std::forward<Ts>( args )... );
     else
-      return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
-  }
-
-  assert( false && "Could not resolve find_effect argument to type/subtype." );
-  return spelleffect_data_t::nil();
-}
-
-template <typename T, typename U, typename... Ts>
-static size_t find_effect_index( T val, U type, Ts&&... args )
-{
-  return find_effect( val, type, std::forward<Ts>( args )... ).index() + 1;
-}
-
-// finds the first effect with a trigger spell
-// argument can be either player_talent_t, spell_data_t*, buff_t*, action_t*
-template <typename T>
-static const spelleffect_data_t& find_trigger( T val )
-{
-  const spell_data_t* data = resolve_spell_data<T>( val );
-
-  for (const auto& eff : data->effects())
-  {
-    switch (eff.type())
     {
-      case E_TRIGGER_SPELL:
-      case E_TRIGGER_SPELL_WITH_VALUE:
-        return eff;
-      case E_APPLY_AURA:
-      case E_APPLY_AREA_AURA_PARTY:
-        switch (eff.subtype())
-        {
-          case A_PROC_TRIGGER_SPELL:
-          case A_PROC_TRIGGER_SPELL_WITH_VALUE:
-          case A_PERIODIC_TRIGGER_SPELL:
-          case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
-            return eff;
-          default:
-            break;
-        }
-        break;
-      default:
-        break;
+      const spell_data_t* affected = resolve_spell_data<U>( type );
+
+      if constexpr (std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_subtype_t>)
+        return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA, std::forward<Ts>( args )... );
+      else if constexpr (std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_type_t>)
+        return spell_data_t::find_spelleffect( *data, *affected, std::forward<Ts>( args )... );
+      else
+        return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
     }
+
+    assert( false && "Could not resolve find_effect argument to type/subtype." );
+    return spelleffect_data_t::nil();
   }
 
-  return spelleffect_data_t::nil();
-}
+  template <typename T, typename U, typename... Ts>
+  static size_t find_effect_index( T val, U type, Ts&&... args )
+  {
+    return find_effect( val, type, std::forward<Ts>( args )... ).index() + 1;
+  }
+
+  // finds the first effect with a trigger spell
+  // argument can be either player_talent_t, spell_data_t*, buff_t*, action_t*
+  template <typename T>
+  static const spelleffect_data_t& find_trigger( T val )
+  {
+    const spell_data_t* data = resolve_spell_data<T>( val );
+
+    for (const auto& eff : data->effects())
+    {
+      switch (eff.type())
+      {
+        case E_TRIGGER_SPELL:
+        case E_TRIGGER_SPELL_WITH_VALUE:
+          return eff;
+        case E_APPLY_AURA:
+        case E_APPLY_AREA_AURA_PARTY:
+          switch (eff.subtype())
+          {
+            case A_PROC_TRIGGER_SPELL:
+            case A_PROC_TRIGGER_SPELL_WITH_VALUE:
+            case A_PERIODIC_TRIGGER_SPELL:
+            case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+              return eff;
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    return spelleffect_data_t::nil();
+  }
 
 using namespace unique_gear;
 
@@ -1465,7 +1465,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Frost
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
                             -> set_default_value_from_effect( 1 )
-                            -> set_period( 0_ms );
+                            -> set_period( 0_ms )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
 
   debuff.piercing_chill   = make_buff( *this, "piercing_chill", p -> spell.piercing_chill_debuff )
                             -> set_default_value_from_effect( 1 );
@@ -1495,11 +1496,14 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value_from_effect( 1 );
 
   // Apocalypse Death Knight Runeforge Debuffs
-  debuff.apocalypse_death = make_buff( *this, "death", p->spell.apocalypse_death_debuff );  // Effect not implemented
+  debuff.apocalypse_death = make_buff( *this, "death", p->spell.apocalypse_death_debuff )  // Effect not implemented
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
   debuff.apocalypse_famine = make_buff( *this, "famine", p -> spell.apocalypse_famine_debuff )
-                            -> set_default_value_from_effect( 1 );
+                            -> set_default_value_from_effect( 1 )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> spell.apocalypse_war_debuff )
-                            -> set_default_value_from_effect( 1 );
+                            -> set_default_value_from_effect( 1 )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
 
 
 }
@@ -3441,12 +3445,12 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
     if ( this -> data().ok() )
     {
-      apply_buff_effects();
+    apply_buff_effects();
 
       if ( this -> type == action_e::ACTION_SPELL || this -> type == action_e::ACTION_ATTACK )
-      {
-        apply_debuff_effects();
-      }
+    {
+      apply_debuff_effects();
+    }
 
       if ( this -> data().flags( spell_attribute::SX_ABILITY ) || this -> trigger_gcd > 0_ms )
       {
@@ -3455,10 +3459,10 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
       if ( p->main_hand_weapon.group() == WEAPON_2H && p->specialization() == DEATH_KNIGHT_FROST 
            && this -> data().affected_by( p->spec.might_of_the_frozen_wastes -> effectN( 2 ) ) )
-      {
-        this->base_dd_multiplier *= 1.0 + ( p->spec.might_of_the_frozen_wastes->effectN( 2 ).percent() );
-      }
+    {
+      this->base_dd_multiplier *= 1.0 + ( p->spec.might_of_the_frozen_wastes->effectN( 2 ).percent() );
     }
+  }
   }
 
   std::string full_name() const
@@ -3504,7 +3508,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_dot_effects( &death_knight_td_t::dots_t::blood_plague, p()->spell.blood_plague, p()->specialization() == DEATH_KNIGHT_UNHOLY ? p()->talent.unholy.morbidity : p()->talent.blood.coagulopathy );
     parse_dot_effects( &death_knight_td_t::dots_t::unholy_blight, p()->spell.unholy_blight_dot, false, p()->talent.unholy.morbidity );
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.apocalypse_war->check(); }, p()->spell.apocalypse_war_debuff );
-    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.razorice->check(); }, p()->spell.razorice_debuff );
+    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.razorice->check(); }, p()->spell.razorice_debuff, p()->talent.unholy_bond );
 
     // Blood
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, p()->spell.tightening_grasp_debuff );
@@ -4845,7 +4849,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
     }
 
-    bos_damage = get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_tick", p );
+    bos_damage = get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_damage", p );
     // Store the ticking cost in bos_damage too so resource_loss can fetch the base ability cost
     // cost() is overriden because the actual cost and resources spent are handled by the buff
     bos_damage -> base_costs[ RESOURCE_RUNIC_POWER ] =  ticking_cost;
@@ -4930,7 +4934,7 @@ struct breath_of_sindragosa_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     base_tick_time = 0_ms; // Handled by the buff
-    add_child( get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_tick", p ) );
+    add_child( get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_damage", p ) );
     track_cd_waste = true;
   }
 
