@@ -5503,6 +5503,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
     death_knight_spell_t::init_finished();
     // Merge stats with the damage object
     damage -> stats = stats;
+    stats -> action_list.push_back( damage );
   }
 
   double cost() const override
@@ -5728,6 +5729,7 @@ struct death_coil_t final : public death_knight_spell_t
 
     impact_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
     impact_action -> stats = stats;
+    stats -> action_list.push_back( impact_action );
 
     if ( p -> talent.unholy.coil_of_devastation.ok() )
       add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
