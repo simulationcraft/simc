@@ -760,6 +760,8 @@ struct player_t : public actor_t
     bool rallied_to_victory_ally_estimate = false;
     // Set the minimum number of allies buffed by Rallied to Victory
     double rallied_to_victory_min_allies = 0;
+    // Set if the haste debuff for ashes of the embersoul can be prevented
+    bool embersoul_debuff_immune = false;
   } dragonflight_opts;
 
 private:

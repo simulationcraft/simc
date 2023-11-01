@@ -6039,7 +6039,7 @@ void ashes_of_the_embersoul( special_effect_t& e )
 
     void expire_override( int /*expiration_stacks*/, timespan_t /*remaining_duration*/ ) override
     {
-      if ( !sim->dragonflight_opts.embersoul_debuff_immune ) {
+      if ( !effect.player->dragonflight_opts.embersoul_debuff_immune ) {
         haste_debuff->trigger();
       }
       recalculate_expiry();

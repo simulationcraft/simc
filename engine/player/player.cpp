@@ -12663,6 +12663,7 @@ void player_t::create_options()
   } ) );
   add_option( opt_bool( "dragonflight.rallied_to_victory_ally_estimate", dragonflight_opts.rallied_to_victory_ally_estimate ) );
   add_option( opt_float( "dragonflight.rallied_to_victory_min_allies", dragonflight_opts.rallied_to_victory_min_allies, 0.0, 4 ) );
+  add_option( opt_bool( "dragonflight.player.embersoul_debuff_immune", dragonflight_opts.embersoul_debuff_immune ) );
 
   // Obsolete options
 
