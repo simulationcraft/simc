@@ -46,7 +46,10 @@
       { return BASE::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects ); }
 
       double composite_target_multiplier( player_t* t ) const override
-      { return BASE::composite_target_multiplier( t ) * get_debuff_effect_value( td( t ) ); }
+      { return BASE::composite_target_multiplier( t ) * get_debuff_effects_value( td( t ) ); }
+
+      void html_customsection( report::sc_html_stream& os ) override
+      { parsed_html_report( os ); }
 */
 
 enum value_type_e
