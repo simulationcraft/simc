@@ -8797,171 +8797,184 @@ namespace monk
       rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
   }
 
+  void monk_t::create_proc_callback( const spell_data_t *effect_driver, bool ( *trigger )( monk_t* player, action_state_t *state ),
+                                     proc_flag PF_OVERRIDE, proc_flag2 PF2_OVERRIDE,
+                                     action_t *proc_action_override )
+  {
+    auto effect = new special_effect_t( this );
+
+    effect->name_str     = effect_driver->name_cstr();
+    effect->spell_id     = effect_driver->id();
+    effect->cooldown_    = effect_driver->internal_cooldown();
+    effect->proc_chance_ = effect_driver->proc_chance();
+    effect->ppm_         = effect_driver->_rppm;
+
+    sim->print_debug( "initializing driver {} {} {}", effect->name_str, effect->spell_id, effect->cooldown_ );
+
+    if ( proc_action_override == nullptr )
+    {
+      // If we didn't define a custom action in initialization then
+      // search action list for the first trigger we have a valid action for
+      for ( auto e : effect_driver->effects() )
+      {
+        for ( auto t : action_list )
+          if ( e.trigger()->ok() && t->id == e.trigger()->id() )
+            proc_action_override = t;
+
+        if ( proc_action_override != nullptr )
+          break;
+      }
+    }
+
+    if ( proc_action_override != nullptr )
+    {
+      effect->name_str         = proc_action_override->name_str;
+      effect->trigger_str      = proc_action_override->name_str;
+      effect->trigger_spell_id = proc_action_override->id;
+      effect->action_disabled  = false;
+      effect->execute_action   = effect->create_action();
+
+      if ( effect->execute_action == nullptr )
+        effect->execute_action = proc_action_override;
+
+      if ( proc_action_override->harmful )
+      {
+        // Translate harmful proc_flags
+        // e.g., the driver for a debuff uses MELEE_ABILITY_TAKEN instead of MELEE_ABILITY
+
+        const std::unordered_map<uint64_t, uint64_t> translation_map = {
+            { PF_MELEE_TAKEN, PF_MELEE },           { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
+            { PF_RANGED_TAKEN, PF_RANGED },         { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
+            { PF_NONE_HEAL_TAKEN, PF_NONE_HEAL },   { PF_NONE_SPELL_TAKEN, PF_NONE_SPELL },
+            { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL }, { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
+            { PF_PERIODIC_TAKEN, PF_PERIODIC },     { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
+        };
+
+        for ( auto t : translation_map )
+        {
+          if ( effect->proc_flags_ & t.first )
+          {
+            effect->proc_flags_ = ( effect->proc_flags_ & ~t.first ) | t.second;
+          }
+        }
+      }
+    }
+
+    // defer configuration of proc flags in case proc_action_override is used
+    effect->proc_flags_  = PF_OVERRIDE ? effect_driver->proc_flags() : PF_OVERRIDE;
+    effect->proc_flags2_ = PF2_OVERRIDE;
+
+    // We still haven't assigned a name, it is most likely a buff
+    // dynamically find buff
+    if ( effect->name_str == "" )
+    {
+      for ( auto e : effect_driver->effects() )
+      {
+        for ( auto t : buff_list )
+        {
+          if ( e.trigger()->ok() && e.trigger()->id() == t->data().id() )
+          {
+            effect->name_str    = t->name_str;
+            effect->custom_buff = t;
+          }
+        }
+
+        if ( effect->create_buff() != nullptr )
+          break;
+      }
+    }
+
+    struct monk_effect_callback : dbc_proc_callback_t
+    {
+      monk_t *p;
+      bool ( *callback_trigger )( monk_t* p, action_state_t *state );
+
+      monk_effect_callback( const special_effect_t &effect, monk_t *p,
+                            bool ( *trigger )( monk_t* p, action_state_t *state ) )
+        : dbc_proc_callback_t( effect.player, effect ), p( p ), callback_trigger( trigger )
+      {
+      }
+
+      void trigger( action_t *a, action_state_t *state ) override
+      {
+        if ( callback_trigger == NULL )
+        {
+          assert( 0 );
+          return;
+        }
+
+        if ( a->internal_id == 0 && state->action->id == effect.trigger_spell_id )
+          return;
+
+        if ( callback_trigger( p, state ) )
+        {
+          dbc_proc_callback_t::trigger( a, state );
+
+          if ( p->sim->debug )
+          {
+            // Debug reporting
+            auto action =
+                range::find_if( p->proc_tracking[ effect.name() ], [ a ]( action_t *it ) { return it->id == a->id; } );
+
+            if ( action == p->proc_tracking[ effect.name() ].end() )
+                p->proc_tracking[ effect.name() ].push_back( a );
+          }
+        }
+      }
+
+      void execute( action_t *a, action_state_t *state ) override
+      {
+        if ( !state->target->is_sleeping() )
+        {
+          // Dynamically find and execute proc tracking
+          auto proc = p->find_proc( effect.trigger()->_name );
+          if ( proc )
+            proc->occur();
+        }
+
+        dbc_proc_callback_t::execute( a, state );
+      }
+    };
+
+    special_effects.push_back( effect );  // Garbage collection
+
+    new monk_effect_callback( *effect, this, trigger );
+  }
+
+  void monk_t::create_proc_callback( const spell_data_t *effect_driver, bool ( *trigger )( monk_t* player, action_state_t *state ),
+                                     action_t *proc_action_override )
+  {
+    create_proc_callback( effect_driver, trigger, static_cast<proc_flag>( 0 ), static_cast<proc_flag2>( 0 ),
+                          proc_action_override );
+  }
+
+  void monk_t::create_proc_callback( const spell_data_t *effect_driver, bool ( *trigger )( monk_t* player, action_state_t *state ),
+                                     proc_flag PF_OVERRIDE, action_t *proc_action_override )
+  {
+    create_proc_callback( effect_driver, trigger, PF_OVERRIDE, static_cast<proc_flag2>( 0 ), proc_action_override );
+  }
+
+  void monk_t::create_proc_callback( const spell_data_t *effect_driver, bool ( *trigger )( monk_t* player, action_state_t *state ),
+                                     proc_flag2 PF2_OVERRIDE, action_t *proc_action_override )
+  {
+    create_proc_callback( effect_driver, trigger, static_cast<proc_flag>( 0 ), PF2_OVERRIDE, proc_action_override );
+  }
+
   // monk_t::init_special_effects ===========================================
 
   void monk_t::init_special_effects()
   {
-    // ======================================
-    // create_proc_callback
-    // ======================================
-
-    auto create_proc_callback = [ this ] ( const spell_data_t *effect_driver, bool ( *trigger )( monk_t *p, action_state_t *state ), action_t *proc_action_override = nullptr )
-    {
-      auto effect = new special_effect_t( this );
-
-      effect->spell_id = effect_driver->id();
-      effect->cooldown_ = effect_driver->internal_cooldown();
-      effect->proc_flags_ = effect_driver->proc_flags();
-      effect->proc_chance_ = effect_driver->proc_chance();
-      effect->ppm_ = effect_driver->_rppm;
-
-
-      if ( proc_action_override == nullptr )
-      {
-        // If we didn't define a custom action in initialization then
-        // search action list for the first trigger we have a valid action for
-        for ( auto e : effect_driver->effects() )
-        {
-          for ( auto t : action_list )
-            if ( e.trigger()->ok() && t->id == e.trigger()->id() )
-              proc_action_override = t;
-
-          if ( proc_action_override != nullptr )
-            break;
-        }
-      }
-
-      if ( proc_action_override != nullptr )
-      {
-        effect->name_str = proc_action_override->name_str;
-        effect->trigger_str = proc_action_override->name_str;
-        effect->trigger_spell_id = proc_action_override->id;
-        effect->action_disabled = false;
-        effect->execute_action = effect->create_action();
-
-        if ( effect->execute_action == nullptr )
-          effect->execute_action = proc_action_override;
-
-        if ( proc_action_override->harmful )
-        {
-          // Translate harmful proc_flags
-          // e.g., the driver for a debuff uses MELEE_ABILITY_TAKEN instead of MELEE_ABILITY
-
-          const std::unordered_map<uint64_t, uint64_t> translation_map =
-          {
-            { PF_MELEE_TAKEN, PF_MELEE },
-            { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
-            { PF_RANGED_TAKEN, PF_RANGED },
-            { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
-            { PF_NONE_HEAL_TAKEN, PF_NONE_HEAL },
-            { PF_NONE_SPELL_TAKEN, PF_NONE_SPELL },
-            { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },
-            { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
-            { PF_PERIODIC_TAKEN, PF_PERIODIC },
-            { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
-          };
-
-          for ( auto t : translation_map )
-          {
-            if ( effect->proc_flags_ & t.first )
-            {
-              effect->proc_flags_ = ( effect->proc_flags_ & ~t.first ) | t.second;
-            }
-          }
-        }
-      }
-
-      // We still haven't assigned a name, it is most likely a buff
-      // dynamically find buff
-      if ( effect->name_str == "" )
-      {
-        for ( auto e : effect_driver->effects() )
-        {
-          for ( auto t : buff_list )
-          {
-            if ( e.trigger()->ok() && e.trigger()->id() == t->data().id() )
-            {
-              effect->name_str = t->name_str;
-              effect->custom_buff = t;
-            }
-          }
-
-          if ( effect->create_buff() != nullptr )
-            break;
-        }
-      }
-
-      struct monk_effect_callback : dbc_proc_callback_t
-      {
-        monk_t *p;
-        bool ( *callback_trigger )( monk_t *p, action_state_t *state );
-
-        monk_effect_callback( const special_effect_t &effect, monk_t *p, bool ( *trigger )( monk_t *p, action_state_t *state ) ) : dbc_proc_callback_t( effect.player, effect )
-          , p( p ), callback_trigger( trigger )
-        {
-        }
-
-        void trigger( action_t *a, action_state_t *state ) override
-        {
-          if ( callback_trigger == NULL )
-          {
-            assert( 0 );
-            return;
-          }
-
-          if ( a->internal_id == 0 && state->action->id == effect.trigger_spell_id )
-            return;
-
-          if ( callback_trigger( p, state ) )
-          {
-            dbc_proc_callback_t::trigger( a, state );
-
-            if ( p->sim->debug )
-            {
-              // Debug reporting
-              auto action = range::find_if( p->proc_tracking[effect.name()], [ a ] ( action_t *it )
-              {
-                return it->id == a->id;
-              } );
-
-              if ( action == p->proc_tracking[effect.name()].end() )
-                p->proc_tracking[effect.name()].push_back( a );
-            }
-          }
-        }
-
-        void execute( action_t *a, action_state_t *state ) override
-        {
-          if ( !state->target->is_sleeping() )
-          {
-            // Dynamically find and execute proc tracking
-            auto proc = p->find_proc( effect.trigger()->_name );
-            if ( proc )
-              proc->occur();
-          }
-
-          dbc_proc_callback_t::execute( a, state );
-        }
-      };
-
-      special_effects.push_back( effect ); // Garbage collection
-
-      new monk_effect_callback( *effect, this, trigger );
-    };
-
-
     // ======================================
     // Resonant Fists Talent
     // ======================================
 
     if ( talent.general.resonant_fists.ok() )
     {
-      create_proc_callback( talent.general.resonant_fists.spell(), [ ] ( monk_t *p, action_state_t *state )
-      {
+      create_proc_callback( talent.general.resonant_fists.spell(), []( monk_t *p, action_state_t *state ) {
         p->active_actions.resonant_fists->set_target( state->target );
 
         return true;
-      } );
+      }, PF2_ALL_HIT );
     }
 
     // ======================================
@@ -8970,8 +8983,7 @@ namespace monk
 
     if ( talent.brewmaster.exploding_keg.ok() )
     {
-      create_proc_callback( talent.brewmaster.exploding_keg.spell(), [ ] ( monk_t *p, action_state_t *state )
-      {
+      create_proc_callback( talent.brewmaster.exploding_keg.spell(), []( monk_t *p, action_state_t *state ) {
         // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
         if ( !p->buff.exploding_keg->up() )
           return false;
@@ -8982,7 +8994,7 @@ namespace monk
         p->active_actions.exploding_keg->set_target( state->target );
 
         return true;
-      } );
+      }, PF2_ALL_HIT );
     }
 
     // ======================================
@@ -8991,12 +9003,14 @@ namespace monk
 
     if ( talent.brewmaster.bountiful_brew.ok() )
     {
-      create_proc_callback( talent.brewmaster.bountiful_brew.spell(), [ ] ( monk_t *p, action_state_t *state )
-      {
-        p->active_actions.bountiful_brew->set_target( state->target );
+      create_proc_callback(
+          talent.brewmaster.bountiful_brew.spell(),
+          []( monk_t *p, action_state_t *state ) {
+            p->active_actions.bountiful_brew->set_target( state->target );
 
-        return true;
-      }, active_actions.bountiful_brew );
+            return true;
+          },
+          active_actions.bountiful_brew );
     }
 
     // ======================================
@@ -9005,16 +9019,13 @@ namespace monk
 
     if ( sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
     {
-      create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ), [ ] ( monk_t *p, action_state_t *state )
-      {
-        return true;
-      } );
+      create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
+                            []( monk_t * /*p*/, action_state_t * /*state*/ ) { return true; } );
     }
 
     // ======================================
 
     player_t::init_special_effects();
-
   }
 
   // monk_t::init_special_effect ============================================

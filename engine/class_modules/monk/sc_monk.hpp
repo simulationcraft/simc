@@ -134,6 +134,16 @@ namespace monk
     // For Debug reporting, used by create_proc_callback in init_special_effects
     std::map< std::string, std::vector< action_t *> > proc_tracking;
 
+    void create_proc_callback( const spell_data_t *effect_driver, bool ( *trigger )( monk_t* player, action_state_t *state ),
+                               proc_flag PF_OVERRIDE, proc_flag2 PF2_OVERRIDE,
+                               action_t *proc_action_override = nullptr );
+    void create_proc_callback( const spell_data_t *effect_driver, bool ( *trigger )( monk_t* player, action_state_t *state ),
+                               action_t *proc_action_override = nullptr );
+    void create_proc_callback( const spell_data_t *effect_driver, bool ( *trigger )( monk_t* player, action_state_t *state ),
+                               proc_flag PF_OVERRIDE, action_t *proc_action_override = nullptr );
+    void create_proc_callback( const spell_data_t *effect_driver, bool ( *trigger )( monk_t* player, action_state_t *state ),
+                               proc_flag2 PF2_OVERRIDE, action_t *proc_action_override = nullptr );
+
     struct sample_data_t
     {
       sc_timeline_t stagger_effective_damage_timeline;
