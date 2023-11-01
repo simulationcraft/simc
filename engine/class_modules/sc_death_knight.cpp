@@ -1028,6 +1028,7 @@ public:
     const spell_data_t* soul_reaper_execute;
     const spell_data_t* sanguination_cooldown;
     const spell_data_t* spellwarding_absorb;
+    const spell_data_t* rune_of_hysteria_buff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -1464,8 +1465,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Frost
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
                             -> set_default_value_from_effect( 1 )
-                            -> set_period( 0_ms )
-                            -> apply_affecting_aura( p -> talent.unholy_bond );
+                            -> set_period( 0_ms );
 
   debuff.piercing_chill   = make_buff( *this, "piercing_chill", p -> spell.piercing_chill_debuff )
                             -> set_default_value_from_effect( 1 );
@@ -1495,14 +1495,11 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value_from_effect( 1 );
 
   // Apocalypse Death Knight Runeforge Debuffs
-  debuff.apocalypse_death  = make_buff( *this, "death", p -> spell.apocalypse_death_debuff )  // Effect not implemented
-                            -> apply_affecting_aura( p -> talent.unholy_bond );
+  debuff.apocalypse_death = make_buff( *this, "death", p->spell.apocalypse_death_debuff );  // Effect not implemented
   debuff.apocalypse_famine = make_buff( *this, "famine", p -> spell.apocalypse_famine_debuff )
-                            -> set_default_value_from_effect( 1 )
-                            -> apply_affecting_aura( p -> talent.unholy_bond );
+                            -> set_default_value_from_effect( 1 );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> spell.apocalypse_war_debuff )
-                            -> set_default_value_from_effect( 1 )
-                            -> apply_affecting_aura( p -> talent.unholy_bond );
+                            -> set_default_value_from_effect( 1 );
 
 
 }
@@ -3446,7 +3443,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     {
       apply_buff_effects();
 
-      if ( this -> type == action_e::ACTION_SPELL || action_base_t::type == action_e::ACTION_ATTACK )
+      if ( this -> type == action_e::ACTION_SPELL || this -> type == action_e::ACTION_ATTACK )
       {
         apply_debuff_effects();
       }
@@ -3491,7 +3488,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
 
     // Frost
-    parse_buff_effects( p()->buffs.chilling_rage, true );
+    parse_buff_effects( p()->buffs.chilling_rage );
 
     // Unholy
     parse_buff_effects( p()->buffs.amplify_damage );
@@ -3723,6 +3720,11 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   void update_ready( timespan_t cd ) override
   {
     Base::update_ready( cd );
+  }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    parsed_html_report( os );
   }
 };
 
@@ -8633,9 +8635,7 @@ void runeforge::hysteria( special_effect_t& effect )
   if ( ! p -> runeforge.rune_of_hysteria )
   {
     p -> runeforge.rune_of_hysteria = true;
-    p -> buffs.rune_of_hysteria = make_buff( p, "rune_of_hysteria", effect.driver() -> effectN( 1 ).trigger() )
-      -> set_default_value_from_effect( 1 )
-      -> apply_affecting_aura( p -> talent.unholy_bond );
+    
   }
 
   // The RP cap increase stacks
@@ -10046,6 +10046,7 @@ void death_knight_t::init_spells()
   spell.apocalypse_war_debuff        = find_spell( 327096 );
   spell.apocalypse_pestilence_damage = find_spell( 327093 );
   spell.razorice_damage              = find_spell( 50401 );
+  spell.rune_of_hysteria_buff        = find_spell( 326918 );
   spell.death_and_decay_damage       = find_spell( 52212 );
   spell.death_coil_damage            = find_spell( 47632 );
   spell.death_strike_heal            = find_spell( 45470 );
@@ -10297,6 +10298,10 @@ void death_knight_t::create_buffs()
   buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff)
         -> set_default_value_from_effect( 1 )
         -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buffs.rune_of_hysteria = make_buff( this, "rune_of_hysteria", spell.rune_of_hysteria_buff )
+        -> set_default_value_from_effect( 1 )
+        -> apply_affecting_aura( talent.unholy_bond );
 
   buffs.abomination_limb = new abomination_limb_buff_t( this );
 
@@ -11417,7 +11422,7 @@ class death_knight_report_t : public player_report_extension_t
 {
 public:
   death_knight_report_t( death_knight_t& player ) : p( player )
-  { }
+  {}
 
   void html_rune_waste( report::sc_html_stream& os ) const
   {
