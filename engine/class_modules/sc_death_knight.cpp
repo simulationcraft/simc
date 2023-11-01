@@ -3408,7 +3408,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     // Masteries
     bool frozen_heart, frozen_heart_periodic;
     bool dreadblade, dreadblade_periodic;
-
     bool lingering_chill;
   } affected_by;
 
@@ -3446,7 +3445,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     this -> affected_by.frozen_heart_periodic = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) );
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
     this -> affected_by.dreadblade_periodic = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 2 ) );
-
     this -> affected_by.lingering_chill = this ->  data().affected_by( p -> spell.lingering_chill -> effectN( 1 ) );
 
     if ( this -> data().ok() )
@@ -3496,7 +3494,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     // Blood
     parse_buff_effects( p()->buffs.sanguine_ground );
     parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
-    parse_passive_effects( p()->talent.merciless_strikes );
 
     // Frost
     parse_buff_effects( p()->buffs.chilling_rage );
@@ -4333,9 +4330,9 @@ struct abomination_limb_damage_t final : public death_knight_spell_t
 struct abomination_limb_buff_t final : public buff_t
 {
   abomination_limb_buff_t( death_knight_t* p )
-    : buff_t( p, "abomination_limb", p->talent.abomination_limb )
+    : buff_t( p, "abomination_limb", p->talent.abomination_limb ),
+      damage( p->active_spells.abomination_limb_damage )
   {
-    damage = p->active_spells.abomination_limb_damage;
     cooldown->duration = 0_ms;  // Controlled by the action
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) 
     { 
@@ -4344,7 +4341,7 @@ struct abomination_limb_buff_t final : public buff_t
     set_partial_tick( true );
   }
 private:
-    action_t* damage;  // (AOE) damage that ticks every second
+  action_t*& damage;  // (AOE) damage that ticks every second
 };
 
 struct abomination_limb_t : public death_knight_spell_t
@@ -11267,6 +11264,7 @@ double death_knight_t::composite_melee_speed() const
   return haste;
 }
 
+// death_knight_t::composite_melee_crit_chance() ============================
 double death_knight_t::composite_melee_crit_chance() const
 {
   double c = player_t::composite_melee_crit_chance();
@@ -11276,6 +11274,7 @@ double death_knight_t::composite_melee_crit_chance() const
   return c;
 }
 
+// death_knight_t::composite_spell_crit_chance() ============================
 double death_knight_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
