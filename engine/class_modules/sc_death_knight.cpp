@@ -3070,10 +3070,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       // DRW is still using an old spell called "Blood Strike" for the 5 additional RP generation on Heart Strike
       blood_strike_rp_generation( dk() -> pet_spell.drw_heart_strike_rp_gen -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
     {
-      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
-      {
-        this -> base_multiplier *= 1.0 + dk() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN( 1 ).percent();
-      }
     }
 
     int n_targets() const override
