@@ -42,6 +42,9 @@
       timespan_t composite_dot_duration( const action_state_t* s ) const override
       { return BASE::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects ); }
 
+      timespan_t tick_time( const action_state_t* s ) const override
+      { return std::max( 1_ms, BASE::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects ) ); }
+
       double recharge_multiplier( const cooldown_t& cd ) const override
       { return BASE::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects ); }
 
@@ -104,6 +107,7 @@ public:
   std::vector<buff_effect_t> da_multiplier_buffeffects;
   std::vector<buff_effect_t> execute_time_buffeffects;
   std::vector<buff_effect_t> dot_duration_buffeffects;
+  std::vector<buff_effect_t> tick_time_buffeffects;
   std::vector<buff_effect_t> recharge_multiplier_buffeffects;
   std::vector<buff_effect_t> cost_buffeffects;
   std::vector<buff_effect_t> flat_cost_buffeffects;
@@ -261,6 +265,10 @@ public:
         case P_CAST_TIME:
           execute_time_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, eff );
           debug_message( "cast time" );
+          break;
+        case P_TICK_TIME:
+          tick_time_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, eff );
+          debug_message( "tick time" );
           break;
         case P_COOLDOWN:
           recharge_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, eff );
@@ -590,13 +598,14 @@ public:
     auto da_mul_c = da_multiplier_buffeffects.size();
     auto exec_time_c = execute_time_buffeffects.size();
     auto dot_dur_c = dot_duration_buffeffects.size();
+    auto tick_time_c = tick_time_buffeffects.size();
     auto recharge_c = recharge_multiplier_buffeffects.size();
     auto cost_c = cost_buffeffects.size();
     auto flat_cost_c = flat_cost_buffeffects.size();
     auto crit_c = crit_chance_buffeffects.size();
     auto tgt_mul_c = target_multiplier_dotdebuffs.size();
 
-    if ( ta_mul_c + da_mul_c + exec_time_c + dot_dur_c + recharge_c + cost_c + flat_cost_c + crit_c + tgt_mul_c == 0 )
+    if ( ta_mul_c + da_mul_c + exec_time_c + dot_dur_c + tick_time_c + recharge_c + cost_c + flat_cost_c + crit_c + tgt_mul_c == 0 )
       return;
 
     os << "<div>\n"
@@ -618,6 +627,7 @@ public:
     print_parsed_type( os, crit_chance_buffeffects, crit_c, "Critical Strike Chance" );
     print_parsed_type( os, execute_time_buffeffects, exec_time_c, "Execute Time" );
     print_parsed_type( os, dot_duration_buffeffects, dot_dur_c, "Dot Duration" );
+    print_parsed_type( os, tick_time_buffeffects, tick_time_c, "Tick Time" );
     print_parsed_type( os, recharge_multiplier_buffeffects, recharge_c, "Recharge Multiplier" );
     print_parsed_type( os, flat_cost_buffeffects, flat_cost_c, "Flat Cost" );
     print_parsed_type( os, cost_buffeffects, cost_c, "Percent Cost" );
