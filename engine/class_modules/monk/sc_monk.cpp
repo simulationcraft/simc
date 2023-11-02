@@ -8803,7 +8803,6 @@ namespace monk
   {
     auto effect = new special_effect_t( this );
 
-    effect->name_str     = effect_driver->name_cstr();
     effect->spell_id     = effect_driver->id();
     effect->cooldown_    = effect_driver->internal_cooldown();
     effect->proc_chance_ = effect_driver->proc_chance();
