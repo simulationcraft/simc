@@ -8803,7 +8803,6 @@ namespace monk
   {
     auto effect = new special_effect_t( this );
 
-    effect->name_str     = effect_driver->name_cstr();
     effect->spell_id     = effect_driver->id();
     effect->cooldown_    = effect_driver->internal_cooldown();
     effect->proc_chance_ = effect_driver->proc_chance();
@@ -8861,7 +8860,7 @@ namespace monk
     }
 
     // defer configuration of proc flags in case proc_action_override is used
-    effect->proc_flags_  = PF_OVERRIDE ? effect_driver->proc_flags() : PF_OVERRIDE;
+    effect->proc_flags_  = PF_OVERRIDE ? PF_OVERRIDE : effect_driver->proc_flags();
     effect->proc_flags2_ = PF2_OVERRIDE;
 
     // We still haven't assigned a name, it is most likely a buff
