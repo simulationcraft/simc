@@ -1119,7 +1119,6 @@ public:
     const spell_data_t* unholy_t30_2pc_stacking;
     const spell_data_t* unholy_t30_2pc_mastery;
     const spell_data_t* unholy_t30_4pc_mastery;
-    const spell_data_t* unholy_t30_2pc_values;
     const spell_data_t* unholy_t30_4pc_values;
 
     // T29 Blood
@@ -3491,6 +3490,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_buff_effects( p()->buffs.sanguine_ground );
     parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
     parse_buff_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
+    parse_passive_effects( p()->sets->set( DEATH_KNIGHT_BLOOD, T30, B2 ) );
     parse_passive_effects( p()->talent.blood.improved_heart_strike );
 
     // Frost
@@ -3499,7 +3499,9 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_passive_effects( p()->talent.frost.improved_frost_strike );
     parse_passive_effects( p()->talent.frost.improved_obliterate );
     parse_passive_effects( p()->talent.frost.frigid_executioner );
+    parse_passive_effects( p()->talent.frost.biting_cold );
     parse_passive_effects( p()->talent.frost.absolute_zero );
+    parse_passive_effects( p()->sets->set( DEATH_KNIGHT_FROST, T30, B2 ) );
     parse_passive_effects( p()->mastery.frozen_heart );
 
     // Unholy
@@ -3508,6 +3510,9 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_buff_effects( p()->buffs.unholy_assault );
     parse_passive_effects( p()->talent.unholy.improved_festering_strike );
     parse_passive_effects( p()->talent.unholy.improved_death_coil );
+    parse_passive_effects( p()->talent.unholy.ebon_fever );
+    parse_passive_effects( p()->talent.unholy.bursting_sores );
+    parse_passive_effects( p()->sets->set( DEATH_KNIGHT_UNHOLY, T30, B2 ) );
     parse_passive_effects( p()->mastery.dreadblade );
   }
 
@@ -3952,11 +3957,6 @@ struct virulent_plague_t final : public death_knight_disease_t
       ff( get_action<frost_fever_t>( "frost_fever", p, true ) ),
       bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
   {
-    // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
-    // Ebon fever does the same damage, in half the time, with tick rate doubled.  So you get the same number of ticks
-    // Tested Oct 21 2020 in beta build 36294
-    dot_duration *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 3 ).percent();
     base_tick_time *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 1 ).percent();
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
@@ -4594,11 +4594,6 @@ struct blood_boil_t final : public death_knight_spell_t
     cooldown -> hasted = true;
     track_cd_waste = true;
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
-    
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
-    {
-      base_multiplier *= 1.0 + p -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
-    }
   }
 
   void execute() override
@@ -5684,11 +5679,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
   {
     background = dual = true;
 
-    if ( p -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
-    {
-      base_multiplier *= 1.0 + p -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
-    }
-
     if ( p -> talent.unholy.coil_of_devastation.ok() )
     {
       coil_of_devastation = get_action<coil_of_devastation_t>( "coil_of_devastation", p );
@@ -6133,11 +6123,6 @@ struct epidemic_damage_main_t final : public death_knight_spell_t
       cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
     }
 
-    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
-    {
-      cam *= 1.0 + p() -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
-    }
-
     return cam;
   }
 };
@@ -6180,10 +6165,6 @@ struct epidemic_damage_aoe_t final : public death_knight_spell_t
       cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
     }
 
-    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
-    {
-      cam *= 1.0 + p() -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
-    }
     return cam;
   }
 };
@@ -6325,8 +6306,6 @@ struct festering_wound_t final : public death_knight_spell_t
     death_knight_spell_t( "festering_wound", p, p -> spell.festering_wound_damage )
   {
     background = true;
-
-    base_multiplier *= 1.0 + p -> talent.unholy.bursting_sores -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -6761,10 +6740,6 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     aoe = 2;
     weapon = &( p -> main_hand_weapon );
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
-    {
-      base_multiplier *= 1.0 + p -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
-    }
   }
 
   int n_targets() const override
@@ -6921,18 +6896,6 @@ struct howling_blast_t final : public death_knight_spell_t
     if ( p() -> buffs.rime -> check() )
     {
       m *= 1.0 + p() -> buffs.rime -> data().effectN( 3 ).percent();
-    }
-
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) )
-    {
-      m *= 1.0 + p() -> spell.frost_t30_2pc -> effectN( 1 ).percent();
     }
 
     return m;
@@ -7556,7 +7519,6 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
     if ( p -> talent.frost.biting_cold.ok() )
     {
       biting_cold_target_threshold = p -> talent.frost.biting_cold -> effectN ( 1 ).base_value();
-      base_multiplier *= 1.0 + p -> talent.frost.biting_cold -> effectN( 2 ).percent();
     }
   }
 
@@ -10170,7 +10132,6 @@ void death_knight_t::init_spells()
   spell.unholy_t30_2pc_stacking    = find_spell( 408375 );
   spell.unholy_t30_2pc_mastery     = find_spell( 408376 );
   spell.unholy_t30_4pc_mastery     = find_spell( 408377 );
-  spell.unholy_t30_2pc_values      = find_spell( 405503 );
   spell.unholy_t30_4pc_values      = find_spell( 405504 );
 
   // Pet abilities
