@@ -1119,7 +1119,6 @@ public:
     const spell_data_t* unholy_t30_2pc_stacking;
     const spell_data_t* unholy_t30_2pc_mastery;
     const spell_data_t* unholy_t30_4pc_mastery;
-    const spell_data_t* unholy_t30_4pc_values;
 
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
