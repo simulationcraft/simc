@@ -10625,17 +10625,17 @@ void death_knight_t::create_buffs()
 
   buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-        -> set_default_value( spell.defile_buff -> effectN( 1 ).percent() / 1.8 );
+        -> set_default_value( spell.defile_buff -> effectN( 1 ).base_value() / 1.8 );
 
   buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
         -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.unholy_t30_4pc_mastery = make_buff( this, "doom_dealer", spell.unholy_t30_4pc_mastery )
-        -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() / 1.8 )
+        -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).base_value() / 1.8 )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-        -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() / 1.8 )
+        -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).base_value() / 1.8 )
         -> set_max_stack( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) ? spell.unholy_t30_2pc_stacking -> max_stacks() : 1 )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
