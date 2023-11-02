@@ -6037,7 +6037,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Affecting spells : Thrill of the Hunt (257944 effect#2)
+Affecting spells : Thrill of the Hunt (257944 effect#2), Savagery (424557 effect#2)
 Triggered by     : Thrill of the Hunt (257944)
 Family Flags     : 126
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -11366,7 +11366,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Thrill of the Hunt (257944 effect#2)
+Affecting spells : Thrill of the Hunt (257944 effect#2), Savagery (424557 effect#2)
 Family Flags     : 126
 Attributes       : ....x..x ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -17365,8 +17365,9 @@ Effects          :
                    Family Flags: 43
 #2 (id=1101620)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Barbed Shot (217200), Frenzy (272790)
-                   Family Flags: 78
+                   Affected Spells: Barbed Shot (217200), Thrill of the Hunt (257946), Frenzy (272790), Thrill of the Hunt (312365)
+                   Family Flags: 78, 126
+Hotfixed         : Affects Spells
 Description      : Kill Command damage is increased by $s1%. Barbed Shot lasts ${$m2/1000}.1 sec longer.
 
 Name             : Master Handler (id=424558) [Spell Family (9), Passive] 

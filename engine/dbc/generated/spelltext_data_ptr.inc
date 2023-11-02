@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.0.51851
+// Spell text, wow build 10.2.0.51973
 static const std::array<spelltext_data_t, 20503> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -20505,12 +20505,12 @@ static const std::array<spelltext_data_t, 20503> __ptr_spelltext_data { {
   { 431172, "Every $s1 Focus you spend has a ${$m2/10}.1% chance to reset the cooldown of Rapid Fire and cause your next Rapid Fire to shoot $431156s1% additional shots during its channel.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.51851
+// spelltext hotfix entries, wow build 10.2.0.51973
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
   {  426321,  0, "@$spelldesc426262", "$@spelldesc426262" },
 } };
 
-// Spell description variables, wow build 10.2.0.51851
+// Spell description variables, wow build 10.2.0.51973
 static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20925,7 +20925,7 @@ static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { 
   {  427688, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${((0.690899398201283*($SP*1.25)*$<demoMastery>*(1+$@versadmg))*1.18)\r\n}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.51851
+// spelldesc_vars hotfix entries, wow build 10.2.0.51973
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
