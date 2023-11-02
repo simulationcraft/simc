@@ -8098,6 +8098,7 @@ struct antimagic_shell_buff_t final : public buff_t
     remaining_absorb( 0.0 ), damage( 0 )
   {
     cooldown -> duration = 0_ms;
+    apply_affecting_aura( p->talent.antimagic_barrier );
 
     if( p -> options.ams_absorb_percent > 0 )
     {
@@ -8176,7 +8177,6 @@ struct antimagic_shell_t final : public death_knight_spell_t
     death_knight_spell_t( "antimagic_shell", p, p -> talent.antimagic_shell ),
     min_interval( 60 ), interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( p -> options.ams_absorb_percent )
   {
-    cooldown -> duration += p -> talent.antimagic_barrier -> effectN( 1 ).time_value();
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
     target = p;
