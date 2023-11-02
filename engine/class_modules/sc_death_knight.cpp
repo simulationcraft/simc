@@ -1344,6 +1344,7 @@ public:
   double    composite_spell_crit_chance() const override;
   double    composite_crit_avoidance() const override;
   double    composite_mastery_value() const override;
+  double    composite_mastery() const override;
   void      combat_begin() override;
   void      activate() override;
   void      reset() override;
@@ -3405,9 +3406,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   struct affected_by_t
   {
-    // Masteries
-    bool frozen_heart, frozen_heart_periodic;
-    bool dreadblade, dreadblade_periodic;
     bool lingering_chill;
   } affected_by;
 
@@ -3440,11 +3438,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
       this -> energize_resource = RESOURCE_NONE;
     }
 
-    // Inits to false if the spec doesn't have that mastery
-    this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
-    this -> affected_by.frozen_heart_periodic = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) );
-    this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
-    this -> affected_by.dreadblade_periodic = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 2 ) );
+
     this -> affected_by.lingering_chill = this ->  data().affected_by( p -> spell.lingering_chill -> effectN( 1 ) );
 
     if ( this -> data().ok() )
@@ -3494,14 +3488,23 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     // Blood
     parse_buff_effects( p()->buffs.sanguine_ground );
     parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
+    parse_passive_effects( p()->talent.blood.improved_heart_strike );
 
     // Frost
     parse_buff_effects( p()->buffs.chilling_rage );
+    parse_buff_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
+    parse_passive_effects( p()->talent.frost.improved_frost_strike );
+    parse_passive_effects( p()->talent.frost.improved_obliterate );
+    parse_passive_effects( p()->talent.frost.frigid_executioner );
+    parse_passive_effects( p()->mastery.frozen_heart );
 
     // Unholy
     parse_buff_effects( p()->buffs.amplify_damage );
     parse_buff_effects( p()->buffs.ghoulish_infusion );
     parse_buff_effects( p()->buffs.unholy_assault );
+    parse_passive_effects( p()->talent.unholy.improved_festering_strike );
+    parse_passive_effects( p()->talent.unholy.improved_death_coil );
+    parse_passive_effects( p()->mastery.dreadblade );
   }
 
   void apply_debuff_effects()
@@ -3564,11 +3567,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   {
     double m = action_base_t::composite_da_multiplier( state );
 
-    if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
-
     m *= get_buff_effects_value( da_multiplier_buffeffects );
 
     return m;
@@ -3577,11 +3575,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = action_base_t::composite_ta_multiplier( state );
-
-    if ( this -> affected_by.frozen_heart_periodic || this -> affected_by.dreadblade_periodic )
-    {
-      m *= 1.0 + p() -> cache.mastery_value();
-    }
 
     m *= get_buff_effects_value( ta_multiplier_buffeffects );
 
@@ -3624,7 +3617,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     return m;
   }
 
-  double recharge_multiplier( const cooldown_t& cd )
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
     double m = action_base_t::recharge_multiplier( cd );
 
@@ -3640,6 +3633,17 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     m *= get_debuff_effects_value( get_td( target ) );
 
     return m;
+  }
+
+  double cost() const override
+  {
+    double c = action_base_t::cost();
+
+    // c *= get_buff_effects_value( flat_cost_buffeffects, true, false );
+    
+    c *= get_buff_effects_value( cost_buffeffects, false, false );
+
+    return std::max( 0.0, c );
   }
 
   double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
@@ -3718,7 +3722,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   void execute() override
   {
-    Base::execute();
+    action_base_t::execute();
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
     if ( p() -> talent.blood_draw.ok() && p() -> specialization() != DEATH_KNIGHT_BLOOD && p() -> active_spells.blood_draw -> ready() && p() -> in_combat)
@@ -3727,7 +3731,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   void update_ready( timespan_t cd ) override
   {
-    Base::update_ready( cd );
+    action_base_t::update_ready( cd );
   }
 
   void html_customsection( report::sc_html_stream& os ) override
@@ -5676,8 +5680,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
   {
     background = dual = true;
 
-    base_multiplier *= 1.0 + p -> talent.unholy.improved_death_coil -> effectN( 1 ).percent();
-
     if ( p -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
       base_multiplier *= 1.0 + p -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
@@ -6323,7 +6325,6 @@ struct festering_wound_t final : public death_knight_spell_t
     background = true;
 
     base_multiplier *= 1.0 + p -> talent.unholy.bursting_sores -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -6350,8 +6351,6 @@ struct festering_strike_t final : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "festering_strike", p, p -> talent.unholy.festering_strike )
   {
     parse_options( options_str );
-
-    base_multiplier *= 1.0 + p -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -6541,7 +6540,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     background = special = true;
     weapon = w;
     triggers_icecap = true;
-    base_multiplier *= 1.0 + p -> talent.frost.improved_frost_strike -> effectN( 1 ).percent();
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -6765,7 +6763,6 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     parse_options( options_str );
     aoe = 2;
     weapon = &( p -> main_hand_weapon );
-    base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
     {
@@ -6936,11 +6933,6 @@ struct howling_blast_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::action_multiplier();
 
-    if ( p() -> buffs.rime -> up() )
-    {
-      m *= 1.0 + p()->buffs.rime->data().effectN( 2 ).percent() + p() -> talent.frost.improved_rime -> effectN( 1 ).percent();
-    }
-
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) )
     {
       m *= 1.0 + p() -> spell.frost_t30_2pc -> effectN( 1 ).percent();
@@ -6959,16 +6951,6 @@ struct howling_blast_t final : public death_knight_spell_t
     }
 
     return m;
-  }
-
-  double cost() const override
-  {
-    if ( p() -> buffs.rime -> check() )
-    {
-      return 0;
-    }
-
-    return death_knight_spell_t::cost();
   }
 
   void schedule_execute( action_state_t* state ) override
@@ -7116,9 +7098,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     may_miss = false;
     weapon = w;
     triggers_icecap = true;
-
-    base_multiplier *= 1.0 + p -> talent.frost.frigid_executioner -> effectN ( 2 ).percent();
-    base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
           
     if ( p -> spec.might_of_the_frozen_wastes -> ok() && p -> main_hand_weapon.group() == WEAPON_2H )
     {
@@ -10645,20 +10624,20 @@ void death_knight_t::create_buffs()
   buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
   buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
-        -> add_invalidate( CACHE_MASTERY )
-        -> set_default_value( spell.defile_buff -> effectN( 1 ).percent() );
+        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+        -> set_default_value( spell.defile_buff -> effectN( 1 ).percent() / 1.8 );
 
   buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
         -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.unholy_t30_4pc_mastery = make_buff( this, "doom_dealer", spell.unholy_t30_4pc_mastery )
-        -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
-        -> add_invalidate( CACHE_MASTERY );
+        -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() / 1.8 )
+        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-        -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
+        -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() / 1.8 )
         -> set_max_stack( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) ? spell.unholy_t30_2pc_stacking -> max_stacks() : 1 )
-        -> add_invalidate( CACHE_MASTERY );
+        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buffs.amplify_damage = make_buff( this, "amplify_damage", pet_spell.amplify_damage )
         -> set_default_value( pet_spell.amplify_damage -> effectN( 1 ).percent() );
@@ -11306,14 +11285,13 @@ double death_knight_t::composite_mastery_value() const
 {
   double m = player_t::composite_mastery_value();
 
-  if ( specialization() == DEATH_KNIGHT_UNHOLY )
-  {
-    m += buffs.unholy_t30_2pc_mastery -> stack_value();
+  return m;
+}
 
-    m += buffs.unholy_t30_4pc_mastery -> stack_value();
-
-    m += buffs.defile_buff -> check_stack_value();
-  }
+// death_knight_t::composite_mastery ========================================
+double death_knight_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
 
   return m;
 }
