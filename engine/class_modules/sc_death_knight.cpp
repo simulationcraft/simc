@@ -3438,7 +3438,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
       this -> energize_resource = RESOURCE_NONE;
     }
 
-
     this -> affected_by.lingering_chill = this ->  data().affected_by( p -> spell.lingering_chill -> effectN( 1 ) );
 
     if ( this -> data().ok() )
@@ -3485,9 +3484,13 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   void apply_buff_effects()
   {
+    // Shared
+    parse_passive_effects( p()->talent.antimagic_barrier );
+
     // Blood
     parse_buff_effects( p()->buffs.sanguine_ground );
     parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
+    parse_buff_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
     parse_passive_effects( p()->talent.blood.improved_heart_strike );
 
     // Frost
@@ -3496,6 +3499,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_passive_effects( p()->talent.frost.improved_frost_strike );
     parse_passive_effects( p()->talent.frost.improved_obliterate );
     parse_passive_effects( p()->talent.frost.frigid_executioner );
+    parse_passive_effects( p()->talent.frost.absolute_zero );
     parse_passive_effects( p()->mastery.frozen_heart );
 
     // Unholy
@@ -3639,7 +3643,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   {
     double c = action_base_t::cost();
 
-    // c *= get_buff_effects_value( flat_cost_buffeffects, true, false );
+    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
     
     c *= get_buff_effects_value( cost_buffeffects, false, false );
 
@@ -6000,8 +6004,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
     m *= 1.0 + p() -> buffs.hemostasis -> stack_value();
 
-    m *= 1.0 + p() -> buffs.heartrend -> stack_value();
-
     // Death Strike is affected by bloodshot, even for the applying DS.  This is because in game, blood shield gets applied before DS damage is calculated.
     // So we apply the modifier here, but only if bloodshield is not up, to avoid double dip by the base multipler when blood shield is up and bloodshot is talented.
     if ( p() -> talent.blood.bloodshot.ok() && !p() -> buffs.blood_shield -> up() )
@@ -6520,11 +6522,6 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
     parse_options( options_str );
     execute_action = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury", p );
     track_cd_waste = true;
-
-    if ( p -> talent.frost.absolute_zero -> ok() )
-    {
-      cooldown -> duration *= 1.0 + p -> talent.frost.absolute_zero->effectN( 1 ).percent();
-    }
     // Stun is NYI
   }
 };
@@ -8124,10 +8121,6 @@ struct antimagic_shell_buff_t final : public buff_t
         }
       } );
     }
-    
-
-    // Assuming AMB's 30% increase is applied after Runic Barrier
-    base_buff_duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
