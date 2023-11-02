@@ -3497,6 +3497,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_buff_effects( p()->buffs.ghoulish_infusion );
     parse_buff_effects( p()->buffs.unholy_assault );
     parse_buff_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
+    parse_buff_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
     parse_passive_effects( p()->mastery.dreadblade );
   }
 
@@ -3604,6 +3605,15 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     m *= get_buff_effects_value( dot_duration_buffeffects );
 
     return m;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t m = action_base_t::tick_time( state );
+
+    m *= get_buff_effects_value( tick_time_buffeffects );
+
+    return std::max( 1_ms, m );
   }
 
   timespan_t cooldown_duration() const override
@@ -3800,18 +3810,6 @@ struct death_knight_disease_t : public death_knight_spell_t
     {
       get_td( d->target ) -> debuff.brittle -> trigger();
     }
-  }
-
-  timespan_t tick_time ( const action_state_t* s ) const override
-  {
-    auto base_tick_time = death_knight_spell_t::tick_time( s );
-
-    if ( p() -> specialization()  == DEATH_KNIGHT_UNHOLY && p() -> buffs.plaguebringer -> up() )
-    { 
-      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
-    }
-
-    return base_tick_time;
   }
 };
 
