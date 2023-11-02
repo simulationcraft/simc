@@ -814,6 +814,12 @@ namespace monk
         return dd;
       }
 
+      timespan_t tick_time( const action_state_t* s ) const override
+      {
+        timespan_t tt = ab::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects );
+        return tt;
+      }
+
       double recharge_multiplier( const cooldown_t &cd ) const override
       {
         double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
