@@ -3488,6 +3488,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_buff_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
     parse_buff_effects( p()->buffs.hemostasis );
     parse_buff_effects( p()->buffs.crimson_scourge );
+    parse_buff_effects( p()->buffs.ossuary );
 
     // Frost
     parse_buff_effects( p()->buffs.chilling_rage );
@@ -3844,11 +3845,8 @@ struct blood_plague_t final : public death_knight_disease_t
     base_tick_time *= 1.0 + p -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
     heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
 
-    // The "reduced effectiveness" mentioned in the tooltip is handled server side
-    // Value calculated from testing, may change without notice
     if ( superstrain )
     {
-      base_multiplier *= 1 + (p -> talent.unholy.superstrain -> effectN( 2 ).percent());
       // It looks like the legendary modifier from superstrain is still being applied to blood plague, but not frost fever.
       if ( p -> bugs )
         base_multiplier *= 0.75;
@@ -3902,11 +3900,6 @@ struct frost_fever_t final : public death_knight_disease_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
-
-    // The "reduced effectiveness" mentioned in the tooltip is handled server side
-    // Value calculated from testing, may change without notice
-    if ( superstrain )
-      base_multiplier *= 1.0 + ( p -> talent.unholy.superstrain -> effectN( 2 ).percent() );
   }
 
   void tick( dot_t* d ) override
@@ -4064,7 +4057,6 @@ struct razorice_attack_t final : public death_knight_melee_attack_t
 
     // Note, razorice always attacks with the main hand weapon, regardless of which hand triggers it
     weapon = &( player -> main_hand_weapon );
-    base_dd_multiplier *= 1.0 + player -> talent.unholy_bond -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -4386,12 +4378,6 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     rune_generation( as<int>( p -> spell.apocalypse_rune_gen -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
-
-    if ( p->talent.unholy.army_of_the_damned.ok() )
-    {
-      cooldown -> duration += p -> talent.unholy.army_of_the_damned->effectN( 3 ).time_value();
-    }
-
     track_cd_waste = true;
   }
 
@@ -5025,9 +5011,7 @@ struct chill_streak_damage_t final : public death_knight_spell_t
   {
     background = proc = true;
     max_hits = as<int>( p -> talent.frost.chill_streak -> effectN( 1 ).base_value() );
-    // Contained in this spells duration, cant convert from timespan_t to double
-    // Manually setting for now to accurately scale the duration of the T31 2pc. 
-    travel_delay = 0.3; 
+    travel_delay = p->spell.chill_streak_damage->duration().total_seconds(); 
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) )
     {
       max_hits += as<int>( p -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value() );
@@ -5564,8 +5548,6 @@ struct death_and_decay_t final : public death_and_decay_base_t
 
     parse_options( options_str );
 
-    if ( p->talent.deaths_echo.ok() )
-      cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
     // Disable when Defile or Death's Due are taken
     if ( p -> talent.unholy.defile.ok() )
       background = true;
@@ -5580,8 +5562,6 @@ struct defile_t final : public death_and_decay_base_t
     damage = get_action<defile_damage_t>( "defile_damage", p );
 
     parse_options( options_str );
-    if ( p->talent.deaths_echo.ok() )
-      cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -5700,7 +5680,7 @@ struct death_coil_t final : public death_knight_spell_t
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.unholy.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 	
-	if ( p() -> buffs.dark_transformation -> up() && p() -> talent.unholy.eternal_agony.ok() )
+	  if ( p() -> buffs.dark_transformation -> up() && p() -> talent.unholy.eternal_agony.ok() )
     {
       p() -> buffs.dark_transformation -> extend_duration( p(),
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
@@ -5968,8 +5948,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
-
-    c += p() -> buffs.ossuary -> value();
 
     c += improved_death_strike_reduction;
 
@@ -6594,7 +6572,6 @@ struct gorefiends_grasp_t final : public death_knight_spell_t
     parse_options( options_str );
     aoe = -1;
     track_cd_waste = true;
-    cooldown->duration += p -> talent.blood.tightening_grasp -> effectN( 1 ).time_value();
   }
 
   void impact ( action_state_t* state ) override
@@ -7300,7 +7277,7 @@ struct vile_contagion_t final : public death_knight_spell_t
     death_knight_spell_t( "vile_contagion", p, p -> talent.unholy.vile_contagion )
   {
     parse_options( options_str );
-    aoe = as<int>(p->talent.unholy.vile_contagion->effectN(1).base_value());
+    aoe = as<int>( p->talent.unholy.vile_contagion->effectN( 1 ).base_value() );
     track_cd_waste = true;
   }
 
@@ -7340,8 +7317,6 @@ struct raise_dead_t final : public death_knight_spell_t
                           p -> talent.unholy.raise_dead : p -> talent.raise_dead )
   {
     parse_options( options_str );
-
-    cooldown -> duration += p -> talent.unholy.all_will_serve -> effectN( 1 ).time_value();
 
     harmful = false;
     track_cd_waste = true;
@@ -11238,9 +11213,11 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.antimagic_barrier );
   action.apply_affecting_aura( talent.empower_rune_weapon );
   action.apply_affecting_aura( talent.unholy_bond );
+  action.apply_affecting_aura( talent.deaths_echo );
 
   // Blood
   action.apply_affecting_aura( talent.blood.improved_heart_strike );
+  action.apply_affecting_aura( talent.blood.tightening_grasp );
   action.apply_affecting_aura( sets->set( DEATH_KNIGHT_BLOOD, T30, B2 ) );
 
   // Frost
@@ -11258,6 +11235,8 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.unholy.improved_death_coil );
   action.apply_affecting_aura( talent.unholy.bursting_sores );
   action.apply_affecting_aura( talent.unholy.unholy_command );
+  action.apply_affecting_aura( talent.unholy.superstrain );
+  action.apply_affecting_aura( talent.unholy.army_of_the_damned );
   action.apply_affecting_aura( sets->set( DEATH_KNIGHT_UNHOLY, T30, B2 ) );
 }
 
