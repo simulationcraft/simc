@@ -9036,7 +9036,7 @@ struct druid_melee_t : public Base
       ab::range -= 2;
 
     // Manually add to da_multiplier as Tiger's Fury + Carnivorious Instinct effect on auto attacks is scripted
-    auto eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
+    const auto& eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
     auto val = eff.percent();
     // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
     val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
