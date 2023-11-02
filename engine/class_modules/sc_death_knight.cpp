@@ -3488,18 +3488,20 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
     parse_buff_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
     parse_buff_effects( p()->buffs.hemostasis );
+    parse_buff_effects( p()->buffs.crimson_scourge );
 
     // Frost
     parse_buff_effects( p()->buffs.chilling_rage );
     parse_buff_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
     parse_buff_effects( p()->buffs.gathering_storm );
+    parse_buff_effects( p()->buffs.killing_machine );
     parse_passive_effects( p()->mastery.frozen_heart );
 
     // Unholy
     parse_buff_effects( p()->buffs.amplify_damage );
     parse_buff_effects( p()->buffs.ghoulish_infusion );
     parse_buff_effects( p()->buffs.unholy_assault );
-    parse_buff_effects( p()->buffs.sudden_doom );
+    parse_buff_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
     parse_passive_effects( p()->mastery.dreadblade );
   }
 
@@ -3519,10 +3521,12 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
     // Frost
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.everfrost->check(); }, p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
+    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.piercing_chill->check(); }, p()->spell.piercing_chill_debuff );
 
     // Unholy
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, p()->spell.brittle_debuff );
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.death_rot->check(); }, p()->spell.death_rot_debuff );
+    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.rotten_touch->check(); }, p()->spell.rotten_touch_debuff );
   }
 
   template <typename DOT, typename... Ts>
@@ -5030,16 +5034,6 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       max_hits += as<int>( p -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value() );
     }
   }
-  
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_spell_t::composite_target_multiplier( t );
-
-    if ( auto td = get_td( t ) )
-      m *= 1.0 + td -> debuff.piercing_chill -> check_value();
-
-    return m;
-  }
 
   void impact( action_state_t* state ) override
   {
@@ -5311,27 +5305,15 @@ struct dark_transformation_buff_t final : public buff_t
 
 struct dark_transformation_t final : public death_knight_spell_t
 {
-  bool precombat_frenzy;
-
   dark_transformation_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "dark_transformation", p, p -> talent.unholy.dark_transformation ),
-    precombat_frenzy( false )
+    death_knight_spell_t( "dark_transformation", p, p -> talent.unholy.dark_transformation )
   {
-    add_option( opt_bool( "precombat_frenzy", precombat_frenzy ) );
     harmful = false;
     target = p;
     track_cd_waste = true;
 
-    // Don't create and use the damage if the spell is used for precombat frenzy
-    if ( ! precombat_frenzy )
-    {
-      execute_action = get_action<dark_transformation_damage_t>( "dark_transformation_damage", p );
-    }
-
-    if ( p -> talent.unholy.unholy_command.ok() )
-    {
-      cooldown->duration += p->talent.unholy.unholy_command->effectN( 1 ).time_value();
-    }
+    execute_action = get_action<dark_transformation_damage_t>( "dark_transformation_damage", p );
+    add_child( execute_action );
 
     parse_options( options_str );
   }
@@ -5496,16 +5478,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
     // Merge stats with the damage object
     damage -> stats = stats;
     stats -> action_list.push_back( damage );
-  }
-
-  double cost() const override
-  {
-    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.crimson_scourge -> check() )
-    {
-      return 0;
-    }
-
-    return death_knight_spell_t::cost();
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -5683,11 +5655,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
       m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
     }
 
-    if ( p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
-    {
-      m *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 3 ).percent() * p() -> buffs.sudden_doom -> stack();
-    }
-
     return m;
   }
 
@@ -5746,7 +5713,7 @@ struct death_coil_t final : public death_knight_spell_t
 
       if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) && p() -> buffs.sudden_doom -> up() )
       {
-        p() -> buffs.unholy_t30_2pc_stacking -> trigger( as<int>(p() -> spell.unholy_t30_4pc_values -> effectN( 1 ).base_value()) );
+        p() -> buffs.unholy_t30_2pc_stacking -> trigger( as<int>( p()->sets->set(DEATH_KNIGHT_UNHOLY, T30, B4) -> effectN( 1 ).base_value() ) );
         
       }
     }
@@ -6061,8 +6028,6 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
     dot_duration = base_tick_time = 0_ms;
 
     cooldown -> duration = p -> spell.empower_rune_weapon_main -> charge_cooldown();
-
-    cooldown -> charges = as<int>(p -> spell.empower_rune_weapon_main -> charges() + p -> talent.empower_rune_weapon -> effectN( 1 ).base_value() + p -> talent.frost.empower_rune_weapon -> effectN( 1 ).base_value());
   }
 
   void execute() override
@@ -6087,20 +6052,6 @@ struct epidemic_damage_main_t final : public death_knight_spell_t
     aoe = 0;
     // this spell has both coefficients in it, and it seems like it is reading #2, the aoe portion, instead of #1
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
-
-    cam *= soft_cap_multiplier;
-
-    if( p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
-    {
-      cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
-    }
-
-    return cam;
   }
 };
 
@@ -6130,20 +6081,6 @@ struct epidemic_damage_aoe_t final : public death_knight_spell_t
 
     return tl.size();
   }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override
-  {
-    double cam = death_knight_spell_t::composite_aoe_multiplier( state );
-
-    cam *= soft_cap_multiplier;
-
-    if( p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
-    {
-      cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
-    }
-
-    return cam;
-  }
 };
 
 struct epidemic_t final : public death_knight_spell_t
@@ -6162,14 +6099,6 @@ struct epidemic_t final : public death_knight_spell_t
 
     add_child( impact_action );
     add_child( impact_action -> impact_action );
-  }
-
-  double cost() const override
-  {
-    if ( p() -> buffs.sudden_doom -> check() )
-      return 0;
-
-    return death_knight_spell_t::cost();
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -6417,15 +6346,6 @@ struct frostscythe_t final : public death_knight_melee_attack_t
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
 
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = death_knight_melee_attack_t::composite_crit_chance();
-
-    cc += p() -> buffs.killing_machine -> value();
-
-    return cc;
   }
 private:
     propagate_const<action_t*> inexorable_assault;
@@ -7102,15 +7022,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     return m;
   }
 
-  double composite_crit_chance() const override
-  {
-    double cc = death_knight_melee_attack_t::composite_crit_chance();
-
-    cc += p() -> buffs.killing_machine -> value();
-
-    return cc;
-  }
-
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
@@ -7280,7 +7191,6 @@ struct runeforge_apocalypse_pestilence_t final : public death_knight_spell_t
   runeforge_apocalypse_pestilence_t( util::string_view name, death_knight_t* p ) :
     death_knight_spell_t( name, p, p -> spell.apocalypse_pestilence_damage )
     {
-      base_dd_multiplier *= 1.0 + p -> talent.unholy_bond -> effectN( 1 ).percent();
     }
 };
 
@@ -7660,18 +7570,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     return current_targets;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    if ( get_td( t ) -> debuff.rotten_touch->up() )
-    {
-      m *= 1.0 + p() -> spell.rotten_touch_debuff -> effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
@@ -7714,18 +7612,6 @@ struct scourge_strike_shadow_t final : public death_knight_melee_attack_t
     may_miss = may_parry = may_dodge = false;
     background = proc = dual = true;
     weapon = &( player -> main_hand_weapon );
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    if ( get_td( t ) -> debuff.rotten_touch -> up() )
-    {
-      m *= 1.0 + p() -> spell.rotten_touch_debuff -> effectN( 1 ).percent();
-    }
-
-    return m;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -10090,7 +9976,6 @@ void death_knight_t::init_spells()
   spell.unholy_t30_2pc_stacking    = find_spell( 408375 );
   spell.unholy_t30_2pc_mastery     = find_spell( 408376 );
   spell.unholy_t30_4pc_mastery     = find_spell( 408377 );
-  spell.unholy_t30_4pc_values      = find_spell( 405504 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10405,8 +10290,7 @@ void death_knight_t::create_buffs()
   buffs.killing_machine = make_buff( this, "killing_machine", talent.frost.killing_machine -> effectN( 1 ).trigger() )
         -> set_chance( 1.0 )
         -> set_default_value_from_effect( 1 )
-        -> set_max_stack( talent.frost.killing_machine.ok() ?
-                   as<unsigned int>( talent.frost.killing_machine -> effectN( 1 ).trigger() -> max_stacks() + talent.frost.fatal_fixation -> effectN( 1 ).base_value() ) : 1 )
+        -> apply_affecting_aura( talent.frost.fatal_fixation )
         -> set_stack_change_callback( [ this ] ( buff_t* buff_, int old_, int new_ )
             {
               // in 10.0.7 killing machine has a behavior where dropping from 2 -> 1 stacks will also refresh your buff
@@ -10493,9 +10377,7 @@ void death_knight_t::create_buffs()
   buffs.sudden_doom = make_buff( this, "sudden_doom", talent.unholy.sudden_doom -> effectN( 1 ).trigger() )
         -> set_rppm( RPPM_ATTACK_SPEED, get_rppm( "sudden_doom", talent.unholy.sudden_doom ) -> get_frequency(), 1.0 + talent.unholy.harbinger_of_doom -> effectN( 2 ).percent())
         -> set_trigger_spell( talent.unholy.sudden_doom )
-        -> set_max_stack( talent.unholy.sudden_doom.ok() ?
-                   as<unsigned int>( talent.unholy.sudden_doom -> effectN( 1 ).trigger() -> max_stacks() + talent.unholy.harbinger_of_doom -> effectN( 1 ).base_value() ):
-                   1 );
+        -> apply_affecting_aura( talent.unholy.harbinger_of_doom );
 
   buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
         -> set_cooldown( 0_ms ); // Handled by the action
@@ -11355,6 +11237,8 @@ void death_knight_t::apply_affecting_auras( action_t& action )
 
   // Shared
   action.apply_affecting_aura( talent.antimagic_barrier );
+  action.apply_affecting_aura( talent.empower_rune_weapon );
+  action.apply_affecting_aura( talent.unholy_bond );
 
   // Blood
   action.apply_affecting_aura( talent.blood.improved_heart_strike );
@@ -11366,6 +11250,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.frost.frigid_executioner );
   action.apply_affecting_aura( talent.frost.biting_cold );
   action.apply_affecting_aura( talent.frost.absolute_zero );
+  action.apply_affecting_aura( talent.frost.empower_rune_weapon );
   action.apply_affecting_aura( sets->set( DEATH_KNIGHT_FROST, T30, B2 ) );
 
   // Unholy
@@ -11373,6 +11258,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.unholy.improved_festering_strike );
   action.apply_affecting_aura( talent.unholy.improved_death_coil );
   action.apply_affecting_aura( talent.unholy.bursting_sores );
+  action.apply_affecting_aura( talent.unholy.unholy_command );
   action.apply_affecting_aura( sets->set( DEATH_KNIGHT_UNHOLY, T30, B2 ) );
 }
 
