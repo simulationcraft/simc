@@ -3483,36 +3483,23 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   void apply_buff_effects()
   {
-    // Shared
-    parse_passive_effects( p()->talent.antimagic_barrier );
-
     // Blood
     parse_buff_effects( p()->buffs.sanguine_ground );
     parse_buff_effects( p()->buffs.vigorous_lifeblood_4pc );
     parse_buff_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
-    parse_passive_effects( p()->sets->set( DEATH_KNIGHT_BLOOD, T30, B2 ) );
-    parse_passive_effects( p()->talent.blood.improved_heart_strike );
+    parse_buff_effects( p()->buffs.hemostasis );
 
     // Frost
     parse_buff_effects( p()->buffs.chilling_rage );
     parse_buff_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
-    parse_passive_effects( p()->talent.frost.improved_frost_strike );
-    parse_passive_effects( p()->talent.frost.improved_obliterate );
-    parse_passive_effects( p()->talent.frost.frigid_executioner );
-    parse_passive_effects( p()->talent.frost.biting_cold );
-    parse_passive_effects( p()->talent.frost.absolute_zero );
-    parse_passive_effects( p()->sets->set( DEATH_KNIGHT_FROST, T30, B2 ) );
+    parse_buff_effects( p()->buffs.gathering_storm );
     parse_passive_effects( p()->mastery.frozen_heart );
 
     // Unholy
     parse_buff_effects( p()->buffs.amplify_damage );
     parse_buff_effects( p()->buffs.ghoulish_infusion );
     parse_buff_effects( p()->buffs.unholy_assault );
-    parse_passive_effects( p()->talent.unholy.improved_festering_strike );
-    parse_passive_effects( p()->talent.unholy.improved_death_coil );
-    parse_passive_effects( p()->talent.unholy.ebon_fever );
-    parse_passive_effects( p()->talent.unholy.bursting_sores );
-    parse_passive_effects( p()->sets->set( DEATH_KNIGHT_UNHOLY, T30, B2 ) );
+    parse_buff_effects( p()->buffs.sudden_doom );
     parse_passive_effects( p()->mastery.dreadblade );
   }
 
@@ -3529,6 +3516,9 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     // Blood
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, p()->spell.tightening_grasp_debuff );
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.ashen_decay->check(); }, p()->spell.ashen_decay_debuff );
+
+    // Frost
+    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.everfrost->check(); }, p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
 
     // Unholy
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, p()->spell.brittle_debuff );
@@ -3957,7 +3947,6 @@ struct virulent_plague_t final : public death_knight_disease_t
       ff( get_action<frost_fever_t>( "frost_fever", p, true ) ),
       bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
   {
-    base_tick_time *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 1 ).percent();
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
   }
@@ -5736,16 +5725,6 @@ struct death_coil_t final : public death_knight_spell_t
     }
   }
 
-  double cost() const override
-  {
-    if ( p() -> buffs.sudden_doom -> check() )
-      return 0;
-
-    double cost = death_knight_spell_t::cost();
-
-    return cost;
-  }
-
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -5991,8 +5970,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
   double action_multiplier() const override
   {
     double m = death_knight_melee_attack_t::action_multiplier();
-
-    m *= 1.0 + p() -> buffs.hemostasis -> stack_value();
 
     // Death Strike is affected by bloodshot, even for the applying DS.  This is because in game, blood shield gets applied before DS damage is calculated.
     // So we apply the modifier here, but only if bloodshield is not up, to avoid double dip by the base multipler when blood shield is up and bloodshot is talented.
@@ -7520,25 +7497,6 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
     {
       biting_cold_target_threshold = p -> talent.frost.biting_cold -> effectN ( 1 ).base_value();
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> buffs.gathering_storm -> stack_value();
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = death_knight_spell_t::composite_target_multiplier( t );
-
-    if ( auto td = get_td( t ) )
-      m *= 1.0 + td -> debuff.everfrost -> check_stack_value();
-
-    return m;
   }
 
   void impact( action_state_t* state ) override
@@ -11394,6 +11352,28 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.unholy_death_knight );
   action.apply_affecting_aura( spec.frost_death_knight );
   action.apply_affecting_aura( spec.blood_death_knight );
+
+  // Shared
+  action.apply_affecting_aura( talent.antimagic_barrier );
+
+  // Blood
+  action.apply_affecting_aura( talent.blood.improved_heart_strike );
+  action.apply_affecting_aura( sets->set( DEATH_KNIGHT_BLOOD, T30, B2 ) );
+
+  // Frost
+  action.apply_affecting_aura( talent.frost.improved_frost_strike );
+  action.apply_affecting_aura( talent.frost.improved_obliterate );
+  action.apply_affecting_aura( talent.frost.frigid_executioner );
+  action.apply_affecting_aura( talent.frost.biting_cold );
+  action.apply_affecting_aura( talent.frost.absolute_zero );
+  action.apply_affecting_aura( sets->set( DEATH_KNIGHT_FROST, T30, B2 ) );
+
+  // Unholy
+  action.apply_affecting_aura( talent.unholy.ebon_fever );
+  action.apply_affecting_aura( talent.unholy.improved_festering_strike );
+  action.apply_affecting_aura( talent.unholy.improved_death_coil );
+  action.apply_affecting_aura( talent.unholy.bursting_sores );
+  action.apply_affecting_aura( sets->set( DEATH_KNIGHT_UNHOLY, T30, B2 ) );
 }
 
 /* Report Extension Class
