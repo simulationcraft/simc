@@ -2850,7 +2850,7 @@ public:
     {
       BASE::da_multiplier_buffeffects.emplace_back(
           nullptr, p_->buff.umbral_embrace->default_value, USE_DEFAULT, false, false,
-          [ this ] { return umbral_embrace_check(); }, &p_->buff.umbral_embrace->data() );
+          [ this ] { return umbral_embrace_check(); }, p_->buff.umbral_embrace->data().effectN( 1 ) );
 
       BASE::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", BASE::name(),
                               BASE::id, p_->buff.umbral_embrace->default_value, p_->buff.umbral_embrace->name(),
@@ -9036,11 +9036,12 @@ struct druid_melee_t : public Base
       ab::range -= 2;
 
     // Manually add to da_multiplier as Tiger's Fury + Carnivorious Instinct effect on auto attacks is scripted
-    auto val = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT ).percent();
+    auto eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
+    auto val = eff.percent();
     // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
     val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
 
-    ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr );
+    ab::da_multiplier_buffeffects.emplace_back( p->buff.tigers_fury, val, USE_DATA, false, false, nullptr, eff );
 
     ab::sim->print_debug( "buff-effects: {} ({}) direct_damage modified by {} with buff {} ({})", ab::name(), ab::id,
                           val, p->buff.tigers_fury->name(), p->buff.tigers_fury->data().id() );

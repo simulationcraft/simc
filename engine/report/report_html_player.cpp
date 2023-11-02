@@ -1206,6 +1206,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
            << "<th class=\"small\">Type</th>\n"
            << "<th class=\"small\">Spell</th>\n"
            << "<th class=\"small\">ID</th>\n"
+           << "<th class=\"small\">#</th>\n"
            << "<th class=\"small\">+/%</th>\n"
            << "<th class=\"small\">Value</th>\n"
            << "</tr>\n";
@@ -1233,10 +1234,11 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
               break;
           }
 
-          os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td></tr>",
+          os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td></tr>",
             type_str,
             eff->spell()->name_cstr(),
             eff->spell()->id(),
+            eff->index() + 1,
             op_str,
             val );
         }

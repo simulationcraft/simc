@@ -71,11 +71,11 @@ struct parse_buff_effects_t
     bool use_stacks;
     bool mastery;
     bfun func;
-    const spell_data_t* s_data;
+    const spelleffect_data_t& eff;
 
     buff_effect_t( buff_t* b, double v, value_type_e t = USE_DATA, bool s = true, bool m = false, bfun f = nullptr,
-                   const spell_data_t* d = spell_data_t::nil() )
-      : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), s_data( d )
+                   const spelleffect_data_t& e = spelleffect_data_t::nil() )
+      : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e )
     {}
   };
 
@@ -86,10 +86,10 @@ struct parse_buff_effects_t
     dfun func;
     double value;
     bool mastery;
-    const spell_data_t* s_data;
+    const spelleffect_data_t& eff;
 
-    dot_debuff_t( dfun f, double v, bool m = false, const spell_data_t* d = spell_data_t::nil() )
-      : func( std::move( f ) ), value( v ), mastery( m ), s_data( d )
+    dot_debuff_t( dfun f, double v, bool m = false, const spelleffect_data_t& e = spelleffect_data_t::nil() )
+      : func( std::move( f ) ), value( v ), mastery( m ), eff( e )
     {}
   };
 
@@ -247,27 +247,27 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
-          da_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, s_data );
+          da_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
           debug_message( "direct damage" );
           break;
         case P_DURATION:
-          dot_duration_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, s_data );
+          dot_duration_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
           debug_message( "duration" );
           break;
         case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, s_data );
+          ta_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
           debug_message( "tick damage" );
           break;
         case P_CAST_TIME:
-          execute_time_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
+          execute_time_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, eff );
           debug_message( "cast time" );
           break;
         case P_COOLDOWN:
-          recharge_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
+          recharge_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, eff );
           debug_message( "cooldown" );
           break;
         case P_RESOURCE_COST:
-          cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
+          cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, eff );
           debug_message( "cost percent" );
           break;
         default:
@@ -279,12 +279,12 @@ public:
       switch ( eff.misc_value1() )
       {
         case P_CRIT:
-          crit_chance_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
+          crit_chance_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, eff );
           debug_message( "crit chance" );
           break;
         case P_RESOURCE_COST:
           val_mul = eff.resource_multiplier( action_->current_resource() );
-          flat_cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, s_data );
+          flat_cost_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, false, f, eff );
           debug_message( "flat cost" );
           break;
         default:
@@ -455,7 +455,7 @@ public:
          !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && !action_->special ) && !force )
       return;
 
-    target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, s_data );
+    target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, eff );
     action_->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})",
                                action_->name(), action_->id, val * val_mul, mastery ? "*mastery" : "",
                                s_data->name_cstr(), s_data->id(), i );
@@ -607,6 +607,7 @@ public:
        << "<th class=\"small\">Type</th>\n"
        << "<th class=\"small\">Spell</th>\n"
        << "<th class=\"small\">ID</th>\n"
+       << "<th class=\"small\">#</th>\n"
        << "<th class=\"small\">Value</th>\n"
        << "<th class=\"small\">Source</th>\n"
        << "<th class=\"small\">Notes</th>\n"
@@ -666,9 +667,10 @@ public:
     if ( entry.func )
       notes.push_back( "Conditional" );
 
-    os.format( "<td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
-               entry.s_data->name_cstr(),
-               entry.s_data->id(),
+    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
+               entry.eff.spell()->name_cstr(),
+               entry.eff.spell()->id(),
+               entry.eff.index() + 1,
                entry.value * ( entry.mastery ? 100 : 1 ),
                value_type_name( entry.type ),
                util::string_join( notes ) );
@@ -676,9 +678,10 @@ public:
 
   void print_parsed_line( report::sc_html_stream& os, const dot_debuff_t& entry )
   {
-    os.format( "<td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
-               entry.s_data->name_cstr(),
-               entry.s_data->id(),
+    os.format( "<td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td><td>{}</td><td>{}</td></tr>\n",
+               entry.eff.spell()->name_cstr(),
+               entry.eff.spell()->id(),
+               entry.eff.index() + 1,
                entry.value * ( entry.mastery ? 100 : 1 ),
                "",
                entry.mastery ? "Mastery" : "" );
