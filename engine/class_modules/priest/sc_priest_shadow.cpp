@@ -650,18 +650,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    timespan_t t = priest_spell_t::tick_time( state );
-
-    if ( priest().talents.shadow.screams_of_the_void.enabled() && priest().buffs.screams_of_the_void->check() )
-    {
-      t *= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 2 ).percent() );
-    }
-
-    return t;
-  }
-
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
@@ -910,18 +898,6 @@ struct vampiric_touch_t final : public priest_spell_t
     }
 
     return priest_spell_t::execute_time();
-  }
-
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    timespan_t t = priest_spell_t::tick_time( state );
-
-    if ( priest().talents.shadow.screams_of_the_void.enabled() && priest().buffs.screams_of_the_void->check() )
-    {
-      t *= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 2 ).percent() );
-    }
-
-    return t;
   }
 
   void tick( dot_t* d ) override
