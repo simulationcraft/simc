@@ -1576,6 +1576,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     buffs.thrill_of_the_hunt =
       make_buff( this, "thrill_of_the_hunt", find_spell( 312365 ) )
         -> set_default_value_from_effect( 1 )
+        -> apply_affecting_aura( o() -> talents.savagery )
         -> set_max_stack( std::max( 1, as<int>( o() -> talents.thrill_of_the_hunt -> effectN( 2 ).base_value() ) ) )
         -> set_chance( o() -> talents.thrill_of_the_hunt.ok() );
 
@@ -7320,6 +7321,7 @@ void hunter_t::create_buffs()
 
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
+      -> apply_affecting_aura( talents.savagery )
       -> set_default_value_from_effect( 1 )
       -> set_max_stack( std::max( 1, as<int>( talents.thrill_of_the_hunt -> effectN( 2 ).base_value() ) ) )
       -> set_trigger_spell( talents.thrill_of_the_hunt );
