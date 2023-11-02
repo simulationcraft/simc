@@ -8861,7 +8861,7 @@ namespace monk
     }
 
     // defer configuration of proc flags in case proc_action_override is used
-    effect->proc_flags_  = PF_OVERRIDE ? effect_driver->proc_flags() : PF_OVERRIDE;
+    effect->proc_flags_  = PF_OVERRIDE ? PF_OVERRIDE : effect_driver->proc_flags();
     effect->proc_flags2_ = PF2_OVERRIDE;
 
     // We still haven't assigned a name, it is most likely a buff
