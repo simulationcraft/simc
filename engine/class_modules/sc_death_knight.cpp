@@ -9158,7 +9158,7 @@ void death_knight_t::create_actions()
       active_spells.remorseless_winter_tick = get_action<remorseless_winter_damage_t>( "remorseless_winter_damage", this );
     }
 
-    if( talent.frost.frost_strike )
+    if( talent.frost.frost_strike.ok() )
     {
       const spell_data_t* mh_data = main_hand_weapon.group() == WEAPON_2H ? spell.frost_strike_2h : spell.frost_strike_mh;
       active_spells.frost_strike_main = get_action<frost_strike_strike_t>( "frost_strike", this, &( main_hand_weapon ), mh_data, false );
