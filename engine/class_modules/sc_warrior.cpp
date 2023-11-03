@@ -3341,7 +3341,7 @@ struct onslaught_t : public warrior_attack_t
     : warrior_attack_t( "onslaught", p, p->talents.fury.onslaught ),
       unbridled_chance( p->talents.fury.unbridled_ferocity->effectN( 1 ).base_value() / 100.0 ),
       damage_spell( p->find_spell( 396718U ) ),
-      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 2 ).base_value() ) )
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     weapon              = &( p->main_hand_weapon );
