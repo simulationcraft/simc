@@ -801,15 +801,15 @@ public:
     player_talent_t suppression; // NYI
     player_talent_t brittle;
     // Row 5
-    player_talent_t acclimation; // NYI
+    player_talent_t acclimation;
     player_talent_t merciless_strikes;
-    player_talent_t antimagic_zone; // NYI
+    player_talent_t antimagic_zone;
     player_talent_t might_of_thassarian;
     player_talent_t clenching_grasp; // NYI
     // Row 6
     player_talent_t proliferating_chill;
     player_talent_t asphyxiate; // NYI
-    player_talent_t assimilation; // NYI
+    player_talent_t assimilation;
     player_talent_t death_pact; // NYI
     player_talent_t grip_of_the_dead; // NYI
     player_talent_t deaths_reach; // NYI
@@ -3716,6 +3716,7 @@ struct blood_plague_heal_t final : public death_knight_heal_t
     death_knight_heal_t( name, p, p -> spell.blood_plague )
   {
     callbacks = false;
+    background = true;
     target = p;
     // Tick time, duration and healing amount handled by the damage
     attack_power_mod.direct = attack_power_mod.tick = 0;
@@ -11060,6 +11061,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.empower_rune_weapon );
   action.apply_affecting_aura( talent.unholy_bond );
   action.apply_affecting_aura( talent.deaths_echo );
+  action.apply_affecting_aura( talent.acclimation );
 
   // Blood
   action.apply_affecting_aura( talent.blood.improved_heart_strike );
