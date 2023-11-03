@@ -27,6 +27,16 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
+# Evaluates a trinkets cooldown, divided by avatar or odyns fur. If it's value has no remainder return 1, else return 0.5.
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%cooldown.avatar.duration=0|trinket.1.cooldown.duration%%cooldown.odyns_fury.duration=0)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%cooldown.avatar.duration=0|trinket.2.cooldown.duration%%cooldown.odyns_fury.duration=0)
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit&!variable.trinket_1_exclude)
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit&!variable.trinket_2_exclude)
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
 actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/berserker_stance,toggle=on
 actions.precombat+=/avatar,if=!talent.titans_torment
@@ -38,17 +48,7 @@ actions+=/charge,if=time<=0.5|movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
 actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
-actions+=/use_item,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)
-actions+=/use_item,name=vial_of_animated_blood,if=buff.avatar.up
-actions+=/use_item,name=elementium_pocket_anvil,use_off_gcd=1,if=gcd.remains>0.7
-actions+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>0.7
-actions+=/use_item,name=irideus_fragment,if=buff.avatar.up
-actions+=/use_item,name=manic_grieftorch,if=buff.avatar.down
-actions+=/use_item,name=gladiators_badge,if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)
-actions+=/use_item,name=might_of_the_ocean,if=(set_bonus.tier31_4pc&cooldown.recklessness.remains>88)|(!set_bonus.tier31_4pc&buff.avatar.up)
-actions+=/use_item,name=ashes_of_the_embersoul,if=cooldown.odyns_fury.remains>1|buff.avatar.up
-actions+=/use_item,name=spores_of_alacrity,if=cooldown.odyns_fury.remains>1|buff.avatar.up
-actions+=/use_items
+actions+=/call_action_list,name=trinkets
 actions+=/ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down
 actions+=/berserking,if=buff.recklessness.up
@@ -125,6 +125,15 @@ actions.single_target+=/bloodthirst
 actions.single_target+=/whirlwind
 actions.single_target+=/wrecking_throw
 actions.single_target+=/storm_bolt
+
+actions.trinkets=use_item,use_off_gcd=1,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)
+# Trinkets The trinket with the highest estimated value, will be used first and paired with Avatar.
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!buff.avatar.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(buff.avatar.up)&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(!buff.avatar.up&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(buff.avatar.up)&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
+# If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
 head=molten_vanguards_domeplate,id=207182,bonus_id=7187/1520/6935,gem_id=192988,enchant_id=7052
 neck=raven_filigree_pendant,id=134499,bonus_id=1514/3326/6646/8782,gem_id=192964/192964/192964

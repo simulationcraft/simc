@@ -101,7 +101,7 @@ actions.cold_heart+=/chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.
 # Cooldowns
 actions.cooldowns=potion,if=variable.cooldown_check|fight_remains<25
 actions.cooldowns+=/empower_rune_weapon,if=talent.obliteration&!buff.empower_rune_weapon.up&rune<6&(cooldown.pillar_of_frost.remains_expected<7&(variable.adds_remain|variable.st_planning)|buff.pillar_of_frost.up)|fight_remains<20
-actions.cooldowns+=/empower_rune_weapon,use_off_gcd=1,if=buff.breath_of_sindragosa.up&!buff.empower_rune_weapon.up&(time<10&buff.bloodlust.up)|(runic_power<70&rune<3&(cooldown.breath_of_sindragosa.remains>variable.erw_pooling_time|full_recharge_time<10))
+actions.cooldowns+=/empower_rune_weapon,use_off_gcd=1,if=buff.breath_of_sindragosa.up&!buff.empower_rune_weapon.up&((time<10&buff.bloodlust.up)|(runic_power<70&rune<3&(cooldown.breath_of_sindragosa.remains>variable.erw_pooling_time|full_recharge_time<10)))
 actions.cooldowns+=/empower_rune_weapon,use_off_gcd=1,if=!talent.breath_of_sindragosa&!talent.obliteration&!buff.empower_rune_weapon.up&rune<5&(cooldown.pillar_of_frost.remains_expected<7|buff.pillar_of_frost.up|!talent.pillar_of_frost)
 actions.cooldowns+=/abomination_limb,if=talent.obliteration&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains<3&(variable.adds_remain|variable.st_planning)|fight_remains<12
 actions.cooldowns+=/abomination_limb,if=talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)
@@ -135,7 +135,7 @@ actions.high_prio_actions+=/glacial_advance,if=active_enemies>=2&variable.rp_buf
 actions.high_prio_actions+=/frost_strike,if=active_enemies=1&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
 actions.high_prio_actions+=/frost_strike,if=active_enemies=1&variable.rp_buffs&talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
 actions.high_prio_actions+=/frost_strike,if=active_enemies=1&variable.rp_buffs&!talent.breath_of_sindragosa&talent.obliteration&!buff.pillar_of_frost.up
-actions.high_prio_actions+=/remorseless_winter,if=variable.rw_buffs|variable.rw_buffs
+actions.high_prio_actions+=/remorseless_winter,if=variable.rw_buffs|variable.adds_remain
 
 # Obliteration Active Rotation
 actions.obliteration=howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react
