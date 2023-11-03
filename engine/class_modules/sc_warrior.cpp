@@ -1163,6 +1163,7 @@ public:
     ab::apply_affecting_aura( p()->talents.fury.deft_experience );
     ab::apply_affecting_aura( p()->talents.fury.improved_bloodthirst );
     ab::apply_affecting_aura( p()->talents.fury.improved_raging_blow );
+    ab::apply_affecting_aura( p()->talents.fury.meat_cleaver );
     ab::apply_affecting_aura( p()->talents.fury.raging_armaments );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.fury.storm_of_swords ); // rage generation in spell
@@ -6516,16 +6517,15 @@ struct victory_rush_t : public warrior_attack_t
 
 // Whirlwind ================================================================
 
-struct whirlwind_off_hand_t : public warrior_attack_t
+struct whirlwind_fury_damage_t : public warrior_attack_t
 {
-  whirlwind_off_hand_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_off-hand", p, whirlwind )
+  bool seismic_reverberation;
+  whirlwind_fury_damage_t( util::string_view name, warrior_t* p, const spell_data_t* whirlwind, bool seismic ) : warrior_attack_t( name, p, whirlwind ),
+  seismic_reverberation( seismic )
   {
     background = true;
     aoe = -1;
     reduced_aoe_targets = 5.0;
-
-
-    base_multiplier *= 1.0 + p->talents.fury.meat_cleaver->effectN( 1 ).percent();
   }
 
   int current_tick;
@@ -6534,42 +6534,9 @@ struct whirlwind_off_hand_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->talents.warrior.seismic_reverberation->ok() && current_tick == 3 )
+    if ( p()->talents.warrior.seismic_reverberation->ok() && seismic_reverberation )
     {
       am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
-    }
-    if ( p()->buff.merciless_bonegrinder_conduit->check() )
-    {
-      am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
-    }
-    return am;
-  }
-};
-
-struct fury_whirlwind_mh_t : public warrior_attack_t
-{
-  fury_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_mh", p, whirlwind )
-  {
-    background = true;
-    aoe = -1;
-    reduced_aoe_targets = 5.0;
-
-    base_multiplier *= 1.0 + p->talents.fury.meat_cleaver->effectN(1).percent();
-  }
-
-  int current_tick;
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->talents.warrior.seismic_reverberation->ok() && current_tick == 3 )
-    {
-      am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
-    }
-    if ( p()->buff.merciless_bonegrinder_conduit->check() )
-    {
-      am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
     }
     return am;
   }
@@ -6577,16 +6544,22 @@ struct fury_whirlwind_mh_t : public warrior_attack_t
 
 struct fury_whirlwind_parent_t : public warrior_attack_t
 {
-  whirlwind_off_hand_t* oh_attack;
-  fury_whirlwind_mh_t* mh_attack;
-  timespan_t spin_time;
+  whirlwind_fury_damage_t* mh_first_attack;
+  whirlwind_fury_damage_t* oh_first_attack;
+  whirlwind_fury_damage_t* mh_other_attack;
+  whirlwind_fury_damage_t* oh_other_attack;
+  whirlwind_fury_damage_t* mh_seismic_reverberation_attack;
+  whirlwind_fury_damage_t* oh_seismic_reverberation_attack;
   double base_rage_gain;
   double additional_rage_gain_per_target;
   fury_whirlwind_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "whirlwind", p, p->spec.whirlwind ),
-      oh_attack( nullptr ),
-      mh_attack( nullptr ),
-      spin_time( timespan_t::from_millis( p->spec.whirlwind->effectN( 6 ).misc_value1() ) ),
+      mh_first_attack( nullptr ),
+      oh_first_attack( nullptr ),
+      mh_other_attack( nullptr ),
+      oh_other_attack( nullptr ),
+      mh_seismic_reverberation_attack( nullptr ),
+      oh_seismic_reverberation_attack( nullptr ),
       base_rage_gain( p->spec.whirlwind->effectN( 1 ).base_value() ),
       additional_rage_gain_per_target( p->spec.whirlwind->effectN( 2 ).base_value() )
   {
@@ -6595,79 +6568,72 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
 
     if ( p->main_hand_weapon.type != WEAPON_NONE )
     {
-      mh_attack         = new fury_whirlwind_mh_t( p, data().effectN( 4 ).trigger() );
-      mh_attack->weapon = &( p->main_hand_weapon );
-      mh_attack->radius = radius;
-      add_child( mh_attack );
+      mh_first_attack         = new whirlwind_fury_damage_t( "whirlwind_mh_first", p, data().effectN( 4 ).trigger(), false );
+      mh_first_attack->weapon = &( p->main_hand_weapon );
+      mh_first_attack->radius = radius;
+      add_child( mh_first_attack );
+
+      mh_other_attack         = new whirlwind_fury_damage_t( "whirlwind_mh_others", p, data().effectN( 6 ).trigger(), false );
+      mh_other_attack->weapon = &( p->main_hand_weapon );
+      mh_other_attack->radius = radius;
+      add_child( mh_other_attack );
+
+      if ( p->talents.warrior.seismic_reverberation.ok() )
+      {
+        mh_seismic_reverberation_attack = new whirlwind_fury_damage_t( "whirlwind_mh_seismic_reverberation", p, p->find_spell( 385233 ), true );
+        mh_seismic_reverberation_attack->weapon = &( p->main_hand_weapon );
+        mh_seismic_reverberation_attack->radius = radius;
+        add_child( mh_seismic_reverberation_attack );
+      }
+
       if ( p->off_hand_weapon.type != WEAPON_NONE )
       {
-        oh_attack         = new whirlwind_off_hand_t( p, data().effectN( 5 ).trigger() );
-        oh_attack->weapon = &( p->off_hand_weapon );
-        oh_attack->radius = radius;
-        add_child( oh_attack );
+        oh_first_attack         = new whirlwind_fury_damage_t( "whirlwind_oh_first", p, data().effectN( 5 ).trigger(), false );
+        oh_first_attack->weapon = &( p->off_hand_weapon );
+        oh_first_attack->radius = radius;
+        add_child( oh_first_attack );
+
+        oh_other_attack         = new whirlwind_fury_damage_t( "whirlwind_oh_others", p, data().effectN( 7 ).trigger(), false );
+        oh_other_attack->weapon = &( p->off_hand_weapon );
+        oh_other_attack->radius = radius;
+        add_child( oh_other_attack );
+
+        if ( p->talents.warrior.seismic_reverberation.ok() )
+        {
+          oh_seismic_reverberation_attack         = new whirlwind_fury_damage_t( "whirlwind_oh_seismic_reverberation", p, p->find_spell( 385234 ), true );
+          oh_seismic_reverberation_attack->weapon = &( p->off_hand_weapon );
+          oh_seismic_reverberation_attack->radius = radius;
+          add_child( oh_seismic_reverberation_attack );
+        }
       }
-    }
-    tick_zero = true;
-    hasted_ticks = false;
-    base_tick_time           = spin_time;
-    dot_duration             = base_tick_time * 2;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
-  {
-    if ( p()->legendary.najentuss_vertebrae != spell_data_t::not_found() &&
-         as<int>( target_list().size() ) >= p()->legendary.najentuss_vertebrae->effectN( 1 ).base_value() )
-    {
-      return dot_duration + ( base_tick_time * p()->legendary.najentuss_vertebrae->effectN( 2 ).base_value() );
-    }
-    if ( p()->talents.warrior.seismic_reverberation != spell_data_t::not_found() &&
-         as<int>( target_list().size() ) >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-    {
-      return dot_duration + ( base_tick_time * p()->talents.warrior.seismic_reverberation->effectN( 2 ).base_value() );
-    }
-
-    return dot_duration;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    mh_attack->current_tick = d->current_tick;
-    if ( oh_attack )
-    {
-      oh_attack->current_tick = d->current_tick;
-    }
-
-    warrior_attack_t::tick( d );
-
-    if ( mh_attack )
-    {
-      mh_attack->execute();
-      if ( oh_attack )
-      {
-        oh_attack->execute();
-      }
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warrior_attack_t::last_tick( d );
-
-    if ( p()->talents.fury.improved_whirlwind->ok() )
-    {
-      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
     }
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
-    const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets 
 
     if ( p()->talents.fury.improved_whirlwind->ok() )
     {
+      const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets 
       p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
                         p()->gain.whirlwind );
+
+      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+
+      mh_first_attack->execute_on_target( target );
+      oh_first_attack->execute_on_target( target );
+
+      if ( p() -> talents.warrior.seismic_reverberation.ok() && mh_first_attack->n_targets() >= p() -> talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
+      {
+        mh_seismic_reverberation_attack->execute_on_target( target );
+        oh_seismic_reverberation_attack->execute_on_target( target );
+      }
+
+      make_event( *sim, data().effectN( 6 ).time_value(), [ this ]() { mh_other_attack->execute_on_target( target ); } );
+      make_event( *sim, data().effectN( 7 ).time_value(), [ this ]() { oh_other_attack->execute_on_target( target ); } );
+      make_event( *sim, data().effectN( 8 ).time_value(), [ this ]() { mh_other_attack->execute_on_target( target ); } );
+      make_event( *sim, data().effectN( 9 ).time_value(), [ this ]() { oh_other_attack->execute_on_target( target ); } );
     }
   }
 
@@ -9546,8 +9512,8 @@ void warrior_t::create_buffs()
 
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.protection.last_stand );
 
-  buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
-  buff.meat_cleaver->set_max_stack(buff.meat_cleaver->max_stack() + as<int>( talents.fury.meat_cleaver->effectN( 2 ).base_value() ) );
+  buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff )
+                        ->apply_affecting_aura( talents.fury.meat_cleaver );
 
   buff.martial_prowess =
     make_buff(this, "martial_prowess", talents.arms.martial_prowess)
