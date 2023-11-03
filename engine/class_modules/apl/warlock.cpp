@@ -257,7 +257,6 @@ void demonology( player_t* p )
 
 
   items->add_action( "use_item,use_off_gcd=1,name=dreambinder_loom_of_the_great_cycle", "Pre Tyrant TODO Fight Time remains stuff" );
-  items->add_action( "use_item,use_off_gcd=1,name=dreambinder_loom_of_the_great_cycle" );
   items->add_action( "use_item,use_off_gcd=1,name=iridal_the_earths_master" );
   items->add_action( "use_item,name=irideus_fragment" );
   items->add_action( "use_item,name=timebreaching_talon" );
