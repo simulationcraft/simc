@@ -10,7 +10,6 @@
 // Disable noise from healing/defensive actions when simming a single, dps role, character
 // Automate Rune energize in death_knight_action_t::execute() instead of per spell overrides
 // utilize stat_pct_buffs instead of overriding player_t methods
-// Add get_action() handling to diseases, obliterate/frost strike, active_spells.x
 // Standardize debug_cast<T>() over other types of casting where possible
 // Look into Death Strike OH handling (p -> dual_wield()?) and see if it can apply to other DW attacks
 // Unholy:
@@ -696,6 +695,10 @@ public:
     // Frost
     action_t* breath_of_sindragosa_tick;
     action_t* remorseless_winter_tick;
+    action_t* frost_strike_main;
+    action_t* frost_strike_offhand;
+    action_t* frost_strike_sb_main;
+    action_t* frost_strike_sb_offhand;
 
     // Unholy
     propagate_const<action_t*> bursting_sores;
@@ -1083,6 +1086,9 @@ public:
     const spell_data_t* frostwhelps_aid_damage;
     const spell_data_t* enduring_strength_cooldown;
     const spell_data_t* lingering_chill;
+    const spell_data_t* frost_strike_2h;
+    const spell_data_t* frost_strike_mh;
+    const spell_data_t* frost_strike_oh;
     const spell_data_t* frost_t30_2pc; // TODO rename when blizz gives it a name
     const spell_data_t* frost_t30_4pc; // TODO rename when blizz gives it a name
     const spell_data_t* wrath_of_the_frostwyrm_damage;
@@ -4027,7 +4033,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 
 struct razorice_attack_t final : public death_knight_melee_attack_t
 {
-  razorice_attack_t( death_knight_t* player, util::string_view name ) :
+  razorice_attack_t( util::string_view name, death_knight_t* player ) :
     death_knight_melee_attack_t( name, player, player -> spell.razorice_damage )
   {
     school      = SCHOOL_FROST;
@@ -4985,8 +4991,8 @@ struct chill_streak_damage_t final : public death_knight_spell_t
   int hit_count;
   int max_hits;
 
-  chill_streak_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "chill_streak_damage", p, p -> spell.chill_streak_damage )
+  chill_streak_damage_t( util::string_view n, death_knight_t* p ) :
+    death_knight_spell_t( n, p, p -> spell.chill_streak_damage )
   {
     background = proc = true;
     max_hits = as<int>( p -> talent.frost.chill_streak -> effectN( 1 ).base_value() );
@@ -5071,11 +5077,11 @@ struct chill_streak_damage_t final : public death_knight_spell_t
 
 struct chill_streak_t final : public death_knight_spell_t
 {
-  chill_streak_damage_t* damage;
+  action_t* damage;
 
   chill_streak_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "chill_streak", p, p -> talent.frost.chill_streak ),
-    damage( new chill_streak_damage_t( p ) )
+    damage( get_action<chill_streak_damage_t>( "chill_streak_damage", p ) )
   {
     parse_options( options_str );
     add_child( damage );
@@ -5086,7 +5092,7 @@ struct chill_streak_t final : public death_knight_spell_t
 
   void execute() override
   {
-    damage -> hit_count = 0;
+    debug_cast<chill_streak_damage_t*>( damage )->hit_count = 0;
     death_knight_spell_t::execute();
   }
 };
@@ -6363,7 +6369,7 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
 struct frost_strike_strike_t final : public death_knight_melee_attack_t
 {
   bool sb;
-  frost_strike_strike_t( death_knight_t* p, util::string_view n, weapon_t* w, const spell_data_t* s, bool shattering_blade ) :
+  frost_strike_strike_t( util::string_view n, death_knight_t* p, weapon_t* w, const spell_data_t* s, bool shattering_blade ) :
     death_knight_melee_attack_t( n, p, s ), sb( shattering_blade )
   {
     background = special = true;
@@ -6400,33 +6406,31 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
 
 struct frost_strike_t final : public death_knight_melee_attack_t
 {
-  frost_strike_strike_t *mh, *oh, *mh_sb, *oh_sb;
+  action_t *&mh, *&oh, *&mh_sb, *&oh_sb;
   bool sb;
   frost_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "frost_strike", p, p -> talent.frost.frost_strike ),
-    mh( nullptr ), oh( nullptr ), mh_sb( nullptr ), oh_sb( nullptr ), sb( false )
+    mh( p->active_spells.frost_strike_main ), 
+    oh( p->active_spells.frost_strike_offhand ), 
+    mh_sb( p->active_spells.frost_strike_sb_main ), 
+    oh_sb( p->active_spells.frost_strike_sb_offhand), 
+    sb( false )
   {
     parse_options( options_str );
     may_crit = false;
-    const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ?
-      data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
     dual = true;
-    mh = new frost_strike_strike_t(p, "frost_strike", &(p->main_hand_weapon), mh_data, false  );
     add_child( mh );
     if( p -> talent.frost.shattering_blade.ok() )
     {
-      mh_sb = new frost_strike_strike_t( p, "frost_strike_sb", &(p->main_hand_weapon), mh_data, true );
       add_child( mh_sb );
     }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &(p->off_hand_weapon), data().effectN(3).trigger(), false );
       add_child( oh );
       if( p -> talent.frost.shattering_blade.ok() )
       {
-        oh_sb = new frost_strike_strike_t( p, "frost_strike_offhand_sb", &(p->off_hand_weapon), data().effectN(3).trigger(), true );
         add_child( oh_sb );
       }
     }
@@ -8313,7 +8317,7 @@ void runeforge::razorice( special_effect_t& effect )
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
 
   if ( ! p -> active_spells.runeforge_razorice )
-    p -> active_spells.runeforge_razorice = new razorice_attack_t( p, "razorice" );
+    p -> active_spells.runeforge_razorice = get_action<razorice_attack_t>( "razorice", p );
 
   // Store in which hand razorice is equipped, as it affects which abilities proc it
   if ( effect.item -> slot == SLOT_MAIN_HAND )
@@ -8370,7 +8374,7 @@ void runeforge::apocalypse( special_effect_t& effect )
   // Triggering the effects is handled in pet_melee_attack_t::impact()
   p -> runeforge.rune_of_apocalypse = true;
   // Even though a pet procs it, the damage from Pestilence belongs directly to the player in logs
-  p -> active_spells.runeforge_pestilence = new runeforge_apocalypse_pestilence_t( "Pestilence", p );
+  p -> active_spells.runeforge_pestilence = get_action<runeforge_apocalypse_pestilence_t>( "pestilence", p );
 }
 
 void runeforge::hysteria( special_effect_t& effect )
@@ -9153,6 +9157,24 @@ void death_knight_t::create_actions()
     {
       active_spells.remorseless_winter_tick = get_action<remorseless_winter_damage_t>( "remorseless_winter_damage", this );
     }
+
+    if( talent.frost.frost_strike )
+    {
+      const spell_data_t* mh_data = main_hand_weapon.group() == WEAPON_2H ? spell.frost_strike_2h : spell.frost_strike_mh;
+      active_spells.frost_strike_main = get_action<frost_strike_strike_t>( "frost_strike", this, &( main_hand_weapon ), mh_data, false );
+      if (!main_hand_weapon.group() == WEAPON_2H)
+      {
+        active_spells.frost_strike_offhand = get_action<frost_strike_strike_t>( "frost_strike_offhand", this, &( off_hand_weapon ), spell.frost_strike_oh, false );
+        if( talent.frost.shattering_blade.ok() )
+        {
+          active_spells.frost_strike_sb_offhand = get_action<frost_strike_strike_t>( "frost_strike_offhand_sb", this, &( off_hand_weapon ), spell.frost_strike_oh, true );
+        }
+      }
+      if( talent.frost.shattering_blade.ok() )
+      {
+        active_spells.frost_strike_sb_main = get_action<frost_strike_strike_t>( "frost_strike_sb", this, &( main_hand_weapon ), mh_data, true );
+      }
+    }
   }
 
   player_t::create_actions();
@@ -9891,6 +9913,9 @@ void death_knight_t::init_spells()
   spell.piercing_chill_debuff         = find_spell( 377359 );
   spell.runic_empowerment_chance      = find_spell( 81229 );
   spell.obliteration_gains            = find_spell( 281327 );
+  spell.frost_strike_2h               = find_spell( 325464 );
+  spell.frost_strike_mh               = find_spell( 222026 );
+  spell.frost_strike_oh               = find_spell( 66196 );
   // T30 Frost
   spell.frost_t30_2pc                 = find_spell( 405501 );
   spell.frost_t30_4pc                 = find_spell( 405502 );
