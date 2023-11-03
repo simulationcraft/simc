@@ -2288,14 +2288,18 @@ struct rend_dot_t : public warrior_attack_t
 struct rend_t : public warrior_attack_t
 {
   warrior_attack_t* rend_dot;
+  int aoe_targets;
   rend_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "rend", p, p->talents.arms.rend ),
-      rend_dot( nullptr )
+      rend_dot( nullptr ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     tick_may_crit = true;
     hasted_ticks  = true;
     rend_dot      = new rend_dot_t( p );
+    radius = 5;
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2304,6 +2308,21 @@ struct rend_t : public warrior_attack_t
 
     rend_dot->set_target( s->target );
     rend_dot->execute();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p() -> buff.meat_cleaver->decrement();
   }
 
   bool ready() override
@@ -4255,6 +4274,7 @@ struct execute_main_hand_t : public warrior_attack_t
     background = true;
     dual   = true;
     weapon = &( p->main_hand_weapon );
+    radius = 5;
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
   }
 
@@ -4279,7 +4299,7 @@ struct execute_off_hand_t : public warrior_attack_t
     dual     = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon                                       = &( p->off_hand_weapon );
-    //base_multiplier *= 1.0 + p->spec.execute_rank_2->effectN( 1 ).percent();
+    radius = 5;
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
   }
 
@@ -4396,10 +4416,30 @@ struct fury_execute_parent_t : public warrior_attack_t
 
 struct hamstring_t : public warrior_attack_t
 {
-  hamstring_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "hamstring", p, p->spell.hamstring )
+  int aoe_targets;
+  hamstring_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "hamstring", p, p->spell.hamstring ),
+  aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
+
+    radius = 5;
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p() -> buff.meat_cleaver->decrement();
   }
 };
 
@@ -4538,14 +4578,27 @@ struct impending_victory_heal_t : public warrior_heal_t
 struct impending_victory_t : public warrior_attack_t
 {
   impending_victory_heal_t* impending_victory_heal;
+  int aoe_targets;
   impending_victory_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "impending_victory", p, p->talents.warrior.impending_victory ), impending_victory_heal( nullptr )
+    : warrior_attack_t( "impending_victory", p, p->talents.warrior.impending_victory ), impending_victory_heal( nullptr ),
+    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     if ( p->non_dps_mechanics )
     {
       impending_victory_heal = new impending_victory_heal_t( p );
     }
+    radius = 5;
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
   }
 
   void execute() override
@@ -4562,6 +4615,8 @@ struct impending_victory_t : public warrior_attack_t
     {
       p() -> buff.fervid -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.25 );
     }
+
+    p() -> buff.meat_cleaver -> decrement();
   }
 };
 
@@ -6134,11 +6189,13 @@ struct shield_slam_t : public warrior_attack_t
   double rage_gain;
   action_t* earthen_smash;
   action_t* fervid_bite;
+  int aoe_targets;
   shield_slam_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
     rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) ),
     earthen_smash( get_action<earthen_smash_t>( "earthen_smash", p ) ),
-    fervid_bite( get_action<fervid_bite_t>( "fervid_bite", p ) )
+    fervid_bite( get_action<fervid_bite_t>( "fervid_bite", p ) ),
+    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
@@ -6147,12 +6204,24 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) )
         base_multiplier *= 1.0 + p -> sets -> set( WARRIOR_PROTECTION, T30, B2 ) -> effectN( 1 ).percent();
+
+    radius = 5;
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
   }
 
     void init() override
   {
     warrior_attack_t::init();
     rage_gain += p()->legendary.the_wall->effectN( 2 ).resource( RESOURCE_RAGE );
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
   }
 
   double action_multiplier() const override
@@ -6244,6 +6313,8 @@ struct shield_slam_t : public warrior_attack_t
       earthen_smash -> execute_on_target( target );
     }
 
+    p() -> buff.meat_cleaver->decrement();
+
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.shield_slam );
   }
 
@@ -6330,6 +6401,7 @@ struct slam_t : public warrior_attack_t
     parse_options( options_str );
     weapon                       = &( p->main_hand_weapon );
     affected_by.crushing_assault = true;
+    radius = 5;
     if ( p->talents.fury.storm_of_swords->ok() )
     {
       energize_amount += p->talents.fury.storm_of_swords->effectN( 6 ).resource( RESOURCE_RAGE );
@@ -6502,16 +6574,37 @@ struct victory_rush_heal_t : public warrior_heal_t
 struct victory_rush_t : public warrior_attack_t
 {
   victory_rush_heal_t* victory_rush_heal;
+  int aoe_targets;
 
   victory_rush_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "victory_rush", p, p->spell.victory_rush ), victory_rush_heal( new victory_rush_heal_t( p ) )
+    : warrior_attack_t( "victory_rush", p, p->spell.victory_rush ), victory_rush_heal( new victory_rush_heal_t( p ) ),
+    aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     if ( p->non_dps_mechanics )
     {
+      // With imp ww while you do hit every target, you still only get the single MT heal
       execute_action = victory_rush_heal;
     }
     cooldown->duration = timespan_t::from_seconds( 1000.0 );
+
+    radius = 5;
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p() -> buff.meat_cleaver->decrement();
   }
 };
 
