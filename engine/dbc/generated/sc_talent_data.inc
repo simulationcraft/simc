@@ -1,4 +1,4 @@
-// 572 talents, wow build 10.1.7.51886
+// 572 talents, wow build 10.2.0.52038
 static std::array<talent_data_t, 572> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -213,8 +213,8 @@ static std::array<talent_data_t, 572> __talent_data { {
   { "Obliteration"                      , 22109, 0x00, 0x0020,  251,   1,   6,  281238,       0,  0 },
   { "Summon Gargoyle"                   , 22110, 0x00, 0x0020,  252,   1,   6,   49206,       0,  0 },
   { "Blinding Powder"                   , 22114, 0x00, 0x0008,  260,   1,   4,  256165,       0,  0 },
-  { "Prey on the Weak"                  , 22115, 0x00, 0x0008,    0,   2,   4,  131511,       0,  0 },
-  { "Weaponmaster"                      , 22118, 0x00, 0x0008,  260,   0,   0,  200733,       0,  0 },
+  { "Sting Like a Bee"                  , 22115, 0x00, 0x0008,    0,   2,   4,  131511,       0,  0 },
+  { "Airborne Irritant"                 , 22118, 0x00, 0x0008,  260,   0,   0,  200733,       0,  0 },
   { "Quick Draw"                        , 22119, 0x00, 0x0008,  260,   1,   0,  196938,       0,  0 },
   { "Ghostly Strike"                    , 22120, 0x00, 0x0008,  260,   2,   0,  196937,       0,  0 },
   { "Iron Stomach"                      , 22121, 0x00, 0x0008,  260,   0,   3,  193546,       0,  0 },
@@ -299,7 +299,7 @@ static std::array<talent_data_t, 572> __talent_data { {
   { "Blindside"                         , 22339, 0x00, 0x0008,  259,   2,   0,  328085,       0,  0 },
   { "Leeching Poison"                   , 22340, 0x00, 0x0008,  259,   0,   3,  280716,       0,  0 },
   { "Venom Rush"                        , 22343, 0x00, 0x0008,  259,   0,   5,  152152,       0,  0 },
-  { "Exsanguinate"                      , 22344, 0x00, 0x0008,  259,   2,   5,  200806,       0,  0 },
+  { "Sanguine Blades"                   , 22344, 0x00, 0x0008,  259,   2,   5,  200806,       0,  0 },
   { "Thrill of the Hunt"                , 22347, 0x00, 0x0004,  253,   1,   3,  257944,       0,  0 },
   { "Sundering"                         , 22351, 0x00, 0x0040,  263,   2,   5,  197214,       0,  0 },
   { "Stormkeeper"                       , 22352, 0x00, 0x0040,  263,   1,   5,  320137,       0,  0 },
