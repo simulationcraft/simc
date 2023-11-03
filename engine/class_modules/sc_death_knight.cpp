@@ -3841,14 +3841,14 @@ struct unholy_blight_dot_t final : public death_knight_disease_t
   }
 };
 
-struct unholy_blight_t final : public death_knight_disease_t
+struct unholy_blight_t final : public death_knight_spell_t
 {
   unholy_blight_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_disease_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
+    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
       dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
       vp( get_action<virulent_plague_t>( "virulent_plague", p )  )
   {
-    may_dodge = may_parry = harmful = background = false;
+    may_dodge = may_parry = harmful = false;
     tick_zero = true;
     track_cd_waste = true;
     target = p;
@@ -3860,7 +3860,7 @@ struct unholy_blight_t final : public death_knight_disease_t
 
   void tick( dot_t* d ) override
   {
-    death_knight_disease_t::tick( d );
+    death_knight_spell_t::tick( d );
     dot -> execute_on_target( d -> state -> target );
     vp -> execute_on_target( d -> state -> target );
   }
