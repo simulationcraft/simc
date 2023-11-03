@@ -3848,7 +3848,7 @@ struct unholy_blight_t final : public death_knight_disease_t
       dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
       vp( get_action<virulent_plague_t>( "virulent_plague", p )  )
   {
-    may_dodge = may_parry = harmful = false;
+    may_dodge = may_parry = harmful = background = false;
     tick_zero = true;
     track_cd_waste = true;
     target = p;
