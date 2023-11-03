@@ -2195,16 +2195,6 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     this -> weapon = &( p -> main_hand_weapon );
     this -> weapon_multiplier = 1.0;
     this -> base_execute_time = this -> weapon -> swing_time;
-
-    if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
-      {
-        auto proxy = proxy_action;
-        auto it    = range::find( proxy->child_action, this -> data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          this -> stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
   }
 
   void execute() override
@@ -2535,24 +2525,20 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 struct army_ghoul_pet_t : public base_ghoul_pet_t
 {
   pet_spell_t<army_ghoul_pet_t>* ruptured_viscera;
-  action_t* proxy_action;
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
-    action_t* proxy_action;
     army_claw_t( army_ghoul_pet_t* p, action_t* a, util::string_view options_str ) :
-      pet_melee_attack_t( p, "claw", p -> dk() -> pet_spell.army_claw ), proxy_action( a )
+      pet_melee_attack_t( p, "claw", p -> dk() -> pet_spell.army_claw )
     {
       parse_options( options_str );
-
     }
   };
   
   struct ruptured_viscera_t final : public pet_spell_t<army_ghoul_pet_t>
   {
-    action_t* proxy_action;
-    ruptured_viscera_t( army_ghoul_pet_t* p, action_t* a ) :
-      pet_spell_t( p, "ruptured_viscera", p -> dk() -> pet_spell.ruptured_viscera ), proxy_action( a )
+    ruptured_viscera_t( army_ghoul_pet_t* p ) :
+      pet_spell_t( p, "ruptured_viscera", p -> dk() -> pet_spell.ruptured_viscera )
     {
       aoe = -1;
       background = true;
@@ -2569,7 +2555,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   };
 
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
-    base_ghoul_pet_t( owner, name, true ), proxy_action( nullptr )
+    base_ghoul_pet_t( owner, name, true )
   {
     affected_by_commander_of_the_dead = true;
   }
@@ -2602,9 +2588,9 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::init_spells();
 
-    if ( dk()->talent.unholy.ruptured_viscera.ok() && proxy_action )
+    if ( dk()->talent.unholy.ruptured_viscera.ok() )
     {
-      ruptured_viscera = new ruptured_viscera_t( this, proxy_action );
+      ruptured_viscera = new ruptured_viscera_t( this );
     }
   }
 
@@ -2653,10 +2639,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
   pet_spell_t<gargoyle_pet_t>* gargoyle_strike;
-  action_t* proxy_action;
 
   gargoyle_pet_t( death_knight_t* owner, action_t* a ) :
-    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr ), proxy_action( a )
+    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -2664,9 +2649,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    action_t* proxy_action;
     gargoyle_strike_t( gargoyle_pet_t* p, action_t* a ) :
-      pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike ), proxy_action( a )
+      pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     { 
       background = repeating = true;
     }
@@ -3253,15 +3237,6 @@ struct magus_pet_t : public death_knight_pet_t
   magus_pet_t( death_knight_t* owner, util::string_view name = "army_magus" ) :
     death_knight_pet_t( owner, name, true, false ), proxy_action( nullptr )
   {
-    if( name == "army_magus" && dk()->find_action( "army_of_the_dead" ) )
-    {
-      proxy_action = dk()->find_action( "army_of_the_dead" );
-    }
-    if( name == "apoc_magus" && dk()->find_action( "apocalypse" ) )
-    {
-      proxy_action = dk()->find_action( "apocalypse" );
-    }
-
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
   }
@@ -9082,7 +9057,7 @@ void death_knight_t::create_actions()
     {
       const spell_data_t* mh_data = main_hand_weapon.group() == WEAPON_2H ? spell.frost_strike_2h : spell.frost_strike_mh;
       active_spells.frost_strike_main = get_action<frost_strike_strike_t>( "frost_strike", this, &( main_hand_weapon ), mh_data, false );
-      if (!main_hand_weapon.group() == WEAPON_2H)
+      if ( main_hand_weapon.group() != WEAPON_2H)
       {
         active_spells.frost_strike_offhand = get_action<frost_strike_strike_t>( "frost_strike_offhand", this, &( off_hand_weapon ), spell.frost_strike_oh, false );
         if( talent.frost.shattering_blade.ok() )
