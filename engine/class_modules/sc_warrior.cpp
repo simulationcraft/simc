@@ -6613,7 +6613,7 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
 
     if ( p()->talents.fury.improved_whirlwind->ok() )
     {
-      const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets 
+      const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets
       p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
                         p()->gain.whirlwind );
 
@@ -6629,10 +6629,10 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
       oh_seismic_reverberation_attack->execute_on_target( target );
     }
 
-    make_event( *sim, data().effectN( 6 ).time_value(), [ this ]() { mh_other_attack->execute_on_target( target ); } );
-    make_event( *sim, data().effectN( 7 ).time_value(), [ this ]() { oh_other_attack->execute_on_target( target ); } );
-    make_event( *sim, data().effectN( 8 ).time_value(), [ this ]() { mh_other_attack->execute_on_target( target ); } );
-    make_event( *sim, data().effectN( 9 ).time_value(), [ this ]() { oh_other_attack->execute_on_target( target ); } );
+    make_event( *sim, timespan_t::from_millis(data().effectN( 6 ).misc_value1()), [ this ]() { mh_other_attack->execute_on_target( target ); } );
+    make_event( *sim, timespan_t::from_millis(data().effectN( 7 ).misc_value1()), [ this ]() { oh_other_attack->execute_on_target( target ); } );
+    make_event( *sim, timespan_t::from_millis(data().effectN( 8 ).misc_value1()), [ this ]() { mh_other_attack->execute_on_target( target ); } );
+    make_event( *sim, timespan_t::from_millis(data().effectN( 9 ).misc_value1()), [ this ]() { oh_other_attack->execute_on_target( target ); } );
   }
 
   bool ready() override
