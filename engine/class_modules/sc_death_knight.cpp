@@ -1331,25 +1331,20 @@ public:
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_parry_rating() const override;
   double    composite_parry() const override;
-  double    composite_dodge() const override;
   double    composite_leech() const override;
   double    composite_melee_expertise( const weapon_t* ) const override;
-  double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
   double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
   double    composite_crit_avoidance() const override;
-  double    composite_mastery_value() const override;
-  double    composite_mastery() const override;
   void      combat_begin() override;
   void      activate() override;
   void      reset() override;
   void      arise() override;
   void      adjust_dynamic_cooldowns() override;
   void      assess_heal( school_e, result_amount_type, action_state_t* ) override;
-  void      assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void      assess_damage_imminent( school_e, result_amount_type, action_state_t* ) override;
   void      target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void      do_damage( action_state_t* ) override;
@@ -3484,6 +3479,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     parse_buff_effects( p()->buffs.hemostasis );
     parse_buff_effects( p()->buffs.crimson_scourge );
     parse_buff_effects( p()->buffs.ossuary );
+    parse_buff_effects( p()->buffs.coagulopathy );
 
     // Frost
     parse_buff_effects( p()->buffs.chilling_rage );
@@ -3846,16 +3842,6 @@ struct blood_plague_t final : public death_knight_disease_t
     }
   }
 
-  double composite_ta_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_disease_t::composite_ta_multiplier( state );
-
-    if( p() -> specialization() == DEATH_KNIGHT_BLOOD)
-      m *= 1.0 + p() -> buffs.coagulopathy -> stack_value();
-
-    return m;
-  }
-
   void tick( dot_t* d ) override
   {
     death_knight_disease_t::tick( d );
@@ -3921,8 +3907,8 @@ struct frost_fever_t final : public death_knight_disease_t
 // Virulent Plague ====================================================
 struct virulent_eruption_t final : public death_knight_disease_t
 {
-  virulent_eruption_t( death_knight_t* p ) :
-    death_knight_disease_t( "virulent_eruption", p, p -> spell.virulent_erruption )
+  virulent_eruption_t( util::string_view n, death_knight_t* p ) :
+    death_knight_disease_t( n, p, p -> spell.virulent_erruption )
   {
     background = split_aoe_damage = true;
     aoe = -1;
@@ -6146,8 +6132,8 @@ struct epidemic_t final : public death_knight_spell_t
 
 struct bursting_sores_t final : public death_knight_spell_t
 {
-  bursting_sores_t( death_knight_t* p ) :
-    death_knight_spell_t( "bursting_sores", p, p -> spell.bursting_sores_damage )
+  bursting_sores_t( util::string_view n, death_knight_t* p ) :
+    death_knight_spell_t( n, p, p -> spell.bursting_sores_damage )
   {
     background = true;
     aoe = -1;
@@ -6178,8 +6164,8 @@ struct bursting_sores_t final : public death_knight_spell_t
 
 struct festering_wound_t final : public death_knight_spell_t
 {
-  festering_wound_t( death_knight_t* p ) :
-    death_knight_spell_t( "festering_wound", p, p -> spell.festering_wound_damage )
+  festering_wound_t( util::string_view n, death_knight_t* p ) :
+    death_knight_spell_t( n, p, p -> spell.festering_wound_damage )
   {
     background = true;
   }
@@ -7354,8 +7340,8 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
   double biting_cold_target_threshold;
   bool triggered_biting_cold;
 
-  remorseless_winter_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "remorseless_winter_damage", p, p -> spec.remorseless_winter -> effectN( 2 ).trigger() ),
+  remorseless_winter_damage_t( util::string_view n, death_knight_t* p ) :
+    death_knight_spell_t( n, p, p -> spec.remorseless_winter -> effectN( 2 ).trigger() ),
     biting_cold_target_threshold( 0 ), triggered_biting_cold( false )
   {
     background = true;
@@ -7615,8 +7601,8 @@ struct scourge_strike_t final : public scourge_strike_base_t
 struct shattering_bone_t final : public death_knight_spell_t
 {
   double boneshield_charges_consumed;
-  shattering_bone_t( death_knight_t* p ) :
-    death_knight_spell_t( "shattering bone", p, p -> spell.shattering_bone_damage )
+  shattering_bone_t( util::string_view n, death_knight_t* p ) :
+    death_knight_spell_t( n, p, p -> spell.shattering_bone_damage )
     {
       background = true;
       aoe = -1;
@@ -8174,8 +8160,8 @@ struct icebound_fortitude_t final : public death_knight_spell_t
 
 struct mark_of_blood_heal_t final : public death_knight_heal_t
 {
-  mark_of_blood_heal_t( death_knight_t* p ) : // The data is removed and switched to the talent spell on PTR 8.3.0.32805
-    death_knight_heal_t( "mark_of_blood_heal", p, p -> talent.blood.mark_of_blood )
+  mark_of_blood_heal_t( util::string_view n, death_knight_t* p ) : // The data is removed and switched to the talent spell on PTR 8.3.0.32805
+    death_knight_heal_t( n, p, p -> talent.blood.mark_of_blood )
   {
     may_crit = callbacks = false;
     background = dual = true;
@@ -9111,12 +9097,12 @@ void death_knight_t::create_actions()
   // Class talents
   if ( talent.blood_draw.ok() )
   {
-    active_spells.blood_draw = new blood_draw_t( "blood_draw", this );
+    active_spells.blood_draw = get_action<blood_draw_t>( "blood_draw", this );
   }
 
   if ( talent.abomination_limb.ok() )
   {
-    active_spells.abomination_limb_damage = new abomination_limb_damage_t( "abomination_limb_damage", this );
+    active_spells.abomination_limb_damage = get_action<abomination_limb_damage_t>( "abomination_limb_damage", this );
   }
 
   // Blood
@@ -9124,11 +9110,11 @@ void death_knight_t::create_actions()
   {
     if ( talent.blood.mark_of_blood.ok() )
     {
-      active_spells.mark_of_blood_heal = new mark_of_blood_heal_t( this );
+      active_spells.mark_of_blood_heal = get_action<mark_of_blood_heal_t>( "mark_of_blood_heal", this );
     }
     if ( talent.blood.shattering_bone.ok() )
     {
-      active_spells.shattering_bone = new shattering_bone_t( this );
+      active_spells.shattering_bone = get_action<shattering_bone_t>( "shattering_bone", this );
     }
   }
 
@@ -9137,22 +9123,22 @@ void death_knight_t::create_actions()
   {
     if ( spec.festering_wound->ok() )
     {
-      active_spells.festering_wound = new festering_wound_t( this );
+      active_spells.festering_wound = get_action<festering_wound_t>( "festering_wound", this );
     }
 
     if ( talent.unholy.bursting_sores.ok() )
     {
-      active_spells.bursting_sores = new bursting_sores_t( this );
+      active_spells.bursting_sores = get_action<bursting_sores_t>( "bursting_sores", this );
     }
 
     if ( talent.unholy.unholy_pact.ok() )
     {
-      active_spells.unholy_pact_damage = new unholy_pact_damage_t( "unholy_pact_damage", this );
+      active_spells.unholy_pact_damage = get_action<unholy_pact_damage_t>( "unholy_pact_damage", this );
     }
 
     if ( talent.unholy.outbreak.ok() || talent.unholy.unholy_blight.ok() )
     {
-      active_spells.virulent_eruption = new virulent_eruption_t( this );
+      active_spells.virulent_eruption = get_action<virulent_eruption_t>( "virulent_eruption", this );
     }
   }
 
@@ -9160,12 +9146,12 @@ void death_knight_t::create_actions()
   {
     if ( talent.frost.breath_of_sindragosa.ok() )
     {
-      active_spells.breath_of_sindragosa_tick = new breath_of_sindragosa_tick_t( "breath_of_sindragosa_damage", this );
+      active_spells.breath_of_sindragosa_tick = get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_damage", this );
     }
 
     if ( spec.remorseless_winter->ok() )
     {
-      active_spells.remorseless_winter_tick = new remorseless_winter_damage_t( this );
+      active_spells.remorseless_winter_tick = get_action<remorseless_winter_damage_t>( "remorseless_winter_damage", this );
     }
   }
 
@@ -10575,14 +10561,6 @@ void death_knight_t::assess_heal( school_e school, result_amount_type t, action_
   player_t::assess_heal( school, t, s );
 }
 
-// death_knight_t::assess_damage ============================================
-
-void death_knight_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
-{
-  player_t::assess_damage( school, type, s );
-
-}
-
 // death_knight_t::assess_damage_imminent ===================================
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
@@ -10850,24 +10828,7 @@ double death_knight_t::composite_parry() const
   return parry;
 }
 
-// death_knight_t::composite_dodge ============================================
-
-double death_knight_t::composite_dodge() const
-{
-  double dodge = player_t::composite_dodge();
-
-  return dodge;
-}
-
 // Player multipliers
-
-double death_knight_t::composite_player_target_multiplier( player_t* target, school_e s ) const
-{
-  double m = player_t::composite_player_target_multiplier( target, s );
-
-  return m;
-}
-
 double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
@@ -11038,23 +10999,6 @@ double death_knight_t::composite_crit_avoidance() const
   c += spec.blood_death_knight -> effectN( 8 ).percent();
 
   return c;
-}
-
-// death_knight_t::composite_mastery_value ===================================
-// Additive, post spec mastery modifiers. 
-double death_knight_t::composite_mastery_value() const
-{
-  double m = player_t::composite_mastery_value();
-
-  return m;
-}
-
-// death_knight_t::composite_mastery ========================================
-double death_knight_t::composite_mastery() const
-{
-  double m = player_t::composite_mastery();
-
-  return m;
 }
 
 // death_knight_t::combat_begin =============================================
