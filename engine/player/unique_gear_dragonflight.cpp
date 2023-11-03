@@ -4955,13 +4955,14 @@ void drogbar_stones( special_effect_t& effect )
 
     drogbar_stones_damage->player->callbacks.register_callback_execute_function(
         drogbar_stones_damage->spell_id,
-        [ buff, drogbar_stones_damage, damage_effect, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        [ buff, damage_effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
           if ( buff->check() )
           {
-            damage_effect->execute();
+            damage_effect->execute_on_target( s->target );
             buff->expire();
           }
         } );
+
     effect.player->special_effects.push_back( drogbar_stones_damage );
     auto damage = new dbc_proc_callback_t( effect.player, *drogbar_stones_damage );
     damage->initialize();
@@ -8315,7 +8316,7 @@ void rallied_to_victory( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       if ( effect.player->dragonflight_opts.rallied_to_victory_ally_estimate )
       {

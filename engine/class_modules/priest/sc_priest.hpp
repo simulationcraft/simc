@@ -970,6 +970,7 @@ public:
       parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+      parse_buff_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
       {
@@ -1101,6 +1102,12 @@ public:
   {
     timespan_t dd = ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
     return dd;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    timespan_t tt = ab::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects );
+    return tt;
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override

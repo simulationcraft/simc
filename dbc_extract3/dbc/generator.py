@@ -1473,6 +1473,9 @@ class SpellDataGenerator(DataGenerator):
             ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
             ( 52437,  0 ),          # Sudden Death (Fury buff)
             ( 425534, 0 ),          # T31 prot Fervid Bite
+            ( 385228, 0 ),          # Seismic Reverbration Arms WW
+            ( 385233, 0 ),          # Seismic Reverbration Fury MH WW
+            ( 385234, 0 ),          # Seismic Reverbration Fury OH WW
         ),
 
         # Paladin:

@@ -13852,7 +13852,7 @@ void player_t::add_active_dot( const dot_t* dot )
   if ( !dot )
     return;
 
-  if ( active_dots.size() < dot->internal_id + 1 )
+  if ( active_dots.size() < as<size_t>( dot->internal_id + 1 ) )
     active_dots.resize( dot->internal_id + 1 );
 
   active_dots[ dot->internal_id ]++;
@@ -13863,7 +13863,7 @@ void player_t::add_active_dot( const dot_t* dot )
 void player_t::remove_active_dot( const dot_t* dot )
 {
   assert( dot );
-  assert( active_dots.size() > dot->internal_id );
+  assert( active_dots.size() > as<size_t>( dot->internal_id ) );
   assert( active_dots[ dot->internal_id ] > 0 );
 
   if ( !dot )
@@ -13878,7 +13878,7 @@ unsigned player_t::get_active_dots( const dot_t* dot ) const
 {
   assert( dot );
 
-  if ( !dot || active_dots.size() <= dot->internal_id )
+  if ( !dot || active_dots.size() <= as<size_t>( dot->internal_id ) )
     return 0;
 
   return active_dots[ dot->internal_id ];

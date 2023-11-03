@@ -2310,6 +2310,11 @@ public:
     return ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
   }
 
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    return ab::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects );
+  }
+
   timespan_t cooldown_duration() const override
   {
     return ab::cooldown_duration() * get_buff_effects_value( recharge_multiplier_buffeffects );
@@ -9036,7 +9041,7 @@ struct druid_melee_t : public Base
       ab::range -= 2;
 
     // Manually add to da_multiplier as Tiger's Fury + Carnivorious Instinct effect on auto attacks is scripted
-    auto eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
+    const auto& eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
     auto val = eff.percent();
     // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
     val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
