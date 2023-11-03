@@ -2056,8 +2056,7 @@ struct pet_action_t : public T_ACTION
     {
       proxy_action = p->dk()->find_action( "apocalypse" );
     }
-    if ( ( p->pet_name == "dancing_rune_weapon" || p->pet_name == "everlasting_bond" ) &&
-         p->dk()->find_action( "dancing_rune_weapon" ) )
+    if ( ( p->pet_name == "dancing_rune_weapon" || p->pet_name == "everlasting_bond" ) && p->dk()->find_action( "dancing_rune_weapon" ) )
     {
       proxy_action = p->dk()->find_action( "dancing_rune_weapon" );
     }
@@ -3140,7 +3139,6 @@ struct bloodworm_pet_t : public death_knight_pet_t
 
 struct magus_pet_t : public death_knight_pet_t
 {
-  action_t* proxy_action;
   struct magus_td_t : public actor_target_data_t
   {
     buff_t* frostbolt_debuff;
@@ -3184,9 +3182,8 @@ struct magus_pet_t : public death_knight_pet_t
 
   struct frostbolt_magus_t final : public magus_spell_t
   {
-    action_t* proxy_action;
-    frostbolt_magus_t( magus_pet_t* p, action_t* a, util::string_view options_str ) :
-      magus_spell_t( p, "frostbolt", p -> dk() -> pet_spell.frostbolt, options_str ), proxy_action( a )
+    frostbolt_magus_t( magus_pet_t* p, util::string_view options_str ) :
+      magus_spell_t( p, "frostbolt", p -> dk() -> pet_spell.frostbolt, options_str )
     {
       // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
       cooldown -> duration = dk() -> pet_spell.frostbolt -> duration();
@@ -3207,9 +3204,8 @@ struct magus_pet_t : public death_knight_pet_t
 
   struct shadow_bolt_magus_t final : public magus_spell_t
   {
-    action_t* proxy_action;
-    shadow_bolt_magus_t( magus_pet_t* p, action_t* a, util::string_view options_str ) :
-      magus_spell_t( p, "shadow_bolt", p -> dk() -> pet_spell.shadow_bolt, options_str ), proxy_action( a )
+    shadow_bolt_magus_t( magus_pet_t* p, util::string_view options_str ) :
+      magus_spell_t( p, "shadow_bolt", p -> dk() -> pet_spell.shadow_bolt, options_str )
     {
       if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
       {
@@ -3235,7 +3231,7 @@ struct magus_pet_t : public death_knight_pet_t
   };
 
   magus_pet_t( death_knight_t* owner, util::string_view name = "army_magus" ) :
-    death_knight_pet_t( owner, name, true, false ), proxy_action( nullptr )
+    death_knight_pet_t( owner, name, true, false )
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
@@ -3266,8 +3262,8 @@ struct magus_pet_t : public death_knight_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "frostbolt" ) return new frostbolt_magus_t( this, proxy_action, options_str );
-    if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, proxy_action, options_str );
+    if ( name == "frostbolt" ) return new frostbolt_magus_t( this, options_str );
+    if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, options_str );
 
     if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
@@ -3696,7 +3692,10 @@ struct death_knight_disease_t : public death_knight_spell_t
 {
   death_knight_disease_t( util::string_view n, death_knight_t* p, const spell_data_t* s ) :
     death_knight_spell_t( n, p, s )
-  { }
+  {
+    tick_may_crit = background = true;
+    may_miss = may_crit = hasted_ticks = false;
+  }
 
   void tick( dot_t* d ) override
   {
@@ -3716,8 +3715,7 @@ struct blood_plague_heal_t final : public death_knight_heal_t
   blood_plague_heal_t( util::string_view name, death_knight_t* p ) :
     death_knight_heal_t( name, p, p -> spell.blood_plague )
   {
-    background = true;
-    callbacks = may_crit = may_miss = false;
+    callbacks = false;
     target = p;
     // Tick time, duration and healing amount handled by the damage
     attack_power_mod.direct = attack_power_mod.tick = 0;
@@ -3730,8 +3728,6 @@ struct blood_plague_t final : public death_knight_disease_t
   blood_plague_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
     death_knight_disease_t( name, p, p -> spell.blood_plague )
   {
-    tick_may_crit = background = true;
-    may_miss = may_crit = hasted_ticks = false;
     base_tick_time *= 1.0 + p -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
     heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
 
@@ -3771,9 +3767,6 @@ struct frost_fever_t final : public death_knight_disease_t
   {
     ap_type = attack_power_type::WEAPON_BOTH;
 
-    tick_may_crit = background = true;
-    may_miss = may_crit = hasted_ticks = false;
-
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
     {
       ap_type = attack_power_type::WEAPON_MAINHAND;
@@ -3811,7 +3804,7 @@ struct virulent_eruption_t final : public death_knight_disease_t
   virulent_eruption_t( util::string_view n, death_knight_t* p ) :
     death_knight_disease_t( n, p, p -> spell.virulent_erruption )
   {
-    background = split_aoe_damage = true;
+    may_crit = split_aoe_damage = true;
     aoe = -1;
   }
 };
@@ -3822,10 +3815,7 @@ struct virulent_plague_t final : public death_knight_disease_t
     death_knight_disease_t( name, p, p -> spell.virulent_plague ),
       ff( get_action<frost_fever_t>( "frost_fever", p, true ) ),
       bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
-  {
-    tick_may_crit = background = true;
-    may_miss = may_crit = hasted_ticks = false;
-  }
+  {}
   void impact( action_state_t* s ) override
   {
     death_knight_disease_t::impact( s );
@@ -3846,8 +3836,7 @@ struct unholy_blight_dot_t final : public death_knight_disease_t
   unholy_blight_dot_t( util::string_view name, death_knight_t* p ) :
     death_knight_disease_t( name, p, p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
   {
-    tick_may_crit = background = tick_on_application = true;
-    may_miss = may_crit = hasted_ticks = false;
+    tick_on_application = true;
   }
 };
 
@@ -3858,7 +3847,7 @@ struct unholy_blight_t final : public death_knight_disease_t
       dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
       vp( get_action<virulent_plague_t>( "virulent_plague", p )  )
   {
-    may_crit = may_miss = may_dodge = may_parry = hasted_ticks = harmful = false;
+    may_dodge = may_parry = harmful = false;
     tick_zero = true;
     track_cd_waste = true;
     target = p;
@@ -3931,7 +3920,6 @@ struct razorice_attack_t final : public death_knight_melee_attack_t
   razorice_attack_t( util::string_view name, death_knight_t* player ) :
     death_knight_melee_attack_t( name, player, player -> spell.razorice_damage )
   {
-    school      = SCHOOL_FROST;
     may_miss    = callbacks = false;
     background  = proc = true;
 
@@ -4273,12 +4261,13 @@ struct apocalypse_t final : public death_knight_melee_attack_t
 
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
     {
-        p()->pets.apoc_magus.spawn( summon_duration, 1 );
+      p()->pets.apoc_magus.spawn( summon_duration, 1 );
+    }
 
-      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
-      {
-        p() -> pets.apoc_magus.spawn( summon_duration, 1 );
-      }
+    // Tier set summons a magus even if the talent is not taken
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
+    {
+      p()->pets.apoc_magus.spawn( summon_duration, 1 );
     }
 
     if ( p() -> talent.unholy.apocalypse.ok() )
@@ -9057,7 +9046,7 @@ void death_knight_t::create_actions()
     {
       const spell_data_t* mh_data = main_hand_weapon.group() == WEAPON_2H ? spell.frost_strike_2h : spell.frost_strike_mh;
       active_spells.frost_strike_main = get_action<frost_strike_strike_t>( "frost_strike", this, &( main_hand_weapon ), mh_data, false );
-      if ( main_hand_weapon.group() != WEAPON_2H)
+      if( main_hand_weapon.group() != WEAPON_2H )
       {
         active_spells.frost_strike_offhand = get_action<frost_strike_strike_t>( "frost_strike_offhand", this, &( off_hand_weapon ), spell.frost_strike_oh, false );
         if( talent.frost.shattering_blade.ok() )
