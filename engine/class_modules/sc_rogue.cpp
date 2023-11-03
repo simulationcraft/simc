@@ -4105,7 +4105,7 @@ struct envenom_t : public rogue_attack_t
 
     // Trigger Envenom buff before impact() so that poison procs from Envenom itself benefit
     // 2023-10-05 -- Envenom spell no longer has a base 1s duration, hard code for now
-    timespan_t envenom_duration = 1_s * ( 1 + cast_state( state )->get_combo_points() ) +
+    timespan_t envenom_duration = ( 1_s * cast_state( state )->get_combo_points() ) +
                                   p()->talent.assassination.twist_the_knife->effectN( 1 ).time_value();
     p()->buffs.envenom->trigger( envenom_duration );
 
