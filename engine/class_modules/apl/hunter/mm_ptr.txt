@@ -64,8 +64,8 @@ actions.trickshots+=/wailing_arrow
 actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery
 actions.trickshots+=/barrage,if=active_enemies>7
 actions.trickshots+=/volley
-actions.trickshots+=/trueshot,if=buff.trueshot.down
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots
+actions.trickshots+=/trueshot,if=!raid_event.adds.exists|(raid_event.adds.up&raid_event.adds.remains>=10)|(!raid_event.adds.up&raid_event.adds.in>60)
 # For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Generally only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise. 
 actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|buff.trueshot.up|full_recharge_time<cast_time+gcd))
 # For no Serpentstalker's Trickery, target the highest Latent Poison stack. Same general rules as the previous line.
