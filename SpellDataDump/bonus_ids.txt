@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.5.50438 Live
+SimulationCraft 1015-01 for World of Warcraft 10.2.0.52038 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4669,45 +4669,45 @@ bonus_id={ 9269 }, quality={ legendary }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
 bonus_id={ 9270 }, quality={ legendary }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
 bonus_id={ 9271 }, quality={ legendary }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
 bonus_id={ 9272 }, quality={ legendary }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
-bonus_id={ 9294 }, quality={ uncommon }
-bonus_id={ 9295 }, quality={ uncommon }
-bonus_id={ 9296 }, quality={ rare }
-bonus_id={ 9297 }, quality={ rare }
-bonus_id={ 9298 }, quality={ rare }
-bonus_id={ 9299 }, quality={ rare }
-bonus_id={ 9300 }, quality={ rare }
-bonus_id={ 9301 }, quality={ rare }
-bonus_id={ 9302 }, quality={ rare }
-bonus_id={ 9303 }, quality={ rare }
-bonus_id={ 9304 }, quality={ rare }
-bonus_id={ 9305 }, quality={ rare }
-bonus_id={ 9306 }, quality={ epic }
-bonus_id={ 9307 }, quality={ epic }
-bonus_id={ 9308 }, quality={ epic }
-bonus_id={ 9309 }, quality={ epic }
+bonus_id={ 9294 }, desc={ Dragonflight Season 2 }, quality={ uncommon }
+bonus_id={ 9295 }, desc={ Dragonflight Season 2 }, quality={ uncommon }
+bonus_id={ 9296 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9297 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9298 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9299 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9300 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9301 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9302 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9303 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9304 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9305 }, desc={ Dragonflight Season 2 }, quality={ rare }
+bonus_id={ 9306 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9307 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9308 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9309 }, desc={ Dragonflight Season 2 }, quality={ epic }
 bonus_id={ 9310 }, quality={ legendary }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
 bonus_id={ 9311 }, base_ilevel={ 366 }
-bonus_id={ 9313 }, quality={ epic }
-bonus_id={ 9314 }, quality={ epic }
-bonus_id={ 9315 }, quality={ epic }
-bonus_id={ 9316 }, quality={ epic }
-bonus_id={ 9317 }, quality={ epic }
-bonus_id={ 9318 }, quality={ epic }
-bonus_id={ 9319 }, quality={ epic }
-bonus_id={ 9320 }, quality={ epic }
-bonus_id={ 9321 }, quality={ epic }
-bonus_id={ 9322 }, quality={ epic }
-bonus_id={ 9323 }, quality={ epic }
-bonus_id={ 9324 }, quality={ epic }
-bonus_id={ 9325 }, quality={ epic }
-bonus_id={ 9327 }, quality={ epic }
-bonus_id={ 9328 }, quality={ epic }
-bonus_id={ 9329 }, quality={ epic }
-bonus_id={ 9330 }, quality={ epic }
-bonus_id={ 9331 }, quality={ epic }
-bonus_id={ 9332 }, quality={ epic }
-bonus_id={ 9333 }, quality={ epic }
-bonus_id={ 9334 }, quality={ epic }
+bonus_id={ 9313 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9314 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9315 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9316 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9317 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9318 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9319 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9320 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9321 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9322 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9323 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9324 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9325 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9327 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9328 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9329 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9330 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9331 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9332 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9333 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9334 }, desc={ Dragonflight Season 2 }, quality={ epic }
 bonus_id={ 9335 }, quality={ epic }
 bonus_id={ 9336 }, quality={ epic }
 bonus_id={ 9337 }, quality={ epic }
@@ -4726,7 +4726,7 @@ bonus_id={ 9366 }, base_ilevel={ 411 }, desc={ Shadowflame Crafted }
 bonus_id={ 9367 }, base_ilevel={ 411 }
 bonus_id={ 9368 }, ilevel_adjust={ 7 }
 bonus_id={ 9369 }, ilevel_adjust={ 13 }
-bonus_id={ 9370 }, ilevel={ 1 @plvl 1 - 174 @plvl 70 }
+bonus_id={ 9370 }, ilevel={ 14 @plvl 1 - 187 @plvl 70 }
 bonus_id={ 9371 }, base_ilevel={ 382 }, quality={ rare }
 bonus_id={ 9372 }, base_ilevel={ 395 }, quality={ epic }
 bonus_id={ 9373 }, base_ilevel={ 424 }
@@ -4734,12 +4734,12 @@ bonus_id={ 9374 }, base_ilevel={ 421 }
 bonus_id={ 9375 }, base_ilevel={ 434 }
 bonus_id={ 9376 }, base_ilevel={ 434 }
 bonus_id={ 9379 }, effects={ Roiling Shadowflame (id=406254, index=0, type=equip) }
-bonus_id={ 9380 }, quality={ epic }
-bonus_id={ 9381 }, quality={ epic }
-bonus_id={ 9382 }, quality={ epic }
-bonus_id={ 9383 }, quality={ epic }
-bonus_id={ 9384 }, quality={ epic }
-bonus_id={ 9385 }, quality={ epic }
+bonus_id={ 9380 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9381 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9382 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9383 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9384 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9385 }, desc={ Dragonflight Season 2 }, quality={ epic }
 bonus_id={ 9399 }, effects={ Precognition (id=377360, index=0, type=equip) }
 bonus_id={ 9400 }, effects={ Determination (id=411126, index=0, type=equip) }
 bonus_id={ 9402 }, ilevel_adjust={ 3 }
@@ -4787,4 +4787,142 @@ bonus_id={ 9474 }, ilevel_adjust={ -408 }
 bonus_id={ 9475 }, ilevel_adjust={ -409 }
 bonus_id={ 9476 }, ilevel_adjust={ -410 }
 bonus_id={ 9492 }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
+bonus_id={ 9498 }, base_ilevel={ 450 }, desc={ Dream Crafted }
+bonus_id={ 9499 }, base_ilevel={ 463 }
+bonus_id={ 9500 }, base_ilevel={ 473 }
+bonus_id={ 9502 }, base_ilevel={ 434 }, quality={ epic }
+bonus_id={ 9516 }, socket={ 1 }
 bonus_id={ 9520 }, ilevel={ 206 @plvl 58 - 316 @plvl 69 }
+bonus_id={ 9521 }, effects={ Verdant Conduit (id=418410, index=0, type=equip) }
+bonus_id={ 9527 }, base_ilevel={ 399 }
+bonus_id={ 9532 }, effects={ Dreamtender's Charm (id=419368, index=0, type=equip) }
+bonus_id={ 9533 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 411 @plvl 70 }
+bonus_id={ 9534 }, quality={ rare }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
+bonus_id={ 9535 }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
+bonus_id={ 9536 }, quality={ rare }
+bonus_id={ 9537 }, quality={ rare }
+bonus_id={ 9538 }, quality={ rare }
+bonus_id={ 9539 }, quality={ rare }
+bonus_id={ 9540 }, quality={ epic }
+bonus_id={ 9541 }, quality={ epic }
+bonus_id={ 9542 }, quality={ epic }
+bonus_id={ 9543 }, quality={ epic }
+bonus_id={ 9544 }, quality={ uncommon }
+bonus_id={ 9545 }, quality={ uncommon }
+bonus_id={ 9546 }, quality={ rare }
+bonus_id={ 9547 }, quality={ rare }
+bonus_id={ 9548 }, quality={ rare }
+bonus_id={ 9549 }, quality={ rare }
+bonus_id={ 9550 }, quality={ rare }
+bonus_id={ 9551 }, quality={ rare }
+bonus_id={ 9552 }, quality={ epic }
+bonus_id={ 9553 }, quality={ epic }
+bonus_id={ 9554 }, quality={ epic }
+bonus_id={ 9555 }, quality={ epic }
+bonus_id={ 9556 }, quality={ epic }
+bonus_id={ 9557 }, quality={ epic }
+bonus_id={ 9558 }, quality={ epic }
+bonus_id={ 9559 }, quality={ epic }
+bonus_id={ 9560 }, quality={ epic }
+bonus_id={ 9561 }, quality={ epic }
+bonus_id={ 9562 }, quality={ epic }
+bonus_id={ 9563 }, quality={ epic }
+bonus_id={ 9564 }, quality={ epic }
+bonus_id={ 9565 }, quality={ epic }
+bonus_id={ 9566 }, quality={ epic }
+bonus_id={ 9567 }, quality={ epic }
+bonus_id={ 9568 }, quality={ epic }
+bonus_id={ 9569 }, quality={ epic }
+bonus_id={ 9570 }, quality={ epic }
+bonus_id={ 9571 }, quality={ epic }
+bonus_id={ 9572 }, quality={ epic }
+bonus_id={ 9573 }, quality={ epic }
+bonus_id={ 9574 }, quality={ epic }
+bonus_id={ 9575 }, quality={ epic }
+bonus_id={ 9576 }, quality={ epic }
+bonus_id={ 9577 }, quality={ epic }
+bonus_id={ 9578 }, quality={ epic }
+bonus_id={ 9581 }, quality={ epic }
+bonus_id={ 9614 }, effects={ Verdant Tether (id=426552, index=0, type=equip) }
+bonus_id={ 9634 }, quality={ rare }
+bonus_id={ 9834 }, ilevel_adjust={ 411 }
+bonus_id={ 9835 }, ilevel_adjust={ 412 }
+bonus_id={ 9836 }, ilevel_adjust={ 413 }
+bonus_id={ 9837 }, ilevel_adjust={ 414 }
+bonus_id={ 9838 }, ilevel_adjust={ 415 }
+bonus_id={ 9839 }, ilevel_adjust={ 416 }
+bonus_id={ 9840 }, ilevel_adjust={ 417 }
+bonus_id={ 9841 }, ilevel_adjust={ 418 }
+bonus_id={ 9842 }, ilevel_adjust={ 419 }
+bonus_id={ 9843 }, ilevel_adjust={ 420 }
+bonus_id={ 9844 }, ilevel_adjust={ 421 }
+bonus_id={ 9845 }, ilevel_adjust={ 422 }
+bonus_id={ 9846 }, ilevel_adjust={ 423 }
+bonus_id={ 9847 }, ilevel_adjust={ 424 }
+bonus_id={ 9848 }, ilevel_adjust={ 425 }
+bonus_id={ 9849 }, ilevel_adjust={ 426 }
+bonus_id={ 9850 }, ilevel_adjust={ 427 }
+bonus_id={ 9851 }, ilevel_adjust={ 428 }
+bonus_id={ 9852 }, ilevel_adjust={ 429 }
+bonus_id={ 9853 }, ilevel_adjust={ 430 }
+bonus_id={ 9854 }, ilevel_adjust={ -411 }
+bonus_id={ 9855 }, ilevel_adjust={ -412 }
+bonus_id={ 9856 }, ilevel_adjust={ -413 }
+bonus_id={ 9857 }, ilevel_adjust={ -414 }
+bonus_id={ 9858 }, ilevel_adjust={ -415 }
+bonus_id={ 9859 }, ilevel_adjust={ -416 }
+bonus_id={ 9860 }, ilevel_adjust={ -417 }
+bonus_id={ 9861 }, ilevel_adjust={ -418 }
+bonus_id={ 9862 }, ilevel_adjust={ -419 }
+bonus_id={ 9863 }, ilevel_adjust={ -420 }
+bonus_id={ 9864 }, ilevel_adjust={ -421 }
+bonus_id={ 9865 }, ilevel_adjust={ -422 }
+bonus_id={ 9866 }, ilevel_adjust={ -423 }
+bonus_id={ 9867 }, ilevel_adjust={ -424 }
+bonus_id={ 9868 }, ilevel_adjust={ -425 }
+bonus_id={ 9869 }, ilevel_adjust={ -426 }
+bonus_id={ 9870 }, ilevel_adjust={ -427 }
+bonus_id={ 9871 }, ilevel_adjust={ -428 }
+bonus_id={ 9872 }, ilevel_adjust={ -429 }
+bonus_id={ 9873 }, ilevel_adjust={ -430 }
+bonus_id={ 9874 }, ilevel_adjust={ 431 }
+bonus_id={ 9875 }, ilevel_adjust={ 432 }
+bonus_id={ 9876 }, ilevel_adjust={ 433 }
+bonus_id={ 9877 }, ilevel_adjust={ 434 }
+bonus_id={ 9878 }, ilevel_adjust={ 435 }
+bonus_id={ 9879 }, ilevel_adjust={ 436 }
+bonus_id={ 9880 }, ilevel_adjust={ 437 }
+bonus_id={ 9881 }, ilevel_adjust={ 438 }
+bonus_id={ 9882 }, ilevel_adjust={ 439 }
+bonus_id={ 9883 }, ilevel_adjust={ 440 }
+bonus_id={ 9884 }, ilevel_adjust={ 441 }
+bonus_id={ 9885 }, ilevel_adjust={ 442 }
+bonus_id={ 9886 }, ilevel_adjust={ 443 }
+bonus_id={ 9887 }, ilevel_adjust={ 444 }
+bonus_id={ 9888 }, ilevel_adjust={ 445 }
+bonus_id={ 9889 }, ilevel_adjust={ 446 }
+bonus_id={ 9890 }, ilevel_adjust={ 447 }
+bonus_id={ 9891 }, ilevel_adjust={ 448 }
+bonus_id={ 9892 }, ilevel_adjust={ 449 }
+bonus_id={ 9893 }, ilevel_adjust={ 450 }
+bonus_id={ 9894 }, ilevel_adjust={ -431 }
+bonus_id={ 9895 }, ilevel_adjust={ -432 }
+bonus_id={ 9896 }, ilevel_adjust={ -433 }
+bonus_id={ 9897 }, ilevel_adjust={ -434 }
+bonus_id={ 9898 }, ilevel_adjust={ -435 }
+bonus_id={ 9899 }, ilevel_adjust={ -436 }
+bonus_id={ 9900 }, ilevel_adjust={ -437 }
+bonus_id={ 9901 }, ilevel_adjust={ -438 }
+bonus_id={ 9902 }, ilevel_adjust={ -439 }
+bonus_id={ 9903 }, ilevel_adjust={ -440 }
+bonus_id={ 9904 }, ilevel_adjust={ -441 }
+bonus_id={ 9905 }, ilevel_adjust={ -442 }
+bonus_id={ 9906 }, ilevel_adjust={ -443 }
+bonus_id={ 9907 }, ilevel_adjust={ -444 }
+bonus_id={ 9908 }, ilevel_adjust={ -445 }
+bonus_id={ 9909 }, ilevel_adjust={ -446 }
+bonus_id={ 9910 }, ilevel_adjust={ -447 }
+bonus_id={ 9911 }, ilevel_adjust={ -448 }
+bonus_id={ 9912 }, ilevel_adjust={ -449 }
+bonus_id={ 9913 }, ilevel_adjust={ -450 }
+bonus_id={ 9916 }, quality={ epic }
