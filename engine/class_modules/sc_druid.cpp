@@ -4,12 +4,14 @@
 // ==========================================================================
 
 #include "config.hpp"
-#include "simulationcraft.hpp"
+
 #include "action/parse_buff_effects.hpp"
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -374,9 +376,7 @@ private:
   form_e form = form_e::NO_FORM;  // Active druid form
 public:
   eclipse_handler_t eclipse_handler;
-  // counters for snapshot tracking
-  std::vector<std::unique_ptr<snapshot_counter_t>> counters;
-  // Tier 30 stacks tracking
+  std::vector<std::unique_ptr<snapshot_counter_t>> counters;  // counters for snapshot tracking
   double expected_max_health;  // For Bristling Fur calculations.
   std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
   std::vector<player_t*> swarm_targets;
@@ -404,8 +404,6 @@ public:
     bool affinity_resources = false;  // activate resources tied to affinities
     bool no_cds = false;
     bool raid_combat = true;
-    timespan_t thorns_attack_period = 2_s;
-    double thorns_hit_chance = 0.75;
 
     // Multi-Spec
     double adaptive_swarm_jump_distance_melee = 5.0;
@@ -520,7 +518,6 @@ public:
     buff_t* bear_form;
     buff_t* cat_form;
     buff_t* prowl;
-    buff_t* thorns;
 
     // Class
     buff_t* dash;
@@ -8217,87 +8214,6 @@ struct orbital_strike_t : public druid_spell_t
   }
 };
 
-// Thorns ===================================================================
-struct thorns_t : public druid_spell_t
-{
-  struct thorns_proc_t : public druid_spell_t
-  {
-    thorns_proc_t( druid_t* p ) : druid_spell_t( "thorns_hit", p, p->find_spell( 305496 ) )
-    {
-      background = true;
-    }
-  };
-
-  struct thorns_attack_event_t : public event_t
-  {
-    action_t* thorns;
-    player_t* target_actor;
-    druid_t* source;
-    timespan_t attack_period;
-    double hit_chance;
-    bool randomize_first;
-
-    thorns_attack_event_t( druid_t* player, action_t* thorns_proc, player_t* source, bool randomize = false )
-      : event_t( *player ),
-        thorns( thorns_proc ),
-        target_actor( source ),
-        source( player ),
-        attack_period( player->options.thorns_attack_period ),
-        hit_chance( player->options.thorns_hit_chance ),
-        randomize_first( randomize )
-    {
-      // this will delay the first psudo autoattack by a random amount between 0 and a full attack period
-      if ( randomize_first )
-        schedule( rng().real() * attack_period );
-      else
-        schedule( attack_period );
-    }
-
-    const char* name() const override { return "Thorns auto attack event"; }
-
-    void execute() override
-    {
-      // Terminate the rescheduling if the target is dead, or if thorns would run out before next attack
-
-      if ( target_actor->is_sleeping() )
-        return;
-
-      thorns->target = target_actor;
-      if ( thorns->ready() && thorns->cooldown->up() && rng().roll( hit_chance ) )
-        thorns->execute();
-
-      if ( source->buff.thorns->remains() >= attack_period )
-        make_event<thorns_attack_event_t>( *source->sim, source, thorns, target_actor, false );
-    }
-  };
-
-  thorns_proc_t* thorns_proc;
-
-  thorns_t( druid_t* p, std::string_view opt ) : druid_spell_t( "thorns", p, p->find_spell( 305497 ), opt )
-  {
-    // workaround so that we do not need to enable mana regen
-    base_costs[ RESOURCE_MANA ] = 0.0;
-
-    thorns_proc = p->get_secondary_action<thorns_proc_t>( "thorns_hit" );
-    thorns_proc->stats = stats;
-  }
-
-  bool ready() override
-  {
-    return false;  // unavailable for now. need to manually allow later
-  }
-
-  void execute() override
-  {
-    p()->buff.thorns->trigger();
-
-    for ( player_t* target : p()->sim->target_non_sleeping_list )
-      make_event<thorns_attack_event_t>( *sim, p(), thorns_proc, target, true );
-
-    druid_spell_t::execute();
-  }
-};
-
 // Warrior of Elune =========================================================
 struct warrior_of_elune_t : public druid_spell_t
 {
@@ -10028,9 +9944,6 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
-
-  // buff.thorns = make_buff( this, "thorns", find_spell( 305497 ) );
-  buff.thorns = buff_t::make_fallback( this, "thorns", this );
 
   // Class
   buff.forestwalk =
@@ -12518,8 +12431,6 @@ void druid_t::create_options()
   add_option( opt_bool( "druid.affinity_resources", options.affinity_resources ) );
   add_option( opt_bool( "druid.no_cds", options.no_cds ) );
   add_option( opt_bool( "druid.raid_combat", options.raid_combat ) );
-  add_option( opt_timespan( "druid.thorns_attack_period", options.thorns_attack_period ) );
-  add_option( opt_float( "druid.thorns_hit_chance", options.thorns_hit_chance ) );
 
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_ranged", options.adaptive_swarm_jump_distance_ranged ) );
