@@ -6528,8 +6528,6 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
     reduced_aoe_targets = 5.0;
   }
 
-  int current_tick;
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -6620,21 +6618,21 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
                         p()->gain.whirlwind );
 
       p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
-
-      mh_first_attack->execute_on_target( target );
-      oh_first_attack->execute_on_target( target );
-
-      if ( p() -> talents.warrior.seismic_reverberation.ok() && mh_first_attack->n_targets() >= p() -> talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-      {
-        mh_seismic_reverberation_attack->execute_on_target( target );
-        oh_seismic_reverberation_attack->execute_on_target( target );
-      }
-
-      make_event( *sim, data().effectN( 6 ).time_value(), [ this ]() { mh_other_attack->execute_on_target( target ); } );
-      make_event( *sim, data().effectN( 7 ).time_value(), [ this ]() { oh_other_attack->execute_on_target( target ); } );
-      make_event( *sim, data().effectN( 8 ).time_value(), [ this ]() { mh_other_attack->execute_on_target( target ); } );
-      make_event( *sim, data().effectN( 9 ).time_value(), [ this ]() { oh_other_attack->execute_on_target( target ); } );
     }
+
+    mh_first_attack->execute_on_target( target );
+    oh_first_attack->execute_on_target( target );
+
+    if ( p() -> talents.warrior.seismic_reverberation.ok() && mh_first_attack->num_targets_hit >= p() -> talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
+    {
+      mh_seismic_reverberation_attack->execute_on_target( target );
+      oh_seismic_reverberation_attack->execute_on_target( target );
+    }
+
+    make_event( *sim, data().effectN( 6 ).time_value(), [ this ]() { mh_other_attack->execute_on_target( target ); } );
+    make_event( *sim, data().effectN( 7 ).time_value(), [ this ]() { oh_other_attack->execute_on_target( target ); } );
+    make_event( *sim, data().effectN( 8 ).time_value(), [ this ]() { mh_other_attack->execute_on_target( target ); } );
+    make_event( *sim, data().effectN( 9 ).time_value(), [ this ]() { oh_other_attack->execute_on_target( target ); } );
   }
 
   bool ready() override
