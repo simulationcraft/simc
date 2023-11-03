@@ -6412,6 +6412,23 @@ struct slam_t : public warrior_attack_t
     }
   }
 
+  slam_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->spell.slam ), from_Fervor( false ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+  {
+    background = true;
+    weapon                       = &( p->main_hand_weapon );
+    radius = 5;
+    if ( p->talents.fury.storm_of_swords->ok() )
+    {
+      energize_amount += p->talents.fury.storm_of_swords->effectN( 6 ).resource( RESOURCE_RAGE );
+    }
+    if ( player->specialization() == WARRIOR_FURY )
+    {
+      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+    }
+  }
+
   int n_targets() const override
   {
     if ( p()->buff.meat_cleaver->check() )
@@ -6741,55 +6758,24 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
 
 // Arms Whirlwind ========================================================
 
-struct arms_whirlwind_mh_t : public warrior_attack_t
+struct whirlwind_arms_damage_t : public warrior_attack_t
 {
-  arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind ) : warrior_attack_t( "whirlwind_mh", p, whirlwind )
+  bool seismic_reverberation;
+  whirlwind_arms_damage_t( util::string_view name, warrior_t* p, const spell_data_t* whirlwind, bool seismic ) : warrior_attack_t( name, p, whirlwind ),
+  seismic_reverberation( seismic )
   {
     aoe = -1;
     reduced_aoe_targets = 5.0;
     background = true;
   }
 
-  int current_tick;
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->talents.warrior.seismic_reverberation->ok() && current_tick == 3 )
+    if ( p()->talents.warrior.seismic_reverberation->ok() && seismic_reverberation )
     {
       am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
-    }
-    if ( p()->buff.merciless_bonegrinder_conduit->check() )
-    {
-      am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
-    }
-    return am;
-  }
-
-  double tactician_cost() const override
-  {
-    return 0;
-  }
-};
-
-struct first_arms_whirlwind_mh_t : public warrior_attack_t
-{
-  first_arms_whirlwind_mh_t( warrior_t* p, const spell_data_t* whirlwind )
-    : warrior_attack_t( "whirlwind_mh", p, whirlwind )
-  {
-    background = true;
-    aoe = -1;
-    reduced_aoe_targets = 5.0;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->buff.merciless_bonegrinder_conduit->check() )
-    {
-      am *= 1.0 + p()->conduit.merciless_bonegrinder.percent();
     }
     return am;
   }
@@ -6804,64 +6790,55 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 {
   double max_rage;
   slam_t* fervor_slam;
-  first_arms_whirlwind_mh_t* first_mh_attack;
-  arms_whirlwind_mh_t* mh_attack;
-  timespan_t spin_time;
+  whirlwind_arms_damage_t* first_attack;
+  whirlwind_arms_damage_t* second_attack;
+  whirlwind_arms_damage_t* third_attack;
+  whirlwind_arms_damage_t* seismic_reverberation_attack;
+
   arms_whirlwind_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "whirlwind", p, p->spell.whirlwind ),
       fervor_slam( nullptr ),
-      first_mh_attack( nullptr ),
-      mh_attack( nullptr ),
-      spin_time( timespan_t::from_millis( p->spell.whirlwind->effectN( 2 ).misc_value1() ) )
+      first_attack( nullptr ),
+      second_attack( nullptr ),
+      third_attack( nullptr ),
+      seismic_reverberation_attack( nullptr )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger()->effectN( 1 ).radius_max();
 
-    if ( p->talents.arms.fervor_of_battle->ok() )
-    {
-      fervor_slam                               = new slam_t( p, options_str );
-      fervor_slam->from_Fervor                  = true;
-      fervor_slam->affected_by.crushing_assault = true;
-    }
-
     if ( p->main_hand_weapon.type != WEAPON_NONE )
     {
-      mh_attack         = new arms_whirlwind_mh_t( p, data().effectN( 2 ).trigger() );
-      mh_attack->weapon = &( p->main_hand_weapon );
-      mh_attack->radius = radius;
-      add_child( mh_attack );
-      first_mh_attack         = new first_arms_whirlwind_mh_t( p, data().effectN( 1 ).trigger() );
-      first_mh_attack->weapon = &( p->main_hand_weapon );
-      first_mh_attack->radius = radius;
-      add_child( first_mh_attack );
-    }
-    tick_zero = true;
-    hasted_ticks = false;
-    base_tick_time           = spin_time;
-    dot_duration             = base_tick_time * 2;
-  }
+      first_attack         = new whirlwind_arms_damage_t( "whirlwind_1", p, data().effectN( 1 ).trigger(), false );
+      first_attack->weapon = &( p->main_hand_weapon );
+      first_attack->radius = radius;
+      add_child( first_attack );
 
-  timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
-  {
-    if ( p()->legendary.najentuss_vertebrae != spell_data_t::not_found() &&
-         as<int>( target_list().size() ) >= p()->legendary.najentuss_vertebrae->effectN( 1 ).base_value() )
+      second_attack         = new whirlwind_arms_damage_t( "whirlwind_2", p, data().effectN( 2 ).trigger(), false );
+      second_attack->weapon = &( p->main_hand_weapon );
+      second_attack->radius = radius;
+      add_child( second_attack );
+
+      third_attack         = new whirlwind_arms_damage_t( "whirlwind_3", p, data().effectN( 3 ).trigger(), false );
+      third_attack->weapon = &( p->main_hand_weapon );
+      third_attack->radius = radius;
+      add_child( third_attack );
+
+      if ( p->talents.warrior.seismic_reverberation.ok() )
+      {
+        seismic_reverberation_attack         = new whirlwind_arms_damage_t( "whirlwind_seismic_reverberation", p, p->find_spell( 385228 ), true );
+        seismic_reverberation_attack->weapon = &( p->main_hand_weapon );
+        seismic_reverberation_attack->radius = radius;
+        add_child( seismic_reverberation_attack );
+      }
+
+      if ( p->talents.arms.fervor_of_battle->ok() )
     {
-      return dot_duration + ( base_tick_time * p()->legendary.najentuss_vertebrae->effectN( 2 ).base_value() );
+      fervor_slam                               = new slam_t( "slam_fervor_of_battle", p );
+      fervor_slam->from_Fervor                  = true;
+      fervor_slam->affected_by.crushing_assault = true;
+      add_child( fervor_slam );
     }
-    if ( p()->talents.warrior.seismic_reverberation != spell_data_t::not_found() &&
-         as<int>( target_list().size() ) >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
-    {
-      return dot_duration + ( base_tick_time * p()->talents.warrior.seismic_reverberation->effectN( 2 ).base_value() );
     }
-
-    return dot_duration;
-  }
-
-  double cost() const override
-  {
-    if ( p()->talents.arms.fervor_of_battle->ok() && p()->buff.crushing_assault->check() )
-      return 10;
-    return warrior_attack_t::cost();
   }
 
   double tactician_cost() const override
@@ -6876,29 +6853,22 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     return c;
   }
 
-  void tick( dot_t* d ) override
-  {
-    mh_attack->current_tick = d->current_tick;
-    warrior_attack_t::tick( d );
-
-    if ( d->current_tick == 1 )
-    {
-      if ( p()->talents.arms.fervor_of_battle->ok() )
-      {
-        fervor_slam->execute();
-      }
-      first_mh_attack->execute();
-    }
-    else
-    {
-      mh_attack->execute();
-    }
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
 
+    first_attack->execute_on_target( target );
+
+    if ( p() -> talents.arms.fervor_of_battle.ok() && first_attack->num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
+      fervor_slam->execute_on_target( target );
+
+    if ( p() -> talents.warrior.seismic_reverberation.ok() && first_attack->num_targets_hit >= p() -> talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
+    {
+      seismic_reverberation_attack->execute_on_target( target );
+    }
+
+    make_event( *sim, timespan_t::from_millis(data().effectN( 2 ).misc_value1()), [ this ]() { second_attack->execute_on_target( target ); } );
+    make_event( *sim, timespan_t::from_millis(data().effectN( 3 ).misc_value1()), [ this ]() { third_attack->execute_on_target( target ); } );
   }
 
   bool ready() override
