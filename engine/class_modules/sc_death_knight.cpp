@@ -3,30 +3,17 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-// TODO as of 2020-09-06
+// TODO as of 2023-11-02
 // Class:
 // Killing Blow based mechanics (free Death Strike, Rune of Unending Thirst)
-// Defensives: Anti-Magic Zone (+ group wide effect), Lichborne
 // Disable noise from healing/defensive actions when simming a single, dps role, character
 // Automate Rune energize in death_knight_action_t::execute() instead of per spell overrides
-// utilize stat_pct_buffs instead of overriding player_t methods
-// Standardize debug_cast<T>() over other types of casting where possible
 // Look into Death Strike OH handling (p -> dual_wield()?) and see if it can apply to other DW attacks
 // Unholy:
 // - Predict the first two Festering wounds on FS and use reaction time on the third?
 // Blood:
 // - Check that VB's absorb increase is correctly implemented
 // - Healing from Consumption damage done
-// Frost:
-// - Revisit Deaths Due, Koltiras to verify 1H vs 2H behavior, especially with DD cleave
-// - Test Frost's damage with atypical weapon setups (single 1H/OH, etc.)
-//     on abilities with the 2H penalty or combined AP type
-// - Figure out what to do with Obliterate/Frost Strike strikes, reporting, etc.
-// TOCHECK: accurate spawn/travel delay timers for all dynamic pets
-// - DRW, Magus of the dead, Bloodworms have no delay at all
-// - Army ghoul, Apoc ghoul, Raise dead ghoul have a different delay (currently estimated at 4.5s with a 0.1 stddev)
-//   TODO: even more variable travel time for apoc/army based on distance from boss on spawn?
-// - Gargoyle has its own delay too
 
 #include "config.hpp"
 #include "simulationcraft.hpp"
@@ -2051,10 +2038,43 @@ struct death_knight_pet_t : public pet_t
 template <typename T_PET, typename T_ACTION>
 struct pet_action_t : public T_ACTION
 {
+  action_t* proxy_action;
   pet_action_t( T_PET* p, util::string_view name, const spell_data_t* spell = spell_data_t::nil() ) :
-    T_ACTION( name, p, spell )
+    T_ACTION( name, p, spell ), proxy_action( nullptr )
   {
     this -> special = this -> may_crit = true;
+
+    if ( ( p->pet_name == "ghoul" || p->pet_name == "risen_skulker" ) && p->dk()->find_action( "raise_dead" ) )
+    {
+      proxy_action = p->dk()->find_action( "raise_dead" );
+    }
+    if ( p->pet_name == "army_ghoul" || p->pet_name == "army_magus" && p->dk()->find_action( "army_of_the_dead" ) )
+    {
+      proxy_action = p->dk()->find_action( "army_of_the_dead" );
+    }
+    if ( p->pet_name == "apoc_ghoul" || p->pet_name == "apoc_magus" && p->dk()->find_action( "apocalypse" ) )
+    {
+      proxy_action = p->dk()->find_action( "apocalypse" );
+    }
+    if ( ( p->pet_name == "dancing_rune_weapon" || p->pet_name == "everlasting_bond" ) &&
+         p->dk()->find_action( "dancing_rune_weapon" ) )
+    {
+      proxy_action = p->dk()->find_action( "dancing_rune_weapon" );
+    }
+    if ( p->pet_name == "gargoyle" && p->dk()->find_action( "summon_gargoyle" ) )
+    {
+      proxy_action = p->dk()->find_action( "summon_gargoyle" );
+    }
+
+    if ( !p->dk()->options.individual_pet_reporting && proxy_action )
+    {
+      auto proxy = proxy_action;
+      auto it    = range::find( proxy->child_action, this->data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        this->stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
   }
 
   T_PET* pet() const
@@ -2176,19 +2196,6 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
     this -> weapon_multiplier = 1.0;
     this -> base_execute_time = this -> weapon -> swing_time;
 
-    if ( p -> pet_name == "army_ghoul" && p -> dk()->find_action( "army_of_the_dead" ) )
-    {
-      proxy_action = p -> dk()->find_action( "army_of_the_dead" );
-    }
-    if ( p -> pet_name == "apoc_ghoul" && p -> dk()->find_action( "apocalypse" ) )
-    {
-      proxy_action = p -> dk()->find_action( "apocalypse" );
-    }
-    if ( ( p -> pet_name == "dancing_rune_weapon" || p -> pet_name == "everlasting_bond" ) && p -> dk()->find_action( "dancing_rune_weapon" ) )
-    {
-      proxy_action = p -> dk()->find_action( "dancing_rune_weapon" );
-    }
-
     if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
       {
         auto proxy = proxy_action;
@@ -2292,7 +2299,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         pet_melee_attack_t(p, name, spell),
         usable_in_dt(usable_in_dt),
         triggers_infected_claws(false)
-    { }
+    {}
 
     void impact( action_state_t* state ) override
     {
@@ -2323,15 +2330,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       triggers_infected_claws = triggers_runeforge_apocalypse = true;
-      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
-      {
-        auto proxy = dk()->find_action( "raise_dead" );
-        auto it = range::find(proxy->child_action, data().id(), &action_t::id);
-        if (it != proxy->child_action.end())
-          stats = (*it)->stats;
-        else
-          proxy->add_child(this);
-      }
     }
   };
 
@@ -2343,15 +2341,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       parse_options( options_str );
       aoe = -1;
       triggers_infected_claws = triggers_runeforge_apocalypse = true;
-      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
-      {
-        auto proxy = dk()->find_action( "raise_dead" );
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
   };
 
@@ -2362,15 +2351,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       cooldown = p -> get_cooldown( "gnaw" );
-      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
-      {
-        auto proxy = dk()->find_action( "raise_dead" );
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
   };
 
@@ -2381,15 +2361,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       cooldown = p -> get_cooldown( "gnaw" );
-      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
-      {
-        auto proxy = dk()->find_action( "raise_dead" );
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
   };
 
@@ -2573,15 +2544,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
       pet_melee_attack_t( p, "claw", p -> dk() -> pet_spell.army_claw ), proxy_action( a )
     {
       parse_options( options_str );
-      if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
-      {
-        auto proxy = proxy_action;
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
+
     }
   };
   
@@ -2593,15 +2556,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     {
       aoe = -1;
       background = true;
-      if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
-      {
-        auto proxy = proxy_action;
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -2618,15 +2572,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t( owner, name, true ), proxy_action( nullptr )
   {
     affected_by_commander_of_the_dead = true;
-
-    if( name == "army_ghoul" && dk()->find_action( "army_of_the_dead" ) )
-    {
-      proxy_action = dk()->find_action( "army_of_the_dead" );
-    }
-    if( name == "apoc_ghoul" && dk()->find_action( "apocalypse" ) )
-    {
-      proxy_action = dk()->find_action( "apocalypse" );
-    }
   }
 
   void init_base_stats() override
@@ -2724,15 +2669,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike ), proxy_action( a )
     { 
       background = repeating = true;
-      if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
-      {
-        auto proxy = proxy_action;
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
   };
 
@@ -2840,15 +2776,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       aoe = -1;
       base_aoe_multiplier = 0.5;
       repeating = true;
-      if( !p -> dk() -> options.individual_pet_reporting && dk()->find_action( "raise_dead" ) )
-      {
-        auto proxy = dk()->find_action( "raise_dead" );
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
   };
 
@@ -2922,16 +2849,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       this -> weapon = &( p -> main_hand_weapon );
 
       this -> affected_by.blood_plague = this -> data().affected_by( p -> dk() -> spell.blood_plague -> effectN( 4 ) );
-
-      if( !p -> dk() -> options.individual_pet_reporting && p -> dk()->find_action( "dancing_rune_weapon" ) && this -> data().id() )
-      {
-        auto proxy = p -> dk()->find_action( "dancing_rune_weapon" );
-        auto it    = range::find( proxy->child_action, this -> data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          this -> stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -3165,14 +3082,36 @@ private:
   {
     death_knight_pet_t::init_spells();
 
-    ability.blood_plague  = new blood_plague_t ( this );
-    ability.blood_boil    = new blood_boil_t   ( this );
-    ability.deaths_caress = new deaths_caress_t( this );
-    ability.death_strike  = new death_strike_t ( this );
-    ability.heart_strike  = new heart_strike_t ( this );
-    ability.marrowrend    = new marrowrend_t   ( this );
-    ability.soul_reaper   = new soul_reaper_t  ( this );
-    ability.consumption   = new consumption_t  ( this );
+    // Dont init spells that dont exist, breaks reporting for auto's
+    if ( dk()->talent.blood.blood_boil.ok() )
+    {
+      ability.blood_plague = new blood_plague_t( this );
+      ability.blood_boil   = new blood_boil_t( this );
+    }
+    if ( dk()->talent.blood.deaths_caress.ok() )
+    {
+      ability.deaths_caress = new deaths_caress_t( this );
+    }
+    if ( dk()->talent.death_strike.ok() )
+    {
+      ability.death_strike = new death_strike_t( this );
+    }
+    if ( dk()->talent.blood.heart_strike.ok() )
+    {
+      ability.heart_strike = new heart_strike_t( this );
+    }
+    if ( dk()->talent.blood.marrowrend.ok() )
+    {
+      ability.marrowrend = new marrowrend_t( this );
+    }
+    if ( dk()->talent.soul_reaper.ok() )
+    {
+      ability.soul_reaper = new soul_reaper_t( this );
+    }
+    if ( dk()->talent.blood.consumption.ok() )
+    {
+      ability.consumption = new consumption_t( this );
+    }
   }
 
   void arise() override
@@ -3267,15 +3206,6 @@ struct magus_pet_t : public death_knight_pet_t
     {
       // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
       cooldown -> duration = dk() -> pet_spell.frostbolt -> duration();
-      if ( !p->dk()->options.individual_pet_reporting && proxy_action )
-      {
-        auto proxy = proxy_action;
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
 
     // Frostbolt applies a slowing debuff on non-boss targets
@@ -3297,16 +3227,6 @@ struct magus_pet_t : public death_knight_pet_t
     shadow_bolt_magus_t( magus_pet_t* p, action_t* a, util::string_view options_str ) :
       magus_spell_t( p, "shadow_bolt", p -> dk() -> pet_spell.shadow_bolt, options_str ), proxy_action( a )
     {
-      if ( !p->dk()->options.individual_pet_reporting && proxy_action )
-      {
-        auto proxy = proxy_action;
-        auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
-
       if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
       {
         aoe = as<int>( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T31, B2 )->effectN( 2 ).base_value() );
