@@ -1777,6 +1777,9 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
   {
     set_absorb_source( p->get_stats( has_4pc ? "Blazing Thorns" : "Dream Thorns" ) );
     set_absorb_high_priority( true );
+
+    if ( !has_4pc )
+      buff_t::make_fallback( p, "blazing_thorns", p );
   }
 
   // triggered with rage spent as value
