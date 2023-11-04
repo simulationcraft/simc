@@ -9861,7 +9861,8 @@ void druid_t::create_buffs()
   else
   {
     buff.heart_of_the_wild->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      resource_gain( RESOURCE_COMBO_POINT, 1, gain.heart_of_the_wild );
+      if ( get_form() == CAT_FORM )
+        resource_gain( RESOURCE_COMBO_POINT, 1, gain.heart_of_the_wild );
     } );
   }
 
