@@ -5584,7 +5584,7 @@ struct regrowth_t : public druid_heal_t
 {
   struct protector_of_the_pack_regrowth_t : public druid_heal_t
   {
-    protector_of_the_pack_regrowth_t( druid_t* p ) : druid_heal_t( "protector_of_the_pack_regrowth", p, p->find_spell( 400204 ) )
+    protector_of_the_pack_regrowth_t( druid_t* p, std::string_view n ) : druid_heal_t( n, p, p->find_spell( 400204 ) )
     {
       // 1 point to allow proper snapshot/update flag parsing
       base_dd_min = base_dd_max = 1.0;
@@ -5625,7 +5625,7 @@ struct regrowth_t : public druid_heal_t
 
     if ( p->specialization() != DRUID_RESTORATION &&  p->talent.protector_of_the_pack.ok() )
     {
-      potp = p->get_secondary_action<protector_of_the_pack_regrowth_t>( "protector_of_the_pack_regrowth" );
+      potp = p->get_secondary_action_n<protector_of_the_pack_regrowth_t>( "protector_of_the_pack_" + name_str );
       add_child( potp );
     }
   }
