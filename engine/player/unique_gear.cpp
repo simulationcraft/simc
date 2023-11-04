@@ -1838,10 +1838,8 @@ void item::orb_of_voidsight( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-
 void item::witherbarks_branch( special_effect_t& effect )
 {
-
   struct aqueous_dowsing_t : public buff_t
   {
     int custom_tick;
@@ -1860,8 +1858,9 @@ void item::witherbarks_branch( special_effect_t& effect )
         if ( n )
         {
           custom_tick = 0;
-          make_event( player->sim, player->dragonflight_opts.witherbarks_branch_timing[ custom_tick ],
-                      [ this ]() { custom_tick_callback(); } );
+          make_event( player->sim, player->dragonflight_opts.witherbarks_branch_timing[ custom_tick ], [ this ]() {
+            custom_tick_callback();
+          } );
         }
       } );
     }
@@ -1874,16 +1873,14 @@ void item::witherbarks_branch( special_effect_t& effect )
       stat_buff->trigger();
 
       if ( custom_tick < 2 )
-        make_event( player->sim, player->dragonflight_opts.witherbarks_branch_timing[ ++custom_tick ],
-                    [ this ]() { custom_tick_callback(); } );
+        make_event( player->sim, player->dragonflight_opts.witherbarks_branch_timing[ ++custom_tick ], [ this ]() {
+          custom_tick_callback();
+        } );
     }
   };
 
   effect.custom_buff = new aqueous_dowsing_t( effect.player, effect );
-
-  new dbc_proc_callback_t( effect.item, effect );
 }
-
 
 void item::black_blood_of_yshaarj( special_effect_t& effect )
 {
