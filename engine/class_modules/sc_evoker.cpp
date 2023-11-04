@@ -1891,12 +1891,7 @@ public:
       if ( use_full_mastery() )
         tm *= 1.0 + p()->cache.mastery_value();
       else
-      {
-        if ( p()->is_ptr() )
-          tm *= 1.0 + p()->cache.mastery_value() * std::max( 0.3, t->health_percentage() / 100 );
-        else
-          tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
-      }
+        tm *= 1.0 + p()->cache.mastery_value() * std::max( 0.3, t->health_percentage() / 100 );
     }
 
     return tm;
