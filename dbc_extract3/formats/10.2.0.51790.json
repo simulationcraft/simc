@@ -346,7 +346,7 @@
     "fields": [
       { "data_type": "S", "field": "desc" },
       { "data_type": "i", "field": "id" },
-      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "api_season" },
       { "data_type": "i", "field": "expansion_season" },
       { "data_type": "i", "field": "id_expansion" },
       { "data_type": "i", "field": "unk_2" }
@@ -974,6 +974,17 @@
       { "data_type": "i", "field": "flags", "elements": 3 }
     ]
   },
+  "MapChallengeMode": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_map", "ref": "Map" },
+      { "data_type": "B", "field": "flags" },
+      { "data_type": "I", "field": "expansion_level" },
+      { "data_type": "I", "field": "unk_1" },
+      { "data_type": "H", "field": "criteria_count", "elements": 3 }
+    ]
+  },
   "MapDifficulty": {
     "parent": "Map",
     "fields": [
@@ -1046,6 +1057,12 @@
       { "data_type": "i", "field": "milestone_season" },
       { "data_type": "i", "field": "id_expansion" },
       { "data_type": "i", "field": "heroic_lfg_dungeon_min_gear" }
+    ]
+  },
+  "MythicPlusSeasonTrackedMap": {
+    "parent": "DisplaySeason",
+    "fields": [
+      { "data_type": "i", "field": "id_map_challenge_mode", "ref": "MapChallengeMode" }
     ]
   },
   "MythicPlusSeasonRewardLevels": {
