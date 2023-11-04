@@ -2961,7 +2961,7 @@ void player_t::init_gains()
   {
     std::string name = util::resource_type_string( r );
     name += "_regen";
-    gains.resource_regen[ r ] = get_gain( name );
+    gains.resource_regen[ r ] = get_gain( util::inverse_tokenize( name ) );
   }
   gains.health             = get_gain( "external_healing" );
   gains.mana_potion        = get_gain( "mana_potion" );
