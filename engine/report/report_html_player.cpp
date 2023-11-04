@@ -1215,6 +1215,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
         {
           std::string op_str;
           std::string type_str;
+          std::string val_str = fmt::format( "{:.3f}", val );
 
           switch ( eff->subtype() )
           {
@@ -1228,19 +1229,24 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
               op_str = "PCT";
               type_str = spell_info::effect_property_str( eff );
               break;
+            case A_MODIFY_SCHOOL:
+              op_str = "SET";
+              type_str = spell_info::effect_subtype_str( eff );
+              val_str = util::school_type_string( eff->school_type() );
+              break;
             default:
               op_str = "SET";
               type_str = spell_info::effect_subtype_str( eff );
               break;
           }
 
-          os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{:.3f}</td></tr>",
+          os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",
             type_str,
             eff->spell()->name_cstr(),
             eff->spell()->id(),
             eff->index() + 1,
             op_str,
-            val );
+            val_str );
         }
 
         os << "</table>\n"
