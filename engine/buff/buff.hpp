@@ -195,10 +195,10 @@ public:
   /**
    * Get current buff value + benefit tracking.
    */
-  virtual double value()
+  double value()
   {
     stack();
-    return current_value;
+    return check_value();
   }
 
   /**
@@ -212,7 +212,7 @@ public:
   /**
    * Get current buff value + NO benefit tracking.
    */
-  double check_value() const
+  virtual double check_value() const
   {
     return current_value;
   }
@@ -448,7 +448,7 @@ struct stat_buff_t : public buff_t
   void bump     ( int stacks = 1, double value = -1.0 ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-  double value() override { stack(); return stats[ 0 ].current_value; }
+  double check_value() const override { return stats[ 0 ].current_value; }
 
   stat_buff_t* add_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
   stat_buff_t* set_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
