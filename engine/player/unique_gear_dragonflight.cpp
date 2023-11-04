@@ -8730,23 +8730,20 @@ void undulating_sporecloak( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 410231 ) );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  if ( effect.player->is_ptr() )
-  {
-    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
+  buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
 
-    // In case the player has two copies of this embellishment, set up the buff events only once.
-    if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
-    {
-      buff->player->register_combat_begin( [ buff ]( player_t* p ) {
-        buff->trigger();
-        make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
-          if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
-            buff->trigger();
-          else
-            buff->expire();
-        } );
+  // In case the player has two copies of this embellishment, set up the buff events only once.
+  if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
+  {
+    buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+      buff->trigger();
+      make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
+        if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
+          buff->trigger();
+        else
+          buff->expire();
       } );
-    }
+    } );
   }
 }
 
