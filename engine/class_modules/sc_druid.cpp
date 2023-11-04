@@ -9803,11 +9803,13 @@ void druid_t::init_finished()
 
   if ( specialization() == DRUID_BALANCE )
   {
-    if ( options.initial_pulsar_value > 0 )
+    if ( options.initial_pulsar_value > 0 && talent.primordial_arcanic_pulsar.ok() )
     {
       register_combat_begin( [ this ]( player_t* ) {
         // Stacks are a purely visual indicator for the sample sequence
-        buff.primordial_arcanic_pulsar->trigger( as<int>( options.initial_pulsar_value ) / 10 );
+        if ( auto stack = static_cast<int>( options.initial_pulsar_value / 10 ) )
+          buff.primordial_arcanic_pulsar->trigger( stack );
+
         buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
       } );
     }
