@@ -6954,7 +6954,7 @@ namespace monk
         return buff_t::trigger( stacks, value, chance, duration );
       }
 
-      double value() override
+      double check_value() const override
       {
         double total_value = 0;
 

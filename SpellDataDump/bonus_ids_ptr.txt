@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.1.7.51536 Live
+SimulationCraft 1015-01 for World of Warcraft 10.2.0.52038 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4787,10 +4787,10 @@ bonus_id={ 9474 }, ilevel_adjust={ -408 }
 bonus_id={ 9475 }, ilevel_adjust={ -409 }
 bonus_id={ 9476 }, ilevel_adjust={ -410 }
 bonus_id={ 9492 }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
-bonus_id={ 9498 }, base_ilevel={ 447 }, desc={ Dream Crafted }
-bonus_id={ 9499 }, base_ilevel={ 460 }
-bonus_id={ 9500 }, base_ilevel={ 470 }
-bonus_id={ 9502 }, base_ilevel={ 431 }, quality={ epic }
+bonus_id={ 9498 }, base_ilevel={ 450 }, desc={ Dream Crafted }
+bonus_id={ 9499 }, base_ilevel={ 463 }
+bonus_id={ 9500 }, base_ilevel={ 473 }
+bonus_id={ 9502 }, base_ilevel={ 434 }, quality={ epic }
 bonus_id={ 9516 }, socket={ 1 }
 bonus_id={ 9520 }, ilevel={ 206 @plvl 58 - 316 @plvl 69 }
 bonus_id={ 9521 }, effects={ Verdant Conduit (id=418410, index=0, type=equip) }

@@ -1638,7 +1638,7 @@ public:
 
     double scaled_m = m;
 
-    if ( parent_targets > 5 && priest().is_ptr() )
+    if ( parent_targets > 5 )
     {
       scaled_m *= std::sqrt( 5 / parent_targets );
       sim->print_debug( "{} {} updates da multiplier: Before: {} After: {} with {} targets from the parent spell.",
@@ -2167,29 +2167,27 @@ void priest_t::create_buffs_shadow()
                         ->set_default_value_from_effect( 1 );
 
   // Custom buff to track how many stacks you are acquiring
-  buffs.surge_of_insanity =
-      make_buff( this, "surge_of_insanity", talents.shadow.surge_of_insanity )
-          ->set_duration( 0_s )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int, int _new ) {
-            if ( _new == b->max_stack() )
-            {
-              buffs.surge_of_insanity->expire();
+  buffs.surge_of_insanity = make_buff( this, "surge_of_insanity", talents.shadow.surge_of_insanity )
+                                ->set_duration( 0_s )
+                                ->set_stack_change_callback( [ this ]( buff_t* b, int, int _new ) {
+                                  if ( _new == b->max_stack() )
+                                  {
+                                    buffs.surge_of_insanity->expire();
 
-              if ( talents.shadow.mind_spike.enabled() )
-              {
-                buffs.mind_spike_insanity->trigger();
-              }
-              else
-              {
-                buffs.mind_flay_insanity->trigger();
-              }
-            }
-          } );
+                                    if ( talents.shadow.mind_spike.enabled() )
+                                    {
+                                      buffs.mind_spike_insanity->trigger();
+                                    }
+                                    else
+                                    {
+                                      buffs.mind_flay_insanity->trigger();
+                                    }
+                                  }
+                                } );
 
   if ( talents.shadow.surge_of_insanity.enabled() )
   {
-    buffs.surge_of_insanity->set_max_stack( is_ptr() ? talents.shadow.surge_of_insanity->effectN( 3 ).base_value()
-                                                     : 1 );
+    buffs.surge_of_insanity->set_max_stack( talents.shadow.surge_of_insanity->effectN( 3 ).base_value() );
   }
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
@@ -2244,8 +2242,8 @@ void priest_t::create_buffs_shadow()
 
 void priest_t::init_rng_shadow()
 {
-  rppm.idol_of_cthun = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
-  rppm.deathspeaker  = get_rppm( "deathspeaker", talents.shadow.deathspeaker );
+  rppm.idol_of_cthun          = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
+  rppm.deathspeaker           = get_rppm( "deathspeaker", talents.shadow.deathspeaker );
   rppm.power_of_the_dark_side = get_rppm( "power_of_the_dark_side", talents.discipline.power_of_the_dark_side );
 }
 

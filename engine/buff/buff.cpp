@@ -867,7 +867,7 @@ buff_t* buff_t::set_dynamic_time_duration_multiplier( double new_multiplier )
   // Speeding up the clock, expiry moved closer
   else
   {
-    for ( auto i = 0; i < expiration.size(); i++ )
+    for ( size_t i = 0; i < expiration.size(); i++ )
     {
       auto old_expiration = expiration[ i ];
       auto new_remains = old_expiration->remains() * ratio;

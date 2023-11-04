@@ -4955,13 +4955,14 @@ void drogbar_stones( special_effect_t& effect )
 
     drogbar_stones_damage->player->callbacks.register_callback_execute_function(
         drogbar_stones_damage->spell_id,
-        [ buff, drogbar_stones_damage, damage_effect, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        [ buff, damage_effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
           if ( buff->check() )
           {
-            damage_effect->execute();
+            damage_effect->execute_on_target( s->target );
             buff->expire();
           }
         } );
+
     effect.player->special_effects.push_back( drogbar_stones_damage );
     auto damage = new dbc_proc_callback_t( effect.player, *drogbar_stones_damage );
     damage->initialize();
@@ -5189,20 +5190,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       else
         proxy->add_child( this );
 
-      if ( data().effectN( 1 ).trigger_spell_id() == 418607 )
-      {
-        auto damage =
-          create_proc_action<generic_proc_t>( "sand_bolt_damage", p, "sand_bolt_damage", p->find_spell( 418607 ) );
-        damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-        damage->stats = stats;
-        damage->dual = true;
-
-        impact_action = damage;
-      }
-      else
-      {
-        base_dd_min = base_dd_max = e.driver()->effectN( 6 ).average( e.item );
-      }
+      base_dd_min = base_dd_max = e.driver()->effectN( 6 ).average( e.item );
     }
 
     void execute() override
@@ -8305,32 +8293,69 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
 // 378139 Buff
 void rallied_to_victory( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-  buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
-
   struct rallied_to_victory_cb_t : public dbc_proc_callback_t
   {
-    buff_t* buff;
-    rallied_to_victory_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
+    target_specific_t<buff_t> buffs;
+    int max_allied_buffs;
+    rallied_to_victory_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        max_allied_buffs( effect.trigger()->effectN( 2 ).base_value() )
     {
+      get_buff( effect.player );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      auto buff =
+          make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "rallied_to_victory", effect.trigger() );
+      buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void execute( action_t*, action_state_t* ) override
     {
       if ( effect.player->dragonflight_opts.rallied_to_victory_ally_estimate )
       {
         int allies = 0;
         allies = effect.player->rng().range( as<int>( effect.player->dragonflight_opts.rallied_to_victory_min_allies ),
                                              as<int>( effect.trigger()->effectN( 2 ).base_value() ) );
-        buff->set_max_stack( 1 + allies );
-        buff->set_initial_stack( 1 + allies );
+        buffs[ effect.player ]->set_max_stack( 1 + allies );
+        buffs[ effect.player ]->set_initial_stack( 1 + allies );
       }
 
-      buff->trigger();
+      buffs[ effect.player ]->trigger();
+
+      if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
+      {
+        int buffs = 1;
+
+        for ( auto p : effect.player->sim->player_non_sleeping_list )
+        {
+          if ( p == effect.player )
+            continue;
+
+          if ( rng().roll( effect.player->dragonflight_opts.rallied_to_victory_multi_actor_skip_chance ) )
+          {
+              buffs++;
+              continue;
+          }
+
+          get_buff( p )->trigger();
+          if ( ++buffs >= max_allied_buffs )
+            break;
+        }
+      }
     }
   };
 
-  new rallied_to_victory_cb_t( effect, buff );
+  new rallied_to_victory_cb_t( effect );
 }
 
 // 406219 Damage Taken Driver
@@ -8705,23 +8730,20 @@ void undulating_sporecloak( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 410231 ) );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  if ( effect.player->is_ptr() )
-  {
-    buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
+  buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
 
-    // In case the player has two copies of this embellishment, set up the buff events only once.
-    if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
-    {
-      buff->player->register_combat_begin( [ buff ]( player_t* p ) {
-        buff->trigger();
-        make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
-          if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
-            buff->trigger();
-          else
-            buff->expire();
-        } );
+  // In case the player has two copies of this embellishment, set up the buff events only once.
+  if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
+  {
+    buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+      buff->trigger();
+      make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
+        if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
+          buff->trigger();
+        else
+          buff->expire();
       } );
-    }
+    } );
   }
 }
 

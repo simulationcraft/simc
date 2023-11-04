@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.0.51973
-static const std::array<spelltext_data_t, 20503> __ptr_spelltext_data { {
+// Spell text, wow build 10.2.0.52038
+static const std::array<spelltext_data_t, 20506> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17442,6 +17442,9 @@ static const std::array<spelltext_data_t, 20503> __ptr_spelltext_data { {
   { 385127, "Your next Holy Power spending ability deals $s1% additional increased damage and healing. This effect stacks.", "Your next Holy Power spending ability deals $s1% additional increased damage and healing.", 0 },
   { 385129, "$@spellicon385127$@spellname385127:\r\nBlessing of Dawn increases the damage and healing of your next Holy Power spending ability by an additional $s3%.\r\n\r\n$@spellicon385126$@spellname385126:\r\nBlessing of Dusk increases your armor by $s2% and your Holy Power generating abilities cooldown $s1% faster.", 0, 0 },
   { 385167, "Frozen Orb deals an additional $s1% damage and its duration is increased by ${$s2/1000} sec.", 0, 0 },
+  { 385228, "$@spelldesc1680", 0, 0 },
+  { 385233, "$@spelldesc190411", 0, 0 },
+  { 385234, "$@spelldesc190411", 0, 0 },
   { 385325, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours. \r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
   { 385326, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
   { 385327, "Imbue your weapon with the energy of a Dragonfly, increasing Critical Strike Rating by $ec1 for 2 hours.\r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
@@ -20505,12 +20508,12 @@ static const std::array<spelltext_data_t, 20503> __ptr_spelltext_data { {
   { 431172, "Every $s1 Focus you spend has a ${$m2/10}.1% chance to reset the cooldown of Rapid Fire and cause your next Rapid Fire to shoot $431156s1% additional shots during its channel.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.51973
+// spelltext hotfix entries, wow build 10.2.0.52038
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
   {  426321,  0, "@$spelldesc426262", "$@spelldesc426262" },
 } };
 
-// Spell description variables, wow build 10.2.0.51973
+// Spell description variables, wow build 10.2.0.52038
 static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20925,7 +20928,7 @@ static const std::array<spelldesc_vars_data_t, 411> __ptr_spelldesc_vars_data { 
   {  427688, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${((0.690899398201283*($SP*1.25)*$<demoMastery>*(1+$@versadmg))*1.18)\r\n}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.51973
+// spelldesc_vars hotfix entries, wow build 10.2.0.52038
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

@@ -146,6 +146,7 @@ struct sim_t : private sc_thread_t
   bool        requires_regen_event;
   bool        single_actor_batch;
   bool        allow_experimental_specializations;
+  bool        enable_all_talents;
   int         progressbar_type;
   int         armory_retries;
 
