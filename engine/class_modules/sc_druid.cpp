@@ -1350,21 +1350,21 @@ struct force_of_nature_t : public pet_t
     owner_coeff.ap_from_sp = 0.6;
 
     // From ExpectedStat.db2
-    double base_dps = 3706;  // @70
+    double base_dps = 4551;  // @70
 
     switch ( o()->true_level )
     {
       case 70: break;
-      case 69: base_dps = 3447; break;
-      case 68: base_dps = 3143; break;
-      case 67: base_dps = 2774; break;
-      case 66: base_dps = 2341; break;
-      case 65: base_dps = 1973; break;
-      case 64: base_dps = 1660; break;
-      case 63: base_dps = 1394; break;
-      case 62: base_dps = 1169; break;
-      case 61: base_dps = 977;  break;
-      default: base_dps = 523;  break;
+      case 69: base_dps = 4307; break;
+      case 68: base_dps = 3994; break;
+      case 67: base_dps = 3554; break;
+      case 66: base_dps = 3025; break;
+      case 65: base_dps = 2571; break;
+      case 64: base_dps = 2181; break;
+      case 63: base_dps = 1846; break;
+      case 62: base_dps = 1559; break;
+      case 61: base_dps = 1312; break;
+      default: base_dps = 712;  break;
     }
 
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = base_dps * main_hand_weapon.swing_time.total_seconds() / 1000;
