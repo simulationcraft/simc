@@ -1777,9 +1777,6 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
   {
     set_absorb_source( p->get_stats( has_4pc ? "Blazing Thorns" : "Dream Thorns" ) );
     set_absorb_high_priority( true );
-
-    if ( !has_4pc )
-      buff_t::make_fallback( p, "blazing_thorns", p );
   }
 
   // triggered with rage spent as value
@@ -10275,6 +10272,9 @@ void druid_t::create_buffs()
   buff.dream_thorns =
       make_buff_fallback<dream_thorns_buff_t>( sets->has_set_bonus( DRUID_GUARDIAN, T31, B2 ), this, "dream_thorns",
                                                sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) );
+  // manually create the fallback for 4t31
+  if ( !sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) )
+    buff_t::make_fallback( this, "blazing_thorns", this );
 
   buff.earthwarden = make_buff_fallback( talent.earthwarden.ok(), this, "earthwarden", find_spell( 203975 ) )
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
