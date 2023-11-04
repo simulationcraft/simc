@@ -533,11 +533,11 @@ void outlaw_ptr( player_t* p )
   default_->add_action( "bag_of_tricks" );
 
   build->add_action( "echoing_reprimand", "Builders" );
-  build->add_action( "ambush,if=talent.hidden_opportunity&(buff.audacity.up|buff.sepsis_buff.up)", "High priority Ambush for Hidden Opportunity builds" );
+  build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "High priority Ambush for Hidden Opportunity builds" );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up", "With Audacity + Hidden Opportunity + Fan the Hammer, consume Opportunity to proc Audacity any time Ambush is not available" );
   build->add_action( "pistol_shot,if=buff.greenskins_wickers.up&(!talent.fan_the_hammer&buff.opportunity.up|buff.greenskins_wickers.remains<1.5)", "Use Greenskins Wickers buff immediately with Opportunity unless running Fan the Hammer" );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With Fan the Hammer, consume Opportunity at max stacks or if it will expire" );
-  build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&combo_points.deficit>((1+talent.quick_draw)*talent.fan_the_hammer.rank)&(cooldown.vanish.remains>10&cooldown.shadow_dance.remains>5|!talent.crackshot|talent.fan_the_hammer.rank<=1)", "With Fan the Hammer, consume Opportunity based on CP deficit, and 2 Fan the Hammer Crackshot builds can briefly hold stacks for an upcoming stealth cooldown" );
+  build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&combo_points.deficit>((1+talent.quick_draw)*talent.fan_the_hammer.rank)&(!cooldown.vanish.ready&!cooldown.shadow_dance.ready|stealthed.all|!talent.crackshot|talent.fan_the_hammer.rank<=1)", "With Fan the Hammer, consume Opportunity based on CP deficit, and 2 Fan the Hammer Crackshot builds can briefly hold stacks for an upcoming stealth cooldown" );
   build->add_action( "pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)", "If not using Fan the Hammer, then consume Opportunity based on energy, when it will exactly cap CPs, or when using Quick Draw" );
   build->add_action( "sinister_strike" );
 
@@ -547,7 +547,7 @@ void outlaw_ptr( player_t* p )
   cds->add_action( "keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+set_bonus.tier31_4pc&(buff.shadow_dance.down|rtb_buffs>=6)", "Use Keep it Rolling with at least 3 buffs (4 with T31)" );
   cds->add_action( "ghostly_strike" );
   cds->add_action( "sepsis,if=talent.crackshot&cooldown.between_the_eyes.ready&variable.finish_condition&!stealthed.all|!talent.crackshot&target.time_to_die>11&buff.between_the_eyes.up|fight_remains<11", "Use Sepsis to trigger Crackshot or if the target will survive its DoT" );
-  cds->add_action( "blade_rush,if=variable.blade_flurry_sync&(energy.base_time_to_max>4-spell_targets%3)&!stealthed.all", "Use Blade Rush at minimal energy, but more regularly with increasing target count" );
+  cds->add_action( "blade_rush,if=energy.base_time_to_max>4&!stealthed.all", "Use Blade Rush at minimal energy outside of stealth" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all" );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=100|fight_remains<charges*6)" );
   cds->add_action( "shadowmeld,if=!stealthed.all&(talent.count_the_odds&variable.finish_condition|variable.ambush_condition)" );
@@ -565,7 +565,7 @@ void outlaw_ptr( player_t* p )
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
   finish->add_action( "between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.remains<4|talent.improved_between_the_eyes|talent.greenskins_wickers|set_bonus.tier30_4pc)&!buff.greenskins_wickers.up", "Finishers  Use Between the Eyes to keep the crit buff up, but on cooldown if Improved/Greenskins/T30, and avoid overriding Greenskins" );
-  finish->add_action( "between_the_eyes,if=talent.crackshot&(cooldown.vanish.remains>45&cooldown.shadow_dance.remains>15)", "Crackshot builds use Between the Eyes outside of Stealth if Vanish or Dance will not come off cooldown within the next cast" );
+  finish->add_action( "between_the_eyes,if=talent.crackshot&(cooldown.vanish.remains>45&cooldown.shadow_dance.remains>12)", "Crackshot builds use Between the Eyes outside of Stealth if Vanish or Dance will not come off cooldown within the next cast" );
   finish->add_action( "slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable" );
   finish->add_action( "killing_spree,if=debuff.ghostly_strike.up|!talent.ghostly_strike" );
   finish->add_action( "cold_blood" );
@@ -575,7 +575,7 @@ void outlaw_ptr( player_t* p )
   stealth->add_action( "cold_blood,if=variable.finish_condition" );
   stealth->add_action( "between_the_eyes,if=variable.finish_condition&talent.crackshot" );
   stealth->add_action( "dispatch,if=variable.finish_condition" );
-  stealth->add_action( "pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.up&(buff.broadside.up&combo_points<=1|buff.opportunity.stack>=6&buff.greenskins_wickers.up)", "2 Fan the Hammer Crackshot builds can consume Opportunity in stealth during Broadside and low CPs, or at max stacks with Greenskins" );
+  stealth->add_action( "pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.stack>=6&(buff.broadside.up&combo_points<=1|buff.greenskins_wickers.up)", "2 Fan the Hammer Crackshot builds can consume Opportunity in stealth with max stacks, Broadside, and low CPs, or with Greenskins active" );
   stealth->add_action( "ambush,if=talent.hidden_opportunity" );
 
   stealth_cds->add_action( "variable,name=vanish_opportunity_condition,value=!talent.shadow_dance&talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling", "Stealth Cooldowns" );
