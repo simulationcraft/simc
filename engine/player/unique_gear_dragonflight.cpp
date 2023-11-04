@@ -8293,14 +8293,30 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
 // 378139 Buff
 void rallied_to_victory( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-  buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
-
   struct rallied_to_victory_cb_t : public dbc_proc_callback_t
   {
-    buff_t* buff;
-    rallied_to_victory_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
+    target_specific_t<buff_t> buffs;
+    int max_allied_buffs;
+    rallied_to_victory_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        max_allied_buffs( effect.trigger()->effectN( 2 ).base_value() )
     {
+      get_buff( effect.player );
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      auto buff =
+          make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "rallied_to_victory", effect.trigger() );
+      buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
     }
 
     void execute( action_t*, action_state_t* ) override
@@ -8310,15 +8326,36 @@ void rallied_to_victory( special_effect_t& effect )
         int allies = 0;
         allies = effect.player->rng().range( as<int>( effect.player->dragonflight_opts.rallied_to_victory_min_allies ),
                                              as<int>( effect.trigger()->effectN( 2 ).base_value() ) );
-        buff->set_max_stack( 1 + allies );
-        buff->set_initial_stack( 1 + allies );
+        buffs[ effect.player ]->set_max_stack( 1 + allies );
+        buffs[ effect.player ]->set_initial_stack( 1 + allies );
       }
 
-      buff->trigger();
+      buffs[ effect.player ]->trigger();
+
+      if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
+      {
+        int buffs = 1;
+
+        for ( auto p : effect.player->sim->player_non_sleeping_list )
+        {
+          if ( p == effect.player )
+            continue;
+
+          if ( rng().roll( effect.player->dragonflight_opts.rallied_to_victory_multi_actor_skip_chance ) )
+          {
+              buffs++;
+              continue;
+          }
+
+          get_buff( p )->trigger();
+          if ( ++buffs >= max_allied_buffs )
+            break;
+        }
+      }
     }
   };
 
-  new rallied_to_victory_cb_t( effect, buff );
+  new rallied_to_victory_cb_t( effect );
 }
 
 // 406219 Damage Taken Driver
