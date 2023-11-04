@@ -25,9 +25,7 @@ actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
 actions.precombat+=/summon_pet
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/steel_trap,precast_time=1.5,if=!talent.wailing_arrow&talent.steel_trap
 
 # Executed every time the actor is available.
@@ -37,63 +35,62 @@ actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=st,if=active_enemies<2|!talent.beast_cleave&active_enemies<3
 actions+=/call_action_list,name=cleave,if=active_enemies>2|talent.beast_cleave&active_enemies>1
 
-# Call for Power Infusion when Bestial Wrath is running, or is close to coming off cooldown (PI lasts 20 seconds and Bestial Wrath lasts 15, so 30 seconds when accounting for Barbed Shot reduction of Bestial Wrath is a good approximate fit).
-actions.cds=invoke_external_buff,name=power_infusion,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30
+actions.cds=invoke_external_buff,name=power_infusion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30)|fight_remains<16
 actions.cds+=/berserking,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<13
 actions.cds+=/blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<16
 actions.cds+=/ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<16
 actions.cds+=/fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<9
-actions.cds+=/potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<31
+actions.cds+=/potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31
 
-actions.cleave=barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains)
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|full_recharge_time<gcd&cooldown.bestial_wrath.remains
-actions.cleave+=/multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25
+actions.cleave=barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains)
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains
+actions.cleave+=/multishot,if=pet.main.buff.beast_cleave.remains>0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)
 actions.cleave+=/bestial_wrath
-actions.cleave+=/kill_command,if=talent.kill_cleave
 actions.cleave+=/call_of_the_wild
+actions.cleave+=/kill_command,if=talent.kill_cleave
 actions.cleave+=/explosive_shot
-actions.cleave+=/stampede,if=buff.bestial_wrath.up|target.time_to_die<15
+actions.cleave+=/stampede
 actions.cleave+=/bloodshed
 actions.cleave+=/death_chakram
 actions.cleave+=/steel_trap
 actions.cleave+=/a_murder_of_crows
-actions.cleave+=/barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2)
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_instincts&buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2
+actions.cleave+=/barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery)
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery
 actions.cleave+=/kill_command
 actions.cleave+=/dire_beast
 actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
 actions.cleave+=/barrage,if=pet.main.buff.frenzy.remains>execute_time
 actions.cleave+=/multishot,if=pet.main.buff.beast_cleave.remains<gcd*2
-actions.cleave+=/aspect_of_the_wild
-actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2|buff.aspect_of_the_wild.up&focus.time_to_max<gcd*4
+actions.cleave+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.cleave+=/kill_shot
+actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2
 actions.cleave+=/wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time|fight_remains<5
 actions.cleave+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.cleave+=/arcane_torrent,if=(focus+focus.regen+30)<focus.max
-actions.cleave+=/kill_shot
 
-actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&cooldown.bestial_wrath.ready
-actions.st+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator
+actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)
 actions.st+=/call_of_the_wild
-actions.st+=/death_chakram
-actions.st+=/bloodshed
+actions.st+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator
 actions.st+=/stampede
+actions.st+=/bestial_wrath
+actions.st+=/bloodshed
+actions.st+=/death_chakram
+actions.st+=/kill_command
 actions.st+=/a_murder_of_crows
 actions.st+=/steel_trap
 actions.st+=/explosive_shot
-actions.st+=/bestial_wrath
-actions.st+=/kill_command
-actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_instincts&buff.call_of_the_wild.up|talent.wild_call&charges_fractional>1.4|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd|full_recharge_time+gcd<8&cooldown.bestial_wrath.remains<24+(8-gcd)+full_recharge_time)|fight_remains<9
+actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9
 actions.st+=/dire_beast
 actions.st+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration
 actions.st+=/kill_shot
-actions.st+=/aspect_of_the_wild
+actions.st+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/cobra_shot
 actions.st+=/wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time|target.time_to_die<5
 actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/arcane_torrent,if=(focus+focus.regen+15)<focus.max
 
-actions.trinkets=variable,name=sync_up,value=buff.call_of_the_wild.up|cooldown.call_of_the_wild.remains<2|!talent.call_of_the_wild&(prev_gcd.1.bestial_wrath|cooldown.bestial_wrath.remains_guess<2)
+actions.trinkets=variable,name=sync_up,value=buff.call_of_the_wild.up|!talent.call_of_the_wild&(prev_gcd.1.bestial_wrath|cooldown.bestial_wrath.remains_guess<2)
 actions.trinkets+=/variable,name=sync_remains,op=setif,value=cooldown.bestial_wrath.remains_guess,value_else=cooldown.call_of_the_wild.remains,condition=!talent.call_of_the_wild
 actions.trinkets+=/variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
 actions.trinkets+=/variable,name=trinket_2_stronger,value=!trinket.1.has_cooldown|trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.1.cooldown.duration<trinket.2.cooldown.duration|trinket.1.cast_time<trinket.2.cast_time|trinket.1.cast_time=trinket.2.cast_time&trinket.1.cooldown.duration=trinket.2.cooldown.duration)|!trinket.2.has_use_buff&(!trinket.1.has_use_buff&(trinket.1.cooldown.duration<trinket.2.cooldown.duration|trinket.1.cast_time<trinket.2.cast_time|trinket.1.cast_time=trinket.2.cast_time&trinket.1.cooldown.duration=trinket.2.cooldown.duration))
