@@ -2795,25 +2795,65 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   }
 }
 
+static void enable_all_talents( player_t* player )
+{
+  std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
+
+  generate_tree_nodes( player, tree_nodes );
+
+  for ( auto& [ id, node ] : tree_nodes )
+  {
+    for ( auto& entry : node )
+    {
+      auto trait = entry.first;
+
+      // assume 'off-screen' nodes are invalid
+      if ( trait->row <= 0 || trait->col <= 0 || trait->max_ranks <= 0 )
+        continue;
+
+      if ( std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) ||
+           range::contains( trait->id_spec, player->specialization() ) )
+      {
+        player->sim->print_debug( "Player {} adding talent {}", player->name(), trait->name );
+        player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
+                                            trait->max_ranks );
+      }
+    }
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
 
-  if ( !talents_str.empty() && sim->talent_input_format == talent_format::BLIZZARD )
+  if ( !is_player() )
   {
-    parse_traits_hash( talents_str, this );
+    sim->print_debug( "Not a player, halting further talent initialization." );
+    return;
   }
 
-  if ( !talent_overrides_str.empty() )
+  if ( sim->enable_all_talents )
   {
-    for ( auto& split : util::string_split<util::string_view>( talent_overrides_str, "/" ) )
+    enable_all_talents( this );
+  }
+  else
+  {
+    if ( !talents_str.empty() && sim->talent_input_format == talent_format::BLIZZARD )
     {
-      override_talent( split );
+      parse_traits_hash( talents_str, this );
     }
-  }
 
-  parse_traits( talent_tree::CLASS, class_talents_str, this );
-  parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
+    if ( !talent_overrides_str.empty() )
+    {
+      for ( auto& split : util::string_split<util::string_view>( talent_overrides_str, "/" ) )
+      {
+        override_talent( split );
+      }
+    }
+
+    parse_traits( talent_tree::CLASS, class_talents_str, this );
+    parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
+  }
 
   // Generate talent effect overrides based on parsed trait information
   for ( const auto& player_trait : player_traits )

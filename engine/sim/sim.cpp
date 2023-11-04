@@ -1510,6 +1510,7 @@ sim_t::sim_t()
     requires_regen_event( false ),
     single_actor_batch( false ),
     allow_experimental_specializations( false ),
+    enable_all_talents( false ),
     progressbar_type( 0 ),
     armory_retries( 3 ),
     enemy_death_pct( 0 ),
@@ -3637,6 +3638,7 @@ void sim_t::create_options()
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
+  add_option( opt_bool( "enable_all_talents", enable_all_talents ) );
 
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
