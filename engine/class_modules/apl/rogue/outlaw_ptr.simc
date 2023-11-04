@@ -94,7 +94,7 @@ actions.cds+=/use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has
 # Use Between the Eyes to keep the crit buff up, but on cooldown if Improved/Greenskins/T30, and avoid overriding Greenskins
 actions.finish=between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.remains<4|talent.improved_between_the_eyes|talent.greenskins_wickers|set_bonus.tier30_4pc)&!buff.greenskins_wickers.up
 # Crackshot builds use Between the Eyes outside of Stealth if Vanish or Dance will not come off cooldown within the next cast
-actions.finish+=/between_the_eyes,if=talent.crackshot&(cooldown.vanish.remains>45&cooldown.shadow_dance.remains>15)
+actions.finish+=/between_the_eyes,if=talent.crackshot&(cooldown.vanish.remains>45&cooldown.shadow_dance.remains>12)
 actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable
 actions.finish+=/killing_spree,if=debuff.ghostly_strike.up|!talent.ghostly_strike
 actions.finish+=/cold_blood
@@ -105,8 +105,8 @@ actions.stealth=blade_flurry,if=talent.subterfuge&talent.hidden_opportunity&spel
 actions.stealth+=/cold_blood,if=variable.finish_condition
 actions.stealth+=/between_the_eyes,if=variable.finish_condition&talent.crackshot
 actions.stealth+=/dispatch,if=variable.finish_condition
-# 2 Fan the Hammer Crackshot builds can consume Opportunity in stealth during Broadside and low CPs, or at max stacks with Greenskins
-actions.stealth+=/pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.up&(buff.broadside.up&combo_points<=1|buff.opportunity.stack>=6&buff.greenskins_wickers.up)
+# 2 Fan the Hammer Crackshot builds can consume Opportunity in stealth with max stacks, Broadside, and low CPs, or with Greenskins active
+actions.stealth+=/pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.stack>=6&(buff.broadside.up&combo_points<=1|buff.greenskins_wickers.up)
 actions.stealth+=/ambush,if=talent.hidden_opportunity
 
 # Stealth Cooldowns
