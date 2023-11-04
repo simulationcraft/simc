@@ -1734,6 +1734,42 @@ public:
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
     parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
     parse_damage_affecting_spell( p->spec.t30_assassination_4pc_buff, affected_by.t30_assassination_4pc );
+
+    // Manually apply scripted modifiers from Veiltouched and Deeper Daggers when affected by Dark Brew talent
+    if ( p->talent.subtlety.dark_brew->ok() && ab::data().affected_by( p->talent.subtlety.dark_brew->effectN( 1 ) ) )
+    {
+      if ( p->talent.subtlety.veiltouched->ok() )
+      {
+        damage_affect_data passive_list;
+        parse_damage_affecting_spell( p->talent.subtlety.veiltouched, passive_list );
+        if ( !passive_list.direct )
+        {
+          const spelleffect_data_t& effect = p->talent.subtlety.veiltouched->effectN( 1 );
+          ab::base_dd_multiplier *= ( 1 + effect.percent() );
+          p->sim->print_debug( "{} {} is manually affected by Veiltouched (id={} - effect #{})", *p, *this,
+                               effect.id(), effect.spell_effect_num() + 1 );
+          p->sim->print_debug( "{} base_dd_multiplier modified by {}% to {}", *this, effect.base_value(), ab::base_dd_multiplier );
+          ab::affecting_list.emplace_back( &effect, effect.percent() );
+        }
+        if ( !passive_list.periodic )
+        {
+          const spelleffect_data_t& effect = p->talent.subtlety.veiltouched->effectN( 2 );
+          ab::base_td_multiplier *= ( 1 + effect.percent() );
+          p->sim->print_debug( "{} {} is manually affected by Veiltouched (id={} - effect #{})", *p, *this,
+                               effect.id(), effect.spell_effect_num() + 1 );
+          p->sim->print_debug( "{} base_td_multiplier modified by {}% to {}", *this, effect.base_value(), ab::base_td_multiplier );
+          ab::affecting_list.emplace_back( &effect, effect.percent() );
+        }
+      }
+
+      if ( p->talent.subtlety.deeper_daggers->ok() )
+      {
+        if ( !affected_by.deeper_daggers.direct )
+          affected_by.deeper_daggers.direct = true;
+        if ( !affected_by.deeper_daggers.periodic )
+          affected_by.deeper_daggers.periodic = true;
+      }
+    }
   }
 
   void init() override
@@ -5137,17 +5173,6 @@ struct rupture_t : public rogue_attack_t
 
     if ( replicating_shadows_tick )
     {
-      // Affected by label modifiers after residual damage calculation is applied
-      /*
-      double multiplier = p()->talent.subtlety.replicating_shadows->effectN( 1 ).percent();
-      multiplier *= 1.0 + p()->talent.subtlety.veiltouched->effectN( 4 ).percent();
-      multiplier *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 5 ).percent();
-      multiplier *= 1.0 + p()->buffs.deeper_daggers->stack_value();
-      double damage = d->state->result_total * multiplier;
-      replicating_shadows_tick->execute_on_target( d->target, damage );
-      */
-
-      // Temporarily reverting PTR changes due to bug issues
       replicating_shadows_tick->execute_on_target( d->target );
     }
 
