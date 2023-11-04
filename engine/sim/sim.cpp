@@ -2769,6 +2769,7 @@ void sim_t::init()
     void bump( int, double ) override { return; }
     void reset() override { return; }
     void invalidate_cache() override { return; }
+    double check_value() const override { return 0; }
   };
 
   auras.fallback = make_buff<fallback_buff_t>( this );
