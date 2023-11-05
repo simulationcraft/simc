@@ -1450,7 +1450,7 @@ void warlock_t::create_buffs_demonology()
                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
-                                ->set_default_value( talents.reign_of_tyranny->effectN( 3 ).percent() );
+                                ->set_default_value( talents.reign_of_tyranny->effectN( 2 ).percent() );  // TODO: temp fix for 10.2 PTR data
 
   buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
                              ->set_default_value_from_effect( 1 );
