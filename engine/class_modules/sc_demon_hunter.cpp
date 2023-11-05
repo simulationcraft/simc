@@ -6403,7 +6403,7 @@ struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
 {
   calcified_spikes_t( demon_hunter_t* p ) : base_t( *p, "calcified_spikes", p->spec.calcified_spikes_buff )
   {
-    auto max_stacks = as<int>(data().duration() / 1_s);
+    auto max_stacks = std::max( 1, as<int>( data().duration() / 1_s ) );
     auto default_value = data().effectN( 1 ).percent() / max_stacks;
 
     set_period( 1_s );
