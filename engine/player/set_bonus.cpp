@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "set_bonus.hpp"
+
 #include "dbc/dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "item/item.hpp"
@@ -11,10 +12,8 @@
 #include "sim/expressions.hpp"
 #include "sim/sim.hpp"
 
-set_bonus_t::set_bonus_t( player_t* player ) :
-  actor( player ),
-  set_bonus_spec_data( SET_BONUS_MAX ),
-  set_bonus_spec_count( SET_BONUS_MAX )
+set_bonus_t::set_bonus_t( player_t* player )
+  : actor( player ), set_bonus_spec_data( SET_BONUS_MAX ), set_bonus_spec_count( SET_BONUS_MAX )
 {
   for ( size_t i = 0; i < set_bonus_spec_data.size(); i++ )
   {
@@ -23,7 +22,7 @@ set_bonus_t::set_bonus_t( player_t* player ) :
     // For now only 2, and 4 set bonuses
     for ( size_t j = 0; j < set_bonus_spec_data[ i ].size(); j++ )
     {
-      set_bonus_spec_data[ i ][ j ].resize( N_BONUSES, set_bonus_data_t(spell_data_t::not_found()) );
+      set_bonus_spec_data[ i ][ j ].resize( N_BONUSES, set_bonus_data_t( spell_data_t::not_found() ) );
       set_bonus_spec_count[ i ][ j ] = 0;
     }
   }
@@ -66,7 +65,7 @@ set_bonus_t::set_bonus_t( player_t* player ) :
     else
     {
       assert( bonus.spec > 0 );
-      specialization_e spec = static_cast< specialization_e >( bonus.spec );
+      specialization_e spec = static_cast<specialization_e>( bonus.spec );
 
       set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].bonus = &bonus;
     }
@@ -79,7 +78,7 @@ void set_bonus_t::initialize_items()
   // Don't allow 2 worn items of the same id to count as 2 slots
   std::vector<unsigned> item_ids;
 
-  for ( auto& item : actor->items)
+  for ( auto& item : actor->items )
   {
     if ( item.parsed.data.id == 0 )
       continue;
@@ -94,7 +93,7 @@ void set_bonus_t::initialize_items()
       if ( bonus.set_id != static_cast<unsigned>( item.parsed.data.id_set ) )
         continue;
 
-      if ( bonus.class_id != -1 && ! bonus.has_spec( static_cast<int>( actor->_spec ) ) )
+      if ( bonus.class_id != -1 && !bonus.has_spec( static_cast<int>( actor->_spec ) ) )
         continue;
 
       if ( range::find( item_ids, item.parsed.data.id ) != item_ids.end() )
@@ -118,7 +117,7 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
   if ( actor->sim->challenge_mode == 1 )
     return bonuses;
 
-  if ( actor->sim->disable_set_bonuses == 1 ) // Or if global disable set bonus override is used.
+  if ( actor->sim->disable_set_bonuses == 1 )  // Or if global disable set bonus override is used.
     return bonuses;
 
   for ( auto& spec_data : set_bonus_spec_data )
@@ -147,18 +146,18 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
 
 // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
 
-const spell_data_t* set_bonus_t::set(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const
+const spell_data_t* set_bonus_t::set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
 {
-  if ( dbc::spec_idx(spec) < 0 )
+  if ( dbc::spec_idx( spec ) < 0 )
   {
     return spell_data_t::nil();
   }
 #ifndef NDEBUG
-  assert(set_bonus_spec_data.size() > (unsigned)set_bonus);
-  assert(set_bonus_spec_data[set_bonus].size() > (unsigned)dbc::spec_idx(spec));
-  assert(set_bonus_spec_data[set_bonus][dbc::spec_idx(spec)].size() > (unsigned)bonus);
+  assert( set_bonus_spec_data.size() > (unsigned)set_bonus );
+  assert( set_bonus_spec_data[ set_bonus ].size() > (unsigned)dbc::spec_idx( spec ) );
+  assert( set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ].size() > (unsigned)bonus );
 #endif
-  return set_bonus_spec_data[set_bonus][dbc::spec_idx(spec)][bonus].spell;
+  return set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ][ bonus ].spell;
 }
 
 void set_bonus_t::initialize()
@@ -167,7 +166,7 @@ void set_bonus_t::initialize()
   if ( actor->sim->challenge_mode == 1 )
     return;
 
-  if ( actor->sim->disable_set_bonuses == 1 ) // Or if global disable set bonus override is used.
+  if ( actor->sim->disable_set_bonuses == 1 )  // Or if global disable set bonus override is used.
     return;
 
   initialize_items();
@@ -194,11 +193,11 @@ void set_bonus_t::initialize()
 
         // Set bonus is overridden, or we have sufficient number of items to enable the bonus
         if ( data.overridden >= 1 ||
-          ( set_bonus_spec_count[idx][spec_role_idx] >= data.bonus->bonus && data.overridden == -1 ) ||
-          ( data.bonus->has_spec( actor->_spec ) &&
-          ( ! util::str_in_str_ci( data.bonus->set_opt_name, "lfr" ) &&
-          ( ( actor->sim->enable_2_set == data.bonus->tier && data.bonus->bonus == 2 ) ||
-          ( actor->sim->enable_4_set == data.bonus->tier && data.bonus->bonus == 4 ) ) ) ) )
+             ( set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus && data.overridden == -1 ) ||
+             ( data.bonus->has_spec( actor->_spec ) &&
+               ( !util::str_in_str_ci( data.bonus->set_opt_name, "lfr" ) &&
+                 ( ( actor->sim->enable_2_set == data.bonus->tier && data.bonus->bonus == 2 ) ||
+                   ( actor->sim->enable_4_set == data.bonus->tier && data.bonus->bonus == 4 ) ) ) ) )
         {
           if ( data.bonus->bonus == 2 )
           {
@@ -234,7 +233,7 @@ void set_bonus_t::initialize()
     }
   }
 
-  actor->sim->print_debug("Initialized set bonus: {}", *this);
+  actor->sim->print_debug( "Initialized set bonus: {}", *this );
 }
 
 void set_bonus_t::enable_all_sets()
@@ -248,21 +247,20 @@ void set_bonus_t::enable_all_sets()
   }
 }
 
-bool set_bonus_t::has_set_bonus(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const
+bool set_bonus_t::has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
 {
-  if ( dbc::spec_idx(spec) < 0 )
+  if ( dbc::spec_idx( spec ) < 0 )
   {
     return false;
   }
 
-  return set_bonus_spec_data[set_bonus][dbc::spec_idx(spec)][bonus].enabled;
+  return set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ][ bonus ].enabled;
 }
 
 std::string set_bonus_t::to_string() const
 {
   return fmt::format( "{}", *this );
 }
-
 
 void sc_format_to( const set_bonus_t& sb, fmt::format_context::iterator out )
 {
@@ -280,15 +278,11 @@ void sc_format_to( const set_bonus_t& sb, fmt::format_context::iterator out )
         unsigned spec_role_idx = static_cast<int>( spec_idx );
 
         if ( data.overridden >= 1 ||
-           ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
+             ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
         {
-          fmt::format_to( out, "{}{{ {}, {}, {}, {} piece bonus {} }}",
-              i > 0 ? ", " : "",
-              data.bonus->set_name,
-              data.bonus->set_opt_name,
-              util::specialization_string( sb.actor->specialization() ),
-              data.bonus->bonus,
-              ( data.overridden >= 1 ) ? " (overridden)" : "");
+          fmt::format_to( out, "{}{{ {}, {}, {}, {} piece bonus {} }}", i > 0 ? ", " : "", data.bonus->set_name,
+                          data.bonus->set_opt_name, util::specialization_string( sb.actor->specialization() ),
+                          data.bonus->bonus, ( data.overridden >= 1 ) ? " (overridden)" : "" );
           ++i;
         }
       }
@@ -313,12 +307,9 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
         unsigned spec_role_idx = static_cast<int>( spec_idx );
 
         if ( data.overridden >= 1 ||
-           ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
+             ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
         {
-          s += fmt::format("# set_bonus={}_{}pc=1{}",
-              data.bonus->set_opt_name,
-              data.bonus->bonus,
-              newline);
+          s += fmt::format( "# set_bonus={}_{}pc=1{}", data.bonus->set_opt_name, data.bonus->bonus, newline );
         }
       }
     }
@@ -327,7 +318,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
   return s;
 }
 
-std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , util::string_view type )
+std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t*, util::string_view type )
 {
   int spec_id = dbc::spec_idx( actor->specialization() );
   if ( spec_id < 0 )
@@ -336,19 +327,17 @@ std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , util::
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
   set_bonus_e bonus = B_NONE;
 
-  if ( ! parse_set_bonus_option( type, set_bonus, bonus ) )
+  if ( !parse_set_bonus_option( type, set_bonus, bonus ) )
   {
-    throw std::invalid_argument(fmt::format("Cannot parse set bonus '{}'.", type));
+    throw std::invalid_argument( fmt::format( "Cannot parse set bonus '{}'.", type ) );
   }
 
   bool state = set_bonus_spec_data[ set_bonus ][ spec_id ][ bonus ].spell->id() > 0;
 
-  return expr_t::create_constant( type, static_cast<double>(state) );
+  return expr_t::create_constant( type, static_cast<double>( state ) );
 }
 
-bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str,
-                                          set_bonus_type_e& set_bonus,
-                                          set_bonus_e& bonus )
+bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus )
 {
   set_bonus = SET_BONUS_NONE;
   bonus = B_NONE;
@@ -383,7 +372,7 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str,
 
     if ( set_bonus == SET_BONUS_NONE && util::str_compare_ci( set_name, bonus.set_opt_name ) )
     {
-      set_bonus = static_cast< set_bonus_type_e >( bonus.enum_id );
+      set_bonus = static_cast<set_bonus_type_e>( bonus.enum_id );
       break;
     }
   }
@@ -403,7 +392,7 @@ std::string set_bonus_t::generate_set_bonus_options() const
 
     if ( std::find( opts.begin(), opts.end(), opt ) == opts.end() )
     {
-      opts.push_back(opt);
+      opts.push_back( opt );
     }
   }
 
