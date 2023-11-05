@@ -2765,7 +2765,7 @@ struct bladestorm_t : public warrior_attack_t
     // Unhinged DOES work w/ Torment and Signet
     if ( p->talents.arms.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
+      mortal_strike = new mortal_strike_unhinged_t( p, "mortal_strike_unhinged" );
       add_child( mortal_strike );
     }
 
@@ -2914,7 +2914,7 @@ struct torment_bladestorm_t : public warrior_attack_t
 
     if ( p->talents.arms.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
+      mortal_strike = new mortal_strike_unhinged_t( p, "mortal_strike_torment_unhinged" );
       add_child( mortal_strike );
     }
   }
