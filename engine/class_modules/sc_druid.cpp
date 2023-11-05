@@ -25,6 +25,8 @@ struct druid_t;
 namespace pets
 {
 struct denizen_of_the_dream_t;
+struct force_of_nature_t;
+struct grove_guardian_t;
 }
 
 enum form_e : unsigned
@@ -497,9 +499,14 @@ public:
   struct pets_t
   {
     spawner::pet_spawner_t<pets::denizen_of_the_dream_t, druid_t> denizen_of_the_dream;
-    std::array<pet_t*, 3> force_of_nature;
+    spawner::pet_spawner_t<pets::force_of_nature_t, druid_t> force_of_nature;
+    spawner::pet_spawner_t<pets::grove_guardian_t, druid_t> grove_guardian;
 
-    pets_t( druid_t* p ) : denizen_of_the_dream( "denizen_of_the_dream", p ) {}
+    pets_t( druid_t* p )
+      : denizen_of_the_dream( "denizen_of_the_dream", p ),
+        force_of_nature( "force_of_nature", p ),
+        grove_guardian( "grove_guardian", p )
+    {}
   } pets;
 
   // Auto-attacks
@@ -1228,13 +1235,6 @@ struct denizen_of_the_dream_t : public pet_t
       : spell_t( "fey_missile", p, p->find_spell( 188046 ) ), o( static_cast<druid_t*>( p->owner ) )
     {
       name_str_reporting = "fey_missile";
-
-      auto proxy = o->active.denizen_of_the_dream;
-      auto it = range::find( proxy->child_action, data().id(), &action_t::id );
-      if ( it != proxy->child_action.end() )
-        stats = ( *it )->stats;
-      else
-        proxy->add_child( this );
     }
 
     void execute() override
@@ -1270,7 +1270,7 @@ struct denizen_of_the_dream_t : public pet_t
     }
   };
 
-  denizen_of_the_dream_t( druid_t* p ) : pet_t( p->sim, p, "denizen_of_the_dream", true, true )
+  denizen_of_the_dream_t( druid_t* p ) : pet_t( p->sim, p, "Denizen of the Dream", true, true )
   {
     owner_coeff.sp_from_sp = 1.0;
 
@@ -1344,7 +1344,7 @@ struct force_of_nature_t : public pet_t
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
 
-  force_of_nature_t( sim_t* sim, druid_t* owner ) : pet_t( sim, owner, "Treant", true /*GUARDIAN*/, true )
+  force_of_nature_t( druid_t* p ) : pet_t( p->sim, p, "Treant", true, true )
   {
     // Treants have base weapon damage + ap from player's sp.
     owner_coeff.ap_from_sp = 0.6;
@@ -1398,6 +1398,31 @@ struct force_of_nature_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 };
+
+// Grove Guardian ===========================================================
+struct grove_guardian_t : public pet_t
+{
+  grove_guardian_t( druid_t* p ) : pet_t( p->sim, p, "Grove Guardian", true, true )
+  {
+
+  }
+
+  druid_t* o() { return static_cast<druid_t*>( owner ); }
+};
+
+std::function<void( pet_t* )> parent_pet_action_fn( action_t* parent )
+{
+  return [ parent ]( pet_t* p ) {
+    for ( auto a : p->action_list )
+    {
+      auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
+      if ( it != parent->child_action.end() )
+        a->stats = ( *it )->stats;
+      else
+        parent->add_child( a );
+    }
+  };
+}
 }  // end namespace pets
 
 namespace buffs
@@ -6643,42 +6668,23 @@ struct entangling_roots_t : public druid_spell_t
 // Force of Nature ==========================================================
 struct force_of_nature_t : public druid_spell_t
 {
-  timespan_t summon_duration;
+  unsigned num;
 
   force_of_nature_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "force_of_nature", p, p->talent.force_of_nature, opt ),
-      summon_duration( find_trigger( p->talent.force_of_nature ).trigger()->duration() + 1_ms )
+      num( as<unsigned>( p->talent.force_of_nature->effectN( 1 ).base_value() ) )
   {
     harmful = false;
-  }
 
-  void init_finished() override
-  {
-    if ( p()->talent.force_of_nature.ok() )
-    {
-      for ( const auto& treant : p()->pets.force_of_nature )
-      {
-        for ( auto a : treant->action_list )
-        {
-          auto it = range::find( child_action, a->name_str, &action_t::name_str );
-          if ( it != child_action.end() )
-            a->stats = ( *it )->stats;
-          else
-            add_child( a );
-        }
-      }
-    }
-
-    druid_spell_t::init_finished();
+    p->pets.force_of_nature.set_default_duration( find_trigger( p->talent.force_of_nature ).trigger()->duration() + 1_ms );
+    p->pets.force_of_nature.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    for ( const auto& treant : p()->pets.force_of_nature )
-      if ( treant->is_sleeping() )
-        treant->summon( summon_duration );
+    p()->pets.force_of_nature.spawn( num );
   }
 };
 
@@ -9099,13 +9105,13 @@ public:
 struct denizen_of_the_dream_t : public action_t
 {
   druid_t* druid;
-  timespan_t dur;
 
   denizen_of_the_dream_t( druid_t* p )
-    : action_t( action_e::ACTION_OTHER, "denizen_of_the_dream", p, p->talent.denizen_of_the_dream ),
-      druid( p ),
-      dur( p->find_spell( 394076 )->duration() )
-  {}
+    : action_t( action_e::ACTION_OTHER, "denizen_of_the_dream", p, p->talent.denizen_of_the_dream ), druid( p )
+  {
+    p->pets.denizen_of_the_dream.set_default_duration( p->find_spell( 394076 )->duration() );
+    p->pets.denizen_of_the_dream.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+  }
 
   result_e calculate_result( action_state_t* ) const override
   {
@@ -9116,7 +9122,7 @@ struct denizen_of_the_dream_t : public action_t
   {
     action_t::execute();
 
-    druid->pets.denizen_of_the_dream.spawn( dur );
+    druid->pets.denizen_of_the_dream.spawn();
   }
 };
 
@@ -9322,19 +9328,6 @@ pet_t* druid_t::create_pet( std::string_view pet_name, std::string_view )
 void druid_t::create_pets()
 {
   player_t::create_pets();
-
-  if ( talent.denizen_of_the_dream.ok() )
-  {
-    pets.denizen_of_the_dream.set_creation_callback( []( druid_t* p ) {
-      return new pets::denizen_of_the_dream_t( p );
-    } );
-  }
-
-  if ( talent.force_of_nature.ok() )
-  {
-    for ( pet_t*& pet : pets.force_of_nature )
-      pet = new pets::force_of_nature_t( sim, this );
-  }
 
   // not actually pets, but this stage is a good place to create these as all spells & actions have been created
   if ( talent.adaptive_swarm.ok() )
@@ -11496,9 +11489,6 @@ void druid_t::datacollection_end()
 
 void druid_t::analyze( sim_t& sim )
 {
-  if ( active.denizen_of_the_dream )
-    range::for_each( active.denizen_of_the_dream->child_action, [ this ]( action_t* a ) { a->stats->player = this; } );
-
   player_t::analyze( sim );
 
   // GG is a major portion of guardian druid damage but skews moonfire reporting because gg has no execute time. We
