@@ -768,7 +768,7 @@ namespace monk
           if ( ab::data().affected_by( td->debuff.weapons_of_order->data().effectN( 1 ) ) && td->debuff.weapons_of_order->check() )
             tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
 
-          if ( p()->is_ptr() && ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) && td->debuff.fae_exposure->check() )
+          if ( ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) && td->debuff.fae_exposure->check() )
             tm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
         }
 
@@ -948,9 +948,6 @@ namespace monk
       double composite_persistent_multiplier( const action_state_t *action_state ) const override
       {
         double pm = base_t::composite_persistent_multiplier( action_state );
-
-        if ( ( !p()->is_ptr() || base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) ) && p()->buff.fae_exposure->check() )
-          pm *= 1 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
 
         return pm;
       }
@@ -9626,10 +9623,6 @@ namespace monk
   double monk_t::composite_player_target_multiplier( player_t *target, school_e school ) const
   {
     double multiplier = player_t::composite_player_target_multiplier( target, school );
-
-    auto td = find_target_data( target );
-    if ( td && td->debuff.fae_exposure->check() && !is_ptr())
-      multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
 
     return multiplier;
   }
