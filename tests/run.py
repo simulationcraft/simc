@@ -34,7 +34,7 @@ def test_trinkets(klass: str, path: str, enable: dict):
         Test(
             "{} ({})".format(trinket.name, trinket.item_id),
             group=grp,
-            all_talents=enable['talent'],
+            all_talents=enable['talents'],
             all_sets=enable['sets'],
             args=[
                 (
