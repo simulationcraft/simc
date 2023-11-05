@@ -7195,7 +7195,11 @@ struct stealth_like_buff_t : public BuffBase
         rogue->buffs.indiscriminate_carnage_aura->trigger();
 
       if ( rogue->talent.outlaw.take_em_by_surprise->ok() )
-        rogue->buffs.take_em_by_surprise_aura->trigger();
+      {
+        // 2023-11-04 -- Shadow Dance does not trigger the aura buff if the duration buff is already active
+        if ( !rogue->bugs || !( rogue->stealthed( STEALTH_SHADOW_DANCE ) && rogue->buffs.take_em_by_surprise->check() ) )
+          rogue->buffs.take_em_by_surprise_aura->trigger();
+      }
 
       if ( rogue->talent.subtlety.premeditation->ok() )
         rogue->buffs.premeditation->trigger();
@@ -7358,6 +7362,12 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
     rogue->buffs.improved_garrote->expire();
     rogue->buffs.indiscriminate_carnage->expire();
     rogue->buffs.master_assassin->expire();
+
+    // 2023-11-04 -- This expires now as of PTR, but didn't previously on live. Unclear if intended.
+    if ( rogue->bugs )
+    {
+      rogue->buffs.take_em_by_surprise->expire();
+    }
   }
 };
 
