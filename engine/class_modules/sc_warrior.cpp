@@ -2395,7 +2395,7 @@ struct rend_prot_t : public warrior_attack_t
 // Mortal Strike ============================================================
 struct crushing_advance_t : warrior_attack_t
 {
-  crushing_advance_t( warrior_t* p ) : warrior_attack_t( "crushing_advance", p, p->find_spell( 411703 ) )
+  crushing_advance_t( util::string_view name, warrior_t* p ) : warrior_attack_t( name, p, p->find_spell( 411703 ) )
   {
     aoe                 = -1;
     reduced_aoe_targets = 5.0;
@@ -2443,8 +2443,7 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
 
     if ( p->tier_set.t30_arms_4pc->ok() )
     {
-      crushing_advance = new crushing_advance_t( p );
-      add_child( crushing_advance );
+      crushing_advance = new crushing_advance_t( "crushing_advance_unhinged", p );
     }
   }
 
@@ -2572,7 +2571,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( p->tier_set.t30_arms_4pc->ok() )
     {
-      crushing_advance = new crushing_advance_t( p );
+      crushing_advance = new crushing_advance_t( "crushing_advance", p );
       add_child( crushing_advance );
     }
   }
