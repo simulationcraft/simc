@@ -949,6 +949,9 @@ namespace monk
       {
         double pm = base_t::composite_persistent_multiplier( action_state );
 
+        if ( base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) && p()->buff.fae_exposure->check() )
+          pm *= 1 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
+
         return pm;
       }
 
