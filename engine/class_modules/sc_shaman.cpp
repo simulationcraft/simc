@@ -2553,7 +2553,7 @@ template <typename T>
 struct spirit_bomb_t : public pet_melee_attack_t<T>
 {
   spirit_bomb_t( T* player ) :
-    pet_melee_attack_t<T>( player, player->dbc->ptr ? "alpha_wolf" : "spirit_bomb", player -> find_spell( 198455 ) )
+    pet_melee_attack_t<T>( player, "alpha_wolf", player -> find_spell( 198455 ) )
   {
     this -> background = true;
     this -> aoe = -1;
@@ -3758,11 +3758,8 @@ struct lava_lash_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( p()->dbc->ptr )
-    {
-      p()->trigger_elemental_assault( execute_state );
-      p()->trigger_tempest_strikes( execute_state );
-    }
+    p()->trigger_elemental_assault( execute_state );
+    p()->trigger_tempest_strikes( execute_state );
 
     p()->buff.ashen_catalyst->expire();
   }
@@ -4178,11 +4175,8 @@ struct ice_strike_t : public shaman_attack_t
       p()->action.crash_lightning_aoe->schedule_execute();
     }
 
-    if ( p()->dbc->ptr )
-    {
-      p()->trigger_elemental_assault( execute_state );
-      p()->trigger_tempest_strikes( execute_state );
-    }
+    p()->trigger_elemental_assault( execute_state );
+    p()->trigger_tempest_strikes( execute_state );
   }
 };
 
@@ -6283,11 +6277,11 @@ struct elemental_blast_t : public shaman_spell_t
       timespan_t duration = p()->talent.further_beyond->effectN( 2 ).time_value();
 
       // limit extension
-      if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
+      if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
       {
         duration = timespan_t::from_seconds( 0 );
       }
-      else if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
+      else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
       {
         duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
       }
@@ -6781,11 +6775,11 @@ struct earthquake_t : public earthquake_base_t
       timespan_t duration = p()->talent.further_beyond->effectN( 1 ).time_value();
 
       // limit extension
-      if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
+      if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
       {
         duration = timespan_t::from_seconds( 0 );
       }
-      else if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
+      else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
       {
         duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
       }
@@ -7022,11 +7016,11 @@ struct earth_shock_t : public shaman_spell_t
       timespan_t duration = p()->talent.further_beyond->effectN( 1 ).time_value();
 
       // limit extension
-      if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
+      if ( p()->accumulated_ascendance_extension_time >= p()->ascendance_extension_cap )
       {
         duration = timespan_t::from_seconds( 0 );
       }
-      else if ( p()->dbc->ptr && p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
+      else if ( p()->accumulated_ascendance_extension_time + duration > p()->ascendance_extension_cap )
       {
         duration = p()->ascendance_extension_cap - p()->accumulated_ascendance_extension_time;
       }
@@ -10574,19 +10568,19 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
     ->apply_affecting_aura(spec.elemental_shaman)
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-    ->set_refresh_behavior( dbc->ptr ? buff_refresh_behavior::PANDEMIC : buff_refresh_behavior::DURATION );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.elemental_blast_haste = make_buff<buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) )
     ->set_default_value_from_effect_type(A_HASTE_ALL)
     ->apply_affecting_aura(spec.elemental_shaman)
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )    
-    ->set_refresh_behavior( dbc->ptr ? buff_refresh_behavior::PANDEMIC : buff_refresh_behavior::DURATION );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.elemental_blast_mastery = make_buff<buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
     ->apply_affecting_aura(spec.elemental_shaman)
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-    ->set_refresh_behavior( dbc->ptr ? buff_refresh_behavior::PANDEMIC : buff_refresh_behavior::DURATION );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.stormkeeper = make_buff( this, "stormkeeper", find_spell( 191634 ) )
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
@@ -11713,19 +11707,11 @@ double shaman_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  if ( dbc->ptr )
+  if ( buff.splintered_elements->up() )
   {
-    if ( buff.splintered_elements->up() )
-    {
-      haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
-                       std::max( buff.splintered_elements->stack() - 1, 0 ) *
-                           talent.splintered_elements->effectN( 2 ).percent() );
-    }
-  }
-  else
-  {
-    haste *= 1.0 / ( 1.0 + buff.splintered_elements->stack() *
-      talent.splintered_elements->effectN( 1 ).percent() );
+    haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
+                      std::max( buff.splintered_elements->stack() - 1, 0 ) *
+                          talent.splintered_elements->effectN( 2 ).percent() );
   }
 
   return haste;
@@ -11737,19 +11723,11 @@ double shaman_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
 
-  if ( dbc->ptr )
+  if ( buff.splintered_elements->up() )
   {
-    if ( buff.splintered_elements->up() )
-    {
-      haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
-                       std::max( buff.splintered_elements->stack() - 1, 0 ) *
-                           talent.splintered_elements->effectN( 2 ).percent() );
-    }
-  }
-  else
-  {
-    haste *= 1.0 / ( 1.0 + buff.splintered_elements->stack() *
-      talent.splintered_elements->effectN( 1 ).percent() );
+    haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
+                      std::max( buff.splintered_elements->stack() - 1, 0 ) *
+                          talent.splintered_elements->effectN( 2 ).percent() );
   }
 
   return haste;
