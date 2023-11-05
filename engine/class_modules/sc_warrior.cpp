@@ -1185,9 +1185,7 @@ public:
     ab::apply_affecting_aura( p()->tier_set.t29_arms_2pc );  
     ab::apply_affecting_aura( p()->tier_set.t29_fury_2pc );  
     ab::apply_affecting_aura( p()->tier_set.t30_fury_2pc );
-    if ( p()->dbc->ptr )
     ab::apply_affecting_aura( p()->tier_set.t31_arms_2pc );
-    if ( p()->dbc->ptr )
     ab::apply_affecting_aura( p()->tier_set.t31_fury_2pc );
 
 
@@ -1567,13 +1565,8 @@ public:
 
     if ( p()->buff.test_of_might_tracker->check() )
     {
-      if ( p() -> is_ptr() )
-      {
         if ( ab::id != 190456)  // Test of might ignores rage used for ignore pain
           p()->buff.test_of_might_tracker->current_value += rage;  // Uses rage cost before anything makes it cheaper.
-      }
-      else
-        p()->buff.test_of_might_tracker->current_value += rage;  // Uses rage cost before anything makes it cheaper.
     }
 
     if ( p()->talents.arms.anger_management->ok() || p()->talents.fury.anger_management->ok() || p()->talents.protection.anger_management->ok() )
@@ -1659,7 +1652,7 @@ public:
 
   virtual void tactician()
   {
-    if ( p() -> is_ptr() && p()->specialization() == WARRIOR_ARMS && ab::id == 190456 ) // Ignore pain can not trigger tactician for arms
+    if ( p()->specialization() == WARRIOR_ARMS && ab::id == 190456 ) // Ignore pain can not trigger tactician for arms
       return;
 
     double tact_rage = tactician_cost();  // Tactician resets based on cost before things make it cost less.
@@ -1692,7 +1685,7 @@ public:
 
       else if ( p()->specialization() == WARRIOR_ARMS )
       {
-        if ( p() -> is_ptr() && ab::id == 190456 )  // Ignore pain can not trigger anger management for arms
+        if ( ab::id == 190456 )  // Ignore pain can not trigger anger management for arms
           return;
 
         cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();  
@@ -2260,12 +2253,9 @@ struct rend_dot_t : public warrior_attack_t
   {
     auto base_tick_time = warrior_attack_t::tick_time( s );
 
-    if ( p() -> dbc -> ptr )
-    {
       auto td = p() -> get_target_data( s -> target );
       if ( p() -> talents.arms.tide_of_blood -> ok() && td -> debuffs_skullsplitter -> up() )
         base_tick_time *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
-    }
 
     return base_tick_time;
   }
@@ -2274,12 +2264,9 @@ struct rend_dot_t : public warrior_attack_t
   {
     auto dot_duration = warrior_attack_t::composite_dot_duration( s );
 
-    if ( p() -> dbc -> ptr )
-    {
       auto td = p() -> get_target_data( s -> target );
       if ( p() -> talents.arms.tide_of_blood -> ok() && td -> debuffs_skullsplitter -> up() )
         dot_duration *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
-    }
 
     return dot_duration;
   }
@@ -2592,11 +2579,6 @@ struct mortal_strike_t : public warrior_attack_t
 
   double cost() const override
   {
-    if ( !p()->dbc->ptr && !from_mortal_combo && p()->buff.battlelord->check() )
-    {
-        return 20;
-    }
-
     if ( from_mortal_combo )
       return 0;
     return warrior_attack_t::cost();
@@ -2642,10 +2624,6 @@ struct mortal_strike_t : public warrior_attack_t
       {
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
-    }
-    if ( !p()->dbc->ptr && !from_mortal_combo )
-    {
-      p()->buff.battlelord->expire();
     }
     if ( p()->talents.arms.exhilarating_blows->ok() && rng().roll( exhilarating_blows_chance ) )
     {
@@ -3538,11 +3516,6 @@ struct cleave_t : public warrior_attack_t
 
   double cost() const override
   {
-    if ( !p()->dbc->ptr && p()->buff.battlelord->check() )
-    {
-      return 10;
-    }
-
     return warrior_attack_t::cost();
   }
 
@@ -3581,10 +3554,6 @@ struct cleave_t : public warrior_attack_t
     if ( p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
-    }
-    if ( !p()->dbc->ptr )
-    {
-      p()->buff.battlelord->expire();
     }
     p()->buff.martial_prowess->expire();
   }
@@ -3688,12 +3657,9 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
   {
     auto base_tick_time = warrior_attack_t::tick_time( s );
 
-    if ( p() -> dbc -> ptr )
-    {
-      auto td = p() -> get_target_data( s -> target );
-      if ( td -> debuffs_skullsplitter -> up() )
-        base_tick_time *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
-    }
+    auto td = p() -> get_target_data( s -> target );
+    if ( td -> debuffs_skullsplitter -> up() )
+      base_tick_time *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
 
     return base_tick_time;
   }
@@ -3702,12 +3668,9 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
   {
     auto dot_duration = warrior_attack_t::composite_dot_duration( s );
 
-    if ( p() -> dbc -> ptr )
-    {
-      auto td = p() -> get_target_data( s -> target );
-      if ( td -> debuffs_skullsplitter -> up() )
-        dot_duration *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
-    }
+    auto td = p() -> get_target_data( s -> target );
+    if ( td -> debuffs_skullsplitter -> up() )
+      dot_duration *= 1 / ( 1.0 + td -> debuffs_skullsplitter -> value() );
 
     return dot_duration;
   }
@@ -4042,11 +4005,8 @@ struct execute_damage_t : public warrior_attack_t
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
     background = true;
-    if ( p->dbc->ptr )
-    {
-      finishing_wound = new finishing_wound_t( "finishing_wound", p);
-      add_child( finishing_wound );
-    }
+    finishing_wound = new finishing_wound_t( "finishing_wound", p);
+    add_child( finishing_wound );
   }
 
   double action_multiplier() const override
@@ -4063,13 +4023,11 @@ struct execute_damage_t : public warrior_attack_t
   void impact( action_state_t* state ) override
   {
     warrior_attack_t::impact( state );
-    if ( p() -> dbc -> ptr )
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_ARMS, T31, B4 ) && p() -> buff.sudden_death -> up() )
     {
-      if ( p() -> sets -> has_set_bonus( WARRIOR_ARMS, T31, B4 ) && p() -> buff.sudden_death -> up() )
-      {
-        auto amount = state -> result_amount * p() -> sets -> set ( WARRIOR_ARMS, T31, B4 )->effectN( 1 ).percent();
-        residual_action::trigger( finishing_wound, state->target, amount );
-      }
+      auto amount = state -> result_amount * p() -> sets -> set ( WARRIOR_ARMS, T31, B4 )->effectN( 1 ).percent();
+      residual_action::trigger( finishing_wound, state->target, amount );
     }
 
     if ( p()->talents.arms.executioners_precision->ok() && ( result_is_hit( state->result ) ) )
@@ -5132,22 +5090,9 @@ struct skullsplitter_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( !p() -> dbc -> ptr )
+    if ( result_is_hit( s->result ) )
     {
-      warrior_td_t* td = p()->get_target_data( target );
-      trigger_tide_of_blood( td->dots_deep_wounds );
-
-      if ( p()->talents.arms.tide_of_blood->ok() )
-      {
-        trigger_tide_of_blood( td->dots_rend );
-      }
-    }
-    else
-    {
-      if ( result_is_hit( s->result ) )
-      {
-        td( s->target )->debuffs_skullsplitter->trigger();
-      }
+      td( s->target )->debuffs_skullsplitter->trigger();
     }
   }
 };
@@ -5453,14 +5398,9 @@ struct overpower_t : public warrior_attack_t
     {
       p()->cooldown.mortal_strike->reset( true );
       p()->cooldown.cleave->reset( true );
-      if ( !p()->dbc->ptr )
-      {
-        p() -> buff.battlelord -> trigger();
-      }
-      if ( p()->dbc->ptr )
-      {
-        p()->resource_gain( RESOURCE_RAGE, rage_from_battlelord, p()->gain.battlelord );
-      }
+
+      p()->resource_gain( RESOURCE_RAGE, rage_from_battlelord, p()->gain.battlelord );
+
     }
 
     if ( p()->talents.arms.martial_prowess->ok() )
@@ -10071,15 +10011,9 @@ void warrior_t::init_action_list()
   switch ( specialization() )
   {
     case WARRIOR_FURY:
-      if ( sim->dbc->ptr )
-        warrior_apl::fury_ptr( this );
-      else
         warrior_apl::fury( this );
       break;
     case WARRIOR_ARMS:
-      if ( sim->dbc->ptr )
-        warrior_apl::arms_ptr( this );
-      else
         warrior_apl::arms( this );
       break;
     case WARRIOR_PROTECTION:
