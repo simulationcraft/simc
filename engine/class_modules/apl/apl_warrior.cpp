@@ -4,7 +4,7 @@
 
 namespace warrior_apl
 {
-// fury_apl_start
+//fury_apl_start
 void fury( player_t* p )
 {
   std::vector<std::string> racial_actions = p->get_racial_actions();
@@ -123,9 +123,9 @@ void fury( player_t* p )
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)" );
 }
-// fury_apl_end
+//fury_apl_end
 
-// arms_apl_start
+//arms_apl_start
 void arms( player_t* p )
 {
   std::vector<std::string> racial_actions = p->get_racial_actions();
@@ -258,7 +258,7 @@ void arms( player_t* p )
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)" );
 }
-// arms_apl_end
+//arms_apl_end
 
 //protection_apl_start
 void protection( player_t* p )
