@@ -1042,7 +1042,7 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
   shadow_word_death_self_damage_t( priest_t& p )
     : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage ),
-      self_damage_coeff( p.is_ptr() ? p.talents.shadow_word_death->effectN( 5 ).percent() : 1 )
+      self_damage_coeff( p.talents.shadow_word_death->effectN( 5 ).percent() )
   {
     background = true;
     may_crit   = false;
@@ -1052,33 +1052,19 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
   double base_da_min( const action_state_t* ) const override
   {
-    if ( priest().is_ptr() )
-    {
-      return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
-    }
-    else
-    {
-      return base_dd_min;
-    }
+    return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
   }
 
   double base_da_max( const action_state_t* ) const override
   {
-    if ( priest().is_ptr() )
-    {
-      return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
-    }
-    else
-    {
-      return base_dd_max;
-    }
+    return player->resources.max[ RESOURCE_HEALTH ] * self_damage_coeff;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_da_multiplier( s );
 
-    if ( priest().talents.tithe_evasion.enabled() && priest().is_ptr() )
+    if ( priest().talents.tithe_evasion.enabled() )
     {
       m *= priest().talents.tithe_evasion->effectN( 1 ).percent();
     }
@@ -1093,17 +1079,6 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     return m;
   }
 
-  // TODO: Remove when 10.2 PTR goes live
-  void trigger( double original_amount )
-  {
-    if ( priest().talents.tithe_evasion.enabled() )
-    {
-      original_amount /= ( 1.0 + priest().talents.tithe_evasion->effectN( 1 ).percent() );
-    }
-    base_td = original_amount;
-    execute();
-  }
-
   void trigger( int chain_number )
   {
     parent_chain_number = chain_number;
@@ -1113,8 +1088,11 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
   void execute() override
   {
     base_t::execute();
+
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
+    {
       p().buffs.deaths_torment->trigger();
+    }
   }
 
   void init() override
@@ -1124,11 +1102,7 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     // We don't want this counted towards our dps
     stats->type = stats_e::STATS_NEUTRAL;
 
-    // Make sure we call composite_da_multiplier
-    if ( priest().is_ptr() )
-    {
-      snapshot_flags |= STATE_MUL_DA;
-    }
+    snapshot_flags |= STATE_MUL_DA;
   }
 
   proc_types proc_type() const override
@@ -1332,16 +1306,9 @@ public:
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
-        // target is not killed
-        if ( priest().is_ptr() )
-        {
-          make_event( sim, 1_s,
-                      [ this, s ] { shadow_word_death_self_damage->trigger( cast_state( s )->chain_number ); } );
-        }
-        else
-        {
-          shadow_word_death_self_damage->trigger( s->result_amount );
-        }
+        // target is not killed, self damage happens 1s later
+        make_event( sim, 1_s,
+                    [ this, s ] { shadow_word_death_self_damage->trigger( cast_state( s )->chain_number ); } );
       }
 
       if ( priest().talents.death_and_madness.enabled() )

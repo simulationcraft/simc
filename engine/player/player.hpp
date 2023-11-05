@@ -762,6 +762,8 @@ struct player_t : public actor_t
     double rallied_to_victory_min_allies = 0;
     // Set if the haste debuff for ashes of the embersoul can be prevented
     bool embersoul_debuff_immune = false;
+    // Rallied to victory skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate losing some to healers.
+    double rallied_to_victory_multi_actor_skip_chance = 0.2;
   } dragonflight_opts;
 
 private:

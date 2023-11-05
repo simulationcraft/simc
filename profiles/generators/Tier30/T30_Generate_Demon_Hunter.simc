@@ -5,7 +5,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=BEkAAAAAAAAAAAAAAAAAAAAAAQAJkSEaJJSSkGCAAAAAAAkg0SJSSKSi0SC5AJJJRA
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAIJRkkgkkISIkAAAAAAASJEJRSIJplWKRSIBKtIJRA
 
 head=kinslayers_hood,id=202524,bonus_id=1478/6652/7981/1498/8767/8780,gem_id=192982
 neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/1537/8782,gem_id=192919/192919/192919,crafted_stats=32/36
@@ -33,7 +33,7 @@ race=night_elf
 timeofday=day
 role=tank
 position=front
-talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAoEhSSikkAIJBSKJQi2BIRikQSkEkkkQJIAAAAA
+talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAiIJJCJIJREiUSCJaJSkIhkEJJtIhEEAAAAQSSA
 
 head=kinslayers_hood,id=202524,bonus_id=9410/1504/9413,gem_id=192945
 neck=torc_of_passed_time,id=201759,bonus_id=8782,ilevel=447,gem_id=192945/192945/192945,crafted_stats=36/32

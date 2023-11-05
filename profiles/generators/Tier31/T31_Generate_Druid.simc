@@ -29,26 +29,26 @@
 # spec=feral
 # level=70
 # race=night_elf
-# timeofday=day
+# timeofday=night
 # role=attack
 # position=back
-# talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIQiikkkUS7ASKJScgkAAAAAAoAQigAQSSSkkQJhS4AAAAAAAQCAQA
+# talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSLigkkkUSjolkEJJAAAAAAAQiggkQSSSIJSJoEOAAAAAAASAAA
 
-# head=bough_of_the_autumn_blaze,id=202515,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504/1808,gem_id=192988
-# neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192961/192961/192961
-# shoulder=mantle_of_the_autumn_blaze,id=202513,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,ilevel=450
-# back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6592
-# chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=9321/7979/6652/9231/1466/8767,enchant_id=6625,ilevel=447
-# wrist=cuffs_of_the_savage_serpent,id=204394,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,enchant_id=6574,gem_id=192961
-# hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
-# waist=oblivions_immortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961
-# legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
-# feet=toxic_thorn_footwraps,id=193452,enchant_id=6607,bonus_id=8836/8840/8902/8960/9405/9376/9366,crafting_quality=5
-# finger1=scalebane_signet,id=193768,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,enchant_id=6562,gem_id=192961
-# finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,enchant_id=6562,gem_id=192961
-# trinket1=ominous_chromatic_essence,id=203729,bonus_id=9410/9381/6652/1501/8767
-# trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-# main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6655
+# head=benevolent_embersages_casque,id=207254,bonus_id=1808,enchant_id=7052,gem_id=192982,ilevel=489
+# neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1537,gem_id=192922/192922/192922,ilevel=486,crafted_stats=32/49
+# shoulder=benevolent_embersages_wisdom,id=207252,bonus_id=4795,ilevel=489
+# back=undulating_sporecloak,id=205025,bonus_id=8960/8840/8836/8902/1537,ilevel=486
+# chest=benevolent_embersages_robe,id=207257,bonus_id=4795,enchant_id=6625,ilevel=489
+# wrist=bracers_of_dreadful_maladies,id=159340,bonus_id=4795/1808,gem_id=192922,ilevel=489
+# hands=benevolent_embersages_talons,id=207255,bonus_id=4795,ilevel=489
+# waist=belt_of_the_eternal_struggle,id=207874,bonus_id=4795/1808,enchant_id=6904,gem_id=192922,ilevel=489
+# legs=benevolent_embersages_leggings,id=207253,bonus_id=4795,enchant_id=6830,ilevel=489
+# feet=decapod_slippers,id=133190,bonus_id=4795,ilevel=489
+# finger1=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489
+# finger2=lord_waycrests_signet,id=158362,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489
+# trinket1=witherbarks_branch,id=109999,ilevel=489
+# trinket2=cataclysmic_signet_brand,id=207166,bonus_id=4795,ilevel=489
+# main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=4795,enchant_id=6655,ilevel=489
 
 # save=T31_Druid_Feral.simc
 

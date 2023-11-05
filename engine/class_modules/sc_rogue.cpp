@@ -1734,6 +1734,42 @@ public:
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
     parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
     parse_damage_affecting_spell( p->spec.t30_assassination_4pc_buff, affected_by.t30_assassination_4pc );
+
+    // Manually apply scripted modifiers from Veiltouched and Deeper Daggers when affected by Dark Brew talent
+    if ( p->talent.subtlety.dark_brew->ok() && ab::data().affected_by( p->talent.subtlety.dark_brew->effectN( 1 ) ) )
+    {
+      if ( p->talent.subtlety.veiltouched->ok() )
+      {
+        damage_affect_data passive_list;
+        parse_damage_affecting_spell( p->talent.subtlety.veiltouched, passive_list );
+        if ( !passive_list.direct )
+        {
+          const spelleffect_data_t& effect = p->talent.subtlety.veiltouched->effectN( 1 );
+          ab::base_dd_multiplier *= ( 1 + effect.percent() );
+          p->sim->print_debug( "{} {} is manually affected by Veiltouched (id={} - effect #{})", *p, *this,
+                               effect.id(), effect.spell_effect_num() + 1 );
+          p->sim->print_debug( "{} base_dd_multiplier modified by {}% to {}", *this, effect.base_value(), ab::base_dd_multiplier );
+          ab::affecting_list.emplace_back( &effect, effect.percent() );
+        }
+        if ( !passive_list.periodic )
+        {
+          const spelleffect_data_t& effect = p->talent.subtlety.veiltouched->effectN( 2 );
+          ab::base_td_multiplier *= ( 1 + effect.percent() );
+          p->sim->print_debug( "{} {} is manually affected by Veiltouched (id={} - effect #{})", *p, *this,
+                               effect.id(), effect.spell_effect_num() + 1 );
+          p->sim->print_debug( "{} base_td_multiplier modified by {}% to {}", *this, effect.base_value(), ab::base_td_multiplier );
+          ab::affecting_list.emplace_back( &effect, effect.percent() );
+        }
+      }
+
+      if ( p->talent.subtlety.deeper_daggers->ok() )
+      {
+        if ( !affected_by.deeper_daggers.direct )
+          affected_by.deeper_daggers.direct = true;
+        if ( !affected_by.deeper_daggers.periodic )
+          affected_by.deeper_daggers.periodic = true;
+      }
+    }
   }
 
   void init() override
@@ -4128,15 +4164,28 @@ struct eviscerate_t : public rogue_attack_t
 {
   struct eviscerate_bonus_t : public rogue_attack_t
   {
-    eviscerate_bonus_t( util::string_view name, rogue_t* p ):
-      rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack )
+    int last_eviscerate_cp;
+
+    eviscerate_bonus_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
+      last_eviscerate_cp( 1 )
     {
-      callbacks = false;
-      dual = true;
-      if ( !p->bugs )
+      if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
-        base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
+        // Spell has the full damage coefficient and is modified via talent scripting
+        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
       }
+    }
+
+    void reset() override
+    {
+      rogue_attack_t::reset();
+      last_eviscerate_cp = 1;
+    }
+
+    double combo_point_da_multiplier( const action_state_t* ) const override
+    {
+      return as<double>( last_eviscerate_cp );
     }
   };
 
@@ -4219,22 +4268,10 @@ struct eviscerate_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // TOCHECK -- With the new residual setup, is this applied before or after Deeper Daggers?
-    // Appears to use the raw, mitigated (but pre-crit) result since the residual spell can crit
-    if ( bonus_attack && td( target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
+    if ( bonus_attack && td( state->target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
     {
-      if ( p()->bugs )
-      {
-        // 2023-10-28 -- Currently bugged on latest PTR build
-        bonus_attack->execute_on_target( state->target );
-      }
-      else
-      {
-        double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
-        if ( state->result == RESULT_CRIT )
-          amount /= 1.0 + state->result_crit_bonus;
-        bonus_attack->execute_on_target( state->target, amount );
-      }
+      bonus_attack->last_eviscerate_cp = cast_state( state )->get_combo_points();
+      bonus_attack->execute_on_target( state->target );
     }
   }
 
@@ -5136,17 +5173,6 @@ struct rupture_t : public rogue_attack_t
 
     if ( replicating_shadows_tick )
     {
-      // Affected by label modifiers after residual damage calculation is applied
-      /*
-      double multiplier = p()->talent.subtlety.replicating_shadows->effectN( 1 ).percent();
-      multiplier *= 1.0 + p()->talent.subtlety.veiltouched->effectN( 4 ).percent();
-      multiplier *= 1.0 + p()->talent.subtlety.dark_brew->effectN( 5 ).percent();
-      multiplier *= 1.0 + p()->buffs.deeper_daggers->stack_value();
-      double damage = d->state->result_total * multiplier;
-      replicating_shadows_tick->execute_on_target( d->target, damage );
-      */
-
-      // Temporarily reverting PTR changes due to bug issues
       replicating_shadows_tick->execute_on_target( d->target );
     }
 
@@ -5584,16 +5610,32 @@ struct black_powder_t: public rogue_attack_t
 {
   struct black_powder_bonus_t : public rogue_attack_t
   {
+    int last_cp;
+
     black_powder_bonus_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->spec.black_powder_shadow_attack )
+      rogue_attack_t( name, p, p->spec.black_powder_shadow_attack ),
+      last_cp( 1 )
     {
-      callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
-      dual = true;
+      callbacks = false; // 2021-07-19-- Does not appear to trigger normal procs
       aoe = -1;
-      if ( !p->bugs )
+      reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
+
+      if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
-        base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
+        // Spell has the full damage coefficient and is modified via talent scripting
+        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
       }
+    }
+
+    void reset() override
+    {
+      rogue_attack_t::reset();
+      last_cp = 1;
+    }
+
+    double combo_point_da_multiplier( const action_state_t* ) const override
+    {
+      return as<double>( last_cp );
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -5702,22 +5744,10 @@ struct black_powder_t: public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // TOCHECK -- With the new residual setup, is this applied before or after Deeper Daggers?
-    // Appears to use the raw, mitigated (but pre-crit) result since the residual spell can crit
     if ( bonus_attack && state->chain_target == 0 )
     {
-      if ( p()->bugs )
-      {
-        // 2023-10-28 -- Currently bugged on latest PTR build
-        bonus_attack->execute_on_target( state->target );
-      }
-      else
-      {
-        double amount = state->result_amount * p()->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
-        if ( state->result == RESULT_CRIT )
-          amount /= 1.0 + state->result_crit_bonus;
-        bonus_attack->execute_on_target( state->target, amount );
-      }
+      bonus_attack->last_cp = cast_state( state )->get_combo_points();
+      bonus_attack->execute_on_target( state->target );
     }
   }
 
@@ -7165,7 +7195,11 @@ struct stealth_like_buff_t : public BuffBase
         rogue->buffs.indiscriminate_carnage_aura->trigger();
 
       if ( rogue->talent.outlaw.take_em_by_surprise->ok() )
-        rogue->buffs.take_em_by_surprise_aura->trigger();
+      {
+        // 2023-11-04 -- Shadow Dance does not trigger the aura buff if the duration buff is already active
+        if ( !rogue->bugs || !( rogue->stealthed( STEALTH_SHADOW_DANCE ) && rogue->buffs.take_em_by_surprise->check() ) )
+          rogue->buffs.take_em_by_surprise_aura->trigger();
+      }
 
       if ( rogue->talent.subtlety.premeditation->ok() )
         rogue->buffs.premeditation->trigger();
@@ -7328,6 +7362,12 @@ struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
     rogue->buffs.improved_garrote->expire();
     rogue->buffs.indiscriminate_carnage->expire();
     rogue->buffs.master_assassin->expire();
+
+    // 2023-11-04 -- This expires now as of PTR, but didn't previously on live. Unclear if intended.
+    if ( rogue->bugs )
+    {
+      rogue->buffs.take_em_by_surprise->expire();
+    }
   }
 };
 
@@ -9264,6 +9304,16 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         timespan_t remains = 0_s;
         for ( auto buff : primary->buffs )
           remains = std::max( remains, buff->remains() );
+        return remains.total_seconds();
+      } );
+    }
+    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "min_remains" ) )
+    {
+      return make_fn_expr( name_str, [ primary ]() {
+        timespan_t remains = 0_s;
+        for ( auto buff : primary->buffs )
+          if ( remains == 0_s || buff->remains_lt( remains ) )
+            remains = buff->remains();
         return remains.total_seconds();
       } );
     }
@@ -11418,11 +11468,6 @@ void rogue_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.subtlety_rogue );
 }
 
-namespace live_rogue
-{
-#include "class_modules/sc_rogue_live.inc"
-};
-
 // ROGUE MODULE INTERFACE ===================================================
 
 class rogue_module_t : public module_t
@@ -11432,11 +11477,6 @@ public:
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    if ( !sim->dbc->ptr )
-    {
-      return new live_rogue::rogue_t( sim, name, r );
-    }
-
     return new rogue_t( sim, name, r );
   }
 

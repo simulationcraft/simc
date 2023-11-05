@@ -367,7 +367,7 @@ public:
       player_talent_t fel_barrage;  // Old implementation
       player_talent_t shattered_destiny;
       player_talent_t any_means_necessary;
-      player_talent_t a_fire_inside;  // NYI
+      player_talent_t a_fire_inside;
 
     } havoc;
 
@@ -709,7 +709,8 @@ public:
   // Shuffled proc objects
   struct shuffled_rngs_t
   {
-  } shuffled_rngs;
+    shuffled_rng_t* a_fire_inside;
+  } shuffled_rng;
 
   // Special
   struct actives_t
@@ -3437,11 +3438,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
-  double afi_chance;
-
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str ),
-      afi_chance( p->talent.havoc.a_fire_inside->effectN( 3 ).percent() )
+    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str )
   {
     may_miss     = false;
     dot_duration = timespan_t::zero();
@@ -3499,7 +3497,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     p()->buff.immolation_aura->trigger();
     demon_hunter_spell_t::execute();
 
-    if ( p()->talent.havoc.a_fire_inside->ok() && rng().roll( afi_chance ) )
+    if ( p()->talent.havoc.a_fire_inside->ok() && p()->shuffled_rng.a_fire_inside->trigger() )
       cooldown->reset( true, 1 );
   }
 };
@@ -6405,7 +6403,7 @@ struct calcified_spikes_t : public demon_hunter_buff_t<buff_t>
 {
   calcified_spikes_t( demon_hunter_t* p ) : base_t( *p, "calcified_spikes", p->spec.calcified_spikes_buff )
   {
-    auto max_stacks = as<int>(data().duration() / 1_s);
+    auto max_stacks = std::max( 1, as<int>( data().duration() / 1_s ) );
     auto default_value = data().effectN( 1 ).percent() / max_stacks;
 
     set_period( 1_s );
@@ -7341,6 +7339,11 @@ void demon_hunter_t::init_rng()
   {
     rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
     rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
+
+    // 2023-11-02 There is no spell data for this.
+    // The RNG was described as "marbles in a bag" with "3 wins out of 10 total" by Realz in Fel Hammer Discord.
+    // https://discord.com/channels/213770335735119873/449080055893590017/1169492209121378365
+    shuffled_rng.a_fire_inside = get_shuffled_rng( "a_fire_inside", 3, 10 );
   }
   else  // DEMON_HUNTER_VENGEANCE
   {
@@ -9095,10 +9098,6 @@ namespace items
 {
 }  // end namespace items
 
-namespace live_demon_hunter
-{
-#include "class_modules/sc_demon_hunter_live.inc"
-};
 
 // MODULE INTERFACE ==================================================
 
@@ -9111,13 +9110,6 @@ public:
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    if ( !sim->dbc->ptr )
-    {
-      auto p = new live_demon_hunter::demon_hunter_t( sim, name, r );
-      p->report_extension =
-          std::unique_ptr<player_report_extension_t>( new live_demon_hunter::demon_hunter_report_t( *p ) );
-      return p;
-    }
     auto p              = new demon_hunter_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new demon_hunter_report_t( *p ) );
     return p;

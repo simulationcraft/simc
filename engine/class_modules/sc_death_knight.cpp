@@ -1966,18 +1966,16 @@ struct death_knight_pet_t : public pet_t
         m *= 1.0 + dk()->talent.unholy.unholy_aura->effectN( 3 ).percent();
     }
 
-    if (is_ptr())
+    if (dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.amplify_damage->check())
     {
-      if (dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.amplify_damage->check())
-      {
-        m *= 1.0 + dk()->buffs.amplify_damage->check_value();
-      }
+      m *= 1.0 + dk()->buffs.amplify_damage->check_value();
+    }
 
-      if (dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.unholy_assault->check())
-      {
-        m *= 1.0 + dk()->buffs.unholy_assault->check_value();
-      }
-    }*/
+    if (dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.unholy_assault->check())
+    {
+      m *= 1.0 + dk()->buffs.unholy_assault->check_value();
+    }
+    */
 
     return m;
   }
@@ -2451,16 +2449,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::init_base_stats();
 
-    // Note: for some dumb reason, WCL has the ghoul's AP and SP swapped
-    // Running a script ingame shows the correct values
-    if (is_ptr())
-    {
-      owner_coeff.ap_from_ap = 0.6534;
-    }
-    else
-    {
-      owner_coeff.ap_from_ap = 0.594;
-    }
+    owner_coeff.ap_from_ap = 0.6534;
   }
 
   void init_gains() override
@@ -2567,19 +2556,16 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     // Ensures parity between all pets that share this ap_from_ap mod.
     owner_coeff.ap_from_ap = army_ghoul_ap_mod;
 
-    if (is_ptr())
+    if ( name_str == "army_ghoul" )
     {
-      if ( name_str == "army_ghoul" )
-      {
-        // Currently has a 0.75x modiier, doesnt appear to be in spell data anywhere
-        owner_coeff.ap_from_ap *= 0.75;
-      }
+      // Currently has a 0.75x modiier, doesnt appear to be in spell data anywhere
+      owner_coeff.ap_from_ap *= 0.75;
+    }
 
-      if ( name_str == "apoc_ghoul" )
-      {
-        // Currently has a 1.12x modifier, also not in spell data
-        owner_coeff.ap_from_ap *= 1.12;
-      }
+    if ( name_str == "apoc_ghoul" )
+    {
+      // Currently has a 1.12x modifier, also not in spell data
+      owner_coeff.ap_from_ap *= 1.12;
     }
   }
 
@@ -3252,7 +3238,7 @@ struct magus_pet_t : public death_knight_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
+    if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
       def->add_action( "amplify_damage" );
     }
@@ -3265,7 +3251,7 @@ struct magus_pet_t : public death_knight_pet_t
     if ( name == "frostbolt" ) return new frostbolt_magus_t( this, options_str );
     if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, options_str );
 
-    if ( is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
+    if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ) )
     {
       if ( name == "amplify_damage" ) return new amplify_damage_t( this, options_str );
     }
@@ -3841,14 +3827,14 @@ struct unholy_blight_dot_t final : public death_knight_disease_t
   }
 };
 
-struct unholy_blight_t final : public death_knight_disease_t
+struct unholy_blight_t final : public death_knight_spell_t
 {
   unholy_blight_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_disease_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
+    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
       dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
       vp( get_action<virulent_plague_t>( "virulent_plague", p )  )
   {
-    may_dodge = may_parry = harmful = background = false;
+    may_dodge = may_parry = harmful = false;
     tick_zero = true;
     track_cd_waste = true;
     target = p;
@@ -3860,7 +3846,7 @@ struct unholy_blight_t final : public death_knight_disease_t
 
   void tick( dot_t* d ) override
   {
-    death_knight_disease_t::tick( d );
+    death_knight_spell_t::tick( d );
     dot -> execute_on_target( d -> state -> target );
     vp -> execute_on_target( d -> state -> target );
   }
@@ -10243,18 +10229,8 @@ void death_knight_t::create_buffs()
         -> apply_affecting_aura( talent.unholy.harbinger_of_doom );
 
   buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
-        -> set_cooldown( 0_ms ); // Handled by the action
-
-        if (!is_ptr())
-        {
-          buffs.unholy_assault->set_default_value_from_effect( 1 );
-          buffs.unholy_assault->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-        }
-        if (is_ptr())
-        {
-          buffs.unholy_assault->set_default_value_from_effect( 4 );
-        }
-          
+        -> set_cooldown( 0_ms ) // Handled by the action
+        -> set_default_value_from_effect( 4 ); 
 
   buffs.unholy_pact = new unholy_pact_buff_t( this );
 
@@ -10796,17 +10772,14 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
       m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
   }
 
-  if ( is_ptr() )
-  {
     if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.amplify_damage->check() )
-    {
-      m *= 1.0 + buffs.amplify_damage->check_value();
-    }
+  {
+    m *= 1.0 + buffs.amplify_damage->check_value();
+  }
 
-    if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.unholy_assault->check() )
-    {
-      m *= 1.0 + buffs.unholy_assault->check_value();
-    }
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.unholy_assault->check() )
+  {
+    m *= 1.0 + buffs.unholy_assault->check_value();
   }
 
   return m;
