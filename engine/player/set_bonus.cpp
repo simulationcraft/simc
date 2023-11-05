@@ -172,6 +172,9 @@ void set_bonus_t::initialize()
 
   initialize_items();
 
+  if ( actor->sim->enable_all_sets )
+    enable_all_sets();
+
   // Enable set bonuses then. This is a combination of item-based enablation
   // (enough items to enable a set bonus), and override based set bonus
   // enablation. As always, user options override everything else.
@@ -232,6 +235,17 @@ void set_bonus_t::initialize()
   }
 
   actor->sim->print_debug("Initialized set bonus: {}", *this);
+}
+
+void set_bonus_t::enable_all_sets()
+{
+  static constexpr set_bonus_type_e tiers[] = { T29, T30, T31 };
+
+  for ( auto tier : tiers )
+  {
+    set_bonus_spec_data[ tier ][ dbc::spec_idx( actor->specialization() ) ][ B2 ].overridden = 1;
+    set_bonus_spec_data[ tier ][ dbc::spec_idx( actor->specialization() ) ][ B4 ].overridden = 1;
+  }
 }
 
 bool set_bonus_t::has_set_bonus(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const

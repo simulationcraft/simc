@@ -61,6 +61,9 @@ struct set_bonus_t
   // Initialize set bonuses in earnest
   void initialize();
 
+  // Override all set bonuses to be enabled
+  void enable_all_sets();
+
   std::unique_ptr<expr_t> create_expression(const player_t*, util::string_view type);
 
   std::vector<const item_set_bonus_t*> enabled_set_bonus_data() const;
