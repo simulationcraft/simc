@@ -2418,10 +2418,22 @@ public:
         p()->t31_assassination_2pc_accumulator += ( p()->bugs ? ab::last_resource_cost :
                                                     std::max( ab::cost(), ab::last_resource_cost ) );
         const double threshold = p()->set_bonuses.t31_assassination_2pc->effectN( 3 ).base_value();
+        int trigger_stacks = 0;
         while ( p()->t31_assassination_2pc_accumulator >= threshold )
         {
           p()->t31_assassination_2pc_accumulator -= threshold;
-          p()->buffs.t31_assassination_2pc->trigger();
+          trigger_stacks++;
+        }
+        if ( trigger_stacks > 0 )
+        {
+          p()->buffs.t31_assassination_2pc->trigger( trigger_stacks );
+
+          // 2023-11-06 -- Currently, removal of stacks appears to be scheduled regardless of if stacks are maxed/refreshed
+          //               This causes removal of stacks that may not originate from the initial trigger and lower expected uptime
+          if ( p()->bugs )
+          {
+            make_event( *p()->sim, 6_s, [ this, trigger_stacks ] { p()->buffs.t31_assassination_2pc->decrement( trigger_stacks ); } );
+          }
         }
       }
 
@@ -6219,7 +6231,8 @@ struct kidney_shot_t : public rogue_attack_t
     if ( !state->target->is_boss() && p()->active.internal_bleeding )
     {
       // 2023-10-05 -- Currently when triggerd by an ER cast, only uses base combo points
-      p()->active.internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->get_combo_points( p()->bugs ) );
+      p()->active.internal_bleeding->trigger_secondary_action( state->target,
+                                                               cast_state( state )->get_combo_points( p()->bugs ) );
     }
   }
 };
@@ -10841,8 +10854,13 @@ void rogue_t::create_buffs()
   buffs.t31_assassination_2pc = make_buff<damage_buff_t>( this, "natureblight", spec.t31_assassination_2pc_buff )
     ->set_is_stacking_mod( true );
   buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED )
-    ->add_invalidate( CACHE_ATTACK_SPEED )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    ->add_invalidate( CACHE_ATTACK_SPEED );
+  // 2023-11-06 -- Manually decremented with bugs, see comment in consume_resource()
+  if ( !this->bugs )
+  {
+    buffs.t31_assassination_2pc->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  }
+
 }
 
 // rogue_t::invalidate_cache =========================================
