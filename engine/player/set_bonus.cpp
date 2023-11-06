@@ -238,13 +238,13 @@ void set_bonus_t::initialize()
 
 void set_bonus_t::enable_all_sets()
 {
-  static constexpr set_bonus_type_e tiers[] = { T29, T30, T31 };
+  auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
+  auto spec = actor->specialization();
 
-  for ( auto tier : tiers )
-  {
-    set_bonus_spec_data[ tier ][ dbc::spec_idx( actor->specialization() ) ][ B2 ].overridden = 1;
-    set_bonus_spec_data[ tier ][ dbc::spec_idx( actor->specialization() ) ][ B4 ].overridden = 1;
-  }
+  // assume class & spec matching bonuses are tier
+  for ( const auto& bonus : set_bonuses )
+    if ( bonus.class_id == util::class_id( actor->type ) && bonus.spec == spec )
+      set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].overridden = 1;
 }
 
 bool set_bonus_t::has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
