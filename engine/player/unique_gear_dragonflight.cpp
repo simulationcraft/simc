@@ -1685,17 +1685,11 @@ void igneous_flowstone( special_effect_t& effect )
   struct high_tide_cb_t : public dbc_proc_callback_t
   {
     buff_t* trigger_buff;
-    action_t* damage;
 
-    high_tide_cb_t( const special_effect_t& e, buff_t* t, action_t* d )
-      : dbc_proc_callback_t( e.player, e ), trigger_buff( t ), damage( d )
-    {
-    }
+    high_tide_cb_t( const special_effect_t& e, buff_t* t ) : dbc_proc_callback_t( e.player, e ), trigger_buff( t ) {}
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
-
       trigger_buff->expire();
 
       size_t n = 1;
@@ -1703,13 +1697,7 @@ void igneous_flowstone( special_effect_t& effect )
         n++;
 
       while ( n-- )
-      {
-        damage->set_target( target( s ) );
-        auto damage_state    = damage->get_state();
-        damage_state->target = damage->target;
-        damage->snapshot_state( damage_state, damage->amount_type( damage_state ) );
-        damage->schedule_execute( damage_state );
-      }
+        dbc_proc_callback_t::execute( a, s );
     }
   };
 
@@ -1733,8 +1721,6 @@ void igneous_flowstone( special_effect_t& effect )
       return tm;
     }
   };
-
-  auto damage = create_proc_action<lava_wave_proc_t>( "lava_wave", effect );
 
   auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 402897 ) )
                        ->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
@@ -1761,9 +1747,10 @@ void igneous_flowstone( special_effect_t& effect )
   high_tide_driver->spell_id  = high_tide_trigger->data().id();
   // Add a cooldown to prevent a double trigger for classes like windwalker
   high_tide_driver->cooldown_ = 1.5_s;
+  high_tide_driver->execute_action = create_proc_action<lava_wave_proc_t>( "lava_wave", effect );
   effect.player->special_effects.push_back( high_tide_driver );
 
-  auto high_tide_cb = new high_tide_cb_t( *high_tide_driver, high_tide_trigger, damage );
+  auto high_tide_cb = new high_tide_cb_t( *high_tide_driver, high_tide_trigger );
   high_tide_cb->initialize();
   high_tide_cb->deactivate();
 
@@ -8299,7 +8286,7 @@ void rallied_to_victory( special_effect_t& effect )
     rallied_to_victory_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         buffs{ false },
-        max_allied_buffs( effect.trigger()->effectN( 2 ).base_value() )
+        max_allied_buffs( as<int>( effect.trigger()->effectN( 2 ).base_value() ) )
     {
       get_buff( effect.player );
     }
