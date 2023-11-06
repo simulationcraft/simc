@@ -1,29 +1,26 @@
-# evoker="T31_Evoker_Devastation"
-# spec=devastation
-# level=70
-# race=dracthyr
-# role=spell
-# position=back
-# talents=BsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJSCSaSIBEISiIJh0iWkkEyBSaJgEJIJJJBCE
+evoker="T31_Evoker_Devastation"
+spec=devastation
+level=70
+race=dracthyr
+role=spell
+position=back
+talents=BsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJSCSaSIBEISiIJh0iWkkEyBSaJgEJIJJJBCE
 
-# dragonflight.ominous_chromatic_essence_dragonflight=azure
-# dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+head=loszkeleths_blighted_skullhelm,id=207912,bonus_id=3524/1808,ilevel=489,gem_id=192988,enchant_id=7052
+neck=amulet_of_eonars_chosen,id=208445,bonus_id=3524,ilevel=489,gem_id=192919/192919/192919
+shoulders=weyrnkeepers_timeless_sandbrace,id=207225,bonus_id=6652/7979/9511/9567/1507/8767,ilevel=489
+back=undulating_sporecloak,id=205025,ilevel=486
+chest=weyrnkeepers_timeless_raiment,id=207230,bonus_id=6652/7979/9515/9567/1507/8767,ilevel=489,enchant_id=6625
+wrists=adaptive_dracothyst_armguards,id=204704,ilevel=486,gem_id=192919
+hands=weyrnkeepers_timeless_clawguards,id=207228,bonus_id=6652/7979/9514/9567/1507/8767,ilevel=489
+waist=forlorn_leaf_clasp,id=207144,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6904
+legs=weyrnkeepers_timeless_breeches,id=207226,bonus_id=6652/7979/9512/9567/1507/8767,ilevel=489,enchant_id=6541
+feet=weyrnkeepers_timeless_treads,id=207229,bonus_id=3524,ilevel=489
+finger1=band_of_burning_thorns,id=207159,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6550
+finger2=signet_of_the_last_elder,id=207162,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6550
+trinket1=belorrelos_the_suncaller,id=207172,bonus_id=3524,ilevel=489
+trinket2=nymues_unraveling_spindle,id=208615,bonus_id=3524,ilevel=489
+main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=3524,ilevel=489,enchant_id=6643
+off_hand=bioluminescent_lamp,id=133200,bonus_id=3524,ilevel=489
 
-# head=loszkeleths_blighted_skullhelm,id=207912,bonus_id=3524/1808,ilevel=489,gem_id=192988,enchant_id=7052
-# neck=amulet_of_eonars_chosen,id=208445,bonus_id=3524,ilevel=489,gem_id=192919/192919/192919
-# shoulders=weyrnkeepers_timeless_sandbrace,id=207225,bonus_id=6652/7979/9511/9567/1507/8767,ilevel=489
-# back=undulating_sporecloak,id=205025,ilevel=486
-# chest=weyrnkeepers_timeless_raiment,id=207230,bonus_id=6652/7979/9515/9567/1507/8767,ilevel=489,enchant_id=6625
-# wrists=adaptive_dracothyst_armguards,id=204704,ilevel=486,gem_id=192919
-# hands=weyrnkeepers_timeless_clawguards,id=207228,bonus_id=6652/7979/9514/9567/1507/8767,ilevel=489
-# waist=forlorn_leaf_clasp,id=207144,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6904
-# legs=weyrnkeepers_timeless_breeches,id=207226,bonus_id=6652/7979/9512/9567/1507/8767,ilevel=489,enchant_id=6541
-# feet=weyrnkeepers_timeless_treads,id=207229,bonus_id=3524,ilevel=489
-# finger1=band_of_burning_thorns,id=207159,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6550
-# finger2=signet_of_the_last_elder,id=207162,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6550
-# trinket1=belorrelos_the_suncaller,id=207172,bonus_id=3524,ilevel=489
-# trinket2=nymues_unraveling_spindle,id=208615,bonus_id=3524,ilevel=489
-# main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=3524,ilevel=489,enchant_id=6643
-# off_hand=bioluminescent_lamp,id=133200,bonus_id=3524,ilevel=489
-
-# save=T31_Evoker_Devastation.simc
+save=T31_Evoker_Devastation.simc
