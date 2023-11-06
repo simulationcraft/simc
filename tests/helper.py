@@ -27,7 +27,7 @@ SIMC_THREADS = int( os.environ.get('SIMC_THREADS', '2') )
 SIMC_FIGHT_STYLE = os.environ.get('SIMC_FIGHT_STYLE')
 SIMC_PROFILE_DIR = os.environ.get('SIMC_PROFILE_DIR', os.getcwd())
 
-IS_PTR = "Tier31" in SIMC_PROFILE_DIR
+IS_PTR = False #"Tier31" in SIMC_PROFILE_DIR
 
 def find_profiles(klass):
     files = Path(SIMC_PROFILE_DIR).glob('*_{}*.simc'.format(klass))
