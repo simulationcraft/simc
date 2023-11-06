@@ -11232,7 +11232,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action(
         "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&!buff.splintered_elements.up",
         "Use Primordial Wave as much as possible without wasting buffs." );
-    single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=active_enemies=1&refreshable&!buff.surge_of_power.up&(!buff.master_of_the_elements.up|(!buff.stormkeeper.up&(talent.elemental_blast.enabled&maelstrom<90-8*talent.eye_of_the_storm.rank|maelstrom<60-5*talent.eye_of_the_storm.rank)))" );
+    single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=active_enemies=1&refreshable&(dot.flame_shock.remains<cooldown.primordial_wave.remains|!talent.primordial_wave.enabled)&!buff.surge_of_power.up&(!buff.master_of_the_elements.up|(!buff.stormkeeper.up&(talent.elemental_blast.enabled&maelstrom<90-8*talent.eye_of_the_storm.rank|maelstrom<60-5*talent.eye_of_the_storm.rank)))" );
     single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=active_dot.flame_shock=0&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&(talent.deeply_rooted_elements.enabled|talent.ascendance.enabled|talent.primordial_wave.enabled|talent.searing_flames.enabled|talent.magma_chamber.enabled)&(!buff.master_of_the_elements.up&(buff.stormkeeper.up|cooldown.stormkeeper.remains=0)|!talent.surge_of_power.enabled)",
       "Use Flame shock without Surge of Power if you can't spread it with SoP because it is going to be used on Stormkeeper or Surge of Power is not talented.");
     single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&refreshable&(talent.deeply_rooted_elements.enabled|talent.ascendance.enabled|talent.primordial_wave.enabled|talent.searing_flames.enabled|talent.magma_chamber.enabled)&(buff.surge_of_power.up&!buff.stormkeeper.up&!cooldown.stormkeeper.remains=0|!talent.surge_of_power.enabled),cycle_targets=1", "Spread Flame Shock to multiple targets only if talents were selected that benefit from it." );
@@ -11246,30 +11246,31 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "lava_burst,if=buff.stormkeeper.up&!buff.master_of_the_elements.up&!talent.surge_of_power.enabled&talent.master_of_the_elements.enabled", "Buff stormkeeper with MotE when not using Surge." );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&!talent.surge_of_power.enabled&buff.master_of_the_elements.up", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&!talent.surge_of_power.enabled&!talent.master_of_the_elements.enabled", "Stormkeeper is strong and should be used." );
-    single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up", "Surge of Power is strong and should be used." );
-    single_target->add_action( "icefury,if=talent.electrified_shocks.enabled" );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(debuff.electrified_shocks.remains<2|buff.icefury.remains<=gcd)" );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up" );
-    single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time" );
+    single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up&talent.lightning_rod.enabled", "{Lightning builds} Surge of Power is strong and should be used." );
+    single_target->add_action( "icefury,if=talent.electrified_shocks.enabled&talent.lightning_rod.enabled", "{Lightning builds} High prio IF for lightning builds." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(debuff.electrified_shocks.remains<2|buff.icefury.remains<=gcd)&talent.lightning_rod.enabled", "{Lightning builds} Maintain Electrified Shocks for lightning builds." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up&talent.lightning_rod.enabled", "{Lightning builds} Refresh Electrified Shocks early to buff Stormkeeper for lightning builds." );
+    single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time&!set_bonus.tier31_4pc" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled&talent.elemental_blast.enabled&(maelstrom>=61&maelstrom<75&cooldown.lava_burst.remains>gcd|maelstrom>=49&maelstrom<63&cooldown.lava_burst.ready)", "{EB/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.elemental_blast.enabled&(maelstrom>=36&maelstrom<50&cooldown.lava_burst.remains>gcd|maelstrom>=24&maelstrom<38&cooldown.lava_burst.ready)", "{ES/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
     single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|maelstrom>=63&talent.master_of_the_elements.enabled|maelstrom>=38&buff.echoes_of_great_sundering.up&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)|!talent.elemental_blast.enabled)", "Windspeaker's Lava Resurgence is strong. Don't sit on it...Unless it's Lightning build and you save it to buff Elemental Blast." );
     single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.master_of_the_elements.enabled|!talent.elemental_blast.enabled)", "Lava Surge is neat. Utilize it...Unless it's Lightning build and you save it to buff Elemental Blast." );
-    single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50&!talent.swelling_maelstrom.enabled&maelstrom<=80", "Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
-    single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=75|maelstrom>=50&!talent.elemental_blast.enabled)&talent.swelling_maelstrom.enabled&maelstrom<=130", "Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
+    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.ascendance.up&(set_bonus.tier31_4pc|!talent.elemental_blast.enabled)&(!talent.further_beyond.enabled|fb_extension_remaining<2)", "Spam Lava burst in Ascendance (if running Elemental Blast - only with T31 4p, otherwise always) if Further Beyond extension is depleted." );
+    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.ascendance.up&(!talent.elemental_blast.enabled|!talent.mountains_will_fall.enabled)&!talent.lightning_rod.enabled&set_bonus.tier31_4pc", "{Fire builds, T31 4p} Spam Lava Burst with T31 4p as much as you can (unless you running Elemental Blast + Mountains will fall)." );
+    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&!talent.lightning_rod.enabled", "{Fire builds} Buff your next <anything> with MotE." );
+    single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=75|maelstrom>=50&!talent.elemental_blast.enabled)&talent.swelling_maelstrom.enabled&maelstrom<=130", "{Lightning builds} Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
     single_target->add_action(
         "earthquake,if=buff.echoes_of_great_sundering.up&(!talent.elemental_blast.enabled&active_enemies<2|active_enemies>1)",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease. Additionally Elemental Blast is stronger than EoGS. In this case don't use Earthquake on single target." );
     single_target->add_action(
         "earthquake,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&!talent.echoes_of_great_sundering.enabled&!talent.elemental_blast.enabled",
         "Use Earthquake against two enemies unless you have to alternate because of Echoes of Great Sundering." );
-    single_target->add_action( "elemental_blast,if=!set_bonus.tier31_2pc&!set_bonus.tier31_4pc" );
-    single_target->add_action( "earth_shock,if=!set_bonus.tier31_2pc&!set_bonus.tier31_4pc" );
-    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.flux_melting.up&active_enemies>1", "Utilize present buffs." );
-    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=enemies=1&talent.deeply_rooted_elements.enabled", "Single target Lava Burst is stronk." );
-    single_target->add_action( "lava_burst,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc" );
-    single_target->add_action( "elemental_blast,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc" );
-    single_target->add_action( "earth_shock,if=set_bonus.tier31_2pc&set_bonus.tier31_4pc" );
+    single_target->add_action( "elemental_blast,if=(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)&debuff.electrified_shocks.up" );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&maelstrom<110&cooldown.lava_burst.charges_fractional<1.0&talent.electrified_shocks.enabled&talent.elemental_blast.enabled&!talent.lightning_rod.enabled", "{EB/ElS Fire builds} Apply Electrified Shocks if you are out of Lava Burst charges and not close to maelstrom cap." );
+    single_target->add_action( "elemental_blast,if=buff.master_of_the_elements.up|talent.lightning_rod.enabled", "Default EB line for lightning builds. Requires MotE buff for fire." );
+    single_target->add_action( "earth_shock" );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&buff.master_of_the_elements.up&!talent.lightning_rod.enabled&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "{Fire builds}[2t] Els-cleaving Frost Shock with MotE is better than hardcasted Lava Burst on 2 targets." );
+    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.deeply_rooted_elements.enabled", "Fish for DRE procs." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled&!buff.flux_melting.up",
                                "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&debuff.electrified_shocks.remains<2|buff.icefury.remains<6)",
@@ -11280,7 +11281,8 @@ void shaman_t::init_action_list_elemental()
         "enabled|buff.stormkeeper.up",
         "Use Lava Burst normally with fire builds. Save it as much as possible in lightning builds unless you cant use "
         "Lightning Bolt without wasting Stormkeeper charges." );
-        single_target->add_action(
+    single_target->add_action( "elemental_blast" );
+    single_target->add_action(
         "chain_lightning,if=buff.power_of_the_maelstrom.up&talent.unrelenting_calamity.enabled&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)",
         "Utilize the Power of the Maelstrom buff if your Chain Lightning is empowered by Unrelenting Calamity." );
         single_target->add_action(
@@ -11294,7 +11296,7 @@ void shaman_t::init_action_list_elemental()
         "lightning_bolt,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)",
         "Spam Lightning Bolt if Storm Elemental is active. But honor all previous priorities." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled" );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.flux_melting.enabled|talent.electrified_shocks.enabled&!talent.lightning_rod.enabled)" );
     single_target->add_action( "chain_lightning,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", 
                               "If you have MotE up and aren't at risk of capping LvB, spend MotE on Chain Lightning." );
     single_target->add_action( "lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
