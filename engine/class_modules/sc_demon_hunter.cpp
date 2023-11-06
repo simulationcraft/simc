@@ -7228,11 +7228,11 @@ void demon_hunter_t::init_action_list()
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    demon_hunter_apl::havoc_ptr( this );
+    demon_hunter_apl::havoc( this );
   }
   else if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    demon_hunter_apl::vengeance_ptr( this );
+    demon_hunter_apl::vengeance( this );
   }
 
   use_default_action_list = true;
@@ -7942,7 +7942,7 @@ std::string demon_hunter_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
-      return demon_hunter_apl::temporary_enchant_vengeance_ptr( this );
+      return demon_hunter_apl::temporary_enchant_vengeance( this );
     default:
       return demon_hunter_apl::temporary_enchant_havoc( this );
   }
