@@ -2411,10 +2411,12 @@ public:
 
     if ( ab::current_resource() == RESOURCE_ENERGY )
     {
-      // Appears to count base energy cost of Blindside abilities, so can't use last_resource_cost
+      // Early PTR builds counted base energy cost of Blindside abilities, so can't use last_resource_cost
+      // 2023-11-06 -- Latest PTR build, however, doesn't seem to give any stacks from Blindside
       if ( p()->set_bonuses.t31_assassination_2pc->ok() )
       {
-        p()->t31_assassination_2pc_accumulator += std::max( ab::cost(), ab::last_resource_cost );
+        p()->t31_assassination_2pc_accumulator += ( p()->bugs ? ab::last_resource_cost :
+                                                    std::max( ab::cost(), ab::last_resource_cost ) );
         const double threshold = p()->set_bonuses.t31_assassination_2pc->effectN( 3 ).base_value();
         while ( p()->t31_assassination_2pc_accumulator >= threshold )
         {
