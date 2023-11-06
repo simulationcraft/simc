@@ -1720,7 +1720,7 @@ timespan_t runes_t::time_to_regen( unsigned n_runes )
   } );
 
   // Number of unsatisfied runes
-  int n_unsatisfied = n_runes - as<unsigned int>( dk -> resources.current[ RESOURCE_RUNE ] );
+  unsigned n_unsatisfied = n_runes - as<unsigned int>( dk -> resources.current[ RESOURCE_RUNE ] );
 
   // If we can satisfy the remaining unsatisfied runes with regenerating runes, return the N - 1th
   // remaining regeneration time
@@ -8520,7 +8520,7 @@ void death_knight_t::create_options()
                      {
                        times.clear();
                        auto splits = util::string_split<util::string_view>( val, "/" );
-                       for (auto split : splits)
+                       for ( auto split : splits )
                        {
                          double t = util::to_double( split );
                          if (t < 0.0)
