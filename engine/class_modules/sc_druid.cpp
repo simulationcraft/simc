@@ -1682,6 +1682,12 @@ struct blood_frenzy_buff_t : public druid_buff_t
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       trigger_blood_frenzy();
     } );
+
+    if ( !p->bugs )
+    {
+      set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+      buff_period *= 1.0 + p->talent.circle_of_life_and_death->effectN( 1 ).percent();
+    }
   }
 
   void trigger_blood_frenzy()
