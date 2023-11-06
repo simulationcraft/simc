@@ -1232,7 +1232,7 @@ struct soul_fragment_t
     if ( dh->talent.vengeance.feed_the_demon->ok() )
     {
       timespan_t duration =
-          timespan_t::from_seconds( dh->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() ) / 10;
+          timespan_t::from_seconds( dh->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() / 100 );
       dh->cooldown.demon_spikes->adjust( -duration );
     }
 
