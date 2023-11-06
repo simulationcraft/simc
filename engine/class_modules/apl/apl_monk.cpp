@@ -868,7 +868,7 @@ namespace monk_apl
     serenity_st->add_action( "blackout_kick,if=combo_strike&set_bonus.tier31_4pc&buff.blackout_reinforcement.up&prev.rising_sun_kick" );
     serenity_st->add_action( "fists_of_fury,if=buff.invokers_delight.up,interrupt=1" );
     serenity_st->add_action( "fists_of_fury_cancel" );
-    serenity_st->add_action( "spinning_crane_kick,if=combo_strike&!buff.blackout_reinforcement.up&set_bonus.tier31_4pc" =;
+    serenity_st->add_action( "spinning_crane_kick,if=combo_strike&!buff.blackout_reinforcement.up&set_bonus.tier31_4pc" );
     serenity_st->add_action( "strike_of_the_windlord,if=debuff.skyreach_exhaustion.remains>buff.call_to_dominance.remains" );
     serenity_st->add_action( "blackout_kick,if=combo_strike&set_bonus.tier30_2pc" );
     serenity_st->add_action( "blackout_kick,if=combo_strike" );
