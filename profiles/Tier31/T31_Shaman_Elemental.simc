@@ -5,11 +5,11 @@ level=70
 race=tauren
 role=spell
 position=back
-talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSrUSCgDkUSShSgkkEBAAAAAoFAlkAiCSLJplSACJBI
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSpUSCgDk0SShSgkkEBAAAAAoEgUSCpJpg0SSaKBIkEgA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_elemental_chaos_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:howling_rune_3,if=!talent.improved_flametongue_weapon
@@ -241,34 +241,33 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=morningscale_cowl,id=109984,bonus_id=4795/1808,ilevel=489,gem_id=192985,enchant_id=7052
-neck=eye_of_the_rising_flame,id=207163,bonus_id=4795/8782,ilevel=489,gem_id=192964/192964/192964
-shoulders=greatwolf_outcasts_companions,id=207207,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
-back=undulating_sporecloak,id=205025,bonus_id=8960/8840/8836/8902/1537,ilevel=486,enchant=graceful_avoidance_3
-chest=greatwolf_outcasts_harness,id=207212,bonus_id=6652/7979/9562/9515/1491/8767,ilevel=489,enchant=waking_stats_3
-wrists=wellspring_wristlets,id=210203,bonus_id=4795/1808,ilevel=489,gem_id=192964
-hands=greatwolf_outcasts_grips,id=207210,bonus_id=6652/7979/9560/9514/1485/8767,ilevel=489
-waist=jeweled_sash_of_the_viper,id=207146,bonus_id=4795/1808,ilevel=489,gem_id=192964
-legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=6652/7979/9562/9512/1491/8767,ilevel=489,enchant=frozen_spellthread_3
-feet=acidic_hailstone_treads,id=193466,bonus_id=8836/8840/8902/8960/9405/9500/9498,enchant=plainsrunners_breeze_3
-finger1=band_of_burning_thorns,id=207159,bonus_id=4795/1808,ilevel=489,gem_id=192964,enchant=devotion_of_mastery_3
-finger2=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,ilevel=489,gem_id=192964,enchant=devotion_of_haste_3
-trinket1=sea_star,id=133201,bonus_id=4795,ilevel=489
-trinket2=balefire_branch,id=159630,bonus_id=4795,ilevel=489
-main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=4795,ilevel=489,enchant=wafting_devotion_3
-off_hand=verdant_matrix_beacon,id=207798,bonus_id=4795,ilevel=489
+head=morningscale_cowl,id=109984,bonus_id=1808,gem_id=192988,enchant=incandescent_essence,ilevel=489
+neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520,gem_id=192964/192964/192964
+shoulder=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520
+back=undulating_sporecloak,id=205025,bonus_id=9500/9405,enchant=graceful_avoidance_3
+chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520,enchant=waking_stats_3
+wrist=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405,gem_id=192964
+hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520
+waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520,enchant=shadowed_belt_clasp_3,gem_id=192964
+legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=frozen_spellthread_3
+feet=boots_of_the_molten_hoard,id=207145,bonus_id=7187/1520,enchant=watchers_loam_3
+finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520,enchant=devotion_of_mastery_3,gem_id=192964
+finger2=archdruids_tainted_seal,id=134487,enchant=devotion_of_mastery_3,gem_id=192964,ilevel=489
+trinket1=sea_star,id=133201,ilevel=489
+trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520
+main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520,enchant=wafting_devotion_3
+off_hand=verdant_matrix_beacon,id=207798,bonus_id=7187/1520
 
 # Gear Summary
 # gear_ilvl=488.63
 # gear_strength=469
-# gear_stamina=38875
-# gear_intellect=11225
-# gear_crit_rating=1256
-# gear_haste_rating=4704
-# gear_mastery_rating=7177
-# gear_versatility_rating=3045
-# gear_speed_rating=250
+# gear_stamina=39137
+# gear_intellect=12122
+# gear_crit_rating=818
+# gear_haste_rating=4648
+# gear_mastery_rating=6792
+# gear_versatility_rating=3197
 # gear_avoidance_rating=125
-# gear_armor=13522
+# gear_armor=13526
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
