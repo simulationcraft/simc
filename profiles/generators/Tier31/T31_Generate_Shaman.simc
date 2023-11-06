@@ -18,7 +18,7 @@ legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=froze
 feet=boots_of_the_molten_hoard,id=207145,bonus_id=7187/1520,enchant=watchers_loam_3
 finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520,enchant=devotion_of_mastery_3,gem_id=192964
 finger2=archdruids_tainted_seal,id=134487,enchant=devotion_of_mastery_3,gem_id=192964,bonus_id=9882
-trinket1=sea_star,id=133201,ilevel=489
+trinket1=sea_star,id=133201,bonus_id=9466/1514
 trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520
 main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520,enchant=wafting_devotion_3
 off_hand=verdant_matrix_beacon,id=207798,bonus_id=7187/1520
