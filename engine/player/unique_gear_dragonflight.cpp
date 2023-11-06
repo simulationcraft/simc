@@ -6559,7 +6559,6 @@ void nymues_unraveling_spindle( special_effect_t& effect )
   }
 
   effect.execute_action = create_proc_action<nymues_channel_t>( "essence_splice", effect, buff );
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Augury of the Primal Flame
