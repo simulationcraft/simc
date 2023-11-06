@@ -6,8 +6,9 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_enums.hpp"
+
 #include "dbc/data_definitions.hh"
+#include "sc_enums.hpp"
 #include "util/format.hpp"
 #include "util/string_view.hpp"
 
@@ -24,7 +25,7 @@ struct player_t;
 struct set_bonus_t
 {
   // Some magic constants
-  static const unsigned N_BONUSES = 8;       // Number of set bonuses in tier gear
+  static const unsigned N_BONUSES = 8;  // Number of set bonuses in tier gear
 
   struct set_bonus_data_t
   {
@@ -33,9 +34,8 @@ struct set_bonus_t
     int overridden;
     bool enabled;
 
-    set_bonus_data_t(const spell_data_t* spell) :
-      spell(spell), bonus(nullptr), overridden(-1), enabled(false)
-    { }
+    set_bonus_data_t( const spell_data_t* spell ) : spell( spell ), bonus( nullptr ), overridden( -1 ), enabled( false )
+    {}
   };
 
   // Data structure definitions
@@ -53,7 +53,7 @@ struct set_bonus_t
   // Set item counts
   set_bonus_count_t set_bonus_spec_count;
 
-  set_bonus_t(player_t* p);
+  set_bonus_t( player_t* p );
 
   // Collect item information about set bonuses, fully DBC driven
   void initialize_items();
@@ -61,19 +61,22 @@ struct set_bonus_t
   // Initialize set bonuses in earnest
   void initialize();
 
-  std::unique_ptr<expr_t> create_expression(const player_t*, util::string_view type);
+  // Override all set bonuses to be enabled
+  void enable_all_sets();
+
+  std::unique_ptr<expr_t> create_expression( const player_t*, util::string_view type );
 
   std::vector<const item_set_bonus_t*> enabled_set_bonus_data() const;
 
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
-  const spell_data_t* set(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const;
+  const spell_data_t* set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
 
   // Fast accessor for checking whether a set bonus is enabled
-  bool has_set_bonus(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const;
+  bool has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
 
-  bool parse_set_bonus_option(util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus);
+  bool parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus );
   std::string to_string() const;
-  std::string to_profile_string(const std::string & = "\n") const;
+  std::string to_profile_string( const std::string& = "\n" ) const;
   std::string generate_set_bonus_options() const;
 
   friend void sc_format_to( const set_bonus_t&, fmt::format_context::iterator );

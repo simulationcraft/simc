@@ -45,6 +45,7 @@ namespace paladin {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
     add_invalidate( CACHE_MASTERY );
+    add_invalidate( CACHE_STAMINA );
   }
 
   sentinel_decay_buff_t::sentinel_decay_buff_t( paladin_t* p ) : buff_t( p, "sentinel_decay" )
@@ -55,6 +56,8 @@ namespace paladin {
     }
     set_refresh_behavior( buff_refresh_behavior::NONE );
     cooldown->duration = p->spells.sentinel->effectN( 10 ).period();
+
+    add_invalidate( CACHE_STAMINA );
   }
   }  // namespace buffs
 

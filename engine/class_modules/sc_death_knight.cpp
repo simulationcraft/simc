@@ -1720,7 +1720,7 @@ timespan_t runes_t::time_to_regen( unsigned n_runes )
   } );
 
   // Number of unsatisfied runes
-  int n_unsatisfied = n_runes - as<unsigned int>( dk -> resources.current[ RESOURCE_RUNE ] );
+  unsigned n_unsatisfied = n_runes - as<unsigned int>( dk -> resources.current[ RESOURCE_RUNE ] );
 
   // If we can satisfy the remaining unsatisfied runes with regenerating runes, return the N - 1th
   // remaining regeneration time
@@ -2046,11 +2046,11 @@ struct pet_action_t : public T_ACTION
     {
       proxy_action = p->dk()->find_action( "raise_dead" );
     }
-    if ( p->pet_name == "army_ghoul" || p->pet_name == "army_magus" && p->dk()->find_action( "army_of_the_dead" ) )
+    if ( ( p->pet_name == "army_ghoul" || p->pet_name == "army_magus" ) && p->dk()->find_action( "army_of_the_dead" ) )
     {
       proxy_action = p->dk()->find_action( "army_of_the_dead" );
     }
-    if ( p->pet_name == "apoc_ghoul" || p->pet_name == "apoc_magus" && p->dk()->find_action( "apocalypse" ) )
+    if ( ( p->pet_name == "apoc_ghoul" || p->pet_name == "apoc_magus" ) && p->dk()->find_action( "apocalypse" ) )
     {
       proxy_action = p->dk()->find_action( "apocalypse" );
     }
@@ -2516,7 +2516,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
-    army_claw_t( army_ghoul_pet_t* p, action_t* a, util::string_view options_str ) :
+    army_claw_t( army_ghoul_pet_t* p, util::string_view options_str ) :
       pet_melee_attack_t( p, "claw", p -> dk() -> pet_spell.army_claw )
     {
       parse_options( options_str );
@@ -2601,7 +2601,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "claw" ) return new army_claw_t( this, proxy_action, options_str );
+    if ( name == "claw" ) return new army_claw_t( this, options_str );
 
     return base_ghoul_pet_t::create_action( name, options_str );
   }
@@ -2625,7 +2625,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   buff_t* dark_empowerment;
   pet_spell_t<gargoyle_pet_t>* gargoyle_strike;
 
-  gargoyle_pet_t( death_knight_t* owner, action_t* a ) :
+  gargoyle_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
@@ -2634,7 +2634,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    gargoyle_strike_t( gargoyle_pet_t* p, action_t* a ) :
+    gargoyle_strike_t( gargoyle_pet_t* p ) :
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     { 
       background = repeating = true;
@@ -2676,7 +2676,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void create_actions() override
   {
     death_knight_pet_t::create_actions();
-    gargoyle_strike = new gargoyle_strike_t( this, proxy_action );
+    gargoyle_strike = new gargoyle_strike_t( this );
   }
 
   void reschedule_gargoyle()
@@ -3747,7 +3747,7 @@ struct frost_fever_t final : public death_knight_disease_t
 {
   int rp_generation;
 
-  frost_fever_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
+  frost_fever_t( util::string_view name, death_knight_t* p ) :
     death_knight_disease_t( name, p, p -> spell.frost_fever ),
     rp_generation( ( as<int>( p -> spec.frost_fever -> effectN( 1 ).trigger()
                      -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) + ( p -> talent.unholy.superstrain -> effectN(3).base_value() / 10 ) ) ) ) 
@@ -3800,7 +3800,7 @@ struct virulent_plague_t final : public death_knight_disease_t
 {
   virulent_plague_t( util::string_view name, death_knight_t* p) :
     death_knight_disease_t( name, p, p -> spell.virulent_plague ),
-      ff( get_action<frost_fever_t>( "frost_fever", p, true ) ),
+      ff( get_action<frost_fever_t>( "frost_fever", p ) ),
       bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
   {}
   void impact( action_state_t* s ) override
@@ -8520,7 +8520,7 @@ void death_knight_t::create_options()
                      {
                        times.clear();
                        auto splits = util::string_split<util::string_view>( val, "/" );
-                       for (auto split : splits)
+                       for ( auto split : splits )
                        {
                          double t = util::to_double( split );
                          if (t < 0.0)
@@ -9321,7 +9321,7 @@ void death_knight_t::create_pets()
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
     // Initialized even if the talent isn't picked for APL purpose
-    pets.gargoyle = new pets::gargoyle_pet_t( this, find_action( "summon_gargoyle" ) );
+    pets.gargoyle = new pets::gargoyle_pet_t( this );
 
     if ( talent.unholy.all_will_serve.ok() )
     {

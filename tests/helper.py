@@ -55,6 +55,7 @@ class Test(object):
         self._iterations = kwargs.get('iterations', group and group.iterations or SIMC_ITERATIONS)
         self._threads = kwargs.get('threads', group and group.threads or SIMC_THREADS)
         self._all_talents = kwargs.get('all_talents', False)
+        self._all_sets = kwargs.get('all_sets', False)
         self._args = kwargs.get('args', [])
 
     def args(self):
@@ -66,6 +67,8 @@ class Test(object):
         ]
         if self._all_talents:
             args.append('enable_all_talents=1')
+        if self._all_sets:
+            args.append('enable_all_sets=1')
         if self._fight_style:
             args.append('fight_style={}'.format(self._fight_style))
         if IS_PTR:

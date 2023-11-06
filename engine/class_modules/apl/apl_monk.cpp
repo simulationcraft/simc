@@ -172,7 +172,7 @@ namespace monk_apl
         break;
     }
   }
-  
+
   void brewmaster( player_t *p )
   {
     const static std::unordered_map<std::string, std::string> trinkets {
@@ -289,45 +289,50 @@ namespace monk_apl
     for ( const auto &racial_action : racial_actions )
       race_actions->add_action( racial_action + _BRM_RACIALS( racial_action ));
 
-    rotation_pta->add_action( "invoke_niuzao_the_black_ox,if=debuff.weapons_of_order_debuff.stack>3" );
-    rotation_pta->add_action( "invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled" );
-    rotation_pta->add_action( "rising_sun_kick,if=(buff.press_the_advantage.stack<6|buff.press_the_advantage.stack>9)&active_enemies<=4" );
-    rotation_pta->add_action( "keg_smash,if=(buff.press_the_advantage.stack<8|buff.press_the_advantage.stack>9)&active_enemies>4" );
+    rotation_pta->add_action( "invoke_niuzao_the_black_ox" );
+    rotation_pta->add_action( "rising_sun_kick,if=buff.press_the_advantage.stack<(7+main_hand.2h)" );
+    rotation_pta->add_action( "rising_sun_kick,if=buff.press_the_advantage.stack>9&active_enemies<=3&(buff.blackout_combo.up|!talent.blackout_combo.enabled)" );
+    rotation_pta->add_action( "keg_smash,if=(buff.press_the_advantage.stack>9)&active_enemies>3" );
+    rotation_pta->add_action( "spinning_crane_kick,if=active_enemies>5&buff.exploding_keg.up&buff.charred_passions.up" );
     rotation_pta->add_action( "blackout_kick" );
     rotation_pta->add_action( "purifying_brew,if=(!buff.blackout_combo.up)" );
     rotation_pta->add_action( "black_ox_brew,if=energy+energy.regen<=40" );
-    rotation_pta->add_action( "summon_white_tiger_statue,if=debuff.weapons_of_order_debuff.stack>3" );
-    rotation_pta->add_action( "summon_white_tiger_statue,if=!talent.weapons_of_order.enabled" );
-    rotation_pta->add_action( "bonedust_brew,if=(time<10&debuff.weapons_of_order_debuff.stack>3)|(time>10&talent.weapons_of_order.enabled)" );
-    rotation_pta->add_action( "bonedust_brew,if=(!talent.weapons_of_order.enabled)" );
-    rotation_pta->add_action( "exploding_keg,if=(buff.bonedust_brew.up)" );
+    rotation_pta->add_action( "breath_of_fire,if=buff.charred_passions.remains<cooldown.blackout_kick.remains&(buff.blackout_combo.up|!talent.blackout_combo.enabled)" );
+    rotation_pta->add_action( "summon_white_tiger_statue" );
+    rotation_pta->add_action( "bonedust_brew" );
+    rotation_pta->add_action( "exploding_keg,if=((buff.bonedust_brew.up)|(cooldown.bonedust_brew.remains>=20))" );
     rotation_pta->add_action( "exploding_keg,if=(!talent.bonedust_brew.enabled)" );
-    rotation_pta->add_action( "breath_of_fire,if=!(buff.press_the_advantage.stack>6&buff.blackout_combo.up)" );
-    rotation_pta->add_action( "keg_smash,if=!(buff.press_the_advantage.stack>6&buff.blackout_combo.up)" );
+    rotation_pta->add_action( "breath_of_fire,if=(buff.blackout_combo.up|!talent.blackout_combo.enabled)" );
+    rotation_pta->add_action( "keg_smash,if=buff.press_the_advantage.stack<10" );
     rotation_pta->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
-    rotation_pta->add_action( "spinning_crane_kick,if=active_enemies>1" );
+    rotation_pta->add_action( "spinning_crane_kick,if=active_enemies>2" );
+    rotation_pta->add_action( "spinning_crane_kick,if=(1.1>(time-action.melee_main_hand.last_used)*(1+spell_haste))-main_hand.2h" );
     rotation_pta->add_action( "expel_harm" );
-    rotation_pta->add_action( "chi_wave,if=talent.chi_wave.enabled" );
-    rotation_pta->add_action( "chi_burst,if=talent.chi_burst.enabled" );
-
+    rotation_pta->add_action( "chi_wave" );
+    rotation_pta->add_action( "chi_burst" );
 
     rotation_boc->add_action( "blackout_kick" );
-    rotation_boc->add_action( "invoke_niuzao_the_black_ox,if=debuff.weapons_of_order_debuff.stack>3" );
-    rotation_boc->add_action( "invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled" );
-    rotation_boc->add_action( "weapons_of_order,if=(talent.weapons_of_order.enabled)" );
-    rotation_boc->add_action( "keg_smash,if=time-action.weapons_of_order.last_used<2&talent.weapons_of_order.enabled" );
-    rotation_boc->add_action( "purifying_brew,if=(!buff.blackout_combo.up)" );
+    rotation_boc->add_action( "purifying_brew,if=(buff.blackout_combo.down&(buff.recent_purifies.down|cooldown.purifying_brew.charges_fractional>(1+talent.improved_purifying_brew.enabled-0.1)))&talent.improved_invoke_niuzao_the_black_ox.enabled&(cooldown.weapons_of_order.remains>40|cooldown.weapons_of_order.remains<5)" );
+    rotation_boc->add_action( "weapons_of_order,if=(buff.recent_purifies.up)&talent.improved_invoke_niuzao_the_black_ox.enabled" );
+    rotation_boc->add_action( "invoke_niuzao_the_black_ox,if=(buff.invoke_niuzao_the_black_ox.down&buff.recent_purifies.up&buff.weapons_of_order.remains<14)&talent.improved_invoke_niuzao_the_black_ox.enabled" );
+    rotation_boc->add_action( "invoke_niuzao_the_black_ox,if=(debuff.weapons_of_order_debuff.stack>3)&!talent.improved_invoke_niuzao_the_black_ox.enabled" );
+    rotation_boc->add_action( "invoke_niuzao_the_black_ox,if=(!talent.weapons_of_order.enabled)" );
+    rotation_boc->add_action( "weapons_of_order,if=(talent.weapons_of_order.enabled)&!talent.improved_invoke_niuzao_the_black_ox.enabled" );
+    rotation_boc->add_action( "keg_smash,if=(time-action.weapons_of_order.last_used<2)" );
+    rotation_boc->add_action( "keg_smash,if=(buff.weapons_of_order.remains<gcd*2&buff.weapons_of_order.up)&!talent.improved_invoke_niuzao_the_black_ox.enabled" );
+    rotation_boc->add_action( "keg_smash,if=(buff.weapons_of_order.remains<gcd*2)&talent.improved_invoke_niuzao_the_black_ox.enabled" );
+    rotation_boc->add_action( "purifying_brew,if=(!buff.blackout_combo.up)&!talent.improved_invoke_niuzao_the_black_ox.enabled" );
     rotation_boc->add_action( "rising_sun_kick" );
-    rotation_boc->add_action( "keg_smash,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.remains<=gcd*2" );
-    rotation_boc->add_action( "black_ox_brew,if=energy+energy.regen<=40" );
-    rotation_boc->add_action( "tiger_palm,if=buff.blackout_combo.up&active_enemies=1" );
-    rotation_boc->add_action( "breath_of_fire,if=buff.charred_passions.remains<cooldown.blackout_kick.remains" );
-    rotation_boc->add_action( "keg_smash,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.stack<=3" );
-    rotation_boc->add_action( "summon_white_tiger_statue,if=debuff.weapons_of_order_debuff.stack>3" );
-    rotation_boc->add_action( "summon_white_tiger_statue,if=!talent.weapons_of_order.enabled" );
+    rotation_boc->add_action( "black_ox_brew,if=(energy+energy.regen<=40)" );
+    rotation_boc->add_action( "tiger_palm,if=(buff.blackout_combo.up&active_enemies=1)" );
+    rotation_boc->add_action( "breath_of_fire,if=(buff.charred_passions.remains<cooldown.blackout_kick.remains)" );
+    rotation_boc->add_action( "keg_smash,if=(buff.weapons_of_order.up&debuff.weapons_of_order_debuff.stack<=3)" );
+    rotation_boc->add_action( "summon_white_tiger_statue,if=(debuff.weapons_of_order_debuff.stack>3)" );
+    rotation_boc->add_action( "summon_white_tiger_statue,if=(!talent.weapons_of_order.enabled)" );
     rotation_boc->add_action( "bonedust_brew,if=(time<10&debuff.weapons_of_order_debuff.stack>3)|(time>10&talent.weapons_of_order.enabled)" );
     rotation_boc->add_action( "bonedust_brew,if=(!talent.weapons_of_order.enabled)" );
     rotation_boc->add_action( "exploding_keg,if=(buff.bonedust_brew.up)" );
+    rotation_boc->add_action( "exploding_keg,if=(cooldown.bonedust_brew.remains>=20)" );
     rotation_boc->add_action( "exploding_keg,if=(!talent.bonedust_brew.enabled)" );
     rotation_boc->add_action( "keg_smash" );
     rotation_boc->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
@@ -335,8 +340,8 @@ namespace monk_apl
     rotation_boc->add_action( "tiger_palm,if=active_enemies=1&!talent.blackout_combo.enabled" );
     rotation_boc->add_action( "spinning_crane_kick,if=active_enemies>1" );
     rotation_boc->add_action( "expel_harm" );
-    rotation_boc->add_action( "chi_wave,if=talent.chi_wave.enabled" );
-    rotation_boc->add_action( "chi_burst,if=talent.chi_burst.enabled" );
+    rotation_boc->add_action( "chi_wave" );
+    rotation_boc->add_action( "chi_burst" );
   }
 
   void mistweaver( player_t *p )
@@ -701,7 +706,7 @@ namespace monk_apl
     serenity_lust->add_action( "blackout_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike" );
     serenity_lust->add_action( "whirling_dragon_punch" );
     serenity_lust->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
-    
+
     // Serenity >4 Target Priority
     serenity_aoe->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<1", "Serenity >4 Targets" );
     serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&!spinning_crane_kick.max&talent.shadowboxing_treads" );
@@ -726,7 +731,7 @@ namespace monk_apl
     serenity_aoe->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     serenity_aoe->add_action( "blackout_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike" );
     serenity_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
-    
+
     // Serenity 4 Target Priority
     serenity_4t->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<1", "Serenity 4 Targets" );
     serenity_4t->add_action( "tiger_palm,,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike" );
@@ -750,7 +755,7 @@ namespace monk_apl
     serenity_4t->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     serenity_4t->add_action( "blackout_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike" );
     serenity_4t->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
-    
+
     // Serenity 3 Target Priority
     serenity_3t->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<1", "Serenity 3 Targets" );
     serenity_3t->add_action( "tiger_palm,,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike" );
@@ -775,7 +780,7 @@ namespace monk_apl
     serenity_3t->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     serenity_3t->add_action( "blackout_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike" );
     serenity_3t->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
-    
+
     // Serenity 2 Target Priority
     serenity_2t->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<2&!debuff.skyreach_exhaustion.remains<2&!debuff.skyreach_exhaustion.remains", "Serenity 2 Targets" );
     serenity_2t->add_action( "tiger_palm,,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike" );
@@ -797,7 +802,7 @@ namespace monk_apl
     serenity_2t->add_action( "whirling_dragon_punch" );
     serenity_2t->add_action( "blackout_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike" );
     serenity_2t->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
-    
+
     // Serenity 1 Target Priority
     serenity_st->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<2&!debuff.skyreach_exhaustion.remains", "Serenity 1 Target" );
     serenity_st->add_action( "tiger_palm,if=!debuff.skyreach_exhaustion.up*20&combo_strike" );
@@ -830,7 +835,7 @@ namespace monk_apl
     default_aoe->add_action( "expel_harm,if=chi=1&(!cooldown.rising_sun_kick.remains|!cooldown.strike_of_the_windlord.remains)|chi=2&!cooldown.fists_of_fury.remains" );
     default_aoe->add_action( "spinning_crane_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains<5&buff.chi_energy.stack>10" );
     default_aoe->add_action( "chi_burst,if=buff.bloodlust.up&chi<5" );
-    default_aoe->add_action( "chi_burst,if=chi<5&energy<50" );    
+    default_aoe->add_action( "chi_burst,if=chi<5&energy<50" );
     default_aoe->add_action( "spinning_crane_kick,if=combo_strike&(cooldown.fists_of_fury.remains>3|chi>2)&spinning_crane_kick.max&buff.bloodlust.up" );
     default_aoe->add_action( "spinning_crane_kick,if=combo_strike&(cooldown.fists_of_fury.remains>3|chi>2)&spinning_crane_kick.max&buff.invokers_delight.up" );
     default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=talent.shadowboxing_treads&combo_strike&set_bonus.tier30_2pc&!buff.bonedust_brew.up&active_enemies<15&!talent.crane_vortex" );
