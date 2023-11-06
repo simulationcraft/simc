@@ -529,6 +529,7 @@ namespace monk_apl
     action_priority_list_t *trinkets = p->get_action_priority_list( "trinkets" );
     action_priority_list_t *cd_sef = p->get_action_priority_list( "cd_sef" );
     action_priority_list_t *cd_serenity = p->get_action_priority_list( "cd_serenity" );
+    action_priority_list_t *serenity_aoelust = p->get_action_priority_list( "serenity_aoelust" );
     action_priority_list_t *serenity_lust = p->get_action_priority_list( "serenity_lust" );
     action_priority_list_t *serenity_aoe = p->get_action_priority_list( "serenity_aoe" );
     action_priority_list_t *serenity_4t = p->get_action_priority_list( "serenity_4t" );
