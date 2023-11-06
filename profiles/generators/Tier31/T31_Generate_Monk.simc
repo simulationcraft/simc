@@ -9,7 +9,7 @@ talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAQShWJJhQSSrRAAAASLUSiEJUKSSaJJtEgSL
 
 # head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192982,enchant=incandescent_essence
 head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192982,enchant_id=7502
-neck=ouroboreal_necklet,id=210214,bonus_id=3524,gem_id=192925/192925/192925
+neck=ouroboreal_necklet,id=210214,bonus_id=7187/6935/1520,gem_id=192925/192925/192925
 shoulder=strigine_epaulets,id=207127,bonus_id=7187/1520
 back=inflammable_drapeleaf,id=207160,bonus_id=7187/1520
 chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
