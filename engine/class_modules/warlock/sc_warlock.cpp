@@ -992,13 +992,13 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_dread_touch = make_buff( *this, "dread_touch", p.talents.dread_touch_debuff )
                             ->set_default_value( p.talents.dread_touch_debuff->effectN( 1 ).percent() );
 
-  debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany" );
+  debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany_dummy" );
 
   debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
                           ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  debuffs_umbrafire_kindling = make_buff( *this, "umbrafire_kindling" );
+  debuffs_umbrafire_kindling = make_buff( *this, "umbrafire_kindling_dummy" );
 
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
