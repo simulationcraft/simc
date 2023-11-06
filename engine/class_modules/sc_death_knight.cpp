@@ -2046,11 +2046,11 @@ struct pet_action_t : public T_ACTION
     {
       proxy_action = p->dk()->find_action( "raise_dead" );
     }
-    if ( p->pet_name == "army_ghoul" || p->pet_name == "army_magus" && p->dk()->find_action( "army_of_the_dead" ) )
+    if ( ( p->pet_name == "army_ghoul" || p->pet_name == "army_magus" ) && p->dk()->find_action( "army_of_the_dead" ) )
     {
       proxy_action = p->dk()->find_action( "army_of_the_dead" );
     }
-    if ( p->pet_name == "apoc_ghoul" || p->pet_name == "apoc_magus" && p->dk()->find_action( "apocalypse" ) )
+    if ( ( p->pet_name == "apoc_ghoul" || p->pet_name == "apoc_magus" ) && p->dk()->find_action( "apocalypse" ) )
     {
       proxy_action = p->dk()->find_action( "apocalypse" );
     }
