@@ -3172,7 +3172,7 @@ namespace monk
         {
           background = true;
 
-          if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() )
+          if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() && !p()->sim->enable_all_talents )
             add_child( p()->active_actions.chi_surge );
           press_the_advantage_whitelist = true;
         }
@@ -5219,7 +5219,7 @@ namespace monk
           base_dd_max = 0;
           cast_during_sck = true;
 
-          if ( p.talent.brewmaster.weapons_of_order->ok() )
+          if ( p.talent.brewmaster.weapons_of_order->ok() && !p.sim->enable_all_talents )
             add_child( p.active_actions.chi_surge );
         }
 
