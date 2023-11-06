@@ -36,7 +36,7 @@ struct enchant_db_item_t
  * item_enchantment_data_t structs in sc_item_data.inc.
  */
 static const enchant_db_item_t __enchant_db[] = {
-  { nullptr, 0 }
+  { "incandescent_essence", 7052 }
 };
 
 unsigned find_override_enchant_id( util::string_view name )
