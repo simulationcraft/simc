@@ -1,11 +1,11 @@
-druid="T30_Druid_Guardian"
+druid="T31_Druid_Guardian"
 source=default
 spec=guardian
 level=70
 race=highmountain_tauren
 role=tank
 position=front
-talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQikkkUS0iIIKSIRBAkIIIBSSSSSiUgWiDAAAAAAAAAA
+talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQikkkUS0iIIKSIRBAkIIIBSSSSSiUgWiDAAAAAAEBEkAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -88,32 +88,32 @@ actions.catweave+=/convoke_the_spirits
 actions.catweave+=/ferocious_bite,if=combo_points>=4&energy>50
 actions.catweave+=/shred,if=combo_points<=5
 
-head=bough_of_the_autumn_blaze,id=202515,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,gem_id=192925
-neck=ionized_choker,id=206181,bonus_id=6652/8783/8784/7936/7937/6808/4786/8780/1669,gem_id=192982/192925/192925
-shoulders=mantle_of_the_autumn_blaze,id=202513,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501,ilevel=450
-back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/609/4800/4786/1498,enchant=waking_stats_3
-wrists=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537,gem_id=192925,crafted_stats=32/36
-hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
-waist=garland_of_the_autumn_blaze,id=202512,bonus_id=4800/4786/1501,ilevel=447,gem_id=192925
-legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant=fierce_armor_kit_3,crafted_stats=32/36
-feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/1537,enchant_id=6606
-finger1=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,gem_id=192925,enchant_id=6550
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant_id=6568
-trinket1=beacon_to_the_beyond,id=203963,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-trinket2=elementium_pocket_anvil,id=202617,bonus_id=6652/8783/8784/9414/9415/4800/4786/1504/9382
-main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6827
+head=benevolent_embersages_casque,id=207254,bonus_id=4800/4786/1520/9576/1808,gem_id=192985
+neck=amulet_of_eonars_chosen,id=208445,bonus_id=4800/4786/1520/9576/8782,gem_id=192945/192945/192945
+shoulders=benevolent_embersages_wisdom,id=207252,bonus_id=4800/4786/1520/9576
+back=shadowfeather_shawl,id=136977,bonus_id=4795,ilevel=489
+chest=benevolent_embersages_robe,id=207257,bonus_id=4800/4786/1520/9576,enchant_id=6625
+wrists=lifebound_bindings,id=193419,bonus_id=1576/8797/8960/1808,gem_id=192945,crafted_stats=32/36
+hands=fading_chronogrips,id=207903,bonus_id=4795,ilevel=489
+waist=bloody_dragonhide_belt,id=207131,bonus_id=4800/4786/1520/9576/1808,gem_id=192945,enchant_id=6904
+legs=benevolent_embersages_leggings,id=207253,bonus_id=4800/4786/1520/9576,enchant_id=6490
+feet=toxic_thorn_footwraps,id=193452,bonus_id=1576,enchant_id=6606
+finger1=seal_of_the_regal_loa,id=159458,bonus_id=4795/1808,ilevel=489,gem_id=192945,enchant_id=6556
+finger2=band_of_burning_thorns,id=207159,bonus_id=4795/1808,ilevel=489,gem_id=192945,enchant_id=6556
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=4800/4786/1520/9576
+trinket2=oakhearts_gnarled_root,id=137306,bonus_id=6536/1566/6646,ilevel=489
+main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=4800/4786/1520/9576,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=446.93
-# gear_agility=6242
-# gear_stamina=22156
+# gear_ilvl=484.33
+# gear_agility=8575
+# gear_stamina=37368
 # gear_attack_power=135
-# gear_crit_rating=4668
-# gear_haste_rating=3001
-# gear_mastery_rating=2114
-# gear_versatility_rating=3004
+# gear_crit_rating=4211
+# gear_haste_rating=6587
+# gear_mastery_rating=1349
+# gear_versatility_rating=3097
 # gear_speed_rating=225
-# gear_armor=3995
-# set_bonus=tier30_2pc=1
-# set_bonus=tier30_4pc=1
+# gear_armor=5124
+# set_bonus=tier31_2pc=1
+# set_bonus=tier31_4pc=1

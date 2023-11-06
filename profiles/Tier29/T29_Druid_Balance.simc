@@ -20,7 +20,7 @@ temporary_enchant=main_hand:hissing_rune_3
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
-# Annotated Balance APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt
+# Balance APL can be found at https://balance-simc.github.io/Balance-SimC/balance.txt
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
@@ -59,13 +59,14 @@ actions.aoe+=/stellar_flare,target_if=refreshable&(target.time_to_die-remains-sp
 actions.aoe+=/variable,name=starfall_condition1,value=variable.cd_condition_aoe&(talent.orbital_strike&astral_power.deficit<variable.passive_asp+8*spell_targets|buff.touch_the_cosmos.up)|astral_power.deficit<(variable.passive_asp+8+12*(buff.eclipse_lunar.remains<4|buff.eclipse_solar.remains<4))
 actions.aoe+=/cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starfall_condition1
 actions.aoe+=/starfall,if=variable.starfall_condition1
+actions.aoe+=/starfire,if=buff.dreamstate.up&variable.cd_condition_aoe&buff.eclipse_lunar.up
 actions.aoe+=/celestial_alignment,if=variable.cd_condition_aoe
 actions.aoe+=/incarnation,if=variable.cd_condition_aoe
 actions.aoe+=/warrior_of_elune
 actions.aoe+=/variable,name=enter_solar,value=spell_targets.starfire<3
 actions.aoe+=/starfire,if=variable.enter_solar&(eclipse.any_next|buff.eclipse_solar.remains<action.starfire.cast_time)
 actions.aoe+=/wrath,if=!variable.enter_solar&(eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.cast_time)
-actions.aoe+=/wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&(!talent.fungal_growth|!talent.waning_twilight|dot.fungal_growth.remains<2&target.time_to_die>7&!prev_gcd.1.wild_mushroom)
+actions.aoe+=/wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&(!talent.waning_twilight|dot.fungal_growth.remains<2&target.time_to_die>7&!prev_gcd.1.wild_mushroom)
 actions.aoe+=/fury_of_elune,if=target.time_to_die>2&(buff.ca_inc.remains>3|cooldown.ca_inc.remains>30&buff.primordial_arcanic_pulsar.value<=280|buff.primordial_arcanic_pulsar.value>=560&astral_power>50)|fight_remains<10
 actions.aoe+=/variable,name=starfall_condition2,value=target.time_to_die>4&(buff.starweavers_warp.up|talent.starlord&buff.starlord.stack<3)
 actions.aoe+=/cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starfall_condition2
@@ -79,7 +80,7 @@ actions.aoe+=/new_moon,if=astral_power.deficit>variable.passive_asp+10
 actions.aoe+=/half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
 actions.aoe+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
 actions.aoe+=/starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17
-actions.aoe+=/starfire,if=spell_targets>3&buff.eclipse_lunar.up|eclipse.in_lunar
+actions.aoe+=/starfire,if=spell_targets>(3-(buff.dreamstate.up|buff.balance_t31_4pc_buff_lunar.stack>buff.balance_t31_4pc_buff_solar.stack))&buff.eclipse_lunar.up|eclipse.in_lunar
 actions.aoe+=/wrath
 actions.aoe+=/run_action_list,name=fallthru
 
@@ -95,12 +96,14 @@ actions.st+=/stellar_flare,target_if=refreshable&astral_power.deficit>variable.p
 actions.st+=/cancel_buff,name=starlord,if=buff.starlord.remains<2&(buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up&buff.starweavers_warp.up|buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up)
 actions.st+=/starfall,if=buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up&buff.starweavers_warp.up
 actions.st+=/starsurge,if=buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up
+actions.st+=/starfire,if=buff.dreamstate.up&variable.cd_condition_st&eclipse.in_lunar
+actions.st+=/wrath,if=buff.dreamstate.up&variable.cd_condition_st&buff.eclipse_solar.up
 actions.st+=/celestial_alignment,if=variable.cd_condition_st
 actions.st+=/incarnation,if=variable.cd_condition_st
-actions.st+=/variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5&spell_targets.starfire<3
+actions.st+=/variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5&spell_targets.starfire<3|set_bonus.tier31_2pc
 actions.st+=/variable,name=enter_eclipse,value=eclipse.any_next|variable.solar_eclipse_st&buff.eclipse_solar.up&(buff.eclipse_solar.remains<action.starfire.cast_time)|!variable.solar_eclipse_st&buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)
-actions.st+=/warrior_of_elune,if=variable.solar_eclipse_st&(variable.enter_eclipse|buff.eclipse_solar.remains<7&buff.primordial_arcanic_pulsar.value<280)
-actions.st+=/starfire,if=variable.enter_eclipse&variable.solar_eclipse_st
+actions.st+=/warrior_of_elune,if=variable.solar_eclipse_st&(variable.enter_eclipse|buff.eclipse_solar.remains<7)
+actions.st+=/starfire,if=variable.enter_eclipse&(variable.solar_eclipse_st|buff.warrior_of_elune.up)
 actions.st+=/wrath,if=variable.enter_eclipse
 actions.st+=/variable,name=convoke_condition,value=buff.ca_inc.remains>4|(cooldown.ca_inc.remains>30|variable.no_cd_talent)&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)
 actions.st+=/starsurge,if=talent.convoke_the_spirits&cooldown.convoke_the_spirits.ready&variable.convoke_condition
@@ -109,7 +112,7 @@ actions.st+=/astral_communion,if=astral_power.deficit>variable.passive_asp+55
 actions.st+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
 actions.st+=/fury_of_elune,if=target.time_to_die>2&(buff.ca_inc.remains>3|cooldown.ca_inc.remains>30&buff.primordial_arcanic_pulsar.value<=280|buff.primordial_arcanic_pulsar.value>=560&astral_power>50)|fight_remains<10
 actions.st+=/starfall,if=buff.starweavers_warp.up
-actions.st+=/variable,name=starsurge_condition1,value=talent.starlord&buff.starlord.stack<3|talent.rattle_the_stars&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max
+actions.st+=/variable,name=starsurge_condition1,value=talent.starlord&buff.starlord.stack<3|(buff.balance_of_all_things_arcane.stack+buff.balance_of_all_things_nature.stack)>2&buff.starlord.remains>4
 actions.st+=/cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starsurge_condition1
 actions.st+=/starsurge,if=variable.starsurge_condition1
 actions.st+=/sunfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3
@@ -121,7 +124,6 @@ actions.st+=/full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.ecl
 actions.st+=/variable,name=starsurge_condition2,value=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+action.wrath.energize_amount+(action.starfire.energize_amount+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5
 actions.st+=/cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starsurge_condition2
 actions.st+=/starsurge,if=variable.starsurge_condition2
-actions.st+=/wild_mushroom,if=talent.fungal_growth&(!fight_style.dungeonroute|target.time_to_die>(full_recharge_time-7)|fight_remains<10)
 actions.st+=/wrath
 actions.st+=/run_action_list,name=fallthru
 

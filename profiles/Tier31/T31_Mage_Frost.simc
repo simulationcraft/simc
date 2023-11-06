@@ -1,4 +1,4 @@
-mage="T30_Mage_Frost"
+mage="T31_Mage_Frost"
 source=default
 spec=frost
 level=70
@@ -6,15 +6,13 @@ race=dwarf
 role=spell
 position=ranged_back
 talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJhQDJJJpBISERSkkAAAIlEJhEJJhkkkkkEAAAAAAAAAICA
-dragonflight.ominous_chromatic_essence_dragonflight=azure
-dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=main_hand:hissing_rune_3
+temporary_enchant=main_hand:howling_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -111,32 +109,31 @@ actions.st+=/ice_nova,if=active_enemies>=4
 actions.st+=/frostbolt
 actions.st+=/call_action_list,name=movement
 
-head=underlight_conjurers_arcanocowl,id=202551,ilevel=447,gem_id=192922
-neck=bromachs_disentombed_locket,id=193809,bonus_id=8782,ilevel=447,gem_id=192988/192958/192958
-shoulders=underlight_conjurers_aurora,id=202549,ilevel=450
-back=voice_of_the_silent_star,id=204465,ilevel=457,enchant_id=6595
-chest=vibrant_wildercloth_vestments,id=193509,ilevel=447,enchant_id=6625,crafted_stats=vers/mastery
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960,ilevel=447,gem_id=192922,enchant_id=6574,crafted_stats=vers/mastery
-hands=underlight_conjurers_gloves,id=202552,ilevel=447
-waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8960,ilevel=447,gem_id=192922,enchant_id=6904,crafted_stats=vers/mastery
-legs=underlight_conjurers_trousers,id=202550,ilevel=450,enchant_id=6541
-feet=underlight_conjurers_treads,id=202553,ilevel=450,enchant_id=6613
-finger1=onyx_impostors_birthright,id=204398,ilevel=450,gem_id=192958,enchant_id=6562
-finger2=signet_of_titanic_insight,id=192999,ilevel=447,gem_id=192958,enchant_id=6562,crafted_stats=vers/mastery
-trinket1=ominous_chromatic_essence,id=203729,ilevel=447
-trinket2=vessel_of_searing_shadow,id=202615,ilevel=447
-main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
+head=wayward_chronomancers_chronocap,id=207290,bonus_id=8780,ilevel=489,gem_id=192988,enchant_id=7052
+neck=ouroboreal_necklet,id=210214,bonus_id=8782,ilevel=489,gem_id=192948/192948/192948
+shoulders=wayward_chronomancers_metronomes,id=207288,ilevel=489
+back=undulating_sporecloak,id=205025,ilevel=486
+chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960/8780,ilevel=486,gem_id=192948,enchant_id=6586,crafted_stats=32/36
+hands=wayward_chronomancers_gloves,id=207291,ilevel=489
+waist=urctoss_hibernal_dial,id=207119,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6904
+legs=bloodstained_sous_chef_pants,id=159285,ilevel=489,enchant_id=6541
+feet=devilsaur_worshipers_sandals,id=158303,ilevel=489,enchant_id=6613
+finger1=signet_of_the_highborne_magi,id=134537,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6562
+finger2=signet_of_the_last_elder,id=207162,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6562
+trinket1=belorrelos_the_suncaller,id=207172,bonus_id=6652/7979/9563/1494/8767,ilevel=489
+trinket2=balefire_branch,id=159630,bonus_id=6652/7979/9563/1494/8767,ilevel=489
+main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=489,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=448.67
-# gear_stamina=22850
-# gear_intellect=9111
-# gear_crit_rating=3022
-# gear_haste_rating=3126
-# gear_mastery_rating=4671
-# gear_versatility_rating=1930
-# gear_leech_rating=125
-# gear_avoidance_rating=200
-# gear_armor=2452
-# set_bonus=tier30_2pc=1
-# set_bonus=tier30_4pc=1
+# gear_ilvl=488.60
+# gear_stamina=39137
+# gear_intellect=12122
+# gear_crit_rating=3399
+# gear_haste_rating=3076
+# gear_mastery_rating=5575
+# gear_versatility_rating=3715
+# gear_speed_rating=200
+# gear_armor=3251
+# set_bonus=tier31_2pc=1
+# set_bonus=tier31_4pc=1

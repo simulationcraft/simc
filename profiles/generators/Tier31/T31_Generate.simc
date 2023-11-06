@@ -31,19 +31,19 @@ T31_Generate_Death_Knight.simc
 T31_Generate_Demon_Hunter.simc
 
 # Druid
-# T31_Generate_Druid.simc
+T31_Generate_Druid.simc
 
 # Evoker
-# T31_Generate_Evoker.simc
+T31_Generate_Evoker.simc
 
 # Hunter
-# T31_Generate_Hunter.simc
+T31_Generate_Hunter.simc
 
 # Mage
-# T31_Generate_Mage.simc
+T31_Generate_Mage.simc
 
 # Monk
-# T31_Generate_Monk.simc
+T31_Generate_Monk.simc
 
 # Paladin
 T31_Generate_Paladin.simc
@@ -52,13 +52,13 @@ T31_Generate_Paladin.simc
 T31_Generate_Priest.simc
 
 # Rogue
-# T31_Generate_Rogue.simc
+T31_Generate_Rogue.simc
 
 # Shaman
 T31_Generate_Shaman.simc
 
 # Warlock
-# T31_Generate_Warlock.simc
+T31_Generate_Warlock.simc
 
 # Warrior
 T31_Generate_Warrior.simc
