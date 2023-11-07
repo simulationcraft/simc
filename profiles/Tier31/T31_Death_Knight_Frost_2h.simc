@@ -205,7 +205,7 @@ actions.variables+=/variable,name=pooling_runic_power,value=talent.breath_of_sin
 head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192988,enchant_id=7052
 neck=elemental_lariat,id=193001,bonus_id=9500/9405/8782/8960,gem_id=192922/192922/192922,crafted_stats=32/49
 shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
-back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1498
+back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
 chest=carapace_of_the_unbending_flame,id=207154,bonus_id=7187/1520,enchant=waking_stats_3
 wrists=allied_wristguard_of_companionship,id=190526,bonus_id=9500/9405/6935/8960,gem_id=192922
 hands=thorns_of_the_risen_nightmare,id=207201,bonus_id=7187/1520
@@ -219,14 +219,14 @@ trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=487.13
-# gear_strength=9675
-# gear_stamina=38252
-# gear_crit_rating=4557
+# gear_ilvl=488.60
+# gear_strength=9773
+# gear_stamina=38769
+# gear_crit_rating=4570
 # gear_haste_rating=4738
-# gear_mastery_rating=5426
+# gear_mastery_rating=5459
 # gear_versatility_rating=284
-# gear_armor=11352
+# gear_armor=11405
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
 deathknight.ams_absorb_percent=1
