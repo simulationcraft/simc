@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52068
-static const std::array<spelltext_data_t, 20506> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20507> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20397,6 +20397,7 @@ static const std::array<spelltext_data_t, 20506> __ptr_spelltext_data { {
   { 426401, "$@spelldesc45243", "All magical damage taken reduced by $w1%.\r\n\r\nAll physical damage taken reduced by $w2%.", 0 },
   { 426431, "$@spelldesc426341", 0, 0 },
   { 426468, "$@spelldesc426552", "Versatility increased by $w1. Move closer to the tethered target to increase Versatility.", 0 },
+  { 426474, "$@spelldesc426552", "Versatility increased by $w1. Move closer to the tethered target to increase Versatility.", 0 },
   { 426486, "$@spelldesc426341", 0, 0 },
   { 426512, "Touching the Ironfur grants you immense resilience for a few minutes while outdoors in the Emerald Dream!", "The Ironfur has granted you immense resilience, increasing your armor by $w1.", 0 },
   { 426527, "$@spelldesc426339\r\n", "Suffering ${$w1} Shadowflame damage per sec.", 0 },
