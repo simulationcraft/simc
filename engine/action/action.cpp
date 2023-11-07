@@ -199,7 +199,7 @@ struct action_execute_event_t : public player_event_t
     return "Action-Execute";
   }
 #ifndef NDEBUG
-  const char* debug() const override { return action->name(); }
+  const char* debug() const override { return action ? action->name() : player_event_t::debug(); }
 #endif
   ~action_execute_event_t() override
   {
