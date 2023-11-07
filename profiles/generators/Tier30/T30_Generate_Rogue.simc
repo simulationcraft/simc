@@ -4,7 +4,7 @@ race=tauren
 role=attack
 position=back
 spec=assassination
-talents=BMQAAAAAAAAAAAAAAAAAAAAAAIFJSCiQJBAAAAAAQSAkIAAAAAAASDJOQJJkkkkWKJikQCRiFE
+talents=BMQAAAAAAAAAAAAAAAAAAAAAAEJJhkEEAAAAAASJJSJJAAAAAAgWSCSgkkSaJREEJJJRSTLSAA
 
 head=,id=202497,bonus_id=1808,gem_id=192982,ilevel=447
 neck=,id=206180,bonus_id=8782,gem_id=192919/192919/192919,ilevel=447
@@ -31,7 +31,7 @@ race=tauren
 role=attack
 position=back
 spec=outlaw
-talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAAgEkEkkkkkk0SECBSISikkkIAAAAAAARLAlIkkEpEAAAA
+talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAEkkEJCSSIJCSkkmkEtkIlkAAAAAAAaJJkERhcgSaBAAAQSCA
 
 head=,id=198324,bonus_id=8780,gem_id=192991,ilevel=447,crafted_stats=40
 neck=,id=206183,bonus_id=8782,gem_id=192932/192932/192932,ilevel=447
@@ -58,7 +58,7 @@ race=tauren
 role=attack
 position=back
 spec=subtlety
-talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkICJgESCSSSkQSokkEtAJlIkkkkWAAAA
+talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAEEAAAAAASJJJlERSKFRICxBSSSISLSSiWSikkAokWAAAAIBB
 
 head=,id=198324,bonus_id=8780,gem_id=192988,ilevel=447,crafted_stats=40
 neck=,id=193666,bonus_id=8782,gem_id=192932/192932/192932,ilevel=447

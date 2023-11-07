@@ -1,11 +1,11 @@
-rogue="T29_Rogue_Assassination"
+rogue="T31_Rogue_Assassination"
 source=default
 spec=assassination
 level=70
-race=tauren
+race=human
 role=attack
 position=back
-talents=BMQAAAAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+talents=BMQAAAAAAAAAAAAAAAAAAAAAAEJJhkEEAAAAAASJJSJJAAAAAAgWSCKBSSKplERQkkkEJNtIBA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -167,31 +167,31 @@ actions.vanish+=/vanish,if=talent.master_assassin&talent.kingsbane&dot.kingsbane
 # Vanish fallback for Master Assassin
 actions.vanish+=/vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
 
-head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/7936/7937/1508,gem_id=192982
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192919/192919/192919,crafted_stats=32/49
-shoulders=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-back=cape_of_the_duskwatch,id=137483,bonus_id=6652/8811/8812/6808/4786/3300
-chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192922
-hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192919
-legs=vault_delvers_pantaloons,id=200373,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1507,enchant=fierce_armor_kit_3
-feet=treads_of_corrupted_water,id=143973,bonus_id=6652/8811/8812/6808/4786/3311
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192919,enchant=devotion_of_haste_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
-trinket1=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-trinket2=algethar_puzzle_box,id=193701,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643
-main_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
-off_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
+head=lucid_shadewalkers_deathmask,id=207236,bonus_id=1808/8780/7187/1520,gem_id=192982,enchant=incandescent_essence
+neck=eye_of_the_rising_flame,id=207163,bonus_id=8782/7187/1520,gem_id=192932/192932/192932
+shoulders=lucid_shadewalkers_bladed_spaulders,id=207234,bonus_id=7187/1520
+back=undulating_sporecloak,id=205025,bonus_id=9500/9405
+chest=lucid_shadewalkers_cuirass,id=207239,bonus_id=7187/1520,enchant=waking_stats_3
+wrists=thermal_bindings,id=134461,bonus_id=1808/8780,ilevel=489,gem_id=192932
+hands=lucid_shadewalkers_clawgrips,id=207237,bonus_id=7187/1520
+waist=bloody_dragonhide_belt,id=207131,bonus_id=1808/8780/7187/1520,gem_id=192932,enchant=shadowed_belt_clasp_3
+legs=shambling_berserkers_leggings,id=155869,ilevel=489,enchant=fierce_armor_kit_3
+feet=toxic_thorn_footwraps,id=193452,bonus_id=9500/9405
+finger1=ring_of_contempt,id=134490,bonus_id=1808/8780,ilevel=489,gem_id=192932,enchant=devotion_of_haste_3
+finger2=signet_of_the_last_elder,id=207162,bonus_id=1808/8780/7187/1520,ilevel=489,gem_id=192932,enchant=devotion_of_haste_3
+trinket1=witherbarks_branch,id=109999,ilevel=489
+trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+main_hand=nick_of_time,id=207996,bonus_id=9526,ilevel=489,enchant=wafting_devotion_3
+off_hand=nick_of_time,id=207996,bonus_id=9526,ilevel=489,enchant=wafting_devotion_3
 
 # Gear Summary
-# gear_ilvl=421.75
-# gear_agility=5442
-# gear_stamina=17306
-# gear_crit_rating=5029
-# gear_haste_rating=2619
-# gear_mastery_rating=2268
-# gear_versatility_rating=1570
-# gear_armor=3347
-# set_bonus=tier29_2pc=1
-# set_bonus=tier29_4pc=1
+# gear_ilvl=488.63
+# gear_agility=9775
+# gear_stamina=38981
+# gear_crit_rating=4353
+# gear_haste_rating=3346
+# gear_mastery_rating=3713
+# gear_versatility_rating=3868
+# gear_armor=5330
+# set_bonus=tier31_2pc=1
+# set_bonus=tier31_4pc=1

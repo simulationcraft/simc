@@ -17,10 +17,6 @@ actions=stealth
 actions+=/kick
 # Used to determine whether cooldowns wait for SnD based on targets.
 actions+=/variable,name=snd_condition,value=buff.slice_and_dice.up|spell_targets.shuriken_storm>=cp_max_spend
-# Check to see if the next CP (in the event of a ShT proc) is Animacharged
-actions+=/variable,name=is_next_cp_animacharged,if=talent.echoing_reprimand.enabled,value=combo_points=1&buff.echoing_reprimand_2.up|combo_points=2&buff.echoing_reprimand_3.up|combo_points=3&buff.echoing_reprimand_4.up|combo_points=4&buff.echoing_reprimand_5.up
-actions+=/variable,name=effective_combo_points,value=effective_combo_points
-actions+=/variable,name=effective_combo_points,if=talent.echoing_reprimand.enabled&effective_combo_points>combo_points&combo_points.deficit>2&time_to_sht.4.plus<0.5&!variable.is_next_cp_animacharged,value=combo_points
 # Check CDs at first
 actions+=/call_action_list,name=cds
 # Apply Slice and Dice at 4+ CP if it expires within the next GCD or is not up
@@ -35,10 +31,10 @@ actions+=/variable,name=stealth_helper,value=energy>=variable.stealth_threshold
 actions+=/variable,name=stealth_helper,value=energy.deficit<=variable.stealth_threshold,if=!talent.vigor|talent.shadowcraft
 # Consider using a Stealth CD when reaching the energy threshold
 actions+=/call_action_list,name=stealth_cds,if=variable.stealth_helper|talent.invigorating_shadowdust
-actions+=/call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend
+actions+=/call_action_list,name=finish,if=effective_combo_points>=cp_max_spend
 # Finish at maximum or close to maximum combo point value
-actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&variable.effective_combo_points>=3
-actions+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4
+actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&effective_combo_points>=3
+actions+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&effective_combo_points>=4
 # Use a builder when reaching the energy threshold
 actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
 # Lowest priority in all of the APL because it causes a GCD
@@ -50,10 +46,8 @@ actions+=/bag_of_tricks
 # Builders
 # Keep using Shuriken Storm for Lingering Shadows on high stacks.
 actions.build=shuriken_storm,if=spell_targets>=2+(talent.gloomblade&buff.lingering_shadow.remains>=6|buff.perforated_veins.up)
-# Build immediately unless the next CP is Animacharged and we won't cap energy waiting for it.
-actions.build+=/variable,name=anima_helper,value=!talent.echoing_reprimand.enabled|!(variable.is_next_cp_animacharged&(time_to_sht.3.plus<0.5|time_to_sht.4.plus<1)&energy<60)
-actions.build+=/gloomblade,if=variable.anima_helper
-actions.build+=/backstab,if=variable.anima_helper
+actions.build+=/gloomblade
+actions.build+=/backstab
 
 # Cooldowns
 # Helper Variable for Flagellation for trinket synchronisation
@@ -72,7 +66,7 @@ actions.cds+=/symbols_of_death,if=variable.snd_condition&(!buff.the_rotten.up|!s
 # Align Shadow Blades to Flagellation.
 actions.cds+=/shadow_blades,if=variable.snd_condition&(combo_points<=1|set_bonus.tier31_4pc)&(buff.flagellation_buff.up|buff.flagellation_persist.up|!talent.flagellation)
 # ER during Shadow Dance.
-actions.cds+=/echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=3&(variable.priority_rotation|spell_targets.shuriken_storm<=4|talent.resounding_clarity)&(buff.shadow_dance.up|!talent.danse_macabre)
+actions.cds+=/echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=3
 # Shuriken Tornado with Symbols of Death.
 actions.cds+=/shuriken_tornado,if=variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&!buff.premeditation.up&(!talent.flagellation|cooldown.flagellation.remains>20)
 actions.cds+=/shuriken_tornado,if=cooldown.shadow_dance.ready&!stealthed.all&spell_targets.shuriken_storm>=3&!talent.flagellation.enabled
@@ -82,10 +76,11 @@ actions.cds+=/goremaws_bite,if=variable.snd_condition&combo_points.deficit>=3&(!
 # Thistle Tea during Shadow Dance when close to max stacks, default use is for energy.
 actions.cds+=/thistle_tea,if=(cooldown.symbols_of_death.remains>=3|buff.symbols_of_death.up)&!buff.thistle_tea.up&(energy.deficit>=(100)&(combo_points.deficit>=2|spell_targets.shuriken_storm>=3)|(cooldown.thistle_tea.charges_fractional>=(2.75-0.15*talent.invigorating_shadowdust.rank&cooldown.vanish.up))&buff.shadow_dance.up&dot.rupture.ticking&spell_targets.shuriken_storm<3)|buff.shadow_dance.remains>=4&!buff.thistle_tea.up&spell_targets.shuriken_storm>=3|!buff.thistle_tea.up&fight_remains<=(6*cooldown.thistle_tea.charges)
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
-actions.cds+=/blood_fury,if=buff.symbols_of_death.up
-actions.cds+=/berserking,if=buff.symbols_of_death.up
-actions.cds+=/fireblood,if=buff.symbols_of_death.up
-actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
+actions.cds+=/variable,name=racial_sync,value=buff.shadow_blades.up|!talent.shadow_blades&buff.symbols_of_death.up|fight_remains<20
+actions.cds+=/blood_fury,if=variable.racial_sync
+actions.cds+=/berserking,if=variable.racial_sync
+actions.cds+=/fireblood,if=variable.racial_sync
+actions.cds+=/ancestral_call,if=variable.racial_sync
 # Sync specific trinkets to Flagellation or Shadow Dance.
 actions.cds+=/use_item,name=ashes_of_the_embersoul,if=buff.flagellation_buff.up&talent.invigorating_shadowdust|buff.shadow_dance.up&!raid_event.adds.up&!equipped.witherbarks_branch
 actions.cds+=/use_item,name=witherbarks_branch,if=buff.flagellation_buff.up&talent.invigorating_shadowdust|buff.shadow_blades.up|equipped.bandolier_of_twisted_blades&raid_event.adds.up
@@ -136,7 +131,7 @@ actions.stealth_cds+=/shadow_dance,if=(dot.rupture.ticking|talent.invigorating_s
 # Always Strike fro Stealth
 actions.stealthed=shadowstrike,if=buff.stealth.up&(spell_targets.shuriken_storm<4|variable.priority_rotation)
 # Finish when on Anaima charged combo points or max combo points.
-actions.stealthed+=/call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend
+actions.stealthed+=/call_action_list,name=finish,if=effective_combo_points>=cp_max_spend
 actions.stealthed+=/call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2
 actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1+(talent.deeper_stratagem|talent.secret_stratagem)
 # Backstab for Danse Macabre stack generation during Shadowblades.
