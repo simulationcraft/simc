@@ -204,7 +204,7 @@ struct formatter<color::rgb> {
   constexpr auto parse( ParseContext& ctx ) { return ctx.begin(); }
   template <typename FormatContext>
   auto format( color::rgb c, FormatContext& ctx ) {
-    return format_to( ctx.out(), "#{:02X}{:02X}{:02X}", c.r_, c.g_, c.b_ );
+    return fmt::format_to( ctx.out(), "#{:02X}{:02X}{:02X}", c.r_, c.g_, c.b_ );
   }
 };
 
