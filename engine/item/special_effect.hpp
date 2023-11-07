@@ -44,6 +44,7 @@ struct special_effect_t
   special_effect_e type;
   special_effect_source_e source;
   std::string name_str, trigger_str, encoding_str;
+  mutable std::string generated_name_str;
   uint64_t proc_flags_; /* Proc-by */
   uint64_t proc_flags2_; /* Proc-on (hit/damage/...) */
   stat_e stat;
