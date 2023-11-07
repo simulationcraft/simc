@@ -3412,7 +3412,7 @@ void racial::entropic_embrace( special_effect_t& effect )
   effect_driver->source = SPECIAL_EFFECT_SOURCE_RACE;
   effect_driver->type = SPECIAL_EFFECT_EQUIP;
   // TODO: healing proc NYI
-  effect_driver->proc_flags_ = effect.driver()->proc_flags() & ~( PF_NONE_HEAL | PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
+  effect_driver->proc_flags_ = effect.trigger()->proc_flags() & ~( PF_NONE_HEAL | PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
   effect_driver->proc_flags2_ = PF2_ALL_HIT;
   effect_driver->name_str = "entropic_embrace_damage_driver";
   effect_driver->spell_id = effect.trigger()->id();
