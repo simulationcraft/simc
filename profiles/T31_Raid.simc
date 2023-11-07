@@ -26,8 +26,7 @@ T31_Mage_Frost.simc
 # T31_Mage_Arcane.simc
 
 T31_Monk_Brewmaster.simc
-# T31_Monk_Windwalker.simc
-# T31_Monk_Windwalker_SEF.simc
+T31_Monk_Windwalker.simc
 
 T31_Paladin_Protection.simc
 # T31_Paladin_Retribution.simc
