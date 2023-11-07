@@ -98,7 +98,7 @@
 // General Macros/Defines
 // ==========================================================================
 
-#if !defined(__GNUC__)
+#if !defined(__GNUC__) && !defined(__clang__)
 #  define __attribute__(x)
 #endif
 
