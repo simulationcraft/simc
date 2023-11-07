@@ -6172,7 +6172,7 @@ struct stealth_t : public rogue_spell_t
 
     // Allow restealth for Dungeon sims against non-boss targets as Shadowmeld drops combat against trash.
     if ( ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || p()->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ) &&
-         p()->player_t::buffs.shadowmeld->check() && !target->is_boss() )
+         p()->player_t::buffs.shadowmeld->check() && !p()->target->is_boss() )
       return true;
 
     if ( !p()->restealth_allowed )
