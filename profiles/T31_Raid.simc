@@ -43,9 +43,9 @@ T31_Shaman_Elemental.simc
 T31_Shaman_Enhancement.simc
 T31_Shaman_Enhancement_Storm.simc
 
-# T31_Warlock_Affliction.simc
-# T31_Warlock_Demonology.simc
-# T31_Warlock_Destruction.simc
+T31_Warlock_Affliction.simc
+T31_Warlock_Demonology.simc
+T31_Warlock_Destruction.simc
 
 T31_Warrior_Arms.simc
 T31_Warrior_Fury.simc
