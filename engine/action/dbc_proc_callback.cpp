@@ -45,7 +45,9 @@ struct proc_event_t : public event_t
   {
     return "dbc_proc_event";
   }
-
+#ifndef NDEBUG
+  const char* debug() const override { return cb->effect.name().c_str(); }
+#endif
   void execute() override
   {
     cb->execute( source_action, source_state );

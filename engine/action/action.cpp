@@ -181,8 +181,10 @@ struct action_execute_event_t : public player_event_t
   bool has_cast_time;
 
   action_execute_event_t( action_t* a, timespan_t time_to_execute, action_state_t* state = nullptr )
-    : player_event_t( *a->player, time_to_execute ), action( a ), execute_state( state ),
-    has_cast_time( time_to_execute > timespan_t::zero() )
+    : player_event_t( *a->player, time_to_execute ),
+      action( a ),
+      execute_state( state ),
+      has_cast_time( time_to_execute > timespan_t::zero() )
   {
     if ( sim().debug )
     {
@@ -196,7 +198,9 @@ struct action_execute_event_t : public player_event_t
   {
     return "Action-Execute";
   }
-
+#ifndef NDEBUG
+  const char* debug() const override { return action->name(); }
+#endif
   ~action_execute_event_t() override
   {
     // Ensure we properly release the carried execute_state even if this event
