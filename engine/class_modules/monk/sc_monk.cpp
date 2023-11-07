@@ -9721,6 +9721,7 @@ namespace monk
     add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
     add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
     add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
+    add_option( opt_int( "monk.stagger_level_override", user_options.stagger_level_override, 0, 3 ) );
   }
 
   // monk_t::copy_from =========================================================
@@ -9907,6 +9908,27 @@ namespace monk
         {
           buff.power_strikes->trigger();
         } );
+      }
+    }
+    else if ( specialization() == MONK_BREWMASTER )
+    {
+      if ( user_options.stagger_level_override > 0 )
+      {
+        switch ( user_options.stagger_level_override )
+        {
+          case 1:
+            buff.light_stagger->trigger();
+            break;
+          case 2:
+            buff.moderate_stagger->trigger();
+            break;
+          case 3:
+            buff.heavy_stagger->trigger();
+            break;
+        }
+
+        if ( talent.brewmaster.training_of_niuzao.ok() )
+          buff.training_of_niuzao->trigger( 1, user_options.stagger_level_override * talent.brewmaster.training_of_niuzao->effectN( 1 ).base_value(), -1, timespan_t::min() );
       }
     }
 
@@ -10294,6 +10316,9 @@ namespace monk
 
   void monk_t::stagger_damage_changed( bool last_tick )
   {
+    if ( user_options.stagger_level_override > 0 )
+      return;
+
     buff_t *previous_buff = nullptr;
     for ( auto *b : std::initializer_list<buff_t *> { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger } )
     {

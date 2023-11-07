@@ -993,6 +993,7 @@ namespace monk
       int chi_burst_healing_targets;
       int motc_override;
       double squirm_frequency;
+      int stagger_level_override;
     } user_options;
 
     // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
