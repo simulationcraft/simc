@@ -177,9 +177,6 @@ jobs:
             cppVersion: 20
           - compiler: gcc-7
             cppVersion: 20
-          # This is a workaround temporarily until we can get the clang-15 build working on cpp20
-          - compiler: clang++-15
-            cppVersion: 20
 
     steps:
       - uses: actions/cache@v3
