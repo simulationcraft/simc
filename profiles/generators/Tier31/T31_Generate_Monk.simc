@@ -7,18 +7,17 @@ role=tank
 position=front
 talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAQShWJJhQSSrRAAAASLUSiEJUKSSaJJtEgSLk0SDC
 
-# head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192982,enchant=incandescent_essence
-head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192982,enchant_id=7502
+head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192982,enchant=incandescent_essence
 neck=ouroboreal_necklet,id=210214,bonus_id=7187/6935/1520,gem_id=192925/192925/192925
 shoulder=strigine_epaulets,id=207127,bonus_id=7187/1520
 back=inflammable_drapeleaf,id=207160,bonus_id=7187/1520
 chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
 wrists=primordial_serpents_bindings,id=207128,bonus_id=7187/6935/1520,gem_id=192925
 hands=mystic_herons_glovebills,id=207246,bonus_id=7187/1520
-waist=lifebound_belt,id=193407,bonus_id=8836/8840/8902/9404/9500/8797/8960/8795/9498/9600/1808,gem_id=192925,ilevel=486,crafted_stats=36/32
+waist=lifebound_belt,id=193407,bonus_id=9500/9405/8960/8797/1808,gem_id=192925,crafted_stats=36/32
 legs=mystic_herons_waders,id=207244,bonus_id=7187/1520,enchant=frosted_armor_kit_3
-feet=,id=193451,bonus_id=8836/8840/8902/8960/9405/9376/9366,enchant_id=6607,ilevel=486
-finger1=lord_waycrests_signet,id=158362,bonus_id=3301/6935,enchant=devotion_of_critical_strike_3,gem_id=192925
+feet=slimy_expulsion_boots,id=193451,bonus_id=9500/9405/8960,enchant=plainsrunners_breeze_3
+finger1=lord_waycrests_signet,id=158362,bonus_id=3316/1515/1808/9916,enchant=devotion_of_critical_strike_3,gem_id=192925
 finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/6935/1520,enchant=devotion_of_critical_strike_3,gem_id=192925
 trinket1=fyrakks_tainted_rageheart,id=207174,bonus_id=7187/1527
 trinket2=bandolier_of_twisted_blades,id=207165,bonus_id=7187/1520
