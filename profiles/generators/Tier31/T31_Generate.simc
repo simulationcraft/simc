@@ -22,6 +22,7 @@ ptr=1
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
 # * Must use enchant name (ex: ",enchant=devotion_of_haste_3") instead of ids/hardcoded stats if possible. Rank 3 enchants are permitted.
+# * Use ,enchant=incandescent_essence on head.
 
 
 # Death Knight
