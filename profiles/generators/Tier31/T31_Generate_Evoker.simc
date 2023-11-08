@@ -6,21 +6,21 @@ role=spell
 position=back
 talents=BsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJSCSaSIBEISiIJh0iWkkEyBSaJgEJIJJJBCE
 
-head=loszkeleths_blighted_skullhelm,id=207912,bonus_id=3524/1808,ilevel=489,gem_id=192988,enchant_id=7052
-neck=amulet_of_eonars_chosen,id=208445,bonus_id=3524,ilevel=489,gem_id=192919/192919/192919
-shoulders=weyrnkeepers_timeless_sandbrace,id=207225,bonus_id=6652/7979/9511/9567/1507/8767,ilevel=489
-back=undulating_sporecloak,id=205025,ilevel=486
-chest=weyrnkeepers_timeless_raiment,id=207230,bonus_id=6652/7979/9515/9567/1507/8767,ilevel=489,enchant_id=6625
-wrists=adaptive_dracothyst_armguards,id=204704,ilevel=486,gem_id=192919
-hands=weyrnkeepers_timeless_clawguards,id=207228,bonus_id=6652/7979/9514/9567/1507/8767,ilevel=489
-waist=forlorn_leaf_clasp,id=207144,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6904
-legs=weyrnkeepers_timeless_breeches,id=207226,bonus_id=6652/7979/9512/9567/1507/8767,ilevel=489,enchant_id=6541
-feet=weyrnkeepers_timeless_treads,id=207229,bonus_id=3524,ilevel=489
-finger1=band_of_burning_thorns,id=207159,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6550
-finger2=signet_of_the_last_elder,id=207162,bonus_id=3524,ilevel=489,gem_id=192919,enchant_id=6550
-trinket1=belorrelos_the_suncaller,id=207172,bonus_id=3524,ilevel=489
-trinket2=nymues_unraveling_spindle,id=208615,bonus_id=3524,ilevel=489
-main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=3524,ilevel=489,enchant_id=6643
-off_hand=bioluminescent_lamp,id=133200,bonus_id=3524,ilevel=489
+head=weyrnkeepers_timeless_dracoif,id=207227,bonus_id=8780,ilevel=489,gem_id=192985,enchant_id=7052
+neck=amulet_of_eonars_chosen,id=208445,ilevel=489,gem_id=192952/192952/192952
+shoulders=weyrnkeepers_timeless_sandbrace,id=207225,ilevel=489
+back=weyrnkeepers_timeless_ornamented_cloak,id=207222,ilevel=489
+chest=weyrnkeepers_timeless_raiment,id=207230,ilevel=489,enchant_id=6625
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8780/8960,ilevel=486,gem_id=192935,enchant=devotion_of_leech_3
+hands=weyrnkeepers_timeless_clawguards,id=207228,ilevel=489
+waist=jeweled_sash_of_the_viper,id=207146,bonus_id=8780,ilevel=489,gem_id=192935
+legs=weyrnkeepers_timeless_breeches,id=207226,ilevel=489,enchant_id=6830
+feet=acidic_hailstone_treads,id=193466,ilevel=486
+finger1=band_of_callous_dominance,id=134528,ilevel=489,gem_id=192925,enchant=devotion_of_critical_strike_3,enchant_id=6568
+finger2=lord_waycrests_signet,id=158362,ilevel=489,gem_id=192925,enchant=devotion_of_critical_strike_3,enchant_id=6568
+trinket1=belorrelos_the_suncaller,id=207172,ilevel=489
+trinket2=nymues_unraveling_spindle,id=208615,ilevel=489
+main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=489,enchant=wafting_devotion_3,enchant_id=6655
+off_hand=tricksters_captivating_chime,id=207796,ilevel=489
 
 save=T31_Evoker_Devastation.simc
