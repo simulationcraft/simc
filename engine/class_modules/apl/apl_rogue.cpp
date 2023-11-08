@@ -215,15 +215,14 @@ void outlaw( player_t* p )
   cds->add_action( "blade_rush,if=energy.base_time_to_max>4&!stealthed.all", "Use Blade Rush at minimal energy outside of stealth" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all" );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=100|fight_remains<charges*6)" );
-  cds->add_action( "shadowmeld,if=!stealthed.all&(talent.count_the_odds&variable.finish_condition|variable.ambush_condition)" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
-  cds->add_action( "use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up|spell_targets.blade_flurry>2)|fight_remains<=5", "Default conditions for usable items." );
+  cds->add_action( "use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up|fight_remains<=5", "Default conditions for usable items." );
   cds->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=(!trinket.1.is.dragonfire_bomb_dispenser&trinket.1.cooldown.remains>10|trinket.2.cooldown.remains>10)|cooldown.dragonfire_bomb_dispenser.charges>2|fight_remains<20|!trinket.2.has_cooldown|!trinket.1.has_cooldown" );
-  cds->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up|spell_targets.blade_flurry>2)|fight_remains<=5" );
+  cds->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up|fight_remains<=5" );
   cds->add_action( "use_item,name=stormeaters_boon,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<10" );
   cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7" );
   cds->add_action( "use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20" );
@@ -250,6 +249,7 @@ void outlaw( player_t* p )
   stealth_cds->add_action( "variable,name=shadow_dance_condition,value=buff.between_the_eyes.up&(!talent.hidden_opportunity|!buff.audacity.up&(talent.fan_the_hammer.rank<2|!buff.opportunity.up))&!talent.crackshot", "Hidden Opportunity builds without Crackshot use Dance if Audacity and Opportunity are not active" );
   stealth_cds->add_action( "shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)&(!talent.hidden_opportunity|!cooldown.vanish.ready)" );
   stealth_cds->add_action( "shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))", "Keep it Rolling builds without Crackshot use Dance at finish condition but hold it for an upcoming Keep it Rolling" );
+  stealth_cds->add_action( "shadowmeld,if=talent.crackshot&variable.finish_condition|!talent.crackshot&(talent.count_the_odds&variable.finish_condition|talent.hidden_opportunity)" );
 }
 //outlaw_apl_end
 
