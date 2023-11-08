@@ -17,9 +17,9 @@ T31_Druid_Guardian.simc
 
 T31_Evoker_Devastation.simc
 
-# T31_Hunter_Beast_Mastery.simc
-# T31_Hunter_Marksmanship.simc
-# T31_Hunter_Survival.simc
+T31_Hunter_Beast_Mastery.simc
+T31_Hunter_Marksmanship.simc
+T31_Hunter_Survival.simc
 
 # T31_Mage_Fire.simc
 T31_Mage_Frost.simc
