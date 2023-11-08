@@ -1658,6 +1658,7 @@ class SpellDataGenerator(DataGenerator):
             ( 423193, 0 ),          # Exsanguinate residual damage spell
             ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
             ( 429951, 0 ),          # Deft Maneuvers alternative Blade Flurry instant attack spell
+            ( 381628, 0 ),          # Dragonflight Internal Bleeding talent spell
         ),
 
         # Priest:
