@@ -6349,6 +6349,16 @@ void dancing_dream_blossoms( special_effect_t& effect )
     return;
   }
 
+  // TODO: the buff is not entirely composed of one stat, but rather a spread of all four stats. Your highest stat gets
+  // the highest value, and your lowest stat gets the lowest value, however the order of the middle two stats do no seem
+  // to correlate to your ratings of those stats. The exact calculation of the value is currently unknown. Furthermore
+  // the values can change in between procs. The total sum of all four stat values match the coefficient value of the
+  // driver @ ilevel. As currently implemented, this trinket will oversim so an error is placed here to warn users until
+  // the actual stat calculation mechanics are known.
+  effect.player->sim->error(
+      "WARNING: Dancing Dream Blossoms oversims, as it is incorrectly implemented to give all of it's value as your "
+      "highest stat, which does not reflect how it works in-game." );
+
   static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
                                                      STAT_CRIT_RATING };
 
