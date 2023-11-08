@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52068
-static const std::array<spelltext_data_t, 20508> __spelltext_data { {
+static const std::array<spelltext_data_t, 20509> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16779,6 +16779,7 @@ static const std::array<spelltext_data_t, 20508> __spelltext_data { {
   { 381624, "Increases the application chance of your weapon poisons by $s1%.", 0, 0 },
   { 381626, "Garrote and Rupture damage increased by $s1%.", 0, 0 },
   { 381627, "Kidney Shot and Rupture also apply Internal Bleeding, dealing up to ${5*$154953o1} Bleed damage over $154953d, based on combo points spent.", 0, 0 },
+  { 381628, "$@spelldesc154904", "Suffering $w1 damage every $t1 sec.", 0 },
   { 381629, "Fan of Knives has $s2% increased critical strike chance and its critical strikes always apply your weapon poisons.", 0, 0 },
   { 381630, "Shadowstep's cooldown is reduced by $s1% when used on a target afflicted by your Garrote.", 0, 0 },
   { 381631, "Fan of Knives has its radius increased to $s4 yds, deals $s5% more damage, and an additional $s1% when striking $s2 or more targets.", 0, 0 },
