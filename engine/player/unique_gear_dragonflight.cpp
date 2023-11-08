@@ -8334,7 +8334,7 @@ void rallied_to_victory( special_effect_t& effect )
 
         for ( auto p : effect.player->sim->player_non_sleeping_list )
         {
-          if ( p == effect.player )
+          if ( p == effect.player || p->is_pet() )
             continue;
 
           if ( rng().roll( effect.player->dragonflight_opts.rallied_to_victory_multi_actor_skip_chance ) )
@@ -8951,7 +8951,7 @@ void string_of_delicacies( special_effect_t& e )
 
         for ( auto p : effect.player->sim->player_non_sleeping_list )
         {
-          if ( p == effect.player )
+          if ( p == effect.player || p->is_pet() )
             continue;
 
           if ( rng().roll( effect.player->dragonflight_opts.string_of_delicacies_multi_actor_skip_chance ) )
