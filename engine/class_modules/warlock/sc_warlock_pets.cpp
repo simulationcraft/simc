@@ -553,10 +553,10 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_FELGUARD, name != "felguard" ),
     soul_strike( nullptr ),
     felguard_guillotine( nullptr ),
+    hatred_proc( nullptr ),
     demonic_strength_executes( 0 ),
     min_energy_threshold( find_spell( 89751 )->cost( POWER_ENERGY ) ),
-    max_energy_threshold( 100 ),
-    hatred_proc( nullptr )
+    max_energy_threshold( 100 )
 {
   action_list_str = "travel";
 

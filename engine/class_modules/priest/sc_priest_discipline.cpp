@@ -53,7 +53,7 @@ struct power_word_radiance_t final : public priest_heal_t
     td.buffs.atonement->trigger( atonement_duration );
   }
 
-  size_t available_targets( std::vector<player_t*>& target_list ) const
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
   {
     target_list.clear();
     target_list.push_back( target );

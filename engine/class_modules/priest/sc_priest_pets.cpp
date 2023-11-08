@@ -377,7 +377,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     return ttm;
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
 

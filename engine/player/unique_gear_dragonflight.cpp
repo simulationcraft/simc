@@ -6310,7 +6310,6 @@ void rune_of_the_umbramane( special_effect_t& effect )
 // Buffs: 424228, 424276, 424274, 424272, 424275
 void pinch_of_dream_magic( special_effect_t& effect )
 {
-  [[maybe_unused]] auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
   auto add_buff = [ &effect, &buffs ]( std::string suf, unsigned id ) {
@@ -6334,6 +6333,8 @@ void pinch_of_dream_magic( special_effect_t& effect )
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Dancing Dream Blossoms
@@ -6344,9 +6345,6 @@ void dancing_dream_blossoms( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs( effect, { "dancing_dream_blossoms" } ) )
     return;
-
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
 
   struct dancing_dream_blossoms_buff_t : public stat_buff_t
   {

@@ -567,9 +567,9 @@ struct smite_base_t : public priest_spell_t
               .talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 )
               .time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
+      t31_2pc_extend( priest().sets->set( PRIEST_DISCIPLINE, T31, B2 )->effectN( 1 ).time_value() ),
       child_holy_fire( priest().background_actions.holy_fire ),
-      child_searing_light( priest().background_actions.searing_light ),
-      t31_2pc_extend( priest().sets->set( PRIEST_DISCIPLINE, T31, B2 )->effectN( 1 ).time_value() )
+      child_searing_light( priest().background_actions.searing_light )
 
   {
     background = bg;
@@ -1423,8 +1423,8 @@ struct flash_heal_t final : public priest_heal_t
   flash_heal_t( priest_t& p, util::string_view name, util::string_view options_str, bool bind = false )
     : priest_heal_t( name, p, p.find_class_spell( "Flash Heal" ) ),
       atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() ) ),
-      binding_heal_percent( p.talents.binding_heals->effectN( 1 ).percent() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 1 ).time_value() ),
+      binding_heal_percent( p.talents.binding_heals->effectN( 1 ).percent() ),
       binding( bind )
   {
     parse_options( options_str );
@@ -1986,7 +1986,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.atonement = make_buff( *this, "atonement", p.talents.discipline.atonement_buff )
                         ->set_refresh_behavior( buff_refresh_behavior::MAX )
-                        ->set_stack_change_callback( [ this, &p, target ]( buff_t*, int, int n ) {
+                        ->set_stack_change_callback( [ &p, target ]( buff_t*, int, int n ) {
                           if ( n )
                           {
                             p.allies_with_atonement.push_back( target );

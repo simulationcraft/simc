@@ -141,7 +141,7 @@ struct sim_signal_handler_t
 
 sim_t* sim_signal_handler_t::global_sim = nullptr;
 
-sim_signal_handler_t handler;
+[[maybe_unused]] sim_signal_handler_t handler;
 
 // need_to_save_profiles ====================================================
 
