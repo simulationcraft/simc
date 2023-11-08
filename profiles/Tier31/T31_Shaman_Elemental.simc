@@ -244,13 +244,13 @@ actions.single_target+=/frost_shock,moving=1
 head=morningscale_cowl,id=109984,bonus_id=1808/9888,gem_id=192988,enchant=incandescent_essence
 neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520,gem_id=192964/192964/192964
 shoulders=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520
-back=undulating_sporecloak,id=205025,bonus_id=9500/9405,enchant=graceful_avoidance_3
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=9853,enchant=graceful_avoidance_3
 chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520,enchant=waking_stats_3
-wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405,gem_id=192964
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=192964
 hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520
 waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520,gem_id=192964,enchant=shadowed_belt_clasp_3
 legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=frozen_spellthread_3
-feet=boots_of_the_molten_hoard,id=207145,bonus_id=7187/1520,enchant=watchers_loam_3
+feet=acidic_hailstone_treads,id=193466,bonus_id=9500/9405/8960,enchant=watchers_loam_3
 finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520,gem_id=192964,enchant=devotion_of_mastery_3
 finger2=archdruids_tainted_seal,id=134487,bonus_id=9882,gem_id=192964,enchant=devotion_of_mastery_3
 trinket1=sea_star,id=133201,bonus_id=9466/1514
@@ -261,13 +261,13 @@ off_hand=verdant_matrix_beacon,id=207798,bonus_id=7187/1520
 # Gear Summary
 # gear_ilvl=488.63
 # gear_strength=469
-# gear_stamina=39137
-# gear_intellect=12122
-# gear_crit_rating=818
-# gear_haste_rating=4648
-# gear_mastery_rating=6792
-# gear_versatility_rating=3197
+# gear_stamina=39112
+# gear_intellect=12117
+# gear_crit_rating=1256
+# gear_haste_rating=4976
+# gear_mastery_rating=6857
+# gear_versatility_rating=2355
 # gear_avoidance_rating=125
-# gear_armor=13526
+# gear_armor=13516
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1

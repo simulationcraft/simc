@@ -6,18 +6,18 @@ spec=elemental
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSpUSCgDk0SShSgkkEBAAAAAoEgUSCpJpg0SSaKBIkEgA
 # https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFRBBBSKJBUhBRDEUANVRRRVFSJVBoAUDAQA
 
-head=morningscale_cowl,id=109984,bonus_id=1808/9888,gem_id=192988,enchant=incandescent_essence
+head=morningscale_cowl,id=109984,bonus_id=1808/9888,enchant=incandescent_essence,gem_id=192988
 neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520,gem_id=192964/192964/192964
 shoulder=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520
-back=undulating_sporecloak,id=205025,bonus_id=9500/9405,enchant=graceful_avoidance_3
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=9853,enchant=graceful_avoidance_3
 chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520,enchant=waking_stats_3
-wrist=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405,gem_id=192964
+wrist=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=192964
 hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520
 waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520,enchant=shadowed_belt_clasp_3,gem_id=192964
 legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=frozen_spellthread_3
-feet=boots_of_the_molten_hoard,id=207145,bonus_id=7187/1520,enchant=watchers_loam_3
+feet=acidic_hailstone_treads,id=193466,bonus_id=9500/9405/8960,enchant=watchers_loam_3
 finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520,enchant=devotion_of_mastery_3,gem_id=192964
-finger2=archdruids_tainted_seal,id=134487,enchant=devotion_of_mastery_3,gem_id=192964,bonus_id=9882
+finger2=archdruids_tainted_seal,id=134487,bonus_id=9882,enchant=devotion_of_mastery_3,gem_id=192964
 trinket1=sea_star,id=133201,bonus_id=9466/1514
 trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520
 main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520,enchant=wafting_devotion_3
