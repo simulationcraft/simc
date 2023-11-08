@@ -1,4 +1,4 @@
-// Item bonuses, wow build 10.2.0.52068
+// Item bonuses, wow build 10.2.0.52095
 static const std::array<item_bonus_entry_t, 14134> __item_bonus_data { {
   {     2,    1,  2,       7,   15789,       0,       0,  0 },
   {   899,    1,  4,    2015,       0,       0,       0,  1 },
