@@ -6339,45 +6339,74 @@ void pinch_of_dream_magic( special_effect_t& effect )
 // Dancing Dream Blossoms
 // Driver: 423905
 // Buff: 423906
-// TODO/VERIFY: Assumed "the way you like them" picks your highest secondary stat.
+// NOTE: buff stats are proportial to player stats, but values for 2nd & 3rd highest stats are flipped
 void dancing_dream_blossoms( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs(
-           effect, { "dancing_dream_blossoms_crit_rating", "dancing_dream_blossoms_mastery_rating",
-                     "dancing_dream_blossoms_haste_rating", "dancing_dream_blossoms_versatility_rating" } ) )
-  {
+  if ( unique_gear::create_fallback_buffs( effect, { "dancing_dream_blossoms" } ) )
     return;
-  }
-
-  // TODO: the buff is not entirely composed of one stat, but rather a spread of all four stats. Your highest stat gets
-  // the highest value, and your lowest stat gets the lowest value, however the order of the middle two stats do no seem
-  // to correlate to your ratings of those stats. The exact calculation of the value is currently unknown. Furthermore
-  // the values can change in between procs. The total sum of all four stat values match the coefficient value of the
-  // driver @ ilevel. As currently implemented, this trinket will oversim so an error is placed here to warn users until
-  // the actual stat calculation mechanics are known.
-  effect.player->sim->error(
-      "WARNING: Dancing Dream Blossoms oversims, as it is incorrectly implemented to give all of it's value as your "
-      "highest stat, which does not reflect how it works in-game." );
 
   static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
                                                      STAT_CRIT_RATING };
 
-  auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
-
-  for ( auto stat : ratings )
+  struct dancing_dream_blossoms_buff_t : public stat_buff_t
   {
-    auto name = std::string( "dancing_dream_blossoms_" ) + util::stat_type_string( stat );
-    auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 423906 ), effect.item )
-                    ->set_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
-                    ->set_name_reporting( util::stat_type_abbrev( stat ) );
-    ( *buffs )[ stat ] = buff;
-  }
+    double full_value;
 
-  effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
-        stat_e max_stat = util::highest_stat( effect.player, ratings );
-        ( *buffs )[ max_stat ]->trigger();
+    dancing_dream_blossoms_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : stat_buff_t( p, n, e.trigger(), e.item ), full_value( e.driver()->effectN( 1 ).average( e.item ) )
+    {
+      assert( stats.size() == 4 );  // spell data sanity check
+    }
+
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      if ( player && player->is_sleeping() )
+        return false;
+
+      std::unordered_map<stat_e, double> player_stats;
+      double total_stats = 0;
+
+      // populate current stat array & total stats
+      for ( auto s : stats )
+      {
+        auto v = util::stat_value( player, s.stat );
+
+        player_stats[ s.stat ] = v;
+        total_stats += v;
+
+        if ( sim->debug )
+          sim->print_debug( "Dancing Dream Blossoms: player stat {}:{}", util::stat_type_abbrev( s.stat ), v );
+      }
+
+      // sort buff stats vector by current rating
+      range::sort( stats, [ &player_stats ]( buff_stat_t l, buff_stat_t r ) {
+        return player_stats[ l.stat ] > player_stats[ r.stat ];
       } );
+
+      auto set_amount = [ & ]( size_t b, size_t p ) {
+        auto v = player_stats[ stats[ p ].stat ] / total_stats * full_value;
+
+        if ( sim->debug )
+          sim->print_debug( "Dancing Dream Blossoms: buff stat {}:{}", util::stat_type_abbrev( stats[ b ].stat ), v );
+
+        stats[ b ].amount = v;
+      };
+
+      // highest buff stat corresponds to highest player stat
+      set_amount( 0, 0 );
+      // 2nd buff stat corresponds to 3rd player stat
+      set_amount( 1, 2 );
+      // 3rd buff stat corresponds to 2nd player stat
+      set_amount( 2, 1 );
+      // lowest buff stat corresponds to lowest player stat
+      set_amount( 3, 3 );
+
+      return stat_buff_t::trigger( s, v, c, d );
+    }
+  };
+
+  effect.custom_buff = create_buff<dancing_dream_blossoms_buff_t>( effect.player, "dancing_dream_blossoms", effect );
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
