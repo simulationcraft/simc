@@ -1150,7 +1150,6 @@ public:
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
-  pet_t* create_pet( std::string_view name, std::string_view type ) override;
   void create_pets() override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
@@ -1176,7 +1175,6 @@ public:
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
   bool check_astral_power( action_t* a, int over );
-  void snapshot_mastery();
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -2591,7 +2589,8 @@ struct druid_residual_data_t
 {
   double total_amount = 0.0;
 
-  friend void sc_format_to( const druid_residual_data_t& data, fmt::format_context::iterator out ) {
+  void sc_format_to( const druid_residual_data_t& data, fmt::format_context::iterator out )
+  {
     fmt::format_to( out, "total_amount={}", data.total_amount );
   }
 };
@@ -3403,7 +3402,8 @@ struct cat_finisher_data_t
 {
   int combo_points = 0;
 
-  friend void sc_format_to( const cat_finisher_data_t& data, fmt::format_context::iterator out ) {
+  void sc_format_to( const cat_finisher_data_t& data, fmt::format_context::iterator out )
+  {
     fmt::format_to( out, "combo_points={}", data.combo_points );
   }
 };
@@ -9319,15 +9319,6 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "tranquility"           ) return new           tranquility_t( this, options_str );
 
   return player_t::create_action( name, options_str );
-}
-
-// druid_t::create_pet ======================================================
-pet_t* druid_t::create_pet( std::string_view pet_name, std::string_view )
-{
-  if ( auto pet = find_pet( pet_name ) )
-    return pet;
-
-  return nullptr;
 }
 
 // druid_t::create_pets =====================================================
