@@ -11239,7 +11239,7 @@ void druid_t::init_special_effects()
       {
         auto d = s->result_amount * mul;
 
-        residual_action::trigger( p()->active.burning_frenzy, listener, d );
+        residual_action::trigger( p()->active.burning_frenzy, s->target, d );
       }
     };
 
