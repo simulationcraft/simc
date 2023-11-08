@@ -1449,6 +1449,7 @@ class SpellDataGenerator(DataGenerator):
          421990, 421996, 421994, 422016, # Gift of Ursine Vengeance
          422651, 422652, 422750, 425571, 425701, 425703, 425461, # Fyrakks Tainted Rageheart
          426474, # Verdant Tether embellishment stat buff
+         424051, 424057, # String of Delicacies
         ),
 
         # Warrior:

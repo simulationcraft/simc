@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52068
-static const std::array<spelltext_data_t, 20507> __spelltext_data { {
+static const std::array<spelltext_data_t, 20508> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20292,6 +20292,7 @@ static const std::array<spelltext_data_t, 20507> __spelltext_data { {
   { 423932, "$@spelldesc423920", 0, 0 },
   { 424044, "Slice and Dice does not lose duration during Blade Flurry.\r\n\r\nBlade Flurry does not lose duration during Adrenaline Rush.\r\n\r\nAdrenaline Rush does not lose duration while Stealthed.\r\n\r\nStealth abilities can be used for an additional ${$s2/1000} sec after Stealth breaks.", 0, 0 },
   { 424051, "While Well Fed, your spells and abilities have a chance of granting you and $s2 nearby allies $s1 Mastery.", 0, 0 },
+  { 424057, "$@spelldesc424051", "Mastery increased by $w1.", 0 },
   { 424066, "$@spelldesc424044", 0, 0 },
   { 424073, "Melee attacks have a chance to burn the enemy, dealing ${$s1*($424075d+1)} Fire damage over $424075d.", 0, 0 },
   { 424075, "$@spelldesc424073", "Burning for $w1 Fire damage every sec.", 0 },

@@ -8901,6 +8901,76 @@ void verdant_conduit( special_effect_t& effect )
   }
 }
 
+// 424051 Driver
+// 424057 Buff
+void string_of_delicacies( special_effect_t& e )
+{
+  struct string_of_delicacies_cb_t : public dbc_proc_callback_t
+  {
+    target_specific_t<buff_t> buffs;
+    int max_allied_buffs;
+    string_of_delicacies_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        max_allied_buffs( as<int>( e.driver()->effectN( 2 ).base_value() ) )
+    {
+      get_buff( e.player );
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "stuffed",
+                                          effect.player->find_spell( 424057 ) );
+      buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( effect.player->dragonflight_opts.string_of_delicacies_ally_estimate )
+      {
+        int allies = 0;
+        allies =
+            effect.player->rng().range( as<int>( effect.player->dragonflight_opts.string_of_delicacies_min_allies ),
+                                        as<int>( 1 + effect.driver()->effectN( 2 ).base_value() ) );
+        buffs[ effect.player ]->set_max_stack( 1 + allies );
+        buffs[ effect.player ]->set_initial_stack( 1 + allies );
+      }
+
+      buffs[ effect.player ]->trigger();
+
+      if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
+      {
+        int buffs = 1;
+
+        for ( auto p : effect.player->sim->player_non_sleeping_list )
+        {
+          if ( p == effect.player )
+            continue;
+
+          if ( rng().roll( effect.player->dragonflight_opts.string_of_delicacies_multi_actor_skip_chance ) )
+          {
+            buffs++;
+            continue;
+          }
+
+          get_buff( p )->trigger();
+          if ( ++buffs >= max_allied_buffs )
+            break;
+        }
+      }
+    }
+  };
+
+  new string_of_delicacies_cb_t( e );
+}
+
 }  // namespace items
 
 namespace sets
@@ -10077,6 +10147,7 @@ void register_special_effects()
   register_special_effect( 410230, items::undulating_sporecloak );
   register_special_effect( 419368, items::dreamtenders_charm );
   register_special_effect( 418410, items::verdant_conduit );
+  register_special_effect( 424051, items::string_of_delicacies );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );

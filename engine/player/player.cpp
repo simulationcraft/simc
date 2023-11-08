@@ -11485,6 +11485,13 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         } );
       }
 
+      if (splits[ 1 ] == "string_of_delicacies_ally_estimate")
+      {
+        return make_fn_expr( expression_str, [ this ] {
+           return dragonflight_opts.string_of_delicacies_ally_estimate;
+        } );
+      }
+
       throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
     }
   } // splits.size() == 2
@@ -12706,6 +12713,10 @@ void player_t::create_options()
   add_option( opt_bool( "dragonflight.player.embersoul_debuff_immune", dragonflight_opts.embersoul_debuff_immune ) );
   add_option( opt_float( "dragonflight.rallied_to_victory_multi_actor_skip_chance",
                          dragonflight_opts.rallied_to_victory_multi_actor_skip_chance, 0.0, 1 ) );
+  add_option( opt_bool( "dragonflight.string_of_delicacies_ally_estimate", dragonflight_opts.string_of_delicacies_ally_estimate ) );
+  add_option( opt_float( "dragonflight.string_of_delicacies_min_allies", dragonflight_opts.string_of_delicacies_min_allies, 0.0, 4 ) );
+  add_option( opt_float( "dragonflight.string_of_delicacies_multi_actor_skip_chance",
+                         dragonflight_opts.string_of_delicacies_multi_actor_skip_chance, 0.0, 1 ) );
 
   // Obsolete options
 
