@@ -1,28 +1,29 @@
-# druid="T31_Druid_Balance"
-# level=70
-# race=zandalari_troll
-# spec=balance
-# role=spell
-# position=back
-# talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCAJiIIJSQSikIFhWiDkIJKJaSOQI0SaJhIaAUAAA
+druid=T31_Druid_Balance
+level=70
+race=tauren
+spec=balance
+role=spell
+position=back
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCAJJigkQQSikIFolIJSSJRTcgQol0SSERDgCAE
 
-# head=bough_of_the_autumn_blaze,id=202515,bonus_id=1504/9413,gem_id=192961
-# neck=choker_of_stolen_thunder,id=206180,bonus_id=7359/6646,ilevel=447,gem_id=192961/192961/192961
-# shoulders=mantle_of_the_autumn_blaze,id=202513,bonus_id=7187,ilevel=450
-# back=voice_of_the_silent_star,id=204465,bonus_id=1498
-# chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=1498,enchant=waking_stats_3
-# wrists=lifebound_bindings,id=193419,bonus_id=8780/8793/8797/8960,ilevel=447,gem_id=192961
-# hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=7187,ilevel=447
-# waist=oblivions_immortal_coil,id=204399,bonus_id=4800/1498,ilevel=450,gem_id=192961
-# legs=lifebound_trousers,id=193408,bonus_id=8793,ilevel=447,enchant=frozen_spellthread_3
-# feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/1537
-# finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
-# finger2=loop_of_pulsing_veins,id=159463,bonus_id=7359/6646/1808,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
-# trinket1=neltharions_call_to_suffering,id=204211,bonus_id=1498
-# trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/1498
-# main_hand=erethos_the_empty_promise,id=202565,bonus_id=4800/1498,ilevel=450,enchant=sophic_devotion_3
+head=benevolent_embersages_casque,id=207254,bonus_id=4786/1520/9576,,gem_id=192988,enchant=incandescent_essence
+neck=eye_of_the_rising_flame,id=207163,bonus_id=4800/4786/1520/9576/8782,gem_id=192961/192961/192961
+shoulder=lifebound_shoulderpads,id=193406,bonus_id=8836/1576/8797/8960/8793
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=4786/9853/9576
+chest=benevolent_embersages_robe,id=207257,bonus_id=4786/1520/9576,enchant=waking_stats_3
+wrists=thermal_bindings,id=134461,bonus_id=4786/9882/9576,gem_id=192961
+hands=benevolent_embersages_talons,id=207255,bonus_id=4786/1520/9576
+waist=benevolent_embersages_sagacious_sash,id=207251,bonus_id=4786/1520/9576,gem_id=192961
+legs=benevolent_embersages_leggings,id=207253,bonus_id=4786/1520/9576,enchant=lambent_armor_kit_3
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8836/1576
+finger1=archdruids_tainted_seal,id=134487,bonus_id=4786/9882/9576,gem_id=192961,enchant=devotion_of_haste_3
+finger2=band_of_twisted_bark,id=134531,bonus_id=4786/9882/9576,gem_id=192961,enchant=devotion_of_haste_3
+trinket1=pips_emerald_friendship_badge,id=207168,bonus_id=4800/4786/1520/9576
+trinket2=balefire_branch,id=159630,bonus_id=4786/9853/9576
+main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=4800/4786/1520/9576,enchant=wafting_devotion_3
+off_hand=tricksters_captivating_chime,id=207796,bonus_id=4800/4786/1520/9576
 
-# save=T31_Druid_Balance.simc
+save=T31_Druid_Balance.simc
 
 # druid="T31_Druid_Feral"
 # source=default
