@@ -6965,7 +6965,7 @@ void infernal_signet_brand( special_effect_t& e )
     {
       generic_proc_t::tick( d );
 
-      if ( buff->at_max_stacks() )
+      if ( buff->max_stack() == current_mod )
       {
         aoe_damage->base_dd_min = aoe_damage->base_dd_max =
             d->state->result_amount * e.driver()->effectN( 6 ).percent();
@@ -6982,11 +6982,11 @@ void infernal_signet_brand( special_effect_t& e )
     void execute() override
     {
       // Damage mod doesnt seem to update until the next application
-      if ( buff->stack() != current_mod )
+      if ( buff->check() != current_mod )
       {
-        current_mod = buff->stack();
+        current_mod = buff->check();
       }
-      if ( buff->check() > ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
+      if ( current_mod >= ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
       {
         self_damage->execute();
       }
