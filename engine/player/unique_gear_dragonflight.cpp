@@ -7314,6 +7314,23 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
   effect.execute_action = on_use;
 }
 
+void fang_of_the_frenzied_nightclaw( special_effect_t& effect )
+{
+  struct fang_of_the_frenzied_nightclaw_t : public generic_proc_t
+  {
+    fang_of_the_frenzied_nightclaw_t( const special_effect_t& e )
+      : generic_proc_t( e, e.name(), e.trigger() )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      base_td = e.driver()->effectN( 2 ).average( e.item );
+    }
+  };
+
+  effect.execute_action = create_proc_action<fang_of_the_frenzied_nightclaw_t>( effect.name(), effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -10184,6 +10201,7 @@ void register_special_effects()
   register_special_effect( 429228, items::rezans_gleaming_eye );
   register_special_effect( 421990, items::gift_of_ursine_vengeance );
   register_special_effect( 422750, items::fyrakks_tainted_rageheart );
+  register_special_effect( 423925, items::fang_of_the_frenzied_nightclaw );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
