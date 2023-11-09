@@ -45,7 +45,7 @@ namespace
 
 namespace http
 {
-[[maybe_unused]] bool parse_url( const std::string& url_in, URL_COMPONENTSA& url_out )
+bool parse_url( const std::string& url_in, URL_COMPONENTSA& url_out )
 {
   memset( &url_out, 0, sizeof( url_out ) );
   url_out.dwStructSize = sizeof( url_out );
