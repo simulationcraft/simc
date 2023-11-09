@@ -3668,7 +3668,7 @@ struct between_the_eyes_t : public rogue_attack_t
 
       if ( p()->talent.outlaw.crackshot->ok() && p()->stealthed( STEALTH_STANCE ) )
       {
-        p()->cooldowns.between_the_eyes->reset( true );
+        p()->cooldowns.between_the_eyes->reset( false );
         dispatch->trigger_secondary_action( execute_state->target, cp_spend );
       }
     }
@@ -9931,14 +9931,30 @@ void rogue_t::init_spells()
 
   talent.outlaw.underhanded_upper_hand = find_talent_spell( talent_tree::SPECIALIZATION, "Underhanded Upper Hand" );
   talent.outlaw.sepsis = find_talent_spell( talent_tree::SPECIALIZATION, "Sepsis", ROGUE_OUTLAW );
+  
   // TODO: ghostly_strike is duplicated in `trait_data_ptr.inc`, making the talent unable to be loaded by name (since there are two `Ghostly Strike` talents!)
   //  `find_talent_spell` normally uses the id of the first match, but in this case, it's broken, and it's the second match that works. So we do the data
   //  load manually to prefer the second, functional, talent node.
-  uint32_t class_idx, spec_idx;
-  dbc->spec_idx( ROGUE_OUTLAW, class_idx, spec_idx );
-  auto traits = trait_data_t::find_by_spell( talent_tree::SPECIALIZATION, 196937, class_idx, ROGUE_OUTLAW, dbc->ptr );
+  talent.outlaw.ghostly_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Ghostly Strike" );
+  if ( specialization() == ROGUE_OUTLAW && !talent.outlaw.ghostly_strike->ok() )
+  {
+    uint32_t class_idx, spec_idx;
+    dbc->spec_idx( ROGUE_OUTLAW, class_idx, spec_idx );
+    auto traits = trait_data_t::find_by_spell( talent_tree::SPECIALIZATION, 196937, class_idx, ROGUE_OUTLAW, dbc->ptr );
+    for ( auto trait : traits )
+    {
+      auto it = range::find_if( player_traits, [ trait ]( const auto& entry ) {
+        return std::get<1>( entry ) == trait->id_trait_node_entry;
+      } );
 
-  talent.outlaw.ghostly_strike = find_talent_spell( (traits[ 1 ] != nullptr ? traits[ 1 ] : traits[ 0 ])->id_trait_node_entry, ROGUE_OUTLAW );
+      if ( it != player_traits.end() && std::get<2>( *it ) != 0U )
+      {
+        talent.outlaw.ghostly_strike = find_talent_spell( trait->id_trait_node_entry, ROGUE_OUTLAW );
+        break;
+      }
+    }
+  }
+
   talent.outlaw.count_the_odds = find_talent_spell( talent_tree::SPECIALIZATION, "Count the Odds" );
   talent.outlaw.blade_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Blade Rush" );
   talent.outlaw.precise_cuts = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Cuts" );
