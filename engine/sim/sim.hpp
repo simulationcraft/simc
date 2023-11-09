@@ -523,8 +523,10 @@ struct sim_t : private sc_thread_t
     timespan_t undulating_sporecloak_update_interval_stddev = 2.5_s;
     // Uptime of the mastery buff (Dreaming Trance) of Dreamtender's Charm (>70% HP), does not include lockout time
     double dreamtenders_charm_uptime = 0.9;
-    // Interval between checking blue_silken_lining_uptime
-    timespan_t dreamtenders_charm_update_interval = 5_s;
+    // Interval between checking dreamtenders_charm_uptime
+    timespan_t dreamtenders_charm_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t dreamtenders_charm_update_interval_stddev = 2.5_s;
     // Amount of allies using Verdant Embrace to increase the amount and reduce RPPM
     unsigned int verdant_embrace_allies = 0;
     // Sets the chance for Ashes of the Embersoul's "Dire" condition to proc on the interval

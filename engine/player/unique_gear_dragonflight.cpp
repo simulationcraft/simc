@@ -8855,37 +8855,50 @@ void dreamtenders_charm( special_effect_t& effect )
 
   if ( first && buff->sim->dragonflight_opts.dreamtenders_charm_uptime > 0.0 )
   {
-    buff->player->register_combat_begin( [ buff, regaining_power, gem_count ]( player_t* p ) {
+    auto up = effect.player->get_uptime( "Dreamtender's Charm" )
+      ->collect_duration( *effect.player->sim )
+      ->collect_uptime( *effect.player->sim );
+
+    buff->player->register_combat_begin( [ buff, regaining_power, gem_count, up ]( player_t* p ) {
       buff->trigger();
-      make_repeating_event( *p->sim, p->sim->dragonflight_opts.dreamtenders_charm_update_interval,
-                            [ buff, p, regaining_power, gem_count ] {
-                              if ( p->rng().roll( p->sim->dragonflight_opts.dreamtenders_charm_uptime ) )
-                              {
-                                // Safety net in case something goes haywire
-                                // buff should re-trigger from regaining_power expiration
-                                if ( !regaining_power->check() && !buff->check() )
-                                {
-                                  buff->trigger();
-                                }
-                              }
-                              else
-                              {
-                                if ( buff->check() )
-                                {
-                                  auto stacks = buff->check();
-                                  buff->expire();
-                                  regaining_power->trigger();
-                                  // Re-trigger the buff with a shorter duration based on the number of Ysemerald's you
-                                  // have equipped
-                                  if ( gem_count > 0 )
-                                  {
-                                    p->sim->print_debug( "{} re-triggers dreaming_trance for {} seconds.", p->name(),
-                                                         gem_count );
-                                    buff->trigger( stacks, timespan_t::from_seconds( gem_count ) );
-                                  }
-                                }
-                              }
-                            } );
+      up->update( true, p->sim->current_time() );
+
+      auto pct = p->sim->dragonflight_opts.dreamtenders_charm_uptime;
+      auto dur = p->sim->dragonflight_opts.dreamtenders_charm_update_interval;
+      auto std = p->sim->dragonflight_opts.dreamtenders_charm_update_interval_stddev;
+
+      make_repeating_event( *p->sim,
+          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ buff, p, regaining_power, gem_count, up, pct ] {
+            if ( p->rng().roll( pct ) )
+            {
+              // Safety net in case something goes haywire
+              // buff should re-trigger from regaining_power expiration
+              if ( !regaining_power->check() && !buff->check() )
+              {
+                buff->trigger();
+                up->update( true, p->sim->current_time() );
+              }
+            }
+            else
+            {
+              if ( buff->check() )
+              {
+                auto stacks = buff->check();
+                buff->expire();
+                up->update( false, p->sim->current_time() );
+                regaining_power->trigger();
+                // Re-trigger the buff with a shorter duration based on the number of Ysemerald's you
+                // have equipped
+                if ( gem_count > 0 )
+                {
+                  p->sim->print_debug( "{} re-triggers dreaming_trance for {} seconds.", *p, gem_count );
+                  buff->trigger( stacks, timespan_t::from_seconds( gem_count ) );
+                  up->update( true, p->sim->current_time() );
+                }
+              }
+            }
+          } );
     } );
 
     // If you drop combat you loose all stacks immedietly but do not trigger regaining power
