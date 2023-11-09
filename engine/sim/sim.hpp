@@ -518,7 +518,9 @@ struct sim_t : private sc_thread_t
     // Uptime of the vers buff of Undulating Sporecloak (>70% HP)
     double undulating_sporecloak_uptime = 0.9;
     // Interval between checking undulating_sporecloak_uptime
-    timespan_t undulating_sporecloak_update_interval = 5_s;
+    timespan_t undulating_sporecloak_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t undulating_sporecloak_update_interval_stddev = 2.5_s;
     // Uptime of the mastery buff (Dreaming Trance) of Dreamtender's Charm (>70% HP), does not include lockout time
     double dreamtenders_charm_uptime = 0.9;
     // Interval between checking blue_silken_lining_uptime

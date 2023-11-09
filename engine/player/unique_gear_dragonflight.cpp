@@ -8773,17 +8773,34 @@ void undulating_sporecloak( special_effect_t& effect )
 
   buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
 
-  // In case the player has two copies of this embellishment, set up the buff events only once.
   if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
   {
-    buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+    auto up = effect.player->get_uptime( "Undulating Sporecloak" )
+      ->collect_duration( *effect.player->sim )
+      ->collect_uptime( *effect.player->sim );
+
+    buff->player->register_combat_begin( [ buff, up ]( player_t* p ) {
       buff->trigger();
-      make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
-        if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
-          buff->trigger();
-        else
-          buff->expire();
-      } );
+      up->update( true, p->sim->current_time() );
+
+      auto pct = p->sim->dragonflight_opts.undulating_sporecloak_uptime;
+      auto dur = p->sim->dragonflight_opts.undulating_sporecloak_update_interval;
+      auto std = p->sim->dragonflight_opts.undulating_sporecloak_update_interval_stddev;
+
+      make_repeating_event( *p->sim,
+          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ buff, p, up, pct ] {
+            if ( p->rng().roll( pct ) )
+            {
+              buff->trigger();
+              up->update( true, p->sim->current_time() );
+            }
+            else
+            {
+              buff->expire();
+              up->update( false, p->sim->current_time() );
+            }
+          } );
     } );
   }
 }
