@@ -508,7 +508,9 @@ struct sim_t : private sc_thread_t
     // Uptime of the mastery buff(Zone of Focus) of Blue Silken Lining (>90% HP)
     double blue_silken_lining_uptime = 0.4;
     // Interval between checking blue_silken_lining_uptime
-    timespan_t blue_silken_lining_update_interval = 5_s;
+    timespan_t blue_silken_lining_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t blue_silken_lining_update_interval_stddev = 2.5_s;
     // Enable or Disable Seething Black Dragonscale's damage
     bool screaming_black_dragonscale_damage = false;
     // Period in which to try to trigger adapative Stonescales. Based on spell data, does not trigger on periodic damage.

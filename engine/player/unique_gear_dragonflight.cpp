@@ -6965,7 +6965,7 @@ void infernal_signet_brand( special_effect_t& e )
     {
       generic_proc_t::tick( d );
 
-      if ( buff->max_stack() == current_mod )
+      if ( buff->at_max_stacks() )
       {
         aoe_damage->base_dd_min = aoe_damage->base_dd_max =
             d->state->result_amount * e.driver()->effectN( 6 ).percent();
@@ -6982,11 +6982,11 @@ void infernal_signet_brand( special_effect_t& e )
     void execute() override
     {
       // Damage mod doesnt seem to update until the next application
-      if ( buff->check() != current_mod )
+      if ( buff->stack() != current_mod )
       {
-        current_mod = buff->check();
+        current_mod = buff->stack();
       }
-      if ( current_mod >= ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
+      if ( buff->check() > ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
       {
         self_damage->execute();
       }
@@ -7965,14 +7965,32 @@ void blue_silken_lining( special_effect_t& effect )
   // In case the player has two copies of this embellishment, set up the buff events only once.
   if ( first && buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
   {
-    buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+    auto up = effect.player->get_uptime( "Blue Silken Lining" )
+      ->collect_duration( *effect.player->sim )
+      ->collect_uptime( *effect.player->sim );
+
+    buff->player->register_combat_begin( [ buff, up ]( player_t* p ) {
       buff->trigger();
-      make_repeating_event( *p->sim, p->sim->dragonflight_opts.blue_silken_lining_update_interval, [ buff, p ] {
-        if ( p->rng().roll( p->sim->dragonflight_opts.blue_silken_lining_uptime ) )
-          buff->trigger();
-        else
-          buff->expire();
-      } );
+      up->update( true, p->sim->current_time() );
+
+      auto pct = p->sim->dragonflight_opts.blue_silken_lining_uptime;
+      auto dur = p->sim->dragonflight_opts.blue_silken_lining_update_interval;
+      auto std = p->sim->dragonflight_opts.blue_silken_lining_update_interval_stddev;
+
+      make_repeating_event( *p->sim,
+          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ buff, p, up, pct ] {
+            if ( p->rng().roll( pct ) )
+            {
+              buff->trigger();
+              up->update( true, p->sim->current_time() );
+            }
+            else
+            {
+              buff->expire();
+              up->update( false, p->sim->current_time() );
+            }
+          } );
     } );
   }
 }

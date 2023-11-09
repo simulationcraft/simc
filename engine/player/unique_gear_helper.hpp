@@ -616,16 +616,16 @@ BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
   return create_buff<BUFF>( p, util::tokenize_fn( s->name_cstr() ), s, std::forward<ARGS>( args )... );
 }
 
-template <typename T, typename F>
+template <typename F, typename G>
 class time_fn_repeating_event : public event_t
 {
-  T time;
-  F func;
+  F fn_time;
+  G fn_exec;
 
 public:
-  template <typename U = T, typename G = F>
-  time_fn_repeating_event( sim_t& s, U&& tf, G&& f )
-    : event_t( s, tf() ), time( std::forward<U>( tf ) ), func( std::forward<G>( f ) )
+  template <typename T = F, typename U = G>
+  time_fn_repeating_event( sim_t& s, T&& time, U&& exec )
+    : event_t( s, time() ), fn_time( std::forward<T>( time ) ), fn_exec( std::forward<U>( exec ) )
   {}
 
   const char* name() const override
@@ -633,16 +633,16 @@ public:
 
   void execute() override
   {
-    func();
-    make_event<time_fn_repeating_event<F, T>>( sim(), sim(), std::move( time ), std::move( func ) );
+    fn_exec();
+    make_event<time_fn_repeating_event<F, G>>( sim(), sim(), std::move( fn_time ), std::move( fn_exec ) );
   }
 };
 
-template <typename T, typename F,
-          typename = std::enable_if_t<std::is_same_v<std::invoke_result_t<std::decay_t<T>>, timespan_t>>>
-inline event_t* make_repeating_event( sim_t& s, T&& t_fn, F&& fn )
+template <typename F, typename G,
+          typename = std::enable_if_t<std::is_same_v<std::invoke_result_t<std::decay_t<F>>, timespan_t>>>
+inline event_t* make_repeating_event( sim_t& s, F&& time, G&& exec )
 {
-  return make_event<time_fn_repeating_event<std::decay_t<T>, std::decay_t<F>>>(
-      s, s, std::forward<T>( t_fn ), std::forward<F>( fn ) );
+  return make_event<time_fn_repeating_event<std::decay_t<F>, std::decay_t<G>>>(
+      s, s, std::forward<F>( time ), std::forward<G>( exec ) );
 }
 } // unique_gear
