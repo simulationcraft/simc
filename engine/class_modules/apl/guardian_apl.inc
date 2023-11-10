@@ -28,7 +28,7 @@ bear->add_action( "convoke_the_spirits" );
 bear->add_action( "berserk_bear" );
 bear->add_action( "incarnation" );
 bear->add_action( "lunar_beam" );
-bear->add_action( "rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60&rage>75|buff.incarnation_guardian_of_ursoc.up&rage>75|(talent.convoke_the_spirits.enabled)&rage>75" );
+bear->add_action( "rage_of_the_sleeper,if=((buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60)|buff.berserk_bear.down)&rage>75&(!talent.convoke_the_spirits.enabled)|(buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up)&rage>75&(!talent.convoke_the_spirits.enabled)|(talent.convoke_the_spirits.enabled)&rage>75" );
 bear->add_action( "berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)" );
 bear->add_action( "maul,if=(buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6&!talent.raze.enabled&variable.If_build=0)|(buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies=1&talent.raze.enabled&variable.If_build=0)" );
 bear->add_action( "raze,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&variable.If_build=0&active_enemies>1" );
