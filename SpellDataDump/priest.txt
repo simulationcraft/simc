@@ -4622,7 +4622,6 @@ Description      : The cooldowns of your Holy Words are reduced by an additional
 
 Name             : Shield Discipline (id=197045) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=4, col=2, max_rank=1, req_points=0]
-                 : Discipline [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12892,7 +12891,6 @@ Description      : Atonement heals for $s1% more when activated by Shadow spells
 
 Name             : Twilight Corruption (id=373065) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=6, col=5, max_rank=1, req_points=8]
-                 : Discipline [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None

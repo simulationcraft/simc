@@ -3841,7 +3841,6 @@ Effects          :
 Hotfixed         : NEW EFFECT
 
 Name             : Marked for Death (id=137619) [Spell Family (8)] 
-Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
