@@ -18,3 +18,8 @@ util::span<const expected_stat_t> expected_stat_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __expected_stat_data, __ptr_expected_stat_data, ptr );
 }
+
+util::span<const expected_stat_mod_t> expected_stat_mod_t::data( bool ptr )
+{
+  return SC_DBC_GET_DATA( __expected_stat_mod_data, __ptr_expected_stat_mod_data, ptr );
+}

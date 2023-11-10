@@ -6,7 +6,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
 from dbc.constants import Class
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet, ExpectedStatModSet
 from dbc.filter import TraitSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
@@ -4822,10 +4822,10 @@ class PermanentEnchantItemGenerator(DataGenerator):
 
     def generate(self, data=None):
         self.output_header(
-                header = 'Permanent item enchants',
-                type = 'permanent_enchant_entry_t',
-                array = 'permanent_enchant',
-                length = len(data))
+            header = 'Permanent item enchants',
+            type = 'permanent_enchant_entry_t',
+            array = 'permanent_enchant',
+            length = len(data))
 
         for spell_name, rank, _, _, _, _, enchant, sei in sorted(data, key=lambda v: (v[0], v[1], v[3], v[4], v[5])):
             fields = enchant.field('id')
@@ -4851,6 +4851,27 @@ class ExpectedStatGenerator(DataGenerator):
             fields = es.field('id_parent', 'creature_auto_attack_dps', 'creature_armor',
                               'player_primary_stat', 'player_secondary_stat',
                               'armor_constant', 'creature_spell_damage')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class ExpectedStatModGenerator(DataGenerator):
+    def filter(self):
+        return ExpectedStatModSet(self._options).get()
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Expected stat mods',
+            type = 'expected_stat_mod_t',
+            array = 'expected_stat_mod',
+            length = len(data))
+
+        for esm in sorted(data, key = lambda e: (e[1], e[0].id)):
+            fields = esm[0].field('id', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
+                                  'mod_player_primary_stat', 'mod_player_secondary_stat',
+                                  'mod_armor_constant', 'mod_creature_spell_damage')
+            fields += [str(esm[1])]
+
             self.output_record(fields)
 
         self.output_footer()

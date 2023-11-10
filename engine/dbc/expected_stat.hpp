@@ -31,6 +31,13 @@ struct expected_stat_t
 struct expected_stat_mod_t
 {
   unsigned id;
+  float creature_auto_attack_dps;
+  float creature_armor;
+  float player_primary_stat;
+  float player_secondary_stat;
+  float armor_constant;
+  float creature_spell_damage;
+  unsigned difficulty;
 
   static const expected_stat_mod_t& find( unsigned id, bool ptr )
   { return dbc::find<expected_stat_mod_t>( id, ptr, &expected_stat_mod_t::id ); }

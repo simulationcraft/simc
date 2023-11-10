@@ -796,3 +796,39 @@ class PermanentEnchantItemSet(DataSet):
     def ids(self):
         return list(set(v[0] for v in self.get()))
 
+class ExpectedStatModSet(DataSet):
+    def _filter(self, **kwargs):
+        mods = list()
+
+        # grab all raid maps reverse sorted by expansion id
+        maps = [
+            m for m in sorted(self.db('Map').values(), key = lambda e: e.id_expansion, reverse = True)
+                if m.instance_type == 2 # raid instance type
+        ]
+
+        # assume the latest expansion has the highest expansion id
+        xpac = maps[0].id_expansion
+        maps = [m for m in maps if m.id_expansion == xpac]
+
+        # assume the latest raid has the highest loading screen id
+        maps.sort(key = lambda e: e.id_loading_screen, reverse = True)
+        map_id = maps[0].id
+
+        # find all the difficulties for the map
+        content_ids = [c for c in self.db('MapDifficulty').values() if c.id_parent == map_id]
+        for content in content_ids:
+            # find all mod_ids that match the content tuning id
+            mod_ids = [
+                e.id_expected_stat_mod for e in self.db('ContentTuningXExpected').values()
+                    if e.id_parent == content.id_content_tuning
+            ]
+
+            for entry in self.db('ExpectedStatMod').values():
+                if entry.id in mod_ids:
+                    mods.append([entry, content.difficulty])
+
+        return mods
+
+    def ids(self, **kwargs):
+        return list(set(v.id for v in self.get()))
+
