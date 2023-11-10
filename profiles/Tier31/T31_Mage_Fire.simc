@@ -1,15 +1,15 @@
-mage="T29_Mage_Fire"
+mage="T31_Mage_Fire"
 source=default
 spec=fire
 level=70
 race=dwarf
 role=spell
 position=back
-talents=B8DAAAAAAAAAAAAAAAAAAAAAAERIl0QSkkiASCRkEJBAAAAAAAAgIikkQJRJJJJJJJHoBAAACA
+talents=B8DAAAAAAAAAAAAAAAAAAAAAAQCSRDJEpJISCRkEJJAAAAAAAAAiISSiDUSOQJJRSSSSAAAACA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_static_empowerment_3
+flask=phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:howling_rune_3
@@ -221,31 +221,32 @@ actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_fl
 actions.standard_rotation+=/pyroblast,if=talent.tempered_flames&!buff.flame_accelerant.react
 actions.standard_rotation+=/fireball
 
-head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498/8810,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=8960/8836/8782/1508,gem_id=192952/192952/192952,crafted_stats=36/49
-shoulders=crystal_scholars_beacons,id=200320,bonus_id=4800/4786/1498
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=8175/8960/8836/1508,crafted_stats=36/49
-chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=overengineered_sleeve_extenders,id=198322,bonus_id=1508/8836/8810,gem_id=192952,crafted_stats=36
-hands=crystal_scholars_pageturners,id=200317,bonus_id=4800/4786/1501
-waist=crystal_scholars_cinch,id=200321,bonus_id=4800/4786/1504/1808,gem_id=192952
-legs=leggings_of_swirling_runes,id=133610,bonus_id=8767/7977/6216,enchant=frozen_spellthread_3
-feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/8810,gem_id=192952,enchant=devotion_of_haste_3
-finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/8810,gem_id=192952,enchant=devotion_of_haste_3
-trinket1=desperate_invokers_codex,id=194310,bonus_id=4800/4786/1498
-trinket2=furious_ragefeather,id=193677,bonus_id=8767/7977/1643
-main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=wafting_devotion_3
-off_hand=scripture_of_primal_devotion,id=195513,bonus_id=4800/4786/1498
+head=crown_of_the_infinite_lord,id=207927,ilevel=489,gem_id=192952,enchant_id=7052
+neck=amulet_of_eonars_chosen,id=208445,ilevel=489,gem_id=192985/192952/192952
+shoulders=wayward_chronomancers_metronomes,id=207288,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=8836/8840/8902/9405/8846/8790/9379/8960/9365,ilevel=486,enchant_id=6598,crafted_stats=36/40
+chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9498/9369/9369/9368/9402/8792/9379/8960,ilevel=486,gem_id=192952,enchant_id=6574
+hands=wayward_chronomancers_gloves,id=207291,ilevel=489
+waist=mobius_strap,id=207898,ilevel=489,gem_id=192952
+legs=wayward_chronomancers_pantaloons,id=207289,bonus_id=6652/7979/9562/9512/1491/8767,ilevel=489,enchant_id=6541
+feet=lost_scholars_belted_treads,id=207122,ilevel=489,enchant_id=6613
+finger1=ringbound_hourglass,id=193000,bonus_id=8836/8840/8902/8780/9405/8795/9376/9366,ilevel=486,gem_id=192952,enchant_id=6556,crafted_stats=49/32
+finger2=ring_of_contempt,id=134490,ilevel=489,gem_id=192952,enchant_id=6556
+trinket1=augury_of_the_primal_flame,id=208614,ilevel=496
+trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
+main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
 
 # Gear Summary
-# gear_ilvl=422.19
-# gear_stamina=17455
-# gear_intellect=7195
-# gear_crit_rating=986
-# gear_haste_rating=5124
-# gear_mastery_rating=2927
-# gear_versatility_rating=2237
-# gear_armor=2045
-# set_bonus=tier29_2pc=1
-# set_bonus=tier29_4pc=1
+# gear_ilvl=488.87
+# gear_stamina=38956
+# gear_intellect=12122
+# gear_crit_rating=4389
+# gear_haste_rating=6101
+# gear_mastery_rating=869
+# gear_versatility_rating=4404
+# gear_leech_rating=125
+# gear_avoidance_rating=200
+# gear_armor=3251
+# set_bonus=tier31_2pc=1
+# set_bonus=tier31_4pc=1
