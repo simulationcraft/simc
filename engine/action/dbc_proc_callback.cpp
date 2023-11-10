@@ -51,7 +51,7 @@ struct proc_event_t : public event_t
     }
 
     debug_str += '-' + source_action->name_str;
-  #endif
+#endif
   }
 
   ~proc_event_t() override
