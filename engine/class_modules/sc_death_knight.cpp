@@ -2307,9 +2307,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
   struct ghoul_melee_t final : public auto_attack_melee_t<ghoul_pet_t>
   {
-    ghoul_pet_t*& pet;
     ghoul_melee_t( ghoul_pet_t* p, util::string_view name = "auto_attack" ) :
-      auto_attack_melee_t<ghoul_pet_t>( p, name ), pet( p )
+      auto_attack_melee_t<ghoul_pet_t>( p, name )
     { }
 
     void impact( action_state_t* state ) override
@@ -2322,9 +2321,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         {
           double chance = dk() -> sets -> set( DEATH_KNIGHT_UNHOLY, T29, B4 ) -> effectN( 1 ).percent();
 
-          if ( pet->vile_infusion->check() )
+          if ( pet()->vile_infusion->check())
           {
-              chance = dk()->sets->set( DEATH_KNIGHT_UNHOLY, T29, B4 )->effectN( 2 ).percent();
+            chance = dk()->sets->set( DEATH_KNIGHT_UNHOLY, T29, B4 )->effectN( 2 ).percent();
           }
 
           if ( dk() -> rng().roll( chance ) )
