@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52106
-static const std::array<spelltext_data_t, 20510> __spelltext_data { {
+static const std::array<spelltext_data_t, 20508> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17963,7 +17963,6 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
   { 388106, "Throw Glaive causes targets to take an additional $s1% of damage dealt as Chaos over $390181d.", 0, 0 },
   { 388107, "Each time Immolation Aura deals damage, $s1% of the damage dealt by up to $s2 critical strikes is gathered as Ragefire.\r\n\r\nWhen Immolation Aura expires you explode, dealing all stored Ragefire damage to nearby enemies.", 0, 0 },
   { 388108, "Damaging an enemy before they damage you increases your critical strike chance by $391215s1% for $391215d.\r\n\r\nVengeful Retreat refreshes your potential to trigger this effect on any enemies you are in combat with.", 0, 0 },
-  { 388110, "You deal $391369s1% increased damage to enemies for $391369d after Sigil of Misery's effect on them ends.", 0, 0 },
   { 388111, "Enemies deal $s1% reduced magic damage to you for $394933d after being afflicted by one of your Sigils.", 0, 0 },
   { 388112, "When you activate Metamorphosis, the cooldowns of Blade Dance and Eye Beam are immediately reset.", 0, 0 },
   { 388113, "Chaos Nova, Eye Beam, and Immolation Aura gain bonuses when striking 1 target.\r\n\r\n$@spellicon179057 $@spellname179057:\r\nStun duration increased by ${$s1/1000} sec.\r\n\r\n$@spellicon198013 $@spellname198013:\r\nDeals $s2% increased damage.\r\n\r\n$@spellicon258920 $@spellname258920:\r\nAlways critically strikes.", 0, 0 },
@@ -18437,7 +18436,6 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
   { 391356, "$@spelldesc391347", "Bleeding for $w1 damage every $t1 seconds.", 0 },
   { 391359, "$@spelldesc391339", 0, 0 },
   { 391368, "Increases healing done by Renew by $s1%, but decreases its base duration by ${$s2/-1000} sec.", 0, 0 },
-  { 391369, "$@spelldesc388110", "Damage taken from $@auracaster increased by $s1%.", 0 },
   { 391370, "The duration of $?s152173[Serenity][Storm, Earth, and Fire] is extended by $?s152173[${$s2/10}.1 sec every time you cast a Chi spender][${$s1/10}.1 sec for every Chi you spend].", 0, 0 },
   { 391374, "$@spelldesc188499", 0, 0 },
   { 391378, "$@spelldesc188499", 0, 0 },
