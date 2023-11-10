@@ -397,6 +397,7 @@ public:
     buff_t* hunters_prey;
     buff_t* call_of_the_wild;
     buff_t* dire_pack;
+    buff_t* beast_cleave; 
 
     // Survival Tree
     buff_t* tip_of_the_spear;
@@ -3803,6 +3804,9 @@ struct multishot_bm_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     if ( p() -> talents.beast_cleave -> ok() ) {
+
+      p() -> buffs.beast_cleave -> trigger();
+      
       for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
         pet -> buffs.beast_cleave -> trigger();
 
@@ -5662,11 +5666,10 @@ struct dire_beast_t: public hunter_spell_t
 
     p() -> pets.dire_beast.spawn( summon_duration );
 
-
-    //If beast cleave is up, the dire beast inherits the buff with the same duration as the existing buff.
-    if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> pets.main -> hunter_pet_t::buffs.beast_cleave -> up() )
+    //If beast cleave (from multi-shot) is up, the dire beast inherits the buff with the same duration as the existing buff.
+    if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> buffs.beast_cleave -> up() )
     {
-      timespan_t duration =  p() -> pets.main -> hunter_pet_t::buffs.beast_cleave -> remains();
+      timespan_t duration =  p() -> buffs.beast_cleave -> remains();
       p() -> pets.dire_beast.active_pets().back() -> buffs.beast_cleave -> trigger( duration );
     }
   }
@@ -5690,10 +5693,10 @@ struct dire_command_summon_t final : hunter_spell_t
 
     p() -> pets.dire_beast.spawn( pets::dire_beast_duration( p() ).first );
     
-    //If beast cleave is up, the dire beast inherits the buff with the same duration as the existing buff.
-    if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> pets.main -> hunter_pet_t::buffs.beast_cleave -> up() )
+    //If beast cleave (from multi-shot) is up, the dire beast inherits the buff with the same duration as the existing buff.
+    if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> buffs.beast_cleave -> up() )
     {
-      timespan_t duration =  p() -> pets.main -> hunter_pet_t::buffs.beast_cleave -> remains();
+      timespan_t duration =  p() -> buffs.beast_cleave -> remains();
       p() -> pets.dire_beast.active_pets().back() -> buffs.beast_cleave -> trigger( duration );
     }
   }
@@ -5752,10 +5755,10 @@ struct bestial_wrath_t: public hunter_spell_t
     {
       p() -> pets.dire_beast.spawn( timespan_t::from_seconds( p() -> tier_set.t31_bm_2pc -> effectN( 1 ).base_value() ) );
       
-      //If beast cleave is up, the dire beast inherits the buff with the same duration as the existing buff.
-      if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> pets.main -> hunter_pet_t::buffs.beast_cleave -> up() )
+      //If beast cleave (from multi-shot) is up, the dire beast inherits the buff with the same duration as the existing buff.
+      if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> buffs.beast_cleave -> up() )
       {
-        timespan_t duration =  p() -> pets.main -> hunter_pet_t::buffs.beast_cleave -> remains();
+        timespan_t duration =  p() -> buffs.beast_cleave -> remains();
         p() -> pets.dire_beast.active_pets().back() -> buffs.beast_cleave -> trigger( duration );
       }
     }
@@ -7242,6 +7245,10 @@ void hunter_t::create_buffs()
         [ this ]( buff_t*, int, int ) {
           cooldowns.kill_command -> adjust_recharge_multiplier();
         } );
+
+  buffs.beast_cleave = 
+    make_buff( this, "beast_cleave", find_spell( 268877 ) )
+    -> apply_affecting_effect( talents.beast_cleave -> effectN( 2 ) );
 
   // Survival
 
