@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52106
-static const std::array<spelltext_data_t, 20508> __spelltext_data { {
+static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9791,6 +9791,7 @@ static const std::array<spelltext_data_t, 20508> __spelltext_data { {
   { 268854, "$@spelldesc268852", "Increases Versatility by $w1.", 0 },
   { 268855, "$@spelldesc268852", 0, 0 },
   { 268856, "$@spelldesc268852", "Increases Versatility by $w1.", 0 },
+  { 268877, "$@spelldesc115939", "Pet's melee attacks also strike all other nearby enemy targets.", 0 },
   { 268878, "Permanently enchant a weapon to sometimes increase Versatility by $268854s for $268854d, stacking up to 5 times. Upon reaching 5 stacks, all stacks are consumed to grant you $268856s Versatility for $268856d.\r\n\r\nReduced materials.", 0, 0 },
   { 268879, "Permanently enchant a weapon to sometimes increase Versatility by $268854s for $268854d, stacking up to 5 times. Upon reaching 5 stacks, all stacks are consumed to grant you $268856s Versatility for $268856d.\r\n\r\nGreatly reduced materials.", 0, 0 },
   { 268887, "$@spelldesc268894", "Increases Haste by $w1.", 0 },
@@ -20077,6 +20078,7 @@ static const std::array<spelltext_data_t, 20508> __spelltext_data { {
   { 417713, "$@spelldesc417710", "Damage taken from $@auracaster's attacks increased by $s1%.", 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
+  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
@@ -20389,6 +20391,7 @@ static const std::array<spelltext_data_t, 20508> __spelltext_data { {
   { 426306, "$@spelldesc426288", 0, 0 },
   { 426321, "$@spelldesc426262", "Healing for $w1 every second.", 0 },
   { 426322, "@$spelldesc426262", "Versatility increased by $w1.", 0 },
+  { 426327, "Permanently imbue a helm with the fiery dreams of your vanquished foes. This effect changes based on your specialization. This item is not consumed on use.", 0, 0 },
   { 426339, "Your attacks have a low chance to draw torment from your victim to manifest a cruel blade based on the number of nearby enemies, dealing ${$425838s8*($426527d/$426527t1)} Shadowflame damage over $426527d to solitary foes or ${$425838s9} Fire damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.\r\n", "Your attacks have a low chance to draw torment from your victim to manifest a cruel blade based on the number of nearby enemies, dealing ${$425838w8*($426527d/$426527t1)} Shadowflame damage over $426527d to solitary foes or ${$425838w9} Fire damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.", 0 },
   { 426341, "Your harmful spells and abilities have a chance to summon a parliament of blazing spirit owls to divebomb your target, dealing ${$425838w6*2+$425838w8} Fire damage split between all nearby targets.\r\nDamage increased per enemy struck, up to 5.", "Your harmful spells and abilities have a chance to summon a parliament of blazing spirit owls to divebomb your target, dealing ${$425838w6*2+$425838w8} Fire damage split between all nearby targets.\r\nDamage increased per enemy struck, up to 5.", 0 },
   { 426344, "$@spelldesc422879", "Wildfire Bomb deals $s1% increased damage to the primary target.", 0 },
@@ -20511,9 +20514,7 @@ static const std::array<spelltext_data_t, 20508> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.52106
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
-  {  422303,  0, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5." },
-  {  422303,  1, "After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", "After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path." },
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
   {  426321,  0, "@$spelldesc426262", "$@spelldesc426262" },
 } };
 
