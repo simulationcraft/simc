@@ -253,12 +253,13 @@ void fire( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "arcane_intellect" );
+  precombat->add_action( "variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.erupting_spear_fragment|equipped.spoils_of_neltharus|equipped.tome_of_unstable_power|equipped.timebreaching_talon|equipped.horn_of_valor|equipped.mirror_of_fractured_tomorrows|equipped.ashes_of_the_embersoul|equipped.balefire_branch|equipped.time_theifs_gambit|equipped.sea_star|equipped.nymues_unraveling_spindle", "defining a group of trinkets as Steroids" );
   precombat->add_action( "variable,name=disable_combustion,op=reset", "APL Variable Option: If set to a non-zero value, the Combustion action and cooldowns that are constrained to only be used when Combustion is up will not be used during the simulation." );
   precombat->add_action( "variable,name=firestarter_combustion,default=-1,value=talent.sun_kings_blessing,if=variable.firestarter_combustion<0", "APL Variable Option: This variable specifies whether Combustion should be used during Firestarter." );
   precombat->add_action( "variable,name=hot_streak_flamestrike,if=variable.hot_streak_flamestrike=0,value=3*talent.flame_patch+999*!talent.flame_patch", "APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes outside of Combustion should be used." );
   precombat->add_action( "variable,name=hard_cast_flamestrike,if=variable.hard_cast_flamestrike=0,value=999", "APL Variable Option: This variable specifies the number of targets at which Hard Cast Flamestrikes outside of Combustion should be used as filler." );
   precombat->add_action( "variable,name=combustion_flamestrike,if=variable.combustion_flamestrike=0,value=3*talent.flame_patch+999*!talent.flame_patch", "APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes are used during Combustion." );
-  precombat->add_action( "variable,name=skb_flamestrike,if=variable.skb_flamestrike=0,value=3", "APL Variable Option: This variable specifies the number of targets at which Flamestrikes should be used to consume Fury of the Sun King." );
+  precombat->add_action( "variable,name=skb_flamestrike,if=variable.skb_flamestrike=0,value=3*talent.fuel_the_fire+999*!talent.fuel_the_fire", "APL Variable Option: This variable specifies the number of targets at which Flamestrikes should be used to consume Fury of the Sun King.  Restricting this variable to be true only if Fuel the Fire is talented." );
   precombat->add_action( "variable,name=arcane_explosion,if=variable.arcane_explosion=0,value=999", "APL Variable Option: This variable specifies the number of targets at which Arcane Explosion outside of Combustion should be used." );
   precombat->add_action( "variable,name=arcane_explosion_mana,default=40,op=reset", "APL Variable Option: This variable specifies the percentage of mana below which Arcane Explosion will not be used." );
   precombat->add_action( "variable,name=combustion_shifting_power,if=variable.combustion_shifting_power=0,value=999", "APL Variable Option: The number of targets at which Shifting Power can used during Combustion." );
@@ -280,7 +281,13 @@ void fire( player_t* p )
   default_->add_action( "variable,name=shifting_power_before_combustion,value=variable.time_to_combustion>cooldown.shifting_power.remains", "Variable that estimates whether Shifting Power will be used before the next Combustion." );
   default_->add_action( "variable,name=item_cutoff_active,value=(variable.time_to_combustion<variable.on_use_cutoff|buff.combustion.remains>variable.skb_duration&!cooldown.item_cd_1141.remains)&((trinket.1.has_cooldown&trinket.1.cooldown.remains<variable.on_use_cutoff)+(trinket.2.has_cooldown&trinket.2.cooldown.remains<variable.on_use_cutoff)>1)" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5" );
-  default_->add_action( "use_item,name=moonlit_prism,if=variable.time_to_combustion<=5|fight_remains<variable.time_to_combustion" );
+  default_->add_action( "use_item,name=mirror_of_fractured_tomorrows,if=buff.combustion.up&buff.combustion.remains>11", "New trinket and weapon lines  need special line for Nymue trinket which would delay combustion under certain conditions?" );
+  default_->add_action( "use_item,name=timethiefs_gambit,if=buff.combustion.up" );
+  default_->add_action( "use_item,name=balefire_branch,if=(variable.time_to_combustion<=3&buff.fury_of_the_sun_king.up)|(buff.combustion.up&buff.combustion.remains>11)" );
+  default_->add_action( "use_item,name=ashes_of_the_embersoul,if=(variable.time_to_combustion<=3&buff.fury_of_the_sun_king.up)|(buff.combustion.up&buff.combustion.remains>11)" );
+  default_->add_action( "use_item,name=nymues_unraveling_spindle,if=variable.time_to_combustion<=9" );
+  default_->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle" );
+  default_->add_action( "use_item,name=belorrelos_the_suncaller,if=(!variable.steroid_trinket_equipped&buff.combustion.down)|(variable.steroid_trinket_equipped&trinket.1.has_cooldown&trinket.1.cooldown.remains>20&buff.combustion.down)|(variable.steroid_trinket_equipped&trinket.2.has_cooldown&trinket.2.cooldown.remains>20&buff.combustion.down)" );
   default_->add_action( "use_items,if=!variable.item_cutoff_active" );
   default_->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=fire_blast_pooling,value=buff.combustion.down&action.fire_blast.charges_fractional+(variable.time_to_combustion+action.shifting_power.full_reduction*variable.shifting_power_before_combustion)%cooldown.fire_blast.duration-1<cooldown.fire_blast.max_charges+variable.overpool_fire_blasts%cooldown.fire_blast.duration-(buff.combustion.duration%cooldown.fire_blast.duration)%%1&variable.time_to_combustion<fight_remains", "Pool as many Fire Blasts as possible for Combustion." );
   default_->add_action( "call_action_list,name=combustion_phase,if=variable.time_to_combustion<=0|buff.combustion.up|variable.time_to_combustion<variable.combustion_precast_time&cooldown.combustion.remains<variable.combustion_precast_time" );
@@ -315,6 +322,10 @@ void fire( player_t* p )
   combustion_cooldowns->add_action( "use_item,name=timebreaching_talon" );
   combustion_cooldowns->add_action( "use_item,name=voidmenders_shadowgem" );
   combustion_cooldowns->add_action( "use_item,name=horn_of_valor" );
+  combustion_cooldowns->add_action( "use_item,name=timethiefs_gambit" );
+  combustion_cooldowns->add_action( "use_item,name=balefire_branch" );
+  combustion_cooldowns->add_action( "use_item,name=ashes_of_the_embersoul" );
+  combustion_cooldowns->add_action( "use_item,name=mirror_of_fractured_tomorrows" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
   combustion_phase->add_action( "bag_of_tricks,if=buff.combustion.down" );
@@ -376,7 +387,7 @@ void fire( player_t* p )
   standard_rotation->add_action( "phoenix_flames,if=!talent.alexstraszas_fury&!buff.hot_streak.react&!variable.phoenix_pooling&buff.flames_fury.up" );
   standard_rotation->add_action( "phoenix_flames,if=talent.alexstraszas_fury&!buff.hot_streak.react&hot_streak_spells_in_flight=0&(!variable.phoenix_pooling&buff.flames_fury.up|charges_fractional>2.5|charges_fractional>1.5&(!talent.feel_the_burn|buff.feel_the_burn.remains<3*gcd.max))" );
   standard_rotation->add_action( "call_action_list,name=active_talents" );
-  standard_rotation->add_action( "dragons_breath,if=active_enemies>1" );
+  standard_rotation->add_action( "dragons_breath,if=active_enemies>1&talent.alexstraszas_fury", "Dragon's Breath is no longer a gain to be cast unless Alexstrazas is talented (need to check cutoff, was true on 10t)" );
   standard_rotation->add_action( "scorch,if=searing_touch.active" );
   standard_rotation->add_action( "arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana" );
   standard_rotation->add_action( "flamestrike,if=active_enemies>=variable.hard_cast_flamestrike", "With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball." );
