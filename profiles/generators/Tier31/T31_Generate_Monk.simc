@@ -1,76 +1,53 @@
-# monk="T31_Monk_Brewmaster"
-# source=default
-# spec=brewmaster
-# level=70
-# race=void_elf
-# role=tank
-# position=front
-# talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAQShWLJJQSSrRAAAASLSRiEJ0KSSaJJlEgWjIt0KhA
+monk="T31_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=70
+race=void_elf
+role=tank
+position=front
+talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAQShWJJhQSSrRAAAASLUSiEJUKSSaJJtEgSLk0SDC
 
-# head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/8780/1504,gem_id=192991
-# neck=amulet_of_tender_breath,id=206183,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669/9382,gem_id=192932/192932/192932
-# shoulder=spines_of_the_vermillion_forge,id=202504,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1507
-# back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6598
-# chest=lifebound_chestpiece,id=193399,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6625,crafted_stats=32/40
-# wrist=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537,enchant_id=6580,gem_id=192932,crafted_stats=32/40
-# hands=fists_of_the_vermillion_forge,id=202507,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
-# waist=blackbelt_of_the_vermillion_forge,id=202503,bonus_id=4800/4786/1507/1808,gem_id=192932
-# legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,enchant_id=6490
-# feet=slimy_expulsion_boots,id=193451,bonus_id=8960/8840/8836/8902/1537,enchant_id=6613
-# finger1=tormentors_siphoning_signet,id=204466,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1501/9382,enchant_id=6568,gem_id=192932
-# finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/8780/1498,enchant_id=6568,gem_id=192932
-# trinket1=beacon_to_the_beyond,id=203963,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-# trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-# main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6827
+head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192982,enchant=incandescent_essence
+neck=ouroboreal_necklet,id=210214,bonus_id=7187/6935/1520,gem_id=192925/192925/192925
+shoulder=strigine_epaulets,id=207127,bonus_id=7187/1520
+back=inflammable_drapeleaf,id=207160,bonus_id=7187/1520
+chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
+wrists=primordial_serpents_bindings,id=207128,bonus_id=7187/6935/1520,gem_id=192925
+hands=mystic_herons_glovebills,id=207246,bonus_id=7187/1520
+waist=lifebound_belt,id=193407,bonus_id=9500/9405/8960/8797/1808,gem_id=192925,crafted_stats=36/32
+legs=mystic_herons_waders,id=207244,bonus_id=7187/1520,enchant=frosted_armor_kit_3
+feet=slimy_expulsion_boots,id=193451,bonus_id=9500/9405/8960,enchant=plainsrunners_breeze_3
+finger1=lord_waycrests_signet,id=158362,bonus_id=3316/1515/1808/9916,enchant=devotion_of_critical_strike_3,gem_id=192925
+finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/6935/1520,enchant=devotion_of_critical_strike_3,gem_id=192925
+trinket1=fyrakks_tainted_rageheart,id=207174,bonus_id=7187/1527
+trinket2=bandolier_of_twisted_blades,id=207165,bonus_id=7187/1520
+main_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant=shadowflame_wreathe_3
+off_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=sophic_devotion_3
 
-# save=T31_Monk_Brewmaster.simc
 
-# monk="T31_Monk_Windwalker"
-# spec=windwalker
-# level=70
-# race=void_elf
-# role=dps
-# talents=B0QAK5xc05YQdq4E+VOLrE2vpCAAAAAAAIRSS0icgEAAAAgEJJFAJJJJBJtIRkQrIJplk0SAAAA
+save=T31_Monk_Brewmaster.simc
 
-# head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/9229/9410/9382/1504/8767/9413,gem_id=192991
-# neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8783/8782/9405/8795/9376/8174/9366,gem_id=192932/192932/192932,crafted_stats=36/32,crafting_quality=5
-# shoulders=spines_of_the_vermillion_forge,id=205833,bonus_id=6652/9227/9410/9383/1507/8767
-# back=voice_of_the_silent_star,id=204465,bonus_id=9410/9385/1498/8767,enchant=graceful_avoidance_3
-# chest=lifebound_chestpiece,id=193399,bonus_id=8836/8840/8902/9405/9376/8797/8960/8795/9366,enchant=waking_stats_3,crafted_stats=32/40,crafting_quality=5
-# wrists=needlessly_complex_wristguards,id=198327,bonus_id=8836/8840/8902/9405/9376/8951/8865/9366/9413,gem_id=201409/192932,enchant=devotion_of_avoidance_3,crafted_stats=32,crafting_quality=5
-# hands=fists_of_the_vermillion_forge,id=202507,bonus_id=6652/9383/9410/8095/9230/1501
-# waist=blackbelt_of_the_vermillion_forge,id=202503,bonus_id=9383/9410/8095/1507/9413,gem_id=192932,enchant=shadowed_belt_clasp_3
-# legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=6652/9228/9410/9382/1504/8767,enchant=fierce_armor_kit_3
-# feet=slimy_expulsion_boots,id=193451,bonus_id=8836/8840/8902/8960/9405/9376/9366,enchant=watchers_loam_3,crafting_quality=5
-# finger1=tormentors_siphoning_signet,id=204466,bonus_id=6652/9410/9382/1501/8767/9413,gem_id=192932,enchant=devotion_of_versatility_3
-# finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/1498/8767/8780,gem_id=192932,enchant=devotion_of_versatility_3
-# trinket1=neltharions_call_to_dominance,id=204202,bonus_id=6652/9410/9385/1498/8767
-# trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/9382/1498/8767
-# main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=6652/9410/9383/8159/1498/8767,enchant=shadowflame_wreathe_3
+monk="T31_Monk_Windwalker"
+spec=windwalker
+level=70
+race=void_elf
+role=dps
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJRkkEtIQCAAAASkk0AkkkkAJlIRkQpIJpkk0SAAAA
 
-# save=T31_Monk_Windwalker.simc
+head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192988,enchant=incandescent_essence
+neck=ouroboreal_necklet,id=210214,bonus_id=7187/6935/1520,gem_id=192932/192932/192932
+shoulders=spore_colony_shoulderguards,id=204706,bonus_id=9500/9405/8960
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=3316/1515/9916,enchant=graceful_avoidance_3
+chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
+wrists=lifebound_bindings,id=193419,bonus_id=9500/9405/8960/8797/1808,gem_id=192958,crafted_stats=36/49
+hands=mystic_herons_glovebills,id=207246,bonus_id=7187/1520
+waist=houndjowl_waistband,id=159341,bonus_id=3316/1524/1808/9916,gem_id=192958,enchant=shadowed_belt_clasp_3
+legs=mystic_herons_waders,id=207244,bonus_id=7187/1520,enchant=fierce_armor_kit_3
+feet=grove_darkeners_treads,id=134429,bonus_id=3316/1515/9916,enchant=watchers_loam_3
+finger1=lord_waycrests_signet,id=158362,bonus_id=3316/1515/1808/9916,enchant=devotion_of_mastery_3,gem_id=192958
+finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/6935/1520,enchant=devotion_of_mastery_3,gem_id=192958
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+trinket2=bandolier_of_twisted_blades,id=207165,bonus_id=7187/1520
+main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=7187/1520,enchant=wafting_devotion_3
 
-# monk="T31_Monk_Windwalker_SEF"
-# spec=windwalker
-# level=70
-# race=orc
-# role=dps
-# talents=B0QAK5xc05YQdq4E+VOLrE2vpCAAAAAAAIRSSUicgEAAAAgEJJFAJJJJBJtIRkQrIJplk0SAAAA
-
-# head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/9229/9410/9382/1504/8767/9413,gem_id=192991
-# neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8783/8782/9405/8795/9376/8174/9366,gem_id=192932/192932/192932,crafted_stats=36/32,crafting_quality=5
-# shoulders=spines_of_the_vermillion_forge,id=205833,bonus_id=6652/9227/9410/9383/1507/8767
-# back=voice_of_the_silent_star,id=204465,bonus_id=9410/9385/1498/8767,enchant=graceful_avoidance_3
-# chest=lifebound_chestpiece,id=193399,bonus_id=8836/8840/8902/9405/9376/8797/8960/8795/9366,enchant=waking_stats_3,crafted_stats=32/40,crafting_quality=5
-# wrists=needlessly_complex_wristguards,id=198327,bonus_id=8836/8840/8902/9405/9376/8951/8865/9366/9413,gem_id=201409/192932,enchant=devotion_of_avoidance_3,crafted_stats=32,crafting_quality=5
-# hands=fists_of_the_vermillion_forge,id=202507,bonus_id=6652/9383/9410/8095/9230/1501
-# waist=blackbelt_of_the_vermillion_forge,id=202503,bonus_id=9383/9410/8095/1507/9413,gem_id=192932,enchant=shadowed_belt_clasp_3
-# legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=6652/9228/9410/9382/1504/8767,enchant=fierce_armor_kit_3
-# feet=slimy_expulsion_boots,id=193451,bonus_id=8836/8840/8902/8960/9405/9376/9366,enchant=watchers_loam_3,crafting_quality=5
-# finger1=tormentors_siphoning_signet,id=204466,bonus_id=6652/9410/9382/1501/8767/9413,gem_id=192932,enchant=devotion_of_versatility_3
-# finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/1498/8767/8780,gem_id=192932,enchant=devotion_of_versatility_3
-# trinket1=neltharions_call_to_dominance,id=204202,bonus_id=6652/9410/9385/1498/8767
-# trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/9382/1498/8767
-# main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=6652/9410/9383/8159/1498/8767,enchant=shadowflame_wreathe_3
-
-# save=T31_Monk_Windwalker_SEF.simc
+save=T31_Monk_Windwalker.simc

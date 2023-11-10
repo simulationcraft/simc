@@ -841,6 +841,9 @@ std::string special_effect_t::name() const
   if ( !name_str.empty() )
     return name_str;
 
+  if ( !generated_name_str.empty() )
+    return generated_name_str;
+
   // Guess proc name based on spells.
   std::string n;
   std::string base_name;
@@ -890,6 +893,8 @@ std::string special_effect_t::name() const
       n += ")";
     }
   }
+
+  generated_name_str = n;
 
   return n;
 }

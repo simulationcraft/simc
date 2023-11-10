@@ -1685,17 +1685,11 @@ void igneous_flowstone( special_effect_t& effect )
   struct high_tide_cb_t : public dbc_proc_callback_t
   {
     buff_t* trigger_buff;
-    action_t* damage;
 
-    high_tide_cb_t( const special_effect_t& e, buff_t* t, action_t* d )
-      : dbc_proc_callback_t( e.player, e ), trigger_buff( t ), damage( d )
-    {
-    }
+    high_tide_cb_t( const special_effect_t& e, buff_t* t ) : dbc_proc_callback_t( e.player, e ), trigger_buff( t ) {}
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
-
       trigger_buff->expire();
 
       size_t n = 1;
@@ -1703,13 +1697,7 @@ void igneous_flowstone( special_effect_t& effect )
         n++;
 
       while ( n-- )
-      {
-        damage->set_target( target( s ) );
-        auto damage_state    = damage->get_state();
-        damage_state->target = damage->target;
-        damage->snapshot_state( damage_state, damage->amount_type( damage_state ) );
-        damage->schedule_execute( damage_state );
-      }
+        dbc_proc_callback_t::execute( a, s );
     }
   };
 
@@ -1733,8 +1721,6 @@ void igneous_flowstone( special_effect_t& effect )
       return tm;
     }
   };
-
-  auto damage = create_proc_action<lava_wave_proc_t>( "lava_wave", effect );
 
   auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 402897 ) )
                        ->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
@@ -1761,9 +1747,10 @@ void igneous_flowstone( special_effect_t& effect )
   high_tide_driver->spell_id  = high_tide_trigger->data().id();
   // Add a cooldown to prevent a double trigger for classes like windwalker
   high_tide_driver->cooldown_ = 1.5_s;
+  high_tide_driver->execute_action = create_proc_action<lava_wave_proc_t>( "lava_wave", effect );
   effect.player->special_effects.push_back( high_tide_driver );
 
-  auto high_tide_cb = new high_tide_cb_t( *high_tide_driver, high_tide_trigger, damage );
+  auto high_tide_cb = new high_tide_cb_t( *high_tide_driver, high_tide_trigger );
   high_tide_cb->initialize();
   high_tide_cb->deactivate();
 
@@ -6323,7 +6310,6 @@ void rune_of_the_umbramane( special_effect_t& effect )
 // Buffs: 424228, 424276, 424274, 424272, 424275
 void pinch_of_dream_magic( special_effect_t& effect )
 {
-  [[maybe_unused]] auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
   auto add_buff = [ &effect, &buffs ]( std::string suf, unsigned id ) {
@@ -6347,40 +6333,78 @@ void pinch_of_dream_magic( special_effect_t& effect )
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Dancing Dream Blossoms
 // Driver: 423905
 // Buff: 423906
-// TODO/VERIFY: Assumed "the way you like them" picks your highest secondary stat.
+// NOTE: buff stats are proportial to player stats, but values for 2nd & 3rd highest stats are flipped
 void dancing_dream_blossoms( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs(
-           effect, { "dancing_dream_blossoms_crit_rating", "dancing_dream_blossoms_mastery_rating",
-                     "dancing_dream_blossoms_haste_rating", "dancing_dream_blossoms_versatility_rating" } ) )
-  {
+  if ( unique_gear::create_fallback_buffs( effect, { "dancing_dream_blossoms" } ) )
     return;
-  }
 
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-
-  auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
-
-  for ( auto stat : ratings )
+  struct dancing_dream_blossoms_buff_t : public stat_buff_t
   {
-    auto name = std::string( "dancing_dream_blossoms_" ) + util::stat_type_string( stat );
-    auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 423906 ), effect.item )
-                    ->set_stat( stat, effect.driver()->effectN( 1 ).average( effect.item ) )
-                    ->set_name_reporting( util::stat_type_abbrev( stat ) );
-    ( *buffs )[ stat ] = buff;
-  }
+    double full_value;
 
-  effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
-        stat_e max_stat = util::highest_stat( effect.player, ratings );
-        ( *buffs )[ max_stat ]->trigger();
+    dancing_dream_blossoms_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : stat_buff_t( p, n, e.trigger(), e.item ), full_value( e.driver()->effectN( 1 ).average( e.item ) )
+    {
+      assert( stats.size() == 4 );  // spell data sanity check
+    }
+
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      if ( player && player->is_sleeping() )
+        return false;
+
+      std::unordered_map<stat_e, double> player_stats;
+      double total_stats = 0;
+
+      // populate current stat array & total stats
+      for ( auto s : stats )
+      {
+        auto v = util::stat_value( player, s.stat );
+
+        player_stats[ s.stat ] = v;
+        total_stats += v;
+
+        if ( sim->debug )
+          sim->print_debug( "Dancing Dream Blossoms: player stat {}:{}", util::stat_type_abbrev( s.stat ), v );
+      }
+
+      // sort buff stats vector by current rating
+      range::sort( stats, [ &player_stats ]( buff_stat_t l, buff_stat_t r ) {
+        return player_stats[ l.stat ] > player_stats[ r.stat ];
       } );
+
+      auto set_amount = [ & ]( size_t b, size_t p ) {
+        auto v = player_stats[ stats[ p ].stat ] / total_stats * full_value;
+
+        if ( sim->debug )
+          sim->print_debug( "Dancing Dream Blossoms: buff stat {}:{}", util::stat_type_abbrev( stats[ b ].stat ), v );
+
+        stats[ b ].amount = v;
+      };
+
+      // highest buff stat corresponds to highest player stat
+      set_amount( 0, 0 );
+      // 2nd buff stat corresponds to 3rd player stat
+      set_amount( 1, 2 );
+      // 3rd buff stat corresponds to 2nd player stat
+      set_amount( 2, 1 );
+      // lowest buff stat corresponds to lowest player stat
+      set_amount( 3, 3 );
+
+      return stat_buff_t::trigger( s, v, c, d );
+    }
+  };
+
+  effect.custom_buff = create_buff<dancing_dream_blossoms_buff_t>( effect.player, "dancing_dream_blossoms", effect );
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -6941,7 +6965,7 @@ void infernal_signet_brand( special_effect_t& e )
     {
       generic_proc_t::tick( d );
 
-      if ( buff->at_max_stacks() )
+      if ( buff->max_stack() == current_mod )
       {
         aoe_damage->base_dd_min = aoe_damage->base_dd_max =
             d->state->result_amount * e.driver()->effectN( 6 ).percent();
@@ -6958,11 +6982,11 @@ void infernal_signet_brand( special_effect_t& e )
     void execute() override
     {
       // Damage mod doesnt seem to update until the next application
-      if ( buff->stack() != current_mod )
+      if ( buff->check() != current_mod )
       {
-        current_mod = buff->stack();
+        current_mod = buff->check();
       }
-      if ( buff->check() > ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
+      if ( current_mod >= ( e.driver()->effectN( 2 ).base_value() - e.driver()->effectN( 5 ).base_value() ) )
       {
         self_damage->execute();
       }
@@ -7288,6 +7312,23 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
 
   on_use                = create_proc_action<on_use_t>( "shadowflame_rage_use", effect );
   effect.execute_action = on_use;
+}
+
+void fang_of_the_frenzied_nightclaw( special_effect_t& effect )
+{
+  struct fang_of_the_frenzied_nightclaw_t : public generic_proc_t
+  {
+    fang_of_the_frenzied_nightclaw_t( const special_effect_t& e )
+      : generic_proc_t( e, e.name(), e.trigger() )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      base_td = e.driver()->effectN( 2 ).average( e.item );
+    }
+  };
+
+  effect.execute_action = create_proc_action<fang_of_the_frenzied_nightclaw_t>( effect.name(), effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Weapons
@@ -7941,14 +7982,32 @@ void blue_silken_lining( special_effect_t& effect )
   // In case the player has two copies of this embellishment, set up the buff events only once.
   if ( first && buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
   {
-    buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+    auto up = effect.player->get_uptime( "Blue Silken Lining" )
+      ->collect_duration( *effect.player->sim )
+      ->collect_uptime( *effect.player->sim );
+
+    buff->player->register_combat_begin( [ buff, up ]( player_t* p ) {
       buff->trigger();
-      make_repeating_event( *p->sim, p->sim->dragonflight_opts.blue_silken_lining_update_interval, [ buff, p ] {
-        if ( p->rng().roll( p->sim->dragonflight_opts.blue_silken_lining_uptime ) )
-          buff->trigger();
-        else
-          buff->expire();
-      } );
+      up->update( true, p->sim->current_time() );
+
+      auto pct = p->sim->dragonflight_opts.blue_silken_lining_uptime;
+      auto dur = p->sim->dragonflight_opts.blue_silken_lining_update_interval;
+      auto std = p->sim->dragonflight_opts.blue_silken_lining_update_interval_stddev;
+
+      make_repeating_event( *p->sim,
+          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ buff, p, up, pct ] {
+            if ( p->rng().roll( pct ) )
+            {
+              buff->trigger();
+              up->update( true, p->sim->current_time() );
+            }
+            else
+            {
+              buff->expire();
+              up->update( false, p->sim->current_time() );
+            }
+          } );
     } );
   }
 }
@@ -8299,7 +8358,7 @@ void rallied_to_victory( special_effect_t& effect )
     rallied_to_victory_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         buffs{ false },
-        max_allied_buffs( effect.trigger()->effectN( 2 ).base_value() )
+        max_allied_buffs( as<int>( effect.trigger()->effectN( 2 ).base_value() ) )
     {
       get_buff( effect.player );
     }
@@ -8337,7 +8396,7 @@ void rallied_to_victory( special_effect_t& effect )
 
         for ( auto p : effect.player->sim->player_non_sleeping_list )
         {
-          if ( p == effect.player )
+          if ( p == effect.player || p->is_pet() )
             continue;
 
           if ( rng().roll( effect.player->dragonflight_opts.rallied_to_victory_multi_actor_skip_chance ) )
@@ -8731,17 +8790,34 @@ void undulating_sporecloak( special_effect_t& effect )
 
   buff->add_stat( STAT_VERSATILITY_RATING, effect.driver()->effectN( 6 ).average( effect.item ) );
 
-  // In case the player has two copies of this embellishment, set up the buff events only once.
   if ( buff->sim->dragonflight_opts.undulating_sporecloak_uptime > 0.0 )
   {
-    buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+    auto up = effect.player->get_uptime( "Undulating Sporecloak" )
+      ->collect_duration( *effect.player->sim )
+      ->collect_uptime( *effect.player->sim );
+
+    buff->player->register_combat_begin( [ buff, up ]( player_t* p ) {
       buff->trigger();
-      make_repeating_event( *p->sim, p->sim->dragonflight_opts.undulating_sporecloak_update_interval, [ buff, p ] {
-        if ( p->rng().roll( p->sim->dragonflight_opts.undulating_sporecloak_uptime ) )
-          buff->trigger();
-        else
-          buff->expire();
-      } );
+      up->update( true, p->sim->current_time() );
+
+      auto pct = p->sim->dragonflight_opts.undulating_sporecloak_uptime;
+      auto dur = p->sim->dragonflight_opts.undulating_sporecloak_update_interval;
+      auto std = p->sim->dragonflight_opts.undulating_sporecloak_update_interval_stddev;
+
+      make_repeating_event( *p->sim,
+          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ buff, p, up, pct ] {
+            if ( p->rng().roll( pct ) )
+            {
+              buff->trigger();
+              up->update( true, p->sim->current_time() );
+            }
+            else
+            {
+              buff->expire();
+              up->update( false, p->sim->current_time() );
+            }
+          } );
     } );
   }
 }
@@ -8796,37 +8872,50 @@ void dreamtenders_charm( special_effect_t& effect )
 
   if ( first && buff->sim->dragonflight_opts.dreamtenders_charm_uptime > 0.0 )
   {
-    buff->player->register_combat_begin( [ buff, regaining_power, gem_count ]( player_t* p ) {
+    auto up = effect.player->get_uptime( "Dreamtender's Charm" )
+      ->collect_duration( *effect.player->sim )
+      ->collect_uptime( *effect.player->sim );
+
+    buff->player->register_combat_begin( [ buff, regaining_power, gem_count, up ]( player_t* p ) {
       buff->trigger();
-      make_repeating_event( *p->sim, p->sim->dragonflight_opts.dreamtenders_charm_update_interval,
-                            [ buff, p, regaining_power, gem_count ] {
-                              if ( p->rng().roll( p->sim->dragonflight_opts.dreamtenders_charm_uptime ) )
-                              {
-                                // Safety net in case something goes haywire
-                                // buff should re-trigger from regaining_power expiration
-                                if ( !regaining_power->check() && !buff->check() )
-                                {
-                                  buff->trigger();
-                                }
-                              }
-                              else
-                              {
-                                if ( buff->check() )
-                                {
-                                  auto stacks = buff->check();
-                                  buff->expire();
-                                  regaining_power->trigger();
-                                  // Re-trigger the buff with a shorter duration based on the number of Ysemerald's you
-                                  // have equipped
-                                  if ( gem_count > 0 )
-                                  {
-                                    p->sim->print_debug( "{} re-triggers dreaming_trance for {} seconds.", p->name(),
-                                                         gem_count );
-                                    buff->trigger( stacks, timespan_t::from_seconds( gem_count ) );
-                                  }
-                                }
-                              }
-                            } );
+      up->update( true, p->sim->current_time() );
+
+      auto pct = p->sim->dragonflight_opts.dreamtenders_charm_uptime;
+      auto dur = p->sim->dragonflight_opts.dreamtenders_charm_update_interval;
+      auto std = p->sim->dragonflight_opts.dreamtenders_charm_update_interval_stddev;
+
+      make_repeating_event( *p->sim,
+          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ buff, p, regaining_power, gem_count, up, pct ] {
+            if ( p->rng().roll( pct ) )
+            {
+              // Safety net in case something goes haywire
+              // buff should re-trigger from regaining_power expiration
+              if ( !regaining_power->check() && !buff->check() )
+              {
+                buff->trigger();
+                up->update( true, p->sim->current_time() );
+              }
+            }
+            else
+            {
+              if ( buff->check() )
+              {
+                auto stacks = buff->check();
+                buff->expire();
+                up->update( false, p->sim->current_time() );
+                regaining_power->trigger();
+                // Re-trigger the buff with a shorter duration based on the number of Ysemerald's you
+                // have equipped
+                if ( gem_count > 0 )
+                {
+                  p->sim->print_debug( "{} re-triggers dreaming_trance for {} seconds.", *p, gem_count );
+                  buff->trigger( stacks, timespan_t::from_seconds( gem_count ) );
+                  up->update( true, p->sim->current_time() );
+                }
+              }
+            }
+          } );
     } );
 
     // If you drop combat you loose all stacks immedietly but do not trigger regaining power
@@ -8902,6 +8991,76 @@ void verdant_conduit( special_effect_t& effect )
           buffs[ cb->rng().range( buffs.size() ) ]->trigger();
         } );
   }
+}
+
+// 424051 Driver
+// 424057 Buff
+void string_of_delicacies( special_effect_t& e )
+{
+  struct string_of_delicacies_cb_t : public dbc_proc_callback_t
+  {
+    target_specific_t<buff_t> buffs;
+    int max_allied_buffs;
+    string_of_delicacies_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ false },
+        max_allied_buffs( as<int>( e.driver()->effectN( 2 ).base_value() ) )
+    {
+      get_buff( e.player );
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "stuffed",
+                                          effect.player->find_spell( 424057 ) );
+      buff->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+      buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( effect.player->dragonflight_opts.string_of_delicacies_ally_estimate )
+      {
+        int allies = 0;
+        allies =
+            effect.player->rng().range( as<int>( effect.player->dragonflight_opts.string_of_delicacies_min_allies ),
+                                        as<int>( 1 + effect.driver()->effectN( 2 ).base_value() ) );
+        buffs[ effect.player ]->set_max_stack( 1 + allies );
+        buffs[ effect.player ]->set_initial_stack( 1 + allies );
+      }
+
+      buffs[ effect.player ]->trigger();
+
+      if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
+      {
+        int buffs = 1;
+
+        for ( auto p : effect.player->sim->player_non_sleeping_list )
+        {
+          if ( p == effect.player || p->is_pet() )
+            continue;
+
+          if ( rng().roll( effect.player->dragonflight_opts.string_of_delicacies_multi_actor_skip_chance ) )
+          {
+            buffs++;
+            continue;
+          }
+
+          get_buff( p )->trigger();
+          if ( ++buffs >= max_allied_buffs )
+            break;
+        }
+      }
+    }
+  };
+
+  new string_of_delicacies_cb_t( e );
 }
 
 }  // namespace items
@@ -10042,6 +10201,7 @@ void register_special_effects()
   register_special_effect( 429228, items::rezans_gleaming_eye );
   register_special_effect( 421990, items::gift_of_ursine_vengeance );
   register_special_effect( 422750, items::fyrakks_tainted_rageheart );
+  register_special_effect( 423925, items::fang_of_the_frenzied_nightclaw );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
@@ -10080,6 +10240,7 @@ void register_special_effects()
   register_special_effect( 410230, items::undulating_sporecloak );
   register_special_effect( 419368, items::dreamtenders_charm );
   register_special_effect( 418410, items::verdant_conduit );
+  register_special_effect( 424051, items::string_of_delicacies );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );

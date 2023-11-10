@@ -796,3 +796,64 @@ class PermanentEnchantItemSet(DataSet):
     def ids(self):
         return list(set(v[0] for v in self.get()))
 
+class ExpectedStatModSet(DataSet):
+    def _filter(self, **kwargs):
+        mods = list()
+
+        # grab all raid maps reverse sorted by expansion id
+        maps = [
+            m for m in sorted(self.db('Map').values(), key = lambda e: e.id_expansion, reverse = True)
+                if m.instance_type == 2 # raid instance type
+        ]
+
+        # assume the latest expansion has the highest expansion id
+        xpac = maps[0].id_expansion
+        maps = [m for m in maps if m.id_expansion == xpac]
+
+        # assume the latest raid has the highest loading screen id
+        maps.sort(key = lambda e: e.id_loading_screen, reverse = True)
+        map_id = maps[0].id
+
+        # find all the difficulties for the map & m+
+        content_ids = []
+        dungeon_id = []
+
+        for c in self.db('MapDifficulty').values():
+            if c.id_parent == map_id:
+                content_ids.append([c.id_content_tuning, c.difficulty])
+            elif len(dungeon_id) == 0 and c.item_context == 16: # m+ item context
+                dungeon_id = [c.id_content_tuning, c.difficulty]
+
+        # find all mod_ids that match the content tuning ids
+        mod_ids = []
+        mod_d_ids = []
+
+        for e in self.db('ContentTuningXExpected').values():
+            for c in content_ids:
+                if e.id_parent == c[0]:
+                    mod_ids.append([e, c[1]])
+                    break
+            else:
+                if e.id_parent == dungeon_id[0]:
+                    mod_d_ids.append([e, dungeon_id[1]])
+
+        # assume highest mythic plus season id is the current season
+        mod_d_ids.sort(key = lambda e: e[0].id_mythic_plus_season, reverse = True)
+        mod_d_ids = [
+            e for e in mod_d_ids
+                if e[0].id_mythic_plus_season == mod_d_ids[0][0].id_mythic_plus_season
+        ]
+
+        mod_ids += mod_d_ids
+
+        # fill in results
+        for entry in self.db('ExpectedStatMod').values():
+            for m in mod_ids:
+                if entry.id == m[0].id_expected_stat_mod:
+                    mods.append([entry, m[1]])
+
+        return mods
+
+    def ids(self, **kwargs):
+        return list(set(v.id for v in self.get()))
+

@@ -6,7 +6,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
 from dbc.constants import Class
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet, ExpectedStatModSet
 from dbc.filter import TraitSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
@@ -1446,8 +1446,10 @@ class SpellDataGenerator(DataGenerator):
          427209, 427212, # Dreambinder, Loom of the Great Cycle Damage Spell and Slowed Debuff
          425509, # Branch of the Tormented Ancient
          425180, 425156, # Infernal Signet Brand
-         421990, 421996, 421994, 422016,  # Gift of Ursine Vengeance
-         422651, 422652, 422750, 425571, 425701, 425703, 425461 # Fyrakks Tainted Rageheart
+         421990, 421996, 421994, 422016, # Gift of Ursine Vengeance
+         422651, 422652, 422750, 425571, 425701, 425703, 425461, # Fyrakks Tainted Rageheart
+         426474, # Verdant Tether embellishment stat buff
+         424051, 424057, # String of Delicacies
         ),
 
         # Warrior:
@@ -1540,6 +1542,7 @@ class SpellDataGenerator(DataGenerator):
           ( 171457, 0 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
           ( 118455, 5 ), # Beast Cleave
+          ( 268877, 0 ), # Beast Cleave player buff
           ( 389448, 5 ), # Kill Cleave
           ( 186254, 5 ), # Bestial Wrath
           ( 392054, 5 ), # Piercing Fangs
@@ -1656,6 +1659,7 @@ class SpellDataGenerator(DataGenerator):
             ( 423193, 0 ),          # Exsanguinate residual damage spell
             ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
             ( 429951, 0 ),          # Deft Maneuvers alternative Blade Flurry instant attack spell
+            ( 381628, 0 ),          # Dragonflight Internal Bleeding talent spell
         ),
 
         # Priest:
@@ -4819,16 +4823,56 @@ class PermanentEnchantItemGenerator(DataGenerator):
 
     def generate(self, data=None):
         self.output_header(
-                header = 'Permanent item enchants',
-                type = 'permanent_enchant_entry_t',
-                array = 'permanent_enchant',
-                length = len(data))
+            header = 'Permanent item enchants',
+            type = 'permanent_enchant_entry_t',
+            array = 'permanent_enchant',
+            length = len(data))
 
         for spell_name, rank, _, _, _, _, enchant, sei in sorted(data, key=lambda v: (v[0], v[1], v[3], v[4], v[5])):
             fields = enchant.field('id')
             fields += ['{:2d}'.format(rank)]
             fields += sei.field('item_class', 'mask_inv_type', 'mask_sub_class')
             fields += ['{:35s}'.format('"{}"'.format(spell_name))]
+            self.output_record(fields)
+
+        self.output_footer()
+
+class ExpectedStatGenerator(DataGenerator):
+    def filter(self):
+        return [ v for v in self.db('ExpectedStat').values() if v.id_expansion == -2 ]
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Expected stat for levels 1-{}'.format(data[-1].id_parent),
+            type = 'expected_stat_t',
+            array = 'expected_stat',
+            length = len(data))
+
+        for es in sorted(data, key = lambda e: e.id_parent):
+            fields = es.field('id_parent', 'creature_auto_attack_dps', 'creature_armor',
+                              'player_primary_stat', 'player_secondary_stat',
+                              'armor_constant', 'creature_spell_damage')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class ExpectedStatModGenerator(DataGenerator):
+    def filter(self):
+        return ExpectedStatModSet(self._options).get()
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Expected stat mods',
+            type = 'expected_stat_mod_t',
+            array = 'expected_stat_mod',
+            length = len(data))
+
+        for esm in sorted(data, key = lambda e: (e[1], e[0].id)):
+            fields = esm[0].field('id', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
+                                  'mod_player_primary_stat', 'mod_player_secondary_stat',
+                                  'mod_armor_constant', 'mod_creature_spell_damage')
+            fields += [str(esm[1])]
+
             self.output_record(fields)
 
         self.output_footer()

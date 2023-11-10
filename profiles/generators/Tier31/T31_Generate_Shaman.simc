@@ -3,25 +3,25 @@ level=70
 race=tauren
 role=spell
 spec=elemental
-talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSrUSCgDkUSShSgkkEBAAAAAoFAlkAiCSLJplSACJBI
-# https://www.wowhead.com/talent-calc/shaman/elemental/DAORFUVBRBASqJBUJCUUNVRRRVFSJVBoAUDBAA
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSpUSCgDk0SShSgkkEBAAAAAoEgUSCpJpg0SSaKBIkEgA
+# https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFRBBBSKJBUhBRDEUANVRRRVFSJVBoAUDAQA
 
-head=,id=109984,bonus_id=4795/1808,enchant_id=7052,gem_id=192985,ilevel=489
-neck=,id=207163,bonus_id=4795/8782,gem_id=192964/192964/192964,ilevel=489
-shoulder=,id=207207,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
-back=,id=205025,bonus_id=8960/8840/8836/8902/1537,enchant=graceful_avoidance_3,ilevel=486
-chest=,id=207212,bonus_id=6652/7979/9562/9515/1491/8767,enchant=waking_stats_3,ilevel=489
-wrist=,id=210203,bonus_id=4795/1808,gem_id=192964,ilevel=489
-hands=,id=207210,bonus_id=6652/7979/9560/9514/1485/8767,ilevel=489
-waist=,id=207146,bonus_id=4795/1808,gem_id=192964,ilevel=489
-legs=,id=207208,bonus_id=6652/7979/9562/9512/1491/8767,enchant=frozen_spellthread_3,ilevel=489
-feet=,id=193466,bonus_id=8836/8840/8902/8960/9405/9500/9498,enchant=plainsrunners_breeze_3
-finger1=,id=207159,bonus_id=4795/1808,enchant=devotion_of_mastery_3,gem_id=192964,ilevel=489
-finger2=,id=134487,bonus_id=4795/1808,enchant=devotion_of_haste_3,gem_id=192964,ilevel=489
-trinket1=,id=133201,bonus_id=4795,ilevel=489
-trinket2=,id=159630,bonus_id=4795,ilevel=489
-main_hand=,id=207788,bonus_id=4795,enchant=wafting_devotion_3,ilevel=489
-off_hand=,id=207798,bonus_id=4795,ilevel=489
+head=morningscale_cowl,id=109984,bonus_id=1808/9888,enchant=incandescent_essence,gem_id=192988
+neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520,gem_id=192964/192964/192964
+shoulder=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=9853,enchant=graceful_avoidance_3
+chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520,enchant=waking_stats_3
+wrist=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=192964
+hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520
+waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520,enchant=shadowed_belt_clasp_3,gem_id=192964
+legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=frozen_spellthread_3
+feet=acidic_hailstone_treads,id=193466,bonus_id=9500/9405/8960,enchant=watchers_loam_3
+finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520,enchant=devotion_of_mastery_3,gem_id=192964
+finger2=archdruids_tainted_seal,id=134487,bonus_id=9882,enchant=devotion_of_mastery_3,gem_id=192964
+trinket1=sea_star,id=133201,bonus_id=9466/1514
+trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520
+main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520,enchant=wafting_devotion_3
+off_hand=verdant_matrix_beacon,id=207798,bonus_id=7187/1520
 
 save=T31_Shaman_Elemental.simc
 
@@ -33,22 +33,22 @@ role=attack
 position=back
 talents=BcQAzii1bx6MdXWQl8y/78bs6KJJHAkcARSSyBIlkIhAAAAAAAAAAAAAKRIJkQKiCJtkkGgSkDEkCC
 
-head=,id=207209,bonus_id=/1808,enchant_id=7052,gem_id=192988,ilevel=489
-neck=,id=207163,bonus_id=7187/1520,gem_id=192961/192961/192961
-shoulder=,id=207207,bonus_id=7187/1520
-back=,id=205025,bonus_id=8836/8902/9405/9500
-chest=,id=207212,bonus_id=7187/1520,enchant_id=6625,enchant=waking_stats_3
-wrist=,id=204704,bonus_id=9405/9500/9436,enchant_id=6574,gem_id=192961
-hands=,id=207210,bonus_id=7187/1520
-waist=,id=207144,bonus_id=7187/1520/523,enchant_id=6904,gem_id=192961
-legs=,id=207208,bonus_id=7187/1520,enchant_id=6490,enchant=fierce_armor_kit_3
-feet=,id=134464,ilevel=489
-finger1=,id=207159,bonus_id=7187/1520,enchant_id=6562,enchant=devotion_of_mastery_3,gem_id=192961
-finger2=,id=134487,bonus_id=4795/1808,enchant_id=6562,enchant=devotion_of_mastery_3,gem_id=192961,ilevel=489
-trinket1=,id=207168,bonus_id=7187/1520
-trinket2=,id=207166,bonus_id=7187/1520
-main_hand=,id=160269,ilevel=489,enchant=wafting_devotion_3
-off_hand=,id=207787,bonus_id=7187/1520,enchant=wafting_devotion_3
+head=greatwolf_outcasts_jaws,id=207209,bonus_id=1808,ilevel=489,gem_id=192988,enchant_id=7052
+neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520,gem_id=192961/192961/192961
+shoulders=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,crafted_stats=36/49
+chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520,enchant=waking_stats_3,enchant_id=6625
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9405/9500/9436,gem_id=192961,enchant_id=6574
+hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520
+waist=forlorn_leaf_clasp,id=207144,bonus_id=7187/1520/523,gem_id=192961,enchant_id=6904
+legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=fierce_armor_kit_3,enchant_id=6490
+feet=whelp_handlers_lined_boots,id=134464,ilevel=489
+finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520,gem_id=192961,enchant=devotion_of_mastery_3,enchant_id=6562
+finger2=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,ilevel=489,gem_id=192961,enchant=devotion_of_mastery_3,enchant_id=6562
+trinket1=pips_emerald_friendship_badge,id=207168,bonus_id=7187/1520
+trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+main_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant=wafting_devotion_3
+off_hand=igiras_flaying_hatchet,id=207787,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 save=T31_Shaman_Enhancement_Storm.simc
 
@@ -61,21 +61,21 @@ role=attack
 position=back
 talents=BcQAzii1bx6MdXWQl8y/78bs6KJJpEJgkESSSDlEAAAAAAAAAAAAAKRIJkQKiCJtkkGgSkDEEI
 
-head=,id=207209,bonus_id=/1808,enchant_id=7052,gem_id=192988,ilevel=489
-neck=,id=207163,bonus_id=7187/1520,gem_id=192961/192961/192961
-shoulder=,id=207207,bonus_id=7187/1520
-back=,id=205025,bonus_id=8836/8902/9405/9500
-chest=,id=207212,bonus_id=7187/1520,enchant_id=6625,enchant=waking_stats_3
-wrist=,id=204704,bonus_id=9405/9500/9436,enchant_id=6574,gem_id=192961
-hands=,id=207210,bonus_id=7187/1520
-waist=,id=207144,bonus_id=7187/1520/523,enchant_id=6904,gem_id=192961
-legs=,id=207208,bonus_id=7187/1520,enchant_id=6490,enchant=fierce_armor_kit_3
-feet=,id=134464,ilevel=489
-finger1=,id=207159,bonus_id=7187/1520,enchant_id=6562,enchant=devotion_of_mastery_3,gem_id=192961
-finger2=,id=134487,bonus_id=4795/1808,enchant_id=6562,enchant=devotion_of_mastery_3,gem_id=192961,ilevel=489
-trinket1=,id=207168,bonus_id=7187/1520
-trinket2=,id=207166,bonus_id=7187/1520
-main_hand=,id=160269,ilevel=489,enchant=wafting_devotion_3
-off_hand=,id=207787,bonus_id=7187/1520,enchant=wafting_devotion_3
+head=greatwolf_outcasts_jaws,id=207209,bonus_id=1808,ilevel=489,gem_id=192988,enchant_id=7052
+neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520,gem_id=192961/192961/192961
+shoulders=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,crafted_stats=36/49
+chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520,enchant=waking_stats_3,enchant_id=6625
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9405/9500/9436,gem_id=192961,enchant_id=6574
+hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520
+waist=forlorn_leaf_clasp,id=207144,bonus_id=7187/1520/523,gem_id=192961,enchant_id=6904
+legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=fierce_armor_kit_3,enchant_id=6490
+feet=whelp_handlers_lined_boots,id=134464,ilevel=489
+finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520,gem_id=192961,enchant=devotion_of_mastery_3,enchant_id=6562
+finger2=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,ilevel=489,gem_id=192961,enchant=devotion_of_mastery_3,enchant_id=6562
+trinket1=pips_emerald_friendship_badge,id=207168,bonus_id=7187/1520
+trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+main_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant=wafting_devotion_3
+off_hand=igiras_flaying_hatchet,id=207787,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 save=T31_Shaman_Enhancement.simc

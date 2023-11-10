@@ -48,7 +48,7 @@ void fury( player_t* p )
   default_->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15&!buff.avatar.up&cooldown.odyns_fury.remains|talent.berserkers_torment&buff.enrage.up&!buff.avatar.up&raid_event.adds.in>15|!talent.titans_torment&!talent.berserkers_torment&(buff.recklessness.up|target.time_to_die<20)" );
   default_->add_action( "recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.spear_of_bastion.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
   default_->add_action( "recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12" );
-  default_->add_action( "spear_of_bastion,if=buff.enrage.up&(buff.furious_bloodthirst.up|target.time_to_die<20|active_enemies>1)&raid_event.adds.in>15" );
+  default_->add_action( "spear_of_bastion,if=buff.enrage.up&((buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)&raid_event.adds.in>15" );
   default_->add_action( "call_action_list,name=multi_target,if=raid_event.adds.exists|active_enemies>2" );
   default_->add_action( "call_action_list,name=single_target,if=!raid_event.adds.exists" );
 
@@ -87,12 +87,11 @@ void fury( player_t* p )
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
   single_target->add_action( "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
   single_target->add_action( "bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
-  single_target->add_action( "bloodbath" );
+  single_target->add_action( "bloodbath,if=set_bonus.tier31_2pc" );
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
   single_target->add_action( "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up&!buff.furious_bloodthirst.up" );
   single_target->add_action( "execute,if=buff.enrage.up&!buff.furious_bloodthirst.up&buff.ashen_juggernaut.up|buff.sudden_death.remains<=gcd&(target.health.pct>35&talent.massacre|target.health.pct>20)" );
-  single_target->add_action( "rampage,if=talent.reckless_abandon&(rage.pct=100|(target.health.pct<35&talent.massacre|target.health.pct<20)&rage.pct>=85)" );
   single_target->add_action( "rampage,if=talent.reckless_abandon&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
   single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( "rampage,if=talent.anger_management" );

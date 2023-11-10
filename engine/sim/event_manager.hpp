@@ -6,9 +6,10 @@
 #pragma once
 
 #include "config.hpp"
-#include "util/timespan.hpp"
+
 #include "util/chrono.hpp"
 #include "util/stopwatch.hpp"
+#include "util/timespan.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -28,7 +29,7 @@ struct event_manager_t
   unsigned timing_slice, global_event_id;
   std::vector<event_t*> timing_wheel;
   event_t* recycled_event_list;
-  int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
+  int wheel_seconds, wheel_size, wheel_mask, wheel_shift;
   double wheel_granularity;
   timespan_t wheel_time;
   std::vector<event_t*> allocated_events;
@@ -44,7 +45,7 @@ struct event_manager_t
 #endif /* EVENT_QUEUE_DEBUG */
 
   event_manager_t( sim_t* );
- ~event_manager_t();
+  ~event_manager_t();
   void* allocate_event( std::size_t size );
   void recycle_event( event_t* );
   void add_event( event_t*, timespan_t delta_time );
@@ -56,5 +57,5 @@ struct event_manager_t
   void init();
   void reset();
   void merge( event_manager_t& other );
-  void cancel_stuck();
+  void cancel_stuck( std::vector<std::string>& debug_list );
 };

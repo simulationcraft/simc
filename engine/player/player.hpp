@@ -764,6 +764,12 @@ struct player_t : public actor_t
     bool embersoul_debuff_immune = false;
     // Rallied to victory skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate losing some to healers.
     double rallied_to_victory_multi_actor_skip_chance = 0.2;
+    // Enable String of Delicacies Ally Estimation
+    bool string_of_delicacies_ally_estimate = false;
+    // Set the minimum number of allies buffed by STrong of Delicacies
+    double string_of_delicacies_min_allies = 0;
+    // String of Delicacies skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate loosing some to healers.
+    double string_of_delicacies_multi_actor_skip_chance = 0.2;
   } dragonflight_opts;
 
 private:

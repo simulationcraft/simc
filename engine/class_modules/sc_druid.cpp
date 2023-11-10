@@ -1150,7 +1150,6 @@ public:
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
-  pet_t* create_pet( std::string_view name, std::string_view type ) override;
   void create_pets() override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
@@ -1176,7 +1175,6 @@ public:
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
   bool check_astral_power( action_t* a, int over );
-  void snapshot_mastery();
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -1349,23 +1347,7 @@ struct force_of_nature_t : public pet_t
     // Treants have base weapon damage + ap from player's sp.
     owner_coeff.ap_from_sp = 0.6;
 
-    // From ExpectedStat.db2
-    double base_dps = 4551;  // @70
-
-    switch ( o()->true_level )
-    {
-      case 70: break;
-      case 69: base_dps = 4307; break;
-      case 68: base_dps = 3994; break;
-      case 67: base_dps = 3554; break;
-      case 66: base_dps = 3025; break;
-      case 65: base_dps = 2571; break;
-      case 64: base_dps = 2181; break;
-      case 63: base_dps = 1846; break;
-      case 62: base_dps = 1559; break;
-      case 61: base_dps = 1312; break;
-      default: base_dps = 712;  break;
-    }
+    double base_dps = o()->dbc->expected_stat( o()->true_level ).creature_auto_attack_dps;
 
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = base_dps * main_hand_weapon.swing_time.total_seconds() / 1000;
 
@@ -1682,6 +1664,12 @@ struct blood_frenzy_buff_t : public druid_buff_t
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       trigger_blood_frenzy();
     } );
+
+    if ( !p->bugs )
+    {
+      set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+      buff_period *= 1.0 + p->talent.circle_of_life_and_death->effectN( 1 ).percent();
+    }
   }
 
   void trigger_blood_frenzy()
@@ -2585,7 +2573,8 @@ struct druid_residual_data_t
 {
   double total_amount = 0.0;
 
-  friend void sc_format_to( const druid_residual_data_t& data, fmt::format_context::iterator out ) {
+  void sc_format_to( const druid_residual_data_t& data, fmt::format_context::iterator out )
+  {
     fmt::format_to( out, "total_amount={}", data.total_amount );
   }
 };
@@ -3397,7 +3386,8 @@ struct cat_finisher_data_t
 {
   int combo_points = 0;
 
-  friend void sc_format_to( const cat_finisher_data_t& data, fmt::format_context::iterator out ) {
+  void sc_format_to( const cat_finisher_data_t& data, fmt::format_context::iterator out )
+  {
     fmt::format_to( out, "combo_points={}", data.combo_points );
   }
 };
@@ -9315,15 +9305,6 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   return player_t::create_action( name, options_str );
 }
 
-// druid_t::create_pet ======================================================
-pet_t* druid_t::create_pet( std::string_view pet_name, std::string_view )
-{
-  if ( auto pet = find_pet( pet_name ) )
-    return pet;
-
-  return nullptr;
-}
-
 // druid_t::create_pets =====================================================
 void druid_t::create_pets()
 {
@@ -11242,7 +11223,7 @@ void druid_t::init_special_effects()
       {
         auto d = s->result_amount * mul;
 
-        residual_action::trigger( p()->active.burning_frenzy, listener, d );
+        residual_action::trigger( p()->active.burning_frenzy, s->target, d );
       }
     };
 

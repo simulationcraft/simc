@@ -120,6 +120,8 @@ actions.filler+=/shadow_word_death,target_if=target.health.pct<20
 actions.filler+=/divine_star
 # Use Shadow Word: Death while moving as a low-priority action
 actions.filler+=/shadow_word_death
+# Use Power Word: Shield while moving with the T31 tier set
+actions.filler+=/power_word_shield,if=set_bonus.tier31_4pc
 # Use Shadow Word: Pain while moving as a low-priority action
 actions.filler+=/shadow_word_pain,target_if=min:remains
 
@@ -181,7 +183,7 @@ actions.trinkets+=/use_item,name=desperate_invokers_codex,if=equipped.desperate_
 head=crest_of_lunar_communion,id=207281,ilevel=489,gem_id=192925,enchant_id=7052
 neck=eye_of_the_rising_flame,id=207163,ilevel=489,gem_id=192985/192925/192925
 shoulders=shoulderguardians_of_lunar_communion,id=207279,ilevel=489
-back=undulating_sporecloak,id=205025,bonus_id=8836/8840/8902/8960/9405/9498/9500,ilevel=486
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=8932/8960,ilevel=486,crafted_stats=36/49
 chest=vesture_of_the_smoldering_serpent,id=207121,ilevel=489,enchant=waking_stats_3
 wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/9405/9500/8793/8932/8960/9498/9600,ilevel=486,gem_id=192925,crafted_stats=40/32
 hands=touch_of_lunar_communion,id=207282,ilevel=489
@@ -200,9 +202,9 @@ off_hand=tricksters_captivating_chime,id=207796,ilevel=489
 # gear_stamina=38900
 # gear_intellect=13014
 # gear_crit_rating=2432
-# gear_haste_rating=5692
-# gear_mastery_rating=6371
-# gear_versatility_rating=535
+# gear_haste_rating=5980
+# gear_mastery_rating=6388
+# gear_versatility_rating=231
 # gear_armor=3251
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1

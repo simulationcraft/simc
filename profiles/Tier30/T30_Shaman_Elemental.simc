@@ -11,7 +11,7 @@ dragonflight.ominous_chromatic_essence_allies=azure/bronze/obsidian/ruby
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_elemental_chaos_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:howling_rune_3,if=!talent.improved_flametongue_weapon
@@ -261,7 +261,7 @@ main_hand=erethos_the_empty_promise,id=202565,bonus_id=6652/8783/8784/9414/9415/
 
 # Gear Summary
 # gear_ilvl=446.73
-# gear_stamina=22246
+# gear_stamina=22265
 # gear_intellect=9095
 # gear_crit_rating=3883
 # gear_haste_rating=4569

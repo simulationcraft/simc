@@ -2418,10 +2418,22 @@ public:
         p()->t31_assassination_2pc_accumulator += ( p()->bugs ? ab::last_resource_cost :
                                                     std::max( ab::cost(), ab::last_resource_cost ) );
         const double threshold = p()->set_bonuses.t31_assassination_2pc->effectN( 3 ).base_value();
+        int trigger_stacks = 0;
         while ( p()->t31_assassination_2pc_accumulator >= threshold )
         {
           p()->t31_assassination_2pc_accumulator -= threshold;
-          p()->buffs.t31_assassination_2pc->trigger();
+          trigger_stacks++;
+        }
+        if ( trigger_stacks > 0 )
+        {
+          p()->buffs.t31_assassination_2pc->trigger( trigger_stacks );
+
+          // 2023-11-06 -- Currently, removal of stacks appears to be scheduled regardless of if stacks are maxed/refreshed
+          //               This causes removal of stacks that may not originate from the initial trigger and lower expected uptime
+          if ( p()->bugs )
+          {
+            make_event( *p()->sim, 6_s, [ this, trigger_stacks ] { p()->buffs.t31_assassination_2pc->decrement( trigger_stacks ); } );
+          }
         }
       }
 
@@ -3656,7 +3668,7 @@ struct between_the_eyes_t : public rogue_attack_t
 
       if ( p()->talent.outlaw.crackshot->ok() && p()->stealthed( STEALTH_STANCE ) )
       {
-        p()->cooldowns.between_the_eyes->reset( true );
+        p()->cooldowns.between_the_eyes->reset( false );
         dispatch->trigger_secondary_action( execute_state->target, cp_spend );
       }
     }
@@ -6160,7 +6172,7 @@ struct stealth_t : public rogue_spell_t
 
     // Allow restealth for Dungeon sims against non-boss targets as Shadowmeld drops combat against trash.
     if ( ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || p()->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ) &&
-         p()->player_t::buffs.shadowmeld->check() && !target->is_boss() )
+         p()->player_t::buffs.shadowmeld->check() && !p()->target->is_boss() )
       return true;
 
     if ( !p()->restealth_allowed )
@@ -6219,7 +6231,8 @@ struct kidney_shot_t : public rogue_attack_t
     if ( !state->target->is_boss() && p()->active.internal_bleeding )
     {
       // 2023-10-05 -- Currently when triggerd by an ER cast, only uses base combo points
-      p()->active.internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->get_combo_points( p()->bugs ) );
+      p()->active.internal_bleeding->trigger_secondary_action( state->target,
+                                                               cast_state( state )->get_combo_points( p()->bugs ) );
     }
   }
 };
@@ -9006,15 +9019,15 @@ void rogue_t::init_action_list()
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    rogue_apl::assassination_ptr( this );
+    rogue_apl::assassination( this );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    rogue_apl::outlaw_ptr( this );
+    rogue_apl::outlaw( this );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    rogue_apl::subtlety_ptr( this );
+    rogue_apl::subtlety( this );
   }
 
   use_default_action_list = true;
@@ -9918,14 +9931,30 @@ void rogue_t::init_spells()
 
   talent.outlaw.underhanded_upper_hand = find_talent_spell( talent_tree::SPECIALIZATION, "Underhanded Upper Hand" );
   talent.outlaw.sepsis = find_talent_spell( talent_tree::SPECIALIZATION, "Sepsis", ROGUE_OUTLAW );
+  
   // TODO: ghostly_strike is duplicated in `trait_data_ptr.inc`, making the talent unable to be loaded by name (since there are two `Ghostly Strike` talents!)
   //  `find_talent_spell` normally uses the id of the first match, but in this case, it's broken, and it's the second match that works. So we do the data
   //  load manually to prefer the second, functional, talent node.
-  uint32_t class_idx, spec_idx;
-  dbc->spec_idx( ROGUE_OUTLAW, class_idx, spec_idx );
-  auto traits = trait_data_t::find_by_spell( talent_tree::SPECIALIZATION, 196937, class_idx, ROGUE_OUTLAW, dbc->ptr );
+  talent.outlaw.ghostly_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Ghostly Strike" );
+  if ( specialization() == ROGUE_OUTLAW && !talent.outlaw.ghostly_strike->ok() )
+  {
+    uint32_t class_idx, spec_idx;
+    dbc->spec_idx( ROGUE_OUTLAW, class_idx, spec_idx );
+    auto traits = trait_data_t::find_by_spell( talent_tree::SPECIALIZATION, 196937, class_idx, ROGUE_OUTLAW, dbc->ptr );
+    for ( auto trait : traits )
+    {
+      auto it = range::find_if( player_traits, [ trait ]( const auto& entry ) {
+        return std::get<1>( entry ) == trait->id_trait_node_entry;
+      } );
 
-  talent.outlaw.ghostly_strike = find_talent_spell( (traits[ 1 ] != nullptr ? traits[ 1 ] : traits[ 0 ])->id_trait_node_entry, ROGUE_OUTLAW );
+      if ( it != player_traits.end() && std::get<2>( *it ) != 0U )
+      {
+        talent.outlaw.ghostly_strike = find_talent_spell( trait->id_trait_node_entry, ROGUE_OUTLAW );
+        break;
+      }
+    }
+  }
+
   talent.outlaw.count_the_odds = find_talent_spell( talent_tree::SPECIALIZATION, "Count the Odds" );
   talent.outlaw.blade_rush = find_talent_spell( talent_tree::SPECIALIZATION, "Blade Rush" );
   talent.outlaw.precise_cuts = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Cuts" );
@@ -10043,7 +10072,7 @@ void rogue_t::init_spells()
   spec.improved_shiv_debuff = ( talent.assassination.improved_shiv->ok() || talent.assassination.arterial_precision->ok() ) ? find_spell( 319504 ) : spell_data_t::not_found();
   spec.indiscriminate_carnage_buff = talent.assassination.indiscriminate_carnage->ok() ? find_spell( 385747 ) : spell_data_t::not_found();
   spec.indiscriminate_carnage_buff_aura = talent.assassination.indiscriminate_carnage->ok() ? find_spell( 385754 ) : spell_data_t::not_found();
-  spec.internal_bleeding_debuff = talent.assassination.internal_bleeding->ok() ? find_spell( 154953 ) : spell_data_t::not_found();
+  spec.internal_bleeding_debuff = talent.assassination.internal_bleeding->ok() ? find_spell( 381628 ) : spell_data_t::not_found();
   spec.kingsbane_buff = talent.assassination.kingsbane->ok() ? find_spell( 394095 ) : spell_data_t::not_found();
   spec.master_assassin_buff = talent.assassination.master_assassin->ok() ? find_spell( 256735 ) : spell_data_t::not_found();
   spec.poison_bomb_driver = talent.assassination.poison_bomb->ok() ? find_spell( 255545 ) : spell_data_t::not_found();
@@ -10841,8 +10870,13 @@ void rogue_t::create_buffs()
   buffs.t31_assassination_2pc = make_buff<damage_buff_t>( this, "natureblight", spec.t31_assassination_2pc_buff )
     ->set_is_stacking_mod( true );
   buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED )
-    ->add_invalidate( CACHE_ATTACK_SPEED )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    ->add_invalidate( CACHE_ATTACK_SPEED );
+  // 2023-11-06 -- Manually decremented with bugs, see comment in consume_resource()
+  if ( !this->bugs )
+  {
+    buffs.t31_assassination_2pc->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  }
+
 }
 
 // rogue_t::invalidate_cache =========================================

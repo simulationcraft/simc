@@ -4066,12 +4066,15 @@ void sim_t::create_options()
   add_option( opt_string( "dragonflight.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
   add_option( opt_float( "dragonflight.blue_silken_lining_uptime", dragonflight_opts.blue_silken_lining_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval", dragonflight_opts.blue_silken_lining_update_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval_stddev", dragonflight_opts.blue_silken_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
   add_option( opt_bool( "dragonflight.screaming_black_dragonscale_damage", dragonflight_opts.screaming_black_dragonscale_damage ) );
   add_option( opt_timespan( "dragonflight.adaptive_stonescales_period", dragonflight_opts.adaptive_stonescales_period, 0_s, timespan_t::max() ) );
   add_option( opt_float( "dragonflight.undulating_sporecloak_uptime", dragonflight_opts.undulating_sporecloak_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.undulating_sporecloak_update_interval", dragonflight_opts.undulating_sporecloak_update_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "dragonflight.undulating_sporecloak_update_interval_stddev", dragonflight_opts.undulating_sporecloak_update_interval_stddev, 1_s, timespan_t::max() ) );
   add_option( opt_float( "dragonflight.dreamtenders_charm_uptime", dragonflight_opts.dreamtenders_charm_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.dreamtenders_charm_update_interval", dragonflight_opts.dreamtenders_charm_update_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "dragonflight.dreamtenders_charm_update_interval_stddev", dragonflight_opts.dreamtenders_charm_update_interval_stddev, 1_s, timespan_t::max() ) );
   add_option( opt_uint( "dragonflight.verdant_embrace_allies", dragonflight_opts.verdant_embrace_allies, 0, 2 ) );
   add_option( opt_float( "dragonflight.embersoul_dire_chance", dragonflight_opts.embersoul_dire_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.embersoul_dire_interval", dragonflight_opts.embersoul_dire_interval, 0_s, timespan_t::max() ) );

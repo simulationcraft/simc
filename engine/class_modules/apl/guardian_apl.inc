@@ -20,7 +20,7 @@ def->add_action( "run_action_list,name=bear" );
 
 bear->add_action( "bear_form,if=!buff.bear_form.up" );
 bear->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled" );
-bear->add_action( "moonfire,cycle_targets=1,if=(((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)" );
+bear->add_action( "moonfire,cycle_targets=1,if=(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)" );
 bear->add_action( "thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)" );
 bear->add_action( "bristling_fur,if=!cooldown.pause_action.remains&&cooldown.rage_of_the_sleeper.remains>8" );
 bear->add_action( "barkskin,if=buff.bear_form.up" );
@@ -28,7 +28,7 @@ bear->add_action( "convoke_the_spirits" );
 bear->add_action( "berserk_bear" );
 bear->add_action( "incarnation" );
 bear->add_action( "lunar_beam" );
-bear->add_action( "rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60&rage>75|buff.incarnation_guardian_of_ursoc.up&rage>75|(talent.convoke_the_spirits.enabled)&rage>75" );
+bear->add_action( "rage_of_the_sleeper,if=((buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60)|buff.berserk_bear.down)&rage>75&(!talent.convoke_the_spirits.enabled)|(buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up)&rage>75&(!talent.convoke_the_spirits.enabled)|(talent.convoke_the_spirits.enabled)&rage>75" );
 bear->add_action( "berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)" );
 bear->add_action( "maul,if=(buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6&!talent.raze.enabled&variable.If_build=0)|(buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies=1&talent.raze.enabled&variable.If_build=0)" );
 bear->add_action( "raze,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&variable.If_build=0&active_enemies>1" );

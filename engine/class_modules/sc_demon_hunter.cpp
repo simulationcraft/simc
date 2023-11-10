@@ -1232,7 +1232,7 @@ struct soul_fragment_t
     if ( dh->talent.vengeance.feed_the_demon->ok() )
     {
       timespan_t duration =
-          timespan_t::from_seconds( dh->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() ) / 10;
+          timespan_t::from_seconds( dh->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() / 100 );
       dh->cooldown.demon_spikes->adjust( -duration );
     }
 
@@ -3016,19 +3016,6 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
       energize_resource = RESOURCE_FURY;
       energize_amount   = p->talent.demon_hunter.flames_of_fury->effectN( 1 ).resource();
     }
-  }
-
-  double action_ta_multiplier() const override
-  {
-    double am = demon_hunter_sigil_t::action_ta_multiplier();
-
-    // 2023-05-01 -- Sigil of Flame's DoT currently deals twice the intended damage.
-    //               There are currently two Apply Aura: Periodic Damage effects in the spell data
-    //               (Effects #2 and #3) which could potentially be the reason for this.
-    if ( p()->bugs )
-      am *= 2.0;
-
-    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -5461,9 +5448,9 @@ struct fracture_t : public demon_hunter_attack_t
     {
       int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
       // divide the number in 2 as half come from main hand, half come from offhand.
-      int number_of_soul_fragments_to_spawn_per_hit = number_of_soul_fragments_to_spawn / 2;
+      [[maybe_unused]] int number_of_soul_fragments_to_spawn_per_hit = number_of_soul_fragments_to_spawn / 2;
       // handle leftover souls in the event that blizz ever changes Fracture to an odd number of souls generated
-      int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn % 2;
+      [[maybe_unused]] int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn % 2;
 
       mh->set_target( s->target );
       mh->execute();

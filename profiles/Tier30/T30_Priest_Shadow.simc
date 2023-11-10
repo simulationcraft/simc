@@ -120,6 +120,8 @@ actions.filler+=/shadow_word_death,target_if=target.health.pct<20
 actions.filler+=/divine_star
 # Use Shadow Word: Death while moving as a low-priority action
 actions.filler+=/shadow_word_death
+# Use Power Word: Shield while moving with the T31 tier set
+actions.filler+=/power_word_shield,if=set_bonus.tier31_4pc
 # Use Shadow Word: Pain while moving as a low-priority action
 actions.filler+=/shadow_word_pain,target_if=min:remains
 
@@ -196,7 +198,7 @@ main_hand=erethos_the_empty_promise,id=202565,bonus_id=4800/4786/1498,enchant=so
 
 # Gear Summary
 # gear_ilvl=448.93
-# gear_stamina=22495
+# gear_stamina=22520
 # gear_intellect=8495
 # gear_crit_rating=1261
 # gear_haste_rating=5080

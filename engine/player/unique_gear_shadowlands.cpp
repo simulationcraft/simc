@@ -2143,7 +2143,7 @@ void salvaged_fusion_amplifier( special_effect_t& effect)
   cb_driver->proc_flags2_ = PF2_ALL_HIT; // As this triggers from white+yellow hits not just casts, use ALL_HIT
   effect.player->special_effects.push_back( cb_driver );
 
-  [[maybe_unused]] auto callback = new salvaged_fusion_amplifier_cb_t( *cb_driver, damage, buff );
+  new salvaged_fusion_amplifier_cb_t( *cb_driver, damage, buff );
 
   timespan_t precast = effect.player->sim->shadowlands_opts.salvaged_fusion_amplifier_precast;
   if ( precast > 0_s )
@@ -4188,7 +4188,7 @@ void yasahm_the_riftbreaker( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "preternatural_charge", effect.trigger() )->set_max_stack( effect.trigger()->max_stacks() + 1 );
-    buff->set_stack_change_callback( [ proc ]( buff_t* buff, [[maybe_unused]] int old, int cur ) {
+    buff->set_stack_change_callback( [ proc ]( buff_t* buff, int, int cur ) {
       if ( cur == buff->max_stack() )
       {
         proc->set_target( buff->player->target );

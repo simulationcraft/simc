@@ -1282,8 +1282,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
-      ignores_automatic_mastery( false ),
-      triggers_atonement( false )
+      triggers_atonement( false ),
+      ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
 

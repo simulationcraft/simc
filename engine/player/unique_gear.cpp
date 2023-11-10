@@ -3382,14 +3382,13 @@ struct entropic_embrace_damage_t : public spell_t
 struct entropic_embrace_damage_cb_t : public dbc_proc_callback_t
 {
   double coeff;
-  entropic_embrace_damage_cb_t( const special_effect_t* effect, double c ) :
-    dbc_proc_callback_t( effect -> player, *effect ),
-    coeff( c )
-  { }
+  entropic_embrace_damage_cb_t( const special_effect_t* effect, double c )
+    : dbc_proc_callback_t( effect->player, *effect ), coeff( c )
+  {}
 
   void trigger( action_t* a, action_state_t* state ) override
   {
-    if ( state -> result_amount <= 0 )
+    if ( state->result_amount <= 0 )
     {
       return;
     }
@@ -3399,37 +3398,40 @@ struct entropic_embrace_damage_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* state ) override
   {
-    proc_action -> base_dd_min = state -> result_amount * coeff;
-    proc_action -> base_dd_max = proc_action -> base_dd_min;
+    proc_action->base_dd_min = state->result_amount * coeff;
+    proc_action->base_dd_max = proc_action->base_dd_min;
 
-    proc_action -> set_target( state -> target );
-    proc_action -> execute();
+    proc_action->set_target( state->target );
+    proc_action->execute();
   }
 };
 
 void racial::entropic_embrace( special_effect_t& effect )
 {
   special_effect_t* effect_driver = new special_effect_t( effect.player );
-  effect_driver -> source = SPECIAL_EFFECT_SOURCE_RACE;
-  effect_driver -> type = SPECIAL_EFFECT_EQUIP;
-  effect_driver -> proc_flags2_ = PF2_ALL_HIT;
-  effect_driver -> name_str = "entropic_embrace_damage_driver";
-  effect_driver -> spell_id = effect.trigger() -> id();
-  effect_driver -> execute_action = create_proc_action<entropic_embrace_damage_t>( "entropic_embrace", effect );
-  effect.player -> special_effects.push_back( effect_driver );
+  effect_driver->source = SPECIAL_EFFECT_SOURCE_RACE;
+  effect_driver->type = SPECIAL_EFFECT_EQUIP;
+  // TODO: healing proc NYI
+  effect_driver->proc_flags_ = effect.trigger()->proc_flags() & ~( PF_NONE_HEAL | PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
+  effect_driver->proc_flags2_ = PF2_ALL_HIT;
+  effect_driver->name_str = "entropic_embrace_damage_driver";
+  effect_driver->spell_id = effect.trigger()->id();
+  effect_driver->execute_action = create_proc_action<entropic_embrace_damage_t>( "entropic_embrace", effect );
+  effect.player->special_effects.push_back( effect_driver );
 
-  auto proc = new entropic_embrace_damage_cb_t( effect_driver,
-      effect.trigger() -> effectN( 1 ).percent() );
-  proc -> deactivate();
+  auto proc = new entropic_embrace_damage_cb_t( effect_driver, effect.trigger()->effectN( 1 ).percent() );
+  proc->deactivate();
 
   buff_t* base_buff = buff_t::find( effect.player, "entropic_embrace" );
   if ( base_buff == nullptr )
   {
     base_buff = make_buff( effect.player, "entropic_embrace", effect.trigger() )
-                ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
-                  if ( new_ > 0 ) proc -> activate();
-                  else            proc -> deactivate();
-                } );
+      ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+        if ( new_ > 0 )
+          proc->activate();
+        else
+          proc->deactivate();
+      } );
   }
 
   effect.custom_buff = base_buff;

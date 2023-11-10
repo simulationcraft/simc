@@ -64,27 +64,27 @@ struct event_t : private noncopyable
   {
     schedule( delta_time );
   }
+
   event_t( actor_t& a, timespan_t delta_time ) : event_t( a )
   {
     schedule( delta_time );
   }
 
-  timespan_t occurs() const  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
+  timespan_t occurs() const { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
   timespan_t remains() const;
 
   void schedule( timespan_t delta_time );
 
   void reschedule( timespan_t delta_time );
-  sim_t& sim()
-  { return _sim; }
-  const sim_t& sim() const
-  { return _sim; }
+  sim_t& sim() { return _sim; }
+  const sim_t& sim() const { return _sim; }
   rng::rng_t& rng();
 
   virtual void execute() = 0; // MUST BE IMPLEMENTED IN SUB-CLASS!
-  virtual const char* name() const
-  { return "core_event_t"; }
-
+  virtual const char* name() const { return "core_event_t"; }
+#ifndef NDEBUG
+  virtual const char* debug() const { return name(); }
+#endif
   virtual ~event_t() = default;
 
   template<class T>
@@ -102,8 +102,8 @@ protected:
   template <typename Event, typename... Args>
   friend Event* make_event( sim_t& sim, Args&&... args );
   static void* operator new( std::size_t size, sim_t& sim );
-  static void  operator delete( void*, sim_t& ) { }
-  static void  operator delete( void* ) { }
+  static void  operator delete( void*, sim_t& ) {}
+  static void  operator delete( void* ) {}
   static void* operator new( std::size_t ) = delete; // NOLINT(modernize-use-equals-delete)
 };
 

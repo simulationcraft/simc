@@ -7265,7 +7265,7 @@ struct remorseless_winter_buff_t final : public buff_t
       damage -> execute();
     } );
     set_partial_tick( true );
-    set_stack_change_callback( [ p, this ] ( buff_t*, int, int new_ ) 
+    set_stack_change_callback( [ p ] ( buff_t*, int, int new_ )
     {
       if ( !new_ )
       {

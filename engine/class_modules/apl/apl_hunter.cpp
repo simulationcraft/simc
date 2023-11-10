@@ -78,7 +78,7 @@ void beast_mastery( player_t* p )
 
   cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains)" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains" );
-  cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains>0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
+  cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
   cleave->add_action( "bestial_wrath" );
   cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "kill_command,if=talent.kill_cleave" );
@@ -165,7 +165,7 @@ void beast_mastery_ptr( player_t* p )
 
   cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains)" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains" );
-  cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains>0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
+  cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
   cleave->add_action( "bestial_wrath" );
   cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "kill_command,if=talent.kill_cleave" );
@@ -190,11 +190,11 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)" );
-  st->add_action( "call_of_the_wild" );
   st->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator" );
+  st->add_action( "call_of_the_wild" );
   st->add_action( "stampede" );
-  st->add_action( "bestial_wrath" );
   st->add_action( "bloodshed" );
+  st->add_action( "bestial_wrath" );
   st->add_action( "death_chakram" );
   st->add_action( "kill_command" );
   st->add_action( "a_murder_of_crows" );

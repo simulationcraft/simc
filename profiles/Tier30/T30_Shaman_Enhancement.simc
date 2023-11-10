@@ -53,10 +53,11 @@ actions+=/berserking,if=(buff.ascendance.up|buff.feral_spirit.up|buff.doom_winds
 actions+=/fireblood,if=(buff.ascendance.up|buff.feral_spirit.up|buff.doom_winds.up|(fight_remains%%action.fireblood.cooldown<=action.fireblood.duration)|(variable.min_talented_cd_remains>=action.fireblood.cooldown)|(!talent.ascendance.enabled&!talent.feral_spirit.enabled&!talent.doom_winds.enabled))
 actions+=/ancestral_call,if=(buff.ascendance.up|buff.feral_spirit.up|buff.doom_winds.up|(fight_remains%%action.ancestral_call.cooldown<=action.ancestral_call.duration)|(variable.min_talented_cd_remains>=action.ancestral_call.cooldown)|(!talent.ascendance.enabled&!talent.feral_spirit.enabled&!talent.doom_winds.enabled))
 actions+=/invoke_external_buff,name=power_infusion,if=(buff.ascendance.up|buff.feral_spirit.up|buff.doom_winds.up|(fight_remains%%120<=20)|(variable.min_talented_cd_remains>=120)|(!talent.ascendance.enabled&!talent.feral_spirit.enabled&!talent.doom_winds.enabled))
+actions+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>1&(active_enemies=1&ti_lightning_bolt)|(active_enemies>1&ti_chain_lightning)
 actions+=/primordial_wave,if=set_bonus.tier31_2pc&(raid_event.adds.in>(action.primordial_wave.cooldown%(1+set_bonus.tier31_4pc))|raid_event.adds.in<6)
 actions+=/feral_spirit
-actions+=/ascendance,if=dot.flame_shock.ticking&((ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1))
-actions+=/doom_winds,if=raid_event.adds.in>=90|active_enemies>1
+actions+=/ascendance,if=dot.flame_shock.ticking&((ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=action.ascendance.cooldown%2)|(ti_chain_lightning&active_enemies>1))
+actions+=/doom_winds,if=raid_event.adds.in>=action.doom_winds.cooldown|active_enemies>1
 actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1&(rotation.standard|rotation.simple)
 actions+=/call_action_list,name=funnel,if=active_enemies>1&rotation.funnel
@@ -66,8 +67,7 @@ actions.aoe=crash_lightning,if=talent.crashing_storms.enabled&((talent.unruly_wi
 actions.aoe+=/lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)
 actions.aoe+=/lava_lash,if=talent.molten_assault.enabled&(talent.primordial_wave.enabled|talent.fire_nova.enabled)&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
-actions.aoe+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!talent.crashing_storms.enabled|active_enemies<=3)
-actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1
+actions.aoe+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|feral_spirit.active>=2)))&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!talent.crashing_storms.enabled|active_enemies<=3)
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack
 actions.aoe+=/crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)
 actions.aoe+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
@@ -88,7 +88,7 @@ actions.aoe+=/ice_strike
 actions.aoe+=/lava_lash
 actions.aoe+=/crash_lightning
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=2
-actions.aoe+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5&(!talent.crashing_storms.enabled|active_enemies<=3)
+actions.aoe+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|feral_spirit.active>=2)))&buff.maelstrom_weapon.stack>=5&(!talent.crashing_storms.enabled|active_enemies<=3)
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
 actions.aoe+=/flame_shock,if=!ticking
@@ -134,22 +134,20 @@ actions.single+=/flame_shock,if=!ticking&talent.lashing_flames.enabled
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&talent.elemental_spirits.enabled&feral_spirit.active>=4
 actions.single+=/sundering,if=set_bonus.tier30_2pc&raid_event.adds.in>=action.sundering.cooldown
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning&(buff.ascendance.remains>(cooldown.strike.remains+gcd))
-actions.single+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1&(talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)|(talent.elemental_assault.enabled&talent.stormflurry.enabled)|ti_lightning_bolt)
-actions.single+=/stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)|((talent.elemental_assault.enabled&talent.stormflurry.enabled)&buff.maelstrom_weapon.stack<buff.maelstrom_weapon.max_stack)
+actions.single+=/stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)
 actions.single+=/lava_lash,if=buff.hot_hand.up
 actions.single+=/windfury_totem,if=!buff.windfury_totem.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
-actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up&talent.elemental_spirits.enabled
-actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&(buff.feral_spirit.up|!talent.elemental_spirits.enabled)
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=8&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
+actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=8&buff.crackling_thunder.up&talent.elemental_spirits.enabled
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=8&(feral_spirit.active>=2|!talent.elemental_spirits.enabled)
 actions.single+=/lava_burst,if=!talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=5
-actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down
-actions.single+=/ice_strike,if=buff.doom_winds.up
-actions.single+=/sundering,if=buff.doom_winds.up&raid_event.adds.in>=action.sundering.cooldown
-actions.single+=/crash_lightning,if=buff.doom_winds.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)
+actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack>=8)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down
+actions.single+=/crash_lightning,if=talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0
 actions.single+=/primordial_wave,if=raid_event.adds.in>(action.primordial_wave.cooldown%(1+set_bonus.tier31_4pc))|raid_event.adds.in<6
 actions.single+=/flame_shock,if=!ticking
-actions.single+=/lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable
+actions.single+=/ice_strike,if=talent.elemental_assault.enabled&talent.swirling_maelstrom.enabled
+actions.single+=/lava_lash,if=talent.lashing_flames.enabled
 actions.single+=/ice_strike,if=!buff.ice_strike.up
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/lava_lash
@@ -165,6 +163,7 @@ actions.single+=/crash_lightning
 actions.single+=/fire_nova,if=active_dot.flame_shock
 actions.single+=/earth_elemental
 actions.single+=/flame_shock
+actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up&talent.elemental_spirits.enabled
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
@@ -188,7 +187,7 @@ off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,enchant=sophi
 # Gear Summary
 # gear_ilvl=448.81
 # gear_agility=6241
-# gear_stamina=22474
+# gear_stamina=22500
 # gear_crit_rating=1024
 # gear_haste_rating=6066
 # gear_mastery_rating=5166

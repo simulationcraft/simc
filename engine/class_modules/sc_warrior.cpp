@@ -1517,7 +1517,7 @@ public:
     {
       anger_management( rage );
     }
-    if ( ab::result_is_miss( ab::execute_state->result ) && rage > 0 && !ab::aoe )
+    if ( rage > 0 && !ab::aoe && ab::execute_state && ab::result_is_miss( ab::execute_state->result ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage * 0.8, p()->gain.avoided_attacks );
     }

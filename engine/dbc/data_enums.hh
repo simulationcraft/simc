@@ -1330,7 +1330,6 @@ enum spell_attribute : unsigned
   SX_REFRESH_EXTENDS_DURATION       = 436u,
 };
 
-
 enum spell_label : unsigned
 {
   LABEL_COVENANT                   = 976u,
@@ -1338,6 +1337,16 @@ enum spell_label : unsigned
   LABEL_SHARD_OF_DOMINATION_FROST  = 1306u,
   LABEL_SHARD_OF_DOMINATION_UNHOLY = 1307u,
   LABEL_PRIMORDIAL_STONE           = 2513u,
+};
+
+enum difficulty_e : unsigned
+{
+  NONE = 0,
+  DUNGEON = 8,
+  NORMAL = 14,
+  HEROIC = 15,
+  MYTHIC = 16,
+  LFR = 17,
 };
 
 #endif

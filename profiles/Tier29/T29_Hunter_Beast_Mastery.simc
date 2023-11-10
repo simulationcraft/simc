@@ -44,7 +44,7 @@ actions.cds+=/potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.b
 
 actions.cleave=barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains)
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains
-actions.cleave+=/multishot,if=pet.main.buff.beast_cleave.remains>0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)
+actions.cleave+=/multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)
 actions.cleave+=/bestial_wrath
 actions.cleave+=/call_of_the_wild
 actions.cleave+=/kill_command,if=talent.kill_cleave

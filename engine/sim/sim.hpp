@@ -508,7 +508,9 @@ struct sim_t : private sc_thread_t
     // Uptime of the mastery buff(Zone of Focus) of Blue Silken Lining (>90% HP)
     double blue_silken_lining_uptime = 0.4;
     // Interval between checking blue_silken_lining_uptime
-    timespan_t blue_silken_lining_update_interval = 5_s;
+    timespan_t blue_silken_lining_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t blue_silken_lining_update_interval_stddev = 2.5_s;
     // Enable or Disable Seething Black Dragonscale's damage
     bool screaming_black_dragonscale_damage = false;
     // Period in which to try to trigger adapative Stonescales. Based on spell data, does not trigger on periodic damage.
@@ -516,11 +518,15 @@ struct sim_t : private sc_thread_t
     // Uptime of the vers buff of Undulating Sporecloak (>70% HP)
     double undulating_sporecloak_uptime = 0.9;
     // Interval between checking undulating_sporecloak_uptime
-    timespan_t undulating_sporecloak_update_interval = 5_s;
+    timespan_t undulating_sporecloak_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t undulating_sporecloak_update_interval_stddev = 2.5_s;
     // Uptime of the mastery buff (Dreaming Trance) of Dreamtender's Charm (>70% HP), does not include lockout time
     double dreamtenders_charm_uptime = 0.9;
-    // Interval between checking blue_silken_lining_uptime
-    timespan_t dreamtenders_charm_update_interval = 5_s;
+    // Interval between checking dreamtenders_charm_uptime
+    timespan_t dreamtenders_charm_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t dreamtenders_charm_update_interval_stddev = 2.5_s;
     // Amount of allies using Verdant Embrace to increase the amount and reduce RPPM
     unsigned int verdant_embrace_allies = 0;
     // Sets the chance for Ashes of the Embersoul's "Dire" condition to proc on the interval

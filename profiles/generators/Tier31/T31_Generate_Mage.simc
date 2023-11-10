@@ -30,34 +30,33 @@
 
 # save=T31_Mage_Arcane.simc
 
-# mage="T31_Mage_Fire"
-# spec=fire
-# level=70
-# race=dwarf
-# role=spell
-# position=back
-# talents=B8DArSxcnei16P8xFL3rzzOyRGJIFNkIRKCikQERkkAAAAAAAAAIiIJJOQJRJJJJJJJaAAAgA
+mage="T31_Mage_Fire"
+spec=fire
+level=70
+race=dwarf
+role=spell
+position=back
+talents=B8DAAAAAAAAAAAAAAAAAAAAAAQCSRDJEpJISCRkEJJAAAAAAAAAiISSiDUSOQJJRSSSSAAAACA
 
-# head=vibrant_wildercloth_headcover,id=193523,ilevel=447,gem_id=192985,bonus_id=523/9379/8960,crafted_stats=36/40
-# neck=ionized_choker,id=206181,ilevel=447,gem_id=192952/192952/192952,bonus_id=8782
-# shoulder=underlight_conjurers_aurora,id=205858,ilevel=450
-# back=voice_of_the_silent_star,id=204465,ilevel=457,enchant_id=6592
-# chest=underlight_conjurers_vestment,id=205862,ilevel=447,enchant_id=6625
-# wrist=overengineered_sleeve_extenders,id=198322,ilevel=447,gem_id=201409/192952,enchant_id=6574,bonus_id=523,crafted_stats=36/36
-# hands=underlight_conjurers_gloves,id=205861,ilevel=447
-# waist=vibrant_wildercloth_girdle,id=193516,ilevel=447,gem_id=192952,bonus_id=523/9379/8960,crafted_stats=36/40
-# legs=underlight_conjurers_trousers,id=205859,ilevel=450,enchant_id=6541
-# feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6613
-# finger1=circle_of_ascended_frost,id=193731,ilevel=447,gem_id=192952,enchant_id=6556,bonus_id=523
-# finger2=signet_of_titanic_insight,id=192999,ilevel=447,gem_id=192952,enchant_id=6556,bonus_id=523,crafted_stats=36/40
-# trinket1=vessel_of_searing_shadow,id=202615,ilevel=447
-# trinket2=ominous_chromatic_essence,id=203729,ilevel=447
-# main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
+head=crown_of_the_infinite_lord,id=207927,enchant_id=7052,gem_id=192952,ilevel=489
+neck=amulet_of_eonars_chosen,id=208445,gem_id=192985/192952/192952,ilevel=489
+shoulder=wayward_chronomancers_metronomes,id=207288,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
+back=vibrant_wildercloth_shawl,id=193511,enchant_id=6598,bonus_id=8836/8840/8902/9405/8846/8790/9379/8960/9365,crafted_stats=36/40,crafting_quality=5,ilevel=486
+chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9498/9369/9369/9368/9402/8792/9379/8960,crafting_quality=5,enchant_id=6574,gem_id=192952,ilevel=486
+hands=wayward_chronomancers_gloves,id=207291,ilevel=489
+waist=mobius_strap,id=207898,gem_id=192952,ilevel=489
+legs=wayward_chronomancers_pantaloons,id=207289,enchant_id=6541,bonus_id=6652/7979/9562/9512/1491/8767,ilevel=489
+feet=lost_scholars_belted_treads,id=207122,ilevel=489,enchant_id=6613
+finger1=ringbound_hourglass,id=193000,enchant_id=6556,gem_id=192952,bonus_id=8836/8840/8902/8780/9405/8795/9376/9366,crafted_stats=49/32,crafting_quality=5,ilevel=486
+finger2=ring_of_contempt,id=134490,enchant_id=6556,gem_id=192952,ilevel=489
+trinket1=augury_of_the_primal_flame,id=208614,ilevel=496
+trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
+main_hand=iridal_the_earths_master,id=208321,enchant_id=6655,ilevel=489
 
-# dragonflight.ominous_chromatic_essence_dragonflight=ruby
-# dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+flask=phial_of_corrupting_rage_3
 
-# save=T31_Mage_Fire.simc
+save=T31_Mage_Fire.simc
 
 mage="T31_Mage_Frost"
 spec=frost
@@ -70,7 +69,7 @@ talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJhQDJJJpBISERSkkAAAIlEJhEJJhkkkkkEAAAAAAAAAICA
 head=wayward_chronomancers_chronocap,id=207290,bonus_id=8780,ilevel=489,gem_id=192988,enchant_id=7052
 neck=ouroboreal_necklet,id=210214,bonus_id=8782,ilevel=489,gem_id=192948/192948/192948
 shoulders=wayward_chronomancers_metronomes,id=207288,ilevel=489
-back=undulating_sporecloak,id=205025,ilevel=486
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,enchant_id=6592,crafted_stats=49/36
 chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
 wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960/8780,ilevel=486,gem_id=192948,enchant_id=6586,crafted_stats=32/36
 hands=wayward_chronomancers_gloves,id=207291,ilevel=489
@@ -79,8 +78,8 @@ legs=bloodstained_sous_chef_pants,id=159285,ilevel=489,enchant_id=6541
 feet=devilsaur_worshipers_sandals,id=158303,ilevel=489,enchant_id=6613
 finger1=signet_of_the_highborne_magi,id=134537,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6562
 finger2=signet_of_the_last_elder,id=207162,bonus_id=8780,ilevel=489,gem_id=192948,enchant_id=6562
-trinket1=belorrelos_the_suncaller,id=207172,bonus_id=6652/7979/9563/1494/8767,ilevel=489
-trinket2=balefire_branch,id=159630,bonus_id=6652/7979/9563/1494/8767,ilevel=489
+trinket1=balefire_branch,id=159630,bonus_id=6652/7979/9563/1494/8767,ilevel=489
+trinket2=belorrelos_the_suncaller,id=207172,bonus_id=6652/7979/9563/1494/8767,ilevel=489
 main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=489,enchant_id=6643
 
 flask=phial_of_corrupting_rage_3
