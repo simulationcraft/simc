@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.2.0.52095 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52106 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -4622,7 +4622,6 @@ Description      : The cooldowns of your Holy Words are reduced by an additional
 
 Name             : Shield Discipline (id=197045) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=4, col=2, max_rank=1, req_points=0]
-                 : Discipline [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12892,7 +12891,6 @@ Description      : Atonement heals for $s1% more when activated by Shadow spells
 
 Name             : Twilight Corruption (id=373065) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=6, col=5, max_rank=1, req_points=8]
-                 : Discipline [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -17351,6 +17349,7 @@ Effects          :
 Description      : $@spelldesc421453
 
 Name             : Ultimate Penitence (id=421453) [Spell Family (6)] 
+Hotfixed         : Attributes
 Talent Entry     : Discipline [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Priest
 School           : Holy
@@ -17360,23 +17359,27 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 6.5 seconds
 Cooldown         : 240 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... .......x ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Jump Pathing (208), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Immunity Purges Effect (47), No Jump Pathing (208), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Do Not Fail if No Target (431)
 Effects          :
 #1 (id=1095751)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-#2 (id=1095752)  : Unknown(254)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 852 | Target: Self (1) -> Custom (18)
+#2 (id=1095752)  : Trigger Spell (64): Ultimate Penitence
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 432154 | Target: Self (1)
+Hotfixed         : Type (254 -> 64), Base Value (2 -> 0), Misc Value (852 -> 0), Trigger Spell (0 -> 432154), Target 2 (18 -> 0)
 #3 (id=1102232)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+#4 (id=1120477)  : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.
 
 While ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.
@@ -17776,5 +17779,32 @@ Description      : $@spelldesc45243
 Tooltip          : All magical damage taken reduced by $w1%.
 
 All physical damage taken reduced by $w2%.
+
+Name             : Ultimate Penitence (id=432154) [Spell Family (6)] 
+Hotfixed         : NEW SPELL
+Class            : Priest
+School           : Holy
+Spell Type       : None
+Range            : 40 yards
+Triggered by     : Ultimate Penitence (421453)
+Attributes       : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... .......x ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Immunity Purges Effect (47), No Jump Pathing (208), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Do Not Fail if No Target (431)
+Effects          :
+#1 (id=1120482)  : Unknown(254)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 852 | Target: Self (1) -> Custom (18)
+Hotfixed         : NEW EFFECT
+Description      : Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.
+
+While ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.
+Tooltip          : Absorbing $w3 damage.
+Variables        : $penancedamage=${$421543s1>*($421434d/$421434t2)}
+$penancehealing=${$421544s1>*($421434d/$421434t2)}
 
 
