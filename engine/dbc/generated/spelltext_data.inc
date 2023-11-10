@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.0.52095
-static const std::array<spelltext_data_t, 20509> __spelltext_data { {
+// Spell text, wow build 10.2.0.52106
+static const std::array<spelltext_data_t, 20508> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17963,7 +17963,6 @@ static const std::array<spelltext_data_t, 20509> __spelltext_data { {
   { 388106, "Throw Glaive causes targets to take an additional $s1% of damage dealt as Chaos over $390181d.", 0, 0 },
   { 388107, "Each time Immolation Aura deals damage, $s1% of the damage dealt by up to $s2 critical strikes is gathered as Ragefire.\r\n\r\nWhen Immolation Aura expires you explode, dealing all stored Ragefire damage to nearby enemies.", 0, 0 },
   { 388108, "Damaging an enemy before they damage you increases your critical strike chance by $391215s1% for $391215d.\r\n\r\nVengeful Retreat refreshes your potential to trigger this effect on any enemies you are in combat with.", 0, 0 },
-  { 388110, "You deal $391369s1% increased damage to enemies for $391369d after Sigil of Misery's effect on them ends.", 0, 0 },
   { 388111, "Enemies deal $s1% reduced magic damage to you for $394933d after being afflicted by one of your Sigils.", 0, 0 },
   { 388112, "When you activate Metamorphosis, the cooldowns of Blade Dance and Eye Beam are immediately reset.", 0, 0 },
   { 388113, "Chaos Nova, Eye Beam, and Immolation Aura gain bonuses when striking 1 target.\r\n\r\n$@spellicon179057 $@spellname179057:\r\nStun duration increased by ${$s1/1000} sec.\r\n\r\n$@spellicon198013 $@spellname198013:\r\nDeals $s2% increased damage.\r\n\r\n$@spellicon258920 $@spellname258920:\r\nAlways critically strikes.", 0, 0 },
@@ -18437,7 +18436,6 @@ static const std::array<spelltext_data_t, 20509> __spelltext_data { {
   { 391356, "$@spelldesc391347", "Bleeding for $w1 damage every $t1 seconds.", 0 },
   { 391359, "$@spelldesc391339", 0, 0 },
   { 391368, "Increases healing done by Renew by $s1%, but decreases its base duration by ${$s2/-1000} sec.", 0, 0 },
-  { 391369, "$@spelldesc388110", "Damage taken from $@auracaster increased by $s1%.", 0 },
   { 391370, "The duration of $?s152173[Serenity][Storm, Earth, and Fire] is extended by $?s152173[${$s2/10}.1 sec every time you cast a Chi spender][${$s1/10}.1 sec for every Chi you spend].", 0, 0 },
   { 391374, "$@spelldesc188499", 0, 0 },
   { 391378, "$@spelldesc188499", 0, 0 },
@@ -20509,15 +20507,18 @@ static const std::array<spelltext_data_t, 20509> __spelltext_data { {
   { 431156, "Your next Rapid Fire will shoot $s1% additional shots during its channel.", "Your next Rapid Fire will shoot $s1% additional shots during its channel.", 0 },
   { 431168, "Rapid Fire deals $s1% additional damage. Trick Shots causes Rapid Fire to launch a Volley for $s2 sec, dealing $s3% of normal damage.", 0, 0 },
   { 431172, "Every $s1 Focus you spend has a ${$m2/10}.1% chance to reset the cooldown of Rapid Fire and cause your next Rapid Fire to shoot $431156s1% additional shots during its channel.", 0, 0 },
+  { 432154, "Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.\r\n\r\nWhile ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.", "Absorbing $w3 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.52095
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.2.0.52106
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  422303,  0, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5." },
+  {  422303,  1, "After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", "After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path." },
   {  426321,  0, "@$spelldesc426262", "$@spelldesc426262" },
 } };
 
-// Spell description variables, wow build 10.2.0.52095
-static const std::array<spelldesc_vars_data_t, 411> __spelldesc_vars_data { {
+// Spell description variables, wow build 10.2.0.52106
+static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -20929,9 +20930,10 @@ static const std::array<spelldesc_vars_data_t, 411> __spelldesc_vars_data { {
   {  425529, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
   {  425965, "$absorb=${($AP*10.5)*(1+$@versadmg)}\r\n" },
   {  427688, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${((0.690899398201283*($SP*1.25)*$<demoMastery>*(1+$@versadmg))*1.18)\r\n}" },
+  {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.52095
+// spelldesc_vars hotfix entries, wow build 10.2.0.52106
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
