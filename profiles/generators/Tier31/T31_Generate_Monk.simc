@@ -47,7 +47,7 @@ feet=grove_darkeners_treads,id=134429,bonus_id=3316/1515/9916,enchant=watchers_l
 finger1=lord_waycrests_signet,id=158362,bonus_id=3316/1515/1808/9916,enchant=devotion_of_mastery_3,gem_id=192958
 finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/6935/1520,enchant=devotion_of_mastery_3,gem_id=192958
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-trinket2=bandolier_of_twisted_blades,id=207165,bonus_id=7187/1520
+trinket2=ashes_of_the_embersoul,id=207167,bonus_id=7187/1520
 main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 save=T31_Monk_Windwalker.simc
