@@ -1899,7 +1899,7 @@ struct dire_critter_t final : public hunter_pet_t
   {
     hunter_pet_t::summon( duration );
 
-    o() -> buffs.dire_beast -> trigger();
+    o() -> buffs.dire_beast -> trigger( duration );
 
     o() -> state.dire_pack_counter++;
     if ( o() -> state.dire_pack_counter == dire_pack_threshold )
