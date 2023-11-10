@@ -48,16 +48,27 @@ struct proc_event_t : public event_t
 #ifndef NDEBUG
   const char* debug() const override
   {
+    std::string str;
+
     if ( !cb )
-      return name();
+    {
+      str = name();
+    }
+    else if ( !cb->effect.name_str.empty() )
+    {
+      str = cb->effect.name_str;
+    }
+    else
+    {
+      if ( cb->effect.generated_name_str.empty() )
+        cb->effect.name();
 
-    if ( !cb->effect.name_str.empty() )
-      return cb->effect.name_str.c_str();
+      str = cb->effect.generated_name_str;
+    }
 
-    if ( cb->effect.generated_name_str.empty() )
-      cb->effect.name();
+    str += '-' + source_action->name_str;
 
-    return cb->effect.generated_name_str.c_str();
+    return str.c_str();
   }
 #endif
   void execute() override
