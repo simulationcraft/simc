@@ -39,8 +39,7 @@ struct expected_stat_mod_t
   float creature_spell_damage;
   unsigned difficulty;
 
-  static const expected_stat_mod_t& find( unsigned id, bool ptr )
-  { return dbc::find<expected_stat_mod_t>( id, ptr, &expected_stat_mod_t::id ); }
+  static util::span<const expected_stat_mod_t> find( unsigned diff, bool ptr );
 
   static const expected_stat_mod_t& nil()
   { return dbc::nil<expected_stat_mod_t>; }

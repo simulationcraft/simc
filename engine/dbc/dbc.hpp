@@ -364,6 +364,7 @@ public:
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
   double armor_mitigation_constant( unsigned level ) const;
+  double get_armor_constant_mod( difficulty_e diff ) const;
   double npc_armor_value( unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
@@ -457,6 +458,15 @@ public:
 
   const expected_stat_t& expected_stat( unsigned level ) const
   { return expected_stat_t::find( level, ptr ); }
+
+  template <typename T, typename = std::enable_if_t<std::is_invocable_v<T, expected_stat_mod_t>>>
+  double expected_stat_mod( difficulty_e difficulty, T field ) const
+  {
+    auto mods = expected_stat_mod_t::find( static_cast<unsigned>( difficulty ), ptr );
+    return std::accumulate( mods.begin(), mods.end(), 1.0, [ field ]( double a, const expected_stat_mod_t b ) {
+      return std::invoke( field, b ) * a;
+    } );
+  }
 
   // Derived data access
   unsigned class_max_size() const;
