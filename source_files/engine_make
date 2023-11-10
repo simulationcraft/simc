@@ -59,6 +59,7 @@ SRC += \
     dbc$(PATHSEP)client_data.cpp \
     dbc$(PATHSEP)client_hotfix_entry.cpp \
     dbc$(PATHSEP)covenant_data.cpp \
+    dbc$(PATHSEP)expected_stat.cpp \
     dbc$(PATHSEP)gem_data.cpp \
     dbc$(PATHSEP)item_armor.cpp \
     dbc$(PATHSEP)item_bonus.cpp \

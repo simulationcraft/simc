@@ -1470,23 +1470,13 @@ double dbc_t::item_socket_cost( unsigned ilevel ) const
 double dbc_t::armor_mitigation_constant( unsigned level ) const
 {
   assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
-#if SC_USE_PTR
-  return ptr ? __ptr_armor_mitigation_constants_data[ level - 1 ]
-             : __armor_mitigation_constants_data[ level - 1 ];
-#else
-  return __armor_mitigation_constants_data[ level - 1 ];
-#endif
+  return expected_stat( level ).armor_constant;
 }
 
 double dbc_t::npc_armor_value( unsigned level ) const
 {
   assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
-#if SC_USE_PTR
-  return ptr ? __ptr_npc_armor_data[ level - 1 ]
-             : __npc_armor_data[ level - 1 ];
-#else
-  return __npc_armor_data[ level - 1 ];
-#endif
+  return expected_stat( level ).creature_armor;
 }
 
 /* Generic helper methods */

@@ -4835,3 +4835,22 @@ class PermanentEnchantItemGenerator(DataGenerator):
             self.output_record(fields)
 
         self.output_footer()
+
+class ExpectedStatGenerator(DataGenerator):
+    def filter(self):
+        return [ v for v in self.db('ExpectedStat').values() if v.id_expansion == -2 ]
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Expected stat for levels 1-{}'.format(data[-1].id_parent),
+            type = 'expected_stat_t',
+            array = 'expected_stat',
+            length = len(data))
+
+        for es in sorted(data, key = lambda e: e.id_parent):
+            fields = es.field('id_parent', 'creature_auto_attack_dps', 'creature_armor',
+                              'player_primary_stat', 'player_secondary_stat',
+                              'armor_constant', 'creature_spell_damage')
+            self.output_record(fields)
+
+        self.output_footer()

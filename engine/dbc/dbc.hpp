@@ -7,8 +7,33 @@
 #define SC_DBC_HPP
 
 #include "config.hpp"
+
+#include "data_definitions.hh"
+#include "data_enums.hh"
+#include "dbc/azerite.hpp"
+#include "dbc/expected_stat.hpp"
+#include "dbc/gem_data.hpp"
+#include "dbc/item_armor.hpp"
+#include "dbc/item_bonus.hpp"
+#include "dbc/item_child.hpp"
+#include "dbc/item_data.hpp"
+#include "dbc/item_effect.hpp"
+#include "dbc/item_naming.hpp"
+#include "dbc/item_scaling.hpp"
+#include "dbc/item_weapon.hpp"
+#include "dbc/racial_spells.hpp"
+#include "dbc/rand_prop_points.hpp"
+#include "dbc/real_ppm_data.hpp"
+#include "dbc/spell_data.hpp"
+#include "dbc/spell_item_enchantment.hpp"
+#include "dbc/spelltext_data.hpp"
+#include "dbc/talent_data.hpp"
+#include "sc_enums.hpp"
+#include "specialization.hpp"
+#include "util/allocator.hpp"
 #include "util/generic.hpp"
 #include "util/timespan.hpp"
+#include "util/util.hpp"
 
 #include <array>
 #include <functional>
@@ -16,31 +41,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include "data_definitions.hh"
-#include "data_enums.hh"
-#include "specialization.hpp"
-#include "sc_enums.hpp"
-#include "util/util.hpp"
-#include "util/allocator.hpp"
-
-#include "dbc/azerite.hpp"
-#include "dbc/rand_prop_points.hpp"
-#include "dbc/spell_item_enchantment.hpp"
-#include "dbc/gem_data.hpp"
-#include "dbc/item_data.hpp"
-#include "dbc/item_child.hpp"
-#include "dbc/item_armor.hpp"
-#include "dbc/item_bonus.hpp"
-#include "dbc/item_naming.hpp"
-#include "dbc/item_scaling.hpp"
-#include "dbc/item_weapon.hpp"
-#include "dbc/item_effect.hpp"
-#include "dbc/racial_spells.hpp"
-#include "dbc/real_ppm_data.hpp"
-#include "dbc/talent_data.hpp"
-#include "dbc/spell_data.hpp"
-#include "dbc/spelltext_data.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -454,6 +454,9 @@ public:
 
   const spelldesc_vars_data_t& spell_desc_vars( unsigned spell_id ) const
   { return spelldesc_vars_data_t::find( spell_id, ptr ); }
+
+  const expected_stat_t& expected_stat( unsigned level ) const
+  { return expected_stat_t::find( level, ptr ); }
 
   // Derived data access
   unsigned class_max_size() const;
