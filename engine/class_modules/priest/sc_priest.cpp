@@ -1299,7 +1299,8 @@ public:
 
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
-          make_event( sim, 200_ms, [ state, child_death ] { child_death->schedule_execute( state ); } );
+          //make_event( sim, 200_ms, [ state, child_death ] { child_death->schedule_execute( state ); } );
+          child_death->schedule_execute( state );
         }
       }
 
