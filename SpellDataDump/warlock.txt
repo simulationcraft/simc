@@ -712,7 +712,7 @@ Spell Level      : 7
 Cooldown         : 60 seconds
 Category         : 1711
 Category Cooldown: 60 seconds
-Affecting spells : Sweet Souls (386620 effect#1), Soulburn (387626 effect#2)
+Affecting spells : Sweet Souls (386620 effect#1)
 Family Flags     : 16
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -15386,10 +15386,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1022531)  : Apply Aura (6) | Dummy (4)
                    Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1022608)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=1022608)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66700 | Target: Self (1)
-                   Affected Spells: Healthstone (6262)
-                   Family Flags: 16
+Hotfixed         : Sub Type (108 -> 4), Affects Spells
 #3 (id=1022617)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Demonic Gateway (111771)
