@@ -46,7 +46,7 @@ def test_trinkets(klass: str, path: str, enable: dict):
             ],
         )
 
-# Test baseline profile with no modifications
+# Test baseline profile & no-talent profile
 def test_baseline(klass: str, path: str, enable: dict):
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     fight_style = "Patchwerk"
@@ -59,6 +59,15 @@ def test_baseline(klass: str, path: str, enable: dict):
     Test(
         "baseline profile",
         group=grp,
+    )
+    Test(
+        "no talents",
+        group=grp,
+        args=[
+            (
+                "talents",
+            )
+        ],
     )
 
 available_tests = {
