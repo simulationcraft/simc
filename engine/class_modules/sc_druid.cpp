@@ -7119,6 +7119,7 @@ struct moonfire_t : public druid_spell_t
       dot_name = "moonfire";
       dot_list = &p->dot_list.moonfire;
 
+      // TODO: refactor second moonfire as true second cast
       if ( p->talent.twin_moons.ok() )
       {
         // The increased target number has been removed from spell data
@@ -7154,8 +7155,8 @@ struct moonfire_t : public druid_spell_t
     {
       double dam = base_t::composite_da_multiplier( s );
 
-      // MF proc'd by gg is not affected by any existing gg buff.
-      if ( !is_free( free_spell_e::GALACTIC ) && p()->buff.galactic_guardian->check() )
+      // only the initial MF proc'd by GG is buffed
+      if ( ( !is_free( free_spell_e::GALACTIC ) || !s->chain_target ) && p()->buff.galactic_guardian->check() )
         dam *= 1.0 + gg_mul;
 
       if ( feral_override_da && !p()->buff.moonkin_form->check() )
@@ -7213,11 +7214,11 @@ struct moonfire_t : public druid_spell_t
           p()->buff.protector_of_the_pack->expire();
         }
 
+        auto rage = p()->buff.galactic_guardian->check_value();
         if ( !is_free( free_spell_e::GALACTIC ) )
-        {
-          auto rage = p()->buff.galactic_guardian->check_value() * num_targets_hit;
-          p()->resource_gain( RESOURCE_RAGE, rage, gain );
-        }
+          rage *= num_targets_hit;
+
+        p()->resource_gain( RESOURCE_RAGE, rage, gain );
 
         if ( !is_free() )
           p()->buff.galactic_guardian->expire();
@@ -10545,7 +10546,6 @@ void druid_t::create_actions()
     gg->s_data_reporting = talent.galactic_guardian;
     gg->set_free_cast( free_spell_e::GALACTIC );
     gg->damage->set_free_cast( free_spell_e::GALACTIC );
-    gg->damage->aoe = 0;  // gg proc cannot proc second moonfire
     active.galactic_guardian = gg;
   }
 
