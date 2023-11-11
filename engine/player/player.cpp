@@ -481,7 +481,27 @@ struct leech_t : public heal_t
     heal_t::init();
 
     snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT;
+
+    player->register_combat_begin( []( player_t* p ) {
+      make_repeating_event( *p->sim,
+          [ p ] { return p->base_gcd * p->cache.spell_speed(); },
+          [ p ] {
+            if ( p->leech_pool > 0 )
+              p->spells.leech->schedule_execute();
+          } );
+    } );
   }
+
+  void execute() override
+  {
+    heal_t::execute();
+
+    player->leech_pool = 0;
+  }
+
+  double base_da_min( const action_state_t* s ) const override { return player->leech_pool; }
+
+  double base_da_max( const action_state_t* s ) const override { return player->leech_pool; }
 };
 
 struct invulnerable_debuff_t : public buff_t
@@ -1065,6 +1085,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     initialized( false ),
     precombat_initialized( false ),
     potion_used( false ),
+    leech_pool( 0 ),
     region_str( s->default_region_str ),
     server_str( s->default_server_str ),
     origin_str(),
@@ -3532,17 +3553,18 @@ void player_t::init_assessors()
   // Leech, if the player has leeching enabled (disabled by default)
   if ( spells.leech )
   {
-    assessor_out_damage.add( assessor::LEECH, [this]( result_amount_type, action_state_t* state ) {
+    assessor_out_damage.add( assessor::LEECH, [ this ]( result_amount_type, action_state_t* state ) {
       // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
       // break in the future if we ever decide to not separate heal and damage assessing.
       double leech_pct = 0;
-      if ( ( state->result_type == result_amount_type::DMG_DIRECT || state->result_type == result_amount_type::DMG_OVER_TIME ) && state->result_amount > 0 &&
-           ( leech_pct = state->action->composite_leech( state ) ) > 0 )
+
+      if ( ( state->result_type == result_amount_type::DMG_DIRECT ||
+             state->result_type == result_amount_type::DMG_OVER_TIME ) &&
+           state->result_amount > 0 && ( leech_pct = state->action->composite_leech( state ) ) > 0 )
       {
-        double leech_amount       = leech_pct * state->result_amount;
-        spells.leech->base_dd_min = spells.leech->base_dd_max = leech_amount;
-        spells.leech->schedule_execute();
+        leech_pool += leech_pct * state->result_amount;
       }
+
       return assessor::CONTINUE;
     } );
   }
@@ -5984,6 +6006,7 @@ void player_t::reset()
 
   precombat_initialized = false;
   potion_used = false;
+  leech_pool = 0;
 
   item_cooldown -> reset( false );
 

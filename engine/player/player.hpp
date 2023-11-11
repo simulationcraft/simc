@@ -141,6 +141,8 @@ struct player_t : public actor_t
   bool        initialized;
   bool        precombat_initialized;
   bool        potion_used;
+  double      leech_pool;  // for leech batching
+
 
   std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
