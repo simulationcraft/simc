@@ -532,7 +532,9 @@ struct sim_t : private sc_thread_t
     // Sets the chance for Ashes of the Embersoul's "Dire" condition to proc on the interval
     double embersoul_dire_chance = 0.0;
     // Sets the interval for ashes of the embersouls "dire" condition to attempt to proc
-    timespan_t embersoul_dire_interval = 5_s;
+    timespan_t embersoul_dire_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t embersoul_dire_interval_stddev = 2.5_s;
     // Sets the base interval for Gift of Ursine Vengeance to attempt to proc
     timespan_t gift_of_ursine_vengeance_period = 750_ms;
   } dragonflight_opts;

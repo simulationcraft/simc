@@ -6060,12 +6060,16 @@ void ashes_of_the_embersoul( special_effect_t& e )
     auto dire_buff = create_proc_action<blazing_soul_t>( "blazing_soul_proc", e );
 
     e.player->register_combat_begin( [ dire_buff ]( player_t* p ) {
-      make_repeating_event( *p->sim, p->sim->dragonflight_opts.embersoul_dire_interval, [ dire_buff, p ] {
-        if ( dire_buff->ready() && p->rng().roll(p->sim->dragonflight_opts.embersoul_dire_chance))
-        {
-          dire_buff->execute();
-        }
-      } );
+      auto pct = p->sim->dragonflight_opts.embersoul_dire_chance;
+      auto dur = p->sim->dragonflight_opts.embersoul_dire_interval;
+      auto std = p->sim->dragonflight_opts.embersoul_dire_interval_stddev;
+
+      make_repeating_event( *p->sim,
+          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ dire_buff, p, pct ] {
+            if ( dire_buff->ready() && p->rng().roll( pct ) )
+              dire_buff->execute();
+          } );
     } );
 
     e.player->register_on_combat_state_callback( [ dire_buff ]( player_t* p, bool c ) {
