@@ -13,7 +13,7 @@ back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
 chest=blazing_dreamstalkers_scaled_hauberk,id=207221,bonus_id=7187/1520,enchant=waking_stats_3
 wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405,gem_id=192919
 hands=gloves_of_wretched_lesions,id=137300,bonus_id=657/9367/5923/7981
-waist=soultorn_fury_cinch,id=136724,bonus_id=657/9367/5923/7981/1808,gem_id=192988,enchant=shadowed_belt_clasp_3
+waist=soultorn_fury_cinch,id=136724,bonus_id=657/9367/5923/7981/1808,gem_id=192919,enchant=shadowed_belt_clasp_3
 legs=blazing_dreamstalkers_shellgreaves,id=207217,bonus_id=7187/1520,enchant=fierce_armor_kit_3
 feet=acidic_hailstone_treads,id=193466,bonus_id=9500/9405
 finger1=band_of_callous_dominance,id=134528,bonus_id=657/9367/5923/7981/1808,gem_id=192919,enchant=devotion_of_critical_strike_3
