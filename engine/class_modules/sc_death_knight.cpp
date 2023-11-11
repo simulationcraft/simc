@@ -2321,7 +2321,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         {
           double chance = dk() -> sets -> set( DEATH_KNIGHT_UNHOLY, T29, B4 ) -> effectN( 1 ).percent();
 
-          if ( pet()->vile_infusion->check())
+          if ( pet()->vile_infusion->check() )
           {
             chance = dk()->sets->set( DEATH_KNIGHT_UNHOLY, T29, B4 )->effectN( 2 ).percent();
           }
@@ -2389,10 +2389,10 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     // The default value stores the %damage increase
 
-    if ( ghoulish_frenzy -> up() )
+    if ( ghoulish_frenzy -> check() )
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy -> data().effectN( 2 ).percent() );
 
-    if ( vile_infusion -> up() )
+    if ( vile_infusion -> check() )
       haste *= 1.0 / ( 1.0 + vile_infusion -> data().effectN( 2 ).percent() );
 
     return haste;
@@ -4204,7 +4204,10 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     parse_options( options_str );
     track_cd_waste = true;
     p->pets.apoc_ghouls.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    p->pets.apoc_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( p->talent.unholy.magus_of_the_dead.ok() || p->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
+    {
+      p->pets.apoc_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4299,7 +4302,10 @@ struct army_of_the_dead_t final : public death_knight_spell_t
     track_cd_waste = true;
     target = p;
     p->pets.army_ghouls.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( p->talent.unholy.magus_of_the_dead.ok() )
+    {
+      p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void init_finished() override
@@ -4998,7 +5004,10 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     parse_options( options_str );
 
     p->pets.dancing_rune_weapon_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    p->pets.everlasting_bond_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( p->talent.blood.everlasting_bond.ok() )
+    {
+      p->pets.everlasting_bond_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void execute() override
@@ -5188,7 +5197,7 @@ struct dark_transformation_t final : public death_knight_spell_t
   {
     for (auto& ghoul : p()->pets.ghoul_pet)
     {
-      if (!ghoul || ghoul->is_sleeping())
+      if ( ghoul->is_sleeping() )
       {
         return false;
       }
@@ -7195,7 +7204,10 @@ struct raise_dead_t final : public death_knight_spell_t
     track_cd_waste = true;
     target = p;
     p->pets.ghoul_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    p->pets.risen_skulker.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( p->talent.unholy.all_will_serve.ok() )
+    {
+      p->pets.risen_skulker.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void execute() override
@@ -7233,7 +7245,7 @@ struct raise_dead_t final : public death_knight_spell_t
   {
     for ( auto& ghoul : p()->pets.ghoul_pet )
     {
-      if ( ghoul && !ghoul->is_sleeping() )
+      if ( !ghoul->is_sleeping() )
         return false;
     }
 
@@ -7379,15 +7391,19 @@ struct sacrificial_pact_t final : public death_knight_heal_t
     death_knight_heal_t::execute();
 
     damage -> execute_on_target( player -> target );
-
-    p() -> pets.ghoul_pet.despawn();
+    for (auto& ghoul : p()->pets.ghoul_pet)
+    {
+      ghoul->dismiss();
+    }
   }
 
   bool ready() override
   {
     for ( auto& ghoul : p()->pets.ghoul_pet )
     {
-      if ( ghoul->is_sleeping() )
+      if (!ghoul->is_sleeping())
+        return true;
+      else
         return false;
     }
 
