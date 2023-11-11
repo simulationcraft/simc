@@ -7582,19 +7582,27 @@ namespace monk
     {
       return;
     }
+    switch ( s->action->id )
+    {
+      case 143924:  // Leech
+      case 259760:  // Entropic Embrace (Void Elf)
+          return;
+    }
 
     // flush out percent heals
     if ( s->action->type == ACTION_HEAL )
     {
-      auto *heal_cast = debug_cast< heal_t * >( s->action );
+      auto *heal_cast = debug_cast<heal_t *>( s->action );
       if ( ( s->result_type == result_amount_type::HEAL_DIRECT && heal_cast->base_pct_heal > 0 ) ||
-        ( s->result_type == result_amount_type::HEAL_OVER_TIME && heal_cast->tick_pct_heal > 0 ) )
-        return;
+           ( s->result_type == result_amount_type::HEAL_OVER_TIME && heal_cast->tick_pct_heal > 0 ) )
+          return;
     }
 
     // Attempt to proc the heal
     if ( active_actions.celestial_fortune && rng().roll( composite_melee_crit_chance() ) )
     {
+      sim->print_debug( "triggering celestial fortune from (id: {}, name: {}) with (amount: {}) damage base",
+                        s->action->id, s->action->name_str, s->result_amount );
       active_actions.celestial_fortune->base_dd_max = active_actions.celestial_fortune->base_dd_min = s->result_amount;
       active_actions.celestial_fortune->schedule_execute();
     }
