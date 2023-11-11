@@ -5314,7 +5314,7 @@ void evoker_t::create_buffs()
                             ->set_duration( 0_s )
                             ->set_max_stack( 3 )
                             ->set_expire_at_max_stack( true )
-                            ->set_stack_change_callback( [ this ]( buff_t* b, int _old, int _new ) {
+                            ->set_stack_change_callback( [ this ]( buff_t* b, int _old, int ) {
                               if ( _old == b->max_stack() )
                               {
                                 buff.t31_2pc_proc->trigger();

@@ -8586,7 +8586,7 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_shadowcraft( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_shadowcraft( const action_state_t* )
 {
   if ( !p()->talent.subtlety.shadowcraft->ok() || !ab::hit_any_target )
     return;

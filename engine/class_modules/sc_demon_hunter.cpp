@@ -2374,7 +2374,7 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t::trigger( a, state );
   }
 
-  void execute( action_t* a, action_state_t* s ) override
+  void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_sleeping() )
       return;
@@ -2706,7 +2706,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
   }
 
   // Fel Devastation is always a 2s channel
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return dot_duration;
   }

@@ -499,9 +499,9 @@ struct leech_t : public heal_t
     player->leech_pool = 0;
   }
 
-  double base_da_min( const action_state_t* s ) const override { return player->leech_pool; }
+  double base_da_min( const action_state_t* ) const override { return player->leech_pool; }
 
-  double base_da_max( const action_state_t* s ) const override { return player->leech_pool; }
+  double base_da_max( const action_state_t* ) const override { return player->leech_pool; }
 };
 
 struct invulnerable_debuff_t : public buff_t
