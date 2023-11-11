@@ -66,6 +66,7 @@ def test_baseline(klass: str, path: str, enable: dict):
         args=[
             (
                 "talents",
+                "",
             )
         ],
     )
