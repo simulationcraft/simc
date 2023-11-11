@@ -28,6 +28,9 @@ public:
   bool ok() const
   { return enabled(); }
 
+  bool nil() const
+  { return m_player == nullptr; }
+
   unsigned rank() const
   { return m_rank; }
 
