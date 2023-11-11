@@ -43,7 +43,7 @@ hands=blazing_dreamstalkers_skinners,id=207219,bonus_id=7187/1520
 waist=realitywarping_waistband,id=207946,bonus_id=7187/1582,gem_id=192958,enchant=shadowed_belt_clasp_3
 legs=blazing_dreamstalkers_shellgreaves,id=207217,bonus_id=7187/1520,enchant=fierce_armor_kit_3
 feet=acidic_hailstone_treads,id=193466,bonus_id=8960/8840/8836/8902/1576
-finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,gem_id=192988,enchant=devotion_of_mastery_3
+finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,gem_id=192958,enchant=devotion_of_mastery_3
 finger2=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192964,enchant=devotion_of_mastery_3
 trinket1=mirror_of_fractured_tomorrows,id=207581,bonus_id=7187/1540
 trinket2=bandolier_of_twisted_blades,id=207165,bonus_id=7187/1520
@@ -69,7 +69,7 @@ hands=blazing_dreamstalkers_skinners,id=207219,bonus_id=7187/1520
 waist=realitywarping_waistband,id=207946,bonus_id=7187/1582,gem_id=192958,enchant=shadowed_belt_clasp_3
 legs=blazing_dreamstalkers_shellgreaves,id=207217,bonus_id=7187/1520,enchant=fierce_armor_kit_3
 feet=acidic_hailstone_treads,id=193466,bonus_id=8960/8840/8836/8902/1576
-finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,gem_id=192988,enchant=devotion_of_mastery_3
+finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,gem_id=192958,enchant=devotion_of_mastery_3
 finger2=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192964,enchant=devotion_of_mastery_3
 trinket1=mirror_of_fractured_tomorrows,id=207581,bonus_id=7187/1540
 trinket2=bandolier_of_twisted_blades,id=207165,bonus_id=7187/1520
