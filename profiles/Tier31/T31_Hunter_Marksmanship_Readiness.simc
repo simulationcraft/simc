@@ -118,29 +118,29 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=trinket.1.has_use_buf
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=trinket.2.has_use_buff&(variable.sync_ready&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|!variable.sync_ready&(variable.trinket_2_stronger&(variable.sync_remains>trinket.2.cooldown.duration%2|trinket.1.has_use_buff&trinket.1.cooldown.remains>variable.sync_remains-15&trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains+40>fight_remains)|variable.trinket_1_stronger&(trinket.1.cooldown.remains&(trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.1.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.2.cooldown.duration%2|trinket.2.cooldown.duration<fight_remains&(variable.sync_remains+trinket.2.cooldown.duration>fight_remains)))|trinket.1.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.1.cooldown.duration%2)))|!trinket.2.has_use_buff&(trinket.2.cast_time=0|!variable.sync_active)&((!trinket.1.has_use_buff&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|trinket.1.has_use_buff&(variable.sync_remains>20|trinket.1.cooldown.remains>20)))|target.time_to_die<25&(variable.trinket_2_stronger|trinket.1.cooldown.remains)
 
 head=blazing_dreamstalkers_flamewaker_horns,id=207218,bonus_id=7187/1520,gem_id=192988,enchant=incandescent_essence
-neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520,gem_id=192922/192922/192922
+neck=ouroboreal_necklet,id=210214,bonus_id=7187/1520,gem_id=192958/192958/192958
 shoulders=blazing_dreamstalkers_finest_hunt,id=207216,bonus_id=7187/1520
-back=undulating_sporecloak,id=205025,bonus_id=9366/1547
+back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
 chest=blazing_dreamstalkers_scaled_hauberk,id=207221,bonus_id=7187/1520,enchant=waking_stats_3
-wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8960/8840/8836/8902/1576,gem_id=192922
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8960/8840/8836/8902/1576,gem_id=192958
 hands=blazing_dreamstalkers_skinners,id=207219,bonus_id=7187/1520
-waist=realitywarping_waistband,id=207946,bonus_id=7187/1582,gem_id=192958
+waist=realitywarping_waistband,id=207946,bonus_id=7187/1582,gem_id=192958,enchant=shadowed_belt_clasp_3
 legs=blazing_dreamstalkers_shellgreaves,id=207217,bonus_id=7187/1520,enchant=fierce_armor_kit_3
-feet=boots_of_the_molten_hoard,id=207145,bonus_id=7187/1520
-finger1=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_versatility_3
-finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/1520,gem_id=192922,enchant=devotion_of_mastery_3
+feet=acidic_hailstone_treads,id=193466,bonus_id=8960/8840/8836/8902/1576
+finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,gem_id=192988,enchant=devotion_of_mastery_3
+finger2=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192964,enchant=devotion_of_mastery_3
 trinket1=mirror_of_fractured_tomorrows,id=207581,bonus_id=7187/1540
-trinket2=coiled_serpent_idol,id=207175,bonus_id=7187/1520
+trinket2=bandolier_of_twisted_blades,id=207165,bonus_id=7187/1520
 main_hand=travelers_timesplitter,id=207986,bonus_id=7187/1611,enchant=high_intensity_thermal_scanner_3
 
 # Gear Summary
 # gear_ilvl=488.60
-# gear_agility=9780
-# gear_stamina=38900
-# gear_crit_rating=3801
-# gear_haste_rating=3577
-# gear_mastery_rating=4649
-# gear_versatility_rating=2693
-# gear_armor=7695
+# gear_agility=9850
+# gear_stamina=38981
+# gear_crit_rating=3246
+# gear_haste_rating=3833
+# gear_mastery_rating=4356
+# gear_versatility_rating=3237
+# gear_armor=7685
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
