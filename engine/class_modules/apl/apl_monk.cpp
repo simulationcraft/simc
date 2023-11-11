@@ -572,8 +572,8 @@ namespace monk_apl
     // Prioritize Faeline Stomp if playing with Faeline Harmony
     def->add_action( "faeline_stomp,target_if=min:debuff.fae_exposure_damage.remains,if=combo_strike&talent.faeline_harmony&debuff.fae_exposure_damage.remains<1", "Prioritize Faeline Stomp if playing with Faeline Harmony" );
     // Spend excess energy
-    def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&energy>50&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|((!talent.skyreach&!talent.skytouch)|time>5|pet.xuen_the_white_tiger.active))&!variable.hold_tp_rsk", "TP if not overcapping Chi or TotM" );
-    def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|((!talent.skyreach&!talent.skytouch)|time>5|pet.xuen_the_white_tiger.active))&!variable.hold_tp_rsk" );
+    def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&energy>50&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|((!talent.skyreach&!talent.skytouch)|time>5|pet.xuen_the_white_tiger.active))&!variable.hold_tp_rsk", "TP to not waste energy" );
+    def->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|((!talent.skyreach&!talent.skytouch)|time>5|pet.xuen_the_white_tiger.active))&!variable.hold_tp_rsk", "TP if not overcapping Chi or TotM" );
     // Use Chi Burst to reset Faeline Stomp
     def->add_action( "chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)&!talent.faeline_harmony", "Use Chi Burst to reset Faeline Stomp" );
     // Use Cooldowns
@@ -704,10 +704,10 @@ namespace monk_apl
     serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&!spinning_crane_kick.max&talent.shadowboxing_treads" );
     serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_monastery.remains<1" );
     serenity_aoelust->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up" );
-    serenity_aoelust->add_action( "spinning_crane_kick,if=set_bonus.tier31_4pc&combo_strike&buff.blackout_reinforcement.up&prev.blackout_kick&buff.dance_of_chiji.up" );
-    serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_4pc&combo_strike&buff.blackout_reinforcement.up" );
-    serenity_aoelust->add_action( "spinning_crane_kick,if=set_bonus.tier31_4pc&combo_strike&!buff.blackout_reinforcement.up" );
-    serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=active_enemies<6&combo_strike&set_bonus.tier31_4pc" );
+    serenity_aoelust->add_action( "spinning_crane_kick,if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up&prev.blackout_kick&buff.dance_of_chiji.up" );
+    serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
+    serenity_aoelust->add_action( "spinning_crane_kick,if=set_bonus.tier31_2pc&combo_strike&!buff.blackout_reinforcement.up" );
+    serenity_aoelust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=active_enemies<6&combo_strike&set_bonus.tier31_2pc" );
     serenity_aoelust->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.pressure_point.up&set_bonus.tier30_2pc" );
     serenity_aoelust->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier30_2pc" );
     serenity_aoelust->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist&buff.call_to_dominance.up&debuff.skyreach_exhaustion.remains>buff.call_to_dominance.remains&active_enemies<10" );
@@ -730,12 +730,12 @@ namespace monk_apl
     
     // Serenity Lust Priority
     serenity_lust->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<1", "Serenity Lust" );
-    serenity_lust->add_action( "spinning_crane_kick,if=buff.serenity.remains<1.5&combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_4pc" );
+    serenity_lust->add_action( "spinning_crane_kick,if=buff.serenity.remains<1.5&combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_2pc" );
     serenity_lust->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=buff.serenity.remains<1" );
     serenity_lust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_monastery.remains<1" );
     serenity_lust->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist" );
     serenity_lust->add_action( "rising_sun_kick,target_if=max:debuff.keefers_skyreach.remains" );
-    serenity_lust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.blackout_reinforcement.up&prev.fists_of_fury&talent.shadowboxing_treads&set_bonus.tier31_4pc&!talent.dance_of_chiji" );
+    serenity_lust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.blackout_reinforcement.up&prev.fists_of_fury&talent.shadowboxing_treads&set_bonus.tier31_2pc&!talent.dance_of_chiji" );
     serenity_lust->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=buff.invokers_delight.up,interrupt=1" );
     serenity_lust->add_action( "fists_of_fury_cancel,target_if=max:debuff.keefers_skyreach.remains" );
     serenity_lust->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike" );
@@ -752,8 +752,8 @@ namespace monk_apl
     serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&!spinning_crane_kick.max&talent.shadowboxing_treads" );
     serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_monastery.remains<1" );
     serenity_aoe->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up" );
-    serenity_aoe->add_action( "spinning_crane_kick,if=set_bonus.tier31_4pc&combo_strike&buff.blackout_reinforcement.up&prev.blackout_kick&buff.dance_of_chiji.up" );
-    serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_4pc&combo_strike&buff.blackout_reinforcement.up" );
+    serenity_aoe->add_action( "spinning_crane_kick,if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up&prev.blackout_kick&buff.dance_of_chiji.up" );
+    serenity_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
     serenity_aoe->add_action( "spinning_crane_kick,if=set_bonus.tier31_2pc&combo_strike&!buff.blackout_reinforcement.up" );
     serenity_aoe->add_action( "spinning_crane_kick,if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up&prev.blackout_kick" );
     serenity_aoe->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.pressure_point.up&set_bonus.tier30_2pc" );
@@ -778,14 +778,14 @@ namespace monk_apl
 
     // Serenity 4 Target Priority
     serenity_4t->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<1", "Serenity 4 Targets" );
-    serenity_4t->add_action( "spinning_crane_kick,if=buff.serenity.remains<1.5&combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_4pc" );
+    serenity_4t->add_action( "spinning_crane_kick,if=buff.serenity.remains<1.5&combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_2pc" );
     serenity_4t->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike&!set_bonus.tier31_2pc" );
     serenity_4t->add_action( "strike_of_the_windlord,if=set_bonus.tier31_4pc&talent.thunderfist" );
     serenity_4t->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=buff.invokers_delight.up&!set_bonus.tier30_2pc,interrupt=1" );
     serenity_4t->add_action( "fists_of_fury_cancel,target_if=max:debuff.keefers_skyreach.remains,if=!set_bonus.tier30_2pc" );
-    serenity_4t->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier31_4pc&!buff.blackout_reinforcement.up" );
+    serenity_4t->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier31_2pc&!buff.blackout_reinforcement.up" );
     serenity_4t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_monastery.remains<1" );
-    serenity_4t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_4pc&combo_strike&buff.blackout_reinforcement.up" );
+    serenity_4t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
     serenity_4t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.pressure_point.up&!talent.bonedust_brew" );
     serenity_4t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.pressure_point.up&set_bonus.tier30_2pc" );
     serenity_4t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier30_2pc" );
@@ -809,7 +809,7 @@ namespace monk_apl
 
     // Serenity 3 Target Priority
     serenity_3t->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<1", "Serenity 3 Targets" );
-    serenity_3t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_4pc&combo_strike&buff.blackout_reinforcement.up" );
+    serenity_3t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
     serenity_3t->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!debuff.skyreach_exhaustion.up*20&combo_strike" );
     serenity_3t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.pressure_point.up" );
     serenity_3t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.pressure_point.up&set_bonus.tier30_2pc" );
@@ -864,11 +864,11 @@ namespace monk_apl
     serenity_st->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<2" );
     serenity_st->add_action( "strike_of_the_windlord,if=talent.thunderfist&buff.call_to_dominance.up&debuff.skyreach_exhaustion.remains>buff.call_to_dominance.remains" );
     serenity_st->add_action( "strike_of_the_windlord,if=talent.thunderfist&debuff.skyreach_exhaustion.remains>55" );
-    serenity_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&prev.rising_sun_kick&set_bonus.tier31_4pc" );
-    serenity_st->add_action( "blackout_kick,if=combo_strike&set_bonus.tier31_4pc&buff.blackout_reinforcement.up&prev.rising_sun_kick" );
+    serenity_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&prev.rising_sun_kick&set_bonus.tier31_2pc" );
+    serenity_st->add_action( "blackout_kick,if=combo_strike&set_bonus.tier31_2pc&buff.blackout_reinforcement.up&prev.rising_sun_kick" );
     serenity_st->add_action( "fists_of_fury,if=buff.invokers_delight.up,interrupt=1" );
     serenity_st->add_action( "fists_of_fury_cancel" );
-    serenity_st->add_action( "spinning_crane_kick,if=combo_strike&!buff.blackout_reinforcement.up&set_bonus.tier31_4pc" );
+    serenity_st->add_action( "spinning_crane_kick,if=combo_strike&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
     serenity_st->add_action( "strike_of_the_windlord,if=debuff.skyreach_exhaustion.remains>buff.call_to_dominance.remains" );
     serenity_st->add_action( "blackout_kick,if=combo_strike&set_bonus.tier30_2pc" );
     serenity_st->add_action( "blackout_kick,if=combo_strike" );
