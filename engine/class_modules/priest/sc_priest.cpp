@@ -1116,9 +1116,10 @@ struct shadow_word_death_t final : public priest_spell_t
 protected:
   struct swd_data
   {
-    int chain_number  = 0;
-    int max_chain     = 2;
-    bool deathspeaker = false;
+    int chain_number        = 0;
+    int max_chain           = 2;
+    bool deathspeaker       = false;
+    timespan_t execute_time = 0_s;
   };
   using state_t = priest_action_state_t<swd_data>;
   using ab      = priest_spell_t;
@@ -1178,6 +1179,15 @@ public:
   {
     return static_cast<const state_t*>( s );
   }
+
+  timespan_t execute_time() const override
+  {
+    if ( execute_state && cast_state( execute_state )->execute_time > 0_s )
+      return cast_state( execute_state )->execute_time;
+
+    return ab::execute_time();
+  }
+
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
@@ -1296,10 +1306,11 @@ public:
           state->chain_number              = curr_state->chain_number + 1;
           state->deathspeaker              = curr_state->deathspeaker;
           state->max_chain                 = number_of_chains;
+          state->execute_time              = 200_ms;
 
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
-          make_event( sim, 200_ms, [ state, child_death ] { child_death->schedule_execute( state ); } );
+          child_death->schedule_execute( state );
         }
       }
 
