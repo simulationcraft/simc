@@ -16,7 +16,7 @@ except ImportError:
 from helper import Test, TestGroup, run, find_profiles
 
 FIGHT_STYLES = ("Patchwerk", "DungeonSlice", "HeavyMovement",)
-SEASON = Season.Season.SEASON_2
+SEASON = Season.Season.SEASON_3
 
 # Test all trinkets
 def test_trinkets(klass: str, path: str, enable: dict):
