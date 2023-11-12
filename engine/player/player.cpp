@@ -10616,8 +10616,10 @@ static player_talent_t create_talent_obj(
     return std::get<1>( entry ) == trait->id_trait_node_entry;
   } );
 
-  bool is_starter = range::find( trait->id_spec_starter,
-      spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end();
+  // check if the trait is a free class trait for the spec, or the initial starting node on the spec tree (1,1)
+  bool is_starter =
+      range::find( trait->id_spec_starter, spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end() ||
+      trait->tree_index == static_cast<unsigned>( talent_tree::SPECIALIZATION ) && trait->col == 1 && trait->row == 1;
 
   if ( ( it != player->player_traits.end() && std::get<2>( *it ) == 0U ) ||
       ( it == player->player_traits.end() && !is_starter ) )
