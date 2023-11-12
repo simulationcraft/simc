@@ -10622,7 +10622,7 @@ static player_talent_t create_talent_obj(
   if ( ( it != player->player_traits.end() && std::get<2>( *it ) == 0U ) ||
       ( it == player->player_traits.end() && !is_starter ) )
   {
-    return { player };
+    return { player };  // Trait not found on player
   }
 
   return { player, trait, is_starter ? trait->max_ranks : std::get<2>( *it ) };
@@ -10652,7 +10652,7 @@ player_talent_t player_t::find_talent_spell(
   {
     sim->print_debug( "Player {}: Can't find {} talent with name '{}'.", this->name(),
         util::talent_tree_string( tree ), name );
-    return {};
+    return {};  // Invalid trait
   }
 
   return create_talent_obj( this, s, trait );
@@ -10672,7 +10672,7 @@ player_talent_t player_t::find_talent_spell(
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
         util::talent_tree_string( tree ), spell_id );
-    return {};
+    return {};  // Invalid trait
   }
 
   return create_talent_obj( this, s, traits[ 0 ] );
@@ -10685,7 +10685,7 @@ player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, speci
   {
     sim->print_debug( "Player {}: Can't find talent with node_entry_id '{}'.", this->name(),
         trait_node_entry_id );
-    return {};
+    return {};  // Invalid trait
   }
 
   return create_talent_obj( this, s, trait );
