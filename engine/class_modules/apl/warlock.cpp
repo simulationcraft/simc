@@ -18,7 +18,7 @@ namespace warlock_apl{
 
   std::string food( const player_t* p )
   {
-    if ( p->true_level >= 70 ) return "fated_fortune_cookie";
+    if ( p->true_level >= 70 ) return "thousandbone_tongueslicer";
     return ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
   }
 
