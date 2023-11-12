@@ -10086,6 +10086,7 @@ void druid_t::create_buffs()
       make_buff_fallback( sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff_solar",
                           sets->set( DRUID_BALANCE, T31, B4 ) )
           ->set_default_value_from_effect( 1 )
+          ->set_name_reporting( "Solar" )
           ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
                                ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
                                           sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
@@ -10098,6 +10099,7 @@ void druid_t::create_buffs()
       make_buff_fallback( sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff_lunar",
                           sets->set( DRUID_BALANCE, T31, B4 ) )
           ->set_default_value_from_effect( 1 )
+          ->set_name_reporting( "Lunar" )
           ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
                                ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
                                           sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
