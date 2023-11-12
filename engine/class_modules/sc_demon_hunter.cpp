@@ -4147,9 +4147,12 @@ struct sigil_of_misery_t : public demon_hunter_spell_t
   sigil_of_misery_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_misery", p, p->spec.sigil_of_misery, options_str ), sigil( nullptr )
   {
-    sigil = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil", p->spec.sigil_of_misery_debuff,
-                                                               ground_aoe_duration );
-    sigil->stats = stats;
+    if ( data().ok() )
+    {
+      sigil = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil",
+                                                                 p->spec.sigil_of_misery_debuff, ground_aoe_duration );
+      sigil->stats = stats;
+    }
   }
 
   void execute() override
@@ -4190,9 +4193,12 @@ struct sigil_of_silence_t : public demon_hunter_spell_t
   sigil_of_silence_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_silence", p, p->spec.sigil_of_silence, options_str ), sigil( nullptr )
   {
-    sigil        = p->get_background_action<sigil_of_silence_sigil_t>( "sigil_of_silence_sigil",
-                                                                p->spec.sigil_of_silence_debuff, ground_aoe_duration );
-    sigil->stats = stats;
+    if ( data().ok() )
+    {
+      sigil = p->get_background_action<sigil_of_silence_sigil_t>( "sigil_of_silence_sigil",
+                                                                  p->spec.sigil_of_silence_debuff, ground_aoe_duration );
+      sigil->stats = stats;
+    }
   }
 
   void execute() override
@@ -4233,9 +4239,12 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   sigil_of_chains_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_chains", p, p->spec.sigil_of_chains, options_str ), sigil( nullptr )
   {
-    sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil", p->spec.sigil_of_chains_debuff,
-                                                               ground_aoe_duration );
-    sigil->stats = stats;
+    if ( data().ok() )
+    {
+      sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil",
+                                                                 p->spec.sigil_of_chains_debuff, ground_aoe_duration );
+      sigil->stats = stats;
+    }
   }
 
   void execute() override
