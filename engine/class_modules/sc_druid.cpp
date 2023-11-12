@@ -7119,7 +7119,9 @@ struct moonfire_t : public druid_spell_t
       dot_name = "moonfire";
       dot_list = &p->dot_list.moonfire;
 
-      // TODO: refactor second moonfire as true second cast
+      // TODO:                                              :TODO
+      // TODO: refactor second moonfire as true second cast :TODO
+      // TODO:                                              :TODO
       if ( p->talent.twin_moons.ok() )
       {
         // The increased target number has been removed from spell data
@@ -7155,8 +7157,8 @@ struct moonfire_t : public druid_spell_t
     {
       double dam = base_t::composite_da_multiplier( s );
 
-      // only the initial MF proc'd by GG is buffed
-      if ( ( !is_free( free_spell_e::GALACTIC ) || !s->chain_target ) && p()->buff.galactic_guardian->check() )
+      // only the extra TM MF proc'd by GG is buffed
+      if ( ( !is_free( free_spell_e::GALACTIC ) || s->chain_target ) && p()->buff.galactic_guardian->check() )
         dam *= 1.0 + gg_mul;
 
       if ( feral_override_da && !p()->buff.moonkin_form->check() )
