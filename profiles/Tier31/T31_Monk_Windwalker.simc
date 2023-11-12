@@ -466,15 +466,15 @@ actions.serenity_st+=/tiger_palm,if=talent.teachings_of_the_monastery&buff.teach
 actions.trinkets=use_item,name=ashes_of_the_embersoul,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains|fight_remains<20
 
 head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192988,enchant=incandescent_essence
-neck=ouroboreal_necklet,id=210214,bonus_id=7187/6935/1520,gem_id=192932/192932/192932
+neck=ouroboreal_necklet,id=210214,bonus_id=7187/8782/1520,gem_id=192932/192932/192932
 shoulders=spore_colony_shoulderguards,id=204706,bonus_id=9500/9405/8960
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=3316/1515/9916,enchant=graceful_avoidance_3
 chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
 wrists=lifebound_bindings,id=193419,bonus_id=9500/9405/8960/8797/1808,gem_id=192958,crafted_stats=36/49
 hands=mystic_herons_glovebills,id=207246,bonus_id=7187/1520
-waist=houndjowl_waistband,id=159341,bonus_id=3316/1524/1808/9916,gem_id=192958,enchant=shadowed_belt_clasp_3
+waist=houndjowl_waistband,id=159341,bonus_id=3316/1515/1808/9916,gem_id=192958,enchant=shadowed_belt_clasp_3
 legs=mystic_herons_waders,id=207244,bonus_id=7187/1520,enchant=fierce_armor_kit_3
-feet=grove_darkeners_treads,id=134429,bonus_id=3316/1515/9916,enchant=watchers_loam_3
+feet=grove_darkeners_treads,id=134429,bonus_id=3316/1524/9916,enchant=watchers_loam_3
 finger1=lord_waycrests_signet,id=158362,bonus_id=3316/1515/1808/9916,gem_id=192958,enchant=devotion_of_mastery_3
 finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/6935/1520,gem_id=192958,enchant=devotion_of_mastery_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
@@ -483,13 +483,13 @@ main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=7187/1520,enchant=wafting
 
 # Gear Summary
 # gear_ilvl=488.60
-# gear_agility=8887
-# gear_stamina=39151
+# gear_agility=8883
+# gear_stamina=39112
 # gear_crit_rating=4315
 # gear_haste_rating=2785
-# gear_mastery_rating=2345
-# gear_versatility_rating=6319
+# gear_mastery_rating=2348
+# gear_versatility_rating=6317
 # gear_avoidance_rating=125
-# gear_armor=5325
+# gear_armor=5327
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
