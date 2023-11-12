@@ -5829,105 +5829,58 @@ void pips_emerald_friendship_badge( special_effect_t& e )
   // Buffs value is equal to drvier effect 1 value / duration in seconds
   // Emulating in game behavior by creating 2 buffs for each, a static one that stays until the next procs
   // and one with 11 stacks, that decrement every 1s as it does in game.
-  auto pips = make_buff<stat_buff_t>( e.player, "best_friends_with_pip", e.player->find_spell( 426647 ) );
-  auto pips_static = make_buff<stat_buff_t>( e.player, "best_friends_with_pip_static", e.player->find_spell( 426647 ) );
-  auto aerwynn = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn", e.player->find_spell( 426676 ) );
-  auto aerwynn_static = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn_static", e.player->find_spell( 426676 ) );
-  auto urctos = make_buff<stat_buff_t>( e.player, "best_friends_with_urctos", e.player->find_spell( 426672 ) );
-  auto urctos_static = make_buff<stat_buff_t>( e.player, "best_friends_with_urctos_static", e.player->find_spell( 426672 ) );
+  using buff_list = std::array<std::pair<buff_t*, buff_t*>, 3>;
 
+  buff_list buffs;
   auto max_stacks = 12;
-  auto buff_value = e.player->find_spell( 422858 )->effectN( 1 ).average( e.item ) / max_stacks;
+  auto buff_value = e.driver()->effectN( 1 ).average( e.item ) / max_stacks;
 
-  pips->set_stat_from_effect( 1, buff_value );
-  pips->set_max_stack( max_stacks - 1 );
-  pips->set_period( pips->data().effectN( 2 ).period() );
-  pips->set_reverse( true );
+  static constexpr unsigned id_list[] = { 426647, 426676, 426672 };
 
-  pips_static->set_stat_from_effect( 1, buff_value );
-  pips_static->set_duration( 0_ms );
-
-  aerwynn->set_stat_from_effect( 1, buff_value );
-  aerwynn->set_max_stack( max_stacks - 1 );
-  aerwynn->set_period( aerwynn->data().effectN( 2 ).period() );
-  aerwynn->set_reverse( true );
-
-  aerwynn_static->set_stat_from_effect( 1, buff_value );
-  aerwynn_static->set_duration( 0_ms );
-
-  urctos->set_stat_from_effect( 1, buff_value );
-  urctos->set_max_stack( max_stacks - 1 );
-  urctos->set_period( urctos->data().effectN( 2 ).period() );
-  urctos->set_reverse( true );
-
-  urctos_static->set_stat_from_effect( 1, buff_value );
-  urctos_static->set_duration( 0_ms );
-
-  e.player->register_combat_begin( [ pips_static, aerwynn_static, urctos_static ]( player_t* p )
+  for ( size_t i = 0; i < 3; i++ )
   {
-    double chance = p->rng().real();
+    auto data = e.player->find_spell( id_list[ i ] );
 
-    if ( chance < 0.3333 )
-    {
-      pips_static->trigger();
-    }
-    else if ( chance < 0.6666 )
-    {
-      aerwynn_static->trigger();
-    }
-    else
-    {
-      urctos_static->trigger();
-    }
+    auto _static = create_buff<stat_buff_t>( e.player, data )
+      ->set_stat_from_effect( 1, buff_value )
+      ->set_duration( 0_ms );
+
+    auto _empowered = create_buff<stat_buff_t>( e.player, _static->name_str + "_empowered", data )
+      ->set_stat_from_effect( 1, buff_value )
+      ->set_max_stack( max_stacks - 1 )
+      ->set_period( spell_data_t::find_spelleffect( *data, E_APPLY_AURA, A_PERIODIC_DUMMY ).period() )
+      ->set_reverse( true )
+      ->set_name_reporting( "Empowered" );
+
+    buffs[ i ] = std::make_pair( _static, _empowered );
+  }
+
+  e.player->register_combat_begin( [ buffs ]( player_t* p ) {
+    buffs.at( p->rng().range( buffs.size() ) ).first->trigger();
   } );
 
   struct pips_cb_t : public dbc_proc_callback_t
   {
-    buff_t* pips;
-    buff_t* pips_static;
-    buff_t* aerwynn;
-    buff_t* aerwynn_static;
-    buff_t* urctos;
-    buff_t* urctos_static;
+    buff_list buffs;
     int max_stacks;
 
-    pips_cb_t( const special_effect_t& e, buff_t* pips, buff_t* pips_static, buff_t* aerwynn, buff_t* aerwynn_static, buff_t* urctos, buff_t* urctos_static, int i )
-      : dbc_proc_callback_t( e.player, e ),
-        pips( pips ), pips_static( pips_static ),
-        aerwynn( aerwynn ), aerwynn_static( aerwynn_static ),
-        urctos( urctos ), urctos_static( urctos_static ),
-        max_stacks( i )
+    pips_cb_t( const special_effect_t& e, buff_list b, int i )
+      : dbc_proc_callback_t( e.player, e ), buffs( b ), max_stacks( i )
     {}
 
-    void execute( action_t* /*a*/, action_state_t* /*s*/) override
+    void execute( action_t*, action_state_t* ) override
     {
-      double chance = rng().real();
+      rng().shuffle( buffs.begin(), buffs.end() );
 
-      if (chance < 0.3333 )
-      {
-        pips->trigger( max_stacks - 1 );
-        pips_static->trigger();
-        aerwynn_static->expire();
-        urctos_static->expire();
-      }
-      else if (chance < 0.6666 )
-      {
-        aerwynn->trigger( max_stacks - 1 );
-        aerwynn_static->trigger();
-        pips_static->expire();
-        urctos_static->expire();
-      }
-      else
-      {
-        urctos->trigger( max_stacks - 1 );
-        urctos_static->trigger();
-        aerwynn_static->expire();
-        pips_static->expire();
-      }
+      buffs[ 0 ].second->trigger( max_stacks - 1 );
+      buffs[ 0 ].first->trigger();
+
+      buffs[ 1 ].first->expire();
+      buffs[ 2 ].first->expire();
     }
   };
 
-  new pips_cb_t( e, pips, pips_static, aerwynn, aerwynn_static, urctos, urctos_static, max_stacks );
+  new pips_cb_t( e, buffs, max_stacks );
 }
 
 // Ashes of the Embersoul
