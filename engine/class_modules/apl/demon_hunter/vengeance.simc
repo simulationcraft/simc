@@ -1,3 +1,18 @@
+# Check if trinkets have buff effects
+actions=variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)
+actions+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)
+actions+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
+
+# Don't spend fury when fel dev soon to maximize fel dev uptime
+actions+=/variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(action.soul_cleave.execute_time+gcd.remains))&fury<80
+
+# When to use Spirit Bomb with Focused Cleave
+actions+=/variable,name=can_spb_focused_cleave,op=setif,condition=talent.fiery_demise&active_dot.fiery_brand>0,value=(spell_targets.spirit_bomb=1&(soul_fragments>=5&talent.burning_blood))|(spell_targets.spirit_bomb=2&(soul_fragments>=5|(soul_fragments>=4&talent.burning_blood)))|(spell_targets.spirit_bomb>=3&soul_fragments>=4)|(spell_targets.spirit_bomb>=6&(soul_fragments>=3)),value_else=(spell_targets.spirit_bomb>=4&talent.burning_blood&soul_fragments>=5)|(spell_targets.spirit_bomb=6&(soul_fragments>=5|(soul_fragments>=4&talent.burning_blood)))|(spell_targets.spirit_bomb=7&soul_fragments>=4)|(spell_targets.spirit_bomb>=8&soul_fragments>=3)
+
+# When to use Spirit Bomb without Focused Cleave
+actions+=/variable,name=can_spb_no_focused_cleave,op=setif,condition=talent.fiery_demise&active_dot.fiery_brand>0,value=soul_fragments>=4|(spell_targets.spirit_bomb>=3&soul_fragments>=3&talent.burning_blood)|(spell_targets.spirit_bomb>=6&soul_fragments>=3),value_else=soul_fragments>=5|(spell_targets.spirit_bomb>=6&soul_fragments>=4)
+
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
 actions.precombat+=/augmentation
@@ -6,17 +21,11 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/sigil_of_flame
 actions.precombat+=/immolation_aura
 
-# Executed every time the actor is available.
-actions=variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)
-actions+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)
-actions+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
-actions+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
-actions+=/variable,name=dont_spend_fury,op=setif,condition=(cooldown.fel_devastation.remains<(action.soul_cleave.execute_time+gcd.remains))&fury<50,value=1,value_else=0
 actions+=/auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
 actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
-actions+=/metamorphosis,use_off_gcd=1
+actions+=/metamorphosis
 actions+=/potion,use_off_gcd=1
 actions+=/call_action_list,name=externals
 actions+=/call_action_list,name=trinkets
@@ -26,71 +35,78 @@ actions+=/run_action_list,name=single_target,if=active_enemies<=1
 actions+=/run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5
 actions+=/run_action_list,name=big_aoe,if=active_enemies>=6
 
-actions.big_aoe=fel_devastation,if=talent.collective_anguish.enabled|talent.stoke_the_flames.enabled
-actions.big_aoe+=/the_hunt
-actions.big_aoe+=/elysian_decree
-actions.big_aoe+=/fel_devastation
-actions.big_aoe+=/soul_carver
-actions.big_aoe+=/spirit_bomb,if=soul_fragments>=4
-actions.big_aoe+=/fracture
-actions.big_aoe+=/shear
-actions.big_aoe+=/soul_cleave,if=soul_fragments<1
-actions.big_aoe+=/call_action_list,name=filler
+# Maintenance & upkeep
+actions.maintenance=fiery_brand,if=(active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains))
+actions.maintenance+=/sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0
+actions.maintenance+=/immolation_aura
+actions.maintenance+=/bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2
+actions.maintenance+=/spirit_bomb,if=talent.focused_cleave&variable.can_spb_focused_cleave|!talent.focused_cleave&variable.can_spb_no_focused_cleave
+actions.maintenance+=/felblade,if=(fury.deficit>=40&active_enemies=1)|((cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50)
+actions.maintenance+=/fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
+actions.maintenance+=/shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
+# Don't overcap fury
+actions.maintenance+=/spirit_bomb,if=fury.deficit<=30&spell_targets>1&soul_fragments>=4
+actions.maintenance+=/soul_cleave,if=fury.deficit<=30
 
-actions.externals=invoke_external_buff,name=symbol_of_hope
-actions.externals+=/invoke_external_buff,name=power_infusion
-
+# Fiery demise window
 actions.fiery_demise=immolation_aura
 actions.fiery_demise+=/sigil_of_flame
 actions.fiery_demise+=/felblade,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
 actions.fiery_demise+=/fel_devastation
 actions.fiery_demise+=/soul_carver
-actions.fiery_demise+=/spirit_bomb,if=spell_targets=1&soul_fragments>=5
-actions.fiery_demise+=/spirit_bomb,if=spell_targets>1&spell_targets<=5&soul_fragments>=4
-actions.fiery_demise+=/spirit_bomb,if=spell_targets>=6&soul_fragments>=3
 actions.fiery_demise+=/the_hunt
-actions.fiery_demise+=/elysian_decree
-actions.fiery_demise+=/soul_cleave,if=fury.deficit<=30&!variable.dont_spend_fury
+actions.fiery_demise+=/elysian_decree,line_cd=1.85
+actions.fiery_demise+=/spirit_bomb,if=talent.focused_cleave&variable.can_spb_focused_cleave|!talent.focused_cleave&variable.can_spb_no_focused_cleave
 
-actions.filler=sigil_of_chains,if=talent.cycle_of_binding.enabled&talent.sigil_of_chains.enabled
-actions.filler+=/sigil_of_misery,if=talent.cycle_of_binding.enabled&talent.sigil_of_misery.enabled
-actions.filler+=/sigil_of_silence,if=talent.cycle_of_binding.enabled&talent.sigil_of_silence.enabled
-actions.filler+=/throw_glaive
-
-actions.maintenance=fiery_brand,if=(active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<(execute_time+gcd.remains)|cooldown.soul_carver.remains<(execute_time+gcd.remains)|cooldown.fel_devastation.remains<(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<(execute_time+gcd.remains))
-actions.maintenance+=/sigil_of_flame
-actions.maintenance+=/spirit_bomb,if=soul_fragments>=5
-actions.maintenance+=/immolation_aura
-actions.maintenance+=/bulk_extraction,if=prev_gcd.1.spirit_bomb
-actions.maintenance+=/felblade,if=fury.deficit>=40
-actions.maintenance+=/fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
-actions.maintenance+=/shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
-actions.maintenance+=/spirit_bomb,if=fury.deficit<30&((spell_targets>=2&soul_fragments>=5)|(spell_targets>=6&soul_fragments>=4))&!variable.dont_spend_fury
-actions.maintenance+=/soul_cleave,if=fury.deficit<30&soul_fragments<=3&!variable.dont_spend_fury
-
+# Single Target
 actions.single_target=the_hunt
 actions.single_target+=/soul_carver
-actions.single_target+=/fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)
+actions.single_target+=/fel_devastation,if=talent.collective_anguish|(talent.stoke_the_flames&talent.burning_blood)
 actions.single_target+=/elysian_decree
 actions.single_target+=/fel_devastation
-actions.single_target+=/soul_cleave,if=talent.focused_cleave&!variable.dont_spend_fury
+actions.single_target+=/soul_cleave,if=talent.focused_cleave&!variable.dont_cleave
 actions.single_target+=/fracture
 actions.single_target+=/shear
-actions.single_target+=/soul_cleave,if=!variable.dont_spend_fury
+actions.single_target+=/soul_cleave,if=!variable.dont_cleave
 actions.single_target+=/call_action_list,name=filler
 
+# 2-5 targets
 actions.small_aoe=the_hunt
 actions.small_aoe+=/fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)
-actions.small_aoe+=/elysian_decree
+actions.small_aoe+=/elysian_decree,line_cd=1.85
 actions.small_aoe+=/fel_devastation
 actions.small_aoe+=/soul_carver
 actions.small_aoe+=/spirit_bomb,if=soul_fragments>=5
-actions.small_aoe+=/soul_cleave,if=talent.focused_cleave&soul_fragments<=2
+actions.small_aoe+=/soul_cleave,if=talent.focused_cleave&soul_fragments<=2&!variable.dont_cleave
 actions.small_aoe+=/fracture
 actions.small_aoe+=/shear
-actions.small_aoe+=/soul_cleave,if=soul_fragments<=2
+actions.small_aoe+=/soul_cleave,if=soul_fragments<=2&!variable.dont_cleave
 actions.small_aoe+=/call_action_list,name=filler
 
+# 6+ targets
+actions.big_aoe=fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames
+actions.big_aoe+=/the_hunt
+actions.big_aoe+=/elysian_decree,line_cd=1.85
+actions.big_aoe+=/fel_devastation
+actions.big_aoe+=/soul_carver
+actions.big_aoe+=/spirit_bomb,if=soul_fragments>=4
+actions.big_aoe+=/fracture
+actions.big_aoe+=/shear
+actions.big_aoe+=/soul_cleave,if=!variable.dont_cleave
+actions.big_aoe+=/call_action_list,name=filler
+
+# Filler
+actions.filler=sigil_of_chains,if=talent.cycle_of_binding&talent.sigil_of_chains
+actions.filler+=/sigil_of_misery,if=talent.cycle_of_binding&talent.sigil_of_misery
+actions.filler+=/sigil_of_silence,if=talent.cycle_of_binding&talent.sigil_of_silence
+actions.filler+=/felblade
+actions.filler+=/throw_glaive
+
+# External buffs
+actions.externals=invoke_external_buff,name=symbol_of_hope
+actions.externals+=/invoke_external_buff,name=power_infusion
+
+# Trinkets prioritize damage dealing on use trinkets over trinkets that give buffs
 actions.trinkets=use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs
 actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(variable.trinket_1_buffs|trinket.1.cooldown.remains)&(variable.trinket_2_buffs|trinket.2.cooldown.remains)
