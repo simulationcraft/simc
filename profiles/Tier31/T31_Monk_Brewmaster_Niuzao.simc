@@ -113,7 +113,7 @@ actions.rotation_pta+=/chi_wave
 actions.rotation_pta+=/chi_burst
 
 head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192982,enchant=incandescent_essence
-neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/6935/1520,gem_id=192925/192925/192925
+neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/8782/1520,gem_id=192925/192925/192925
 shoulders=strigine_epaulets,id=207127,bonus_id=7187/1520
 back=inflammable_drapeleaf,id=207160,bonus_id=7187/1520
 chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
