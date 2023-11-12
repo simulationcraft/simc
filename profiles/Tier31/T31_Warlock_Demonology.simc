@@ -5,7 +5,7 @@ level=70
 race=Dwarf
 role=spell
 position=ranged_back
-talents=BoQAAAAAAAAAAAAAAAAAAAAAAAHgkEJJQaKQaJJh0CAAAAAa5ABSioERIJSaaJJJEAAAAAAkI
+talents=BoQAAAAAAAAAAAAAAAAAAAAAAAHgkEJJQaKQaJJh0CAAAAAIBSikSEhkIpolkkQAAAAAAQiA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -132,19 +132,19 @@ actions.variables+=/variable,name=impl,op=set,value=buff.tyrant.remains<6,if=act
 actions.variables+=/variable,name=impl,op=set,value=buff.tyrant.remains<8,if=active_enemies>4+(talent.sacrificed_souls.enabled)
 actions.variables+=/variable,name=pool_cores_for_tyrant,op=set,value=cooldown.summon_demonic_tyrant.remains<20&variable.tyrant_cd<20&(buff.demonic_core.stack<=2|!buff.demonic_core.up)&cooldown.summon_vilefiend.remains<gcd.max*5&cooldown.call_dreadstalkers.remains<gcd.max*5
 
-head=devout_ashdevils_grimhorns,id=207272,bonus_id=6652/9599/7979/9563/9513/1494/8767/1808,ilevel=489,gem_id=192982,enchant_id=7052
-neck=amulet_of_eonars_chosen,id=208445,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/8782,ilevel=489,gem_id=192938/192938/192938
+head=devout_ashdevils_grimhorns,id=207272,bonus_id=6652/9599/7979/9563/9513/1494/8767/1808,ilevel=489,gem_id=192988,enchant_id=7052
+neck=amulet_of_eonars_chosen,id=208445,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/8782,ilevel=489,gem_id=192932/192932/192932
 shoulders=devout_ashdevils_hatespikes,id=207270,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
 back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,enchant_id=6592,crafted_stats=40/49
 chest=devout_ashdevils_razorhide,id=207275,bonus_id=6652/7979/9562/9515/1491/8767,ilevel=489,enchant_id=6625
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960,ilevel=486,gem_id=192938,enchant_id=6574,crafted_stats=40/36
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960/1808,ilevel=486,gem_id=192932,enchant_id=6574,crafted_stats=36/40
 hands=devout_ashdevils_claws,id=207273,bonus_id=6652/8783/8784/9515/9514/9513/9512/9511/9599/9600/10244/10245/4800/4786/1520/9576
-waist=urctoss_hibernal_dial,id=207119,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192938,enchant_id=6574,crafted_stats=40/32
+waist=urctoss_hibernal_dial,id=207119,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192932,enchant_id=6574,crafted_stats=40/32
 legs=elders_volcanic_wrap,id=207118,bonus_id=4800/4786/1520/9576,enchant_id=6830
 feet=lifewoven_slippers,id=207123,bonus_id=4800/4786/1520/9576,enchant_id=6607
-finger1=band_of_burning_thorns,id=207159,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192938,enchant_id=6568
-finger2=signet_of_the_last_elder,id=207162,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,ilevel=489,gem_id=192938,enchant_id=6550
-trinket1=nymues_unraveling_spindle,id=208615,ilevel=489
+finger1=band_of_burning_thorns,id=207159,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192932,enchant_id=6568
+finger2=signet_of_the_last_elder,id=207162,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,ilevel=489,gem_id=192932,enchant_id=6568
+trinket1=nymues_unraveling_spindle,id=208615,bonus_id=4800/4786/1520/9576,ilevel=489
 trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
 main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
 
@@ -152,10 +152,10 @@ main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
 # gear_ilvl=488.60
 # gear_stamina=38769
 # gear_intellect=12992
-# gear_crit_rating=4149
+# gear_crit_rating=4232
 # gear_haste_rating=4768
-# gear_mastery_rating=2494
-# gear_versatility_rating=3659
+# gear_mastery_rating=2329
+# gear_versatility_rating=3741
 # gear_speed_rating=250
 # gear_avoidance_rating=525
 # gear_armor=3251

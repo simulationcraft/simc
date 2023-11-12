@@ -35,11 +35,22 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  std::string frost_food = ( p->true_level >= 61 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
+  std::string frost_food;
+  std::string unholy_food;
+  std::string blood_food;
 
-  std::string unholy_food = ( p->true_level >= 61 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
-
-  std::string blood_food = ( p->true_level >= 60 ) ? "fated_fortune_cookie" : "disabled";
+  if ( p->true_level >= 61 )
+  {
+    frost_food  = ( p->dual_wield() ) ? "thousandbone_tongueslicer" : "sizzling_seafood_medley";
+    unholy_food = "sizzling_seafood_medley";
+    blood_food  = "great_cerulean_sea";
+  }
+  else
+  {
+    frost_food  = "feast_of_gluttonous_hedonism";
+    unholy_food = "feast_of_gluttonous_hedonism";
+    blood_food  = "feast_of_gluttonous_hedonism";
+  }
 
   switch ( p->specialization() )
   {
