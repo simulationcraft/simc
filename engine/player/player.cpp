@@ -13260,7 +13260,7 @@ void player_t::do_update_movement( double yards )
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
                                                                          timespan_t ts, timespan_t wait,
                                                                          const player_t* p )
-  : action( a ), target( t ), time( ts ), wait_time( wait ), queue_failed( false )
+  : action( a ), target( t ), target_name( t ? t->name_str : "" ), time( ts ), wait_time( wait ), queue_failed( false )
 {
   for ( buff_t* b : p->buff_list )
   {
