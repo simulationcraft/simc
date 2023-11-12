@@ -418,7 +418,7 @@ void frost( player_t* p )
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=7&!set_bonus.tier30_2pc|active_enemies>=3&talent.ice_caller" );
-  default_->add_action( "run_action_list,name=cleave,if=active_enemies=2&set_bonus.tier31_4pc" );
+  default_->add_action( "run_action_list,name=cleave,if=active_enemies=2" );
   default_->add_action( "run_action_list,name=st" );
 
   aoe->add_action( "cone_of_cold,if=talent.coldest_snap&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&!talent.comet_storm)" );
