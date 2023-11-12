@@ -64,7 +64,7 @@ position=front
 talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAiIJJCJIJBhIlkQiWiEJSIJpkk0iESQAAAAAJJB
 
 
-head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=7187/6935/1520,gem_id=192919
+head=screaming_torchfiends_burning_scowl,id=207263,bonus_id=7187/6935/1520,gem_id=192919,enchant=incandescent_essence
 neck=elemental_lariat,id=193001,bonus_id=9500/9498/9405/8782/8960,gem_id=192919/192919/192919,crafted_stats=36/32
 shoulders=screaming_torchfiends_horned_memento,id=207261,bonus_id=7187/1520
 back=cloak_of_fading_echoes,id=134405,bonus_id=9499/7981/5868/657
