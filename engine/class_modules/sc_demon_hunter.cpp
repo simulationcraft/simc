@@ -2941,6 +2941,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   dot_t* get_dot( player_t* t ) override
   {
+    if (!data().ok())
+      return nullptr;
     return dot_action->get_dot( t );
   }
 };
