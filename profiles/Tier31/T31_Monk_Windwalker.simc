@@ -472,7 +472,7 @@ back=drape_of_the_loyal_vassal,id=158375,bonus_id=3316/1515/9916,enchant=gracefu
 chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
 wrists=lifebound_bindings,id=193419,bonus_id=9500/9405/8960/8797/1808,gem_id=192958,crafted_stats=36/49
 hands=mystic_herons_glovebills,id=207246,bonus_id=7187/1520
-waist=houndjowl_waistband,id=159341,bonus_id=3316/1524/1808/9916,gem_id=192958,enchant=shadowed_belt_clasp_3
+waist=houndjowl_waistband,id=159341,bonus_id=3316/1515/1808/9916,gem_id=192958,enchant=shadowed_belt_clasp_3
 legs=mystic_herons_waders,id=207244,bonus_id=7187/1520,enchant=fierce_armor_kit_3
 feet=grove_darkeners_treads,id=134429,bonus_id=3316/1515/9916,enchant=watchers_loam_3
 finger1=lord_waycrests_signet,id=158362,bonus_id=3316/1515/1808/9916,gem_id=192958,enchant=devotion_of_mastery_3
@@ -482,14 +482,14 @@ trinket2=ashes_of_the_embersoul,id=207167,bonus_id=7187/1520
 main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 # Gear Summary
-# gear_ilvl=488.60
-# gear_agility=8887
-# gear_stamina=39151
+# gear_ilvl=488.00
+# gear_agility=8826
+# gear_stamina=38810
 # gear_crit_rating=4315
 # gear_haste_rating=2785
-# gear_mastery_rating=2345
-# gear_versatility_rating=6319
+# gear_mastery_rating=2330
+# gear_versatility_rating=6308
 # gear_avoidance_rating=125
-# gear_armor=5325
+# gear_armor=5290
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
