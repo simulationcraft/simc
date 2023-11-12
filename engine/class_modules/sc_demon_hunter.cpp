@@ -2894,15 +2894,18 @@ struct fiery_brand_t : public demon_hunter_spell_t
   {
     use_off_gcd = true;
 
-    // Merge the action stats for simplified reporting if we aren't using T30, otherwise split out
-    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
-    if ( !p->set_bonuses.t30_vengeance_4pc->ok() )
+    if ( data().ok() )
     {
-      dot_action->stats = stats;
-    }
-    else if ( !from_t30 )
-    {
-      add_child( dot_action );
+      // Merge the action stats for simplified reporting if we aren't using T30, otherwise split out
+      dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+      if ( !p->set_bonuses.t30_vengeance_4pc->ok() )
+      {
+        dot_action->stats = stats;
+      }
+      else if ( !from_t30 )
+      {
+        add_child( dot_action );
+      }
     }
   }
 
@@ -5467,7 +5470,7 @@ struct fracture_t : public demon_hunter_attack_t
       // t30 4pc proc happens after main hand execute but before offhand execute
       // this matters because the offhand hit benefits from Fiery Demise that may be
       // applied because of the t30 4pc proc
-      if ( p()->buff.t30_vengeance_4pc->up() )
+      if ( p()->buff.t30_vengeance_4pc->up() && p()->active.fiery_brand_t30 )
       {
         p()->active.fiery_brand_t30->execute_on_target( s->target );
         p()->buff.t30_vengeance_4pc->expire();
@@ -5543,7 +5546,7 @@ struct shear_t : public demon_hunter_attack_t
       }
     }
 
-    if ( p()->buff.t30_vengeance_4pc->up() )
+    if ( p()->buff.t30_vengeance_4pc->up() && p()->active.fiery_brand_t30 )
     {
       p()->active.fiery_brand_t30->execute_on_target( s->target );
       p()->buff.t30_vengeance_4pc->expire();
@@ -7802,7 +7805,7 @@ void demon_hunter_t::init_spells()
     active.retaliation = get_background_action<retaliation_t>( "retaliation" );
   }
 
-  if ( set_bonuses.t30_vengeance_4pc->ok() )
+  if ( set_bonuses.t30_vengeance_4pc->ok() && talent.vengeance.fiery_brand->ok() )
   {
     fiery_brand_t* fiery_brand_t30 = get_background_action<fiery_brand_t>( "fiery_brand_t30", "", true );
     fiery_brand_t30->internal_cooldown->base_duration = 0_s;
