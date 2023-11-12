@@ -9477,48 +9477,6 @@ namespace monk
     return e;
   }
 
-  // monk_t::composite_melee_attack_power ==================================
-
-  double monk_t::composite_melee_attack_power() const
-  {
-    if ( base.attack_power_per_spell_power > 0 )
-      return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-    return player_t::composite_melee_attack_power();
-  }
-
-  // monk_t::composite_melee_attack_power_by_type ==================================
-
-  double monk_t::composite_melee_attack_power_by_type( attack_power_type type ) const
-  {
-    if ( base.attack_power_per_spell_power > 0 )
-      return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-    return player_t::composite_melee_attack_power_by_type( type );
-  }
-
-  // monk_t::composite_spell_power ==============================================
-
-  double monk_t::composite_spell_power( school_e school ) const
-  {
-    if ( base.spell_power_per_attack_power > 0 )
-      return base.spell_power_per_attack_power *
-      composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
-      composite_attack_power_multiplier();
-
-    return player_t::composite_spell_power( school );
-  }
-
-  // monk_t::composite_spell_power_multiplier ================================
-
-  double monk_t::composite_spell_power_multiplier() const
-  {
-    if ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER )
-      return 1.0;
-
-    return player_t::composite_spell_power_multiplier();
-  }
-
   // monk_t::composite_attack_power_multiplier() ==========================
 
   double monk_t::composite_attack_power_multiplier() const

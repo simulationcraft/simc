@@ -1569,7 +1569,15 @@ void player_t::init_base_stats()
     // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
     base.armor_coeff = dbc->armor_mitigation_constant( level() );
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
+  }
 
+  // initialize sp->ap and ap->sp overrides for hybrid specs
+  if ( is_player() && spec_spell->ok() )
+  {
+    base.attack_power_per_spell_power =
+        spell_data_t::find_spelleffect( *spec_spell, E_APPLY_AURA, A_OVERRIDE_AP_PER_SP ).percent();
+    base.spell_power_per_attack_power =
+        spell_data_t::find_spelleffect( *spec_spell, E_APPLY_AURA, A_OVERRIDE_SP_PER_AP ).percent();
   }
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
@@ -4192,19 +4200,26 @@ double player_t::composite_melee_speed() const
 
 double player_t::composite_melee_attack_power() const
 {
+  if ( current.attack_power_per_spell_power > 0 )
+  {
+    return current.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
+  }
+
   double ap = current.stats.attack_power;
 
   ap += current.attack_power_per_strength * cache.strength();
   ap += current.attack_power_per_agility * cache.agility();
-
-  if ( current.attack_power_per_spell_power > 0 )
-    ap += std::floor( current.attack_power_per_spell_power * cache.spell_power( SCHOOL_MAX ) );
 
   return ap;
 }
 
 double player_t::composite_melee_attack_power_by_type( attack_power_type type ) const
 {
+  if ( current.attack_power_per_spell_power > 0 )
+  {
+    return current.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
+  }
+
   double base_ap = cache.attack_power();
   double ap = 0;
   bool has_mh = main_hand_weapon.type != WEAPON_NONE;
@@ -4275,12 +4290,12 @@ double player_t::composite_melee_attack_power_by_type( attack_power_type type ) 
 
 double player_t::composite_attack_power_multiplier() const
 {
-  double m = current.attack_power_multiplier;
-
-  if ( is_pet() || is_enemy() || type == HEALING_ENEMY )
+  if ( is_pet() || is_enemy() || type == HEALING_ENEMY || current.attack_power_per_spell_power > 0 )
   {
     return 1.0;
   }
+
+  double m = current.attack_power_multiplier;
 
   m *= 1.0 + sim->auras.battle_shout->check_value();
 
@@ -4560,18 +4575,27 @@ double player_t::composite_spell_speed() const
 
 double player_t::composite_spell_power( school_e /* school */ ) const
 {
+  if ( current.spell_power_per_attack_power > 0 )
+  {
+    return current.spell_power_per_attack_power *
+           composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
+           composite_attack_power_multiplier();
+  }
+
   double sp = current.stats.spell_power;
 
   sp += current.spell_power_per_intellect * cache.intellect();
-
-  if ( current.spell_power_per_attack_power > 0 )
-    sp += std::floor( current.spell_power_per_attack_power * cache.attack_power() );
 
   return sp;
 }
 
 double player_t::composite_spell_power_multiplier() const
 {
+  if ( is_pet() || is_enemy() || type == HEALING_ENEMY || current.spell_power_per_attack_power > 0 )
+  {
+    return 1.0;
+  }
+
   return current.spell_power_multiplier;
 }
 

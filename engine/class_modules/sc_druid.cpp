@@ -435,13 +435,6 @@ public:
     double time_spend_healing = 0.0;
   } options;
 
-  // spec-based spell/attack power overrides
-  struct spec_override_t
-  {
-    double attack_power;
-    double spell_power;
-  } spec_override;
-
   // RPPM objects
   struct rppms_t
   {
@@ -1061,7 +1054,6 @@ public:
     : player_t( sim, DRUID, name, r ),
       eclipse_handler( this ),
       options(),
-      spec_override(),
       active(),
       pets( this ),
       caster_form_weapon(),
@@ -1128,8 +1120,6 @@ public:
   void datacollection_end() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
-  double composite_melee_attack_power() const override;
-  double composite_melee_attack_power_by_type( attack_power_type type ) const override;
   double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
@@ -1145,7 +1135,6 @@ public:
   double composite_melee_expertise( const weapon_t* ) const override;
   double temporary_movement_modifier() const override;
   double passive_movement_modifier() const override;
-  double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
@@ -9742,9 +9731,6 @@ void druid_t::init_finished()
 {
   player_t::init_finished();
 
-  spec_override.attack_power = find_effect( spec_spell, A_404 ).percent();
-  spec_override.spell_power  = find_effect( spec_spell, A_366 ).percent();
-
   // PRECOMBAT WRATH SHENANIGANS
   // we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
   // parsed and we can adjust wrath travel times accordingly based on subsequent precombat actions that will sucessfully
@@ -11709,27 +11695,8 @@ void druid_t::invalidate_cache( cache_e c )
 // Composite combat stat override functions =================================
 
 // Attack Power =============================================================
-double druid_t::composite_melee_attack_power() const
-{
-  if ( spec_override.attack_power )
-    return spec_override.attack_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-  return player_t::composite_melee_attack_power();
-}
-
-double druid_t::composite_melee_attack_power_by_type( attack_power_type type ) const
-{
-  if ( spec_override.attack_power )
-    return spec_override.attack_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-  return player_t::composite_melee_attack_power_by_type( type );
-}
-
 double druid_t::composite_attack_power_multiplier() const
 {
-  if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
-    return 1.0;
-
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.natures_guardian->ok() )
@@ -11880,17 +11847,6 @@ double druid_t::passive_movement_modifier() const
 }
 
 // Spell Power ==============================================================
-double druid_t::composite_spell_power( school_e school ) const
-{
-  if ( spec_override.spell_power )
-  {
-    return composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
-           composite_attack_power_multiplier() * spec_override.spell_power;
-  }
-
-  return player_t::composite_spell_power( school );
-}
-
 double druid_t::composite_spell_power_multiplier() const
 {
   if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_FERAL )

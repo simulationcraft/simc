@@ -1022,10 +1022,6 @@ namespace monk
     double resource_regen_per_second( resource_e ) const override;
     double composite_attribute_multiplier( attribute_e attr ) const override;
     double composite_melee_expertise( const weapon_t *weapon ) const override;
-    double composite_melee_attack_power() const override;
-    double composite_melee_attack_power_by_type( attack_power_type type ) const override;
-    double composite_spell_power( school_e school ) const override;
-    double composite_spell_power_multiplier() const override;
     double composite_spell_haste() const override;
     double composite_melee_haste() const override;
     double composite_attack_power_multiplier() const override;
