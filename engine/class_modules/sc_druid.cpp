@@ -1135,7 +1135,6 @@ public:
   double composite_melee_expertise( const weapon_t* ) const override;
   double temporary_movement_modifier() const override;
   double passive_movement_modifier() const override;
-  double composite_spell_power_multiplier() const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -1163,7 +1162,6 @@ public:
   double calculate_expected_max_health() const;
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
-  bool check_astral_power( action_t* a, int over );
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -2648,20 +2646,6 @@ public:
     : ab( n, p, s )
   {
     parse_options( opt );
-  }
-
-  std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
-  {
-    auto splits = util::string_split<std::string_view>( name_str, "." );
-
-    if ( p()->specialization() == DRUID_BALANCE && util::str_compare_ci( splits[ 0 ], "ap_check" ) )
-    {
-      int over = splits.size() > 1 ? util::to_int( splits[ 1 ] ) : 0;
-
-      return make_fn_expr( name_str, [ this, over ]() { return p()->check_astral_power( this, over ); } );
-    }
-
-    return ab::create_expression( name_str );
   }
 };  // end druid_spell_t
 
@@ -10753,7 +10737,6 @@ void druid_t::apl_feral()
 
 void druid_t::apl_balance()
 {
-// Annotated APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt
 #include "class_modules/apl/balance_apl.inc"
 }
 
@@ -10825,8 +10808,7 @@ void druid_t::init()
   {
     case DRUID_BALANCE:
       action_list_information +=
-        "\n# Balance APL can be found at https://balance-simc.github.io/Balance-SimC/balance.txt\n";
-        //"\n# Annotated Balance APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt\n";
+        "\n# Balance APL can be found at https://www.dreamgrove.gg/sims/owl/balance.txt\n";
       break;
     case DRUID_FERAL:
       action_list_information +=
@@ -11846,15 +11828,6 @@ double druid_t::passive_movement_modifier() const
   return ms;
 }
 
-// Spell Power ==============================================================
-double druid_t::composite_spell_power_multiplier() const
-{
-  if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_FERAL )
-    return 1.0;
-
-  return player_t::composite_spell_power_multiplier();
-}
-
 // Expressions ==============================================================
 std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::string_view name_str )
 {
@@ -11977,21 +11950,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       splits[ 1 ] = talent.incarnation_moonkin.ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
 
       return druid_t::create_expression( util::string_join( splits, "." ) );
-    }
-
-    // check for AP overcap on action other than current action. check for current action handled in
-    // druid_spell_t::create_expression syntax: <action>.ap_check.<allowed overcap = 0>
-    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ap_check" ) )
-    {
-      action_t* action = find_action( splits[ 0 ] );
-      if ( action )
-      {
-        int over = splits.size() > 2 ? util::to_int( splits[ 2 ] ) : 0;
-
-        return make_fn_expr( name_str, [ this, action, over ]() { return check_astral_power( action, over ); } );
-      }
-
-      throw std::invalid_argument( "invalid action" );
     }
 
     if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "buff" ) && util::str_compare_ci( splits[ 1 ], "fury_of_elune" ) )
@@ -13062,22 +13020,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.rampant_growth );
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
-}
-
-// check for AP overcap on current action. syntax: ap_check.<allowed overcap = 0>
-bool druid_t::check_astral_power( action_t* a, int over )
-{
-  double ap = resources.current[ RESOURCE_ASTRAL_POWER ];
-
-  auto aps = buff.natures_balance->check_value() +
-             buff.fury_of_elune->check_value() +
-             buff.sundered_firmament->check_value();
-
-  ap += a->composite_energize_amount( nullptr );
-  ap += a->time_to_execute.total_seconds() * aps;
-  ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-
-  return ap <= resources.max[ RESOURCE_ASTRAL_POWER ] + over;
 }
 
 /* Report Extension Class
