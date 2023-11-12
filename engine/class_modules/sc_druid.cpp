@@ -3353,6 +3353,18 @@ public:
 
     residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
+
+  size_t total_buffeffects_count() override
+  {
+    return base_t::total_buffeffects_count() + persistent_multiplier_buffeffects.size();
+  }
+
+  void print_parsed_custom_type( report::sc_html_stream& os ) override
+  {
+    print_parsed_type( os, persistent_multiplier_buffeffects, "Snapshots" );
+  }
+
+
 };  // end druid_cat_attack_t
 
 struct cat_finisher_data_t
