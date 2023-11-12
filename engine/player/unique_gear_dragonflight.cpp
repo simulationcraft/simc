@@ -780,35 +780,43 @@ void incandescent_essence( special_effect_t& e )
     }
   };
 
-  struct tindrals_fowl_fantasia_t : public generic_proc_t
+  struct tindrals_fowl_fantasia_t : public action_t
   {
-    action_t* main_damage;
-    buff_t* buff;
+    action_t* echo;  // 426431, hits twice 1s apart
+    action_t* last;  // 426486, hits once 1s later
+
+    // tindrals_fowl_fantasia_t is a proxy holder action
     tindrals_fowl_fantasia_t( const special_effect_t& e )
-      : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
-      main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
-                   e.player->find_spell( 426486 ), true ) ),
-      buff( make_buff<buff_t>( e.player, "tindrals_fowl_fantasia", e.player->find_spell( 426431 ) ) )
+      : action_t( action_e::ACTION_OTHER, "tindrals_fowl_fantasia", e.player, e.player->find_spell( 426341 ) )
     {
-      auto secondary_damage = create_proc_action<generic_aoe_proc_t>(
-        "denizen_of_the_flame_secondary", e, "denizen_of_the_flame_secondary", e.player->find_spell( 426431 ), true );
-      secondary_damage->base_dd_min = secondary_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 6 ).average( e.item );
-      main_damage->base_dd_min = main_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
+      background = true;
 
-      buff->set_quiet( true );
-      buff->set_duration( 2_s );
-      buff->set_period( 1_s );
-      buff->set_tick_callback( [ secondary_damage ]( buff_t*, int, timespan_t ) { secondary_damage->execute(); } );
+      auto coeffs = player->find_spell( 425838 );
 
-      add_child( main_damage );
-      add_child( secondary_damage );
+      echo = create_proc_action<generic_aoe_proc_t>(
+          "denizen_of_the_flame", e, "denizen_of_the_flame", player->find_spell( 426431 ), true );
+      echo->base_dd_min = echo->base_dd_max = coeffs->effectN( 6 ).average( e.item );
+      add_child( echo );
+
+      last = create_proc_action<generic_aoe_proc_t>(
+          "denizen_of_the_flame_final", e, "denizen_of_the_flame_final", player->find_spell( 426486 ), true );
+      last->name_str_reporting = "Final";
+      last->base_dd_min = last->base_dd_max = coeffs->effectN( 8 ).average( e.item );
+      add_child( last );
+    }
+
+    result_e calculate_result( action_state_t* ) const override
+    {
+      return result_e::RESULT_NONE;
     }
 
     void execute() override
     {
-      generic_proc_t::execute();
-      main_damage->execute();
-      buff->trigger();
+      action_t::execute();
+
+      echo->execute_on_target( target );
+      make_event( sim, 1_s, [ this, t = target ] { echo->execute_on_target( t ); } );
+      make_event( sim, 2_s, [ this, t = target ] { last->execute_on_target( t ); } );
     }
   };
 
