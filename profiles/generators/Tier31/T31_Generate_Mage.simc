@@ -1,34 +1,34 @@
-# mage="T31_Mage_Arcane"
-# spec=arcane
-# level=70
-# race=mechagnome
-# role=spell
-# position=back
-# talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJRSKCikQEJhEJQSQSLJAAAAAAAAAAAgIJJJRSSSgA
+mage="T31_Mage_Arcane"
+spec=arcane
+level=70
+race=human
+role=spell
+position=back
+talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJRSKCikQEJhEJQSQSLJAAAAAAAAAAAgIJJJRSSSgA
 
-# flask=phial_of_corrupting_rage_3
-# temporary_enchant=main_hand:hissing_rune_3
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_corrupting_rage_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:hissing_rune_3
 
-# head=underlight_conjurers_arcanocowl,id=202551,bonus_id=9321/7979/6652/9414/9229/1472/8767,ilevel=447,gem_id=192988
-# neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192938/192938/192938
-# shoulders=underlight_conjurers_aurora,id=202549,ilevel=450
-# back=voice_of_the_silent_star,id=204465,bonus_id=6652/9330/7979/1485/8767,ilevel=457
-# chest=underlight_conjurers_vestment,id=202554,bonus_id=9321/7979/6652/9231/1466/8767,ilevel=447,enchant_id=6625
-# wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8780/8793,ilevel=447,gem_id=192938,enchant_id=6580,crafted_stats=40/32
-# hands=underlight_conjurers_gloves,id=202552,ilevel=447
-# waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8780/8790,ilevel=447,gem_id=192938,crafted_stats=36/49
-# legs=underlight_conjurers_trousers,id=202550,ilevel=450,enchant_id=6544
-# feet=underlight_conjurers_treads,id=202553,ilevel=450
-# finger1=bloodied_wedding_ring,id=193671,bonus_id=8780,ilevel=447,gem_id=192938,enchant_id=6556
-# finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192938,enchant_id=6556
-# trinket1=irideus_fragment,id=193743,ilevel=447
-# trinket2=ominous_chromatic_essence,id=203729,ilevel=447
-# main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=sophic_devotion_3,enchant_id=6643
+head=wayward_chronomancers_chronocap,id=207290,bonus_id=8780,ilevel=489,gem_id=192988,enchant_id=7052
+neck=ouroboreal_necklet,id=210214,bonus_id=8782,ilevel=489,gem_id=192922/192922/192922
+shoulder=wayward_chronomancers_metronomes,id=207288,ilevel=489
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,enchant_id=6592,crafted_stats=49/40
+chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
+wrist=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9498/9369/9369/9368/9402/8793/9379/8960/8780,gem_id=192922,enchant_id=6574
+hands=wayward_chronomancers_gloves,id=207291,ilevel=489
+waist=wayward_chronomancers_synchronous_belt,id=207287,bonus_id=8780,ilevel=489,gem_id=192922,enchant_id=6904
+legs=wayward_chronomancers_pantaloons,id=207289,bonus_id=6652/7979/9562/9512/1491/8767,ilevel=489,enchant_id=6544
+feet=wayward_chronomancers_strapped_boots,id=207292,ilevel=489,enchant_id=6613
+finger1=signet_of_the_highborne_magi,id=134537,bonus_id=8780,ilevel=489,gem_id=192922,enchant_id=6562
+finger2=lord_waycrests_signet,id=158362,bonus_id=8780,ilevel=489,gem_id=192922,enchant_id=6556
+trinket1=balefire_branch,id=159630,ilevel=489
+trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
+main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=489,enchant_id=6643
 
-# dragonflight.ominous_chromatic_essence_dragonflight=ruby
-# dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
-
-# save=T31_Mage_Arcane.simc
+save=T31_Mage_Arcane.simc
 
 mage="T31_Mage_Fire"
 spec=fire
