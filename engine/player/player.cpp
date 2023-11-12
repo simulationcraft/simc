@@ -11596,7 +11596,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     const auto stalent = find_talent_spell( talent_tree::SPECIALIZATION,
         splits[ 1 ], specialization(), true );
 
-    if ( ctalent.nil() && stalent.nil() )
+    if ( ctalent.invalid() && stalent.invalid() )
     {
       throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
     }

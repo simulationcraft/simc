@@ -28,7 +28,7 @@ public:
   bool ok() const
   { return enabled(); }
 
-  bool nil() const
+  bool invalid() const
   { return m_player == nullptr; }
 
   unsigned rank() const
