@@ -8427,6 +8427,15 @@ void demon_hunter_t::combat_begin()
   if ( talent.vengeance.spirit_bomb->ok() )
   {
     frailty_driver = make_event<frailty_event_t>( *sim, this, true );
+  }  
+
+  // Cap starting fury
+  double fury_cap     = 20.0;
+  double current_fury = resources.current[ RESOURCE_FURY ];
+  if ( in_boss_encounter && current_fury > fury_cap )
+  {
+    resources.current[ RESOURCE_FURY ] = fury_cap;
+    sim->print_debug( "Fury for {} capped at combat start to {} (was {})", *this, fury_cap, current_fury );
   }
 }
 
