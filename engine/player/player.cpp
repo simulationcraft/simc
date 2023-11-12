@@ -10622,7 +10622,7 @@ static player_talent_t create_talent_obj(
   if ( ( it != player->player_traits.end() && std::get<2>( *it ) == 0U ) ||
       ( it == player->player_traits.end() && !is_starter ) )
   {
-    return { player };
+    return { player };  // Trait not found on player
   }
 
   return { player, trait, is_starter ? trait->max_ranks : std::get<2>( *it ) };
@@ -10652,6 +10652,7 @@ player_talent_t player_t::find_talent_spell(
   {
     sim->print_debug( "Player {}: Can't find {} talent with name '{}'.", this->name(),
         util::talent_tree_string( tree ), name );
+    return {};  // Invalid trait
   }
 
   return create_talent_obj( this, s, trait );
@@ -10671,7 +10672,7 @@ player_talent_t player_t::find_talent_spell(
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
         util::talent_tree_string( tree ), spell_id );
-    return { this };
+    return {};  // Invalid trait
   }
 
   return create_talent_obj( this, s, traits[ 0 ] );
@@ -10680,6 +10681,13 @@ player_talent_t player_t::find_talent_spell(
 player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, specialization_e s ) const
 {
   const trait_data_t* trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
+  if ( trait == &trait_data_t::nil() )
+  {
+    sim->print_debug( "Player {}: Can't find talent with node_entry_id '{}'.", this->name(),
+        trait_node_entry_id );
+    return {};  // Invalid trait
+  }
+
   return create_talent_obj( this, s, trait );
 }
 
@@ -11588,7 +11596,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     const auto stalent = find_talent_spell( talent_tree::SPECIALIZATION,
         splits[ 1 ], specialization(), true );
 
-    if ( ctalent.spell() == spell_data_t::nil() && stalent.spell() == spell_data_t::nil() )
+    if ( ctalent.invalid() && stalent.invalid() )
     {
       throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
     }
