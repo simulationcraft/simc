@@ -2172,6 +2172,7 @@ public:
     parse_buff_effects( p()->buff.sabertooth, USE_DEFAULT );
     parse_buff_effects( p()->buff.sharpened_claws );
     parse_buff_effects( p()->buff.smoldering_frenzy );
+    parse_conditional_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -3960,6 +3961,8 @@ struct rake_t : public cat_attack_t
 {
   struct rake_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
   {
+    rake_t* rake = nullptr;
+
     rake_bleed_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( n, p, s )
     {
       background = dual = true;
@@ -3968,37 +3971,36 @@ struct rake_t : public cat_attack_t
 
       dot_name = "rake";
     }
+
+    // read persistent mul off the parent rake's table for reporting
+    void print_parsed_custom_type( report::sc_html_stream& os ) override
+    {
+      rake->print_parsed_custom_type( os );
+    }
   };
 
   rake_bleed_t* bleed;
-  double stealth_mul = 0.0;
 
   rake_t( druid_t* p, std::string_view opt ) : rake_t( p, "rake", p->talent.rake, opt ) {}
 
   rake_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt ) : cat_attack_t( n, p, s, opt )
   {
     if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
-      stealth_mul = data().effectN( 4 ).percent();
+    {
+      persistent_multiplier_buffeffects.emplace_back( nullptr, data().effectN( 4 ).percent(), USE_DATA, true, false,
+          [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, data().effectN( 4 ) );
+    }
 
     aoe = std::max( aoe, 1 ) + as<int>( p->talent.doubleclawed_rake->effectN( 1 ).base_value() );
 
     bleed = p->get_secondary_action_n<rake_bleed_t>( name_str + "_bleed", find_trigger( this ).trigger() );
     bleed->stats = stats;
+    bleed->rake = this;
     stats->action_list.push_back( bleed );
 
     dot_name = "rake";
   }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    double pm = cat_attack_t::composite_persistent_multiplier( s );
-
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
-      pm *= 1.0 + stealth_mul;
-
-    return pm;
-  }
-  
   bool has_amount_result() const override { return bleed->has_amount_result(); }
 
   std::vector<player_t*>& target_list() const override
@@ -4277,6 +4279,9 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
     {
       stealth_mul = data().effectN( 3 ).percent();
       stealth_cp = p->find_spell( 343232 )->effectN( 1 ).base_value();
+
+      da_multiplier_buffeffects.emplace_back( nullptr, stealth_mul, USE_DATA, true, false,
+          [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, data().effectN( 3 ) );
     }
   }
 
@@ -4329,16 +4334,6 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
       cm *= 2.0;
 
     return cm;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = base_t::action_multiplier();
-
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
-      m *= 1.0 + stealth_mul;
-
-    return m;
   }
 };
 
@@ -7113,8 +7108,6 @@ struct moonfire_t : public druid_spell_t
 
     action_t* potp = nullptr;
     double gg_mul = 0.0;
-    double feral_override_da = 0.0;
-    double feral_override_ta = 0.0;
 
     moonfire_damage_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.moonfire_dmg )
     {
@@ -7144,13 +7137,6 @@ struct moonfire_t : public druid_spell_t
       if ( p->talent.galactic_guardian.ok() )
         gg_mul = p->buff.galactic_guardian->data().effectN( 3 ).percent();
 
-      // Always applies when you are a feral druid unless you go into moonkin form
-      if ( p->specialization() == DRUID_FERAL )
-      {
-        feral_override_da = find_effect( p->spec.feral_overrides, this, A_ADD_PCT_MODIFIER, P_GENERIC ).percent();
-        feral_override_ta = find_effect( p->spec.feral_overrides, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE ).percent();
-      }
-
       if ( p->specialization() == DRUID_RESTORATION && p->talent.protector_of_the_pack.ok() )
       {
         potp = p->get_secondary_action<protector_of_the_pack_moonfire_t>( "protector_of_the_pack_moonfire" );
@@ -7166,20 +7152,7 @@ struct moonfire_t : public druid_spell_t
       if ( ( !is_free( free_spell_e::GALACTIC ) || s->chain_target ) && p()->buff.galactic_guardian->check() )
         dam *= 1.0 + gg_mul;
 
-      if ( feral_override_da && !p()->buff.moonkin_form->check() )
-        dam *= 1.0 + feral_override_da;
-
       return dam;
-    }
-
-    double composite_ta_multiplier( const action_state_t* s ) const override
-    {
-      double tam = base_t::composite_ta_multiplier( s );
-
-      if ( feral_override_ta && !p()->buff.moonkin_form->check() )
-        tam *= 1.0 + feral_override_ta;
-
-      return tam;
     }
 
     std::vector<player_t*>& target_list() const override
