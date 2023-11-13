@@ -1215,9 +1215,14 @@ struct denizen_of_the_dream_t : public pet_t
   struct fey_missile_t : public spell_t
   {
     druid_t* o;
+    double mastery_passive;
+    double mastery_dot;
 
     fey_missile_t( pet_t* p )
-      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ), o( static_cast<druid_t*>( p->owner ) )
+      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ),
+        o( static_cast<druid_t*>( p->owner ) ),
+        mastery_passive( o->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
+        mastery_dot( o->mastery.astral_invocation->effectN( 5 ).mastery_value() )
     {
       name_str_reporting = "fey_missile";
     }
@@ -1237,6 +1242,12 @@ struct denizen_of_the_dream_t : public pet_t
       da *= 1.0 + o->buff.eclipse_lunar->check_value();
       da *= 1.0 + o->buff.eclipse_solar->check_value();
 
+      if ( !o->bugs )
+      {
+        da *= 1.0 + o->cache.mastery() * mastery_passive;
+        da *= 1.0 + o->cache.mastery() * mastery_passive;
+      }
+
       return da;
     }
 
@@ -1246,10 +1257,10 @@ struct denizen_of_the_dream_t : public pet_t
       auto td = o->get_target_data( t );
 
       if ( td->dots.moonfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery_value();
+        tm *= 1.0 + o->cache.mastery() * mastery_dot;
 
       if ( td->dots.sunfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery_value();
+        tm *= 1.0 + o->cache.mastery() * mastery_dot;
 
       return tm;
     }
@@ -2843,6 +2854,8 @@ private:
   buff_t* other_ecl = nullptr;
   dot_t* druid_td_t::dots_t::* other_dot = nullptr;
   double mul;
+  double mastery_passive;
+  double mastery_dot;
 
 public:
   using base_t = trigger_astral_smolder_t<BASE>;
@@ -2850,7 +2863,9 @@ public:
   trigger_astral_smolder_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
     : BASE( n, p, s, o ),
       p_( p ),
-      mul( p->talent.astral_smolder->effectN( 1 ).percent() )
+      mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
+      mastery_passive( p->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
+      mastery_dot( p->mastery.astral_invocation->effectN( 5 ).mastery_value() )
   {}
 
   void init_astral_smolder( buff_t* b, dot_t* druid_td_t::dots_t::*d )
@@ -2870,9 +2885,14 @@ public:
     auto amount = s->result_amount * mul;
     amount *= 1.0 + other_ecl->check_value();
 
-    auto dot = std::invoke( other_dot, BASE::td( s->target )->dots );
-    if ( !p_->bugs && dot->is_ticking() )
-      amount *= 1.0 + p_->cache.mastery_value();
+    if ( !p_->bugs )
+    {
+      amount *= 1.0 + p_->cache.mastery() * mastery_passive;
+
+      auto dot = std::invoke( other_dot, BASE::td( s->target )->dots );
+      if ( dot->is_ticking() )
+        amount *= 1.0 + p_->cache.mastery() * mastery_dot;
+    }
 
     residual_action::trigger( p_->active.astral_smolder, s->target, amount );
   }
