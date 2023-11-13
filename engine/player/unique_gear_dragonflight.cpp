@@ -6584,12 +6584,12 @@ void augury_of_the_primal_flame( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* state ) override
     {
-      double amount       = state->result_amount * mod;
-      damage->base_dd_min = damage->base_dd_max = amount;
-
       // Remove from the cap before modifiers are added (crit/vers/targets)
       if ( buff->check() )
       {
+        double amount       = state->result_amount * mod;
+        damage->base_dd_min = damage->base_dd_max = amount;
+
         // After the hit occurs calculate how much is left or expire if needed
         if ( buff->current_value > amount )
         {
@@ -6608,10 +6608,10 @@ void augury_of_the_primal_flame( special_effect_t& effect )
           damage->base_dd_min = damage->base_dd_max = buff->current_value;
           buff->expire();
         }
-      }
 
-      // Always trigger the damage event if you have gotten to this point, even if buff was expired
-      damage->execute_on_target( state->target );
+        // Always trigger the damage event if you have gotten to this point, even if buff was expired
+        damage->execute_on_target( state->target );
+      }
     }
   };
 
