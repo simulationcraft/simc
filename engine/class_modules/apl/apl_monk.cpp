@@ -993,7 +993,7 @@ namespace monk_apl
     default_st->add_action( "faeline_stomp,if=debuff.skyreach_exhaustion.remains<1&debuff.fae_exposure_damage.remains<3" );
     default_st->add_action( "rising_sun_kick,,if=buff.pressure_point.up|debuff.skyreach_exhaustion.remains>55" );
     default_st->add_action( "blackout_kick,if=buff.pressure_point.remains&chi>2&prev.rising_sun_kick" );
-    default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier31_4pc&!buff.blackout_reinforcement.up" );
+    default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier31_2pc&!buff.blackout_reinforcement.up" );
     default_st->add_action( "rising_sun_kick,if=buff.kicks_of_flowing_momentum.up|buff.pressure_point.up|debuff.skyreach_exhaustion.remains>55" );
     default_st->add_action( "blackout_kick,if=buff.teachings_of_the_monastery.stack=3");
     default_st->add_action( "rising_sun_kick" );
