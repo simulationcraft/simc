@@ -13,8 +13,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( p -> true_level > 60 && p -> specialization() == HUNTER_MARKSMANSHIP ) ? "iced_phial_of_corrupting_rage_3" : 
-         ( p -> true_level > 60 ) ? "phial_of_tepid_versatility_3" :
+  return ( p -> true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : 
          ( p -> true_level > 50 ) ? "spectral_flask_of_power" :
          ( p -> true_level >= 40 ) ? "greater_flask_of_the_currents" :
          "disabled";
