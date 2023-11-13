@@ -306,7 +306,7 @@ namespace monk_apl
     rotation_pta->add_action( "keg_smash,if=buff.press_the_advantage.stack<10" );
     rotation_pta->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
     rotation_pta->add_action( "spinning_crane_kick,if=active_enemies>2" );
-    rotation_pta->add_action( "spinning_crane_kick,if=(1.1>(time-action.melee_main_hand.last_used)*(1+spell_haste))-main_hand.2h" );
+    rotation_pta->add_action( "spinning_crane_kick,if=(1.1>(time-action.melee_main_hand.last_used)*(1+spell_haste)-main_hand.2h)" );
     rotation_pta->add_action( "expel_harm" );
     rotation_pta->add_action( "chi_wave" );
     rotation_pta->add_action( "chi_burst" );
@@ -727,7 +727,7 @@ namespace monk_apl
     serenity_aoelust->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     serenity_aoelust->add_action( "blackout_kick,target_if=max:debuff.keefers_skyreach.remains,if=combo_strike" );
     serenity_aoelust->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
-    
+
     // Serenity Lust Priority
     serenity_lust->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<1", "Serenity Lust" );
     serenity_lust->add_action( "spinning_crane_kick,if=buff.serenity.remains<1.5&combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_2pc" );
