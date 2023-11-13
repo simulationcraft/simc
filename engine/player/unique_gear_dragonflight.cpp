@@ -7862,6 +7862,24 @@ void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
   effect.execute_action = create_proc_action<dreambinder_loom_of_the_great_cycle_t>( "web_of_dreams", effect );
 }
 
+// Fystia's Fiery Kris
+// 424073 Driver/Values
+// 424075 DoT
+void fystias_fiery_kris( special_effect_t& effect )
+{
+  struct fystias_fiery_kris_t : public generic_proc_t
+  {
+    fystias_fiery_kris_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "fystias_fiery_kris", effect.driver()->effectN( 1 ).trigger() )
+    {
+      base_td = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+  };
+
+  effect.execute_action = create_proc_action<fystias_fiery_kris_t>( "fystias_fiery_kris", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Thorncaller Claw
 // 424406 Driver/Values
 // 424965 Thorn Spirit DoT
@@ -10181,6 +10199,7 @@ void register_special_effects()
   register_special_effect( 424320, items::hungering_shadowflame );              // Hungering Shadowflame - Unnamed 1h axe
   register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
   register_special_effect( 424406, items::thorncaller_claw );                   // Thorncaller Claw
+  register_special_effect( 424073, items::fystias_fiery_kris );                 // Fystia's Fiery Kris
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
