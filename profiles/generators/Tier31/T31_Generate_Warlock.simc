@@ -6,6 +6,8 @@ role=spell
 position=ranged_back
 talents=BkQAAAAAAAAAAAAAAAAAAAAAAASSSkkAppoEpdgkESJAAAAQDAAAAAAgERLEJJSikWSEAQC
 
+food=thousandbone_tongueslicer
+
 head=devout_ashdevils_grimhorns,id=207272,bonus_id=6652/9599/7979/9563/9513/1494/8767/1808,ilevel=489,gem_id=192988,enchant_id=7052
 neck=chain_of_the_green_flight,id=137311,bonus_id=3524/8782,ilevel=489,gem_id=192961/192961/192961
 shoulders=devout_ashdevils_hatespikes,id=207270,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
@@ -32,6 +34,8 @@ role=spell
 position=ranged_back
 talents=BoQAAAAAAAAAAAAAAAAAAAAAAAHgkEJJQaKQaJJh0CAAAAAIBSikSEhkIpolkkQAAAAAAQiA
 
+food=thousandbone_tongueslicer
+
 head=devout_ashdevils_grimhorns,id=207272,bonus_id=6652/9599/7979/9563/9513/1494/8767/1808,ilevel=489,gem_id=192988,enchant_id=7052
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/8782,ilevel=489,gem_id=192932/192932/192932
 shoulders=devout_ashdevils_hatespikes,id=207270,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
@@ -57,6 +61,8 @@ race=dwarf
 role=spell
 position=ranged_back
 talents=BsQAAAAAAAAAAAAAAAAAAAAAAgESSkkAppApdgkEShWwB0SSkAalikAAAAAAAAAAAAIJokEJA
+
+food=thousandbone_tongueslicer
 
 head=devout_ashdevils_grimhorns,id=207272,bonus_id=523,ilevel=489,gem_id=192985,enchant_id=7052
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=8782,ilevel=489,gem_id=192964/192964/192964
