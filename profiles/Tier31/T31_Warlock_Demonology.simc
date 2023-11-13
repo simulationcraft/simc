@@ -140,8 +140,8 @@ chest=devout_ashdevils_razorhide,id=207275,bonus_id=6652/7979/9562/9515/1491/876
 wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960/1808,ilevel=486,gem_id=192932,enchant_id=6574,crafted_stats=36/40
 hands=devout_ashdevils_claws,id=207273,bonus_id=6652/8783/8784/9515/9514/9513/9512/9511/9599/9600/10244/10245/4800/4786/1520/9576
 waist=urctoss_hibernal_dial,id=207119,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192932,enchant_id=6574,crafted_stats=40/32
-legs=elders_volcanic_wrap,id=207118,bonus_id=4800/4786/1520/9576,enchant_id=6830
-feet=lifewoven_slippers,id=207123,bonus_id=4800/4786/1520/9576,enchant_id=6607
+legs=leggings_of_the_new_dawn,id=207928,ilevel=489,enchant_id=6830
+feet=slippers_of_heedless_sacrifice,id=134419,bonus_id=3524,ilevel=489
 finger1=band_of_burning_thorns,id=207159,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192932,enchant_id=6568
 finger2=signet_of_the_last_elder,id=207162,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,ilevel=489,gem_id=192932,enchant_id=6568
 trinket1=nymues_unraveling_spindle,id=208615,bonus_id=4800/4786/1520/9576,ilevel=489
@@ -152,11 +152,10 @@ main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
 # gear_ilvl=488.60
 # gear_stamina=38769
 # gear_intellect=12992
-# gear_crit_rating=4232
-# gear_haste_rating=4768
-# gear_mastery_rating=2329
-# gear_versatility_rating=3741
-# gear_speed_rating=250
+# gear_crit_rating=4571
+# gear_haste_rating=4829
+# gear_mastery_rating=1456
+# gear_versatility_rating=4214
 # gear_avoidance_rating=525
 # gear_armor=3251
 # set_bonus=tier31_2pc=1
