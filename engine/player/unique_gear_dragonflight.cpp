@@ -6555,17 +6555,27 @@ void nymues_unraveling_spindle( special_effect_t& effect )
 // Buff: 426553
 void augury_of_the_primal_flame( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "annihilating_flame" );
-  if ( !buff )
+  struct annihilating_flame_buff_t : public buff_t
   {
-    // Use the cap as the default value to be decremented as you trigger
-    buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
-               ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
-  }
+    annihilating_flame_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : buff_t( p, n, e.driver()->effectN( 3 ).trigger() )
+    {
+      // Use the cap as the default value to be decremented as you trigger
+      set_default_value( e.driver()->effectN( 1 ).average( e.item ) );
+    }
 
-  auto damage         = create_proc_action<generic_aoe_proc_t>( "annihilating_flame", effect, "annihilating_flame",
-                                                        effect.player->find_spell( 426564 ), true );
-  damage->may_crit    = true;
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      if ( check() )
+        v = current_value + default_value;
+
+      return buff_t::trigger( s, v, c, d );
+    }
+  };
+
+  auto buff = create_buff<annihilating_flame_buff_t>( effect.player, "annihilating_flame", effect );
+  auto damage = create_proc_action<generic_aoe_proc_t>(
+      "annihilating_flame", effect, "annihilating_flame", effect.player->find_spell( 426564 ), true );
   damage->base_dd_min = damage->base_dd_max = 1;  // allow the action to scale with modifiers like vers
 
   // Damage events trigger additional damage based off the original amount
