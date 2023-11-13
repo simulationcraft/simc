@@ -123,7 +123,7 @@ void protection( player_t* p )
   standard->add_action( "divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)" );
   standard->add_action( "avengers_shield" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
-  standard->add_action( "consecration,if=!consecration.up&!buff.sanctification.stack=buff.sanctification.max_stack" );
+  standard->add_action( "consecration,if=!consecration.up&(!buff.sanctification.stack=buff.sanctification.max_stack|!set_bonus.tier31_2pc)" );
   standard->add_action( "eye_of_tyr,if=talent.inmost_light.enabled&raid_event.adds.in>=45|spell_targets.shield_of_the_righteous>=3" );
   standard->add_action( "blessed_hammer" );
   standard->add_action( "hammer_of_the_righteous" );

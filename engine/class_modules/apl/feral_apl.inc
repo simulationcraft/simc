@@ -36,7 +36,7 @@ def->add_action( "call_action_list,name=builder,if=!buff.bs_inc.up&spell_targets
 def->add_action( "regrowth,if=energy<25&buff.predatory_swiftness.up&!buff.clearcasting.up&variable.regrowth" );
 
 aoe_builder->add_action( "brutal_slash,target_if=min:target.time_to_die,if=(cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5)&!((variable.need_bt|buff.bs_inc.up)&buff.bt_brutal_slash.up)","if you need to proc bloodtalons, skip actions that you've already casted towards bloodtalons" );
-aoe_builder->add_action( "thrash_cat,if=dot.thrash_cat.remains<3&(!buff.sudden_ambush.up|!talent.double_clawed_rake.enabled)&!talent.thrashing_claws" );
+aoe_builder->add_action( "thrash_cat,if=dot.thrash_cat.remains<3&(!buff.sudden_ambush.up|!talent.doubleclawed_rake.enabled)&!talent.thrashing_claws" );
 aoe_builder->add_action( "prowl,target_if=max:dot.rake.pmultiplier<1.6|dot.rake.refreshable,if=(dot.rake.pmultiplier<1.6|dot.rake.refreshable)&!(variable.need_bt&buff.bt_rake.up)" );
 aoe_builder->add_action( "shadowmeld,target_if=max:(dot.rake.pmultiplier<1.6|dot.rake.refreshable),if=(dot.rake.pmultiplier<1.6|dot.rake.refreshable)&!(variable.need_bt&buff.bt_rake.up)" );
 aoe_builder->add_action( "rake,target_if=max:(dot.rake.pmultiplier<1.6|dot.rake.refreshable)*druid.rake.ticks_gained_on_refresh,if=(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier|dot.rake.refreshable)&!(variable.need_bt&buff.bt_rake.up)" );

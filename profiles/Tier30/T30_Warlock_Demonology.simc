@@ -5,7 +5,7 @@ level=70
 race=troll
 role=spell
 position=ranged_back
-talents=BoQAAAAAAAAAAAAAAAAAAAAAAAIJRSCkWKHQkmkESJAAAAAokIJSiAkIJSKaJRCBAAAAAAJA
+talents=BoQAAAAAAAAAAAAAAAAAAAAAAAIJRSCkWKHQkmkESJAAAAAokDEIJiSEhkIpplkkQAAAAAAQiA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -54,7 +54,7 @@ actions+=/call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains
 actions+=/call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<15&(buff.vilefiend.up|!talent.summon_vilefiend&(buff.grimoire_felguard.up|cooldown.grimoire_felguard.up|!set_bonus.tier30_2pc))&(!variable.shadow_timings|variable.tyrant_cd<15|fight_remains<40|buff.power_infusion.up)
 actions+=/summon_demonic_tyrant,if=buff.vilefiend.up|buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>90
 actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>45
-actions+=/demonbolt,target_if=(!debuff.doom_brand.up|action.hand_of_guldan.in_flight&debuff.doom_brand.remains<=3),if=buff.demonic_core.up&(((!talent.soul_strike|cooldown.soul_strike.remains>gcd.max*2)&soul_shard<4)|soul_shard<3)&!prev_gcd.1.demonbolt&set_bonus.tier31_2pc
+actions+=/demonbolt,target_if=(!debuff.doom_brand.up|action.hand_of_guldan.in_flight&debuff.doom_brand.remains<=3),if=buff.demonic_core.up&(((!talent.soul_strike|cooldown.soul_strike.remains>gcd.max*2)&soul_shard<4)|soul_shard<(4-(active_enemies>2)))&!prev_gcd.1.demonbolt&set_bonus.tier31_2pc
 actions+=/power_siphon,if=!buff.demonic_core.up&(!debuff.doom_brand.up|(!action.hand_of_guldan.in_flight&debuff.doom_brand.remains<gcd.max+action.demonbolt.travel_time)|(action.hand_of_guldan.in_flight&debuff.doom_brand.remains<gcd.max+action.demonbolt.travel_time+3))&set_bonus.tier31_2pc
 actions+=/demonic_strength,if=buff.nether_portal.remains<gcd.max&(fight_remains>63&!(fight_remains>cooldown.summon_demonic_tyrant.remains+69)|cooldown.summon_demonic_tyrant.remains>30|variable.shadow_timings|buff.rite_of_ruvaraad.up|!talent.summon_demonic_tyrant|!talent.grimoire_felguard|!set_bonus.tier30_2pc)
 actions+=/bilescourge_bombers

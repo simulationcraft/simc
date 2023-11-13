@@ -7582,19 +7582,27 @@ namespace monk
     {
       return;
     }
+    switch ( s->action->id )
+    {
+      case 143924:  // Leech
+      case 259760:  // Entropic Embrace (Void Elf)
+          return;
+    }
 
     // flush out percent heals
     if ( s->action->type == ACTION_HEAL )
     {
-      auto *heal_cast = debug_cast< heal_t * >( s->action );
+      auto *heal_cast = debug_cast<heal_t *>( s->action );
       if ( ( s->result_type == result_amount_type::HEAL_DIRECT && heal_cast->base_pct_heal > 0 ) ||
-        ( s->result_type == result_amount_type::HEAL_OVER_TIME && heal_cast->tick_pct_heal > 0 ) )
-        return;
+           ( s->result_type == result_amount_type::HEAL_OVER_TIME && heal_cast->tick_pct_heal > 0 ) )
+          return;
     }
 
     // Attempt to proc the heal
     if ( active_actions.celestial_fortune && rng().roll( composite_melee_crit_chance() ) )
     {
+      sim->print_debug( "triggering celestial fortune from (id: {}, name: {}) with (amount: {}) damage base",
+                        s->action->id, s->action->name_str, s->result_amount );
       active_actions.celestial_fortune->base_dd_max = active_actions.celestial_fortune->base_dd_min = s->result_amount;
       active_actions.celestial_fortune->schedule_execute();
     }
@@ -9469,48 +9477,6 @@ namespace monk
     return e;
   }
 
-  // monk_t::composite_melee_attack_power ==================================
-
-  double monk_t::composite_melee_attack_power() const
-  {
-    if ( base.attack_power_per_spell_power > 0 )
-      return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-    return player_t::composite_melee_attack_power();
-  }
-
-  // monk_t::composite_melee_attack_power_by_type ==================================
-
-  double monk_t::composite_melee_attack_power_by_type( attack_power_type type ) const
-  {
-    if ( base.attack_power_per_spell_power > 0 )
-      return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-    return player_t::composite_melee_attack_power_by_type( type );
-  }
-
-  // monk_t::composite_spell_power ==============================================
-
-  double monk_t::composite_spell_power( school_e school ) const
-  {
-    if ( base.spell_power_per_attack_power > 0 )
-      return base.spell_power_per_attack_power *
-      composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
-      composite_attack_power_multiplier();
-
-    return player_t::composite_spell_power( school );
-  }
-
-  // monk_t::composite_spell_power_multiplier ================================
-
-  double monk_t::composite_spell_power_multiplier() const
-  {
-    if ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER )
-      return 1.0;
-
-    return player_t::composite_spell_power_multiplier();
-  }
-
   // monk_t::composite_attack_power_multiplier() ==========================
 
   double monk_t::composite_attack_power_multiplier() const
@@ -10269,9 +10235,8 @@ namespace monk
   double monk_t::stagger_pct( int target_level )
   {
     double stagger_base = stagger_base_value();
-    // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
     double k = dbc->armor_mitigation_constant( target_level );
-    k *= 2.12599992752;  // Mythic Raid
+    k *= dbc->get_armor_constant_mod( difficulty_e::MYTHIC );  // Mythic Raid
 
     double stagger = stagger_base / ( stagger_base + k );
 

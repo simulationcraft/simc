@@ -1473,6 +1473,11 @@ double dbc_t::armor_mitigation_constant( unsigned level ) const
   return expected_stat( level ).armor_constant;
 }
 
+double dbc_t::get_armor_constant_mod( difficulty_e diff ) const
+{
+  return expected_stat_mod( diff, &expected_stat_mod_t::armor_constant );
+}
+
 double dbc_t::npc_armor_value( unsigned level ) const
 {
   assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );

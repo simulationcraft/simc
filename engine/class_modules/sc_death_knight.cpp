@@ -140,6 +140,7 @@ namespace pets {
   struct gargoyle_pet_t;
   struct ghoul_pet_t;
   struct magus_pet_t;
+  struct risen_skulker_pet_t;
 }
 
 namespace runeforge {
@@ -1168,12 +1169,11 @@ public:
   // Pets and Guardians
   struct pets_t
   {
-    pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
-    pets::dancing_rune_weapon_pet_t* everlasting_bond_pet;
-    pets::gargoyle_pet_t* gargoyle;
-    pets::ghoul_pet_t* ghoul_pet;
-    pet_t* risen_skulker;
-
+    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> dancing_rune_weapon_pet;
+    spawner::pet_spawner_t<pets::dancing_rune_weapon_pet_t, death_knight_t> everlasting_bond_pet;
+    spawner::pet_spawner_t<pets::gargoyle_pet_t, death_knight_t> gargoyle;
+    spawner::pet_spawner_t<pets::ghoul_pet_t, death_knight_t> ghoul_pet;
+    spawner::pet_spawner_t<pets::risen_skulker_pet_t, death_knight_t> risen_skulker;
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
@@ -1181,12 +1181,16 @@ public:
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> apoc_magus;
 
     pets_t(death_knight_t* p) :
-        army_ghouls("army_ghoul", p),
-        apoc_ghouls("apoc_ghoul", p),
-        bloodworms("bloodworm", p),
-        army_magus("army_magus", p),
-        apoc_magus("apoc_magus", p)
-
+        dancing_rune_weapon_pet( "dancing_rune_weapon", p ),
+        everlasting_bond_pet( "everlasting_bond", p ),
+        gargoyle( "gargoyle", p ),
+        ghoul_pet( "ghoul", p ),
+        risen_skulker( "risen_skulker", p ),
+        army_ghouls( "army_ghoul", p ),
+        apoc_ghouls( "apoc_ghoul", p ),
+        bloodworms( "bloodworm", p ),
+        army_magus( "army_magus", p ),
+        apoc_magus( "apoc_magus", p )
     {}
   } pets;
 
@@ -1893,7 +1897,6 @@ struct death_knight_pet_t : public pet_t
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead, guardian;
   timespan_t precombat_spawn_adjust;
   util::string_view pet_name;
-  action_t* proxy_action;
   double army_ghoul_ap_mod;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true,
@@ -1905,17 +1908,11 @@ struct death_knight_pet_t : public pet_t
       guardian( guardian ),
       precombat_spawn_adjust( 0_s ),
       pet_name( name ),
-      proxy_action( nullptr ),
       army_ghoul_ap_mod()
   {
     if ( auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
-    }
-
-    if ( pet_name == "ghoul" && dk()->find_action( "raise_dead" ) )
-    {
-      proxy_action = dk()->find_action( "raise_dead" );
     }
 
     // Not in spell data, storing here to ensure parity between magus/apoc/army ghouls. 
@@ -1983,23 +1980,13 @@ struct death_knight_pet_t : public pet_t
   // Standard Death Knight pet actions
   struct auto_attack_t : public melee_attack_t
   {
-    action_t* proxy_action;
-    auto_attack_t( death_knight_pet_t* p, action_t* a ) :
-      melee_attack_t( "auto_attack", p ), proxy_action( a )
+    auto_attack_t( death_knight_pet_t* p ) :
+      melee_attack_t( "auto_attack", p )
     {
       assert( p -> main_hand_weapon.type != WEAPON_NONE );
       p -> main_hand_attack = p -> create_auto_attack();
       trigger_gcd = 0_ms;
       school = SCHOOL_PHYSICAL;
-      if( !p -> dk() -> options.individual_pet_reporting && proxy_action )
-      {
-        auto proxy                = proxy_action;
-        auto it                   = range::find( proxy->child_action, data().id(), &action_t::id );
-        if ( it != proxy->child_action.end() )
-          stats = ( *it )->stats;
-        else
-          proxy->add_child( this );
-      }
     }
 
     void execute() override
@@ -2014,7 +2001,7 @@ struct death_knight_pet_t : public pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "auto_attack" ) return new auto_attack_t( this, proxy_action );
+    if ( name == "auto_attack" ) return new auto_attack_t( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -2036,42 +2023,10 @@ struct death_knight_pet_t : public pet_t
 template <typename T_PET, typename T_ACTION>
 struct pet_action_t : public T_ACTION
 {
-  action_t* proxy_action;
   pet_action_t( T_PET* p, util::string_view name, const spell_data_t* spell = spell_data_t::nil() ) :
-    T_ACTION( name, p, spell ), proxy_action( nullptr )
+    T_ACTION( name, p, spell )
   {
     this -> special = this -> may_crit = true;
-
-    if ( ( p->pet_name == "ghoul" || p->pet_name == "risen_skulker" ) && p->dk()->find_action( "raise_dead" ) )
-    {
-      proxy_action = p->dk()->find_action( "raise_dead" );
-    }
-    if ( ( p->pet_name == "army_ghoul" || p->pet_name == "army_magus" ) && p->dk()->find_action( "army_of_the_dead" ) )
-    {
-      proxy_action = p->dk()->find_action( "army_of_the_dead" );
-    }
-    if ( ( p->pet_name == "apoc_ghoul" || p->pet_name == "apoc_magus" ) && p->dk()->find_action( "apocalypse" ) )
-    {
-      proxy_action = p->dk()->find_action( "apocalypse" );
-    }
-    if ( ( p->pet_name == "dancing_rune_weapon" || p->pet_name == "everlasting_bond" ) && p->dk()->find_action( "dancing_rune_weapon" ) )
-    {
-      proxy_action = p->dk()->find_action( "dancing_rune_weapon" );
-    }
-    if ( p->pet_name == "gargoyle" && p->dk()->find_action( "summon_gargoyle" ) )
-    {
-      proxy_action = p->dk()->find_action( "summon_gargoyle" );
-    }
-
-    if ( !p->dk()->options.individual_pet_reporting && proxy_action )
-    {
-      auto proxy = proxy_action;
-      auto it    = range::find( proxy->child_action, this->data().id(), &action_t::id );
-      if ( it != proxy->child_action.end() )
-        this->stats = ( *it )->stats;
-      else
-        proxy->add_child( this );
-    }
   }
 
   T_PET* pet() const
@@ -2183,9 +2138,8 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 template <typename T>
 struct auto_attack_melee_t : public pet_melee_attack_t<T>
 {
-  action_t* proxy_action;
   auto_attack_melee_t( T* p, util::string_view name = "main_hand" ) :
-    pet_melee_attack_t<T>( p, name ), proxy_action( nullptr )
+    pet_melee_attack_t<T>( p, name )
   {
     this -> background = this -> repeating = true;
     this -> special = false;
@@ -2367,9 +2321,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         {
           double chance = dk() -> sets -> set( DEATH_KNIGHT_UNHOLY, T29, B4 ) -> effectN( 1 ).percent();
 
-          if ( dk() -> pets.ghoul_pet -> vile_infusion -> up() )
+          if ( pet()->vile_infusion->check() )
           {
-            chance = dk() -> sets -> set( DEATH_KNIGHT_UNHOLY, T29, B4 ) -> effectN( 2 ).percent();
+            chance = dk()->sets->set( DEATH_KNIGHT_UNHOLY, T29, B4 )->effectN( 2 ).percent();
           }
 
           if ( dk() -> rng().roll( chance ) )
@@ -2381,7 +2335,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  ghoul_pet_t( death_knight_t* owner, bool guardian ) :
+  ghoul_pet_t( death_knight_t* owner, bool guardian = true ) :
     base_ghoul_pet_t( owner, "ghoul" , guardian )
   {
     gnaw_cd = get_cooldown( "gnaw" );
@@ -2398,7 +2352,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
   attack_t* create_auto_attack() override
   { return new ghoul_melee_t( this ); }
-
 
   double composite_player_multiplier( school_e school ) const override
   {
@@ -2436,10 +2389,10 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     // The default value stores the %damage increase
 
-    if ( ghoulish_frenzy -> up() )
+    if ( ghoulish_frenzy -> check() )
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy -> data().effectN( 2 ).percent() );
 
-    if ( vile_infusion -> up() )
+    if ( vile_infusion -> check() )
       haste *= 1.0 / ( 1.0 + vile_infusion -> data().effectN( 2 ).percent() );
 
     return haste;
@@ -2449,7 +2402,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 0.6534;
+    owner_coeff.ap_from_ap = 0.705672;
   }
 
   void init_gains() override
@@ -2565,7 +2518,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     if ( name_str == "apoc_ghoul" )
     {
       // Currently has a 1.12x modifier, also not in spell data
-      owner_coeff.ap_from_ap *= 1.12;
+      owner_coeff.ap_from_ap *= 1.176;
     }
   }
 
@@ -3033,7 +2986,7 @@ private:
     drw_action_t<melee_attack_t>* consumption;
   } ability;
 
-  dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name ) :
+  dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name = "dancing_rune_weapon" ) :
     death_knight_pet_t( owner, drw_name, true, true ),
     blood_plague_dot( false ),
     ability()
@@ -3260,6 +3213,22 @@ struct magus_pet_t : public death_knight_pet_t
   }
 };
 
+std::function<void( death_knight_pet_t* )> parent_pet_action_fn( action_t* parent )
+{
+  return [ parent ]( death_knight_pet_t* p ) {
+    if ( !p->dk()->options.individual_pet_reporting )
+    {
+      for ( auto a : p->action_list )
+      {
+        auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
+        if ( it != parent->child_action.end() )
+          a->stats = ( *it )->stats;
+        else
+          parent->add_child( a );
+      }
+    }
+  };
+}
 } // namespace pets
 
 namespace { // UNNAMED NAMESPACE
@@ -4234,6 +4203,11 @@ struct apocalypse_t final : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     track_cd_waste = true;
+    p->pets.apoc_ghouls.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( p->talent.unholy.magus_of_the_dead.ok() || p->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
+    {
+      p->pets.apoc_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4243,10 +4217,10 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     assert( td && "apocalypse impacting without any target data" ); // td should should exist because the debuff is a condition of target_ready()
     auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td -> debuff.festering_wound -> check() );
 
-    p() -> burst_festering_wound( state -> target, n_wounds );
-    p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
+    p()->burst_festering_wound( state->target, n_wounds );
+    p()->pets.apoc_ghouls.spawn( summon_duration, n_wounds );
 
-    if ( p() -> talent.unholy.magus_of_the_dead.ok() )
+    if ( p()->talent.unholy.magus_of_the_dead.ok() )
     {
       p()->pets.apoc_magus.spawn( summon_duration, 1 );
     }
@@ -4327,6 +4301,11 @@ struct army_of_the_dead_t final : public death_knight_spell_t
     harmful = false;
     track_cd_waste = true;
     target = p;
+    p->pets.army_ghouls.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( p->talent.unholy.magus_of_the_dead.ok() )
+    {
+      p->pets.army_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void init_finished() override
@@ -4405,8 +4384,10 @@ struct army_of_the_dead_t final : public death_knight_spell_t
     if ( n_ghoul < 8 )
       make_event<summon_army_event_t>( *sim, p(), n_ghoul, summon_interval, summon_duration );
 
-    if ( p() -> talent.unholy.magus_of_the_dead.ok() )
-      p() -> pets.army_magus.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
+    if ( p()->talent.unholy.magus_of_the_dead.ok() )
+    {
+      p()->pets.army_magus.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
+    }
 
     if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) )
     {
@@ -4434,12 +4415,17 @@ struct blood_boil_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> up() )
+      for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> execute_on_target( target );
+      drw->ability.blood_boil->execute_on_target( target );
+    }
 
-      if ( p() -> talent.blood.everlasting_bond.ok() )
-        p() -> pets.everlasting_bond_pet -> ability.blood_boil -> execute_on_target( target );
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      {
+        eb->ability.blood_boil->execute_on_target( target );
+      }
     }
 
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
@@ -4987,12 +4973,17 @@ struct consumption_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> up() )
+    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.consumption -> execute_on_target( target );
+       drw->ability.consumption->execute_on_target( target );
+    }
 
-      if ( p() -> talent.blood.everlasting_bond.ok() )
-        p() -> pets.everlasting_bond_pet -> ability.consumption -> execute_on_target( target );
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      {
+       eb->ability.consumption->execute_on_target( target );
+      }
     }
   }
 };
@@ -5011,6 +5002,12 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
       bone_shield_stack_gain += as<int>(p -> talent.blood.insatiable_blade -> effectN( 2 ).base_value());
     track_cd_waste = true;
     parse_options( options_str );
+
+    p->pets.dancing_rune_weapon_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( p->talent.blood.everlasting_bond.ok() )
+    {
+      p->pets.everlasting_bond_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void execute() override
@@ -5024,13 +5021,13 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     // Only summon the rune weapons if the buff is down.
     if ( ! p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> summon( p() -> talent.blood.dancing_rune_weapon -> duration() +
-                                                                               p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
+      p() -> pets.dancing_rune_weapon_pet.spawn( p() -> talent.blood.dancing_rune_weapon -> duration() +
+                                                                               p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value(), 1 );
 
       if ( p() -> talent.blood.everlasting_bond.ok() )
       {
-        p() -> pets.everlasting_bond_pet -> summon( p() -> talent.blood.dancing_rune_weapon -> duration() +
-                                                                              p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
+        p() -> pets.everlasting_bond_pet.spawn( p() -> talent.blood.dancing_rune_weapon -> duration() +
+                                                                              p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value(), 1 );
       }
     }
   }
@@ -5130,12 +5127,18 @@ struct dark_transformation_buff_t final : public buff_t
         if ( new_ )
         {
           p -> buffs.ghoulish_frenzy -> trigger();
-          debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> trigger();
+          for (auto& ghoul : p->pets.ghoul_pet)
+          {
+            ghoul->ghoulish_frenzy->trigger();
+          }
         }
         else
         {
           p -> buffs.ghoulish_frenzy -> expire();
-          debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> expire();
+          for (auto& ghoul : p->pets.ghoul_pet)
+          {
+            ghoul->ghoulish_frenzy->expire();
+          }
         }
       } );
     }
@@ -5166,8 +5169,11 @@ struct dark_transformation_t final : public death_knight_spell_t
     // Rank 2 still exists for unholy as a baseline
     if ( p() -> spec.dark_transformation_2 -> ok() )
     {
-      p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY, p() -> spec.dark_transformation_2 -> effectN( 1 ).base_value(),
-                                                p() -> pets.ghoul_pet -> dark_transformation_gain, this );
+      for (auto& ghoul : p()->pets.ghoul_pet)
+      {
+        ghoul->resource_gain( RESOURCE_ENERGY, p()->spec.dark_transformation_2->effectN( 1 ).base_value(),
+                                            ghoul->dark_transformation_gain, this );
+      }
     }
 
     if ( p() -> talent.unholy.unholy_pact.ok() )
@@ -5189,9 +5195,12 @@ struct dark_transformation_t final : public death_knight_spell_t
 
   bool ready() override
   {
-    if ( ! p() -> pets.ghoul_pet || p() -> pets.ghoul_pet -> is_sleeping() )
+    for (auto& ghoul : p()->pets.ghoul_pet)
     {
-      return false;
+      if ( ghoul->is_sleeping() )
+      {
+        return false;
+      }
     }
 
     return death_knight_spell_t::ready();
@@ -5447,12 +5456,17 @@ struct deaths_caress_t final : public death_knight_spell_t
 
     p() -> buffs.bone_shield -> trigger( as<int>(p() -> talent.blood.deaths_caress -> effectN( 3 ).base_value()) );
 
-    if ( p() -> buffs.dancing_rune_weapon -> up() )
+    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> execute_on_target( target );
+      drw->ability.deaths_caress->execute_on_target( target );
+    }
 
-      if ( p() -> talent.blood.everlasting_bond.ok() )
-        p() -> pets.everlasting_bond_pet -> ability.deaths_caress -> execute_on_target( target );
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      {
+        eb->ability.deaths_caress->execute_on_target( target );
+      }
     }
   }
 };
@@ -5821,13 +5835,17 @@ struct death_strike_t final : public death_knight_melee_attack_t
     if ( oh_attack )
       oh_attack -> execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> up() )
+    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> execute_on_target( target );
+      drw->ability.death_strike->execute_on_target( target );
+    }
 
-      if ( p() -> talent.blood.everlasting_bond.ok() )
-        p() -> pets.everlasting_bond_pet -> ability.death_strike -> execute_on_target( target );
-
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      {
+        eb->ability.death_strike->execute_on_target( target );
+      }
     }
 
     if ( hit_any_target )
@@ -6481,12 +6499,17 @@ struct heart_strike_t final : public death_knight_melee_attack_t
       p() -> buffs.heartrend -> trigger();
     }
 
-    if ( p() -> buffs.dancing_rune_weapon -> up() )
+    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute_on_target( target );
+      drw->ability.heart_strike->execute_on_target( target );
+    }
 
-      if ( p() -> talent.blood.everlasting_bond.ok() )
-        p() -> pets.everlasting_bond_pet -> ability.heart_strike -> execute_on_target( target );
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      {
+        eb->ability.heart_strike->execute_on_target( target );
+      }
     }
 
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
@@ -6718,12 +6741,17 @@ struct marrowrend_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> up() )
+    for ( auto& drw : p()->pets.dancing_rune_weapon_pet )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute_on_target( target );
+      drw->ability.marrowrend->execute_on_target( target );
+    }
 
-      if ( p() -> talent.blood.everlasting_bond.ok() )
-        p() -> pets.everlasting_bond_pet -> ability.marrowrend -> execute_on_target( target );
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      for ( auto& eb : p()->pets.everlasting_bond_pet )
+      {
+        eb->ability.marrowrend->execute_on_target( target );
+      }
     }
   }
 
@@ -7175,6 +7203,11 @@ struct raise_dead_t final : public death_knight_spell_t
     harmful = false;
     track_cd_waste = true;
     target = p;
+    p->pets.ghoul_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    if ( p->talent.unholy.all_will_serve.ok() )
+    {
+      p->pets.risen_skulker.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   void execute() override
@@ -7186,23 +7219,35 @@ struct raise_dead_t final : public death_knight_spell_t
     if ( is_precombat && p() -> talent.unholy.raise_dead.ok() )
     {
       cooldown -> reset( false );
-      p() -> pets.ghoul_pet -> precombat_spawn = true;
+      for ( auto& ghoul : p()->pets.ghoul_pet )
+      {
+        ghoul->precombat_spawn = true;
+      }
     }
 
     // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
-    p() -> pets.ghoul_pet -> summon( data().duration() );
+    p()->pets.ghoul_pet.spawn( data().duration(), 1 );
 
     // Sacrificial Pact doesn't despawn risen skulker, so make sure it's not already up before spawning it
-    if ( p() -> talent.unholy.all_will_serve.ok() && p() -> pets.risen_skulker -> is_sleeping() )
+    if ( p()->talent.unholy.all_will_serve.ok() )
     {
-      p() -> pets.risen_skulker -> summon( 0_ms );
+      for ( auto& skulker : p()->pets.risen_skulker )
+      {
+        if ( skulker->is_sleeping() )
+        {
+          p()->pets.risen_skulker.spawn( 0_ms );
+        }
+      }
     }
   }
 
   bool ready() override
   {
-    if ( p() -> pets.ghoul_pet && ! p() -> pets.ghoul_pet -> is_sleeping() )
-      return false;
+    for ( auto& ghoul : p()->pets.ghoul_pet )
+    {
+      if ( !ghoul->is_sleeping() )
+        return false;
+    }
 
     return death_knight_spell_t::ready();
   }
@@ -7346,14 +7391,21 @@ struct sacrificial_pact_t final : public death_knight_heal_t
     death_knight_heal_t::execute();
 
     damage -> execute_on_target( player -> target );
-
-    p() -> pets.ghoul_pet -> dismiss();
+    for (auto& ghoul : p()->pets.ghoul_pet)
+    {
+      ghoul->dismiss();
+    }
   }
 
   bool ready() override
   {
-    if ( p() -> pets.ghoul_pet -> is_sleeping() )
-      return false;
+    for ( auto& ghoul : p()->pets.ghoul_pet )
+    {
+      if (!ghoul->is_sleeping())
+        return true;
+      else
+        return false;
+    }
 
     return death_knight_heal_t::ready();
   }
@@ -7574,12 +7626,20 @@ struct soul_reaper_t final : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.dancing_rune_weapon -> up() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.soul_reaper -> execute_on_target( target );
+      for (auto& drw : p()->pets.dancing_rune_weapon_pet)
+      {
+        drw->ability.soul_reaper->execute_on_target( target );
+      }
 
-      if ( p() -> talent.blood.everlasting_bond.ok() )
-        p() -> pets.everlasting_bond_pet -> ability.soul_reaper -> execute_on_target( target );
+      if (p()->talent.blood.everlasting_bond.ok())
+      {
+        for (auto& eb : p()->pets.everlasting_bond_pet)
+        {
+          eb->ability.soul_reaper->execute_on_target( target );
+        }
+      }
     }
   }
 
@@ -7614,13 +7674,14 @@ struct summon_gargoyle_t final : public death_knight_spell_t
     harmful = false;
     target = p;
     track_cd_waste = true;
+    p->pets.gargoyle.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
 
-    p() -> pets.gargoyle -> summon( data().duration() );
+    p()->pets.gargoyle.spawn( data().duration(), 1 );
   }
 };
 
@@ -8459,12 +8520,15 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     trigger_runic_empowerment( base_rp_cost );
     trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost, false );
 
-    if ( talent.unholy.summon_gargoyle.ok() && pets.gargoyle )
+    if ( talent.unholy.summon_gargoyle.ok() )
     {
       // 2019-02-12 Death Strike buffs gargoyle as if it had its full cost, even though it received a -10rp cost in 8.1
       // Assuming it's a bug for now, using base_costs instead of last_resource_cost won't affect free spells here
       // Free Death Coils are still handled in the action
-      pets.gargoyle -> increase_power( base_rp_cost );
+      for (auto& gargoyle : pets.gargoyle )
+      {
+        gargoyle->increase_power( base_rp_cost );
+      }
     }
 
     buffs.icy_talons -> trigger();
@@ -8661,7 +8725,10 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
 
   if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
   {
-      pets.ghoul_pet -> vile_infusion -> trigger();
+    for (auto& ghoul : pets.ghoul_pet)
+    {
+      ghoul->vile_infusion->trigger();
+    }
   }
 }
 
@@ -8897,7 +8964,10 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       
       if ( dk -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
       {
-        dk -> pets.ghoul_pet -> vile_infusion -> trigger();
+        for ( auto& ghoul : dk->pets.ghoul_pet )
+        {
+          ghoul->vile_infusion->trigger();
+        }
       }
 
       td -> debuff.festering_wound -> decrement( n_executes ); 
@@ -9316,19 +9386,24 @@ void death_knight_t::create_pets()
 {
   // Created unconditionally for APL purpose
   // Only the permanent version with raise dead 2 is a pet, others are guardians
-  pets.ghoul_pet = new pets::ghoul_pet_t( this, !talent.unholy.raise_dead.ok() );
+  pets.ghoul_pet.set_creation_callback(
+      []( death_knight_t* p ) { return new pets::ghoul_pet_t( p, !p->talent.unholy.raise_dead.ok() ); } );
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
     // Initialized even if the talent isn't picked for APL purpose
-    pets.gargoyle = new pets::gargoyle_pet_t( this );
+    if ( talent.unholy.summon_gargoyle.ok() )
+    {
+      pets.gargoyle.set_creation_callback( []( death_knight_t* p ) { return new pets::gargoyle_pet_t( p ); } );
+    }
 
     if ( talent.unholy.all_will_serve.ok() )
     {
-      pets.risen_skulker = new pets::risen_skulker_pet_t( this );
+      pets.risen_skulker.set_creation_callback(
+          []( death_knight_t* p ) { return new pets::risen_skulker_pet_t( p ); } );
     }
 
-    if ( find_action( "army_of_the_dead" ) )
+    if ( talent.unholy.army_of_the_dead.ok() )
     {
       pets.army_ghouls.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "army_ghoul" ); } );
@@ -9340,7 +9415,7 @@ void death_knight_t::create_pets()
       }
     }
 
-    if ( find_action( "apocalypse" ) )
+    if ( talent.unholy.apocalypse.ok() )
     {
       pets.apoc_ghouls.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
@@ -9355,12 +9430,14 @@ void death_knight_t::create_pets()
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    if ( find_action( "dancing_rune_weapon" ) )
+    if ( talent.blood.dancing_rune_weapon.ok() )
     {
-      pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this, "dancing_rune_weapon" );
+      pets.dancing_rune_weapon_pet.set_creation_callback(
+          []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "dancing_rune_weapon" ); } );
 
       if ( talent.blood.everlasting_bond.ok() )
-        pets.everlasting_bond_pet = new pets::dancing_rune_weapon_pet_t( this, "everlasting_bond" );
+        pets.everlasting_bond_pet.set_creation_callback(
+            []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "everlasting_bond" ); } );
     }
 
     if ( talent.blood.bloodworms.ok() )
@@ -11163,58 +11240,46 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
-  /*
+
   void register_hotfixes() const override
   {
-      hotfix::register_spell( "Death Knight", "2023-4-7", "Gargoyle Strike Cast time increased to 2.5s", 51963, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "cast_time" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2500 )
-      .verification_value( 2000 );
-      
-      hotfix::register_effect( "Death Knight", "2023-4-7", "Gargoyle Strike buffed by 25%", 44400, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.36 )
-      .verification_value( 0.28800 );
-            
-      hotfix::register_effect( "Death Knight", "2023-4-7", "Scourge Strike Physical buffed by 20%", 48019, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.484476 )
-      .verification_value( 0.40373 );
+    /*hotfix::register_spell("Death Knight", "2023-11-10", "Gargoyle Strike Cast time increased to 2.5s", 51963, hotfix::HOTFIX_FLAG_LIVE)
+    .field( "cast_time" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 2500 )
+    .verification_value( 2000 );*/
 
-      hotfix::register_effect( "Death Knight", "2023-4-7", "Scourge Strike Shadow buffed by 20%", 214692, hotfix::HOTFIX_FLAG_LIVE )
+    hotfix::register_effect( "Death Knight", "2023-11-10", "Death Coil buffed by 10%", 39872, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.26688 )
-      .verification_value( 0.22240 );
-    
-      hotfix::register_effect( "Death Knight", "2023-4-7", "Clawing Shadows buffed by 20%", 324719, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.710568 )
-      .verification_value( 0.59214 );
+      .modifier( 0.7010938 )
+      .verification_value( 0.637358 );
 
-      hotfix::register_effect( "Death Knight", "2023-4-7", "Death Coil buffed by 10%", 39872, hotfix::HOTFIX_FLAG_LIVE )
+    hotfix::register_effect( "Death Knight", "2023-11-10", "Clawing Shadows buffed by 10%", 324719, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.517341 )
-      .verification_value( 0.47031 );
+      .modifier( 1.0067288 )
+      .verification_value( 0.915208 );
 
-      hotfix::register_effect( "Death Knight", "2023-4-7", "Soul Reaper Initial buffed by 15%", 844983, hotfix::HOTFIX_FLAG_LIVE )
+    hotfix::register_effect( "Death Knight", "2023-11-10", "Scourge Strike (physical) buffed by 10%", 48019, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.4301 )
-      .verification_value( 0.37400 );
+      .modifier( 0.6863967 )
+      .verification_value( 0.623997 );
 
-      hotfix::register_effect( "Death Knight", "2023-4-7", "Soul Reaper Execute buffed by 15%", 844986, hotfix::HOTFIX_FLAG_LIVE )
+    hotfix::register_effect( "Death Knight", "2023-11-10", "Scourge Strike (shadow) buffed by 10%", 214692, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.9734 )
-      .verification_value( 1.71600 );
+      .modifier( 0.3781151 )
+      .verification_value( 0.343741 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-10", "Virulent Plague buffed by 20%", 281049, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.15 )
+      .verification_value( 0.125 );
   }
-  */
+
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}

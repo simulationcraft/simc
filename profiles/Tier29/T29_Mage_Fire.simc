@@ -25,6 +25,8 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/arcane_intellect
+# defining a group of trinkets as Steroids
+actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.erupting_spear_fragment|equipped.spoils_of_neltharus|equipped.tome_of_unstable_power|equipped.timebreaching_talon|equipped.horn_of_valor|equipped.mirror_of_fractured_tomorrows|equipped.ashes_of_the_embersoul|equipped.balefire_branch|equipped.time_theifs_gambit|equipped.sea_star|equipped.nymues_unraveling_spindle
 # APL Variable Option: If set to a non-zero value, the Combustion action and cooldowns that are constrained to only be used when Combustion is up will not be used during the simulation.
 actions.precombat+=/variable,name=disable_combustion,op=reset
 # APL Variable Option: This variable specifies whether Combustion should be used during Firestarter.
@@ -35,8 +37,8 @@ actions.precombat+=/variable,name=hot_streak_flamestrike,if=variable.hot_streak_
 actions.precombat+=/variable,name=hard_cast_flamestrike,if=variable.hard_cast_flamestrike=0,value=999
 # APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes are used during Combustion.
 actions.precombat+=/variable,name=combustion_flamestrike,if=variable.combustion_flamestrike=0,value=3*talent.flame_patch+999*!talent.flame_patch
-# APL Variable Option: This variable specifies the number of targets at which Flamestrikes should be used to consume Fury of the Sun King.
-actions.precombat+=/variable,name=skb_flamestrike,if=variable.skb_flamestrike=0,value=3
+# APL Variable Option: This variable specifies the number of targets at which Flamestrikes should be used to consume Fury of the Sun King.  Restricting this variable to be true only if Fuel the Fire is talented.
+actions.precombat+=/variable,name=skb_flamestrike,if=variable.skb_flamestrike=0,value=3*talent.fuel_the_fire+999*!talent.fuel_the_fire
 # APL Variable Option: This variable specifies the number of targets at which Arcane Explosion outside of Combustion should be used.
 actions.precombat+=/variable,name=arcane_explosion,if=variable.arcane_explosion=0,value=999
 # APL Variable Option: This variable specifies the percentage of mana below which Arcane Explosion will not be used.
@@ -71,7 +73,14 @@ actions+=/potion,if=buff.potion.duration>variable.time_to_combustion+buff.combus
 actions+=/variable,name=shifting_power_before_combustion,value=variable.time_to_combustion>cooldown.shifting_power.remains
 actions+=/variable,name=item_cutoff_active,value=(variable.time_to_combustion<variable.on_use_cutoff|buff.combustion.remains>variable.skb_duration&!cooldown.item_cd_1141.remains)&((trinket.1.has_cooldown&trinket.1.cooldown.remains<variable.on_use_cutoff)+(trinket.2.has_cooldown&trinket.2.cooldown.remains<variable.on_use_cutoff)>1)
 actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
-actions+=/use_item,name=moonlit_prism,if=variable.time_to_combustion<=5|fight_remains<variable.time_to_combustion
+# New trinket and weapon lines  need special line for Nymue trinket which would delay combustion under certain conditions?
+actions+=/use_item,name=mirror_of_fractured_tomorrows,if=buff.combustion.up&buff.combustion.remains>11
+actions+=/use_item,name=timethiefs_gambit,if=buff.combustion.up
+actions+=/use_item,name=balefire_branch,if=(variable.time_to_combustion<=3&buff.fury_of_the_sun_king.up)|(buff.combustion.up&buff.combustion.remains>11)
+actions+=/use_item,name=ashes_of_the_embersoul,if=(variable.time_to_combustion<=3&buff.fury_of_the_sun_king.up)|(buff.combustion.up&buff.combustion.remains>11)
+actions+=/use_item,name=nymues_unraveling_spindle,if=variable.time_to_combustion<=9
+actions+=/use_item,name=dreambinder_loom_of_the_great_cycle
+actions+=/use_item,name=belorrelos_the_suncaller,if=(!variable.steroid_trinket_equipped&buff.combustion.down)|(variable.steroid_trinket_equipped&trinket.1.has_cooldown&trinket.1.cooldown.remains>20&buff.combustion.down)|(variable.steroid_trinket_equipped&trinket.2.has_cooldown&trinket.2.cooldown.remains>20&buff.combustion.down)
 actions+=/use_items,if=!variable.item_cutoff_active
 # Pool as many Fire Blasts as possible for Combustion.
 actions+=/variable,use_off_gcd=1,use_while_casting=1,name=fire_blast_pooling,value=buff.combustion.down&action.fire_blast.charges_fractional+(variable.time_to_combustion+action.shifting_power.full_reduction*variable.shifting_power_before_combustion)%cooldown.fire_blast.duration-1<cooldown.fire_blast.max_charges+variable.overpool_fire_blasts%cooldown.fire_blast.duration-(buff.combustion.duration%cooldown.fire_blast.duration)%%1&variable.time_to_combustion<fight_remains
@@ -114,6 +123,10 @@ actions.combustion_cooldowns+=/use_item,name=tome_of_unstable_power
 actions.combustion_cooldowns+=/use_item,name=timebreaching_talon
 actions.combustion_cooldowns+=/use_item,name=voidmenders_shadowgem
 actions.combustion_cooldowns+=/use_item,name=horn_of_valor
+actions.combustion_cooldowns+=/use_item,name=timethiefs_gambit
+actions.combustion_cooldowns+=/use_item,name=balefire_branch
+actions.combustion_cooldowns+=/use_item,name=ashes_of_the_embersoul
+actions.combustion_cooldowns+=/use_item,name=mirror_of_fractured_tomorrows
 
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
 actions.combustion_phase+=/bag_of_tricks,if=buff.combustion.down
@@ -199,7 +212,8 @@ actions.standard_rotation+=/scorch,if=improved_scorch.active&debuff.improved_sco
 actions.standard_rotation+=/phoenix_flames,if=!talent.alexstraszas_fury&!buff.hot_streak.react&!variable.phoenix_pooling&buff.flames_fury.up
 actions.standard_rotation+=/phoenix_flames,if=talent.alexstraszas_fury&!buff.hot_streak.react&hot_streak_spells_in_flight=0&(!variable.phoenix_pooling&buff.flames_fury.up|charges_fractional>2.5|charges_fractional>1.5&(!talent.feel_the_burn|buff.feel_the_burn.remains<3*gcd.max))
 actions.standard_rotation+=/call_action_list,name=active_talents
-actions.standard_rotation+=/dragons_breath,if=active_enemies>1
+# Dragon's Breath is no longer a gain to be cast unless Alexstrazas is talented (need to check cutoff, was true on 10t)
+actions.standard_rotation+=/dragons_breath,if=active_enemies>1&talent.alexstraszas_fury
 actions.standard_rotation+=/scorch,if=searing_touch.active
 actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana
 # With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball.

@@ -59,7 +59,7 @@ actions.standard+=/avengers_shield,if=spell_targets.avengers_shield>2|buff.momen
 actions.standard+=/divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)
 actions.standard+=/avengers_shield
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains
-actions.standard+=/consecration,if=!consecration.up&!buff.sanctification.stack=buff.sanctification.max_stack
+actions.standard+=/consecration,if=!consecration.up&(!buff.sanctification.stack=buff.sanctification.max_stack|!set_bonus.tier31_2pc)
 actions.standard+=/eye_of_tyr,if=talent.inmost_light.enabled&raid_event.adds.in>=45|spell_targets.shield_of_the_righteous>=3
 actions.standard+=/blessed_hammer
 actions.standard+=/hammer_of_the_righteous
@@ -72,7 +72,7 @@ actions.standard+=/consecration,if=!buff.sanctification_empower.up
 actions.trinkets=use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)
 actions.trinkets+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)
 
-head=zealous_pyreknights_barbute,id=207191,bonus_id=1520/6935/7187/8767,gem_id=192935,enchant_id=7052
+head=zealous_pyreknights_barbute,id=207191,bonus_id=1520/6935/7187/8767,gem_id=192935,enchant=incandescent_essence
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=1520/7187/8767/8782,gem_id=192985/192935/192935
 shoulders=zealous_pyreknights_ailettes,id=207189,bonus_id=1520/7187/8767
 back=shadowfeather_shawl,id=136977,bonus_id=9882/7187/8767,enchant=homebound_speed_3
@@ -85,7 +85,7 @@ feet=primal_molten_sabatons,id=190496,bonus_id=8790/8960/9379/9405/9500,enchant=
 finger1=band_of_burning_thorns,id=207159,bonus_id=1520/6935/7187/8767,gem_id=192935,enchant=devotion_of_haste_3
 finger2=thornwoven_band,id=162548,bonus_id=6935/7187/8767/9853,gem_id=192935,enchant=devotion_of_haste_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=1520/7187/8767
-trinket2=fyrakks_tainted_rageheart,id=207174,bonus_id=1527/7187/8767
+trinket2=augury_of_the_primal_flame,id=208614,bonus_id=1527/7187/8767
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=1520/7187/8767,enchant=shadowflame_wreathe_3
 off_hand=defender_of_the_ancient,id=207797,bonus_id=1520/7187/8767
 
@@ -93,10 +93,10 @@ off_hand=defender_of_the_ancient,id=207797,bonus_id=1520/7187/8767
 # gear_ilvl=489.06
 # gear_strength=8883
 # gear_stamina=38981
-# gear_crit_rating=3443
+# gear_crit_rating=4200
 # gear_haste_rating=7194
 # gear_mastery_rating=1266
-# gear_versatility_rating=3878
+# gear_versatility_rating=3121
 # gear_speed_rating=375
 # gear_armor=17208
 # set_bonus=tier31_2pc=1

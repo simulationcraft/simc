@@ -1810,7 +1810,7 @@ struct felseeker_t : warlock_pet_spell_t
   }
 
   // Pit Lord does a single channel for a fixed duration. The tick interval is hasted so that it still scales with haste.
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return dot_duration ;
   }
@@ -2369,7 +2369,7 @@ struct eye_of_guldan_t : public warlock_pet_spell_t
     cooldown->duration = dot_duration;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return dot_duration - 10_ms; // 2023-10-17: Since Eye of Gul'dan now benefits from haste like Pit Lord, fudge this duration slightly so that we can ensure it finishes the last tick before expiring
   }

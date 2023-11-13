@@ -1198,7 +1198,7 @@ enum effect_subtype_t : unsigned {
     A_363 = 363,
     A_364 = 364,
     A_365 = 365,
-    A_366 = 366,
+    A_OVERRIDE_SP_PER_AP = 366,
     A_367 = 367,
     A_371 = 371,
     A_372 = 372,
@@ -1221,7 +1221,7 @@ enum effect_subtype_t : unsigned {
     A_400 = 400,
     A_402 = 402,
     A_403 = 403,
-    A_404 = 404,
+    A_OVERRIDE_AP_PER_SP = 404,
     A_405 = 405, // Misc value seems to be a mask that holds the modified ratings.
     A_406 = 406,
     A_407 = 407,
@@ -1330,7 +1330,6 @@ enum spell_attribute : unsigned
   SX_REFRESH_EXTENDS_DURATION       = 436u,
 };
 
-
 enum spell_label : unsigned
 {
   LABEL_COVENANT                   = 976u,
@@ -1338,6 +1337,16 @@ enum spell_label : unsigned
   LABEL_SHARD_OF_DOMINATION_FROST  = 1306u,
   LABEL_SHARD_OF_DOMINATION_UNHOLY = 1307u,
   LABEL_PRIMORDIAL_STONE           = 2513u,
+};
+
+enum difficulty_e : unsigned
+{
+  NONE = 0,
+  DUNGEON = 8,
+  NORMAL = 14,
+  HEROIC = 15,
+  MYTHIC = 16,
+  LFR = 17,
 };
 
 #endif

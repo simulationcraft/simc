@@ -2922,54 +2922,6 @@ double paladin_t::composite_bonus_armor() const
   return ba;
 }
 
-// paladin_t::composite_spell_power =========================================
-
-double paladin_t::composite_spell_power( school_e school ) const
-{
-  double sp = player_t::composite_spell_power( school );
-
-  // For Protection and Retribution, SP is fixed to AP by passives
-  switch ( specialization() )
-  {
-    case PALADIN_PROTECTION:
-      sp = spec.protection_paladin->effectN( 7 ).percent();
-      sp *= composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
-           composite_attack_power_multiplier();
-      break;
-    case PALADIN_RETRIBUTION:
-      sp = spec.retribution_paladin->effectN( 10 ).percent() *
-           composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
-           composite_attack_power_multiplier();
-      break;
-    default:
-      break;
-  }
-  return sp;
-}
-
-// paladin_t::composite_melee_attack_power ==================================
-
-double paladin_t::composite_melee_attack_power() const
-{
-  if ( specialization() == PALADIN_HOLY )
-  {
-    return composite_spell_power( SCHOOL_MAX ) * spec.holy_paladin->effectN( 9 ).percent();
-  }
-
-  return player_t::composite_melee_attack_power();
-}
-
-double paladin_t::composite_melee_attack_power_by_type( attack_power_type ap_type ) const
-{
-  // Holy paladin AP scales purely off of Spell power and nothing else not even Weapon
-  if ( specialization() == PALADIN_HOLY )
-  {
-    return player_t::composite_melee_attack_power_by_type( attack_power_type::NO_WEAPON );
-  }
-
-  return player_t::composite_melee_attack_power_by_type( ap_type );
-}
-
 // paladin_t::composite_attack_power_multiplier =============================
 
 double paladin_t::composite_attack_power_multiplier() const
@@ -2983,25 +2935,7 @@ double paladin_t::composite_attack_power_multiplier() const
       ap *= 1.0 + cache.mastery() * mastery.divine_bulwark->effectN( 2 ).mastery_value();
   }
 
-  // Holy paladin AP scales purely off of Spell power and nothing else not even Weapon
-  // This means literally nothing, not sharpning/weight stones, battle shout, weapon, etc etc
-  // It is purely off SP and nothing effects it.
-  if ( specialization() == PALADIN_HOLY )
-  {
-    return 1.0;
-  }
-
   return ap;
-}
-
-// paladin_t::composite_spell_power_multiplier ==============================
-
-double paladin_t::composite_spell_power_multiplier() const
-{
-  if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
-    return 1.0;
-
-  return player_t::composite_spell_power_multiplier();
 }
 
 // paladin_t::composite_block ==========================================

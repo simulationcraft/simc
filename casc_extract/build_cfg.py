@@ -1,10 +1,22 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-BASE_URL = "http://dist.blizzard.com.edgesuite.net/tpr/wow/config"
-
-import configparser, os, glob, sys, io, collections
+import configparser, os, glob, sys, io, collections, csv
 
 import jenkins
+
+def product_arg_str(opts):
+	if opts.product:
+		return opts.product
+	elif opts.ptr:
+		return 'wowt'
+	elif opts.beta:
+		return 'wow_beta'
+	elif opts.alpha:
+		return 'wow_alpha'
+	elif opts.classic:
+		return 'wow_classic'
+	else:
+		return 'wow'
 
 class DBFileList(collections.abc.Mapping):
 	def __init__(self, options):
@@ -29,7 +41,7 @@ class DBFileList(collections.abc.Mapping):
 			return False
 
 		if not os.access(self.options.dbfile, os.R_OK):
-			self.options.parser.error('Unable to open filename list %s' % self.options.dbfile)
+			self.options.parser.error(f'Unable to open filename list {self.options.dbfile}')
 			return False
 
 		with open(self.options.dbfile, 'r') as f:
@@ -40,10 +52,10 @@ class DBFileList(collections.abc.Mapping):
 
 				split_line = cleaned_file.split(',', 1)
 				if len(split_line) != 2:
-					self.options.parser.error('Invalid dbfile line "%s", lines require a file data id and a file name, separated by commas' %
-							cleaned_file)
-					continue
-				
+					self.options.parser.error(
+						f'Invalid dbfile line "{cleaned_file}", lines require a file data id and a file name, separated by commas'
+					)
+
 				file_data_id = int(split_line[0].strip())
 				file_name = split_line[1].strip()
 
@@ -61,6 +73,13 @@ class DBFileList(collections.abc.Mapping):
 		return True
 
 class BuildCfg(object):
+	BI_ACTIVE = 'Active!DEC:1'
+	BI_BUILD_KEY = 'Build Key!HEX:16'
+	BI_CDN_PATH = 'CDN Path!STRING:0'
+	BI_CDN_HOSTS = 'CDN Hosts!STRING:0'
+	BI_VERSION = 'Version!STRING:0'
+	BI_PRODUCT = 'Product!STRING:0'
+
 	def __init__(self, options):
 		self.options = options
 		self.cfg = None
@@ -73,39 +92,65 @@ class BuildCfg(object):
 			self.options.parser.error('No World of Warcraft installation directory given')
 
 		if not os.access(self.options.data_dir, os.R_OK):
-			self.options.parser.error('World of Warcraft installation directory %s is not readable' % self.options.data_dir)
+			self.options.parser.error(
+				f'World of Warcraft installation directory {self.options.data_dir} is not readable'
+			)
 
 		build_file = os.path.join(self.options.data_dir, '.build.info')
 		if not os.access(build_file, os.R_OK):
-			self.options.parser.error('World of Warcraft installation directory does not contain a readable .build.info file')
+			self.options.parser.error(
+				'World of Warcraft installation directory does not contain a readable .build.info file'
+			)
 
-		build_lines = None
+		build_version = None
 		with open(build_file, 'r') as build:
-			build_lines = build.readlines()
+			try:
+				reader = csv.DictReader(build, delimiter='|')
+			except csv.Error as err:
+				self.options.parser.error(f'Unable to parse .build_info, error: {str(err)}')
 
-		if len(build_lines) != 2:
-			self.options.parser.error('Unknown file format for .build.info file, expected 2 lines, got %u' % len(build_lines))
+			req_fields = [
+				BuildCfg.BI_ACTIVE,
+				BuildCfg.BI_BUILD_KEY,
+				BuildCfg.BI_CDN_PATH,
+				BuildCfg.BI_CDN_HOSTS,
+				BuildCfg.BI_VERSION,
+				BuildCfg.BI_PRODUCT
+			]
 
-		line_split = build_lines[1].strip().split('|')
-		if len(line_split) != 12:
-			self.options.parser.error('Unknown file format for .build.info file, expected 14 fields, got %u' % len(line_split))
+			for field in req_fields:
+				if field not in reader.fieldnames:
+					self.options.parser.error(
+						f'No field named {field} found in .build_info, available fields: {", ".join(reader.fieldnames)}'
+					)
 
-		self.build_cfg_file = line_split[2]
-		self.cdn_domain = line_split[7].split(' ')[0].strip()
-		self.cdn_dir = line_split[6]
+			for line in reader:
+				if line[BuildCfg.BI_PRODUCT] != product_arg_str(self.options):
+					continue
+
+				if int(line[BuildCfg.BI_ACTIVE]) == 0:
+					print(f'Warning, build configuration {product_arg_str(self.options)} marked inactive',
+						file=sys.stderr)
+
+				self.build_cfg_file = line[BuildCfg.BI_BUILD_KEY]
+				self.cdn_domain = line[BuildCfg.BI_CDN_HOSTS].split(' ')[0].strip()
+				self.cdn_dir = line[BuildCfg.BI_CDN_PATH]
+				build_version = line[BuildCfg.BI_VERSION]
+				break
 
 		if len(self.build_cfg_file) == 0:
 			self.options.parser.error('Could not deduce build configuration from .build.info file')
 
 		data_dir = os.path.join(self.options.data_dir, 'Data')
 		if not os.access(data_dir, os.R_OK):
-			self.options.parser.error('World of Warcraft installation directory does not contain a Data" directory')
-			return False
+			self.options.parser.error(
+				'World of Warcraft installation directory does not contain a "Data" directory'
+			)
 
-		build_cfg_path = os.path.join(data_dir, 'config', self.build_cfg_file[0:2], self.build_cfg_file[2:4], self.build_cfg_file)
+		build_cfg_path = os.path.join(data_dir, 'config', self.build_cfg_file[0:2],
+			self.build_cfg_file[2:4], self.build_cfg_file)
 		if not os.access(build_cfg_path, os.R_OK):
-			self.options.parser.error('Could not read configuration file %s' % build_cfg_path)
-			return False
+			self.options.parser.error(f'Could not read configuration file {build_cfg_path}')
 
 		self.cfg = configparser.ConfigParser()
 		# Slight hack to get the configuration file read easily
@@ -113,7 +158,7 @@ class BuildCfg(object):
 		conf_str_fp = io.StringIO(conf_str)
 		self.cfg.readfp(conf_str_fp)
 
-		print('Wow build: %s' % line_split[-1])
+		print(f'Wow build: {build_version}')
 
 		return True
 
@@ -148,7 +193,7 @@ class BuildCfg(object):
 	def encoding_blte_url(self):
 		blte_file = self.encoding_blte()
 
-		return 'http://%s%s/data/%s/%s/%s' % (self.cdn_domain, self.cdn_dir, blte_file[0:2], blte_file[2:4], blte_file)
+		return 'http://%s/%s/data/%s/%s/%s' % (self.cdn_domain, self.cdn_dir, blte_file[0:2], blte_file[2:4], blte_file)
 
 	def cdn_url(self, file_name):
 		return 'http://%s%s/data/%s/%s/%s' % (self.cdn_domain, self.cdn_dir, file_name[0:2], file_name[2:4], file_name)

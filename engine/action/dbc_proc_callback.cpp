@@ -25,6 +25,9 @@ struct proc_event_t : public event_t
   dbc_proc_callback_t* cb;
   action_t* source_action;
   action_state_t* source_state;
+#ifndef NDEBUG
+  std::string debug_str;
+#endif
 
   proc_event_t( dbc_proc_callback_t* c, action_t* a, action_state_t* s )
     : event_t( *a->sim ),
@@ -34,6 +37,21 @@ struct proc_event_t : public event_t
       source_state( s->action->get_state( s ) )
   {
     schedule( timespan_t::zero() );
+#ifndef NDEBUG
+    if ( !cb )
+      debug_str = name();
+    else if ( !cb->effect.name_str.empty() )
+      debug_str = cb->effect.name_str;
+    else
+    {
+      if ( cb->effect.generated_name_str.empty() )
+        cb->effect.name();
+
+      debug_str = cb->effect.generated_name_str;
+    }
+
+    debug_str += '-' + source_action->name_str;
+#endif
   }
 
   ~proc_event_t() override
@@ -48,16 +66,7 @@ struct proc_event_t : public event_t
 #ifndef NDEBUG
   const char* debug() const override
   {
-    if ( !cb )
-      return name();
-
-    if ( !cb->effect.name_str.empty() )
-      return cb->effect.name_str.c_str();
-
-    if ( cb->effect.generated_name_str.empty() )
-      cb->effect.name();
-
-    return cb->effect.generated_name_str.c_str();
+    return debug_str.c_str();
   }
 #endif
   void execute() override

@@ -435,13 +435,6 @@ public:
     double time_spend_healing = 0.0;
   } options;
 
-  // spec-based spell/attack power overrides
-  struct spec_override_t
-  {
-    double attack_power;
-    double spell_power;
-  } spec_override;
-
   // RPPM objects
   struct rppms_t
   {
@@ -1061,7 +1054,6 @@ public:
     : player_t( sim, DRUID, name, r ),
       eclipse_handler( this ),
       options(),
-      spec_override(),
       active(),
       pets( this ),
       caster_form_weapon(),
@@ -1128,8 +1120,6 @@ public:
   void datacollection_end() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
-  double composite_melee_attack_power() const override;
-  double composite_melee_attack_power_by_type( attack_power_type type ) const override;
   double composite_attack_power_multiplier() const override;
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
@@ -1145,8 +1135,6 @@ public:
   double composite_melee_expertise( const weapon_t* ) const override;
   double temporary_movement_modifier() const override;
   double passive_movement_modifier() const override;
-  double composite_spell_power( school_e school ) const override;
-  double composite_spell_power_multiplier() const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -1174,7 +1162,6 @@ public:
   double calculate_expected_max_health() const;
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
-  bool check_astral_power( action_t* a, int over );
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -1228,9 +1215,14 @@ struct denizen_of_the_dream_t : public pet_t
   struct fey_missile_t : public spell_t
   {
     druid_t* o;
+    double mastery_passive;
+    double mastery_dot;
 
     fey_missile_t( pet_t* p )
-      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ), o( static_cast<druid_t*>( p->owner ) )
+      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ),
+        o( static_cast<druid_t*>( p->owner ) ),
+        mastery_passive( o->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
+        mastery_dot( o->mastery.astral_invocation->effectN( 5 ).mastery_value() )
     {
       name_str_reporting = "fey_missile";
     }
@@ -1250,6 +1242,12 @@ struct denizen_of_the_dream_t : public pet_t
       da *= 1.0 + o->buff.eclipse_lunar->check_value();
       da *= 1.0 + o->buff.eclipse_solar->check_value();
 
+      if ( !o->bugs )
+      {
+        da *= 1.0 + o->cache.mastery() * mastery_passive;
+        da *= 1.0 + o->cache.mastery() * mastery_passive;
+      }
+
       return da;
     }
 
@@ -1259,10 +1257,10 @@ struct denizen_of_the_dream_t : public pet_t
       auto td = o->get_target_data( t );
 
       if ( td->dots.moonfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery_value();
+        tm *= 1.0 + o->cache.mastery() * mastery_dot;
 
       if ( td->dots.sunfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery_value();
+        tm *= 1.0 + o->cache.mastery() * mastery_dot;
 
       return tm;
     }
@@ -2174,6 +2172,7 @@ public:
     parse_buff_effects( p()->buff.sabertooth, USE_DEFAULT );
     parse_buff_effects( p()->buff.sharpened_claws );
     parse_buff_effects( p()->buff.smoldering_frenzy );
+    parse_conditional_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
@@ -2660,20 +2659,6 @@ public:
   {
     parse_options( opt );
   }
-
-  std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
-  {
-    auto splits = util::string_split<std::string_view>( name_str, "." );
-
-    if ( p()->specialization() == DRUID_BALANCE && util::str_compare_ci( splits[ 0 ], "ap_check" ) )
-    {
-      int over = splits.size() > 1 ? util::to_int( splits[ 1 ] ) : 0;
-
-      return make_fn_expr( name_str, [ this, over ]() { return p()->check_astral_power( this, over ); } );
-    }
-
-    return ab::create_expression( name_str );
-  }
 };  // end druid_spell_t
 
 struct ap_spender_t : public druid_spell_t
@@ -2870,6 +2855,8 @@ private:
   buff_t* other_ecl = nullptr;
   dot_t* druid_td_t::dots_t::* other_dot = nullptr;
   double mul;
+  double mastery_passive;
+  double mastery_dot;
 
 public:
   using base_t = trigger_astral_smolder_t<BASE>;
@@ -2877,7 +2864,9 @@ public:
   trigger_astral_smolder_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
     : BASE( n, p, s, o ),
       p_( p ),
-      mul( p->talent.astral_smolder->effectN( 1 ).percent() )
+      mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
+      mastery_passive( p->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
+      mastery_dot( p->mastery.astral_invocation->effectN( 5 ).mastery_value() )
   {}
 
   void init_astral_smolder( buff_t* b, dot_t* druid_td_t::dots_t::*d )
@@ -2897,9 +2886,14 @@ public:
     auto amount = s->result_amount * mul;
     amount *= 1.0 + other_ecl->check_value();
 
-    auto dot = std::invoke( other_dot, BASE::td( s->target )->dots );
-    if ( !p_->bugs && dot->is_ticking() )
-      amount *= 1.0 + p_->cache.mastery_value();
+    if ( !p_->bugs )
+    {
+      amount *= 1.0 + p_->cache.mastery() * mastery_passive;
+
+      auto dot = std::invoke( other_dot, BASE::td( s->target )->dots );
+      if ( dot->is_ticking() )
+        amount *= 1.0 + p_->cache.mastery() * mastery_dot;
+    }
 
     residual_action::trigger( p_->active.astral_smolder, s->target, amount );
   }
@@ -3380,6 +3374,18 @@ public:
 
     residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
+
+  size_t total_buffeffects_count() override
+  {
+    return base_t::total_buffeffects_count() + persistent_multiplier_buffeffects.size();
+  }
+
+  void print_parsed_custom_type( report::sc_html_stream& os ) override
+  {
+    print_parsed_type( os, persistent_multiplier_buffeffects, "Snapshots" );
+  }
+
+
 };  // end druid_cat_attack_t
 
 struct cat_finisher_data_t
@@ -3955,6 +3961,8 @@ struct rake_t : public cat_attack_t
 {
   struct rake_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
   {
+    rake_t* rake = nullptr;
+
     rake_bleed_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( n, p, s )
     {
       background = dual = true;
@@ -3963,37 +3971,36 @@ struct rake_t : public cat_attack_t
 
       dot_name = "rake";
     }
+
+    // read persistent mul off the parent rake's table for reporting
+    void print_parsed_custom_type( report::sc_html_stream& os ) override
+    {
+      rake->print_parsed_custom_type( os );
+    }
   };
 
   rake_bleed_t* bleed;
-  double stealth_mul = 0.0;
 
   rake_t( druid_t* p, std::string_view opt ) : rake_t( p, "rake", p->talent.rake, opt ) {}
 
   rake_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt ) : cat_attack_t( n, p, s, opt )
   {
     if ( p->talent.pouncing_strikes.ok() || p->spec.improved_prowl->ok() )
-      stealth_mul = data().effectN( 4 ).percent();
+    {
+      persistent_multiplier_buffeffects.emplace_back( nullptr, data().effectN( 4 ).percent(), USE_DATA, true, false,
+          [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, data().effectN( 4 ) );
+    }
 
     aoe = std::max( aoe, 1 ) + as<int>( p->talent.doubleclawed_rake->effectN( 1 ).base_value() );
 
     bleed = p->get_secondary_action_n<rake_bleed_t>( name_str + "_bleed", find_trigger( this ).trigger() );
     bleed->stats = stats;
+    bleed->rake = this;
     stats->action_list.push_back( bleed );
 
     dot_name = "rake";
   }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    double pm = cat_attack_t::composite_persistent_multiplier( s );
-
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
-      pm *= 1.0 + stealth_mul;
-
-    return pm;
-  }
-  
   bool has_amount_result() const override { return bleed->has_amount_result(); }
 
   std::vector<player_t*>& target_list() const override
@@ -4272,6 +4279,9 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
     {
       stealth_mul = data().effectN( 3 ).percent();
       stealth_cp = p->find_spell( 343232 )->effectN( 1 ).base_value();
+
+      da_multiplier_buffeffects.emplace_back( nullptr, stealth_mul, USE_DATA, true, false,
+          [ this ] { return stealthed() || this->p()->buff.sudden_ambush->check(); }, data().effectN( 3 ) );
     }
   }
 
@@ -4324,16 +4334,6 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
       cm *= 2.0;
 
     return cm;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = base_t::action_multiplier();
-
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
-      m *= 1.0 + stealth_mul;
-
-    return m;
   }
 };
 
@@ -7108,8 +7108,6 @@ struct moonfire_t : public druid_spell_t
 
     action_t* potp = nullptr;
     double gg_mul = 0.0;
-    double feral_override_da = 0.0;
-    double feral_override_ta = 0.0;
 
     moonfire_damage_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.moonfire_dmg )
     {
@@ -7119,6 +7117,9 @@ struct moonfire_t : public druid_spell_t
       dot_name = "moonfire";
       dot_list = &p->dot_list.moonfire;
 
+      // TODO:                                              :TODO
+      // TODO: refactor second moonfire as true second cast :TODO
+      // TODO:                                              :TODO
       if ( p->talent.twin_moons.ok() )
       {
         // The increased target number has been removed from spell data
@@ -7136,13 +7137,6 @@ struct moonfire_t : public druid_spell_t
       if ( p->talent.galactic_guardian.ok() )
         gg_mul = p->buff.galactic_guardian->data().effectN( 3 ).percent();
 
-      // Always applies when you are a feral druid unless you go into moonkin form
-      if ( p->specialization() == DRUID_FERAL )
-      {
-        feral_override_da = find_effect( p->spec.feral_overrides, this, A_ADD_PCT_MODIFIER, P_GENERIC ).percent();
-        feral_override_ta = find_effect( p->spec.feral_overrides, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE ).percent();
-      }
-
       if ( p->specialization() == DRUID_RESTORATION && p->talent.protector_of_the_pack.ok() )
       {
         potp = p->get_secondary_action<protector_of_the_pack_moonfire_t>( "protector_of_the_pack_moonfire" );
@@ -7154,24 +7148,11 @@ struct moonfire_t : public druid_spell_t
     {
       double dam = base_t::composite_da_multiplier( s );
 
-      // MF proc'd by gg is not affected by any existing gg buff.
-      if ( !is_free( free_spell_e::GALACTIC ) && p()->buff.galactic_guardian->check() )
+      // only the extra TM MF proc'd by GG is buffed
+      if ( ( !is_free( free_spell_e::GALACTIC ) || s->chain_target ) && p()->buff.galactic_guardian->check() )
         dam *= 1.0 + gg_mul;
 
-      if ( feral_override_da && !p()->buff.moonkin_form->check() )
-        dam *= 1.0 + feral_override_da;
-
       return dam;
-    }
-
-    double composite_ta_multiplier( const action_state_t* s ) const override
-    {
-      double tam = base_t::composite_ta_multiplier( s );
-
-      if ( feral_override_ta && !p()->buff.moonkin_form->check() )
-        tam *= 1.0 + feral_override_ta;
-
-      return tam;
     }
 
     std::vector<player_t*>& target_list() const override
@@ -7213,11 +7194,11 @@ struct moonfire_t : public druid_spell_t
           p()->buff.protector_of_the_pack->expire();
         }
 
+        auto rage = p()->buff.galactic_guardian->check_value();
         if ( !is_free( free_spell_e::GALACTIC ) )
-        {
-          auto rage = p()->buff.galactic_guardian->check_value() * num_targets_hit;
-          p()->resource_gain( RESOURCE_RAGE, rage, gain );
-        }
+          rage *= num_targets_hit;
+
+        p()->resource_gain( RESOURCE_RAGE, rage, gain );
 
         if ( !is_free() )
           p()->buff.galactic_guardian->expire();
@@ -9739,9 +9720,6 @@ void druid_t::init_finished()
 {
   player_t::init_finished();
 
-  spec_override.attack_power = find_effect( spec_spell, A_404 ).percent();
-  spec_override.spell_power  = find_effect( spec_spell, A_366 ).percent();
-
   // PRECOMBAT WRATH SHENANIGANS
   // we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
   // parsed and we can adjust wrath travel times accordingly based on subsequent precombat actions that will sucessfully
@@ -10113,6 +10091,7 @@ void druid_t::create_buffs()
       make_buff_fallback( sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff_solar",
                           sets->set( DRUID_BALANCE, T31, B4 ) )
           ->set_default_value_from_effect( 1 )
+          ->set_name_reporting( "Solar" )
           ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
                                ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
                                           sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
@@ -10125,6 +10104,7 @@ void druid_t::create_buffs()
       make_buff_fallback( sets->has_set_bonus( DRUID_BALANCE, T31, B4 ), this, "balance_t31_4pc_buff_lunar",
                           sets->set( DRUID_BALANCE, T31, B4 ) )
           ->set_default_value_from_effect( 1 )
+          ->set_name_reporting( "Lunar" )
           ->set_max_stack( sets->has_set_bonus( DRUID_BALANCE, T31, B4 )
                                ? as<int>( sets->set( DRUID_BALANCE, T31, B4 )->effectN( 2 ).base_value() /
                                           sets->set( DRUID_BALANCE, T31, B4 )->effectN( 1 ).base_value() )
@@ -10545,7 +10525,6 @@ void druid_t::create_actions()
     gg->s_data_reporting = talent.galactic_guardian;
     gg->set_free_cast( free_spell_e::GALACTIC );
     gg->damage->set_free_cast( free_spell_e::GALACTIC );
-    gg->damage->aoe = 0;  // gg proc cannot proc second moonfire
     active.galactic_guardian = gg;
   }
 
@@ -10765,7 +10744,6 @@ void druid_t::apl_feral()
 
 void druid_t::apl_balance()
 {
-// Annotated APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt
 #include "class_modules/apl/balance_apl.inc"
 }
 
@@ -10837,8 +10815,7 @@ void druid_t::init()
   {
     case DRUID_BALANCE:
       action_list_information +=
-        "\n# Balance APL can be found at https://balance-simc.github.io/Balance-SimC/balance.txt\n";
-        //"\n# Annotated Balance APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt\n";
+        "\n# Balance APL can be found at https://www.dreamgrove.gg/sims/owl/balance.txt\n";
       break;
     case DRUID_FERAL:
       action_list_information +=
@@ -11707,27 +11684,8 @@ void druid_t::invalidate_cache( cache_e c )
 // Composite combat stat override functions =================================
 
 // Attack Power =============================================================
-double druid_t::composite_melee_attack_power() const
-{
-  if ( spec_override.attack_power )
-    return spec_override.attack_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-  return player_t::composite_melee_attack_power();
-}
-
-double druid_t::composite_melee_attack_power_by_type( attack_power_type type ) const
-{
-  if ( spec_override.attack_power )
-    return spec_override.attack_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-  return player_t::composite_melee_attack_power_by_type( type );
-}
-
 double druid_t::composite_attack_power_multiplier() const
 {
-  if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
-    return 1.0;
-
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.natures_guardian->ok() )
@@ -11877,26 +11835,6 @@ double druid_t::passive_movement_modifier() const
   return ms;
 }
 
-// Spell Power ==============================================================
-double druid_t::composite_spell_power( school_e school ) const
-{
-  if ( spec_override.spell_power )
-  {
-    return composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
-           composite_attack_power_multiplier() * spec_override.spell_power;
-  }
-
-  return player_t::composite_spell_power( school );
-}
-
-double druid_t::composite_spell_power_multiplier() const
-{
-  if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_FERAL )
-    return 1.0;
-
-  return player_t::composite_spell_power_multiplier();
-}
-
 // Expressions ==============================================================
 std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::string_view name_str )
 {
@@ -12019,21 +11957,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       splits[ 1 ] = talent.incarnation_moonkin.ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
 
       return druid_t::create_expression( util::string_join( splits, "." ) );
-    }
-
-    // check for AP overcap on action other than current action. check for current action handled in
-    // druid_spell_t::create_expression syntax: <action>.ap_check.<allowed overcap = 0>
-    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ap_check" ) )
-    {
-      action_t* action = find_action( splits[ 0 ] );
-      if ( action )
-      {
-        int over = splits.size() > 2 ? util::to_int( splits[ 2 ] ) : 0;
-
-        return make_fn_expr( name_str, [ this, action, over ]() { return check_astral_power( action, over ); } );
-      }
-
-      throw std::invalid_argument( "invalid action" );
     }
 
     if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "buff" ) && util::str_compare_ci( splits[ 1 ], "fury_of_elune" ) )
@@ -13104,22 +13027,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.rampant_growth );
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
-}
-
-// check for AP overcap on current action. syntax: ap_check.<allowed overcap = 0>
-bool druid_t::check_astral_power( action_t* a, int over )
-{
-  double ap = resources.current[ RESOURCE_ASTRAL_POWER ];
-
-  auto aps = buff.natures_balance->check_value() +
-             buff.fury_of_elune->check_value() +
-             buff.sundered_firmament->check_value();
-
-  ap += a->composite_energize_amount( nullptr );
-  ap += a->time_to_execute.total_seconds() * aps;
-  ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-
-  return ap <= resources.max[ RESOURCE_ASTRAL_POWER ] + over;
 }
 
 /* Report Extension Class

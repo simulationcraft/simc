@@ -48,7 +48,7 @@ actions+=/run_action_list,name=bear
 
 actions.bear=bear_form,if=!buff.bear_form.up
 actions.bear+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled
-actions.bear+=/moonfire,cycle_targets=1,if=(((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)
+actions.bear+=/moonfire,cycle_targets=1,if=(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)
 actions.bear+=/thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)
 actions.bear+=/bristling_fur,if=!cooldown.pause_action.remains&&cooldown.rage_of_the_sleeper.remains>8
 actions.bear+=/barkskin,if=buff.bear_form.up
@@ -56,7 +56,7 @@ actions.bear+=/convoke_the_spirits
 actions.bear+=/berserk_bear
 actions.bear+=/incarnation
 actions.bear+=/lunar_beam
-actions.bear+=/rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60&rage>75|buff.incarnation_guardian_of_ursoc.up&rage>75|(talent.convoke_the_spirits.enabled)&rage>75
+actions.bear+=/rage_of_the_sleeper,if=((buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60)|buff.berserk_bear.down)&rage>75&(!talent.convoke_the_spirits.enabled)|(buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up)&rage>75&(!talent.convoke_the_spirits.enabled)|(talent.convoke_the_spirits.enabled)&rage>75
 actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
 actions.bear+=/maul,if=(buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6&!talent.raze.enabled&variable.If_build=0)|(buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies=1&talent.raze.enabled&variable.If_build=0)
 actions.bear+=/raze,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&variable.If_build=0&active_enemies>1
@@ -88,16 +88,16 @@ actions.catweave+=/convoke_the_spirits
 actions.catweave+=/ferocious_bite,if=combo_points>=4&energy>50
 actions.catweave+=/shred,if=combo_points<=5
 
-head=benevolent_embersages_casque,id=207254,bonus_id=4800/4786/1520/9576/1808,gem_id=192985
+head=benevolent_embersages_casque,id=207254,bonus_id=4800/4786/1520/9576/1808,gem_id=192985,enchant_id=7052
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=4800/4786/1520/9576/8782,gem_id=192945/192945/192945
 shoulders=benevolent_embersages_wisdom,id=207252,bonus_id=4800/4786/1520/9576
 back=shadowfeather_shawl,id=136977,bonus_id=4795,ilevel=489
 chest=benevolent_embersages_robe,id=207257,bonus_id=4800/4786/1520/9576,enchant_id=6625
-wrists=lifebound_bindings,id=193419,bonus_id=1576/8797/8960/1808,gem_id=192945,crafted_stats=32/36
+wrists=lifebound_bindings,id=193419,bonus_id=1576/8797/8960/1808,ilevel=486,gem_id=192945,crafted_stats=32/36
 hands=fading_chronogrips,id=207903,bonus_id=4795,ilevel=489
 waist=bloody_dragonhide_belt,id=207131,bonus_id=4800/4786/1520/9576/1808,gem_id=192945,enchant_id=6904
 legs=benevolent_embersages_leggings,id=207253,bonus_id=4800/4786/1520/9576,enchant_id=6490
-feet=toxic_thorn_footwraps,id=193452,bonus_id=1576,enchant_id=6606
+feet=toxic_thorn_footwraps,id=193452,bonus_id=1576,ilevel=486,enchant_id=6606
 finger1=seal_of_the_regal_loa,id=159458,bonus_id=4795/1808,ilevel=489,gem_id=192945,enchant_id=6556
 finger2=band_of_burning_thorns,id=207159,bonus_id=4795/1808,ilevel=489,gem_id=192945,enchant_id=6556
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=4800/4786/1520/9576
@@ -105,15 +105,15 @@ trinket2=oakhearts_gnarled_root,id=137306,bonus_id=6536/1566/6646,ilevel=489
 main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=4800/4786/1520/9576,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=484.33
-# gear_agility=8575
-# gear_stamina=37368
+# gear_ilvl=488.60
+# gear_agility=8883
+# gear_stamina=38981
 # gear_attack_power=135
-# gear_crit_rating=4211
-# gear_haste_rating=6587
+# gear_crit_rating=4279
+# gear_haste_rating=6674
 # gear_mastery_rating=1349
 # gear_versatility_rating=3097
 # gear_speed_rating=225
-# gear_armor=5124
+# gear_armor=5328
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1

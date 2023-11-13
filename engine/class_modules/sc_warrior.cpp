@@ -6670,18 +6670,23 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
     }
 
     mh_first_attack->execute_on_target( target );
-    oh_first_attack->execute_on_target( target );
+    if ( oh_first_attack )
+      oh_first_attack->execute_on_target( target );
 
     if ( p() -> talents.warrior.seismic_reverberation.ok() && mh_first_attack->num_targets_hit >= p() -> talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
       mh_seismic_reverberation_attack->execute_on_target( target );
-      oh_seismic_reverberation_attack->execute_on_target( target );
+      if ( oh_seismic_reverberation_attack )
+        oh_seismic_reverberation_attack->execute_on_target( target );
     }
 
     make_event( *sim, timespan_t::from_millis(data().effectN( 6 ).misc_value1()), [ this ]() { mh_other_attack->execute_on_target( target ); } );
-    make_event( *sim, timespan_t::from_millis(data().effectN( 7 ).misc_value1()), [ this ]() { oh_other_attack->execute_on_target( target ); } );
     make_event( *sim, timespan_t::from_millis(data().effectN( 8 ).misc_value1()), [ this ]() { mh_other_attack->execute_on_target( target ); } );
-    make_event( *sim, timespan_t::from_millis(data().effectN( 9 ).misc_value1()), [ this ]() { oh_other_attack->execute_on_target( target ); } );
+    if ( oh_other_attack )
+    {
+      make_event( *sim, timespan_t::from_millis(data().effectN( 7 ).misc_value1()), [ this ]() { oh_other_attack->execute_on_target( target ); } );
+      make_event( *sim, timespan_t::from_millis(data().effectN( 9 ).misc_value1()), [ this ]() { oh_other_attack->execute_on_target( target ); } );
+    }
   }
 
   bool ready() override
