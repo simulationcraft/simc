@@ -1,18 +1,18 @@
-mage="T29_Mage_Arcane"
+mage="T31_Mage_Arcane"
 source=default
 spec=arcane
 level=70
-race=orc
+race=human
 role=spell
 position=back
-talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJSkigIJERSIRCkEk0SCAAAAAAAAAAAISSSSkkkEIA
+talents=B4DAAAAAAAAAAAAAAAAAAAAAAQEUSDJRSKCikQEJhEJQSQSLJAAAAAAAAAAAgIJJJRSSSgA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_static_empowerment_3
+flask=phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=main_hand:buzzing_rune_3
+temporary_enchant=main_hand:hissing_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -214,31 +214,31 @@ actions.touch_phase+=/arcane_missiles,if=buff.clearcasting.react&(debuff.touch_o
 actions.touch_phase+=/arcane_blast
 actions.touch_phase+=/arcane_barrage
 
-head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498,gem_id=192919
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/40
-shoulders=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
-back=cape_of_entanglement,id=144094,bonus_id=4177/6808/4786/3311
-chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=infused_elemental_bands,id=193635,bonus_id=6808/4786/1643,gem_id=192919
-hands=crystal_scholars_pageturners,id=200317,bonus_id=4800/4786/1498
-waist=cord_of_wicked_pyromania,id=137488,bonus_id=1795/6808/4786/3300,gem_id=192919
-legs=crystal_scholars_britches,id=200319,bonus_id=4800/4786/1498,enchant=temporal_spellthread_3
-feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
-finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192919,enchant=devotion_of_haste_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
-trinket1=voidmenders_shadowgem,id=110007,ilevel=421
-trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-off_hand=kokias_burnout_rod,id=193766,bonus_id=6808/4786/1643
+head=wayward_chronomancers_chronocap,id=207290,bonus_id=8780,ilevel=489,gem_id=192988,enchant_id=7052
+neck=ouroboreal_necklet,id=210214,bonus_id=8782,ilevel=489,gem_id=192922/192922/192922
+shoulders=wayward_chronomancers_metronomes,id=207288,ilevel=489
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,enchant_id=6592,crafted_stats=49/40
+chest=wayward_chronomancers_patchwork,id=207293,ilevel=489,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9498/9369/9369/9368/9402/8793/9379/8960/8780,gem_id=192922,enchant_id=6574
+hands=wayward_chronomancers_gloves,id=207291,ilevel=489
+waist=wayward_chronomancers_synchronous_belt,id=207287,bonus_id=8780,ilevel=489,gem_id=192922,enchant_id=6904
+legs=wayward_chronomancers_pantaloons,id=207289,bonus_id=6652/7979/9562/9512/1491/8767,ilevel=489,enchant_id=6544
+feet=wayward_chronomancers_strapped_boots,id=207292,ilevel=489,enchant_id=6613
+finger1=signet_of_the_highborne_magi,id=134537,bonus_id=8780,ilevel=489,gem_id=192922,enchant_id=6562
+finger2=lord_waycrests_signet,id=158362,bonus_id=8780,ilevel=489,gem_id=192922,enchant_id=6556
+trinket1=balefire_branch,id=159630,ilevel=489
+trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
+main_hand=dreambinder_loom_of_the_great_cycle,id=208616,ilevel=489,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=421.38
-# gear_stamina=17111
-# gear_intellect=7139
-# gear_crit_rating=3572
-# gear_haste_rating=2274
-# gear_mastery_rating=2741
-# gear_versatility_rating=2643
-# gear_armor=2029
-# set_bonus=tier29_2pc=1
-# set_bonus=tier29_4pc=1
+# gear_ilvl=488.60
+# gear_stamina=39006
+# gear_intellect=12122
+# gear_crit_rating=4143
+# gear_haste_rating=2527
+# gear_mastery_rating=5287
+# gear_versatility_rating=3810
+# gear_avoidance_rating=325
+# gear_armor=3251
+# set_bonus=tier31_2pc=1
+# set_bonus=tier31_4pc=1
