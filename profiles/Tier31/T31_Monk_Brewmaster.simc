@@ -106,7 +106,7 @@ actions.rotation_pta+=/breath_of_fire,if=(buff.blackout_combo.up|!talent.blackou
 actions.rotation_pta+=/keg_smash,if=buff.press_the_advantage.stack<10
 actions.rotation_pta+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
 actions.rotation_pta+=/spinning_crane_kick,if=active_enemies>2
-actions.rotation_pta+=/spinning_crane_kick,if=(1.1>(time-action.melee_main_hand.last_used)*(1+spell_haste))-main_hand.2h
+actions.rotation_pta+=/spinning_crane_kick,if=(1.1>(time-action.melee_main_hand.last_used)*(1+spell_haste)-main_hand.2h)
 actions.rotation_pta+=/expel_harm
 actions.rotation_pta+=/chi_wave
 actions.rotation_pta+=/chi_burst
