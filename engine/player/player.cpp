@@ -11474,7 +11474,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       if ( action )
       {
         return make_fn_expr( expression_str, [ this, action ] {
-          return get_active_dots( action->get_dot() );
+          return !action->data().ok() ? 0 : get_active_dots( action->get_dot() );
         } );
       }
       throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
