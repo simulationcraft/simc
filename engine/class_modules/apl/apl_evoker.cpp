@@ -28,7 +28,13 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "main_hand:buzzing_rune_3" : "main_hand:shadowcore_oil";
+  switch ( p->specialization() )
+  {
+    case EVOKER_AUGMENTATION:
+      return ( p->true_level > 60 ) ? "main_hand:hissing_rune_3" : "main_hand:shadowcore_oil";
+    default:
+      return ( p->true_level > 60 ) ? "main_hand:buzzing_rune_3" : "main_hand:shadowcore_oil";
+  }
 }
 
 //devastation_apl_start
@@ -143,9 +149,89 @@ void preservation( player_t* /*p*/ )
 {
 }
 
-void augmentation( player_t* /*p*/ )
+//augmentation_apl_start
+void augmentation( player_t* p )
 {
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* ebon_logic = p->get_action_priority_list( "ebon_logic" );
+  action_priority_list_t* opener_filler = p->get_action_priority_list( "opener_filler" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* fb = p->get_action_priority_list( "fb" );
+  action_priority_list_t* filler = p->get_action_priority_list( "filler" );
+
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "variable,name=spam_heal,default=1,op=reset" );
+  precombat->add_action( "variable,name=minimum_opener_delay,op=reset,default=0" );
+  precombat->add_action( "variable,name=opener_delay,value=variable.minimum_opener_delay,if=!talent.interwoven_threads" );
+  precombat->add_action( "variable,name=opener_delay,value=variable.minimum_opener_delay+variable.opener_delay,if=talent.interwoven_threads" );
+  precombat->add_action( "variable,name=opener_cds_detected,op=reset,default=0" );
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.irideus_fragment|trinket.1.is.balefire_branch|trinket.1.is.ashes_of_the_embersoul|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.spoils_of_neltharus" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.irideus_fragment|trinket.2.is.balefire_branch|trinket.2.is.ashes_of_the_embersoul|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.spoils_of_neltharus" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.irideus_fragment|trinket.1.is.balefire_branch|trinket.1.is.ashes_of_the_embersoul|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.spoils_of_neltharus|trinket.1.is.beacon_to_the_beyond|trinket.1.is.belorrelos_the_suncaller" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.irideus_fragment|trinket.2.is.balefire_branch|trinket.2.is.ashes_of_the_embersoul|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.spoils_of_neltharus|trinket.2.is.beacon_to_the_beyond|trinket.2.is.belorrelos_the_suncaller" );
+  precombat->add_action( "blistering_scales,target_if=target.role.tank" );
+  precombat->add_action( "living_flame" );
+
+  ebon_logic->add_action( "ebon_might,if=raid_event.adds.remains>10|raid_event.adds.in>20" );
+
+  opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay>?variable.minimum_opener_delay,if=!variable.opener_cds_detected&evoker.allied_cds_up>0" );
+  opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay-1" );
+  opener_filler->add_action( "variable,name=opener_cds_detected,value=1,if=!variable.opener_cds_detected&evoker.allied_cds_up>0" );
+  opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay-2,if=equipped.nymues_unraveling_spindle&trinket.nymues_unraveling_spindle.cooldown.up" );
+  opener_filler->add_action( "use_item,name=nymues_unraveling_spindle,if=cooldown.breath_of_eons.remains<=3" );
+  opener_filler->add_action( "living_flame,if=active_enemies=1|talent.pupil_of_alexstrasza" );
+  opener_filler->add_action( "azure_strike" );
+
+  items->add_action( "use_item,name=nymues_unraveling_spindle,if=cooldown.breath_of_eons.remains<=3" );
+  items->add_action( "use_item,name=irideus_fragment,if=debuff.temporal_wound.up|fight_remains<=30&buff.ebon_might_self.up" );
+  items->add_action( "use_item,name=ashes_of_the_embersoul,if=debuff.temporal_wound.up|fight_remains<=30&buff.ebon_might_self.up" );
+  items->add_action( "use_item,name=mirror_of_fractured_tomorrows,if=debuff.temporal_wound.up|fight_remains<=30&buff.ebon_might_self.up" );
+  items->add_action( "use_item,name=balefire_branch,if=debuff.temporal_wound.up|fight_remains<=30&buff.ebon_might_self.up" );
+  items->add_action( "use_item,name=spoils_of_neltharus,if=buff.spoils_of_neltharus_mastery.up&(!((trinket.1.is.irideus_fragment|trinket.1.is.mirror_of_fractured_tomorrows)&trinket.1.cooldown.up|(trinket.is.2.irideus_fragment|trinket.2.is.mirror_of_fractured_tomorrows)&trinket.2.cooldown.up)|!(time%%120<=20|fight_remains>=190&fight_remains<=250&&time%%60<=25|fight_remains<=25))" );
+  items->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>0.1&((!debuff.temporal_wound.up&((trinket.1.cooldown.remains>=20|!variable.trinket_1_exclude)&(trinket.2.cooldown.remains>=20|!variable.trinket_2_exclude))|variable.trinket_1_exclude&variable.trinket_2_exclude))&(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|raid_event.adds.in>60)|fight_remains<20" );
+  items->add_action( "use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=gcd.remains>0.1&((!debuff.temporal_wound.up&((trinket.1.cooldown.remains>=20|!variable.trinket_1_exclude)&(trinket.2.cooldown.remains>=20|!variable.trinket_2_exclude))|variable.trinket_1_exclude&variable.trinket_2_exclude))&(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|raid_event.adds.in>60)|fight_remains<20" );
+  items->add_action( "use_item,slot=trinket1,if=!debuff.temporal_wound.up&(cooldown.breath_of_eons.remains>=30|!variable.trinket_2_exclude)&!variable.trinket_1_manual" );
+  items->add_action( "use_item,slot=trinket2,if=!debuff.temporal_wound.up&(cooldown.breath_of_eons.remains>=30|!variable.trinket_1_exclude)&!variable.trinket_2_manual" );
+  items->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=gcd.remains>=gcd.max*0.6" );
+
+  default_->add_action( "variable,name=temp_wound,value=debuff.temporal_wound.remains,target_if=max:debuff.temporal_wound.remains" );
+  default_->add_action( "prescience,target_if=min:debuff.prescience.remains+1000*(target=self&active_allies>2)+1000*target.spec.augmentation,if=(full_recharge_time<=gcd.max*3|cooldown.ebon_might.remains<=gcd.max*3&(buff.ebon_might_self.remains-gcd.max*3)<=buff.ebon_might_self.duration*0.4|variable.temp_wound>=(gcd.max+action.eruption.cast_time)|fight_remains<=30)&(buff.trembling_earth.stack+evoker.prescience_buffs)<=(5+(full_recharge_time<=gcd.max*3))" );
+  default_->add_action( "call_action_list,name=ebon_logic,if=(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*0.4&(active_enemies>0|raid_event.adds.in<=3)&(evoker.prescience_buffs>=2&time<=10|evoker.prescience_buffs>=3|buff.ebon_might_self.remains>=action.ebon_might.cast_time)" );
+  default_->add_action( "run_action_list,name=opener_filler,if=variable.opener_delay>0&!equipped.nymues_unraveling_spindle" );
+  default_->add_action( "potion,if=debuff.temporal_wound.up&buff.ebon_might_self.up" );
+  default_->add_action( "call_action_list,name=items" );
+  default_->add_action( "deep_breath" );
+  default_->add_action( "call_action_list,name=fb,if=cooldown.time_skip.up&talent.time_skip&!talent.interwoven_threads" );
+  default_->add_action( "upheaval,target_if=target.time_to_die>duration+0.2,empower_to=1,if=buff.ebon_might_self.remains>duration&cooldown.time_skip.up&talent.time_skip&!talent.interwoven_threads" );
+  default_->add_action( "breath_of_eons,if=(cooldown.ebon_might.remains<=4|buff.ebon_might_self.up)&target.time_to_die>15&raid_event.adds.in>15&(!equipped.nymues_unraveling_spindle|trinket.nymues_unraveling_spindle.cooldown.remains>=10|fight_remains<30)|fight_remains<30,line_cd=117" );
+  default_->add_action( "living_flame,if=buff.leaping_flames.up&cooldown.fire_breath.up" );
+  default_->add_action( "call_action_list,name=fb,if=(raid_event.adds.remains>13|evoker.allied_cds_up>0|!raid_event.adds.exists)" );
+  default_->add_action( "upheaval,target_if=target.time_to_die>duration+0.2,empower_to=1,if=buff.ebon_might_self.remains>duration&(raid_event.adds.remains>13|!raid_event.adds.exists)" );
+  default_->add_action( "time_skip,if=(cooldown.fire_breath.remains+cooldown.upheaval.remains+cooldown.prescience.full_recharge_time)>=35" );
+  default_->add_action( "emerald_blossom,if=talent.dream_of_spring&buff.essence_burst.up&(variable.spam_heal=2|variable.spam_heal=1&!buff.ancient_flame.up)&(buff.ebon_might_self.up|essence.deficit=0|buff.essence_burst.stack=buff.essence_burst.max_stack&cooldown.ebon_might.remains>4)" );
+  default_->add_action( "eruption,if=buff.ebon_might_self.remains>execute_time|essence.deficit=0|buff.essence_burst.stack=buff.essence_burst.max_stack&cooldown.ebon_might.remains>4" );
+  default_->add_action( "blistering_scales,target_if=target.role.tank,if=!evoker.scales_up&buff.ebon_might_self.down" );
+  default_->add_action( "emerald_blossom,if=!buff.ebon_might_self.up&talent.ancient_flame&talent.scarlet_adaptation&!talent.dream_of_spring&!buff.ancient_flame.up&active_enemies=1" );
+  default_->add_action( "verdant_embrace,if=!buff.ebon_might_self.up&talent.ancient_flame&talent.scarlet_adaptation&!buff.ancient_flame.up&(!talent.dream_of_spring|mana>=200000)&active_enemies=1" );
+  default_->add_action( "run_action_list,name=filler" );
+
+  fb->add_action( "tip_the_scales,if=cooldown.fire_breath.ready&buff.ebon_might_self.up" );
+  fb->add_action( "fire_breath,empower_to=1,target_if=target.time_to_die>16,if=buff.ebon_might_self.remains>duration&equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=2,target_if=target.time_to_die>12,if=buff.ebon_might_self.remains>duration&equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=3,target_if=target.time_to_die>8,if=buff.ebon_might_self.remains>duration&equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=4,target_if=target.time_to_die>4,if=talent.font_of_magic&(buff.ebon_might_self.remains>duration|buff.tip_the_scales.up)" );
+  fb->add_action( "fire_breath,empower_to=3,target_if=target.time_to_die>8,if=(buff.ebon_might_self.remains>duration|buff.tip_the_scales.up)&!equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=2,target_if=target.time_to_die>12,if=buff.ebon_might_self.remains>duration&!equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=1,target_if=target.time_to_die>16,if=buff.ebon_might_self.remains>duration&!equipped.neltharions_call_to_chaos" );
+
+  filler->add_action( "living_flame,if=(buff.ancient_flame.up|mana>=200000|!talent.dream_of_spring|variable.spam_heal=0)&(active_enemies=1|talent.pupil_of_alexstrasza)" );
+  filler->add_action( "azure_strike" );
 }
+//augmentation_apl_end
 
 void no_spec( player_t* /*p*/ )
 {
