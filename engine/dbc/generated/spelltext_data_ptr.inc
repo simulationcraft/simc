@@ -19008,7 +19008,7 @@ static const std::array<spelltext_data_t, 20510> __ptr_spelltext_data { {
   { 395041, "$?a388114[Chaos][Shadow]", 0, 0 },
   { 395042, "$?a388114[Chaos][Nature]", 0, 0 },
   { 395110, "$@spelldesc394094", "The next Eclipse you enter will trigger Sundered Firmament.\r\n\r\n$@spellicon394094$@spellname394094\r\n$@spelldesc394094", 0 },
-  { 395152, "Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "$pri increased by $w2.", "Black" },
+  { 395152, "Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "$pri increased by $w2.", "Black" },
   { 395153, "$@spellname395160 $?s414969[or $@spellname355913 ][]increases the duration of your active Ebon Might effects by ${$s1/1000} sec.\r\n\r\nYour empower spells increase the duration of your active Ebon Might effects by ${$s2/1000} sec.\r\n\r\n$?s403631[$@spellname403631][$@spellname357210] increases the duration of your active Ebon Might effects by ${$s3/1000} sec.\r\n\r\nThis effect can critically strike, increasing the duration of Ebon Might by an additional $s4%.", 0, 0 },
   { 395157, "$@spelldesc199471", 0, 0 },
   { 395160, "Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[\r\n\r\nIncreases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]", 0, "Black" },
@@ -20513,7 +20513,8 @@ static const std::array<spelltext_data_t, 20510> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.52129
-static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __ptr_spelltext_hotfix_data { {
+  {  395152,  0, "Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects." },
   {  422303,  0, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5." },
   {  422303,  1, "After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", "After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path." },
   {  423611,  0, "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every 3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat.", "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every $t3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat." },
@@ -20909,7 +20910,7 @@ static const std::array<spelldesc_vars_data_t, 412> __ptr_spelldesc_vars_data { 
   {  393400, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
   {  394352, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
-  {  395152, "$stat=${$INT*($s1/100)}" },
+  {  395152, "$stat=${$INT*($s1/100)}\r\n$amount=${6.5}.1" },
   {  396286, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   {  403631, "$emDur=${5}" },
@@ -20939,6 +20940,7 @@ static const std::array<spelldesc_vars_data_t, 412> __ptr_spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.2.0.52129
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelldesc_vars_hotfix_data { {
+  {  395152,  0, "$stat=${$INT*($s1/100)}", "$stat=${$INT*($s1/100)}\r\n$amount=${6.5}.1" },
 } };
 
