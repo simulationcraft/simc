@@ -1657,17 +1657,15 @@ struct blood_frenzy_buff_t : public druid_buff_t
       rage( find_effect( p->find_spell( 203961 ), E_ENERGIZE ).resource( RESOURCE_RAGE ) ),
       cap( as<size_t>( p->talent.blood_frenzy->effectN( 1 ).base_value() ) )
   {
-    //set_quiet( true );
+    set_quiet( true );
     set_tick_zero( true );
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       trigger_blood_frenzy();
     } );
 
+    // Circle does not apply to BF due to bad effect data for the BF periodic effect
     if ( !p->bugs )
-    {
-      set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-      buff_period *= 1.0 + p->talent.circle_of_life_and_death->effectN( 1 ).percent();
-    }
+      apply_affecting_aura( p->talent.circle_of_life_and_death );
   }
 
   void trigger_blood_frenzy()
