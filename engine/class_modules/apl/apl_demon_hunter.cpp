@@ -194,8 +194,12 @@ void vengeance( player_t* p )
   default_->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
   default_->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
   default_->add_action( "variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(action.soul_cleave.execute_time+gcd.remains))&fury<80", "Don't spend fury when fel dev soon to maximize fel dev uptime" );
-  default_->add_action( "variable,name=can_spb_focused_cleave,op=setif,condition=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0,value=(spell_targets.spirit_bomb=1&(soul_fragments>=5&talent.burning_blood))|(spell_targets.spirit_bomb=2&(soul_fragments>=5|(soul_fragments>=4&talent.burning_blood)))|(spell_targets.spirit_bomb>=3&soul_fragments>=4)|(spell_targets.spirit_bomb>=6&(soul_fragments>=3)),value_else=(spell_targets.spirit_bomb>=4&talent.burning_blood&soul_fragments>=5)|(spell_targets.spirit_bomb=6&(soul_fragments>=5|(soul_fragments>=4&talent.burning_blood)))|(spell_targets.spirit_bomb=7&soul_fragments>=4)|(spell_targets.spirit_bomb>=8&soul_fragments>=3)", "When to use Spirit Bomb with Focused Cleave" );
-  default_->add_action( "variable,name=can_spb_no_focused_cleave,op=setif,condition=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0,value=soul_fragments>=4|(spell_targets.spirit_bomb>=3&soul_fragments>=3&talent.burning_blood)|(spell_targets.spirit_bomb>=6&soul_fragments>=3),value_else=soul_fragments>=5|(spell_targets.spirit_bomb>=6&soul_fragments>=4)", "When to use Spirit Bomb without Focused Cleave" );
+  default_->add_action( "variable,name=fd_ready,value=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0", "Check if fiery demise is active and spread" );
+  default_->add_action( "variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(action.soul_cleave.execute_time+gcd.remains))&fury<80", "Don't spend fury when fel dev soon to maximize fel dev uptime" );
+  default_->add_action( "variable,name=single_target,value=spell_targets.spirit_bomb=1", "When to use Spirit Bomb with Focused Cleave" );
+  default_->add_action( "variable,name=small_aoe,value=spell_targets.spirit_bomb>=2&spell_targets.spirit_bomb<=5" );
+  default_->add_action( "variable,name=big_aoe,value=spell_targets.spirit_bomb>=6" );
+  default_->add_action( "variable,name=can_spb,op=setif,condition=variable.fd_ready,value=(variable.single_target&soul_fragments>=5)|(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3),value_else=(variable.small_aoe&soul_fragments>=5)|(variable.big_aoe&soul_fragments>=4)" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
@@ -214,15 +218,15 @@ void vengeance( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
   default_->add_action( "call_action_list,name=maintenance" );
-  default_->add_action( "run_action_list,name=single_target,if=active_enemies<=1" );
-  default_->add_action( "run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5" );
-  default_->add_action( "run_action_list,name=big_aoe,if=active_enemies>=6" );
+  default_->add_action( "run_action_list,name=single_target,if=variable.single_target" );
+  default_->add_action( "run_action_list,name=small_aoe,if=variable.small_aoe" );
+  default_->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
 
   maintenance->add_action( "fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))", "Maintenance & upkeep" );
   maintenance->add_action( "sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0" );
   maintenance->add_action( "immolation_aura" );
   maintenance->add_action( "bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2" );
-  maintenance->add_action( "spirit_bomb,if=talent.focused_cleave&variable.can_spb_focused_cleave|!talent.focused_cleave&variable.can_spb_no_focused_cleave" );
+  maintenance->add_action( "spirit_bomb,if=variable.can_spb" );
   maintenance->add_action( "felblade,if=(fury.deficit>=40&active_enemies=1)|((cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50)" );
   maintenance->add_action( "fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   maintenance->add_action( "shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
@@ -236,7 +240,7 @@ void vengeance( player_t* p )
   fiery_demise->add_action( "soul_carver" );
   fiery_demise->add_action( "the_hunt" );
   fiery_demise->add_action( "elysian_decree,line_cd=1.85" );
-  fiery_demise->add_action( "spirit_bomb,if=talent.focused_cleave&variable.can_spb_focused_cleave|!talent.focused_cleave&variable.can_spb_no_focused_cleave" );
+  fiery_demise->add_action( "spirit_bomb,if=variable.can_spb" );
 
   single_target->add_action( "the_hunt", "Single Target" );
   single_target->add_action( "soul_carver" );
@@ -255,10 +259,10 @@ void vengeance( player_t* p )
   small_aoe->add_action( "fel_devastation" );
   small_aoe->add_action( "soul_carver" );
   small_aoe->add_action( "spirit_bomb,if=soul_fragments>=5" );
-  small_aoe->add_action( "soul_cleave,if=talent.focused_cleave&soul_fragments<=2&!variable.dont_cleave" );
+  small_aoe->add_action( "soul_cleave,if=talent.focused_cleave&soul_fragments<=1&!variable.dont_cleave" );
   small_aoe->add_action( "fracture" );
   small_aoe->add_action( "shear" );
-  small_aoe->add_action( "soul_cleave,if=soul_fragments<=2&!variable.dont_cleave" );
+  small_aoe->add_action( "soul_cleave,if=soul_fragments<=1&!variable.dont_cleave" );
   small_aoe->add_action( "call_action_list,name=filler" );
 
   big_aoe->add_action( "fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames", "6+ targets" );
