@@ -837,6 +837,7 @@ Effects          :
 #21 (id=1119178)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3043 (Label) | Target: Self (1)
                    Affected Spells (Label): Fragile Echoes (215266)
+Hotfixed         : NEW EFFECT
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown (1465) Evoker
@@ -7476,6 +7477,7 @@ $@spellicon403264$@spellname403264: You and your $s2 nearest allies have $403264
 $@spellicon403265$@spellname403265:You and your $s2 nearest allies have $403265s1% increased movement speed.
 
 Name             : Aerial Halt (desc=Racial) (id=403216) 
+Hotfixed         : Attributes
 Class            : Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -7495,6 +7497,7 @@ Attributes       : ........ ........ ........ x......x   ........ ........ .....
 Effects          :
 #1 (id=1050035)  : Apply Aura (6) | Unknown(513)
                    Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 513), Base Value (0 -> 10000)
 Description      : Flap back, reducing forward movement.
 
 Name             : Black Attunement (desc=Black) (id=403264) [Spell Family (224)] 
@@ -9803,8 +9806,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098470)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (40 -> 50)
 #2 (id=1104181)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (5 -> 3)
 Description      : Empower spells cast up to $s2 Living Flames at enemies or allies struck at $s1% effectiveness.
 
 Name             : Evoker Preservation 10.2 Class Set 4pc (id=422873) [Spell Family (224), Passive, Hidden] 
@@ -9827,6 +9832,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098471)  : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 70)
 Description      : Living Flame has a chance to apply Echo at $s1% effectiveness on allies healed, or a nearby ally who doesn't already have Echo.
 
 Name             : Emerald Trance (id=424155) [Spell Family (224)] 
