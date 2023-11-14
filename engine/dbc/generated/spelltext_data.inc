@@ -20500,7 +20500,7 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
   { 429246, "$@spelldesc429244", "Critical Strike increased by $s1.", 0 },
   { 429257, "Draw a set of aqueous spheres towards you that envelop you on contact, increasing your Mastery by $429262s1 for $429262d, stacking up to $429262u times.", 0, 0 },
   { 429262, "$@spelldesc429257", "Mastery increased by $s1.", 0 },
-  { 429267, "Taking damage has a chance to call Xeri'tac's brood your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", 0, 0 },
+  { 429267, "Taking damage has a chance to call Xeri'tac's brood to your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", 0, 0 },
   { 429271, "Envelop an ally in ancient protection, absorbing up to $s1 damage. If the protection is fully consumed, the ally gains an ancient resurgence, increasing Versatility by $429272s1 for $429272d.", "Absorbs $w1 damage.", 0 },
   { 429272, "$@spelldesc429271", "Versatility increased by $s1.", 0 },
   { 429364, "Plant a banner representing your successes against the Dreaming.", 0, 0 },
@@ -20513,7 +20513,7 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.52129
-static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __spelltext_hotfix_data { {
   {  395152,  0, "Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects." },
   {  422303,  0, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5." },
   {  422303,  1, "After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", "After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path." },
@@ -20522,6 +20522,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix
   {  426322,  0, "@$spelldesc426262", "$@spelldesc426262" },
   {  427113,  0, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Not effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Less effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. " },
   {  428492,  0, "Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. ", "Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;." },
+  {  429267,  0, "Taking damage has a chance to call Xeri'tac's brood your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", "Taking damage has a chance to call Xeri'tac's brood to your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage." },
 } };
 
 // Spell description variables, wow build 10.2.0.52129
