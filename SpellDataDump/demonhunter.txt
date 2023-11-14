@@ -13601,7 +13601,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1103666)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75900 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60720 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.759 -> 0.6072)
 Description      : $@spelldesc422861
 
 Name             : Inertia (id=427640) [Spell Family (107), Passive] 
@@ -13920,8 +13921,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1887 | Target: Self (1)
                    Affected Spells (Category): Elysian Decree (306830), Elysian Decree (327839), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (390163), Elysian Decree (394985)
 #6 (id=1113242)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3036 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3036 (Label) | Target: Self (1)
                    Affected Spells (Label): Sigil of Flame (204598)
+Hotfixed         : Base Value (20 -> 15)
 Description      : Sigil skills have $s2 additional $lcharge:charges;.
 
 You have $s6% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.

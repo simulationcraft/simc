@@ -15642,7 +15642,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023291)  : School Damage (2): magic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17940 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18837 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Hotfixed         : SP Coefficient (0.1794 -> 0.18837)
 Description      : Deals $s1 Chaos damage.
 
 Name             : Inquisitor's Gaze (id=388067) [Spell Family (5), Hidden] 
@@ -16239,7 +16240,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033724)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.71760 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75348 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Hotfixed         : SP Coefficient (0.7176 -> 0.75348)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Chaos Tear (id=394243) [Spell Family (5)] 
@@ -16281,7 +16283,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033732)  : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.79400 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.33220 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Hotfixed         : SP Coefficient (1.794 -> 2.3322)
 Description      : Fires a Chaos Bolt, dealing $s1 Chaos damage. This Chaos Bolt always critically strikes and your critical strike chance increases its damage.
 
 Name             : Cruel Epiphany (id=394253) [Spell Family (5)] 
@@ -16545,7 +16548,8 @@ Effects          :
                    Affected Spells: Demonbolt (264178)
                    Family Flags: 70
 #2 (id=1074729)  : None (0)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.50000
+Hotfixed         : Base Value (1000 -> 500)
 Description      : Demonbolt deals $s1% additional damage. Consuming a Demonic Core reduces the cooldown of Grimoire: Felguard by ${$s2/1000}.1 sec.
 
 Name             : Warlock Demonology 10.1 Class Set 4pc (id=405574) [Spell Family (5), Passive, Hidden] 
@@ -17402,7 +17406,8 @@ Effects          :
 #1 (id=1098517)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1109334)  : None (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+                   Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (50 -> 125)
 Description      : Consuming a Demonic Core applies a Doom Brand that explodes after $423583d, dealing $423584s1 Shadow damage to nearby enemies or ${$423584s1*(1+$s2/100)} Shadow damage to a single enemy. Hand of Gul'dan reduces the duration of your Doom Brands by ${$s1/1000} sec per Soul Shard spent.
 
 Name             : Warlock Demonology 10.2 Class Set 4pc (id=422920) [Spell Family (5), Passive, Hidden] 
@@ -17422,7 +17427,8 @@ Effects          :
 #1 (id=1098518)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 423585 | Target: Self (1)
 #2 (id=1109338)  : None (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (50 -> 110)
 Description      : When Doom Brand is removed, you have a chance to summon a Doomfiend that casts $423734s2 Doom Bolt Volleys before departing. Each Doom Bolt Volley deals $<damage> Shadow damage to up to $423734x1 enemies or ${$<damage>*(1+$s2/100)} Shadow damage to a single enemy.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${(1.553369999
@@ -17628,9 +17634,11 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : Not Shapeshifted (16), Aura Is Debuff (26), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100205)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37975 | PvP Coefficient: 0.50000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56962 | PvP Coefficient: 0.50000 | Target: Unknown(25)
+Hotfixed         : SP Coefficient (0.379748 -> 0.569622)
 #2 (id=1100206)  : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01520 | PvP Coefficient: 0.50000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02279 | PvP Coefficient: 0.50000 | Target: Unknown(25)
+Hotfixed         : SP Coefficient (0.015195 -> 0.022793)
 Description      : Sends a searing bolt at the enemy, causing $s1 Fire damage, and an additional $o2 Fire damage over $d.
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.
 
