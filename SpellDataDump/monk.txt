@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52129 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52148 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4041,14 +4041,17 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.86700
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+Hotfixed         : Base Value (-10 -> 4), PvP Coefficient (1 -> 0.867)
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 245 | Scaled Value: 245 | PvP Coefficient: 0.53200
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
+Hotfixed         : Base Value (130 -> 245), PvP Coefficient (1 -> 0.532)
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 184 | Scaled Value: 184 | PvP Coefficient: 1.00000
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
+Hotfixed         : Base Value (170 -> 184)
 #15 (id=741702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
@@ -4752,6 +4755,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ..x..... .....
 Effects          :
 #1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence Font every 0.167 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 191840 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 5)
 Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1}.1 sec for $d. Each bolt heals a target for $191840s1, plus an additional $191840o2 over $191840d.
 
 Gust of Mists will heal affected targets twice. Castable while moving.$?a337209[
@@ -4782,8 +4786,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.464094 -> 0.65)
 #2 (id=289619)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.06086 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.04347 -> 0.060858)
 Description      : $@spelldesc191837
 Tooltip          : Restoring $w2 health every $t2 sec.
 
@@ -15906,6 +15912,7 @@ Effects          :
 Description      : You and your allies within $m2 yards take $s1% reduced damage from area-of-effect attacks.
 
 Name             : Bounce Back (id=389577) [Spell Family (53), Passive] 
+Hotfixed         : Proc Flags 1 (664232 -> 2148182696)
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Monk
@@ -18535,8 +18542,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1098484)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 40)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103007)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Breath of Fire deals $s1% bonus damage as Shadowflame and causes you to heal for $s2% of your Fire damage dealt.
@@ -18556,8 +18562,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 15)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1103027)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your attacks against targets afflicted by Breath of Fire have a chance to deal $s1% extra damage as Shadowflame, and each Celestial Brew also grants a Stagger absorb for $s2% of the Shadowflame damage you have dealt, causing damage delayed by Stagger to instead be prevented.
@@ -18603,7 +18608,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 2.5 (Haste multiplier)
+Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : ..x.x... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -18617,8 +18622,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098489)  : Apply Aura (6) | Proc Trigger Spell (42): Blackout Reinforcement
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Trigger Spell: 424454 | Target: Self (1)
-Hotfixed         : Base Value (150 -> 200)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Trigger Spell: 424454 | Target: Self (1)
 Description      : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 Tooltip          : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 
@@ -18692,10 +18696,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1101241)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-Hotfixed         : Base Value (150 -> 200)
 Description      : $@spelldesc422891
 Tooltip          : Blackout Kick damage increased by $w1%.
 $?a422892[Cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch reduced by $422892s1 sec.][]
@@ -18798,12 +18801,14 @@ Effects          :
 #8 (id=1114685)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value 2: 3053 (Label) | Target: Self (1)
                    Affected Spells (Label): Faeline Stomp (388207)
+Hotfixed         : Base Value (100 -> 150)
 #9 (id=1114873)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 3033 (Label) | Target: Self (1)
                    Affected Spells (Label): Bounce Back (390239)
 #10 (id=1118403)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 3074 (Label) | Target: Self (1)
                    Affected Spells (Label): Teachings of the Monastery (202090)
+Hotfixed         : NEW EFFECT
 Description      : Mistweaver Monk core passive
 
 Name             : Healing Elixir (id=428439) [Spell Family (53)] 
