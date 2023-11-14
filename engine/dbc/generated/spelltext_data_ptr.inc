@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.0.52129
+// Spell text, wow build 10.2.0.52148
 static const std::array<spelltext_data_t, 20510> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -20484,7 +20484,7 @@ static const std::array<spelltext_data_t, 20510> __ptr_spelltext_data { {
   { 428455, "$@spelldesc428351", 0, 0 },
   { 428464, "$@spelldesc422879", "Your next Wildfire Bomb will not incur a cooldown.", 0 },
   { 428486, "Your finishing moves heal you for $s1% of damage done. At full health gain shielding instead, absorbing up to $s2% of your maximum health.", 0, 0 },
-  { 428492, "Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. ", 0, 0 },
+  { 428492, "Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;.", 0, 0 },
   { 428493, "$@spelldesc428492", 0, 0 },
   { 428557, "Sigil skills have $s2 additional $lcharge:charges;.\r\n\r\nYou have $s6% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.", 0, 0 },
   { 428603, "Sigil of Flame's initial damage is increased by $s2%.\r\n\r\nMultiple applications of Sigil of Flame may overlap.", 0, 0 },
@@ -20512,17 +20512,19 @@ static const std::array<spelltext_data_t, 20510> __ptr_spelltext_data { {
   { 432154, "Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.\r\n\r\nWhile ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.", "Absorbing $w3 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.52129
-static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.2.0.52148
+static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __ptr_spelltext_hotfix_data { {
   {  422303,  0, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5." },
   {  422303,  1, "After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", "After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path." },
   {  423611,  0, "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every 3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat.", "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every $t3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat." },
   {  426269,  0, "@$spelldesc426262", "$@spelldesc426262" },
+  {  426321,  0, "@$spelldesc426262", "$@spelldesc426262" },
   {  426322,  0, "@$spelldesc426262", "$@spelldesc426262" },
   {  427113,  0, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Not effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Less effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. " },
+  {  428492,  0, "Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. ", "Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;." },
 } };
 
-// Spell description variables, wow build 10.2.0.52129
+// Spell description variables, wow build 10.2.0.52148
 static const std::array<spelldesc_vars_data_t, 412> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20938,7 +20940,7 @@ static const std::array<spelldesc_vars_data_t, 412> __ptr_spelldesc_vars_data { 
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.52129
+// spelldesc_vars hotfix entries, wow build 10.2.0.52148
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
