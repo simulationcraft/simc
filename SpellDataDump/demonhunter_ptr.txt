@@ -2205,7 +2205,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 5 seconds
 Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 33
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -12755,8 +12755,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1031649)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : Base Value (-12 -> -10)
 Description      : $@spelldesc337546
 Tooltip          : Magic damage taken reduced by $s1%.
 
