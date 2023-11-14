@@ -1663,9 +1663,7 @@ struct blood_frenzy_buff_t : public druid_buff_t
       trigger_blood_frenzy();
     } );
 
-    // Circle does not apply to BF due to bad effect data for the BF periodic effect
-    if ( !p->bugs )
-      apply_affecting_aura( p->talent.circle_of_life_and_death );
+    apply_affecting_aura( p->talent.circle_of_life_and_death );
   }
 
   void trigger_blood_frenzy()
