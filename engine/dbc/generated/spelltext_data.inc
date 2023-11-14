@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.0.52129
+// Spell text, wow build 10.2.0.52148
 static const std::array<spelltext_data_t, 20510> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19008,7 +19008,7 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
   { 395041, "$?a388114[Chaos][Shadow]", 0, 0 },
   { 395042, "$?a388114[Chaos][Nature]", 0, 0 },
   { 395110, "$@spelldesc394094", "The next Eclipse you enter will trigger Sundered Firmament.\r\n\r\n$@spellicon394094$@spellname394094\r\n$@spelldesc394094", 0 },
-  { 395152, "Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "$pri increased by $w2.", "Black" },
+  { 395152, "Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "$pri increased by $w2.", "Black" },
   { 395153, "$@spellname395160 $?s414969[or $@spellname355913 ][]increases the duration of your active Ebon Might effects by ${$s1/1000} sec.\r\n\r\nYour empower spells increase the duration of your active Ebon Might effects by ${$s2/1000} sec.\r\n\r\n$?s403631[$@spellname403631][$@spellname357210] increases the duration of your active Ebon Might effects by ${$s3/1000} sec.\r\n\r\nThis effect can critically strike, increasing the duration of Ebon Might by an additional $s4%.", 0, 0 },
   { 395157, "$@spelldesc199471", 0, 0 },
   { 395160, "Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[\r\n\r\nIncreases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]", 0, "Black" },
@@ -20500,7 +20500,7 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
   { 429246, "$@spelldesc429244", "Critical Strike increased by $s1.", 0 },
   { 429257, "Draw a set of aqueous spheres towards you that envelop you on contact, increasing your Mastery by $429262s1 for $429262d, stacking up to $429262u times.", 0, 0 },
   { 429262, "$@spelldesc429257", "Mastery increased by $s1.", 0 },
-  { 429267, "Taking damage has a chance to call Xeri'tac's brood your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", 0, 0 },
+  { 429267, "Taking damage has a chance to call Xeri'tac's brood to your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", 0, 0 },
   { 429271, "Envelop an ally in ancient protection, absorbing up to $s1 damage. If the protection is fully consumed, the ally gains an ancient resurgence, increasing Versatility by $429272s1 for $429272d.", "Absorbs $w1 damage.", 0 },
   { 429272, "$@spelldesc429271", "Versatility increased by $s1.", 0 },
   { 429364, "Plant a banner representing your successes against the Dreaming.", 0, 0 },
@@ -20512,19 +20512,20 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
   { 432154, "Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.\r\n\r\nWhile ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.", "Absorbing $w3 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.52129
-static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix_data { {
-  {  395152,  0, "Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects." },
+// spelltext hotfix entries, wow build 10.2.0.52148
+static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __spelltext_hotfix_data { {
   {  422303,  0, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5." },
   {  422303,  1, "After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", "After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path." },
   {  423611,  0, "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every 3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat.", "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every $t3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat." },
   {  426269,  0, "@$spelldesc426262", "$@spelldesc426262" },
+  {  426321,  0, "@$spelldesc426262", "$@spelldesc426262" },
   {  426322,  0, "@$spelldesc426262", "$@spelldesc426262" },
   {  427113,  0, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Not effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Less effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. " },
   {  428492,  0, "Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. ", "Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;." },
+  {  429267,  0, "Taking damage has a chance to call Xeri'tac's brood your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", "Taking damage has a chance to call Xeri'tac's brood to your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage." },
 } };
 
-// Spell description variables, wow build 10.2.0.52129
+// Spell description variables, wow build 10.2.0.52148
 static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20911,7 +20912,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  393400, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
   {  394352, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
-  {  395152, "$stat=${$INT*($s1/100)}\r\n$amount=${6.5}.1" },
+  {  395152, "$stat=${$INT*($s1/100)}" },
   {  396286, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   {  403631, "$emDur=${5}" },
@@ -20940,8 +20941,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.52129
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
-  {  395152,  0, "$stat=${$INT*($s1/100)}", "$stat=${$INT*($s1/100)}\r\n$amount=${6.5}.1" },
+// spelldesc_vars hotfix entries, wow build 10.2.0.52148
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
