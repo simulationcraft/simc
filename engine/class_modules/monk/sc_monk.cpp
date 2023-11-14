@@ -10902,6 +10902,7 @@ namespace monk
 
     void register_hotfixes() const override
     {
+/*
       hotfix::register_effect( "Monk", "2023-11-14", "Manually apply BrM-T31-2p Buff", 1098484)
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
@@ -10912,6 +10913,7 @@ namespace monk
         .operation( hotfix::HOTFIX_SET )
         .modifier( 15 )
         .verification_value( 10 );
+*/
     }
 
     void init( player_t *p ) const override
