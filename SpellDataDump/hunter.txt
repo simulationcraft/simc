@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52106 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52129 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -17388,7 +17388,6 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Thrill of the Hunt (257946), Frenzy (272790), Thrill of the Hunt (312365)
                    Family Flags: 78, 126
-Hotfixed         : Affects Spells
 Description      : Kill Command damage is increased by $s1%. Barbed Shot lasts ${$m2/1000}.1 sec longer.
 
 Name             : Master Handler (id=424558) [Spell Family (9), Passive] 
@@ -17587,7 +17586,6 @@ Description      : $@spelldesc422879
 Tooltip          : Your next Wildfire Bomb will not incur a cooldown.
 
 Name             : Rapid Reload (id=431156) [Spell Family (9)] 
-Hotfixed         : NEW SPELL
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17606,17 +17604,14 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rapid Fire (257044)
                    Family Flags: 118
-Hotfixed         : NEW EFFECT
 #2 (id=1118739)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rapid Fire (257044)
                    Family Flags: 118
-Hotfixed         : NEW EFFECT
 Description      : Your next Rapid Fire will shoot $s1% additional shots during its channel.
 Tooltip          : Your next Rapid Fire will shoot $s1% additional shots during its channel.
 
 Name             : Hunter Marksmanship 10.2 Class Set 2pc (id=431168) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17634,17 +17629,13 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rapid Fire (257045)
                    Family Flags: 3
-Hotfixed         : NEW EFFECT
 #2 (id=1118758)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1118759)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Rapid Fire deals $s1% additional damage. Trick Shots causes Rapid Fire to launch a Volley for $s2 sec, dealing $s3% of normal damage.
 
 Name             : Hunter Marksmanship 10.2 Class Set 4pc (id=431172) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17663,13 +17654,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1118763)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #2 (id=1118764)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1118765)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Every $s1 Focus you spend has a ${$m2/10}.1% chance to reset the cooldown of Rapid Fire and cause your next Rapid Fire to shoot $431156s1% additional shots during its channel.
 
 
