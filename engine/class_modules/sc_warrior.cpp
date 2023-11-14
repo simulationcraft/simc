@@ -810,26 +810,6 @@ public:
     never_surrender_percentage = 70;
 
     resource_regeneration = regen_type::DISABLED;
-
-    talent_points->register_validity_fn( [this]( const spell_data_t* spell ) {
-      // Soul of the Battlelord
-      if ( find_item_by_id( 151650 ) )
-      {
-        switch ( specialization() )
-        {
-          case WARRIOR_FURY:
-            return spell->id() == 206315;  // Massacre
-          case WARRIOR_ARMS:
-            return spell->id() == 152278;  // Anger Management
-          case WARRIOR_PROTECTION:
-            return spell->id() == 202572;  // Vengeance
-          default:
-            // This shouldn't happen
-            break;
-        }
-      }
-      return false;
-    } );
   }
 
   // Character Definition
@@ -950,12 +930,6 @@ public:
   void enrage()
   {
     buff.enrage->trigger();
-    if ( legendary.ceannar_charger->found() )
-    {
-      resource_gain( RESOURCE_RAGE,
-                     legendary.ceannar_charger->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ),
-                     gain.ceannar_rage );
-    }
   }
 };
 
