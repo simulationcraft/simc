@@ -7674,19 +7674,21 @@ Effects          :
 Description      : $@spelldesc203962
 
 Name             : Blood Frenzy (id=203962) [Spell Family (7), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Guardian [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Labels           : 3097: Circle of Life and Death (391969 effect#6)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Passive (6), Not In Spellbook (143), Spell Haste Affects Periodic (173), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300974)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -17702,6 +17704,10 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Primal Wrath (285381)
                    Family Flags: 93
+#6 (id=1120516)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 19 | Misc Value 2: 3097 (Label)
+                   Affected Spells (Label): Blood Frenzy (203962)
+Hotfixed         : NEW EFFECT
 Description      : Your damage over time effects deal their damage in $s1% less time, and your healing over time effects in $s2% less time.
 
 Name             : Lion's Strength (id=391972) [Spell Family (7), Passive] 
