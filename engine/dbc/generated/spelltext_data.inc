@@ -20484,7 +20484,7 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
   { 428455, "$@spelldesc428351", 0, 0 },
   { 428464, "$@spelldesc422879", "Your next Wildfire Bomb will not incur a cooldown.", 0 },
   { 428486, "Your finishing moves heal you for $s1% of damage done. At full health gain shielding instead, absorbing up to $s2% of your maximum health.", 0, 0 },
-  { 428492, "Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. ", 0, 0 },
+  { 428492, "Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;.", 0, 0 },
   { 428493, "$@spelldesc428492", 0, 0 },
   { 428557, "Sigil skills have $s2 additional $lcharge:charges;.\r\n\r\nYou have $s6% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.", 0, 0 },
   { 428603, "Sigil of Flame's initial damage is increased by $s2%.\r\n\r\nMultiple applications of Sigil of Flame may overlap.", 0, 0 },
@@ -20513,7 +20513,7 @@ static const std::array<spelltext_data_t, 20510> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.0.52129
-static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix_data { {
   {  395152,  0, "Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects." },
   {  422303,  0, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5." },
   {  422303,  1, "After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", "After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path." },
@@ -20521,6 +20521,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __spelltext_hotfix
   {  426269,  0, "@$spelldesc426262", "$@spelldesc426262" },
   {  426322,  0, "@$spelldesc426262", "$@spelldesc426262" },
   {  427113,  0, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Not effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Less effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. " },
+  {  428492,  0, "Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. ", "Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;." },
 } };
 
 // Spell description variables, wow build 10.2.0.52129
