@@ -8958,22 +8958,22 @@ void verdant_conduit( special_effect_t& effect )
   // Check if this is the first time we've added stats
   bool first = !crit->manual_stats_added;
   crit->add_stat_from_effect( 1, amount );
-  crit->set_name_reporting( util::inverse_tokenize( "verdant_conduit_crit" ) );
+  crit->set_name_reporting( "Crit" );
   buffs.push_back( crit );
 
   auto haste = create_buff<stat_buff_t>( effect.player, "verdant_conduit_haste", buff_spell );
   haste->add_stat_from_effect( 2, amount );
-  haste->set_name_reporting( util::inverse_tokenize( "verdant_conduit_haste" ) );
+  haste->set_name_reporting( "Haste" );
   buffs.push_back( haste );
 
   auto mastery = create_buff<stat_buff_t>( effect.player, "verdant_conduit_mastery", buff_spell );
   mastery->add_stat_from_effect( 3, amount );
-  mastery->set_name_reporting( util::inverse_tokenize( "verdant_conduit_mastery" ) );
+  mastery->set_name_reporting( "Mastery" );
   buffs.push_back( mastery );
 
   auto vers = create_buff<stat_buff_t>( effect.player, "verdant_conduit_vers", buff_spell );
   vers->add_stat_from_effect( 4, amount );
-  vers->set_name_reporting( util::inverse_tokenize( "verdant_conduit_vers" ) );
+  vers->set_name_reporting( "Vers" );
   buffs.push_back( vers );
 
   new dbc_proc_callback_t( effect.player, effect );
