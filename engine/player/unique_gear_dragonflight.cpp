@@ -725,7 +725,7 @@ void incandescent_essence( special_effect_t& e )
   };
 
   auto tank_damage = create_proc_action<blazing_rage_t>( "blazing_rage", e );
-  auto tank_buff   = create_buff<buff_t>( e.player, "blazing_rage_buff", e.player->find_spell( 426289 ) );
+  auto tank_buff   = create_buff<buff_t>( e.player, "blazing_rage", e.player->find_spell( 426289 ) );
 
   auto blazing_rage            = new special_effect_t( e.player );
   blazing_rage->spell_id       = 426289;
