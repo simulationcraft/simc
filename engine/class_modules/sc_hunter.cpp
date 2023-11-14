@@ -3832,7 +3832,6 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
   const timespan_t kill_command_reduction;
-  action_t* cotw_serpent_sting = nullptr;
 
   cobra_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "cobra_shot", p, p -> talents.cobra_shot ),
@@ -3844,9 +3843,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    if ( cotw_serpent_sting && p() -> buffs.call_of_the_wild -> up() )
-      cotw_serpent_sting -> execute_on_target( target );
 
     if ( p() -> talents.killer_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
