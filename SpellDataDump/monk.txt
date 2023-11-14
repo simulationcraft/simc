@@ -18535,7 +18535,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1098484)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 40)
 #2 (id=1103007)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Breath of Fire deals $s1% bonus damage as Shadowflame and causes you to heal for $s2% of your Fire damage dealt.
@@ -18555,7 +18556,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 15)
 #2 (id=1103027)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your attacks against targets afflicted by Breath of Fire have a chance to deal $s1% extra damage as Shadowflame, and each Celestial Brew also grants a Stagger absorb for $s2% of the Shadowflame damage you have dealt, causing damage delayed by Stagger to instead be prevented.
@@ -18601,7 +18603,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 1.5 (Haste multiplier)
+Real PPM         : 2.5 (Haste multiplier)
 Proc Flags       : ..x.x... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -18615,7 +18617,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098489)  : Apply Aura (6) | Proc Trigger Spell (42): Blackout Reinforcement
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Trigger Spell: 424454 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Trigger Spell: 424454 | Target: Self (1)
+Hotfixed         : Base Value (150 -> 200)
 Description      : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 Tooltip          : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 
@@ -18689,9 +18692,10 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1101241)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+Hotfixed         : Base Value (150 -> 200)
 Description      : $@spelldesc422891
 Tooltip          : Blackout Kick damage increased by $w1%.
 $?a422892[Cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch reduced by $422892s1 sec.][]
