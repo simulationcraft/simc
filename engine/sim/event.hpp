@@ -64,27 +64,27 @@ struct event_t : private noncopyable
   {
     schedule( delta_time );
   }
+
   event_t( actor_t& a, timespan_t delta_time ) : event_t( a )
   {
     schedule( delta_time );
   }
 
-  timespan_t occurs() const  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
+  timespan_t occurs() const { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
   timespan_t remains() const;
 
   void schedule( timespan_t delta_time );
 
   void reschedule( timespan_t delta_time );
-  sim_t& sim()
-  { return _sim; }
-  const sim_t& sim() const
-  { return _sim; }
+  sim_t& sim() { return _sim; }
+  const sim_t& sim() const { return _sim; }
   rng::rng_t& rng();
 
   virtual void execute() = 0; // MUST BE IMPLEMENTED IN SUB-CLASS!
-  virtual const char* name() const
-  { return "core_event_t"; }
-
+  virtual const char* name() const { return "core_event_t"; }
+#ifndef NDEBUG
+  virtual const char* debug() const { return name(); }
+#endif
   virtual ~event_t() = default;
 
   template<class T>
@@ -102,8 +102,8 @@ protected:
   template <typename Event, typename... Args>
   friend Event* make_event( sim_t& sim, Args&&... args );
   static void* operator new( std::size_t size, sim_t& sim );
-  static void  operator delete( void*, sim_t& ) { }
-  static void  operator delete( void* ) { }
+  static void  operator delete( void*, sim_t& ) {}
+  static void  operator delete( void* ) {}
   static void* operator new( std::size_t ) = delete; // NOLINT(modernize-use-equals-delete)
 };
 
@@ -171,6 +171,28 @@ public:
   }
 };
 
+template <typename F, typename G>
+class time_fn_repeating_event : public event_t
+{
+  F fn_time;
+  G fn_exec;
+
+public:
+  template <typename T = F, typename U = G>
+  time_fn_repeating_event( sim_t& s, T&& time, U&& exec )
+    : event_t( s, time() ), fn_time( std::forward<T>( time ) ), fn_exec( std::forward<U>( exec ) )
+  {}
+
+  const char* name() const override
+  { return "time_fn_repeating_event"; }
+
+  void execute() override
+  {
+    fn_exec();
+    make_event<time_fn_repeating_event<F, G>>( sim(), sim(), std::move( fn_time ), std::move( fn_exec ) );
+  }
+};
+
 template <typename T>
 inline event_t* make_event( sim_t& s, timespan_t t, T&& fn )
 {
@@ -181,6 +203,14 @@ template <typename T>
 inline event_t* make_repeating_event( sim_t& s, timespan_t t, T&& fn, int n = -1 )
 {
   return make_event<fn_event_repeating_t<std::decay_t<T>>>( s, s, t, std::forward<T>( fn ), n );
+}
+
+template <typename F, typename G,
+          typename = std::enable_if_t<std::is_same_v<std::invoke_result_t<std::decay_t<F>>, timespan_t>>>
+inline event_t* make_repeating_event( sim_t& s, F&& time, G&& exec )
+{
+  return make_event<time_fn_repeating_event<std::decay_t<F>, std::decay_t<G>>>(
+      s, s, std::forward<F>( time ), std::forward<G>( exec ) );
 }
 
 template <typename T>
@@ -198,3 +228,8 @@ inline event_t* make_event( sim_t& s, T&& fn )
 template <typename T>
 inline event_t* make_repeating_event( sim_t* s, timespan_t t, T&& fn, int n = -1 )
 { return make_repeating_event( *s, t, std::forward<T>( fn ), n ); }
+
+template <typename F, typename G,
+          typename = std::enable_if_t<std::is_same_v<std::invoke_result_t<std::decay_t<F>>, timespan_t>>>
+inline event_t* make_repeating_event( sim_t* s, F&& time, G&& exec )
+{ return make_event( *s, std::forward<F>( time ), std::forward<G>( exec ) ); }

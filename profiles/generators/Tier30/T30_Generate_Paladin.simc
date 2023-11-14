@@ -6,7 +6,7 @@ server=valdrakken
 role=tank
 spec=protection
 
-talents=BIEAS+uMNo6HaxL/ztTZBhrdcWSKJSKkCSSo1kkIhESAAACAAAAAAAASEJNBSQSKSkkAAiACABC
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAASEJNBSQSKCJJAACIAEIAB
 
 head=heartfire_sentinels_forgehelm,gem_id=192945,id=202452,bonus_id=4800/4786/1504/8780
 neck=torc_of_passed_time,id=201759,gem_id=192985/192945/192945,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,crafted_stats=32/49
@@ -17,9 +17,9 @@ legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce
 feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/9405/8790/9379/8960/9366/1495,crafted_stats=36/32
 wrist=bonds_of_desperate_ascension,id=204390,gem_id=192945,bonus_id=6652/7981/8095/1498/8780/4786
 hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1501/8767
-finger1=onyx_annulet,id=203460,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,bonus_id=1491,enchant=devotion_of_haste_3
+finger1=onyx_impostors_birthright,id=204398,gem_id=192945,bonus_id=6652/7981/1498/8767/8780,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,gem_id=192945,bonus_id=6652/7981/1498/8767/8780,enchant=devotion_of_haste_3
-trinket1=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1498/8767
+trinket1=elementium_pocket_anvil,id=202617,bonus_id=9410/9380/6652/1498/8767
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=shadowflame_wreathe_3
@@ -33,28 +33,51 @@ level=70
 race=tauren
 role=attack
 position=back
-talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAARQSCBSQkSESCpkmQkICJiSjWA
-dragonflight.ominous_chromatic_essence_dragonflight=emerald
-dragonflight.ominous_chromatic_essence_allies=azure/bronze/ruby/obsidian
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAQEkkQgEEpEhkQKpkQkICJiShGAA
 
-head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/6935,gem_id=192991
-neck=ionized_choker,id=206181,bonus_id=1795/6808/4786/1669/6935/6935/6935,gem_id=192932/192932/192932
+head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/6935,gem_id=192985
+neck=bromachs_disentombed_locket,id=193809,bonus_id=1795/6808/4786/1669/6935/6935/6935,gem_id=192945/192945/192945
 shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1507,enchant_id=6625
-wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192932
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192945
 hands=heartfire_sentinels_protectors,id=202453,bonus_id=4800/4786/1501
-waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=192932
-legs=legplates_of_profane_sacrifice,id=159443,bonus_id=1795/6808/4786/3317,enchant_id=6490
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=192945
+legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant_id=6490
 feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=40/36
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192932,enchant=devotion_of_versatility_3
-finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204029/204027,enchant=devotion_of_versatility_3
-trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
-trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192945,enchant=devotion_of_haste_3
+finger2=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192945,enchant=devotion_of_haste_3,crafted_stats=40/36
+trinket1=elementium_pocket_anvil,id=202617,bonus_id=4800/4786/1504
+trinket2=neltharions_call_to_chaos,id=204201,bonus_id=4800/4786/1498
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
 save=T30_Paladin_Retribution.simc
 
+paladin="T30_Paladin_Retribution_CS"
+spec=retribution
+level=70
+race=tauren
+role=attack
+position=back
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAQEkkQgEEpEhkQKplQkICJiCaBAA
+
+head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/6935,gem_id=192991
+neck=ionized_choker,id=206181,bonus_id=1795/6808/4786/1669/6935/6935/6935,gem_id=192952/192952/192952
+shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=rockbound_chestguard,id=134135,bonus_id=1795/6808/4786/3326,enchant_id=6625
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192952
+hands=heartfire_sentinels_protectors,id=202453,bonus_id=4800/4786/1501
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=192952
+legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant_id=6490
+feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=40/36
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192952,enchant=devotion_of_haste_3
+finger2=onyx_impostors_birthright,id=204398,bonus_id=4800/4786/1498/6935,gem_id=192952,enchant=devotion_of_haste_3
+trinket1=elementium_pocket_anvil,id=202617,bonus_id=4800/4786/1504
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
+main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+
+save=T30_Paladin_Retribution_CS.simc
 
 # # paladin="T27_Paladin_Holy"
 # # level=70

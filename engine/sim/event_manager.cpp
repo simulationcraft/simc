@@ -203,22 +203,26 @@ void event_manager_t::reschedule_event( event_t* e )
 bool event_manager_t::execute()
 {
   unsigned n_events = 0U;
-
-  static const unsigned MAX_EVENTS = 500U * (
-    sim->single_actor_batch ? 1U : sim->player_no_pet_list.size()
-  );
+  std::vector<std::string> debug_list;
+  static const unsigned MAX_EVENTS = 500U * ( sim->single_actor_batch ? 1U : sim->player_no_pet_list.size() );
 
   while ( event_t* e = next_event() )
   {
     if ( e->time == current_time )
     {
+#ifndef NDEBUG
+      debug_list.push_back( e->debug() );
+#endif
       if ( ++n_events == MAX_EVENTS )
       {
-        cancel_stuck();
+        cancel_stuck( debug_list );
       }
     }
     else
     {
+#ifndef NDEBUG
+      debug_list.clear();
+#endif
       n_events = 0U;
     }
 
@@ -232,8 +236,7 @@ bool event_manager_t::execute()
       if ( e->actor->event_counter < 0 )
       {
         fmt::print( stderr,
-                    "sim_t::combat assertion error! canceling event {} "
-                    "leaves negative event count for user {}.\n",
+                    "sim_t::combat assertion error! canceling event {} leaves negative event count for user {}.\n",
                     e->name(), e->actor->name() );
         assert( false );
       }
@@ -256,10 +259,8 @@ bool event_manager_t::execute()
       if ( monitor_cpu )
       {
 #ifdef ACTOR_EVENT_BOOKKEEPING
-        auto& sw =
-            e->actor ? e->actor->event_stopwatch : event_stopwatch;
+        auto& sw = e->actor ? e->actor->event_stopwatch : event_stopwatch;
 #else
-
         auto& sw = event_stopwatch;
 #endif
         sw.mark();
@@ -428,9 +429,9 @@ void event_manager_t::merge( event_manager_t& other )
 
 // event_manager_t::cancel_stuck ============================================
 
-void event_manager_t::cancel_stuck()
+void event_manager_t::cancel_stuck( std::vector<std::string>& debug_list )
 {
-  std::string player_str { "(unknown)" };
+  std::string player_str{ "(unknown)" };
 
   if ( sim->player_no_pet_list.size() == 1 )
   {
@@ -441,14 +442,23 @@ void event_manager_t::cancel_stuck()
     player_str = sim->player_no_pet_list[ sim->current_index ]->name();
   }
 
-  fmt::print( stderr,
-        "Simulator likely stuck on "
-        "thread={}, iteration={}, seed={}, player={}, canceling ...\n", sim->thread_index,
-        sim->current_iteration, sim->seed, player_str );
+  fmt::print( stderr, "Simulator likely stuck on thread={}, iteration={}, seed={}, player={}, canceling ...\n",
+              sim->thread_index, sim->current_iteration, sim->seed, player_str );
+#ifndef NDEBUG
+  std::unordered_map<std::string, unsigned> event_list;
+  for ( const auto& d : debug_list )
+    event_list[ d ]++;
+
+  std::vector<std::string> formatted_list;
+  for ( const auto& e : event_list )
+    formatted_list.push_back( fmt::format( "{}:{}", e.first, e.second ) );
+
+  fmt::print( stderr, "\nEvents: {}\n", util::string_join( formatted_list ) );
+#endif
 
   if ( sim->parent )
   {
-    sim->parent->event_mgr.cancel_stuck();
+    sim->parent->event_mgr.cancel_stuck( debug_list );
   }
   // Parent (thread 0) processing
   else
@@ -460,4 +470,3 @@ void event_manager_t::cancel_stuck()
     sim->cancel_iteration();
   }
 }
-

@@ -269,7 +269,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Paladin TODO: Verify 12-21 Stamina, 65-69 values
+  { // Paladin TODO: Verify 12-21 Stamina
     // Agi = 0.35 of Primary
     //    Str     Agi     Sta     Int     Spi
     {     18,      6,     37,     20,      0 },
@@ -393,7 +393,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Hunter TODO: Verify 12-21 Stamina, 61-69 values
+  { // Hunter TODO: Verify 12-21 Stamina
     // Str = 0.61 of Primary
     // Int = 0.82 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -461,11 +461,11 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    466,    764,   1407,    626,      0 },
     {    531,    870,   1603,    713,      0 },
     {    605,    992,   1826,    813,      0 },
-    {    690,   1130,   2081,    927,      0 }, // 65
-    {    786,   1287,   2370,   1055,      0 },
+    {    689,   1130,   2081,    926,      0 }, // 65
+    {    785,   1287,   2370,   1055,      0 },
     {    895,   1466,   2701,   1202,      0 },
-    {   1020,   1671,   3077,   1370,      0 },
-    {   1161,   1903,   3506,   1560,      0 },
+    {   1019,   1671,   3077,   1370,      0 },
+    {   1161,   1903,   3506,   1561,      0 },
     {   1275,   2089,   3848,   1713,      0 }, // 70
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },

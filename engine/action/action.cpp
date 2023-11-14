@@ -5,28 +5,29 @@
 
 #include "action/action.hpp"
 
-#include "action/action_state.hpp"
 #include "action/action_callback.hpp"
+#include "action/action_state.hpp"
+#include "action/dot.hpp"
+#include "buff/buff.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"
-#include "buff/buff.hpp"
-#include "action/dot.hpp"
+#include "player/action_priority_list.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/covenant.hpp"
+#include "player/expansion_effects.hpp"  // try to implement leyshocks_grand_compilation as a callback
+#include "player/pet.hpp"
+#include "player/player.hpp"
 #include "player/player_collected_data.hpp"
 #include "player/player_event.hpp"
 #include "player/stats.hpp"
-#include "player/player.hpp"
-#include "player/pet.hpp"
-#include "player/action_priority_list.hpp"
-#include "sim/event.hpp"
-#include "sim/proc.hpp"
-#include "sim/expressions.hpp"
 #include "sim/cooldown.hpp"
+#include "sim/event.hpp"
+#include "sim/expressions.hpp"
+#include "sim/proc.hpp"
 #include "sim/sim.hpp"
 #include "util/generic.hpp"
+#include "util/io.hpp"
 #include "util/rng.hpp"
-#include "player/expansion_effects.hpp" // try to implement leyshocks_grand_compilation as a callback
 #include "util/util.hpp"
 
 #include <utility>
@@ -58,17 +59,26 @@ void do_execute( action_t* action, execute_type type )
     action->player->schedule_cwc_ready( timespan_t::zero() );
   }
 
-  if ( !action->quiet )
+  // Check if the target has died or gone out of range between now and when this was queued
+  // If this is the case, we shouldn't continue with attempting to execute it
+  if ( !action->target_ready( action->target ) )
   {
-    action->player->iteration_executed_foreground_actions++;
-    action->total_executions++;
-    action->player->sequence_add( action, action->target, action->sim->current_time() );
+    action->sim->print_debug( "{} skipping queued do_execute for {} due to failing target_ready() check", *action->player, *action );
   }
-  action->execute();
-  action->line_cooldown->start();
+  else
+  {
+    if ( !action->quiet )
+    {
+      action->player->iteration_executed_foreground_actions++;
+      action->total_executions++;
+      action->player->sequence_add( action, action->target, action->sim->current_time() );
+    }
+    action->execute();
+    action->line_cooldown->start();
 
-  // If the ability has a GCD, we need to start it
-  action->start_gcd();
+    // If the ability has a GCD, we need to start it
+    action->start_gcd();
+  }
 
   if ( action->player->queueing == action )
   {
@@ -171,8 +181,10 @@ struct action_execute_event_t : public player_event_t
   bool has_cast_time;
 
   action_execute_event_t( action_t* a, timespan_t time_to_execute, action_state_t* state = nullptr )
-    : player_event_t( *a->player, time_to_execute ), action( a ), execute_state( state ),
-    has_cast_time( time_to_execute > timespan_t::zero() )
+    : player_event_t( *a->player, time_to_execute ),
+      action( a ),
+      execute_state( state ),
+      has_cast_time( time_to_execute > timespan_t::zero() )
   {
     if ( sim().debug )
     {
@@ -186,7 +198,9 @@ struct action_execute_event_t : public player_event_t
   {
     return "Action-Execute";
   }
-
+#ifndef NDEBUG
+  const char* debug() const override { return action ? action->name() : name(); }
+#endif
   ~action_execute_event_t() override
   {
     // Ensure we properly release the carried execute_state even if this event
@@ -367,6 +381,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     tick_on_application( false ),
     hasted_ticks(),
     consume_per_tick_(),
+    rolling_periodic(),
     split_aoe_damage(),
     reduced_aoe_targets( 0.0 ),
     full_amount_targets( 0 ),
@@ -581,12 +596,12 @@ static bool is_periodic_damage_effect( const spelleffect_data_t& effect )
          range::contains( subtypes, effect.subtype() );
 }
 
-static bool has_direct_damage_effect( const spell_data_t& spell )
+bool action_t::has_direct_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_direct_damage_effect );
 }
 
-static bool has_periodic_damage_effect( const spell_data_t& spell )
+bool action_t::has_periodic_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_periodic_damage_effect );
 }
@@ -615,6 +630,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   tick_may_crit       = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
   hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  rolling_periodic    = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
   ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
@@ -1280,8 +1296,9 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
 
   amount = floor( base_ta( state ) + 0.5 );
   amount += bonus_ta( state );
-  amount += state->composite_spell_power() * spell_tick_power_coefficient( state );
-  amount += state->composite_attack_power() * attack_tick_power_coefficient( state );
+  double rolling_ta_multiplier = state->composite_rolling_ta_multiplier();
+  amount += state->composite_spell_power() * spell_tick_power_coefficient( state ) * rolling_ta_multiplier;
+  amount += state->composite_attack_power() * attack_tick_power_coefficient( state ) * rolling_ta_multiplier;
   amount *= state->composite_ta_multiplier();
 
   double init_tick_amount = amount;
@@ -1392,8 +1409,7 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   // Spell goes over the maximum number of AOE targets - ignore for enemies
   // Note that this split damage factor DOES affect spells that are supposed
   // to do full damage to the main target.
-  if ( !state->action->split_aoe_damage &&
-       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
+  if ( state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
        !state->action->player->is_enemy() )
   {
     amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
@@ -1685,13 +1701,8 @@ void action_t::execute()
   num_targets_hit              = 0;
   interrupt_immediate_occurred = false;
 
-  if ( harmful )
-  {
-    if ( !player->in_combat && sim->debug )
-      sim->print_debug( "{} enters combat.", *player );
-
-    player->in_combat = true;
-  }
+  if ( harmful && !player->in_combat )
+    player->enter_combat();
 
   // Handle tick_action initial state snapshotting, primarily for handling STATE_MUL_PERSISTENT
   if ( tick_action )
@@ -1797,22 +1808,15 @@ void action_t::execute()
     {
       // "On spell cast", only performed for foreground actions
       if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-      {
-        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
       // "On an execute result"
       if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-      {
-        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
       // "On interrupt cast result"
       if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-      {
-        if ( execute_state->target->debuffs.casting->check() )
-          action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
     }
 
     // Special handling for "Cast Successful" procs
@@ -1823,22 +1827,15 @@ void action_t::execute()
 
       // "On spell cast", only performed for foreground actions
       if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-      {
-        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
       // "On an execute result"
       if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-      {
-        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
       // "On interrupt cast result"
       if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-      {
-        if ( execute_state->target->debuffs.casting->check() )
-          action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
     }
   }
 
@@ -1912,13 +1909,15 @@ void action_t::tick( dot_t* d )
 
     if ( dynamic_tick_action )
     {
-      tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
-    }
+      auto flags_ = tick_action->update_flags;
 
-    // Apply the last tick factor from the DoT to the base damage multipliers for partial ticks
-    // 6/23/2018 -- Revert the previous logic of overwriting the da modifiers with ta modifiers
-    tick_state->da_multiplier *= d->get_tick_factor();
-    tick_state->ta_multiplier *= d->get_tick_factor();
+      // ticks actions that are also rolling periodics need to force update composite_rolling_ta_multiplier on every
+      // tick_action execute
+      if ( tick_action->rolling_periodic )
+        flags_ |= STATE_ROLLING_TA;
+
+      tick_action->update_state( tick_state, flags_, amount_type( tick_state, tick_action->direct_tick ) );
+    }
 
     tick_action->schedule_execute( tick_state );
 
@@ -2533,6 +2532,13 @@ void action_t::init()
   if ( quiet )
     stats->quiet = true;
 
+  if ( rolling_periodic )
+  {
+    // Rolling Periodic refresh behavior overrides other behaviors.
+    dot_behavior = dot_behavior_e::DOT_ROLLING;
+    snapshot_flags |= STATE_ROLLING_TA;
+  }
+
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
@@ -2589,6 +2595,9 @@ void action_t::init()
   // WOD: Yank out persistent multiplier from update flags, so they get
   // snapshot once at the application of the spell
   update_flags &= ~STATE_MUL_PERSISTENT;
+
+  // The Rolling Periodic multiplier is only updated when the DoT is applied or refreshed
+  update_flags &= ~STATE_ROLLING_TA;
 
   // Channeled dots get haste snapshoted
   if ( channeled )
@@ -3743,6 +3752,10 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     auto tail      = name_str.substr( splits[ 0 ].length() + 1 );
     if ( util::is_number( splits[ 1 ] ) )
     {
+      sim->error(
+          "target.#.* expressions are deprecated and may give unexpected results in simulations with dynamic targets.\n"
+          "Please rewrite to a 'target_if' expression." );
+
       expr_target = find_target_by_number( util::to_int( splits[ 1 ] ) );
 
       if ( !expr_target )
@@ -4006,6 +4019,9 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_MUL_SPELL_TA )
     state->ta_multiplier = composite_ta_multiplier( state );
 
+  if ( flags & STATE_ROLLING_TA )
+    state->rolling_ta_multiplier = composite_rolling_ta_multiplier( state );
+
   if ( flags & STATE_MUL_PLAYER_DAM )
     state->player_multiplier = composite_player_multiplier( state );
 
@@ -4110,15 +4126,6 @@ void action_t::impact( action_state_t* s )
   {
     sim->print_log( "Target {} avoids {} {} ({})", *s->target, *player, *this, s->result );
   }
-
-  // Handle Heirmir Marrowed Gemstone Soulbind
-  if ( this -> player -> type == PLAYER_PET && s -> result == RESULT_CRIT )
-  {
-    auto counter_buff = buff_t::find( debug_cast<pet_t*>( this -> player ) -> owner, "marrowed_gemstone_charging" );
-    auto buff = buff_t::find( debug_cast<pet_t*>( this -> player ) -> owner, "marrowed_gemstone_enhancement" );
-    if ( buff && counter_buff && buff -> cooldown -> up() )
-      counter_buff -> trigger();
-  }
 }
 
 void action_t::trigger_dot( action_state_t* s )
@@ -4217,6 +4224,10 @@ timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_
   {
     case dot_behavior_e::DOT_REFRESH_PANDEMIC:
       return std::max( dot->remains(), std::min( triggered_duration * 0.3, dot->remains() ) + triggered_duration );
+    case dot_behavior_e::DOT_ROLLING:
+      if ( dot->ticks_left_fractional() < 1.0 )
+        return triggered_duration;
+      return dot->time_to_next_full_tick() + triggered_duration;
     case dot_behavior_e::DOT_REFRESH_DURATION:
       return dot->time_to_next_full_tick() + triggered_duration;
     case dot_behavior_e::DOT_EXTEND:
@@ -4238,6 +4249,7 @@ bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration 
     case dot_behavior_e::DOT_REFRESH_DURATION:
       return dot->ticks_left() <= 1;
     case dot_behavior_e::DOT_EXTEND:
+    case dot_behavior_e::DOT_ROLLING:
       return true;
     case dot_behavior_e::DOT_NONE:
     case dot_behavior_e::DOT_CLIP:
@@ -4353,14 +4365,14 @@ void run_action_list_t::execute()
  * If the action is still ticking and all resources could be successfully consumed,
  * return true to indicate continued ticking.
  */
-bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
+bool action_t::consume_cost_per_tick( const dot_t& dot )
 {
   if ( !consume_per_tick_ )
   {
     return true;
   }
 
-  if ( player->get_active_dots( internal_id ) == 0 )
+  if ( player->get_active_dots( &dot ) == 0 )
   {
     sim->print_debug( "{} {} ticking cost ends because dot is no longer ticking.", *player, *this );
     return false;
@@ -4543,6 +4555,32 @@ double action_t::composite_da_multiplier( const action_state_t* ) const
 double action_t::composite_ta_multiplier( const action_state_t* ) const
 {
   return action_multiplier() * action_ta_multiplier();
+}
+
+double action_t::composite_rolling_ta_multiplier( const action_state_t* s ) const
+{
+  // The behavior of Rolling Periodic DoTs can be modeled by keeping track of a multiplier.
+  // A single instance of the DoT has a multiplier of 1.0 for all ticks. When the DoT is
+  // refreshed early, the damage from any remaining ticks is rolled into multiplier so that
+  // damage is not lost.
+  double m = 1.0;
+
+  dot_t* dot = find_dot( s->target );
+  if ( dot && dot->is_ticking() )
+  {
+    double ticks_left = dot->ticks_left_fractional();
+    timespan_t new_tick = tick_time( s );
+    timespan_t new_duration = composite_dot_duration( s );
+    double new_base_ticks = new_duration / new_tick;
+    // Calculate ticks_left_fractional for the DoT after it is refreshed.
+    double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, new_duration ) - dot->time_to_next_full_tick() ) / new_tick;
+    // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
+    m = ( ticks_left * s->rolling_ta_multiplier + new_base_ticks ) / new_ticks_left;
+    sim->print_debug( "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} new_ticks_left={}.",
+      *player, *this, s->rolling_ta_multiplier, m, ticks_left, new_base_ticks, new_ticks_left );
+  }
+
+  return m;
 }
 
 /// Persistent modifiers that are snapshot at the start of the spell cast
@@ -5006,6 +5044,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     return;
   }
 
+  double value_ = 0;
+
   if ( sim->debug )
   {
     const spell_data_t& spell = *effect.spell();
@@ -5019,23 +5059,23 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   }
 
   // Applies "Spell Effect N" auras if they directly affect damage auras
-  auto apply_effect_n_multiplier = [ this ]( const spelleffect_data_t& effect, unsigned n ) {
+  auto apply_effect_n_multiplier = [ &value_, this ]( const spelleffect_data_t& effect, unsigned n ) {
     if ( is_direct_damage_effect( data().effectN( n ) ) )
     {
       base_dd_multiplier *= 1 + effect.percent();
-      sim->print_debug( "{} base_dd_multiplier modified by {}% to {}",
-                        *this, effect.base_value(), base_dd_multiplier );
+      sim->print_debug( "{} base_dd_multiplier modified by {}% to {}", *this, effect.base_value(), base_dd_multiplier );
+      value_ = effect.percent();
     }
     else if ( is_periodic_damage_effect( data().effectN( n ) ) )
     {
       base_td_multiplier *= 1 + effect.percent();
-      sim->print_debug( "{} base_td_multiplier modified by {}% to {}",
-                        *this, effect.base_value(), base_td_multiplier );
+      sim->print_debug( "{} base_td_multiplier modified by {}% to {}", *this, effect.base_value(), base_td_multiplier );
+      value_ = effect.percent();
     }
   };
 
   // Applies "Flat Modifier" and "Flat Modifier w/ Label" auras
-  auto apply_flat_modifier = [ this ]( const spelleffect_data_t& effect ) {
+  auto apply_flat_modifier = [ &value_, this ]( const spelleffect_data_t& effect ) {
     switch ( effect.property_type() )
     {
       case P_DURATION:
@@ -5043,27 +5083,32 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           dot_duration += effect.time_value();
           sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
+          value_ = effect.base_value();
         }
         if ( ground_aoe_duration > timespan_t::zero() )
         {
           ground_aoe_duration += effect.time_value();
           sim->print_debug( "{} ground aoe duration modified by {}", *this, effect.time_value() );
+          value_ = effect.base_value();
         }
         break;
 
       case P_CAST_TIME:
         base_execute_time += effect.time_value();
         sim->print_debug( "{} cast time modified by {}", *this, effect.time_value() );
+        value_ = effect.base_value();
         break;
 
       case P_RANGE:
         range += effect.base_value();
         sim->print_debug( "{} range modified by {}", *this, effect.base_value() );
+        value_ = effect.base_value();
         break;
 
       case P_CRIT:
         base_crit += effect.percent();
         sim->print_debug( "{} base crit modified by {}", *this, effect.percent() );
+        value_ = effect.percent();
         break;
 
       case P_COOLDOWN:
@@ -5084,14 +5129,42 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
               cooldown->duration = timespan_t::zero();
             sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
           }
+          value_ = effect.base_value();
         }
         break;
 
       case P_RESOURCE_COST:
         base_costs[ resource_current ] += effect.resource( current_resource() );
-        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this, resource_current,
+        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource_current,
                           effect.resource( current_resource() ) );
+        value_ = effect.resource( current_resource() );
         break;
+
+      case P_RESOURCE_COST_1:
+      {
+        if ( data().powers().size() < 2 )
+          break;
+        // Resource Cost 1 is actually the second resource as it's Zero Indexed.
+        resource_e resource = data().powers()[ 1 ].resource();
+        base_costs[ resource ] += effect.resource( resource );
+        sim->print_debug( "{} base resource cost for resource {} (2) modified by {}", *this, resource,
+                          effect.resource( resource ) );
+        value_ = effect.resource( resource );
+        break;
+      }
+
+      case P_RESOURCE_COST_2:
+      {
+        if ( data().powers().size() < 3 )
+          break;
+        // Resource Cost 2 is actually the third resource as it's Zero Indexed.
+        resource_e resource = data().powers()[ 2 ].resource();
+        base_costs[ resource ] += effect.resource( resource );
+        sim->print_debug( "{} base resource cost for resource {} (3) modified by {}", *this, resource,
+                          effect.resource( resource ) );
+        value_ = effect.resource( resource );
+        break;
+      }
 
       case P_TARGET:
         assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
@@ -5110,17 +5183,19 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           aoe = as<int>( has_chain_target ) + as<int>( effect.base_value() );
           sim->print_debug( "{} max target count modified by {} to {}", *this, effect.base_value() - !has_chain_target, aoe );
         }
-        
+        value_ = effect.base_value();
         break;
 
       case P_TARGET_BONUS:
-        chain_bonus_damage += effect.percent();
-        sim->print_debug( "{} chain target bonus modified by {} to {}", *this, effect.percent(), chain_bonus_damage );
+        chain_multiplier += effect.percent();
+        sim->print_debug( "{} chain target multiplier modified by {} to {}", *this, effect.percent(), chain_multiplier );
+        value_ = effect.percent();
         break;
 
       case P_GCD:
         trigger_gcd += effect.time_value();
         sim->print_debug( "{} trigger_gcd modified by {} to {}", *this, effect.time_value(), trigger_gcd );
+        value_ = effect.base_value();
         break;
 
       case P_MAX_STACKS:
@@ -5128,6 +5203,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           dot_max_stack += as<int>( effect.base_value() );
           sim->print_debug( "{} dot_max_stack modified by {} to {}", *this, effect.base_value(), dot_max_stack );
+          value_ = effect.base_value();
         }
         break;
 
@@ -5137,12 +5213,13 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   };
 
   // Applies "Percent Modifier" and "Percent Modifier w/ Label" auras
-  auto apply_percent_modifier = [ this ]( const spelleffect_data_t& effect ) {
+  auto apply_percent_modifier = [ &value_, this ]( const spelleffect_data_t& effect ) {
     switch ( effect.property_type() )
     {
       case P_GENERIC:
         base_dd_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
         break;
 
       case P_DURATION:
@@ -5150,36 +5227,70 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           dot_duration *= 1.0 + effect.percent();
           sim->print_debug( "{} duration modified by {}%", *this, effect.base_value() );
+          value_ = effect.percent();
         }
         if ( ground_aoe_duration > timespan_t::zero() )
         {
           ground_aoe_duration *= 1.0 + effect.percent();
           sim->print_debug( "{} ground aoe duration modified by {}%", *this, effect.base_value() );
+          value_ = effect.percent();
         }
         break;
 
       case P_RADIUS:
         radius *= 1.0 + effect.percent();
         sim->print_debug( "{} radius modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
         break;
 
       case P_COOLDOWN:
-        base_recharge_multiplier *= 1.0 + effect.percent();
-        if ( base_recharge_multiplier <= 0 )
-          cooldown->duration = timespan_t::zero();
-        sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        if ( data().charge_cooldown() <= 0_ms )
+        {
+          base_recharge_multiplier *= 1.0 + effect.percent();
+          if ( base_recharge_multiplier <= 0 )
+            cooldown->duration = timespan_t::zero();
+          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+          value_ = effect.percent();
+        }
         break;
 
       case P_RESOURCE_COST:
         base_costs[ resource_current ] *= 1.0 + effect.percent();
-        sim->print_debug( "{} base resource cost for resource {} modified by {}%", *this,
-                          resource_current, effect.base_value() );
+        sim->print_debug( "{} base resource cost for resource {} (1) modified by {}%", *this, resource_current,
+                          effect.base_value() );
+        value_ = effect.percent();
         break;
 
+      case P_RESOURCE_COST_1:
+      {
+        if ( data().powers().size() < 2 )
+          break;
+        // Zero Indexed, this is the second cost.
+        resource_e resource = data().powers()[ 1 ].resource();
+        base_costs[ resource ] *= 1.0 + effect.percent();
+        sim->print_debug( "{} base resource cost for resource {} (2) modified by {}%", *this, resource,
+                          effect.base_value() );
+        value_ = effect.percent();
+        break;
+      }
+
+      case P_RESOURCE_COST_2:
+      {
+        if ( data().powers().size() < 3 )
+          break;
+        // Zero Indexed, this is the third cost.
+        resource_e resource = data().powers()[ 2 ].resource();
+        base_costs[ resource ] *= 1.0 + effect.percent();
+        sim->print_debug( "{} base resource cost for resource {} (3) modified by {}%", *this, resource,
+                          effect.base_value() );
+        value_ = effect.percent();
+        break;
+      }
+
       case P_TARGET_BONUS:
-        // Chain Bonus Damage is base 0.0 and applied as 1.0 + chain_bonus_damage in action_t::calculate_direct_amount
-        chain_bonus_damage = ( ( 1.0 + chain_bonus_damage ) * ( 1.0 + effect.percent() ) ) - 1.0;
-        sim->print_debug( "{} chain target bonus modified by {}% to {}", *this, effect.base_value(), chain_bonus_damage );
+        chain_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} chain target multiplier modified by {}% to {}", *this, effect.base_value(), chain_multiplier );
+        value_ = effect.percent();
         break;
 
       case P_TICK_TIME:
@@ -5188,16 +5299,19 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           base_tick_time *= 1.0 + effect.percent();
           sim->print_debug( "{} base tick time modified by {}%", *this, effect.base_value() );
         }
+        value_ = effect.percent();
         break;
 
       case P_TICK_DAMAGE:
         base_td_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} base_td_multiplier modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
         break;
 
       case P_CRIT_DAMAGE:
         crit_bonus_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
         break;
 
       case P_GCD:
@@ -5205,6 +5319,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         if ( trigger_gcd < timespan_t::zero() )
           trigger_gcd = timespan_t::zero();
         sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
+        value_ = effect.percent();
         break;
 
       default:
@@ -5220,15 +5335,18 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_HASTED_GCD:
         gcd_type = gcd_haste_type::ATTACK_HASTE;
         sim->print_debug( "{} gcd type set to attack_haste", *this );
+        value_ = 1;
         break;
 
       case A_HASTED_COOLDOWN:
         cooldown->hasted = true;
         sim->print_debug( "{} cooldown set to hasted", *this );
+        value_ = 1;
         break;
 
       case A_MODIFY_SCHOOL:
         set_school( effect.school_type() );
+        value_ = effect.misc_value1();
         break;
 
       case A_ADD_FLAT_MODIFIER:
@@ -5290,8 +5408,10 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             cooldown->duration += effect.time_value();
             if ( cooldown->duration < timespan_t::zero() )
               cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
+            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(),
+                              cooldown->duration );
           }
+          value_ = effect.base_value();
         }
         break;
 
@@ -5300,12 +5420,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           cooldown->charges += as<int>( effect.base_value() );
           sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
+          value_ = effect.base_value();
         }
         break;
 
       case A_HASTED_CATEGORY:
         cooldown->hasted = true;
         sim->print_debug( "{} cooldown set to hasted", *this );
+        value_ = 1;
         break;
 
       case A_MOD_RECHARGE_TIME:
@@ -5313,7 +5435,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           if ( data().charge_cooldown() <= 0_ms )
           {
-            sim->print_debug( "{} cooldown recharge time modifier ({}) ignored due to not being a charge cooldown", *this, effect.time_value() );
+            sim->print_debug( "{} cooldown recharge time modifier ({}) ignored due to not being a charge cooldown",
+                              *this, effect.time_value() );
           }
           else
           {
@@ -5322,6 +5445,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
               cooldown->duration = timespan_t::zero();
             sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
           }
+          value_ = effect.base_value();
         }
         break;
 
@@ -5330,6 +5454,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           base_recharge_multiplier *= 1 + effect.percent();
           sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+          value_ = effect.percent();
         }
         break;
 
@@ -5337,6 +5462,9 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
     }
   }
+
+  if ( value_ )
+    affecting_list.emplace_back( &effect, value_ );
 }
 
 void action_t::apply_affecting_conduit( const conduit_data_t& conduit, int effect_num )

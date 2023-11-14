@@ -332,7 +332,7 @@ static constexpr auto _resource_strings = util::make_static_map<int, util::strin
   {  5, "Rune",          },
   {  6, "Runic Power",   },
   {  7, "Soul Shard",    },
-  {  8, "Eclipse",       },
+  {  8, "Astral Power",  },
   {  9, "Holy Power",    },
   { 11, "Maelstrom",     },
   { 12, "Chi",           },
@@ -811,6 +811,7 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 10, "Spell Cast Time"           },
   { 11, "Spell Cooldown"            },
   { 12, "Spell Effect 2"            },
+  { 13, "Spell Target Resistance"   },
   { 14, "Spell Resource Cost"       },
   { 15, "Spell Critical Damage"     },
   { 16, "Spell Penetration"         },
@@ -822,14 +823,21 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 22, "Spell Periodic Amount"     },
   { 23, "Spell Effect 3"            },
   { 24, "Spell Power"               },
+  { 25, "Spell Trigger Damage"      },
   { 26, "Spell Proc Frequency"      },
-  { 27, "Spell Damage Taken"        },
+  { 27, "Spell Amplitude"           },
   { 28, "Spell Dispel Chance"       },
+  { 29, "Spell Crowd Damage"        },
+  { 30, "Spell Cost On Miss"        },
+  { 31, "Spell Doses"               },
   { 32, "Spell Effect 4"            },
   { 33, "Spell Effect 5"            },
-  { 34, "Spell Resource Generation" },
-    { 35, "Spell Chain Target Range" },
-    { 37, "Spell Max Stacks" },
+  { 34, "Spell Resource Cost 2"     },
+  { 35, "Spell Chain Target Range"  },
+  { 36, "Spell Area Max Summons"    },
+  { 37, "Spell Max Stacks"          },
+  { 38, "Spell Proc Cooldown"       },
+  { 39, "Spell Resource Cost 3"     },
 } );
 
 static constexpr auto _effect_type_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -1020,6 +1028,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 118, "Modify Healing Received%"                     },
   { 123, "Modify Target Resistance"                     },
   { 124, "Modify Ranged Attack Power"                   },
+  { 126, "Modify Melee Damage Taken%"                   },
   { 129, "Increase Movement Speed% (Stacking)"          },
   { 130, "Increase Mount Speed% (Stacking)"             },
   { 131, "Modify Ranged Attack Power vs Race"           },
@@ -1033,6 +1042,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 142, "Modify Base Resistance"                       },
   { 143, "Modify Cooldown Recharge Rate% (Label)"       },
   { 144, "Reduce Fall Damage"                           },
+  { 147, "Mechanic Immunity"                            },
   { 148, "Modify Cooldown Recharge Rate% (Category)"    },
   { 149, "Modify Casting Pushback"                      },
   { 150, "Modify Block Effectiveness"                   },
@@ -1142,6 +1152,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 507, "Modify Damage Taken% from Spells (Label)"     },
   { 531, "Modify Guardian Damage Done%"                 },
   { 537, "Modify Damage Taken% from Caster's Spells (Label)" },
+  { 540, "Modify Stat With Support Triggers"            },
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -1495,6 +1506,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     if ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
     {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value2() );
+    }
+    else if ( e->subtype() == A_SCHOOL_ABSORB )
+    {
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value2() );
     }
     else
     {
@@ -2170,6 +2185,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     std::vector<rppm_modifier_t> modifiers( mod_span.begin(), mod_span.end() );
     range::sort( modifiers, []( rppm_modifier_t a, rppm_modifier_t b ) {
+      if ( a.modifier_type == RPPM_MODIFIER_SPEC && b.modifier_type == RPPM_MODIFIER_SPEC )
+        return a.type < b.type;
+
       return a.modifier_type < b.modifier_type;
     } );
 
@@ -2886,4 +2904,28 @@ void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_
     node->add_parm( "spec", util::specialization_string( static_cast<specialization_e>( set_bonus->spec ) ) );
   }
   node->add_parm( "spell_id", set_bonus->spell_id );
+}
+
+std::string_view spell_info::effect_type_str( const spelleffect_data_t* effect )
+{
+  auto it = _effect_type_strings.find( effect->type() );
+  if ( it != _effect_type_strings.end() )
+    return it->second;
+  return {};
+}
+
+std::string_view spell_info::effect_subtype_str( const spelleffect_data_t* effect )
+{
+  auto it = _effect_subtype_strings.find( effect->subtype() );
+  if ( it != _effect_subtype_strings.end() )
+    return it->second;
+  return {};
+}
+
+std::string_view spell_info::effect_property_str( const spelleffect_data_t* effect )
+{
+  auto it = _property_type_strings.find( effect->property_type() );
+  if ( it != _property_type_strings.end() )
+    return it->second;
+  return {};
 }

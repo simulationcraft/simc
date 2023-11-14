@@ -146,6 +146,8 @@ struct sim_t : private sc_thread_t
   bool        requires_regen_event;
   bool        single_actor_batch;
   bool        allow_experimental_specializations;
+  bool        enable_all_talents;
+  bool        enable_all_sets;
   int         progressbar_type;
   int         armory_retries;
 
@@ -228,7 +230,7 @@ struct sim_t : private sc_thread_t
 
   struct auras_t
   {
-    buff_t* nil; // generic global fallback buff
+    buff_t* fallback; // generic global fallback buff
     buff_t* arcane_intellect;
     buff_t* battle_shout;
     buff_t* mark_of_the_wild;
@@ -488,7 +490,7 @@ struct sim_t : private sc_thread_t
     // The Blessing the player will receive if they have Primal Ritual Shell trinket equiped (wind,stone,flame,sea)
     std::string primal_ritual_shell_blessing = "wind";
     // Number of nearby allies for the effect of Allied Wristguards of Companionship
-    unsigned int allied_wristguards_allies = 4;
+    unsigned int allied_wristguards_allies = 3;
     // Chance for nearby enemies to move out of range for Allied Wristguards of Companionship
     double allied_wristguards_ally_leave_chance = 0.05;
     // Corrupting Rages Average Uptime
@@ -504,13 +506,35 @@ struct sim_t : private sc_thread_t
     // A list of context-aware procs for Ruby Whelp Shell
     std::string ruby_whelp_shell_context = "";
     // Uptime of the mastery buff(Zone of Focus) of Blue Silken Lining (>90% HP)
-    double blue_silken_lining_uptime = 0.7;
+    double blue_silken_lining_uptime = 0.4;
     // Interval between checking blue_silken_lining_uptime
-    timespan_t blue_silken_lining_update_interval = 5_s;
+    timespan_t blue_silken_lining_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t blue_silken_lining_update_interval_stddev = 2.5_s;
     // Enable or Disable Seething Black Dragonscale's damage
     bool screaming_black_dragonscale_damage = false;
     // Period in which to try to trigger adapative Stonescales. Based on spell data, does not trigger on periodic damage.
-    timespan_t adaptive_stonescales_period = 30_s;
+    timespan_t adaptive_stonescales_period = 3_s;
+    // Uptime of the vers buff of Undulating Sporecloak (>70% HP)
+    double undulating_sporecloak_uptime = 0.9;
+    // Interval between checking undulating_sporecloak_uptime
+    timespan_t undulating_sporecloak_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t undulating_sporecloak_update_interval_stddev = 2.5_s;
+    // Uptime of the mastery buff (Dreaming Trance) of Dreamtender's Charm (>70% HP), does not include lockout time
+    double dreamtenders_charm_uptime = 0.9;
+    // Interval between checking dreamtenders_charm_uptime
+    timespan_t dreamtenders_charm_update_interval = 10_s;
+    // Standard Deviation of interval
+    timespan_t dreamtenders_charm_update_interval_stddev = 2.5_s;
+    // Amount of allies using Verdant Embrace to increase the amount and reduce RPPM
+    unsigned int verdant_embrace_allies = 0;
+    // Sets the chance for Ashes of the Embersoul's "Dire" condition to proc on the interval
+    double embersoul_dire_chance = 0.0;
+    // Sets the interval for ashes of the embersouls "dire" condition to attempt to proc
+    timespan_t embersoul_dire_interval = 5_s;
+    // Sets the base interval for Gift of Ursine Vengeance to attempt to proc
+    timespan_t gift_of_ursine_vengeance_period = 750_ms;
   } dragonflight_opts;
 
   // Auras and De-Buffs
@@ -535,8 +559,8 @@ struct sim_t : private sc_thread_t
   std::vector<size_t> work_per_thread;
   size_t work_done;
   double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
-  simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
-  extended_sample_data_t simulation_length;
+  simple_sample_data_t total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
+  extended_sample_data_t raid_dps, simulation_length;
   chrono::wall_clock::duration merge_time, init_time, analyze_time;
   // Deterministic simulation iteration data collectors for specific iteration
   // replayability
@@ -565,6 +589,7 @@ struct sim_t : private sc_thread_t
   std::string output_file_str, html_file_str, json_file_str;
   std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;
+  int display_build;
   int report_precision;
   int report_pets_separately;
   int report_targets;
@@ -643,6 +668,9 @@ struct sim_t : private sc_thread_t
 
   // Profilesets
   opts::map_list_t profileset_map;
+  unsigned profileset_main_actor_index;
+  unsigned profileset_report_player_index;
+  std::string profileset_multiactor_base_name;
   std::vector<scale_metric_e> profileset_metric;
   std::vector<std::string> profileset_output_data;
   bool profileset_enabled;
@@ -730,6 +758,10 @@ struct sim_t : private sc_thread_t
 
   // Activates the necessary actor/actors before iteration begins.
   void activate_actors();
+
+  void heartbeat_event_callback();
+  std::vector<std::function<void(sim_t*)>> heartbeat_event_callback_function;
+  void register_heartbeat_event_callback( std::function<void( sim_t*)> fn );
 
   timespan_t current_time() const
   { return event_mgr.current_time; }

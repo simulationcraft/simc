@@ -10,7 +10,7 @@ talents=BcEAAAAAAAAAAAAAAAAAAAAAAAQplIRkQkkSrkEAAAAQQkIKEQREQiQSoJRIAhECAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:howling_rune_3
@@ -25,37 +25,51 @@ temporary_enchant=main_hand:howling_rune_3
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/battle_stance,toggle=on
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
+# Evaluates a trinkets cooldown, divided by avatar. If it's value has no remainder return 1, else return 0.5.
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%cooldown.avatar.duration=0)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%cooldown.avatar.duration=0)
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit&!variable.trinket_1_exclude)
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit&!variable.trinket_2_exclude)
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
 actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/battle_stance,toggle=on
 
 # Executed every time the actor is available.
 actions=charge,if=time<=0.5|movement.distance>5
 actions+=/auto_attack
 actions+=/potion,if=gcd.remains=0&debuff.colossus_smash.remains>8|target.time_to_die<25
 actions+=/pummel,if=target.debuff.casting.react
-actions+=/use_item,name=manic_grieftorch,if=!buff.avatar.up&!debuff.colossus_smash.up
-actions+=/blood_fury,if=debuff.colossus_smash.up
-actions+=/berserking,if=debuff.colossus_smash.remains>6
+actions+=/call_action_list,name=trinkets
+actions+=/arcane_torrent,if=cooldown.mortal_strike.remains>1.5&rage<50
 actions+=/lights_judgment,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
+actions+=/bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
+actions+=/berserking,if=target.time_to_die>180&buff.avatar.up|target.time_to_die<180&(target.health.pct<35&talent.massacre|target.health.pct<20)&buff.avatar.up|target.time_to_die<20
+actions+=/blood_fury,if=debuff.colossus_smash.up
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
-actions+=/run_action_list,name=hac,if=raid_event.adds.exists|active_enemies>2
+actions+=/run_action_list,name=hac,if=raid_event.adds.up&active_enemies>2|!raid_event.adds.up&active_enemies>2
 actions+=/call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
 actions+=/run_action_list,name=single_target,if=!raid_event.adds.exists
 
 actions.execute=sweeping_strikes,if=spell_targets.whirlwind>1
-actions.execute+=/rend,if=remains<=gcd&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12
+actions.execute+=/rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12
 actions.execute+=/avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20
 actions.execute+=/warbreaker
 actions.execute+=/colossus_smash
-actions.execute+=/thunderous_roar,if=buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up
+actions.execute+=/execute,if=buff.sudden_death.react&dot.deep_wounds.remains
+actions.execute+=/skullsplitter,if=(talent.test_of_might&rage.pct<=30)|(!talent.test_of_might&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>5)&rage.pct<=30)
+actions.execute+=/thunderous_roar,if=(talent.test_of_might&rage<40)|(!talent.test_of_might&(buff.avatar.up|debuff.colossus_smash.up)&rage<70)
 actions.execute+=/spear_of_bastion,if=debuff.colossus_smash.up|buff.test_of_might.up
-actions.execute+=/skullsplitter,if=rage<40
 actions.execute+=/cleave,if=spell_targets.whirlwind>2&dot.deep_wounds.remains<gcd
+actions.execute+=/mortal_strike,if=debuff.executioners_precision.stack=2&debuff.colossus_smash.remains<=gcd
 actions.execute+=/overpower,if=rage<40&buff.martial_prowess.stack<2
-actions.execute+=/mortal_strike,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd
+actions.execute+=/mortal_strike,if=debuff.executioners_precision.stack=2
 actions.execute+=/execute
 actions.execute+=/shockwave,if=talent.sonic_boom
 actions.execute+=/overpower
@@ -97,31 +111,42 @@ actions.hac+=/bladestorm,if=raid_event.adds.in>30
 actions.hac+=/wrecking_throw
 
 actions.single_target=sweeping_strikes,if=spell_targets.whirlwind>1
+actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/mortal_strike
-actions.single_target+=/rend,if=remains<=gcd|talent.tide_of_blood&cooldown.skullsplitter.remains<=gcd&(cooldown.colossus_smash.remains<=gcd|debuff.colossus_smash.up)&dot.rend.remains<dot.rend.duration*0.85
-actions.single_target+=/avatar,if=talent.warlords_torment&rage.pct<33&(cooldown.colossus_smash.ready|debuff.colossus_smash.up|buff.test_of_might.up)|!talent.warlords_torment&(cooldown.colossus_smash.ready|debuff.colossus_smash.up)
+actions.single_target+=/thunder_clap,if=!dot.rend.remains
+actions.single_target+=/avatar,if=talent.warlords_torment&(cooldown.colossus_smash.ready|debuff.colossus_smash.up|buff.test_of_might.up)|!talent.warlords_torment&(cooldown.colossus_smash.ready|debuff.colossus_smash.up)
 actions.single_target+=/spear_of_bastion,if=cooldown.colossus_smash.remains<=gcd|cooldown.warbreaker.remains<=gcd
 actions.single_target+=/warbreaker
 actions.single_target+=/colossus_smash
-actions.single_target+=/thunderous_roar,if=buff.test_of_might.up|talent.test_of_might&debuff.colossus_smash.up&rage.pct<33|!talent.test_of_might&debuff.colossus_smash.up
+actions.single_target+=/skullsplitter,if=!talent.test_of_might&dot.deep_wounds.remains&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)
+actions.single_target+=/skullsplitter,if=talent.test_of_might&dot.deep_wounds.remains
+actions.single_target+=/thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|debuff.colossus_smash.up|cooldown.colossus_smash.remains<3|buff.avatar.up
+actions.single_target+=/whirlwind,if=talent.storm_of_swords&talent.test_of_might&rage.pct>80&debuff.colossus_smash.up
+actions.single_target+=/thunder_clap,if=dot.rend.remains<=gcd&!talent.tide_of_blood
 actions.single_target+=/bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)
-actions.single_target+=/skullsplitter,if=talent.tide_of_blood&dot.rend.remains&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>gcd*4&buff.test_of_might.up|!talent.test_of_might&cooldown.colossus_smash.remains>gcd*4)|rage<30
-actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/shockwave,if=talent.sonic_boom.enabled
-actions.single_target+=/ignore_pain,if=talent.anger_management|talent.test_of_might&debuff.colossus_smash.up
-actions.single_target+=/whirlwind,if=talent.storm_of_swords&talent.battlelord&rage.pct>80&debuff.colossus_smash.up
+actions.single_target+=/whirlwind,if=talent.storm_of_swords&talent.test_of_might&cooldown.colossus_smash.remains>gcd*7
 actions.single_target+=/overpower,if=charges=2&!talent.battlelord&(debuff.colossus_smash.down|rage.pct<25)|talent.battlelord
-actions.single_target+=/whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1
+actions.single_target+=/slam,if=(talent.crushing_force&debuff.colossus_smash.up&rage>=60&talent.test_of_might|talent.improved_slam)&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)
+actions.single_target+=/whirlwind,if=talent.fervor_of_battle&active_enemies>1
+actions.single_target+=/slam,if=(talent.crushing_force|!talent.crushing_force&rage>=30)&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)
 actions.single_target+=/thunder_clap,if=talent.battlelord&talent.blood_and_thunder
 actions.single_target+=/overpower,if=debuff.colossus_smash.down&rage.pct<50&!talent.battlelord|rage.pct<25
-actions.single_target+=/whirlwind,if=buff.merciless_bonegrinder.up
+actions.single_target+=/whirlwind,if=!talent.storm_of_swords
 actions.single_target+=/cleave,if=set_bonus.tier29_2pc&!talent.crushing_force
-actions.single_target+=/slam,if=rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)
 actions.single_target+=/bladestorm
-actions.single_target+=/arcane_torrent
 actions.single_target+=/cleave
 actions.single_target+=/wrecking_throw
-actions.single_target+=/rend,if=remains<duration*0.3
+actions.single_target+=/rend,if=!talent.crushing_force&remains<duration*0.3
+
+actions.trinkets=use_item,use_off_gcd=1,name=algethar_puzzle_box,if=cooldown.avatar.remains<=3
+# Trinkets The trinket with the highest estimated value, will be used first and paired with Avatar.
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!buff.avatar.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&buff.avatar.up&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(!buff.avatar.up&trinket.2.cast_time>0|!trinket.2.cast_time>0)&buff.avatar.up&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
+# If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
 head=casque_of_the_walking_mountain,id=200426,bonus_id=4800/4786/1498/7935,ilevel=424,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=8782/8960,ilevel=418,gem_id=192919/192919/192919,crafted_stats=32/36

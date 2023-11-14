@@ -30,6 +30,7 @@ struct enemy_t : public player_t
   size_t enemy_id;
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
+  std::vector<std::pair<double, double>> custom_health_timeline;
   double health_recalculation_dampening_exponent;
   timespan_t waiting_time;
 
@@ -46,6 +47,7 @@ struct enemy_t : public player_t
       initial_health( 0 ),
       fixed_health_percentage( 0 ),
       initial_health_percentage( 100.0 ),
+      custom_health_timeline(),
       health_recalculation_dampening_exponent( 1.0 ),
       waiting_time( timespan_t::from_seconds( 1.0 ) ),
       current_target( 0 ),
@@ -120,6 +122,7 @@ struct enemy_t : public player_t
   void reset_auto_attacks( timespan_t delay, proc_t* proc = nullptr ) override;
   void delay_auto_attacks( timespan_t delay, proc_t* proc = nullptr ) override;
 
+  bool validate_custom_timeline();
   std::string generate_tank_action_list( tank_dummy_e );
   void add_tank_heal_raid_event( tank_dummy_e );
 };
@@ -1301,9 +1304,64 @@ void enemy_t::init_base_stats()
     initial_health_percentage = 100.0;
   }
 
+  if ( !validate_custom_timeline() )
+    custom_health_timeline.clear();
+
   // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
   base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : armor_coefficient( level(), tank_dummy_e::MYTHIC );
   sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
+}
+
+bool enemy_t::validate_custom_timeline()
+{
+  if ( custom_health_timeline.empty() )
+    return false;
+
+  if ( !sim->fixed_time )
+  {
+    sim->error( "Disabling custom health timeline: must be used with fixed_time=1." );
+    return false;
+  }
+
+  if ( death_pct != 0.0 || fixed_health_percentage != 0.0 || initial_health_percentage != 100.0 )
+  {
+    sim->error( "Disabling custom health timeline: cannot be used with other health percentage options." );
+    return false;
+  }
+
+  range::sort( custom_health_timeline, [] ( const auto& l, const auto& r ) { return l.second < r.second; } );
+
+  if ( custom_health_timeline.front().second < 0.0 || custom_health_timeline.back().second > 1.0 )
+  {
+    sim->error( "Disabling custom health timeline: time values must be between 0.0 and 1.0." );
+    return false;
+  }
+
+  for ( const auto& p : custom_health_timeline )
+  {
+    if ( p.first < 0.0 || p.first > 100.0 )
+    {
+      sim->error( "Disabling custom health timeline: health values must be between 0.0 and 100.0." );
+      return false;
+    }
+  }
+
+  for ( std::size_t i = 0; i < custom_health_timeline.size() - 1; i++ )
+  {
+    if ( custom_health_timeline[ i ].second == custom_health_timeline[ i + 1 ].second )
+    {
+      sim->error( "Disabling custom health timeline: must contain unique time values." );
+      return false;
+    }
+  }
+
+  if ( custom_health_timeline.back().second != 1.0 )
+    custom_health_timeline.emplace_back( 0.0, 1.0 );
+
+  if ( custom_health_timeline.front().second != 0.0 )
+    custom_health_timeline.emplace( custom_health_timeline.begin(), 100.0, 0.0 );
+
+  return true;
 }
 
 void enemy_t::init_defense()
@@ -1407,19 +1465,23 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  std::array<int, numTankDummies> aa_damage               = { 0, 102100, 133380, 174241, 240324, 401733 };  // Base auto attack damage
-  std::array<int, numTankDummies> dummy_strike_damage     = { 0, 204200, 266759, 348483, 480649, 642444 };  // Base melee nuke damage (currently set to Raszageth's Electrified Jaws)
-  std::array<int, numTankDummies> background_spell_damage = { 0, 4084, 5335, 6970, 9613, 16069 };  // Base background dot damage (currently set to 0.04x auto damage)
+  // Calculated by computing (M / <difficulty>) pre-mitigation (U) melee swings for all difficulties from Kazzara - Aberrus.
+  // A Normal Dungeon estimate was then added below LFR. Prior to this update, it was approximately 3.9, but the rest of the
+  // values were a bit lower, so this one was also lowered.
+  std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 3.6, 2.8, 2.1, 1.5, 1};
+  int aa_damage_base                                         = 830000;
+  int dummy_strike_base                                      = aa_damage_base * 1.5;
+  int background_spell_base                                  = aa_damage_base * 0.04;
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
-  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) +
-         ",attack_speed=1.5,aoe_tanks=1";
-  als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) +
+  als += "/auto_attack,damage=" + util::to_string( floor( aa_damage_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
+         ",range=" + util::to_string( aa_damage_base / tank_dummy_index_scalar[ tank_dummy_index ] * 0.02 ) +
+         ",attack_speed=2,aoe_tanks=1";
+  als += "/melee_nuke,damage=" + util::to_string( floor( dummy_strike_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
+         ",range=" + util::to_string( floor( dummy_strike_base / tank_dummy_index_scalar[ tank_dummy_index ] * 0.02 ) ) +
          ",attack_speed=2,cooldown=30,aoe_tanks=1";
-  als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) +
+  als += "/spell_dot,damage=" + util::to_string( floor( background_spell_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
+         ",range=" + util::to_string( floor( background_spell_base / tank_dummy_index_scalar[ tank_dummy_index ] * 0.02 ) ) +
          ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=30,bleed=1";
   // pause periodically to mimic a tank swap
   als += "/pause_action,duration=30,cooldown=30,if=time>=30";
@@ -1607,6 +1669,27 @@ void enemy_t::create_options()
   add_option( opt_string( "enemy_tank", target_str ) );
   add_option( opt_int( "apply_debuff", apply_damage_taken_debuff ) );
 
+  add_option( opt_func( "enemy_custom_health_timeline", [ this ] ( sim_t*, std::string_view, std::string_view val )
+  {
+    custom_health_timeline.clear();
+
+    auto splits = util::string_split<std::string_view>( val, "/," );
+    range::transform(
+      splits,
+      std::back_inserter( custom_health_timeline ),
+      [] ( std::string_view s ) -> std::pair<double, double>
+      {
+        auto pair = util::string_split<std::string_view>( s, ":" );
+        if ( pair.size() == 2 )
+          return { util::to_double( pair[ 0 ] ), util::to_double( pair[ 1 ] ) };
+        else
+          throw std::invalid_argument( fmt::format( "Invalid custom health timeline pair: {}", s ) );
+      }
+    );
+
+    return true;
+  } ) );
+
   // the next part handles actor-specific options for enemies
   player_t::create_options();
 
@@ -1638,6 +1721,31 @@ void enemy_t::create_pets()
 
 double enemy_t::health_percentage() const
 {
+  if ( !custom_health_timeline.empty() )
+  {
+    double time = sim->current_time() / sim->expected_iteration_time;
+    if ( time <= 0.0 )
+      return custom_health_timeline.front().first;
+    if ( time >= 1.0 )
+      return custom_health_timeline.back().first;
+
+    for ( std::size_t i = 0; i < custom_health_timeline.size() - 1; i++ )
+    {
+      const auto& left  = custom_health_timeline[ i ];
+      const auto& right = custom_health_timeline[ i + 1 ];
+
+      if ( left.second <= time && time <= right.second )
+      {
+        double interval_pct = ( time - left.second ) / ( right.second - left.second );
+        return left.first + interval_pct * ( right.first - left.first );
+      }
+    }
+
+    // We should always find an interval to use, so we shouldn't ever get here.
+    assert( false );
+    return 100.0;
+  }
+
   if ( fixed_health_percentage > 0 && sim->current_time() < sim->expected_iteration_time )
   {
     return fixed_health_percentage;
@@ -1661,7 +1769,33 @@ timespan_t enemy_t::time_to_percent( double percent ) const
 {
   // First check current health, considering fixed_health_percentage and initial_health_percentage
   if ( health_percentage() <= percent )
-    return timespan_t::zero();
+    return 0_ms;
+
+  if ( !custom_health_timeline.empty() )
+  {
+    double time = sim->current_time() / sim->expected_iteration_time;
+    for ( std::size_t i = 0; i < custom_health_timeline.size() - 1; i++ )
+    {
+      const auto& left  = custom_health_timeline[ i ];
+      const auto& right = custom_health_timeline[ i + 1 ];
+
+      if ( right.second < time )
+        continue;
+
+      if ( percent < std::min( left.first, right.first ) || percent > std::max( left.first, right.first ) )
+        continue;
+
+      double intersect = left.first == right.first ? 0.0 : ( percent - left.first ) / ( right.first - left.first );
+      double intersect_time = left.second + intersect * ( right.second - left.second );
+      if ( left.first != right.first && intersect_time < time )
+        continue;
+
+      return std::max( 0_ms, intersect_time * sim->expected_iteration_time - sim->current_time() );
+    }
+
+    // No intersection found, health percentage will never occur
+    return 2 * sim->expected_iteration_time;
+  }
 
   // time_to_pct_0, or time_to_die, can ignore fixed_health_percentage or initial_health_percentage
   if ( percent != 0 )
@@ -1686,7 +1820,7 @@ timespan_t enemy_t::time_to_percent( double percent ) const
 
 void enemy_t::recalculate_health()
 {
-  if ( sim->expected_iteration_time <= timespan_t::zero() || fixed_health > 0 )
+  if ( sim->expected_iteration_time <= timespan_t::zero() || fixed_health > 0 || fixed_health_percentage > 0 )
     return;
 
   if ( initial_health == 0 )  // first iteration
@@ -1953,22 +2087,27 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
     Aberrus, the Shadowed Crucible Normal: 16,284.14333792718 (ExpectedStatModID: 215; ArmorConstMod: 1.38399994373)
     Aberrus, the Shadowed Crucible Heroic: 17,625.4683029745 (ExpectedStatModID: 227; ArmorConstMod: 1.49800002575)
     Aberrus, the Shadowed Crucible Mythic: 19,155.04824685068 (ExpectedStatModID: 228; ArmorConstMod: 1.62800002098)
+    Level 70 Season 3 M0/M+: 18,672.64201458984 (ExpectedStatModID: 249; ArmorConstMod: 1.5870000124)
+    Amirdrassil, the Dream's Hope LFR: 19,155.04824685068 (ExpectedStatModID: 228; ArmorConstMod: 1.62800002098)
+    Amirdrassil, the Dream's Hope Normal: 20,872.88457229824 (ExpectedStatModID: 229; ArmorConstMod: 1.77400004864)
+    Amirdrassil, the Dream's Hope Heroic: 22,814.27412342534 (ExpectedStatModID: 230; ArmorConstMod: 1.93900001049)
+    Amirdrassil, the Dream's Hope Mythic: 25,014.51514720032 (ExpectedStatModID: 231; ArmorConstMod: 2.12599992752)
   */
   double k = dbc->armor_mitigation_constant( level );
 
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * 1.25300002098;  // M0/M+
+      return k * dbc->get_armor_constant_mod( difficulty_e::DUNGEON );  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k * 1.28199994564;  // Normal Raid
+      return k * dbc->get_armor_constant_mod( difficulty_e::NORMAL );  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k * 1.49800002575;  // Heroic Raid
+      return k * dbc->get_armor_constant_mod( difficulty_e::HEROIC );  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k * 1.62800002098;  // Mythic Raid
+      return k * dbc->get_armor_constant_mod( difficulty_e::MYTHIC );  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE

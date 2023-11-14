@@ -25,6 +25,9 @@ struct proc_event_t : public event_t
   dbc_proc_callback_t* cb;
   action_t* source_action;
   action_state_t* source_state;
+#ifndef NDEBUG
+  std::string debug_str;
+#endif
 
   proc_event_t( dbc_proc_callback_t* c, action_t* a, action_state_t* s )
     : event_t( *a->sim ),
@@ -34,6 +37,21 @@ struct proc_event_t : public event_t
       source_state( s->action->get_state( s ) )
   {
     schedule( timespan_t::zero() );
+#ifndef NDEBUG
+    if ( !cb )
+      debug_str = name();
+    else if ( !cb->effect.name_str.empty() )
+      debug_str = cb->effect.name_str;
+    else
+    {
+      if ( cb->effect.generated_name_str.empty() )
+        cb->effect.name();
+
+      debug_str = cb->effect.generated_name_str;
+    }
+
+    debug_str += '-' + source_action->name_str;
+#endif
   }
 
   ~proc_event_t() override
@@ -45,7 +63,12 @@ struct proc_event_t : public event_t
   {
     return "dbc_proc_event";
   }
-
+#ifndef NDEBUG
+  const char* debug() const override
+  {
+    return debug_str.c_str();
+  }
+#endif
   void execute() override
   {
     cb->execute( source_action, source_state );
@@ -111,7 +134,11 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     if ( !can_proc_from_procs )
     {
       if ( !a->not_a_proc && ( a->background || a->proc ) )
-        return;
+      {
+        // only direct damage obeys proc-related attributes
+        if ( state->proc_type() != PROC1_PERIODIC && state->proc_type() != PROC1_HELPFUL_PERIODIC )
+          return;
+      }
     }
 
     // Additional trigger condition to check before performing proc chance process.
@@ -276,7 +303,7 @@ void dbc_proc_callback_t::initialize()
   }
 
   can_only_proc_from_class_abilites = effect.can_only_proc_from_class_abilites();
-  can_proc_from_procs = allow_procs = effect.can_proc_from_procs();
+  can_proc_from_procs = effect.can_proc_from_procs();
 }
 
 // Determine target for the callback (action).
@@ -297,6 +324,7 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state ) const
   //
   // Technically, this information is exposed in the client data, but simc needs a proper
   // targeting system first before we start using it.
+  assert( proc_action && "Cannot determine target of incoming callback, there is no proc_action" );
   switch ( proc_action->type )
   {
       // Heals are always targeted to the callback actor on incoming events

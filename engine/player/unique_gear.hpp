@@ -8,6 +8,8 @@
 #include "config.hpp"
 
 #include "sc_enums.hpp"
+#include "targetdata_initializer.hpp"
+#include "util/span.hpp"
 #include "util/string_view.hpp"
 
 #include <cassert>
@@ -16,15 +18,35 @@
 #include <vector>
 
 struct action_t;
+struct actor_target_data_t;
 struct expr_t;
 struct player_t;
-struct special_effect_t;
 struct scoped_callback_t;
-struct special_effect_db_item_t;
 struct sim_t;
+struct special_effect_t;
+struct special_effect_db_item_t;
 
 namespace unique_gear
 {
+// targetdata initializer for gear/trinket special effects
+struct item_targetdata_initializer_t : public targetdata_initializer_t<const special_effect_t>
+{
+  unsigned item_id;
+  unsigned spell_id;
+  std::vector<slot_e> slots_;
+
+  item_targetdata_initializer_t( unsigned iid, util::span<const slot_e> s );
+  item_targetdata_initializer_t( unsigned sid, unsigned did = 0 );
+
+  // Returns the special effect based on spell id, or item id and slots to source from.
+  const special_effect_t* find( player_t* ) const override;
+
+  bool init( player_t* ) const override;
+
+  // return cached effect
+  const special_effect_t* effect( actor_target_data_t* ) const;
+};
+
 using special_effect_set_t = std::vector<const special_effect_db_item_t*>;
 
 void register_hotfixes();

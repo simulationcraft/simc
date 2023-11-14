@@ -225,34 +225,36 @@ std::string util::version_info_str( const dbc_t* dbc )
     return {};
   }
 
-  std::string build_info;
+  return fmt::format( "SimulationCraft {} for World of Warcraft {} {}", SC_VERSION,
+                      dbc::client_data_version_str( dbc->ptr ), dbc->wow_ptr_status() );
+}
+
+std::string util::build_info_str( const dbc_t* dbc )
+{
+  if ( !dbc )
+  {
+    return {};
+  }
+
+  std::vector<std::string> build_strings;
+
   if ( !dbc::hotfix_date_str( dbc->ptr ).empty() )
   {
-    build_info += fmt::format( "hotfix {}/{}",
-        dbc::hotfix_date_str( dbc->ptr ),
-        dbc::hotfix_build_version( dbc->ptr ) );
+    build_strings.emplace_back(
+        fmt::format( "hotfix {}/{}", dbc::hotfix_date_str( dbc->ptr ), dbc::hotfix_build_version( dbc->ptr ) ) );
   }
 
   if ( git_info::available() )
   {
-    if ( !build_info.empty() )
-    {
-      build_info += ", ";
-    }
-
-    build_info += fmt::format( "git build {} {}",
-        git_info::branch(), git_info::revision());
+    build_strings.emplace_back( fmt::format( "git build {} {}", git_info::branch(), git_info::revision() ) );
   }
 
   if constexpr ( SC_NO_NETWORKING_ON )
   {
-    build_info += ", no-networking";
+    build_strings.emplace_back( "no-networking" );
   }
 
-  return fmt::format( "SimulationCraft {} for World of Warcraft {} {} ({})",
-      SC_VERSION, dbc::client_data_version_str( dbc->ptr ),
-      dbc->wow_ptr_status(),
-      build_info );
+  return util::string_join( build_strings );
 }
 
 double util::stat_value( const player_t* p, stat_e stat )
@@ -738,6 +740,7 @@ const char* util::pet_type_string( pet_e type )
     case PET_WILD_IMP:            return "wild_imp";
     case PET_DREADSTALKER:        return "dreadstalker";
     case PET_PIT_LORD:            return "pit_lord";
+    case PET_DOOMFIEND:           return "doomfiend";
     case PET_SERVICE_IMP:         return "service_imp";
     case PET_SERVICE_FELHUNTER:   return "service_felhunter";
     case PET_OBSERVER:            return "observer";
@@ -1383,31 +1386,31 @@ const char* util::proc_type_string( proc_types type )
 {
   switch ( type )
   {
-    case PROC1_KILLED:               return "Killed";
-    case PROC1_KILLING_BLOW:         return "KillingBlow";
-    case PROC1_MELEE:                return "MeleeSwing";
-    case PROC1_MELEE_TAKEN:          return "MeleeSwingTaken";
-    case PROC1_MELEE_ABILITY:        return "MeleeAbility";
-    case PROC1_MELEE_ABILITY_TAKEN:  return "MeleeAbilityTaken";
-    case PROC1_RANGED:               return "RangedShot";
-    case PROC1_RANGED_TAKEN:         return "RangedShotTaken";
-    case PROC1_RANGED_ABILITY:       return "RangedAbility";
-    case PROC1_RANGED_ABILITY_TAKEN: return "RangedAbilityTaken";
-    case PROC1_NONE_HEAL:            return "GenericHeal";
-    case PROC1_NONE_HEAL_TAKEN:      return "GenericHealTaken";
-    case PROC1_NONE_SPELL:           return "GenericHarmfulSpell";
-    case PROC1_NONE_SPELL_TAKEN:     return "GenericHarmfulSpellTaken";
-    case PROC1_MAGIC_HEAL:           return "MagicHeal";
-    case PROC1_MAGIC_HEAL_TAKEN:     return "MagicHealTaken";
-    case PROC1_MAGIC_SPELL:          return "MagicHarmfulSpell";
-    case PROC1_MAGIC_SPELL_TAKEN:    return "MagicHarmfulSpellTaken";
-    case PROC1_PERIODIC:             return "HarmfulTick";
-    case PROC1_PERIODIC_TAKEN:       return "HarmfulTickTaken";
-    case PROC1_ANY_DAMAGE_TAKEN:     return "AnyDamageTaken";
-    case PROC1_PERIODIC_HEAL:        return "TickHeal";
-    case PROC1_PERIODIC_HEAL_TAKEN:  return "TickHealTaken";
-    case PROC1_CAST_SUCCESSFUL:      return "CastSuccessful";
-    default:                         return "Unknown";
+    case PROC1_KILLED:                 return "Killed";
+    case PROC1_KILLING_BLOW:           return "KillingBlow";
+    case PROC1_MELEE:                  return "MeleeSwing";
+    case PROC1_MELEE_TAKEN:            return "MeleeSwingTaken";
+    case PROC1_MELEE_ABILITY:          return "MeleeAbility";
+    case PROC1_MELEE_ABILITY_TAKEN:    return "MeleeAbilityTaken";
+    case PROC1_RANGED:                 return "RangedShot";
+    case PROC1_RANGED_TAKEN:           return "RangedShotTaken";
+    case PROC1_RANGED_ABILITY:         return "RangedAbility";
+    case PROC1_RANGED_ABILITY_TAKEN:   return "RangedAbilityTaken";
+    case PROC1_NONE_HEAL:              return "GenericHeal";
+    case PROC1_NONE_HEAL_TAKEN:        return "GenericHealTaken";
+    case PROC1_NONE_SPELL:             return "GenericHarmfulSpell";
+    case PROC1_NONE_SPELL_TAKEN:       return "GenericHarmfulSpellTaken";
+    case PROC1_MAGIC_HEAL:             return "MagicHeal";
+    case PROC1_MAGIC_HEAL_TAKEN:       return "MagicHealTaken";
+    case PROC1_MAGIC_SPELL:            return "MagicHarmfulSpell";
+    case PROC1_MAGIC_SPELL_TAKEN:      return "MagicHarmfulSpellTaken";
+    case PROC1_PERIODIC:               return "HarmfulTick";
+    case PROC1_PERIODIC_TAKEN:         return "HarmfulTickTaken";
+    case PROC1_ANY_DAMAGE_TAKEN:       return "AnyDamageTaken";
+    case PROC1_HELPFUL_PERIODIC:       return "HelpfulTick";
+    case PROC1_HELPFUL_PERIODIC_TAKEN: return "HelpfulTickTaken";
+    case PROC1_CAST_SUCCESSFUL:        return "CastSuccessful";
+    default:                           return "Unknown";
   }
 }
 
@@ -1789,6 +1792,19 @@ stat_e util::parse_stat_type( util::string_view name )
   return STAT_NONE;
 }
 
+// scale_metric_is_raid =======================================================
+bool util::scale_metric_is_raid( scale_metric_e sm )
+{
+  switch ( sm )
+  {
+    case SCALE_METRIC_TIME:
+    case SCALE_METRIC_RAID_DPS:
+      return true;
+    default:
+      return false;
+  }
+}
+
 // scale_metric_type_string ===================================================
 
 const char* util::scale_metric_type_string( scale_metric_e sm )
@@ -1809,6 +1825,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
     case SCALE_METRIC_DEATHS:    return "Deaths";
     case SCALE_METRIC_TIME:      return "Fight Length";
+    case SCALE_METRIC_RAID_DPS:  return "Raid Damage per Second";
     default:                     return "Unknown";
   }
 }
@@ -1833,6 +1850,7 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
     case SCALE_METRIC_TIME:      return "time";
+    case SCALE_METRIC_RAID_DPS:  return "raid_dps";
     default:                     return "unknown";
   }
 }

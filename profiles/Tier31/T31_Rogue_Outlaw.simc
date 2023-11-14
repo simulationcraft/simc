@@ -1,0 +1,173 @@
+rogue="T31_Rogue_Outlaw"
+source=default
+spec=outlaw
+level=70
+race=tauren
+role=attack
+position=back
+talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAEkkUkIIJhkIIRSaSS0SiUSCAAAAAAolkQKRUIHokWAAAAkkAA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=iced_phial_of_corrupting_rage_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=apply_poison
+actions.precombat+=/flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand
+actions.precombat+=/roll_the_bones,precombat_seconds=2
+actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush
+actions.precombat+=/slice_and_dice,precombat_seconds=1
+actions.precombat+=/stealth
+
+# Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
+# Interrupt on cooldown to allow simming interactions with that
+actions+=/kick
+# Default Roll the Bones reroll rule: reroll for any buffs that aren't Buried Treasure, excluding Grand Melee in single target
+actions+=/variable,name=rtb_reroll,value=rtb_buffs.will_lose=(rtb_buffs.will_lose.buried_treasure+rtb_buffs.will_lose.grand_melee&spell_targets.blade_flurry<2&raid_event.adds.in>10)
+# Crackshot builds without T31 should reroll for True Bearing (or Broadside without Hidden Opportunity) if we won't lose over 1 buff
+actions+=/variable,name=rtb_reroll,if=talent.crackshot&talent.hidden_opportunity&!set_bonus.tier31_4pc,value=(!rtb_buffs.will_lose.true_bearing&talent.hidden_opportunity|!rtb_buffs.will_lose.broadside&!talent.hidden_opportunity)&rtb_buffs.will_lose<=1
+# Crackshot builds with T31 should reroll if we won't lose over 1 buff (2 with Loaded Dice), and if Broadside is not active for builds without Hidden Opportunity
+actions+=/variable,name=rtb_reroll,if=talent.crackshot&set_bonus.tier31_4pc,value=(rtb_buffs.will_lose<=1+buff.loaded_dice.up)&(talent.hidden_opportunity|!buff.broadside.up)
+# Hidden Opportunity builds without Crackshot should reroll for Skull and Crossbones or any 2 buffs excluding Grand Melee in single target
+actions+=/variable,name=rtb_reroll,if=!talent.crackshot&talent.hidden_opportunity,value=!rtb_buffs.will_lose.skull_and_crossbones&(rtb_buffs.will_lose<2+rtb_buffs.will_lose.grand_melee&spell_targets.blade_flurry<2&raid_event.adds.in>10)
+# Additional reroll rules if all active buffs will not be rolled away and we don't already have 5+ buffs
+actions+=/variable,name=rtb_reroll,value=variable.rtb_reroll|rtb_buffs.normal=0&rtb_buffs.longer>=1&rtb_buffs<5&rtb_buffs.max_remains<=39
+# Avoid rerolls when we will not have time remaining on the fight or add wave to recoup the opportunity cost of the global
+actions+=/variable,name=rtb_reroll,op=reset,if=!(raid_event.adds.remains>12|raid_event.adds.up&(raid_event.adds.in-raid_event.adds.remains)<6|target.time_to_die>12)|fight_remains<12
+actions+=/variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up)&energy>=50
+# Use finishers if at -1 from max combo points, or -2 in Stealth with Crackshot
+actions+=/variable,name=finish_condition,value=effective_combo_points>=cp_max_spend-1-(stealthed.all&talent.crackshot)
+# With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
+actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>gcd
+actions+=/call_action_list,name=cds
+# High priority stealth list, will fall through if no conditions are met
+actions+=/call_action_list,name=stealth,if=stealthed.all
+actions+=/run_action_list,name=finish,if=variable.finish_condition
+actions+=/call_action_list,name=build
+actions+=/arcane_torrent,if=energy.base_deficit>=15+energy.regen
+actions+=/arcane_pulse
+actions+=/lights_judgment
+actions+=/bag_of_tricks
+
+# Builders
+actions.build=echoing_reprimand
+# High priority Ambush for Hidden Opportunity builds
+actions.build+=/ambush,if=talent.hidden_opportunity&buff.audacity.up
+# With Audacity + Hidden Opportunity + Fan the Hammer, consume Opportunity to proc Audacity any time Ambush is not available
+actions.build+=/pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up
+# Use Greenskins Wickers buff immediately with Opportunity unless running Fan the Hammer
+actions.build+=/pistol_shot,if=buff.greenskins_wickers.up&(!talent.fan_the_hammer&buff.opportunity.up|buff.greenskins_wickers.remains<1.5)
+# With Fan the Hammer, consume Opportunity at max stacks or if it will expire
+actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)
+# With Fan the Hammer, consume Opportunity based on CP deficit, and 2 Fan the Hammer Crackshot builds can briefly hold stacks for an upcoming stealth cooldown
+actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&combo_points.deficit>((1+talent.quick_draw)*talent.fan_the_hammer.rank)&(!cooldown.vanish.ready&!cooldown.shadow_dance.ready|stealthed.all|!talent.crackshot|talent.fan_the_hammer.rank<=1)
+# If not using Fan the Hammer, then consume Opportunity based on energy, when it will exactly cap CPs, or when using Quick Draw
+actions.build+=/pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)
+actions.build+=/sinister_strike
+
+# Cooldowns  Use Adrenaline Rush if it is not active and at 2cp if Improved, but Crackshot builds can refresh it in stealth
+actions.cds=adrenaline_rush,if=(!buff.adrenaline_rush.up|stealthed.all&talent.crackshot&talent.improved_adrenaline_rush)&(combo_points<=2|!talent.improved_adrenaline_rush)
+# Maintain Blade Flurry on 2+ targets, and on single target with Underhanded, or on cooldown at 5+ targets with Deft Maneuvers
+actions.cds+=/blade_flurry,if=(spell_targets>=2-talent.underhanded_upper_hand&!stealthed.rogue)&buff.blade_flurry.remains<gcd|talent.deft_maneuvers&spell_targets>=5&!variable.finish_condition
+# Use Roll the Bones if reroll conditions are met, or just before buffs expire based on T31 and upcoming stealth cooldowns
+actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs.max_remains<=set_bonus.tier31_4pc+(cooldown.shadow_dance.remains<=1|cooldown.vanish.remains<=1)*6
+# Use Keep it Rolling with at least 3 buffs (4 with T31)
+actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&rtb_buffs>=3+set_bonus.tier31_4pc&(buff.shadow_dance.down|rtb_buffs>=6)
+actions.cds+=/ghostly_strike
+# Use Sepsis to trigger Crackshot or if the target will survive its DoT
+actions.cds+=/sepsis,if=talent.crackshot&cooldown.between_the_eyes.ready&variable.finish_condition&!stealthed.all|!talent.crackshot&target.time_to_die>11&buff.between_the_eyes.up|fight_remains<11
+# Use Blade Rush at minimal energy outside of stealth
+actions.cds+=/blade_rush,if=energy.base_time_to_max>4&!stealthed.all
+actions.cds+=/call_action_list,name=stealth_cds,if=!stealthed.all
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=100|fight_remains<charges*6)
+actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up
+actions.cds+=/blood_fury
+actions.cds+=/berserking
+actions.cds+=/fireblood
+actions.cds+=/ancestral_call
+# Default conditions for usable items.
+actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
+actions.cds+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=(!trinket.1.is.dragonfire_bomb_dispenser&trinket.1.cooldown.remains>10|trinket.2.cooldown.remains>10)|cooldown.dragonfire_bomb_dispenser.charges>2|fight_remains<20|!trinket.2.has_cooldown|!trinket.1.has_cooldown
+actions.cds+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
+actions.cds+=/use_item,name=stormeaters_boon,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<10
+actions.cds+=/use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7
+actions.cds+=/use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
+actions.cds+=/use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20
+
+# Finishers  Use Between the Eyes to keep the crit buff up, but on cooldown if Improved/Greenskins/T30, and avoid overriding Greenskins
+actions.finish=between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.remains<4|talent.improved_between_the_eyes|talent.greenskins_wickers|set_bonus.tier30_4pc)&!buff.greenskins_wickers.up
+# Crackshot builds use Between the Eyes outside of Stealth if Vanish or Dance will not come off cooldown within the next cast
+actions.finish+=/between_the_eyes,if=talent.crackshot&(cooldown.vanish.remains>45&cooldown.shadow_dance.remains>12)
+actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable
+actions.finish+=/killing_spree,if=debuff.ghostly_strike.up|!talent.ghostly_strike
+actions.finish+=/cold_blood
+actions.finish+=/dispatch
+
+# Stealth
+actions.stealth=blade_flurry,if=talent.subterfuge&talent.hidden_opportunity&spell_targets>=2&buff.blade_flurry.remains<gcd
+actions.stealth+=/cold_blood,if=variable.finish_condition
+actions.stealth+=/between_the_eyes,if=variable.finish_condition&talent.crackshot
+actions.stealth+=/dispatch,if=variable.finish_condition
+# 2 Fan the Hammer Crackshot builds can consume Opportunity in stealth with max stacks, Broadside, and low CPs, or with Greenskins active
+actions.stealth+=/pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.stack>=6&(buff.broadside.up&combo_points<=1|buff.greenskins_wickers.up)
+actions.stealth+=/ambush,if=talent.hidden_opportunity
+
+# Stealth Cooldowns
+actions.stealth_cds=variable,name=vanish_opportunity_condition,value=!talent.shadow_dance&talent.fan_the_hammer.rank+talent.quick_draw+talent.audacity<talent.count_the_odds+talent.keep_it_rolling
+# Hidden Opportunity builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks
+actions.stealth_cds+=/vanish,if=talent.hidden_opportunity&!talent.crackshot&!buff.audacity.up&(variable.vanish_opportunity_condition|buff.opportunity.stack<buff.opportunity.max_stack)&variable.ambush_condition
+# Crackshot builds or builds without Hidden Opportunity use Vanish at finish condition
+actions.stealth_cds+=/vanish,if=(!talent.hidden_opportunity|talent.crackshot)&variable.finish_condition
+# Crackshot builds use Dance at finish condition
+actions.stealth_cds+=/shadow_dance,if=talent.crackshot&variable.finish_condition
+# Hidden Opportunity builds without Crackshot use Dance if Audacity and Opportunity are not active
+actions.stealth_cds+=/variable,name=shadow_dance_condition,value=buff.between_the_eyes.up&(!talent.hidden_opportunity|!buff.audacity.up&(talent.fan_the_hammer.rank<2|!buff.opportunity.up))&!talent.crackshot
+actions.stealth_cds+=/shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)&(!talent.hidden_opportunity|!cooldown.vanish.ready)
+# Keep it Rolling builds without Crackshot use Dance at finish condition but hold it for an upcoming Keep it Rolling
+actions.stealth_cds+=/shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))
+actions.stealth_cds+=/shadowmeld,if=talent.crackshot&variable.finish_condition|!talent.crackshot&(talent.count_the_odds&variable.finish_condition|talent.hidden_opportunity)
+
+head=lucid_shadewalkers_deathmask,id=207236,bonus_id=1808/7187/1520,gem_id=192991,enchant=incandescent_essence
+neck=ouroboreal_necklet,id=210214,bonus_id=8782/7187/1520,gem_id=192932/192932/192932
+shoulders=lucid_shadewalkers_bladed_spaulders,id=207234,bonus_id=7187/1520
+back=inflammable_drapeleaf,id=207160,bonus_id=7187/1520
+chest=lucid_shadewalkers_cuirass,id=207239,bonus_id=7187/1520,enchant=waking_stats_3
+wrists=lifebound_bindings,id=193419,bonus_id=8780/8797/8960/9500/9405,gem_id=192932,crafted_stats=32/40
+hands=flamewakers_grips,id=207130,bonus_id=7187/1520
+waist=belt_of_gleaming_determination,id=158306,bonus_id=1808,ilevel=489,gem_id=192932
+legs=lucid_shadewalkers_chausses,id=207235,bonus_id=7187/1520,enchant=fierce_armor_kit_3
+feet=toxic_thorn_footwraps,id=193452,bonus_id=9500/9405
+finger1=thornwoven_band,id=162548,bonus_id=1808,ilevel=489,gem_id=192932,enchant=devotion_of_versatility_3
+finger2=signet_of_the_last_elder,id=207162,bonus_id=1808/7187/1520,gem_id=192932,enchant=devotion_of_critical_strike_3
+trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
+trinket2=mydas_talisman,id=158319,ilevel=489
+main_hand=thorncaller_claw,id=207784,bonus_id=7187/1520,enchant=sophic_devotion_3
+off_hand=nick_of_time,id=207996,bonus_id=9526,ilevel=489,enchant=wafting_devotion_3
+
+# Gear Summary
+# gear_ilvl=488.63
+# gear_agility=9541
+# gear_stamina=38875
+# gear_crit_rating=4302
+# gear_haste_rating=2570
+# gear_mastery_rating=590
+# gear_versatility_rating=7561
+# gear_armor=5328
+# set_bonus=tier31_2pc=1
+# set_bonus=tier31_4pc=1

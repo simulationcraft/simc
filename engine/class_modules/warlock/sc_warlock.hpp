@@ -9,10 +9,12 @@ namespace warlock
 {
 struct warlock_t;
 
-//Used for version checking in code (e.g. PTR vs Live)
+// Used for version checking in code (e.g. PTR vs Live)
 enum version_check_e
 {
   VERSION_PTR,
+  VERSION_10_2_0,
+  VERSION_10_1_5,
   VERSION_10_1_0,
   VERSION_10_0_7,
   VERSION_10_0_5,
@@ -52,9 +54,11 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_dread_touch;
   propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
+  propagate_const<buff_t*> debuffs_umbrafire_kindling; // T31 4pc dummy debuff to track empowered Seeds of Corruption
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
+  propagate_const<dot_t*> dots_searing_bolt;
 
   propagate_const<buff_t*> debuffs_shadowburn;
   propagate_const<buff_t*> debuffs_eradication;
@@ -65,10 +69,10 @@ struct warlock_td_t : public actor_target_data_t
   // Demo
   propagate_const<dot_t*> dots_doom;
 
-  propagate_const<buff_t*> debuffs_from_the_shadows;
   propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
   propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
+  propagate_const<buff_t*> debuffs_doom_brand; // T31 2pc
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
@@ -115,7 +119,10 @@ public:
   double agony_accumulator;
   double corruption_accumulator;
   double cdf_accumulator; // For T30 Destruction tier set
+  double dimensional_accumulator; // For T31 Destruction tier set
   int incinerate_last_target_count; // For use with T30 Destruction tier set
+  double shadow_invocation_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Shadow Invocation
+  double doom_brand_accumulator;
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
 
   unsigned active_pets;
@@ -132,7 +139,7 @@ public:
     // Affliction
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
-    const spell_data_t* xavian_teachings;  // Separate spell (learned automatically). Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
+    const spell_data_t* xavian_teachings; // Separate spell (learned automatically). Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
@@ -141,7 +148,7 @@ public:
     const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
     const spell_data_t* wild_imp; // Data for pet summoning
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
-    const spell_data_t* demonic_core; // The passive responsible for the proc chance
+    const spell_data_t* demonic_core; // The passive responsible for the proc chance. TODO: 10.2 has made this contingent on the Demonbolt talent, may need shuffling
     const spell_data_t* demonic_core_buff; // Buff spell data
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
     const spell_data_t* demonology_warlock; // Spec aura
@@ -184,6 +191,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
 
     spawner::pet_spawner_t<pets::demonology::pit_lord_t, warlock_t> pit_lords;
+    spawner::pet_spawner_t<pets::demonology::doomfiend_t, warlock_t> doomfiends;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -195,8 +203,8 @@ public:
   {
     // Class Tree
 
-    player_talent_t demonic_inspiration; // Behavior changed in 10.0.7
-    player_talent_t wrathful_minion; // Behavior changed in 10.0.7
+    player_talent_t demonic_inspiration; // Primary pet attack speed increase
+    player_talent_t wrathful_minion; // Primary pet damage increase
     player_talent_t grimoire_of_synergy;
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     player_talent_t socrethars_guile;
@@ -219,7 +227,7 @@ public:
     player_talent_t grimoire_of_sacrifice; // Aff/Destro only
     const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
-    player_talent_t grand_warlocks_design; // One spell data for all 3 specs
+    player_talent_t grand_warlocks_design; // One spell data for all 3 specs. TODO: Changed in 10.2 to be a flat CDR
 
     // Affliction
     player_talent_t malefic_rapture;
@@ -233,16 +241,13 @@ public:
 
     player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
-    player_talent_t xavian_teachings; // REMOVED (from here) in 10.0.7
     player_talent_t writhe_in_agony;
     player_talent_t sow_the_seeds;
 
     player_talent_t shadow_embrace;
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
-    player_talent_t harvester_of_souls; // REMOVED in 10.0.7
     player_talent_t dark_virtuosity;
     player_talent_t kindled_malice;
-    const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
 
     player_talent_t drain_soul; // This represents the talent node but not much else
@@ -275,19 +280,18 @@ public:
     player_talent_t summon_darkglare; 
     player_talent_t soul_rot;
 
-    player_talent_t malefic_affliction; // Stacking damage increase to Unstable Affliction until UA is cancelled/swapped/ends
-    const spell_data_t* malefic_affliction_buff; // Buff applied on Malefic Rapture casts
+    player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
     player_talent_t seized_vitality; // Additional Haunt damage
     player_talent_t malevolent_visionary; // Longer Darkglare and more damage scaling
     player_talent_t wrath_of_consumption; // DoT damage buff on target deaths
     const spell_data_t* wrath_of_consumption_buff;
-    player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction
+    player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction. TODO: Changed in 10.2 to flat base reduction rather than per-tick effect
 
-    player_talent_t doom_blossom; // Damage proc on Corruption ticks based on Malefic Affliction stacks
+    player_talent_t doom_blossom; // Seed of Corruption damage on Unstable Affliction target procs AoE damage
     const spell_data_t* doom_blossom_proc;
-    player_talent_t dread_touch; // Increased DoT damage based on Malefic Affliction procs
+    player_talent_t dread_touch; // Malefic Rapture on Unstable Affliction target applies debuff increasing DoT damage
     const spell_data_t* dread_touch_debuff; // Applied to target when Dread Touch procs
     player_talent_t haunted_soul; // Haunt increase ALL DoT damage while active
     const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
@@ -300,19 +304,22 @@ public:
     player_talent_t call_dreadstalkers;
     const spell_data_t* call_dreadstalkers_2; // Contains duration data
 
-    player_talent_t demonbolt; // Note: Demonic Core is a guaranteed passive, even though this talent is optional
+    player_talent_t demonbolt; // TODO: Remove/refactor when 10.2 goes live
+    player_talent_t demoniac; // 10.2 combines Demonbolt and Demonic Core under this talent
+    const spell_data_t* demonbolt_spell;
+    const spell_data_t* demonic_core_spell;
+    const spell_data_t* demonic_core_buff;
+
     player_talent_t dreadlash;
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
 
     player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     player_talent_t summon_vilefiend;
-    player_talent_t soul_strike;
+    player_talent_t soul_strike; // TODO: Active player ability moved to pet in 10.2
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
-    player_talent_t from_the_shadows; // TODO: REPLACED in 10.1
-    const spell_data_t* from_the_shadows_debuff; // TODO: REPLACED in 10.1
     player_talent_t the_houndmasters_stratagem; // Whitelisted warlock spells do more damage to target afflicted with debuff
     const spell_data_t* the_houndmasters_stratagem_debuff; // Debuff applied by Dreadstalker's Dreadbite
 
@@ -320,41 +327,43 @@ public:
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
     const spell_data_t* shadows_bite_buff;
+    player_talent_t fel_invocation; // New in 10.2. Buffs either Soul Strike or Summon Vilefiend
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
-    player_talent_t fel_and_steel; // Felstorm and Dreadbite damage increase
-    player_talent_t fel_might; // Shorter Felstorm CD - main pet only!
+    player_talent_t shadow_invocation; // New in 10.2 (previously called Volatile Fiends). Bilescourge Bomber damage and proc.
+    player_talent_t fel_and_steel; // Increase's primary Felguard's Legion Strike and Felstorm damage
+    player_talent_t heavy_handed; // Primary Felguard crit chance increase (additive)
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
-    player_talent_t inner_demons;
-    player_talent_t demonic_calling;
-    const spell_data_t* demonic_calling_buff;
+    player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
+    player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
     player_talent_t grimoire_felguard;
 
-    player_talent_t bloodbound_imps; // Increased Demonic Core proc chance from Wild Imps
-    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
-    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
+    player_talent_t bloodbound_imps; // TODO: REMOVED in 10.2
+    player_talent_t spiteful_reconstitution; // New in 10.2. Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
+    player_talent_t inner_demons; // TODO: 10.2 has removed the "Summon Random Demon" proc
     player_talent_t doom;
-    player_talent_t demonic_meteor; // Increased Hand of Gul'dan damage and chance to refund soul shard
+    player_talent_t demonic_calling;
+    const spell_data_t* demonic_calling_buff;
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    player_talent_t fel_covenant; // Stacking Demonbolt buff when casting Shadow Bolt, not consumed after cast
-    const spell_data_t* fel_covenant_buff;
+    player_talent_t umbral_blaze;
+    const spell_data_t* umbral_blaze_dot;
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
-    player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance
-    player_talent_t hounds_of_war; // REMOVED in 10.0.7
-    player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT
-    const spell_data_t* umbral_blaze_dot; // The actual DoT applied to the target
+    player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
+    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
+    player_talent_t cavitation; // Increased critical strike damage for primary Felguard. TOCHECK: As of 2023-06-21 PTR, this is actually granting double the stated value
 
-    player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
+    player_talent_t nether_portal; // 2023-09-20: Last audit of NP demon damage values
     const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
-    player_talent_t summon_demonic_tyrant; // TOCHECK: 2022-10-07 Pit Lord is not currently extendable by Tyrant
-    const spell_data_t* demonic_power_buff; // Buff on player when Tyrant is summoned, should grant 15% damage to pets
+    player_talent_t summon_demonic_tyrant; // TODO: 10.2 has reworked Tyrant, including Wild Imp caps and a smaller pet whitelist.
+    const spell_data_t* demonic_power_buff; // TODO: 10.2 has changed this buff to not be universal, but only applicable to "extended" demons
     player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
 
-    player_talent_t nerzhuls_volition; // Chance to summon additional demon from Nether Portal summons (TOCHECK: It is currently assumed this cannot proc itself)
+    player_talent_t nerzhuls_volition; // TODO: Changed in 10.2 to buff demons summoned by Nether Portal (buff on pets inccl. Pit Lord)
+    const spell_data_t* nerzhuls_volition_buff; // New in 10.2
     player_talent_t stolen_power; // Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage
     const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
     const spell_data_t* stolen_power_final_buff;
@@ -364,10 +373,11 @@ public:
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active
 
-    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal
-    const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned
-    player_talent_t reign_of_tyranny; // Each summoned active pet gives stacks of Demonic Servitude. Tyrant snapshots this buff on summon for more damage
-    const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
+    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal. TODO: 10.2 has reworked Pit Lord behavior. 2023-09-20 PTR: Felseeker is not benefitting from guardian aura in-game. Sim IS applying it automatically, TOCHECK near release.
+    const spell_data_t* guldans_ambition_summon; // Contains Pit Lord duration data
+    const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned. TODO: This buff is REMOVED in 10.2
+    player_talent_t reign_of_tyranny; // TODO: 10.2 has capped this at 15 stacks and may have changed other behavior
+    const spell_data_t* demonic_servitude; // TOCHECK: 2023-09-10 On 10.2 PTR, expiring demons will always lower the full amount even if overcapped. When Blizzard fixes it, implement that fix.
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     player_talent_t immutable_hatred;
     player_talent_t guillotine;
@@ -437,15 +447,16 @@ public:
     const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
     const spell_data_t* ritual_of_ruin_buff;
     
-    player_talent_t crashing_chaos; // Summon Infernal reduces cost of next X casts
+    player_talent_t crashing_chaos; // Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
     const spell_data_t* crashing_chaos_buff;
     player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
-    player_talent_t madness_of_the_azjaqir; // Buffs that reward repeating certain spells
+    player_talent_t madness_of_the_azjaqir; // TODO: REMOVED in 10.2
     const spell_data_t* madness_cb;
     const spell_data_t* madness_rof;
     const spell_data_t* madness_sb;
+    player_talent_t chaosbringer; // Increased damage to Chaos Bolt, Rain of Fire, Shadowburn
     player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
     player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
     const spell_data_t* burn_to_ashes_buff;
@@ -473,7 +484,10 @@ public:
     action_t* soul_flame_proc;
     action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
-    action_t* summon_random_demon; // Nether Portal and Inner Demons
+    action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
+    action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
+    action_t* summon_nether_portal_demon; // Separate version for Nether Portal based summons due to Ner'zhul's Volition
+    action_t* doom_brand_explosion; // Demonology T31 2pc
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
@@ -487,15 +501,23 @@ public:
     const spell_data_t* cruel_inspiration; // T29 2pc procs haste buff
     const spell_data_t* cruel_epiphany; // T29 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
     const spell_data_t* infirmity; // T30 4pc applies this debuff when using Vile Taint/Phantom Singularity
+    const spell_data_t* umbrafire_kindling; // T31 4pc buff after casting Soul Rot. Empowers Malefic Rapture or Seed of Corruption
 
     // Demonology
     const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
     const spell_data_t* rite_of_ruvaraad; // T30 4pc buff which increases pet damage while Grimoire: Felguard is active
+    const spell_data_t* doom_brand; // T31 2pc debuff which does AoE damage on expiration. Hand of Gul'dan reduces remaining duration on all Brands
+    const spell_data_t* doom_brand_debuff; // Doom Brand primary data isn't really useful to SimC, actual debuff is a separate spell. (Misc Value 1 for primary does hold the NPC ID for Doomfiend, though)
+    const spell_data_t* doom_brand_aoe;
+    const spell_data_t* doom_bolt_volley; // T31 4pc spell used by Doomfiend pet
 
     // Destruction 
     const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
     const spell_data_t* channel_demonfire; // T30 2pc damage proc is separate from talent version
     const spell_data_t* umbrafire_embers; // T30 4pc enables stacking buff on 2pc procs
+    const spell_data_t* dimensional_cinder; // T31 2pc AoE proc
+    const spell_data_t* flame_rift; // T31 4pc - Additional Dimensional Rift type
+    const spell_data_t* searing_bolt; // Projectile + DoT from Flame Rift
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -506,6 +528,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
+    propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> soul_rot;
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
@@ -533,13 +556,13 @@ public:
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> tormented_crescendo;
-    propagate_const<buff_t*> malefic_affliction;
     propagate_const<buff_t*> haunted_soul;
     propagate_const<buff_t*> active_haunts; // Dummy buff used for tracking Haunts in multi-target to properly handle Haunted Soul
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
     propagate_const<buff_t*> cruel_inspiration; // T29 2pc
     propagate_const<buff_t*> cruel_epiphany; // T29 4pc
+    propagate_const<buff_t*> umbrafire_kindling; // T31 4pc buff
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_power; // Buff from Summon Demonic Tyrant (increased demon damage + duration)
@@ -610,7 +633,7 @@ public:
     // Demonology
     gain_t* doom;
     gain_t* soulbound_tyrant;
-    gain_t* demonic_meteor;
+    gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 
   // Procs
@@ -625,7 +648,6 @@ public:
     // Affliction
     proc_t* nightfall;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
-    proc_t* harvester_of_souls;
     proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
     proc_t* doom_blossom;
@@ -640,13 +662,14 @@ public:
     proc_t* summon_random_demon;
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers;
-    proc_t* demonic_meteor;
+    proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
     proc_t* imp_gang_boss;
-    proc_t* hounds_of_war;
+    proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
     proc_t* blazing_meteor; // T29 4pc
+    proc_t* doomfiend; // T31 4pc
 
     // Destruction
     proc_t* reverse_entropy;
@@ -658,14 +681,14 @@ public:
     proc_t* conflagration_of_chaos_sb;
     proc_t* chaos_maelstrom; // T29 2pc
     proc_t* channel_demonfire; // T30 2pc
+    proc_t* dimensional_refund; // T31 2pc charge refund on Dimensional Rift
   } procs;
 
   int initial_soul_shards;
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_10_0_7_data;
-  const spell_data_t* version_10_1_0_data;
+  const spell_data_t* version_10_2_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -714,7 +737,6 @@ public:
   void invalidate_cache( cache_e ) override;
   double composite_spell_crit_chance() const override;
   double composite_melee_crit_chance() const override;
-  double resource_gain( resource_e, double, gain_t* source = nullptr, action_t* action = nullptr ) override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
@@ -899,7 +921,7 @@ public:
         make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
       }
 
-      if ( p()->talents.grand_warlocks_design.ok() )
+      if ( p()->talents.grand_warlocks_design.ok() && !p()->min_version_check( VERSION_10_2_0 ) )
       {
         switch ( p()->specialization() )
         {
@@ -976,7 +998,7 @@ public:
     double m = spell_t::composite_target_multiplier( t );
 
     if ( p()->talents.dread_touch.ok() && td( t )->debuffs_dread_touch->check() && data().affected_by( p()->talents.dread_touch_debuff->effectN( 1 ) ) )
-      m *= 1.0 + td( t )->debuffs_dread_touch->check_stack_value();
+      m *= 1.0 + td( t )->debuffs_dread_touch->check_stack_value(); // TOCHECK: Is using stack value an outdated holdover?
 
     return m;
   }
@@ -1102,8 +1124,8 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
     background = true;
     proc = true;
 
-    base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( p->min_version_check( VERSION_10_0_7 ) ? 2 : 7 ).percent();
-    base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( p->min_version_check( VERSION_10_0_7 ) ? 2 : 7 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 2 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 2 ).percent();
   }
 };
 

@@ -385,6 +385,11 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     tier_name          = "T30";
     max_ilevel_allowed = 457;
   }
+  else if ( p.report_information.save_str.find( "T31" ) != std::string::npos )
+  {
+    tier_name          = "T31";
+    max_ilevel_allowed = 496;
+  }
   else
   {
     return true;
@@ -526,18 +531,21 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     if ( !item.option_stats_str.empty() )
       sim.errorf( "Player %s has %s with stats=, it is not allowed.\n", p.name(), util::slot_type_string( slot ) );
 
-    // Check allowed enchant slots in Dragonflight: chest/back/fingers/weapons/legs
+    // Check allowed enchant slots in Dragonflight: chest/back/fingers/weapons/legs/head
     // Warns about invalid slots and kindly notices if an item is missing an enchant
     if ( slot == SLOT_CHEST || slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_MAIN_HAND || slot == SLOT_LEGS ||
          // Make sure offhand enchants are only on regular weapons, not shields or off-hand stat sticks
-         ( slot == SLOT_OFF_HAND && item.weapon()->type != weapon_e::WEAPON_NONE ))
+         ( slot == SLOT_OFF_HAND && item.weapon()->type != weapon_e::WEAPON_NONE ) || 
+         // Make sure head items from T31 are not missing an enchant
+         ( slot == SLOT_HEAD && item.item_level() > 457 )
+        )
     {
       if ( item.option_enchant_str.empty() && item.option_enchant_id_str.empty() )
         sim.errorf( "Player %s is missing an enchantment on %s, please add one.\n", p.name(),
                     util::slot_type_string( slot ) );
     }
-    // Don't enforce non-throughput cloak, feet, or wrist enchants
-    else if ( !item.option_enchant_str.empty() && slot != SLOT_BACK && slot != SLOT_WRISTS && slot != SLOT_FEET )
+    // Don't enforce non-throughput cloak, feet, waist or wrist enchants
+    else if ( !item.option_enchant_str.empty() && slot != SLOT_BACK && slot != SLOT_WRISTS && slot != SLOT_FEET && slot != SLOT_WAIST )
       sim.errorf( "Player %s has an invalid enchantment equipped on %s, please remove it. \n", p.name(),
                   util::slot_type_string( slot ) );
 

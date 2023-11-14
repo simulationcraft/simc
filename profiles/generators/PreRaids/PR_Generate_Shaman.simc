@@ -28,13 +28,13 @@
 
 # save=PR_Shaman_Elemental.simc
 
-shaman="PR_Shaman_Enhancement"
+shaman="PR_Shaman_Enhancement_Ele"
 level=70
 race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAu3fz4tp2ZikXIAdNeR+oLQSSKRSCSSIIJUSIAAAAAAAAAAAAgSESCJoJQSLJpgIEESaI
+talents=BcQAzii1bx6MdXWQl8y/78bs6KJJpEJgkESSSDlEAAAAAAAAAAAAAKRIJkQKiCJtkkGgSkDEEI
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
 neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
@@ -53,15 +53,15 @@ trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
 main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 
-save=PR_Shaman_Enhancement.simc
+save=PR_Shaman_Enhancement_Ele.simc
 
-shaman="PR_Shaman_Enhancement_Storm"
+shaman="PR_Shaman_Enhancement"
 level=70
 race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
+talents=BcQAzii1bx6MdXWQl8y/78bs6KJJHAkcARSSSQJJSIAAAAAAAAAAAAgSESCJkioQSLJpBoE5ABpgA
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
 neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
@@ -80,7 +80,7 @@ trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
 main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 
-save=PR_Shaman_Enhancement_Storm.simc
+save=PR_Shaman_Enhancement.simc
 
 # shaman="PR_Shaman_Restoration"
 # level=70

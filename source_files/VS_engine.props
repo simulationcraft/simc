@@ -29,6 +29,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\class_modules\apl\apl_paladin.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_priest.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_rogue.hpp" />
+		<ClInclude Include="..\engine\class_modules\apl\apl_warrior.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\mage.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\warlock.hpp" />
 		<ClInclude Include="..\engine\class_modules\class_module.hpp" />
@@ -46,6 +47,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\data_definitions.hh" />
 		<ClInclude Include="..\engine\dbc\data_enums.hh" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
+		<ClInclude Include="..\engine\dbc\expected_stat.hpp" />
 		<ClInclude Include="..\engine\dbc\gem_data.hpp" />
 		<ClInclude Include="..\engine\dbc\item_armor.hpp" />
 		<ClInclude Include="..\engine\dbc\item_bonus.hpp" />
@@ -83,7 +85,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\interfaces\wowhead.hpp" />
 		<ClInclude Include="..\engine\item\enchants.hpp" />
 		<ClInclude Include="..\engine\item\item.hpp" />
-		<ClInclude Include="..\engine\item\item_targetdata_initializer.hpp" />
 		<ClInclude Include="..\engine\item\special_effect.hpp" />
 		<ClInclude Include="..\engine\lib\cpp-semver\base\type.hpp" />
 		<ClInclude Include="..\engine\lib\cpp-semver\base\util.hpp" />
@@ -132,6 +133,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\stats.hpp" />
 		<ClInclude Include="..\engine\player\talent.hpp" />
 		<ClInclude Include="..\engine\player\target_specific.hpp" />
+		<ClInclude Include="..\engine\player\targetdata_initializer.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear_dragonflight.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear_helper.hpp" />
@@ -218,6 +220,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\apl\apl_paladin.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_priest.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_rogue.cpp" />
+		<ClCompile Include="..\engine\class_modules\apl\apl_warrior.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\mage.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\warlock.cpp" />
 		<ClCompile Include="..\engine\class_modules\monk\sc_monk.cpp" />
@@ -251,6 +254,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\dbc\client_data.cpp" />
 		<ClCompile Include="..\engine\dbc\client_hotfix_entry.cpp" />
 		<ClCompile Include="..\engine\dbc\covenant_data.cpp" />
+		<ClCompile Include="..\engine\dbc\expected_stat.cpp" />
 		<ClCompile Include="..\engine\dbc\gem_data.cpp" />
 		<ClCompile Include="..\engine\dbc\item_armor.cpp" />
 		<ClCompile Include="..\engine\dbc\item_bonus.cpp" />
@@ -290,7 +294,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\interfaces\wowhead.cpp" />
 		<ClCompile Include="..\engine\item\enchants.cpp" />
 		<ClCompile Include="..\engine\item\item.cpp" />
-		<ClCompile Include="..\engine\item\item_targetdata_initializer.cpp" />
 		<ClCompile Include="..\engine\item\special_effect.cpp" />
 		<ClCompile Include="..\engine\lib\fmt\format.cpp" />
 		<ClCompile Include="..\engine\lib\fmt\os.cpp" />
@@ -317,6 +320,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\spawner_base.cpp" />
 		<ClCompile Include="..\engine\player\talent.cpp" />
 		<ClCompile Include="..\engine\player\target_specific.cpp" />
+		<ClCompile Include="..\engine\player\targetdata_initializer.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_bfa.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_dragonflight.cpp" />

@@ -3,24 +3,25 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
-#include "player/covenant.hpp"
-#include "player/unique_gear_shadowlands.hpp"
-#include "dbc/temporary_enchant.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "dbc/sc_spell_info.hpp"
+#include "dbc/temporary_enchant.hpp"
 #include "dbc/trait_data.hpp"
-#include "reports.hpp"
-#include "report/report_helper.hpp"
-#include "report/decorators.hpp"
-#include "report/charts.hpp"
-#include "report/highchart.hpp"
+#include "player/covenant.hpp"
 #include "player/player_talent_points.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
-#include "sim/scale_factor_control.hpp"
+#include "player/unique_gear_shadowlands.hpp"
+#include "report/charts.hpp"
+#include "report/decorators.hpp"
+#include "report/highchart.hpp"
+#include "report/report_helper.hpp"
+#include "reports.hpp"
 #include "sim/profileset.hpp"
+#include "sim/scale_factor_control.hpp"
 #include "util/util.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -258,8 +259,8 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   }
 
   // If we are printing a stats object that belongs to a pet, for an actual
-  // actor, print out the pet name too
-  if ( actor && !actor->is_pet() && s.player->is_pet() )
+  // actor, print out the pet name too unless the action already has a parent
+  if ( actor && !actor->is_pet() && s.player->is_pet() && !s.parent )
     name += " (" + util::encode_html( s.player->name_str ) + ")";
 
   return "<span" + class_attr + ">" + name + "</span>";
@@ -557,7 +558,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     rowspan = " rowspan=\"" + util::to_string( result_rows ) + "\"";
 
   // Ability name
-  os << "<td class=\"left\"" << rowspan << ">";
+  os << "<td style=\"white-space:nowrap\" class=\"left\"" << rowspan << ">";
 
   if ( hasparent )
   {
@@ -600,7 +601,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   os.printf( "<td class=\"right\"%s>%.1f</td>\n", rowspan.c_str(), s.num_executes.pretty_mean() );
 
   // Execute interval
-  os.printf( "<td class=\"right\"%s>%.2fsec</td>\n", rowspan.c_str(), s.total_intervals.pretty_mean() );
+  os.printf( "<td class=\"right\"%s>%.2fs</td>\n", rowspan.c_str(), s.total_intervals.pretty_mean() );
 
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
@@ -997,7 +998,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       if ( found )
         continue;
 
-      processed_actions.emplace_back(a->name() );
+      processed_actions.emplace_back( a->name() );
 
       os << "<div class=\"flex\">\n";  // Wrap details, damage/weapon, spell_data
 
@@ -1189,6 +1190,72 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       }
 
       os << "</div>\n";
+    }
+
+    if ( s.action_list.size() )
+    {
+      os << "<div class=\"flex\">\n";
+
+      if ( s.action_list.back()->affecting_list.size() )
+      {
+        os << "<div>\n"
+           << "<h4>Affected By (Passive)</h4>\n"
+           << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
+
+        os << "<tr>\n"
+           << "<th class=\"small\">Type</th>\n"
+           << "<th class=\"small\">Spell</th>\n"
+           << "<th class=\"small\">ID</th>\n"
+           << "<th class=\"small\">#</th>\n"
+           << "<th class=\"small\">+/%</th>\n"
+           << "<th class=\"small\">Value</th>\n"
+           << "</tr>\n";
+
+        for ( auto [ eff, val ] : s.action_list.back()->affecting_list )
+        {
+          std::string op_str;
+          std::string type_str;
+          std::string val_str = fmt::format( "{:.3f}", val );
+
+          switch ( eff->subtype() )
+          {
+            case A_ADD_FLAT_LABEL_MODIFIER:
+            case A_ADD_FLAT_MODIFIER:
+              op_str = "ADD";
+              type_str = spell_info::effect_property_str( eff );
+              break;
+            case A_ADD_PCT_LABEL_MODIFIER:
+            case A_ADD_PCT_MODIFIER:
+              op_str = "PCT";
+              type_str = spell_info::effect_property_str( eff );
+              break;
+            case A_MODIFY_SCHOOL:
+              op_str = "SET";
+              type_str = spell_info::effect_subtype_str( eff );
+              val_str = util::school_type_string( eff->school_type() );
+              break;
+            default:
+              op_str = "SET";
+              type_str = spell_info::effect_subtype_str( eff );
+              break;
+          }
+
+          os.format( "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>",
+            type_str,
+            eff->spell()->name_cstr(),
+            eff->spell()->id(),
+            eff->index() + 1,
+            op_str,
+            val_str );
+        }
+
+        os << "</table>\n"
+           << "</div>\n";
+      }
+
+      s.action_list.back()->html_customsection( os );
+
+      os << "</div>";
     }
 
     os << "</td>\n"
@@ -2448,7 +2515,7 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
     os.printf( "<td class=\"left\">Waiting</td>\n"
                "<td class=\"left\">&#160;</td>\n"
                "<td class=\"left\">&#160;</td>\n"
-               "<td class=\"left\">%.3f sec</td>\n",
+               "<td class=\"left\">%.3fs</td>\n",
                data.wait_time.total_seconds() );
   }
 
@@ -3358,9 +3425,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   if ( !constant_buffs )
     os.printf( "<td class=\"right\">%.1f</td>\n"
                "<td class=\"right\">%.1f</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
                "<td class=\"right\">%.2f%%</td>\n"
                "<td class=\"right\">%.2f%%</td>\n"
                "<td class=\"right\">%.1f&#160;(%.1f)</td>\n"
@@ -3380,7 +3447,8 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   if ( report_details )
   {
     const stat_buff_t* stat_buff = dynamic_cast<const stat_buff_t*>( &b );
-    const auto* absorb_buff = dynamic_cast<const absorb_buff_t*>(&b);
+    const auto* absorb_buff = dynamic_cast<const absorb_buff_t*>( &b );
+    const auto* damage_buff = dynamic_cast<const damage_buff_t*>( &b );
 
     int first_rows    = 2 + ( b.item ? 16 : 15 );  // # of rows in the first column incl 2 for header (buff details)
     int second_rows   = ( b.rppm ? 5 : 0 ) +
@@ -3459,6 +3527,23 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
       os << "</ul>\n";
     }
 
+    if ( damage_buff )
+    {
+      os.printf( "<h4>Damage Modifiers</h4>\n"
+                 "<ul>\n"
+                 "<li><span class=\"label\">direct:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
+                 "<li><span class=\"label\">is_stacking:</span>%s</li>\n"
+                 "</ul>\n",
+                 damage_buff->direct_mod.multiplier,
+                 damage_buff->periodic_mod.multiplier,
+                 damage_buff->auto_attack_mod.multiplier,
+                 damage_buff->crit_chance_mod.multiplier,
+                 damage_buff->is_stacking ? "true" : "false" );
+    }
+
     if ( !constant_buffs )
     {
 
@@ -3492,6 +3577,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    "<li><span class=\"label\">trigger_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
                    "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n"
                    "<li><span class=\"label\">duration_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
+                   "<li><span class=\"label\">uptime_min/max:</span>%.2f%%&#160;/&#160;%.2f%%</li>\n"
                    "</ul>\n",
                    b.start_intervals.min(),
                    b.start_intervals.max(),
@@ -3499,7 +3585,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    b.trigger_intervals.max(),
                    b.trigger_pct.mean(),
                    b.duration_lengths.min(),
-                   b.duration_lengths.max() );
+                   b.duration_lengths.max(),
+                   b.uptime_pct.min(),
+                   b.uptime_pct.max() );
       }
 
       if ( break_second )  // if stack rows will overflow past first column

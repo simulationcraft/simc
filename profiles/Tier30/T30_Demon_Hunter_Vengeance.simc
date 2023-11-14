@@ -6,14 +6,14 @@ race=night_elf
 timeofday=day
 role=tank
 position=front
-talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAoEBJJIJaIJRgkSCIahEJSCJpkEkkkQJIAAAAA
+talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAiIJJCJIJREiUSCJaJSkIhkEJJtIhEEAAAAQSSA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=main_hand:howling_rune_3/off_hand:howling_rune_3
+temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -25,54 +25,100 @@ temporary_enchant=main_hand:howling_rune_3/off_hand:howling_rune_3
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
-actions.precombat+=/variable,name=spirit_bomb_soul_fragments_not_in_meta,op=setif,value=4,value_else=5,condition=talent.fracture
-actions.precombat+=/variable,name=spirit_bomb_soul_fragments_in_meta,op=setif,value=3,value_else=4,condition=talent.fracture
-actions.precombat+=/variable,name=vulnerability_frailty_stack,op=setif,value=1,value_else=0,condition=talent.vulnerability
-actions.precombat+=/variable,name=cooldown_frailty_requirement_st,op=setif,value=6*variable.vulnerability_frailty_stack,value_else=variable.vulnerability_frailty_stack,condition=talent.soulcrush
-actions.precombat+=/variable,name=cooldown_frailty_requirement_aoe,op=setif,value=5*variable.vulnerability_frailty_stack,value_else=variable.vulnerability_frailty_stack,condition=talent.soulcrush
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/sigil_of_flame
-actions.precombat+=/immolation_aura,if=active_enemies=1|!talent.fallout
+actions.precombat+=/immolation_aura
 
 # Executed every time the actor is available.
-actions=auto_attack
+actions=variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)
+actions+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)
+actions+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
+actions+=/variable,name=dont_spend_fury,op=setif,condition=(cooldown.fel_devastation.remains<(action.soul_cleave.execute_time+gcd.remains))&fury<50,value=1,value_else=0
+actions+=/auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
 actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
-actions+=/metamorphosis
-actions+=/fel_devastation,if=!talent.fiery_demise.enabled
-actions+=/fiery_brand,if=!talent.fiery_demise.enabled&!dot.fiery_brand.ticking
-actions+=/bulk_extraction
-actions+=/potion
-actions+=/use_item,slot=trinket1
-actions+=/use_item,slot=trinket2
-actions+=/variable,name=the_hunt_on_cooldown,value=talent.the_hunt&cooldown.the_hunt.remains|!talent.the_hunt
-actions+=/variable,name=elysian_decree_on_cooldown,value=talent.elysian_decree&cooldown.elysian_decree.remains|!talent.elysian_decree
-actions+=/variable,name=soul_carver_on_cooldown,value=talent.soul_carver&cooldown.soul_carver.remains|!talent.soul_carver
-actions+=/variable,name=fel_devastation_on_cooldown,value=talent.fel_devastation&cooldown.fel_devastation.remains|!talent.fel_devastation
-actions+=/variable,name=fiery_demise_fiery_brand_is_ticking_on_current_target,value=talent.fiery_brand&talent.fiery_demise&dot.fiery_brand.ticking
-actions+=/variable,name=fiery_demise_fiery_brand_is_not_ticking_on_current_target,value=talent.fiery_brand&((talent.fiery_demise&!dot.fiery_brand.ticking)|!talent.fiery_demise)
-actions+=/variable,name=fiery_demise_fiery_brand_is_ticking_on_any_target,value=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand_dot
-actions+=/variable,name=fiery_demise_fiery_brand_is_not_ticking_on_any_target,value=talent.fiery_brand&((talent.fiery_demise&!active_dot.fiery_brand_dot)|!talent.fiery_demise)
-actions+=/variable,name=spirit_bomb_soul_fragments,op=setif,value=variable.spirit_bomb_soul_fragments_in_meta,value_else=variable.spirit_bomb_soul_fragments_not_in_meta,condition=buff.metamorphosis.up
-actions+=/variable,name=cooldown_frailty_requirement,op=setif,value=variable.cooldown_frailty_requirement_aoe,value_else=variable.cooldown_frailty_requirement_st,condition=talent.spirit_bomb&(spell_targets.spirit_bomb>1|variable.fiery_demise_fiery_brand_is_ticking_on_any_target)
-actions+=/the_hunt,if=variable.fiery_demise_fiery_brand_is_not_ticking_on_current_target&debuff.frailty.stack>=variable.cooldown_frailty_requirement
-actions+=/elysian_decree,if=variable.fiery_demise_fiery_brand_is_not_ticking_on_current_target&debuff.frailty.stack>=variable.cooldown_frailty_requirement
-actions+=/soul_carver,if=!talent.fiery_demise&soul_fragments<=3&debuff.frailty.stack>=variable.cooldown_frailty_requirement
-actions+=/soul_carver,if=variable.fiery_demise_fiery_brand_is_ticking_on_current_target&soul_fragments<=3&debuff.frailty.stack>=variable.cooldown_frailty_requirement
-actions+=/fel_devastation,if=variable.fiery_demise_fiery_brand_is_ticking_on_current_target&dot.fiery_brand.remains<3
-actions+=/fiery_brand,if=variable.fiery_demise_fiery_brand_is_not_ticking_on_any_target&variable.the_hunt_on_cooldown&variable.elysian_decree_on_cooldown&((talent.soul_carver&(cooldown.soul_carver.up|cooldown.soul_carver.remains<10))|(talent.fel_devastation&(cooldown.fel_devastation.up|cooldown.fel_devastation.remains<10)))
-actions+=/immolation_aura,if=talent.fiery_demise&variable.fiery_demise_fiery_brand_is_ticking_on_any_target
-actions+=/sigil_of_flame,if=talent.fiery_demise&variable.fiery_demise_fiery_brand_is_ticking_on_any_target
-actions+=/spirit_bomb,if=soul_fragments>=variable.spirit_bomb_soul_fragments&(spell_targets>1|variable.fiery_demise_fiery_brand_is_ticking_on_any_target)
-actions+=/soul_cleave,if=(soul_fragments<=1&spell_targets>1)|spell_targets=1
-actions+=/sigil_of_flame
-actions+=/immolation_aura
-actions+=/fracture
-actions+=/shear
-actions+=/throw_glaive
-actions+=/felblade
+actions+=/metamorphosis,use_off_gcd=1
+actions+=/potion,use_off_gcd=1
+actions+=/call_action_list,name=externals
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=fiery_demise,if=talent.fiery_demise&active_dot.fiery_brand>0
+actions+=/call_action_list,name=maintenance
+actions+=/run_action_list,name=single_target,if=active_enemies<=1
+actions+=/run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5
+actions+=/run_action_list,name=big_aoe,if=active_enemies>=6
+
+actions.big_aoe=fel_devastation,if=talent.collective_anguish.enabled|talent.stoke_the_flames.enabled
+actions.big_aoe+=/the_hunt
+actions.big_aoe+=/elysian_decree
+actions.big_aoe+=/fel_devastation
+actions.big_aoe+=/soul_carver
+actions.big_aoe+=/spirit_bomb,if=soul_fragments>=4
+actions.big_aoe+=/fracture
+actions.big_aoe+=/shear
+actions.big_aoe+=/soul_cleave,if=soul_fragments<1
+actions.big_aoe+=/call_action_list,name=filler
+
+actions.externals=invoke_external_buff,name=symbol_of_hope
+actions.externals+=/invoke_external_buff,name=power_infusion
+
+actions.fiery_demise=immolation_aura
+actions.fiery_demise+=/sigil_of_flame
+actions.fiery_demise+=/felblade,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
+actions.fiery_demise+=/fel_devastation
+actions.fiery_demise+=/soul_carver
+actions.fiery_demise+=/spirit_bomb,if=spell_targets=1&soul_fragments>=5
+actions.fiery_demise+=/spirit_bomb,if=spell_targets>1&spell_targets<=5&soul_fragments>=4
+actions.fiery_demise+=/spirit_bomb,if=spell_targets>=6&soul_fragments>=3
+actions.fiery_demise+=/the_hunt
+actions.fiery_demise+=/elysian_decree
+actions.fiery_demise+=/soul_cleave,if=fury.deficit<=30&!variable.dont_spend_fury
+
+actions.filler=sigil_of_chains,if=talent.cycle_of_binding.enabled&talent.sigil_of_chains.enabled
+actions.filler+=/sigil_of_misery,if=talent.cycle_of_binding.enabled&talent.sigil_of_misery.enabled
+actions.filler+=/sigil_of_silence,if=talent.cycle_of_binding.enabled&talent.sigil_of_silence.enabled
+actions.filler+=/throw_glaive
+
+actions.maintenance=fiery_brand,if=(active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<(execute_time+gcd.remains)|cooldown.soul_carver.remains<(execute_time+gcd.remains)|cooldown.fel_devastation.remains<(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<(execute_time+gcd.remains))
+actions.maintenance+=/sigil_of_flame
+actions.maintenance+=/spirit_bomb,if=soul_fragments>=5
+actions.maintenance+=/immolation_aura
+actions.maintenance+=/bulk_extraction,if=prev_gcd.1.spirit_bomb
+actions.maintenance+=/felblade,if=fury.deficit>=40
+actions.maintenance+=/fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
+actions.maintenance+=/shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
+actions.maintenance+=/spirit_bomb,if=fury.deficit<30&((spell_targets>=2&soul_fragments>=5)|(spell_targets>=6&soul_fragments>=4))&!variable.dont_spend_fury
+actions.maintenance+=/soul_cleave,if=fury.deficit<30&soul_fragments<=3&!variable.dont_spend_fury
+
+actions.single_target=the_hunt
+actions.single_target+=/soul_carver
+actions.single_target+=/fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)
+actions.single_target+=/elysian_decree
+actions.single_target+=/fel_devastation
+actions.single_target+=/soul_cleave,if=talent.focused_cleave&!variable.dont_spend_fury
+actions.single_target+=/fracture
+actions.single_target+=/shear
+actions.single_target+=/soul_cleave,if=!variable.dont_spend_fury
+actions.single_target+=/call_action_list,name=filler
+
+actions.small_aoe=the_hunt
+actions.small_aoe+=/fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)
+actions.small_aoe+=/elysian_decree
+actions.small_aoe+=/fel_devastation
+actions.small_aoe+=/soul_carver
+actions.small_aoe+=/spirit_bomb,if=soul_fragments>=5
+actions.small_aoe+=/soul_cleave,if=talent.focused_cleave&soul_fragments<=2
+actions.small_aoe+=/fracture
+actions.small_aoe+=/shear
+actions.small_aoe+=/soul_cleave,if=soul_fragments<=2
+actions.small_aoe+=/call_action_list,name=filler
+
+actions.trinkets=use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs
+actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(variable.trinket_1_buffs|trinket.1.cooldown.remains)&(variable.trinket_2_buffs|trinket.2.cooldown.remains)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_2_exclude|trinket.2.cooldown.remains|!trinket.2.has_cooldown|variable.trinket_2_buffs)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_1_exclude|trinket.1.cooldown.remains|!trinket.1.has_cooldown|variable.trinket_1_buffs)
 
 head=kinslayers_hood,id=202524,bonus_id=9410/1504/9413,gem_id=192945
 neck=torc_of_passed_time,id=201759,bonus_id=8782,ilevel=447,gem_id=192945/192945/192945,crafted_stats=36/32
@@ -84,21 +130,21 @@ hands=kinslayers_bloodstained_grips,id=202525,bonus_id=9410/1501,ilevel=450
 waist=kinslayers_sash,id=202521,ilevel=450,gem_id=192985
 legs=kinslayers_legguards,id=202523,bonus_id=9410/1504,enchant_id=6496
 feet=slimy_expulsion_boots,id=193451,ilevel=447,enchant_id=6613
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
-finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,enchant_id=6550
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192945,enchant_id=6556
+finger2=onyx_impostors_birthright,id=204398,bonus_id=4800/4786/1498,gem_id=192945,enchant_id=6556
 trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=4800/4786/1498
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
-main_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6643
+main_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6655
 off_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6655
 
 # Gear Summary
-# gear_ilvl=445.31
+# gear_ilvl=446.94
 # gear_agility=6236
-# gear_stamina=21754
-# gear_crit_rating=3559
-# gear_haste_rating=3995
+# gear_stamina=22159
+# gear_crit_rating=5226
+# gear_haste_rating=3923
 # gear_mastery_rating=1224
-# gear_versatility_rating=2191
+# gear_versatility_rating=2158
 # gear_armor=4003
 # gear_bonus_armor=141
 # set_bonus=tier30_2pc=1

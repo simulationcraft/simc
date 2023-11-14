@@ -16,10 +16,10 @@ except ImportError:
 from helper import Test, TestGroup, run, find_profiles
 
 FIGHT_STYLES = ("Patchwerk", "DungeonSlice", "HeavyMovement",)
-SEASON = Season.Season.SEASON_1
+SEASON = Season.Season.SEASON_2
 
 
-def test_trinkets(klass: str, path: str):
+def test_trinkets(klass: str, path: str, enable: dict):
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     trinkets = Trinket.get_trinkets_for_spec(spec)
     seasonal_trinkets = [t for t in trinkets if SEASON in t.seasons]
@@ -34,6 +34,8 @@ def test_trinkets(klass: str, path: str):
         Test(
             "{} ({})".format(trinket.name, trinket.item_id),
             group=grp,
+            all_talents=enable['talents'],
+            all_sets=enable['sets'],
             args=[
                 (
                     "trinket1",
@@ -71,6 +73,16 @@ parser.add_argument(
     type=str,
     help="Fight style used for trinket simulations.",
 )
+parser.add_argument(
+    "--enable-all-talents",
+    action="store_true",
+    help="Enable all talent at maximum rank",
+)
+parser.add_argument(
+    "--enable-all-sets",
+    action="store_true",
+    help="Enable all set bonuses",
+)
 # parser.add_argument('--soulbind-fight-style', default='DungeonSlice', type=str,
 #                     help='Fight style used for soulbind simulations.')
 parser.add_argument(
@@ -87,6 +99,7 @@ klass = args.specialization
 print(" ".join(klass.split("_")))
 
 tests = []
+enable = { 'talents': args.enable_all_talents, 'sets': args.enable_all_sets }
 profiles = list(find_profiles(klass))
 if args.max_profiles_to_use != 0:
     profiles = profiles[: args.max_profiles_to_use]
@@ -97,7 +110,7 @@ if len(profiles) == 0:
 for profile, path in profiles:
     for test in args.tests:
         if test in available_tests:
-            available_tests[test](klass, path)
+            available_tests[test](klass, path, enable)
         else:
             print("Could not find test {}".format(test))
 

@@ -67,6 +67,7 @@ void primal_ritual_shell( special_effect_t& );
 void seasoned_hunters_trophy( special_effect_t& );
 void desperate_invokers_codex( special_effect_t& );
 void iceblood_deathsnare( special_effect_t& );
+void fractured_crystalspine_quill( special_effect_t& );
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& );
@@ -82,6 +83,7 @@ void elemental_lariat( special_effect_t& );
 void flaring_cowl( special_effect_t& );
 void thriving_thorns( special_effect_t& );
 void ever_decaying_spores( special_effect_t& );
+void dreamtenders_charm( special_effect_t& );
 }
 
 namespace sets

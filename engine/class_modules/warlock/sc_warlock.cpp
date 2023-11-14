@@ -137,6 +137,17 @@ struct drain_life_t : public warlock_spell_t
     return m;
   }
 
+  void tick( dot_t* d ) override
+  {
+    warlock_spell_t::tick( d );
+
+    if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.shadow_invocation->ok() && rng().roll( p()->shadow_invocation_proc_chance ) )
+    {
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
+      p()->procs.shadow_invocation->occur();
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
     p()->buffs.drain_life->expire();
@@ -162,17 +173,6 @@ struct drain_life_t : public warlock_spell_t
   }
 };
 
-// This is the damage spell which can be triggered on Corruption ticks for Harvester of Souls
-// NOTE: Spec aura is not affecting this spell. Last checked at end of beta 2022-11-27
-struct harvester_of_souls_t : public warlock_spell_t
-{
-  harvester_of_souls_t( warlock_t* p )
-    : warlock_spell_t( "Harvester of Souls", p, p->talents.harvester_of_souls_dmg )
-  {
-    background = dual = true;
-  }
-};
-
 struct doom_blossom_t : public warlock_spell_t
 {
   doom_blossom_t( warlock_t* p ) : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
@@ -186,18 +186,10 @@ struct corruption_t : public warlock_spell_t
 {
   struct corruption_dot_t : public warlock_spell_t
   {
-    harvester_of_souls_t* harvester_proc;
-    doom_blossom_t* doom_blossom_proc;
-
-    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
-      harvester_proc( new harvester_of_souls_t( p ) ),
-      doom_blossom_proc( new doom_blossom_t( p ) )
+    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
     {
       tick_zero = false;
       background = dual = true;
-      
-      add_child( harvester_proc );
-      add_child( doom_blossom_proc );
 
       if ( p->talents.absolute_corruption->ok() )
       {
@@ -227,7 +219,7 @@ struct corruption_t : public warlock_spell_t
           // Last checked 09-28-2020.
           double increment_max = 0.13;
 
-          double active_corruptions = p()->get_active_dots( internal_id );
+          double active_corruptions = p()->get_active_dots( d );
           increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
 
           p()->corruption_accumulator += rng().range( 0.0, increment_max );
@@ -241,19 +233,10 @@ struct corruption_t : public warlock_spell_t
           }
         }
 
-        if ( p()->talents.harvester_of_souls->ok() && rng().roll( p()->talents.harvester_of_souls->effectN( 1 ).percent() ) )
+        if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.shadow_invocation->ok() && rng().roll( p()->shadow_invocation_proc_chance ) )
         {
-          harvester_proc->execute_on_target( d->state->target );
-          p()->procs.harvester_of_souls->occur();
-        }
-
-        if ( p()->talents.doom_blossom->ok() && td( d->state->target )->dots_unstable_affliction->is_ticking() )
-        {
-          if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
-          {
-            doom_blossom_proc->execute_on_target( d->state->target );
-            p()->procs.doom_blossom->occur();
-          }
+          p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
+          p()->procs.shadow_invocation->occur();
         }
       }
     }
@@ -288,24 +271,10 @@ struct corruption_t : public warlock_spell_t
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    if ( !seed_action )
+    if ( !seed_action && p->warlock_base.xavian_teachings->ok() )
     {
-      if ( p->min_version_check( VERSION_10_0_7 ) )
-      {
-        if ( p->warlock_base.xavian_teachings->ok() )
-        {
-          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Spell uses this effect in base spell for damage
-          base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
-        }
-      }
-      else
-      {
-        if ( p->talents.xavian_teachings->ok() )
-        {
-          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Talent uses this effect in base spell for damage
-          base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
-        }
-      }
+      spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Spell uses this effect in base spell for damage
+      base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
     }
   }
 
@@ -345,11 +314,15 @@ struct seed_of_corruption_t : public warlock_spell_t
   {
     corruption_t* corruption;
     bool cruel_epiphany;
+    bool umbrafire_kindling;
+    doom_blossom_t* doom_blossom;
 
     seed_of_corruption_aoe_t( warlock_t* p )
       : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
         corruption( new corruption_t( p, "", true ) ),
-        cruel_epiphany( false )
+        cruel_epiphany( false ),
+        umbrafire_kindling( false ),
+        doom_blossom( new doom_blossom_t( p ) )
     {
       aoe = -1;
       background = dual = true;
@@ -359,6 +332,8 @@ struct seed_of_corruption_t : public warlock_spell_t
       corruption->background = true;
       corruption->dual = true;
       corruption->base_costs[ RESOURCE_MANA ] = 0;
+
+      add_child( doom_blossom );
     }
 
     void impact( action_state_t* s ) override
@@ -372,6 +347,12 @@ struct seed_of_corruption_t : public warlock_spell_t
         {
           tdata->soc_threshold = 0;
           tdata->dots_seed_of_corruption->cancel();
+        }
+
+        if ( p()->talents.doom_blossom->ok() && tdata->dots_unstable_affliction->is_ticking() )
+        {
+          doom_blossom->execute_on_target( s->target );
+          p()->procs.doom_blossom->occur();
         }
 
         // 2022-09-24 Agonizing Corruption does not apply Agony, only increments existing ones
@@ -397,17 +378,22 @@ struct seed_of_corruption_t : public warlock_spell_t
       if ( p()->buffs.cruel_epiphany->check() && cruel_epiphany )
         m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
 
+      if ( umbrafire_kindling )
+        m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 2 ).percent();
+
       return m;
     }
   };
 
   seed_of_corruption_aoe_t* explosion;
   seed_of_corruption_aoe_t* epiphany_explosion;
+  seed_of_corruption_aoe_t* umbrafire_explosion;
 
   seed_of_corruption_t( warlock_t* p, util::string_view options_str )
     : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
       explosion( new seed_of_corruption_aoe_t( p ) ),
-      epiphany_explosion( new seed_of_corruption_aoe_t( p ) )
+      epiphany_explosion( new seed_of_corruption_aoe_t( p ) ),
+      umbrafire_explosion( new seed_of_corruption_aoe_t( p ) )
   {
     parse_options( options_str );
     may_crit = false;
@@ -419,6 +405,9 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     epiphany_explosion->cruel_epiphany = true;
     add_child( epiphany_explosion );
+
+    umbrafire_explosion->umbrafire_kindling = true;
+    add_child( umbrafire_explosion );
 
     if ( p->talents.sow_the_seeds->ok() )
       aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
@@ -461,6 +450,8 @@ struct seed_of_corruption_t : public warlock_spell_t
     // 2022-10-17: Cruel Epiphany provides the damage bonus on explosion, but decrements on cast
     // TOCHECK, as this can create unfortunate situations in-game and may be considered a bug
     p()->buffs.cruel_epiphany->decrement();
+
+    p()->buffs.umbrafire_kindling->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -474,6 +465,11 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     if ( s->chain_target == 0 && p()->buffs.cruel_epiphany->check() )
       td( s->target )->debuffs_cruel_epiphany->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
+    {
+      td( s->target )->debuffs_umbrafire_kindling->trigger();
+    }
   }
 
   // If Seed of Corruption is refreshed on a target, it will extend the duration
@@ -489,10 +485,16 @@ struct seed_of_corruption_t : public warlock_spell_t
 
   void last_tick( dot_t* d ) override
   {
+    // Note: We're PROBABLY okay to do this as an if/else if on tier sets because you can't have two separate 4pc bonuses at once
     if ( td( d->target )->debuffs_cruel_epiphany->check() )
     {
       epiphany_explosion->set_target( d->target );
       epiphany_explosion->schedule_execute();
+    }
+    else if ( td( d->target )->debuffs_umbrafire_kindling->check() )
+    {
+      umbrafire_explosion->set_target( d->target );
+      umbrafire_explosion->schedule_execute();
     }
     else
     {
@@ -501,6 +503,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     }
 
     td( d->target )->debuffs_cruel_epiphany->expire();
+    td( d->target )->debuffs_umbrafire_kindling->expire();
 
     warlock_spell_t::last_tick( d );
   }
@@ -541,13 +544,10 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    if ( p()->talents.fel_covenant->ok() )
-      p()->buffs.fel_covenant->trigger();
-
-    if ( p()->talents.hounds_of_war->ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
+    if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.shadow_invocation->ok() && rng().roll( p()->shadow_invocation_proc_chance ) )
     {
-      p()->cooldowns.call_dreadstalkers->reset( true );
-      p()->procs.hounds_of_war->occur();
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( target );
+      p()->procs.shadow_invocation->occur();
     }
 
     p()->buffs.stolen_power_final->expire();
@@ -607,6 +607,14 @@ struct soul_rot_t : public warlock_spell_t
   {
     parse_options( options_str );
     aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
+
+    if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B2 ) )
+      apply_affecting_aura( p->sets->set( WARLOCK_AFFLICTION, T31, B2 ) );
+
+    if ( p->min_version_check( VERSION_10_2_0 ) && p->talents.souleaters_gluttony->ok() )
+    {
+      cooldown->duration += p->talents.souleaters_gluttony->effectN( 1 ).time_value();
+    }
   }
 
   soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
@@ -622,6 +630,9 @@ struct soul_rot_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p()->buffs.soul_rot->trigger();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
+      p()->buffs.umbrafire_kindling->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -841,15 +852,15 @@ struct soulburn_t : public warlock_spell_t
       {
         if ( p()->buffs.nether_portal->up() )
         {
-          p()->proc_actions.summon_random_demon->execute();
+          p()->proc_actions.summon_nether_portal_demon->execute();
           p()->procs.portal_summon->occur();
 
-          if ( p()->talents.guldans_ambition->ok() )
+          if ( p()->talents.guldans_ambition->ok() && !p()->min_version_check( VERSION_10_2_0 ) )
             p()->buffs.nether_portal_total->trigger();
 
-          if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
+          if ( !p()->min_version_check( VERSION_10_2_0 ) && p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
           {
-            p()->proc_actions.summon_random_demon->execute();
+            p()->proc_actions.summon_nether_portal_demon->execute();
             p()->procs.nerzhuls_volition->occur();
 
             if ( p()->talents.guldans_ambition->ok() )
@@ -981,14 +992,18 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_dread_touch = make_buff( *this, "dread_touch", p.talents.dread_touch_debuff )
                             ->set_default_value( p.talents.dread_touch_debuff->effectN( 1 ).percent() );
 
-  debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany" );
+  debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany_dummy" );
 
   debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
                           ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  debuffs_umbrafire_kindling = make_buff( *this, "umbrafire_kindling_dummy" );
+
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
+
+  dots_searing_bolt = target->get_dot( "searing_bolt", &p );
 
   debuffs_eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
                             ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
@@ -1027,9 +1042,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Demonology
   dots_doom = target->get_dot( "doom", &p );
 
-  debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
-                                 ->set_default_value_from_effect( 1 );
-
   debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
                                            ->set_default_value_from_effect( 1 );
 
@@ -1038,6 +1050,15 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_kazaaks_final_curse = make_buff( *this, "kazaaks_final_curse", p.talents.kazaaks_final_curse )
                                     ->set_default_value( 0 );
+
+  debuffs_doom_brand = make_buff( *this, "doom_brand", p.tier.doom_brand_debuff )
+                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                           ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
+                               if ( cur == 0 )
+                               {
+                                 p.proc_actions.doom_brand_explosion->execute_on_target( b->player );
+                               }
+                             } );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -1166,7 +1187,10 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
     cdf_accumulator( 0.0 ),
+    dimensional_accumulator( 0.0 ),
     incinerate_last_target_count( 0 ),
+    shadow_invocation_proc_chance( 0.0 ),
+    doom_brand_accumulator( 0.0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -1177,14 +1201,15 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     procs(),
     initial_soul_shards( 3 ),
-    disable_auto_felstorm( false ),
-    default_pet()
+    default_pet(),
+    disable_auto_felstorm( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.darkglare = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
+  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
@@ -1279,7 +1304,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
 
-    if ( talents.summon_demonic_tyrant->ok() )
+    if ( talents.summon_demonic_tyrant->ok() && !min_version_check( VERSION_10_2_0 ) )
       m *= 1.0 + buffs.demonic_power->check_value();
 
     if ( buffs.rite_of_ruvaraad->check() )
@@ -1355,32 +1380,6 @@ double warlock_t::composite_melee_crit_chance() const
     m += talents.backlash->effectN( 1 ).percent();
 
   return m;
-}
-
-double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
-{
-  double prev = resources.current[ resource_type ];
-
-  double amt = player_t::resource_gain( resource_type, amount, source, action );
-
-  if ( resource_type == RESOURCE_SOUL_SHARD && !min_version_check( VERSION_10_0_7 ) )
-  {
-    bool filled = ( resources.current[ resource_type ] - std::floor( prev ) >= 1.0 );
-
-    if ( filled && talents.demonic_inspiration->ok() && warlock_pet_list.active )
-    {
-      warlock_pet_list.active->buffs.demonic_inspiration->trigger();
-      procs.demonic_inspiration->occur();
-    }
-
-    if ( filled && talents.wrathful_minion->ok() && warlock_pet_list.active )
-    {
-      warlock_pet_list.active->buffs.wrathful_minion->trigger();
-      procs.wrathful_minion->occur();
-    }
-  }
-
-  return amt;
 }
 
 // Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
@@ -1551,7 +1550,8 @@ void warlock_t::create_buffs()
   create_buffs_affliction();
 
   buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
-                       ->set_cooldown( 0_ms );
+                       ->set_cooldown( 0_ms )
+                       ->set_duration( talents.soul_rot->duration() + sets->set( WARLOCK_AFFLICTION, T31, B2 )->effectN( 2 ).time_value() );
 
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
                                ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
@@ -1578,6 +1578,8 @@ void warlock_t::create_buffs()
 void warlock_t::init_spells()
 {
   player_t::init_spells();
+
+  version_10_2_0_data = find_spell( 422054 ); // For 10.2 version checking, new Shadow Invocation talent
 
   // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
   // find_class_spell - active_spells.inc
@@ -1660,9 +1662,6 @@ void warlock_t::init_spells()
 
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
   talents.soulburn_buff = find_spell( 387626 );
-
-  version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
-  version_10_1_0_data = find_spell( 409652 ); // For 10.1.0 version checking, Umbrafire Embers tier buff
 }
 
 void warlock_t::init_rng()
@@ -1881,7 +1880,10 @@ void warlock_t::reset()
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   corruption_accumulator             = rng().range( 0.0, 0.99 );
   cdf_accumulator                    = rng().range( 0.0, 0.99 );
+  dimensional_accumulator            = rng().range( 0.0, 0.99 );
+  doom_brand_accumulator             = rng().range( 0.0, 0.99 );
   incinerate_last_target_count       = 0;
+  shadow_invocation_proc_chance        = 0.2;
   wild_imp_spawns.clear();
 }
 
@@ -2035,10 +2037,11 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_2_0:
+      return !( version_10_2_0_data == spell_data_t::not_found() );
+    case VERSION_10_1_5:
     case VERSION_10_1_0:
-      return !( version_10_1_0_data == spell_data_t::not_found() );
     case VERSION_10_0_7:
-      return !( version_10_0_7_data == spell_data_t::not_found() );
     case VERSION_10_0_5:
     case VERSION_10_0_0:
     case VERSION_ANY:
@@ -2148,6 +2151,22 @@ std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name
       } );
     } );
   }
+  else if ( name_str == "last_cast_igb_imps" )
+  {
+    return make_fn_expr( "last_cast_igb_imps", [ this ]() {
+      return warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
+        return pet->resources.current[ RESOURCE_ENERGY ] < 32 && pet->buffs.imp_gang_boss->check();
+      } );
+    } );
+  }
+  else if ( name_str == "two_cast_igb_imps" )
+  {
+    return make_fn_expr( "two_cast_igb_imps", [ this ]() {
+      return warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
+        return pet->resources.current[ RESOURCE_ENERGY ] < 48 && pet->buffs.imp_gang_boss->check();
+      } );
+    } );
+  }
   else if ( name_str == "igb_ratio" )
   {
     return make_fn_expr( "igb_ratio", [ this ]() {
@@ -2166,14 +2185,13 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 {
   if ( name_str == "time_to_shard" )
   {
-    auto agony_id = find_action_id( "agony" );
-
-    return make_fn_expr( name_str, [ this, agony_id ]() {
+    return make_fn_expr( name_str, [ this]() {
       auto td               = get_target_data( target );
-      double active_agonies = get_active_dots( agony_id );
+      dot_t* agony          = td->dots_agony;
+      double active_agonies = get_active_dots( agony );
       if ( sim->debug )
         sim->out_debug.printf( "active agonies: %f", active_agonies );
-      dot_t* agony = td->dots_agony;
+      
       if ( active_agonies == 0 || !agony->current_action )
       {
         return std::numeric_limits<double>::infinity();
@@ -2203,6 +2221,14 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     return create_pet_expression( name_str );
   }
   else if ( name_str == "two_cast_imps" )
+  {
+    return create_pet_expression( name_str );
+  }
+  else if ( name_str == "last_cast_igb_imps" )
+  {
+    return create_pet_expression( name_str );
+  }
+  else if ( name_str == "two_cast_igb_imps" )
   {
     return create_pet_expression( name_str );
   }
@@ -2309,7 +2335,7 @@ void warlock_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.sargerei_technique );
   action.apply_affecting_aura( talents.dark_virtuosity );
   action.apply_affecting_aura( talents.kindled_malice );
-
+  action.apply_affecting_aura( talents.xavius_gambit ); // TOCHECK: Should this just go in Unstable Affliction struct for clarity?
 }
 
 struct warlock_module_t : public module_t
@@ -2367,7 +2393,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     illidari_satyrs( "illidari_satyr", w ),
     eyes_of_guldan( "eye_of_guldan", w ),
     prince_malchezaar( "prince_malchezaar", w ),
-    pit_lords( "pit_lord", w )
+    pit_lords( "pit_lord", w ),
+    doomfiends( "doomfiend", w )
 {
 }
 }  // namespace warlock

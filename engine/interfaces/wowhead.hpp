@@ -16,6 +16,7 @@ enum wowhead_e
 {
   LIVE,
   PTR,
+  PTR2,
   BETA
 };
 

@@ -1,4 +1,4 @@
-// Gem properties, wow build 10.1.5.49516
+// Gem properties, wow build 10.2.0.52095
 static const std::array<gem_property_data_t, 2084> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
@@ -349,7 +349,7 @@ static const std::array<gem_property_data_t, 2084> __ptr_gem_property_data { {
   { 1214,  3445, 0x0000000c }, // +$k1 Haste and +$k2 Versatility
   { 1215,  3446, 0x00000002 }, // +$k1 Strength
   { 1216,  3447, 0x00000002 }, // +$k1 Agility
-  { 1217,     0, 0x00000002 },
+  { 1217,  7010, 0x00000002 }, // +$k1 Intellect
   { 1218,  3449, 0x00000002 }, // +$k1 Agility
   { 1219,  3450, 0x00000004 }, // +$k1 Dodge
   { 1220,  3451, 0x00000002 }, // +$k1 Parry

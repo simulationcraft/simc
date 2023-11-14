@@ -42,12 +42,15 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> the_expendables;
     propagate_const<buff_t*> infernal_command;
     propagate_const<buff_t*> soul_glutton;
+    propagate_const<buff_t*> nerzhuls_volition; // Damage buff on Nether Portal demons
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
+    propagate_const<buff_t*> reign_of_tyranny; // 10.2 replaces the old buff behavior for this talent
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     propagate_const<buff_t*> festering_hatred; // Dummy buff for Immutable Hatred increment tracking
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     propagate_const<buff_t*> fury_of_ruvaraad; // T30 Demo 4pc buff for Grimoire: Felguard
+    propagate_const<buff_t*> demonic_power; // Starting in 10.2, this buff is on the pets rather than the player
   } buffs;
 
   bool is_main_pet          = false;
@@ -58,7 +61,6 @@ struct warlock_pet_t : public pet_t
   void create_buffs() override;
   void schedule_ready( timespan_t = 0_ms, bool = false ) override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_haste() const override;
   double composite_spell_speed() const override;
   double composite_melee_speed() const override;
@@ -371,6 +373,7 @@ struct felguard_pet_t : public warlock_pet_t
     action_t* proc;
     player_t* target;
   } immutable_hatred;
+  action_t* hatred_proc; // New for 10.2 version, scrap previous struct when 10.2 goes live
   cooldown_t* felstorm_cd;
   cooldown_t* dstr_cd;
   int demonic_strength_executes;
@@ -387,6 +390,9 @@ struct felguard_pet_t : public warlock_pet_t
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
   double composite_melee_speed() const override;
+  double composite_melee_crit_chance() const override;
+  double composite_spell_crit_chance() const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
 
   void queue_ds_felstorm();
 };
@@ -444,9 +450,11 @@ struct dreadstalker_t : public warlock_pet_t
 struct vilefiend_t : public warlock_simple_pet_t
 {
   int bile_spit_executes;
+  buff_t* caustic_presence;
 
   vilefiend_t( warlock_t* );
   void init_base_stats() override;
+  void create_buffs() override;
   void arise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
@@ -464,10 +472,18 @@ struct pit_lord_t : public warlock_pet_t
 {
   double soul_glutton_damage_bonus;
   pit_lord_t( warlock_t*, util::string_view = "pit_lord" );
+  action_t* create_action( util::string_view, util::string_view ) override;
   void init_base_stats() override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
   double composite_melee_speed() const override;
+};
+
+struct doomfiend_t : public warlock_pet_t
+{
+  doomfiend_t( warlock_t*, util::string_view = "doomfiend" );
+  action_t* create_action( util::string_view, util::string_view ) override;
+  void init_base_stats() override;
 };
 
 namespace random_demons

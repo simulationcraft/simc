@@ -36,6 +36,7 @@
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
 #include "player/covenant.hpp"
+#include "player/ground_aoe.hpp"
 #include "player/instant_absorb.hpp"
 #include "player/pet.hpp"
 #include "player/player_demise_event.hpp"
@@ -472,6 +473,7 @@ struct leech_t : public heal_t
   {
     background = proc = true;
     callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
+    target = player;
   }
 
   void init() override
@@ -479,7 +481,27 @@ struct leech_t : public heal_t
     heal_t::init();
 
     snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT;
+
+    player->register_combat_begin( []( player_t* p ) {
+      make_repeating_event( *p->sim,
+          [ p ] { return p->base_gcd * p->cache.spell_speed(); },
+          [ p ] {
+            if ( p->leech_pool > 0 )
+              p->spells.leech->schedule_execute();
+          } );
+    } );
   }
+
+  void execute() override
+  {
+    heal_t::execute();
+
+    player->leech_pool = 0;
+  }
+
+  double base_da_min( const action_state_t* ) const override { return player->leech_pool; }
+
+  double base_da_max( const action_state_t* ) const override { return player->leech_pool; }
 };
 
 struct invulnerable_debuff_t : public buff_t
@@ -1061,13 +1083,14 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     default_target( nullptr ),
     target( nullptr ),
     initialized( false ),
+    precombat_initialized( false ),
     potion_used( false ),
+    leech_pool( 0 ),
     region_str( s->default_region_str ),
     server_str( s->default_server_str ),
     origin_str(),
-    timeofday( DAY_TIME ),  // Set to Day by Default since in raid it always switches to Day, user can override.
-    zandalari_loa(
-        PAKU ),  // Set loa to paku by default (as it has some gain for any role if not optimal), user can override
+    timeofday( NIGHT_TIME ),  // Depends on server time, default to night that's more common for raid hours
+    zandalari_loa( PAKU ),  // Default to Paku as it has some non-zero dps benefit for all specs
     vulpera_tricks( CORROSIVE ),  // default trick for damage
     gcd_ready( timespan_t::zero() ),
     base_gcd( timespan_t::from_seconds( 1.5 ) ),
@@ -1123,6 +1146,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     off_gcd_ready( timespan_t::min() ),
     cast_while_casting_ready( timespan_t::min() ),
     in_combat( false ),
+    in_boss_encounter( 1 ),
     action_queued( false ),
     first_cast( true ),
     last_foreground_action( nullptr ),
@@ -1173,12 +1197,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     sets( ( !is_pet() && !is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
     meta_gem( META_GEM_NONE ),
     matching_gear( false ),
-    karazhan_trinkets_paired( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
-    legendary_tank_cloak_cd( nullptr ),
-    warlords_unseeing_eye( 0.0 ),
-    warlords_unseeing_eye_stats(),
     auto_attack_modifier( 0.0 ),
     auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
@@ -1201,6 +1221,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     racials(),
     passive_values(),
     active_during_iteration( false ),
+    spec_spell( spell_data_t::nil() ),
     _mastery( &spelleffect_data_t::nil() ),
     cache( this ),
     resource_regeneration( regen_type::STATIC ),
@@ -1300,6 +1321,16 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
       "dps.\n"
       "# Feel free to edit, adapt and improve it to your own needs.\n"
       "# SimulationCraft is always looking for updates and improvements to the default action lists.\n";
+
+  if ( !is_pet() && !is_enemy() )
+  {
+    sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+      for ( auto& pet : active_pets )
+      {
+        pet->update_stats();
+      }
+    } );
+  }
 }
 
 // Added in source file to get full definitions of all objects to destruct here;
@@ -2512,9 +2543,9 @@ static bool generate_tree_nodes( player_t* player,
 // Different entries within the same node are allowed to have non-unique selection indices. Every new build, it seems
 // random which node becomes the first choice. Manually resolve such conflicts here.
 // ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
-static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
+static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool /* is_ptr */ )
 {
-  auto get_index = [ is_ptr ]( const trait_data_t* t ) -> short {
+  auto get_index = [ /* is_ptr */ ]( const trait_data_t* t ) -> short {
     return t->selection_index;
   };
 
@@ -2785,25 +2816,65 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   }
 }
 
+static void enable_all_talents( player_t* player )
+{
+  std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
+
+  generate_tree_nodes( player, tree_nodes );
+
+  for ( auto& [ id, node ] : tree_nodes )
+  {
+    for ( auto& entry : node )
+    {
+      auto trait = entry.first;
+
+      // assume 'off-screen' nodes are invalid
+      if ( trait->row <= 0 || trait->col <= 0 || trait->max_ranks <= 0 )
+        continue;
+
+      if ( std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) ||
+           range::contains( trait->id_spec, player->specialization() ) )
+      {
+        player->sim->print_debug( "Player {} adding talent {}", player->name(), trait->name );
+        player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
+                                            trait->max_ranks );
+      }
+    }
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
 
-  if ( !talents_str.empty() && sim->talent_input_format == talent_format::BLIZZARD )
+  if ( !is_player() )
   {
-    parse_traits_hash( talents_str, this );
+    sim->print_debug( "Not a player, halting further talent initialization." );
+    return;
   }
 
-  if ( !talent_overrides_str.empty() )
+  if ( sim->enable_all_talents )
   {
-    for ( auto& split : util::string_split<util::string_view>( talent_overrides_str, "/" ) )
+    enable_all_talents( this );
+  }
+  else
+  {
+    if ( !talents_str.empty() && sim->talent_input_format == talent_format::BLIZZARD )
     {
-      override_talent( split );
+      parse_traits_hash( talents_str, this );
     }
-  }
 
-  parse_traits( talent_tree::CLASS, class_talents_str, this );
-  parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
+    if ( !talent_overrides_str.empty() )
+    {
+      for ( auto& split : util::string_split<util::string_view>( talent_overrides_str, "/" ) )
+      {
+        override_talent( split );
+      }
+    }
+
+    parse_traits( talent_tree::CLASS, class_talents_str, this );
+    parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
+  }
 
   // Generate talent effect overrides based on parsed trait information
   for ( const auto& player_trait : player_traits )
@@ -2931,8 +3002,10 @@ void player_t::init_spells()
   racials.brush_it_off          = find_racial_spell( "Brush It Off" );
   racials.awakened              = find_racial_spell( "Awakened" );
 
-  if ( !is_enemy() )
+  if ( is_player() )
   {
+    spec_spell = find_spell( util::specialization_string( specialization() ) );
+
     const spell_data_t* s = find_mastery_spell( specialization() );
     if ( s->ok() )
       _mastery = &( s->effectN( 1 ) );
@@ -2945,12 +3018,11 @@ void player_t::init_gains()
   sim->print_debug( "Initializing gains for {}.", *this );
 
   gains.arcane_torrent      = get_gain( "arcane_torrent" );
-  gains.endurance_of_niuzao = get_gain( "endurance_of_niuzao" );
   for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     std::string name = util::resource_type_string( r );
     name += "_regen";
-    gains.resource_regen[ r ] = get_gain( name );
+    gains.resource_regen[ r ] = get_gain( util::inverse_tokenize( name ) );
   }
   gains.health             = get_gain( "external_healing" );
   gains.mana_potion        = get_gain( "mana_potion" );
@@ -2959,7 +3031,6 @@ void player_t::init_gains()
   gains.vampiric_embrace   = get_gain( "vampiric_embrace" );
   gains.leech              = get_gain( "leech" );
   gains.embrace_of_bwonsamdi = get_gain( "embrace_of_bwonsamdi" );
-  gains.urh_restoration    = get_gain( "urh_restoration" );
 }
 
 void player_t::init_procs()
@@ -3187,13 +3258,9 @@ void player_t::init_background_actions()
 {
   if ( !is_enemy() )
   {
-    const spell_data_t* s = find_mastery_spell( specialization() );
-    if ( s->ok() )
-      _mastery = &( s->effectN( 1 ) );
-
-    if (record_healing())
+    if ( record_healing() )
     {
-      spells.leech = new leech_t(this);
+      spells.leech = new leech_t( this );
     }
   }
 }
@@ -3486,17 +3553,18 @@ void player_t::init_assessors()
   // Leech, if the player has leeching enabled (disabled by default)
   if ( spells.leech )
   {
-    assessor_out_damage.add( assessor::LEECH, [this]( result_amount_type, action_state_t* state ) {
+    assessor_out_damage.add( assessor::LEECH, [ this ]( result_amount_type, action_state_t* state ) {
       // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
       // break in the future if we ever decide to not separate heal and damage assessing.
       double leech_pct = 0;
-      if ( ( state->result_type == result_amount_type::DMG_DIRECT || state->result_type == result_amount_type::DMG_OVER_TIME ) && state->result_amount > 0 &&
-           ( leech_pct = state->action->composite_leech( state ) ) > 0 )
+
+      if ( ( state->result_type == result_amount_type::DMG_DIRECT ||
+             state->result_type == result_amount_type::DMG_OVER_TIME ) &&
+           state->result_amount > 0 && ( leech_pct = state->action->composite_leech( state ) ) > 0 )
       {
-        double leech_amount       = leech_pct * state->result_amount;
-        spells.leech->base_dd_min = spells.leech->base_dd_max = leech_amount;
-        spells.leech->schedule_execute();
+        leech_pool += leech_pct * state->result_amount;
       }
+
       return assessor::CONTINUE;
     } );
   }
@@ -3511,7 +3579,7 @@ void player_t::init_assessors()
     proc_types pt   = state->proc_type();
     proc_types2 pt2 = state->impact_proc_type2();
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], state->action, state );
+      trigger_callbacks( pt, pt2, state->action, state );
 
     return assessor::CONTINUE;
   } );
@@ -3804,122 +3872,43 @@ void player_t::create_buffs()
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
     // Racials
-    buffs.berserking = make_buff( this, "berserking", find_spell( 26297 ) )->add_invalidate( CACHE_HASTE );
-    buffs.stoneform  = make_buff( this, "stoneform", find_spell( 65116 ) );
-    buffs.blood_fury = make_buff<stat_buff_t>( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
+    buffs.berserking = make_buff_fallback( race == RACE_TROLL, this, "berserking", find_spell( 26297 ) )
+                           ->add_invalidate( CACHE_HASTE );
+
+    buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) );
+
+    buffs.blood_fury = make_buff_fallback<stat_buff_t>( race == RACE_ORC, this, "blood_fury", find_racial_spell( "Blood Fury" ) )
                            ->add_invalidate( CACHE_SPELL_POWER )
                            ->add_invalidate( CACHE_ATTACK_POWER );
-    buffs.fortitude  = make_buff( this, "fortitude", find_spell( 137593 ) )->set_activated( false );
-    buffs.shadowmeld = make_buff( this, "shadowmeld", find_spell( 58984 ) )->set_cooldown( timespan_t::zero() );
 
-    buffs.ancestral_call[ 0 ] = make_buff<stat_buff_t>( this, "rictus_of_the_laughing_skull", find_spell( 274739 ) );
-    buffs.ancestral_call[ 1 ] = make_buff<stat_buff_t>( this, "zeal_of_the_burning_blade", find_spell( 274740 ) );
-    buffs.ancestral_call[ 2 ] = make_buff<stat_buff_t>( this, "ferocity_of_the_frostwolf", find_spell( 274741 ) );
-    buffs.ancestral_call[ 3 ] = make_buff<stat_buff_t>( this, "might_of_the_blackrock", find_spell( 274742 ) );
+    buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
+                           ->set_cooldown( 0_ms );
 
-    buffs.fireblood = make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
-                        ->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-                          util::round( find_spell( 265226 ) -> effectN( 1 ).average( this, level() ) ) * 3 );
+    buffs.ancestral_call[ 0 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
+                                                                 "rictus_of_the_laughing_skull", find_spell( 274739 ) );
+    buffs.ancestral_call[ 1 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
+                                                                 "zeal_of_the_burning_blade", find_spell( 274740 ) );
+    buffs.ancestral_call[ 2 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
+                                                                 "ferocity_of_the_frostwolf", find_spell( 274741 ) );
+    buffs.ancestral_call[ 3 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
+                                                                 "might_of_the_blackrock", find_spell( 274742 ) );
 
-    buffs.archmages_greater_incandescence_agi =
-        make_buff( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
-            ->add_invalidate( CACHE_AGILITY );
-    buffs.archmages_greater_incandescence_str =
-        make_buff( this, "archmages_greater_incandescence_str", find_spell( 177175 ) )
-            ->add_invalidate( CACHE_STRENGTH );
-    buffs.archmages_greater_incandescence_int =
-        make_buff( this, "archmages_greater_incandescence_int", find_spell( 177176 ) )
-            ->add_invalidate( CACHE_INTELLECT );
+    if ( race == RACE_DARK_IRON_DWARF )
+    {
+      buffs.fireblood =
+          make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
+              ->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
+                          util::round( find_spell( 265226 )->effectN( 1 ).average( this, level() ) ) * 3 );
+    }
+    else
+      buffs.fireblood = buff_t::make_fallback( this, "fireblood", this );
 
-    buffs.archmages_incandescence_agi =
-        make_buff( this, "archmages_incandescence_agi", find_spell( 177161 ) )->add_invalidate( CACHE_AGILITY );
-    buffs.archmages_incandescence_str =
-        make_buff( this, "archmages_incandescence_str", find_spell( 177160 ) )->add_invalidate( CACHE_STRENGTH );
-    buffs.archmages_incandescence_int =
-        make_buff( this, "archmages_incandescence_int", find_spell( 177159 ) )->add_invalidate( CACHE_INTELLECT );
-
-    // Legendary meta haste buff
-    buffs.tempus_repit = make_buff( this, "tempus_repit", find_spell( 137590 ) )
-        ->add_invalidate( CACHE_SPELL_SPEED )->set_activated( false );
-
-    buffs.darkflight = make_buff( this, "darkflight", find_racial_spell( "darkflight" ) );
-
-    buffs.nitro_boosts = make_buff( this, "nitro_boosts", find_spell( 54861 ) );
-
-    buffs.amplification = make_buff( this, "amplification", find_spell( 146051 ) )
-                              ->add_invalidate( CACHE_MASTERY )
-                              ->add_invalidate( CACHE_HASTE )
-                              ->add_invalidate( CACHE_VERSATILITY )
-                              ->set_chance( 0 );
-    buffs.amplification_2 = make_buff( this, "amplification_2", find_spell( 146051 ) )
-                                ->add_invalidate( CACHE_MASTERY )
-                                ->add_invalidate( CACHE_HASTE )
-                                ->add_invalidate( CACHE_VERSATILITY )
-                                ->set_chance( 0 );
-
-    buffs.temptation = make_buff( this, "temptation", find_spell( 234143 ) )
-                           ->set_cooldown( timespan_t::zero() )
-                           ->set_chance( 1 )
-                           ->set_default_value( 0.1 );  // Not in spelldata
-
-    buffs.courageous_primal_diamond_lucidity = make_buff( this, "lucidity", find_spell( 137288 ) );
-
-    buffs.body_and_soul = make_buff( this, "body_and_soul", find_spell( 64129 ) )
-                              ->set_max_stack( 1 )
-                              ->set_duration( timespan_t::from_seconds( 4.0 ) );
-
-    buffs.angelic_feather = make_buff( this, "angelic_feather", find_spell( 121557 ) )
-                                ->set_max_stack( 1 )
-                                ->set_duration( timespan_t::from_seconds( 6.0 ) );
-
-    buffs.close_to_heart_leech_aura = make_buff( this, "close_to_heart", find_spell( 389684 ) )
-                                        ->add_invalidate( CACHE_LEECH );
-    buffs.generous_pour_avoidance_aura = make_buff( this, "generous pour", find_spell( 389685 ) )
-                                            ->add_invalidate( CACHE_AVOIDANCE );
-    buffs.windwalking_movement_aura = make_buff( this, "windwalking", find_spell( 365080 ) )
-                                        ->add_invalidate( CACHE_RUN_SPEED );
+    buffs.darkflight = make_buff_fallback( race == RACE_WORGEN, this, "darkflight", find_racial_spell( "darkflight" ) );
 
     buffs.movement = new movement_buff_t( this );
 
     if ( !is_pet() )
     {
-      buffs.memory_of_lucid_dreams = make_buff<stat_buff_t>( this, "memory_of_lucid_dreams",
-        find_spell( 298357 ) );
-
-      auto memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-      buffs.lucid_dreams = make_buff<stat_buff_t>( this, "lucid_dreams", find_spell( 298343 ) );
-      buffs.lucid_dreams->add_stat( STAT_VERSATILITY_RATING,
-        memory_of_lucid_dreams.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).average(
-          memory_of_lucid_dreams.item() ) );
-      buffs.lucid_dreams->set_quiet( memory_of_lucid_dreams.rank() < 3 );
-
-      buffs.reckless_force = make_buff( this, "reckless_force", find_spell( 302932 ) )
-        ->add_invalidate(CACHE_CRIT_CHANCE)
-        ->set_default_value( find_spell( 302932 )->effectN( 1 ).percent() );
-
-      buffs.reckless_force_counter = make_buff( this, "reckless_force_counter", find_spell( 302917 ) );
-
-      auto worldvein_resonance = find_azerite_essence( "Worldvein Resonance" );
-      buffs.lifeblood = make_buff<stat_buff_t>( this, "lifeblood", find_spell( 295137 ) );
-      buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-        worldvein_resonance.spell( 1, essence_type::MINOR )->effectN( 5 ).average( worldvein_resonance.item() ) );
-
-      buffs.seething_rage_essence = make_buff( this, "seething_rage_essence", find_spell( 297126 ) )
-        ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
-
-      buffs.guardian_of_azeroth = make_buff( this, "guardian_of_azeroth", find_spell( 295855 ) )
-        ->set_default_value( find_spell( 295855 )->effectN( 1 ).percent() )
-        ->add_invalidate( CACHE_HASTE );
-
-      auto ripple_in_space = find_azerite_essence( "Ripple in Space" );
-      buffs.reality_shift = make_buff<stat_buff_t>( this, "reality_shift", find_spell( 302916 ) );
-      buffs.reality_shift->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-        ripple_in_space.spell_ref(1U, essence_type::MINOR).effectN( 2 ).average(
-          ripple_in_space.item() ) );
-      buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
-        + timespan_t::from_seconds( ripple_in_space.spell_ref( 2U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
-      buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
-
       buffs.windfury_totem = make_buff<buff_t>( this, "windfury_totem", find_spell( 327942 ) )
         ->set_duration( sim->max_time * 3 )
         ->set_chance( as<double>( sim->overrides.windfury_totem ) );
@@ -3933,10 +3922,6 @@ void player_t::create_buffs()
         ->set_default_value_from_effect( 1 )
         ->set_cooldown( 0_ms )
         ->add_invalidate( CACHE_HASTE );
-
-      // Runecarves
-      buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
-      buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
 
       // External trinkets
       if ( external_buffs.soleahs_secret_technique )
@@ -4031,11 +4016,6 @@ void player_t::create_buffs()
         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-
-      // 10.0 M+ Affix Thundering
-      buffs.mark_of_lightning = make_buff( this, "mark_of_lightning", find_spell( 396369 ) )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-        ->set_default_value_from_effect( 3 );
     }
   }
   // .. for enemies
@@ -4175,17 +4155,8 @@ double player_t::composite_melee_haste() const
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
 
-    if ( buffs.mongoose_mh && buffs.mongoose_mh->check() )
-      h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
-
-    if ( buffs.mongoose_oh && buffs.mongoose_oh->check() )
-      h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
-
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    if ( buffs.guardian_of_azeroth->check() )
-      h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
@@ -4329,14 +4300,8 @@ double player_t::composite_melee_crit_chance() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
 
-  // The Unbound Force crit bonus from 20 stack proc
-  if (buffs.reckless_force)
-    ac += buffs.reckless_force->check_value();
-
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
-  if ( buffs.embrace_of_paku )
-    ac += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
     ac += racials.touch_of_elune->effectN( 1 ).percent();
@@ -4552,9 +4517,6 @@ double player_t::composite_spell_haste() const
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
 
-    if ( buffs.guardian_of_azeroth->check() )
-      h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
-
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
@@ -4577,9 +4539,9 @@ double player_t::composite_spell_speed() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( buffs.tempus_repit->check() )
+    if ( buffs.tempus_repit &&  buffs.tempus_repit->check() )
     {
-      speed *= 1.0 / ( 1.0 + buffs.tempus_repit->data().effectN( 1 ).percent() );
+      speed *= 1.0 / ( 1.0 + buffs.tempus_repit->check_stack_value() );
     }
 
     if ( buffs.nefarious_pact )
@@ -4628,14 +4590,8 @@ double player_t::composite_spell_crit_chance() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
 
-  // reckless force (The Unbound Force) crit bonus from 20 stack proc
-  if (buffs.reckless_force)
-    sc += buffs.reckless_force->check_value();
-
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
-  if ( buffs.embrace_of_paku )
-    sc += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
   {
@@ -4688,9 +4644,6 @@ double player_t::composite_damage_versatility() const
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     cdv += sim->auras.mark_of_the_wild->check_value();
-
-    if ( buffs.legendary_tank_buff )
-      cdv += buffs.legendary_tank_buff->check_value();
   }
 
   if ( buffs.dmf_well_fed )
@@ -4713,9 +4666,6 @@ double player_t::composite_heal_versatility() const
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     chv += sim->auras.mark_of_the_wild->check_value();
-
-    if ( buffs.legendary_tank_buff )
-      chv += buffs.legendary_tank_buff->check_value();
   }
 
   if ( buffs.dmf_well_fed )
@@ -4738,9 +4688,6 @@ double player_t::composite_mitigation_versatility() const
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     cmv += sim->auras.mark_of_the_wild->check_value() / 2;
-
-    if ( buffs.legendary_tank_buff )
-      cmv += buffs.legendary_tank_buff->check_value() / 2;
   }
 
   if ( buffs.dmf_well_fed )
@@ -4792,9 +4739,6 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
   double m = 1.0;
 
   m *= 1.0 + racials.command->effectN(1).percent();
-
-  if (buffs.mark_of_lightning && buffs.mark_of_lightning->check())
-    m *= 1.0 + buffs.mark_of_lightning->check_value();
 
   if (!guardian)
   {
@@ -4850,9 +4794,6 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.coldhearted && buffs.coldhearted->check() )
     m *= 1.0 + buffs.coldhearted->check_value();
-
-  if ( buffs.mark_of_lightning && buffs.mark_of_lightning->check() )
-    m *= 1.0 + buffs.mark_of_lightning->check_value();
 
   return m;
 }
@@ -4999,7 +4940,7 @@ double player_t::temporary_movement_modifier() const
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( buffs.stampeding_roar )
+    if ( buffs.stampeding_roar && buffs.stampeding_roar->check() )
       temporary = std::max( buffs.stampeding_roar->check_value(), temporary );
   }
 
@@ -5008,16 +4949,16 @@ double player_t::temporary_movement_modifier() const
     if ( buffs.darkflight->check() )
       temporary = std::max( buffs.darkflight->data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.nitro_boosts->check() )
+    if ( buffs.nitro_boosts && buffs.nitro_boosts->check() )
       temporary = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.body_and_soul->check() )
+    if ( buffs.body_and_soul && buffs.body_and_soul->check() )
       temporary = std::max( buffs.body_and_soul->data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.angelic_feather->check() )
+    if ( buffs.angelic_feather && buffs.angelic_feather->check() )
       temporary = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.windwalking_movement_aura->check() )
+    if ( buffs.windwalking_movement_aura && buffs.windwalking_movement_aura->check() )
       temporary = std::max( buffs.windwalking_movement_aura->data().effectN( 1 ).percent(), temporary );
 
     if ( buffs.normalization_increase && buffs.normalization_increase->check() )
@@ -5092,24 +5033,12 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   {
     case ATTR_STRENGTH:
       pct_type = STAT_PCT_BUFF_STRENGTH;
-      if ( buffs.archmages_greater_incandescence_str->check() )
-        m *= 1.0 + buffs.archmages_greater_incandescence_str->data().effectN( 1 ).percent();
-      if ( buffs.archmages_incandescence_str->check() )
-        m *= 1.0 + buffs.archmages_incandescence_str->data().effectN( 1 ).percent();
       break;
     case ATTR_AGILITY:
       pct_type = STAT_PCT_BUFF_AGILITY;
-      if ( buffs.archmages_greater_incandescence_agi->check() )
-        m *= 1.0 + buffs.archmages_greater_incandescence_agi->data().effectN( 1 ).percent();
-      if ( buffs.archmages_incandescence_agi->check() )
-        m *= 1.0 + buffs.archmages_incandescence_agi->data().effectN( 1 ).percent();
       break;
     case ATTR_INTELLECT:
       pct_type = STAT_PCT_BUFF_INTELLECT;
-      if ( buffs.archmages_greater_incandescence_int->check() )
-        m *= 1.0 + buffs.archmages_greater_incandescence_int->data().effectN( 1 ).percent();
-      if ( buffs.archmages_incandescence_int->check() )
-        m *= 1.0 + buffs.archmages_incandescence_int->data().effectN( 1 ).percent();
       if ( sim->auras.arcane_intellect->check() )
         m *= 1.0 + sim->auras.arcane_intellect->current_value;
       break;
@@ -5291,13 +5220,19 @@ void player_t::invalidate_cache( cache_e c )
   {
     case CACHE_STRENGTH:
       if ( current.attack_power_per_strength > 0 )
+      {
         invalidate_cache( CACHE_ATTACK_POWER );
+        invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
+      }
       if ( current.parry_per_strength > 0 )
         invalidate_cache( CACHE_PARRY );
       break;
     case CACHE_AGILITY:
       if ( current.attack_power_per_agility > 0 )
+      {
         invalidate_cache( CACHE_ATTACK_POWER );
+        invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
+      }
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
       if ( current.attack_crit_per_agility > 0 )
@@ -5311,9 +5246,13 @@ void player_t::invalidate_cache( cache_e c )
       break;
     case CACHE_SPELL_POWER:
       if ( current.attack_power_per_spell_power > 0 )
+      {
         invalidate_cache( CACHE_ATTACK_POWER );
+        invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
+      }
       break;
     case CACHE_ATTACK_POWER:
+      invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
       if ( current.spell_power_per_attack_power > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       break;
@@ -5408,10 +5347,10 @@ void player_t::sequence_add( const action_t* a, const player_t* target, timespan
   {
     if ( collected_data.action_sequence.size() <= sim->expected_max_time() * 2.0 + 3.0 )
     {
-      if ( in_combat )
-        collected_data.action_sequence.emplace_back( a, target, ts, this );
-      else
+      if ( a->is_precombat )
         collected_data.action_sequence_precombat.emplace_back( a, target, ts, this );
+      else
+        collected_data.action_sequence.emplace_back( a, target, ts, this );
     }
     else
     {
@@ -5423,16 +5362,23 @@ void player_t::sequence_add( const action_t* a, const player_t* target, timespan
   }
 }
 
-void player_t::combat_begin()
+void player_t::precombat_init()
 {
-  sim->print_debug( "Combat begins for {}.", *this );
+  precombat_initialized = true;
 
+  sim->print_debug( "Precombat begins for {}.", *this );
   if ( !is_pet() && !is_add() )
   {
     arise();
   }
 
   init_resources( true );
+}
+
+void player_t::combat_begin()
+{
+  if ( !precombat_initialized )
+    precombat_init();
 
   // Trigger registered pre-pull functions
   for ( const auto& f : precombat_begin_functions )
@@ -5478,8 +5424,10 @@ void player_t::combat_begin()
   }
   first_cast = false;
 
+  sim->print_debug( "Combat begins for {}.", *this );
+
   if ( !precombat_action_list.empty() )
-    in_combat = true;
+    enter_combat();
 
   // re-initialize collected_data.health_changes.previous_*_level
   // necessary because food/flask are counted as resource gains, and thus provide phantom
@@ -5495,21 +5443,6 @@ void player_t::combat_begin()
     collected_data.combat_start_resource[ i ].add( resources.current[ i ] );
   }
 
-  if ( buffs.cooldown_reduction )
-    buffs.cooldown_reduction->trigger();
-
-  if ( buffs.amplification )
-    buffs.amplification->trigger();
-
-  if ( buffs.amplification_2 )
-    buffs.amplification_2->trigger();
-
-  if ( buffs.tyrants_decree_driver )
-  {  // Assume actor has stacked the buff to max stack precombat.
-    buffs.tyrants_decree_driver->trigger();
-    buffs.tyrants_immortality->trigger( buffs.tyrants_immortality->max_stack() );
-  }
-
   auto add_timed_buff_triggers = [ this ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
     if ( buff )
@@ -5518,6 +5451,7 @@ void player_t::combat_begin()
   };
 
   add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
+  add_timed_buff_triggers( external_buffs.symbol_of_hope, buffs.symbol_of_hope );
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
@@ -5525,7 +5459,7 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
   add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
 
-  auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
+  auto add_timed_blessing_triggers = [ add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
     add_timed_buff_triggers( times, buff, duration );
   };
@@ -6012,6 +5946,11 @@ void player_t::reset()
   cast_while_casting_poll_event = nullptr;
   in_combat       = false;
 
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+    in_boss_encounter = 0;
+  else
+    in_boss_encounter = 1;
+
   current_execute_type = execute_type::FOREGROUND;
 
   current_attack_speed    = 1.0;
@@ -6065,7 +6004,9 @@ void player_t::reset()
 
   range::for_each( spawners, []( spawner::base_actor_spawner_t* obj ) { obj->reset(); } );
 
+  precombat_initialized = false;
   potion_used = false;
+  leech_pool = 0;
 
   item_cooldown -> reset( false );
 
@@ -6485,6 +6426,8 @@ void player_t::demise()
   if ( current.sleeping )
     return;
 
+  leave_combat();
+
   current.sleeping = true;
 
   if ( sim->log )
@@ -6560,6 +6503,35 @@ void player_t::demise()
     sim->active_allies--;
     sim->player_non_sleeping_list.find_and_erase_unordered( this );
   }
+}
+
+// Player enters/leaves "combat". Primarily relevant for DungeonSlice/DungeonRoute sims where "combat" is defined as
+// sim_t::target_non_sleeping_list.size() > 0
+// Use index-based lookup since enter/leaving combat may insert new combat state callbacks to the vector
+void player_t::enter_combat()
+{
+  if ( in_combat )
+    return;
+
+  in_combat = true;
+
+  sim->print_log( "{} enters combat.", *this );
+
+  for ( size_t i = 0; i < callbacks_on_combat_state.size(); ++i )
+    callbacks_on_combat_state[ i ]( this, in_combat );
+}
+
+void player_t::leave_combat()
+{
+  if ( !in_combat )
+    return;
+
+  in_combat = false;
+
+  sim->print_log( "{} leaves combat.", *this );
+
+  for ( size_t i = 0; i < callbacks_on_combat_state.size(); ++i )
+    callbacks_on_combat_state[ i ]( this, in_combat );
 }
 
 /**
@@ -7494,7 +7466,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
                         dbc::is_school( ab->absorb_school, school ) ) )  // Otherwise check by school
                  && ab->up() )
             {
-              double absorbed = ab->consume( s->result_amount );
+              double absorbed = ab->consume( s->result_amount, s->action->player );
 
               s->result_amount -= absorbed;
 
@@ -7584,28 +7556,6 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
   s->result_absorbed = s->result_amount;
 }
 
-void account_legendary_tank_cloak( player_t& p, action_state_t* s )
-{
-  // Legendary Tank Cloak Proc - max absorb of 1e7 hardcoded (in spellid 146193, effect 1)
-  if ( p.legendary_tank_cloak_cd && p.legendary_tank_cloak_cd->up()    // and the cloak's cooldown is up
-       && s->result_amount > p.resources.current[ RESOURCE_HEALTH ] )  // attack exceeds player health
-  {
-    if ( s->result_amount > 1e7 )
-    {
-      p.gains.endurance_of_niuzao->add( RESOURCE_HEALTH, 1e7, 0 );
-      s->result_amount -= 1e7;
-      s->result_absorbed += 1e7;
-    }
-    else
-    {
-      p.gains.endurance_of_niuzao->add( RESOURCE_HEALTH, s->result_amount, 0 );
-      s->result_absorbed += s->result_amount;
-      s->result_amount = 0;
-    }
-    p.legendary_tank_cloak_cd->start();
-  }
-}
-
 /**
  * Statistical data collection for damage taken.
  */
@@ -7686,8 +7636,6 @@ void player_t::assess_damage( school_e school, result_amount_type type, action_s
   account_absorb_buffs( *this, s, school );
 
   assess_damage_imminent( school, type, s );
-
-  account_legendary_tank_cloak( *this, s );
 }
 
 void player_t::do_damage( action_state_t* incoming_state )
@@ -7707,16 +7655,28 @@ void player_t::do_damage( action_state_t* incoming_state )
   // TODO: How to express action causing/not causing incoming callbacks?
   if ( incoming_state->action && incoming_state->action->callbacks )
   {
-    proc_types pt   = incoming_state->proc_type();
-    proc_types2 pt2 = incoming_state->execute_proc_type2();
-    // For incoming landed abilities, get the impact type for the proc.
-    // if ( pt2 == PROC2_LANDED )
-    //  pt2 = s -> impact_proc_type2();
+    proc_types pt = incoming_state->proc_type();
+    if ( pt != PROC1_INVALID )
+    {
+      // On damage/heal in. Proc flags are arranged as such that the "incoming"
+      // version of the primary proc flag is always follows the outgoing version...
+      proc_types pt_taken = static_cast<proc_types>( pt + 1 );
+      // ...except for PROC1_HELPFUL_PERIODIC_TAKEN
+      if ( pt == PROC1_HELPFUL_PERIODIC )
+        pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
 
-    // On damage/heal in. Proc flags are arranged as such that the "incoming"
-    // version of the primary proc flag is always follows the outgoing version.
-    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( callbacks.procs[ pt + 1 ][ pt2 ], incoming_state->action, incoming_state );
+      // Because most procs in simc default to using PROC2_LANDED for most proc types,
+      // trigger the execute_proc_type2() here to ensure that those procs will work.
+      proc_types2 execute_pt2 = incoming_state->execute_proc_type2();
+      if ( execute_pt2 != PROC2_INVALID )
+        trigger_callbacks( pt_taken, execute_pt2, incoming_state->action, incoming_state );
+
+      // Additionally, trigger the impact_proc_type2() so that periodic effects and
+      // procs not using execute proc types will also work.
+      proc_types2 impact_pt2 = incoming_state->impact_proc_type2();
+      if ( impact_pt2 != PROC2_INVALID )
+        trigger_callbacks( pt_taken, impact_pt2, incoming_state->action, incoming_state );
+    }
   }
 
   // Check if target is dying
@@ -7751,14 +7711,11 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
   if ( buffs.pain_suppression && buffs.pain_suppression->up() )
     s->result_amount *= 1.0 + buffs.pain_suppression->data().effectN( 1 ).percent();
 
-  if ( buffs.naarus_discipline && buffs.naarus_discipline->check() )
-    s->result_amount *= 1.0 + buffs.naarus_discipline->stack_value();
-
   if ( buffs.stoneform && buffs.stoneform->up() )
     s->result_amount *= 1.0 + buffs.stoneform->data().effectN( 1 ).percent();
 
   if ( buffs.fortitude && buffs.fortitude->up() )
-    s->result_amount *= 1.0 + buffs.fortitude->data().effectN( 1 ).percent();
+    s->result_amount *= 1.0 + buffs.fortitude->check_value();
 
   if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->check() )
     s->result_amount *= 1.0 + buffs.elemental_chaos_earth->check_value();
@@ -7860,6 +7817,11 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
 
   // store iteration heal taken
   iteration_heal_taken += s->result_amount;
+}
+
+void player_t::trigger_callbacks( proc_types type, proc_types2 type2, action_t* action, action_state_t* state )
+{
+  action_callback_t::trigger( callbacks.procs[ type ][ type2 ], action, state );
 }
 
 void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )
@@ -8232,6 +8194,29 @@ int player_t::get_action_id( util::string_view name )
   return static_cast<int>(action_map.size() - 1);
 }
 
+int player_t::find_dot_id( util::string_view name ) const
+{
+  for ( size_t i = 0; i < dot_map.size(); i++ )
+  {
+    if ( util::str_compare_ci( name, dot_map[ i ] ) )
+      return static_cast<int>( i );
+  }
+
+  return -1;
+}
+
+int player_t::get_dot_id( util::string_view name )
+{
+  auto id = find_dot_id( name );
+  if ( id != -1 )
+  {
+    return id;
+  }
+
+  dot_map.emplace_back( name );
+  return static_cast<int>( dot_map.size() - 1 );
+}
+
 cooldown_waste_data_t* player_t::get_cooldown_waste_data( const cooldown_t* cd )
 {
   for ( const auto& cdw : cooldown_waste_data_list )
@@ -8360,6 +8345,9 @@ struct shadowmeld_t : public racial_spell_t
 
     // Shadowmeld stops autoattacks
     player->cancel_auto_attacks();
+
+    if ( !player->in_boss_encounter )
+      player->leave_combat();
   }
 };
 
@@ -8378,6 +8366,9 @@ struct arcane_torrent_t : public racial_spell_t
     parse_options( options_str );
     harmful = false;
     energize_type = action_energize::ON_CAST;
+
+    target = p;
+
     // Some specs need special handling here
     switch ( p->specialization() )
     {
@@ -8424,6 +8415,7 @@ struct berserking_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8443,6 +8435,7 @@ struct blood_fury_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8461,6 +8454,7 @@ struct darkflight_t : public racial_spell_t
     racial_spell_t( p, "darkflight", p->find_racial_spell( "Darkflight" ) )
   {
     parse_options( options_str );
+    target = p;
   }
 
   void execute() override
@@ -8493,6 +8487,7 @@ struct stoneform_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8631,6 +8626,7 @@ struct gift_of_the_naaru : public racial_heal_t
     racial_heal_t( p, "gift_of_the_naaru", p->find_racial_spell( "Gift of the Naaru" ) )
   {
     parse_options( options_str );
+    target = p;
   }
 
   double base_ta( const action_state_t* /* state */ ) const override
@@ -8648,6 +8644,7 @@ struct ancestral_call_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8668,6 +8665,7 @@ struct fireblood_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target = p;
   }
 
   void execute() override
@@ -8850,6 +8848,8 @@ struct restore_mana_t : public action_t
     parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
+
+    target = player;
   }
 
   void execute() override
@@ -8877,6 +8877,7 @@ struct wait_action_base_t : public action_t
     trigger_gcd = timespan_t::zero();
     interrupt_auto_attack = false;
     quiet = true;
+    target = player;
   }
 
   void execute() override
@@ -9138,6 +9139,15 @@ struct use_item_t : public action_t
       // Create an action
       action = e->create_action();
 
+      // if the action is the same as the driver, has a direct/periodic damage effect, and the driver has a cast time,
+      // then the action is not considered a proc
+      if ( action && action->id == e->driver()->id() && e->driver()->cast_time() > 0_ms &&
+           ( action_t::has_direct_damage_effect( *e->driver() ) ||
+             action_t::has_periodic_damage_effect( *e->driver() ) ) )
+      {
+        action->not_a_proc = true;
+      }
+
       stats = player->get_stats( name_str, this );
 
       // Setup the long-duration cooldown for this item effect
@@ -9166,6 +9176,12 @@ struct use_item_t : public action_t
         cooldown_group = player->item_cooldown.get();
         cooldown_group_duration = player->default_item_group_cooldown;
       }
+    }
+
+    if ( action )
+    {
+      interrupt_auto_attack = action->interrupt_auto_attack;
+      reset_auto_attack = action->reset_auto_attack;
     }
 
     if ( !buff && !action )
@@ -9362,7 +9378,7 @@ struct use_items_t : public action_t
     // sub-action
     for ( auto action : use_actions )
     {
-      if ( action->ready() )
+      if ( action->ready() && action->target_ready( target ) )
       {
         action->set_target( target );
         action->execute();
@@ -9417,7 +9433,7 @@ struct use_items_t : public action_t
 
     for ( const auto action : use_actions )
     {
-      if ( action->target_ready( t ) )
+      if ( action->ready() && action->target_ready( t ) )
         return true;
     }
 
@@ -11116,6 +11132,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( expression_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
 
+  if ( expression_str == "in_boss_encounter" )
+    return make_ref_expr( "in_boss_encounter", in_boss_encounter );
+
   if ( expression_str == "ptr" )
     return expr_t::create_constant( "ptr", dbc->ptr );
 
@@ -11417,10 +11436,12 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
     if ( splits[ 0 ] == "active_dot" )
     {
-      int internal_id = find_action_id( splits[ 1 ] );
-      if ( internal_id > -1 )
+      action_t* action = find_action( splits[ 1 ] );
+      if ( action )
       {
-        return make_fn_expr(expression_str, [this, internal_id] {return get_active_dots( internal_id );});
+        return make_fn_expr( expression_str, [ this, action ] {
+          return get_active_dots( action->get_dot() );
+        } );
       }
       throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
     }
@@ -11480,6 +11501,20 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         } );
       }
 
+      if ( splits[ 1 ] == "rallied_to_victory_ally_estimate" )
+      {
+        return make_fn_expr( expression_str, [ this ] { 
+          return dragonflight_opts.rallied_to_victory_ally_estimate; 
+        } );
+      }
+
+      if (splits[ 1 ] == "string_of_delicacies_ally_estimate")
+      {
+        return make_fn_expr( expression_str, [ this ] {
+           return dragonflight_opts.string_of_delicacies_ally_estimate;
+        } );
+      }
+
       throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
     }
   } // splits.size() == 2
@@ -11493,7 +11528,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       get_target_data( this );
       buff_t* buff = buff_t::find_expressable( buff_list, splits[ 1 ], this );
       if ( !buff )
-        buff = buff_t::find( this, splits[ 1 ], this );  // Raid debuffs
+        buff = buff_t::find( this, splits[ 1 ], this );  // Raid debuffs & fallback buffs
       if ( buff )
         return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
       throw std::invalid_argument(fmt::format("Cannot find buff '{}'.", splits[ 1 ]));
@@ -12421,7 +12456,7 @@ void player_t::create_options()
   add_option( opt_map( "actions.", alist_map ) );
   add_option( opt_map( "apl_variable.", apl_variable_map ) );
   add_option( opt_string( "action_list", choose_action_list ) );
-  add_option( opt_bool( "sleeping", initial.sleeping ) );
+  add_option( opt_bool( "sleeping", base.sleeping ) );
   add_option( opt_bool( "quiet", quiet ) );
   add_option( opt_string( "save", report_information.save_str ) );
   add_option( opt_string( "save_gear", report_information.save_gear_str ) );
@@ -12580,7 +12615,6 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
-  add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
   add_option( opt_timespan( "default_item_group_cooldown", default_item_group_cooldown, 0_ms, timespan_t::max() ) );
   add_option( opt_func( "override.precombat_state",
     [ this ] ( sim_t*, util::string_view, util::string_view value ) {
@@ -12618,6 +12652,7 @@ void player_t::create_options()
   };
 
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
+  add_option( opt_external_buff_times( "external_buffs.symbol_of_hope", external_buffs.symbol_of_hope ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_summer", external_buffs.blessing_of_summer ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_autumn", external_buffs.blessing_of_autumn ) );
   add_option( opt_external_buff_times( "external_buffs.blessing_of_winter", external_buffs.blessing_of_winter ) );
@@ -12682,6 +12717,29 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
   add_option( opt_string( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type ) );
   add_option( opt_float( "dragonflight.igneous_flowstone_double_lava_wave_chance", dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) );
+  add_option( opt_bool( "dragonflight.voice_of_the_silent_star_enable", dragonflight_opts.voice_of_the_silent_star_enable ) );
+  add_option( opt_bool( "dragonflight.nymue_forced_immobilized", dragonflight_opts.nymue_forced_immobilized ) );
+  add_option( opt_func( "dragonflight.witherbarks_branch_timing", [ this ]( sim_t*, util::string_view,
+                                                                            util::string_view value ) {
+    auto splits = util::string_split<std::string>( value, "/" );
+    if ( splits.size() != 3 )
+      throw std::invalid_argument( fmt::format( "Invalid 'dragonflight.witherbarks_branch_timing' option: '{}'", value ) );
+
+    for ( size_t i = 0; i < 3; i++ )
+    {
+      dragonflight_opts.witherbarks_branch_timing[ i ] = timespan_t::from_seconds( util::to_double( splits[ i ] ) );
+    }
+    return true;
+  } ) );
+  add_option( opt_bool( "dragonflight.rallied_to_victory_ally_estimate", dragonflight_opts.rallied_to_victory_ally_estimate ) );
+  add_option( opt_float( "dragonflight.rallied_to_victory_min_allies", dragonflight_opts.rallied_to_victory_min_allies, 0.0, 4 ) );
+  add_option( opt_bool( "dragonflight.player.embersoul_debuff_immune", dragonflight_opts.embersoul_debuff_immune ) );
+  add_option( opt_float( "dragonflight.rallied_to_victory_multi_actor_skip_chance",
+                         dragonflight_opts.rallied_to_victory_multi_actor_skip_chance, 0.0, 1 ) );
+  add_option( opt_bool( "dragonflight.string_of_delicacies_ally_estimate", dragonflight_opts.string_of_delicacies_ally_estimate ) );
+  add_option( opt_float( "dragonflight.string_of_delicacies_min_allies", dragonflight_opts.string_of_delicacies_min_allies, 0.0, 4 ) );
+  add_option( opt_float( "dragonflight.string_of_delicacies_multi_actor_skip_chance",
+                         dragonflight_opts.string_of_delicacies_multi_actor_skip_chance, 0.0, 1 ) );
 
   // Obsolete options
 
@@ -12722,10 +12780,14 @@ void player_t::analyze( sim_t& s )
   if ( quiet )
     return;
 
+  // If we have no data collected for an actor, also verify thier pets have data collected
+  // Relevant for fight styles with an initial sleeping target
   if ( collected_data.fight_length.mean() == 0 )
   {
     auto it = range::find_if( pet_list, []( pet_t* pet ) {
-      return pet->collected_data.fight_length.mean() > 0; } );
+      return pet->collected_data.fight_length.mean() > 0 ||
+             pet->iteration_fight_length.total_seconds() > 0;
+    });
 
     if ( it == pet_list.end() )
       return;
@@ -12918,6 +12980,8 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
       return { metric, q->collected_data.deaths };
     case SCALE_METRIC_TIME:
       return { metric, q->collected_data.fight_length };
+    case SCALE_METRIC_RAID_DPS:
+      return { metric, q->sim->raid_dps };
     default:
       if ( q->primary_role() == ROLE_TANK )
         return { SCALE_METRIC_DTPS, q->collected_data.dtps };
@@ -13858,32 +13922,42 @@ const pet_t* player_t::cast_pet() const
   return debug_cast<const pet_t*>( this );
 }
 
-void player_t::add_active_dot( unsigned action_id )
+void player_t::add_active_dot( const dot_t* dot )
 {
-  if ( active_dots.size() < action_id + 1 )
-    active_dots.resize( action_id + 1 );
+  assert( dot );
+  if ( !dot )
+    return;
 
-  active_dots[ action_id ]++;
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s Increasing %s dot count to %u", name(), action_map[ action_id ].c_str(), active_dots[ action_id ] );
+  if ( active_dots.size() < as<size_t>( dot->internal_id + 1 ) )
+    active_dots.resize( dot->internal_id + 1 );
+
+  active_dots[ dot->internal_id ]++;
+  if ( sim->debug )
+    sim->out_debug.printf( "%s Increasing %s dot count to %u", name(), dot_map[ dot->internal_id ].c_str(), active_dots[ dot->internal_id ] );
 }
 
-void player_t::remove_active_dot( unsigned action_id )
+void player_t::remove_active_dot( const dot_t* dot )
 {
-  assert( active_dots.size() > action_id );
-  assert( active_dots[ action_id ] > 0 );
+  assert( dot );
+  assert( active_dots.size() > as<size_t>( dot->internal_id ) );
+  assert( active_dots[ dot->internal_id ] > 0 );
 
-  active_dots[ action_id ]--;
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s Decreasing %s dot count to %u", name(), action_map[ action_id ].c_str(), active_dots[ action_id ] );
+  if ( !dot )
+    return;
+
+  active_dots[ dot->internal_id ]--;
+  if ( sim->debug )
+    sim->out_debug.printf( "%s Decreasing %s dot count to %u", name(), dot_map[ dot->internal_id ].c_str(), active_dots[ dot->internal_id ] );
 }
 
-unsigned player_t::get_active_dots( unsigned action_id ) const
+unsigned player_t::get_active_dots( const dot_t* dot ) const
 {
-  if ( active_dots.size() <= action_id )
+  assert( dot );
+
+  if ( !dot || active_dots.size() <= as<size_t>( dot->internal_id ) )
     return 0;
 
-  return active_dots[ action_id ];
+  return active_dots[ dot->internal_id ];
 }
 
 void player_t::adjust_dynamic_cooldowns()
@@ -14369,6 +14443,11 @@ void player_t::register_on_arise_callback( player_t* source, std::function<void(
 void player_t::register_on_kill_callback( std::function<void( player_t* )> fn )
 {
   callbacks_on_kill.emplace_back( std::move( fn ) );
+}
+
+void player_t::register_on_combat_state_callback( std::function<void( player_t*, bool )> fn )
+{
+  callbacks_on_combat_state.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

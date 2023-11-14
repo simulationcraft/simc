@@ -6,7 +6,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
 from dbc.constants import Class
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet, ExpectedStatModSet
 from dbc.filter import TraitSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
@@ -1016,6 +1016,7 @@ class SpellDataGenerator(DataGenerator):
          184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
          184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
          60235,                     # Darkmoon Card: Greatness proc
+         96977, 96978, 96979,       # Restabilizing Matrix buffs
          71556, 71558, 71559, 71560,# Deathbringer's Will procs
          71484, 71485, 71492,
          45428, 45429, 45430,       # Shattered Sun Pendant procs
@@ -1422,6 +1423,33 @@ class SpellDataGenerator(DataGenerator):
          402813, 402894, 402896, 402897, 402898, 402903, 407961, 407982, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
          407914, 407913, 407939,  # Might of the Drogbar set
+         # 10.1.5
+         418076, 418527, 418547, 418773, 418774, 418775, 418776, 419591, 418588, 418999, 418605, 419052,  # Mirror of Fractured Tomorrows
+         417356, 417290, 417139, 417069, 417050, 417049, # Prophetic Stonescales
+         417534, 417545, 417792, 417543, # Time-Thief's Gambit
+         417449, 417458, 417456, 417452, # Accelerating Sandglass
+         415284, 415410, 415339, 415403, 415412, 415395, # Paracausal Fragment of Thunderfin
+         415006, 415130, 415245, 415033, 419539, 415052, 415038, # Paracausal Fragment of Frostmourne
+         414976, 414977, 414968, 417468, # Paracausal Fragment of Azzinoth
+         414856, 414864, 414858, 414857, 414865, 414866, # Paracausal Fragment of Sulfuras
+         414928, 414936, 414951, 414950, 414935, # Paracausal Fragment of Doomhammer/Shalamayne
+         419737, 420144, # Timestrike
+         419262, 419261, # Demonsbane
+         # 10.2
+         425838, 426339, 426262, 426288, 426341, 426535, 426534, 426486, 426431, # Incandescent Essence Enchant
+         422858, 426676, 426647, 426672, # Pip's Emerald Frendship Badge
+         423611, 426898, 426911, 426906, 423021, 426897, # Ashes of the Embersoul
+         426827, 427059, 426834, 427037, 427058, 427057, 427056, 426840, 427047, # Coiled Serpent Idol
+         423124, 426564, 426553, # Augury of the Primal Flame
+         426114, # Bandolier of Twisted Blades
+         424228, 424276, 424274, 424272, 424275, # Pinch of Dream Magic: Shapeshift Buffs
+         427209, 427212, # Dreambinder, Loom of the Great Cycle Damage Spell and Slowed Debuff
+         425509, # Branch of the Tormented Ancient
+         425180, 425156, # Infernal Signet Brand
+         421990, 421996, 421994, 422016, # Gift of Ursine Vengeance
+         422651, 422652, 422750, 425571, 425701, 425703, 425461, # Fyrakks Tainted Rageheart
+         426474, # Verdant Tether embellishment stat buff
+         424051, 424057, # String of Delicacies
         ),
 
         # Warrior:
@@ -1444,6 +1472,12 @@ class SpellDataGenerator(DataGenerator):
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
             ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
+            ( 280776, 0 ),          # Sudden Death (Arms/Prot buff)
+            ( 52437,  0 ),          # Sudden Death (Fury buff)
+            ( 425534, 0 ),          # T31 prot Fervid Bite
+            ( 385228, 0 ),          # Seismic Reverbration Arms WW
+            ( 385233, 0 ),          # Seismic Reverbration Fury MH WW
+            ( 385234, 0 ),          # Seismic Reverbration Fury OH WW
         ),
 
         # Paladin:
@@ -1494,6 +1528,10 @@ class SpellDataGenerator(DataGenerator):
             ( 384810, 0 ),          # Seal of Clarity buff
             ( 404140, 0 ),          # Blessed Hammers for Adjudication
             ( 387113, 0 ),          # ES
+            ( 425261, 0 ),          # Cleansing Flame (Damage - Prot T31 4pc)
+            ( 425262, 0 ),          # Cleansing Flame (Healing - Prot T31 4pc)
+            ( 423590, 0 ),          # Echoes of Wrath (Ret T31 4pc buff)
+            ( 423593, 0 ),          # Tempest of the Lightbringer triggered by T31 4pc
         ),
 
         # Hunter:
@@ -1504,6 +1542,7 @@ class SpellDataGenerator(DataGenerator):
           ( 171457, 0 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
           ( 118455, 5 ), # Beast Cleave
+          ( 268877, 0 ), # Beast Cleave player buff
           ( 389448, 5 ), # Kill Cleave
           ( 186254, 5 ), # Bestial Wrath
           ( 392054, 5 ), # Piercing Fangs
@@ -1536,10 +1575,12 @@ class SpellDataGenerator(DataGenerator):
           ( 164273, 2 ), # Lone Wolf buff
           ( 361736, 5 ), # Coordinated Assault (pet buff)
           ( 219199, 1 ), # Dire Beast (summon)
+          ( 426703, 5), # Dire Beast Kill Command
         ),
 
         # Rogue:
         (
+            ( 115192, 0 ),          # Subterfuge Buff
             ( 121474, 0 ),          # Shadow Blades off hand
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
@@ -1612,6 +1653,13 @@ class SpellDataGenerator(DataGenerator):
             ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
             ( 409483, 0 ),          # T30 Assassination Set Bonus Spells
             ( 413890, 0 ),          # Nightstalker background spell
+            ( 424081, 0 ), ( 424066, 0 ), ( 424080, 0 ), # Underhanded Upper Hand background spells
+            ( 421979, 0 ),          # Caustic Spatter damage spell
+            ( 426595, 0 ),          # Shadow Techniques delayed CP energize
+            ( 423193, 0 ),          # Exsanguinate residual damage spell
+            ( 424491, 0 ), ( 424492, 0 ), ( 424493, 0 ), # T31 Subtlety clone damage spells
+            ( 429951, 0 ),          # Deft Maneuvers alternative Blade Flurry instant attack spell
+            ( 381628, 0 ),          # Dragonflight Internal Bleeding talent spell
         ),
 
         # Priest:
@@ -1669,6 +1717,7 @@ class SpellDataGenerator(DataGenerator):
             ( 407468, 0 ),          # Mind Spike Insanity Buff
             ( 391232, 0 ),          # Maddening Touch Insanity
             ( 409502, 0 ),          # Priest Shadow Class Set 2-set - Weakening Reality
+            ( 148859, 0 ),          # Shadowy Apparitions Travel Spell
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1743,6 +1792,7 @@ class SpellDataGenerator(DataGenerator):
           ( 196782, 0 ), # Outbreak Intermediate AoE spell
           ( 281327, 0 ), # Obliteration Rune Generation Spell
           ( 47466, 0 ), # DK Pet Stun
+          ( 425721, 0 ), # T31 Blood 2pc buff
         ),
 
         # Shaman:
@@ -1847,6 +1897,10 @@ class SpellDataGenerator(DataGenerator):
           ( 383882, 0 ),                            # Sun King's Blessing
           ( 408763, 0 ),                            # Frost T30 2pc
           ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
+          ( 414381, 0 ),                            # Concentrated Power AE
+          ( 418735, 0 ),                            # Splintering Ray
+          ( 419800, 0 ),                            # Intensifying Flame
+          ( 424120, 0 ),                            # Glacial Blast
         ),
 
         # Warlock:
@@ -1946,6 +2000,10 @@ class SpellDataGenerator(DataGenerator):
           ( 387414, 0 ),    # Madness Shadowburn aura
           ( 405681, 0 ),    # Immutable Hatred Damage Proc
           ( 409890, 0 ),    # T30 - Channel Demonfire
+          ( 417282, 3 ),    # Crashing Chaos Buff 10.1.5
+          ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
+          ( 423874, 0 ),    # T31 - Flame Rift
+          ( 427285, 0 ),    # T31 - Dimensional Cinder
         ),
 
         # Monk:
@@ -1978,6 +2036,7 @@ class SpellDataGenerator(DataGenerator):
           ( 383733, 1 ), # Training of Niuzao Mastery % Buff
           ( 386959, 1 ), # Charred Passions Damage
           ( 395267, 1 ), # Call to Arms Invoke Niuzao
+	  ( 387179, 0 ), # Weapons of Order (Debuff)
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
@@ -1997,7 +2056,6 @@ class SpellDataGenerator(DataGenerator):
           ( 220358, 3 ), # Cyclone Strikes info
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
-          ( 242387, 3 ), # Thunderfist Artifact trait buff
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
           ( 290461, 3 ), # Reverse Harm Damage
@@ -2006,6 +2064,7 @@ class SpellDataGenerator(DataGenerator):
           ( 396168, 3 ), # Fury of Xuen Haste Buff
           ( 393048, 3 ), # Skyreach Debuff
           ( 393050, 3 ), # Skyreach Exxhaustion Debuff
+          ( 393565, 3 ), # Thunderfist buff
           ( 395413, 3 ), # Fae Exposure Healing Buff
           ( 395414, 3 ), # Fae Exposure Damage Debuff
 
@@ -2072,6 +2131,11 @@ class SpellDataGenerator(DataGenerator):
 
           # Tier 30
           ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
+
+          # Tier 31
+          ( 425298, 1 ), # BrM 2-piece Charred Dreams Healing
+          ( 425299, 1 ), # BrM 2-piece Charred Dreams Damage
+          ( 425965, 1 ), # BrM 4-piece Celestial Brew Guard
         ),
 
         # Druid:
@@ -2160,6 +2224,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395110, 1 ), # Parting Skies Sundered Firmament tracker buff
           ( 393869, 1 ), # Lunar Shrapnel damage
           ( 393957, 1 ), # Waning Twilight
+          ( 424248, 1 ), # Balance T31 2pc buff
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
@@ -2172,6 +2237,7 @@ class SpellDataGenerator(DataGenerator):
           ( 279555, 3 ), # Layered Mane buff
           ( 395942, 3 ), # 2t29 Mangle AoE
           ( 400360, 3 ), # Moonless Night
+          ( 425441, 3 ), ( 425448, 3 ), # Blazing Thorns (4t31)
           # Restoration
         ),
         # Demon Hunter:
@@ -2205,8 +2271,12 @@ class SpellDataGenerator(DataGenerator):
           ( 390195, 1 ), # Chaos Theory talent buff
           ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
-          ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
-          ( 408754, 0 ), # T30 4pc Seething Potential damage buff
+          ( 393628, 1 ), ( 393629, 0 ), # T29 Set Bonus Spells
+          ( 408754, 1 ), # T30 4pc Seething Potential damage buff
+          ( 228532, 1 ), # Consume Lesser Soul heal
+          ( 328953, 1 ), # Consume Demon Soul heal
+          ( 328951, 1 ), # New Shattered Souls area trigger
+          ( 428493, 1 ), # Chaotic Disposition Damage
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
@@ -2237,6 +2307,13 @@ class SpellDataGenerator(DataGenerator):
           ( 409848, 1 ), # 4t30 buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
+          # Augmentation
+          ( 392268, 3 ), # Augmentation Essence Burst
+          ( 404908, 3 ), ( 413786, 3 ), # Fate Mirror Damage/Heal
+          ( 409632, 3 ), # Breath of Eons Damage
+          ( 360828, 3 ), # Blistering Scales
+          ( 410265, 3 ), # Inferno's Blessing
+          ( 424368, 3 ), # T31 4pc Buff Trembling Earth
        ),
     ]
 
@@ -3721,6 +3798,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1539 ],
             'tier'   : 30
         },
+        {
+            'name'   : 'tier31',
+            'bonuses': [ 1557, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1568, 1569 ],
+            'tier'   : 31
+        },
     ]
 
     @staticmethod
@@ -4741,10 +4823,10 @@ class PermanentEnchantItemGenerator(DataGenerator):
 
     def generate(self, data=None):
         self.output_header(
-                header = 'Permanent item enchants',
-                type = 'permanent_enchant_entry_t',
-                array = 'permanent_enchant',
-                length = len(data))
+            header = 'Permanent item enchants',
+            type = 'permanent_enchant_entry_t',
+            array = 'permanent_enchant',
+            length = len(data))
 
         for spell_name, rank, _, _, _, _, enchant, sei in sorted(data, key=lambda v: (v[0], v[1], v[3], v[4], v[5])):
             fields = enchant.field('id')
@@ -4755,3 +4837,42 @@ class PermanentEnchantItemGenerator(DataGenerator):
 
         self.output_footer()
 
+class ExpectedStatGenerator(DataGenerator):
+    def filter(self):
+        return [ v for v in self.db('ExpectedStat').values() if v.id_expansion == -2 ]
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Expected stat for levels 1-{}'.format(data[-1].id_parent),
+            type = 'expected_stat_t',
+            array = 'expected_stat',
+            length = len(data))
+
+        for es in sorted(data, key = lambda e: e.id_parent):
+            fields = es.field('id_parent', 'creature_auto_attack_dps', 'creature_armor',
+                              'player_primary_stat', 'player_secondary_stat',
+                              'armor_constant', 'creature_spell_damage')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class ExpectedStatModGenerator(DataGenerator):
+    def filter(self):
+        return ExpectedStatModSet(self._options).get()
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Expected stat mods',
+            type = 'expected_stat_mod_t',
+            array = 'expected_stat_mod',
+            length = len(data))
+
+        for esm in sorted(data, key = lambda e: (e[1], e[0].id)):
+            fields = esm[0].field('id', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
+                                  'mod_player_primary_stat', 'mod_player_secondary_stat',
+                                  'mod_armor_constant', 'mod_creature_spell_damage')
+            fields += [str(esm[1])]
+
+            self.output_record(fields)
+
+        self.output_footer()

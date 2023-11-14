@@ -231,9 +231,7 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
     proc_types pt = s->proc_type();
     proc_types2 pt2 = s->impact_proc_type2();
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-    {
-      action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, s );
-    }
+      player->trigger_callbacks( pt, pt2, this, s );
   }
 
   if ( record_healing )
@@ -387,6 +385,11 @@ size_t heal_t::available_targets( std::vector<player_t*>& target_list ) const
   }
 
   return target_list.size();
+}
+
+player_t* heal_t::get_expression_target()
+{
+  return target;
 }
 
 std::unique_ptr<expr_t> heal_t::create_expression( util::string_view name )

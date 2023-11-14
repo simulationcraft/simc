@@ -155,6 +155,18 @@ double player_stat_cache_t::attack_power() const
   return _attack_power;
 }
 
+double player_stat_cache_t::total_melee_attack_power() const
+{
+  if( !active || !valid[ CACHE_TOTAL_MELEE_ATTACK_POWER ] )
+  {
+    valid[ CACHE_TOTAL_MELEE_ATTACK_POWER ] = true;
+    _total_melee_attack_power               = player->composite_melee_attack_power_by_type( player->default_ap_type() );
+  }
+  else
+   assert( _total_melee_attack_power == player->composite_melee_attack_power_by_type( player->default_ap_type() ) );
+  return _total_melee_attack_power;
+}
+
 double player_stat_cache_t::attack_expertise() const
 {
   if ( !active || !valid[ CACHE_ATTACK_EXP ] )
@@ -555,6 +567,7 @@ double player_stat_cache_t::player_heal_multiplier( const action_state_t* s ) co
   double player_stat_cache_t::spirit() const    { return _player -> spirit();    }
   double player_stat_cache_t::spell_power( school_e s ) const { return _player -> composite_spell_power( s ); }
   double player_stat_cache_t::attack_power() const            { return _player -> composite_melee_attack_power();   }
+  double player_stat_cache_t::total_melee_attack_power() const { return _player->composite_melee_attack_power_by_type( _player -> default_ap_type() ); }
   double player_stat_cache_t::attack_expertise() const { return _player -> composite_melee_expertise(); }
   double player_stat_cache_t::attack_hit() const       { return _player -> composite_melee_hit();       }
   double player_stat_cache_t::attack_crit_chance() const      { return _player -> composite_melee_crit_chance();      }

@@ -4,38 +4,35 @@
 // ==========================================================================
 
 #include "action_callback.hpp"
+
 #include "action.hpp"
 #include "player/player.hpp"
 
-action_callback_t::action_callback_t( player_t* l, bool ap, bool asp ) :
-  listener( l ), active( true ), allow_self_procs( asp ), allow_procs( ap )
+action_callback_t::action_callback_t( player_t* l )
+  : listener( l ), active( true ), allow_self_procs( false ), allow_pet_procs( false )
 {
   assert( l );
   if ( range::find( l->callbacks.all_callbacks, this ) == l->callbacks.all_callbacks.end() )
     l->callbacks.all_callbacks.push_back( this );
 }
 
-void action_callback_t::trigger(const std::vector<action_callback_t*>& v, action_t* a, action_state_t* state )
+void action_callback_t::trigger( const std::vector<action_callback_t*>& v, action_t* a, action_state_t* state )
 {
-  if (a && !a->player->in_combat) return;
+  if ( a && !a->player->in_combat )
+    return;
 
   std::size_t size = v.size();
-  for (std::size_t i = 0; i < size; i++)
+  for ( std::size_t i = 0; i < size; i++ )
   {
-    action_callback_t* cb = v[i];
-    if (cb->active)
-    {
-      if (!cb->allow_procs && a && a->proc) return;
-      cb->trigger(a, state);
-    }
+    action_callback_t* cb = v[ i ];
+    if ( cb->active )
+      cb->trigger( a, state );
   }
 }
 
-void action_callback_t::reset(const std::vector<action_callback_t*>& v)
+void action_callback_t::reset( const std::vector<action_callback_t*>& v )
 {
   std::size_t size = v.size();
-  for (std::size_t i = 0; i < size; i++)
-  {
-    v[i]->reset();
-  }
+  for ( std::size_t i = 0; i < size; i++ )
+    v[ i ]->reset();
 }

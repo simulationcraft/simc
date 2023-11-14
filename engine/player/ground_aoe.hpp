@@ -157,6 +157,8 @@ protected:
   // structs)
   ground_aoe_event_t(player_t* p, const ground_aoe_params_t* param,
     action_state_t* ps, bool immediate_pulse = false);
+  static const ground_aoe_params_t* get_params( player_t*, const ground_aoe_params_t& );
+  static void release_params( player_t*, const ground_aoe_params_t*& );
 public:
   // Make a copy of the parameters, and use that object until this event expires
   ground_aoe_event_t(player_t* p, const ground_aoe_params_t& param, bool immediate_pulse = false);

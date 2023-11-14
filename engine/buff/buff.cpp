@@ -572,7 +572,6 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 buff_t::buff_t(actor_pair_t q, util::string_view name)
   : buff_t(q, name, spell_data_t::nil(), nullptr)
 {
-
 }
 
 buff_t::buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell_data, const item_t* item )
@@ -618,8 +617,10 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     quiet(),
     overridden(),
     can_cancel( true ),
+    is_fallback(),
     requires_invalidation(),
     expire_at_max_stack(),
+    ignore_time_modifier( false ),
     reverse_stack_reduction( 1 ),
     current_value(),
     current_stack(),
@@ -627,6 +628,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     buff_duration_multiplier( 1.0 ),
     default_chance( 1.0 ),
     manual_chance( -1.0 ),
+    base_time_duration_multiplier( 1.0 ),
+    dynamic_time_duration_multiplier( 1.0 ),
     constant_behavior( buff_constant_behavior::DEFAULT ),
     allow_precombat( true ),
     current_tick( 0 ),
@@ -670,6 +673,11 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 {
   if ( source )  // Player Buffs
   {
+    // remove matching name from fallback buff list
+    auto &fl = player->fallback_buff_names;
+    fl.erase( std::remove_if( fl.begin(), fl.end(), [ name, source]( std::pair<std::string, player_t*> f ) {
+      return f.first == name && f.second == source;
+    } ), fl.end() );
     player->buff_list.push_back( this );
     cooldown = source->get_cooldown( "buff_" + name_str );
   }
@@ -718,6 +726,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   // These are initialized at -1 then set to their spell data values here (along with error checking)
   set_max_stack( _max_stack );
   set_initial_stack( _initial_stack );
+
+  if ( s_data->flags( spell_attribute::SX_IGNORE_FOR_MOD_TIME_RATE ) )
+    ignore_time_modifier = true;
 
   update_trigger_calculations();
 }
@@ -769,8 +780,12 @@ void buff_t::update_trigger_calculations()
 
 buff_t* buff_t::set_chance( double chance )
 {
-  manual_chance = chance;
-  update_trigger_calculations();
+  if ( !is_fallback )
+  {
+    manual_chance = chance;
+    update_trigger_calculations();
+  }
+
   return this;
 }
 
@@ -815,6 +830,57 @@ buff_t* buff_t::set_duration_multiplier( double multiplier )
   if ( buff_duration_multiplier < 0.0 )
   {
     buff_duration_multiplier = 0.0;
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_dynamic_time_duration_multiplier( double new_multiplier )
+{
+  assert( new_multiplier > 0.0 );
+  if ( new_multiplier == dynamic_time_duration_multiplier )
+    return this;
+
+  auto old_multiplier = dynamic_time_duration_multiplier;
+  dynamic_time_duration_multiplier = new_multiplier;
+
+  if ( current_stack <= 0 || expiration.empty() )
+  {
+    return this;
+  }
+
+  auto ratio = new_multiplier / old_multiplier;
+
+  // Slowing down the clock, expiry will be moved into the future
+  if ( ratio > 1.0 )
+  {
+    for ( auto exp : expiration )
+    {
+      auto new_remains = exp->remains() * ratio;
+      exp->reschedule( new_remains );
+
+      if ( player )
+        sim->print_log( "{} increases {} expiry by a factor of {}. New expiration: {}", *player, *this, ratio,
+                      exp->occurs() );
+    }
+  }
+  // Speeding up the clock, expiry moved closer
+  else
+  {
+    for ( size_t i = 0; i < expiration.size(); i++ )
+    {
+      auto old_expiration = expiration[ i ];
+      auto new_remains = old_expiration->remains() * ratio;
+      event_t::cancel( old_expiration );
+
+      auto exp = make_event<expiration_t>( *sim, this, new_remains );
+      expiration[ i ] = exp;
+
+      if ( player )
+        sim->print_log( "{} decreases {} expiry by a factor of {}. New expiration: {}", *player, *this, ratio,
+                      exp->occurs() );
+    }
+
   }
 
   return this;
@@ -1110,6 +1176,9 @@ buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multipl
 buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, property_type_t p_type, double multiplier,
                                                     effect_type_t e_type )
 {
+  if ( !s_data->ok() )
+    return this;
+
   for ( size_t idx = 1; idx <= s_data->effect_count(); idx++ )
   {
     const spelleffect_data_t& eff = s_data->effectN( idx );
@@ -1131,12 +1200,9 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
     return this;  // return out after matching the first effect
   }
 
-  if ( s_data->ok() )
-  {
-    sim->error(
-        "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
-        name(), s_data->id(), static_cast<int>(a_type), static_cast<int>(p_type), static_cast<int>(e_type) );
-  }
+  sim->error( "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
+              name(), s_data->id(), static_cast<int>( a_type ), static_cast<int>( p_type ),
+              static_cast<int>( e_type ) );
 
   return this;
 }
@@ -1186,14 +1252,22 @@ buff_t* buff_t::set_tick_behavior( buff_tick_behavior behavior )
 
 buff_t* buff_t::set_tick_callback( buff_tick_callback_t fn )
 {
-  tick_callback = std::move( fn );
+  if ( fn && !is_fallback )
+  {
+    tick_callback = std::move( fn );
+  }
+
   return this;
 }
 
 buff_t* buff_t::set_tick_time_callback( buff_tick_time_callback_t cb )
 {
-  set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
-  tick_time_callback = std::move( cb );
+  if ( cb && !is_fallback )
+  {
+    set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
+    tick_time_callback = std::move( cb );
+  }
+
   return this;
 }
 
@@ -1238,7 +1312,7 @@ buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
 
 buff_t* buff_t::set_refresh_duration_callback( buff_refresh_duration_callback_t cb )
 {
-  if ( cb )
+  if ( cb && !is_fallback )
   {
     refresh_behavior          = buff_refresh_behavior::CUSTOM;
     refresh_duration_callback = std::move( cb );
@@ -1288,7 +1362,11 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
 
 buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& cb )
 {
-  stack_change_callback = cb;
+  if ( !is_fallback )
+  {
+    stack_change_callback = cb;
+  }
+
   return this;
 }
 
@@ -1318,7 +1396,7 @@ buff_t* buff_t::set_name_reporting( std::string_view n )
 
 buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
 {
-  if ( !spell->ok() )
+  if ( !spell->ok() || !s_data->ok() )
     return this;
 
   assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting buffs." );
@@ -1432,6 +1510,28 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
                       *this, effect.percent(), default_value, prev );
   };
 
+  // Applies a modifier from -99 to infinity that controls how fast the buff functions.
+  // Values less than -99 will be rounded to -99, which seems to match in-game behavior where
+  // auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
+  // It's intended to modify real time duration and tickrate, without affecting the apparent duration
+  // as used for things like pandemic refresh behavior.
+  // Currently, this only modifies the duration of the buff, moving its expiration closer or
+  // further out. The "apparent" duration is lost (but recoverable), since remains() returns the
+  // real-time duration. The tickrate is un-adjusted, since it is currently based on the real-time duration.
+  // None of these limitations particularly matter for current usecases, but if you're looking at using this, be
+  // aware there may be more work required to support your usecase.
+  auto apply_time_modifier_duration = [ this ]( const spelleffect_data_t& effect )
+  {
+    if ( ignore_time_modifier )
+      return this;
+
+    auto mul = 1.0 / ( 1.0 + std::max( effect.percent(), -0.99 ) ); // Limit slow down to 100x slower
+
+    base_time_duration_multiplier = base_time_duration_multiplier * mul;
+
+    return this;
+  };
+
   auto apply_percent_modifier = [ this, apply_percent_effect_modifier ]( const spelleffect_data_t& effect ) {
     switch ( effect.misc_value1() )
     {
@@ -1509,6 +1609,10 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case A_ADD_PCT_LABEL_MODIFIER:
         apply_percent_modifier( effect );
+        break;
+
+      case A_MOD_TIME_RATE_BY_SPELL_LABEL:
+        apply_time_modifier_duration( effect );
         break;
 
       default:
@@ -2047,6 +2151,8 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   assert( expiration.size() == 1 );
 
+  extra_seconds = extra_seconds * get_time_duration_multiplier();
+
   if ( extra_seconds > timespan_t::zero() )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
@@ -2111,7 +2217,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 #endif
 
-  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration();
+  timespan_t d = (( duration >= timespan_t::zero() ) ? duration : buff_duration()) * get_time_duration_multiplier();
 
   if ( sim->current_time() <= timespan_t::from_seconds( 0.01 ) )
   {
@@ -2223,6 +2329,8 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
   else
     d = refresh_duration( buff_duration() );
 
+  d = d * get_time_duration_multiplier();
+
   if ( refresh_behavior == buff_refresh_behavior::DISABLED && duration != timespan_t::zero() )
     return;
 
@@ -2279,12 +2387,12 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} refreshes {} (value={}, duration={})", *player, buff_display_name, current_value, d );
+        sim->print_log( "{} refreshes {} (value={}, duration={}, time_duration_multiplier={})", *player, buff_display_name, current_value, d, get_time_duration_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid refreshes {} (value={}, duration={})", buff_display_name, current_value, d );
+      sim->print_log( "Raid refreshes {} (value={}, duration={}, time_duration_multiplier={})", buff_display_name, current_value, d, get_time_duration_multiplier() );
     }
   }
 }
@@ -2587,12 +2695,12 @@ void buff_t::aura_gain()
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} gains {} (value={})", *player, buff_display_name, current_value );
+        sim->print_log( "{} gains {} (value={}, time_duration_multiplier={})", *player, buff_display_name, current_value, get_time_duration_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid gains {} (value={})", buff_display_name, current_value );
+      sim->print_log( "Raid gains {} (value={}, time_duration_multiplier={})", buff_display_name, current_value, get_time_duration_multiplier() );
     }
   }
 }
@@ -2623,6 +2731,7 @@ void buff_t::reset()
   last_trigger      = timespan_t::min();
   last_expire       = timespan_t::min();
   last_stack_change = timespan_t::min();
+  dynamic_time_duration_multiplier = 1.0;
 }
 
 void buff_t::merge( const buff_t& other )
@@ -2733,7 +2842,7 @@ static buff_t* find_potion_buff( util::span<buff_t* const> buffs, player_t* sour
 
   if ( source )
   {
-    return source->sim->auras.nil;
+    return source->sim->auras.fallback;
   }
 
   return nullptr;
@@ -2745,6 +2854,16 @@ buff_t* buff_t::find_expressable( util::span<buff_t* const> buffs, util::string_
     return find_potion_buff( buffs, source );
   else
     return find( buffs, name, source );
+}
+
+buff_t* buff_t::make_fallback( player_t* player, std::string_view name, player_t* source )
+{
+  for ( const auto& fb : player->fallback_buff_names )
+    if ( fb.first == name && fb.second == source )
+      return player->sim->auras.fallback;
+
+  player->fallback_buff_names.emplace_back( name, source );
+  return player->sim->auras.fallback;
 }
 
 std::string buff_t::to_str() const
@@ -2802,6 +2921,10 @@ buff_t* buff_t::find( sim_t* s, util::string_view name )
 
 buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
+  for ( const auto& fb : p->fallback_buff_names )
+    if ( fb.first == name && fb.second == source )
+      return p->sim->auras.fallback;
+
   return find( p->buff_list, name, source );
 }
 
@@ -3046,7 +3169,7 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
 
   if ( eff.subtype() == A_MOD_STAT )
   {
-    auto misc = eff.misc_value1();
+    auto misc   = eff.misc_value1();
     stat_e stat = STAT_NONE;
 
     if ( misc >= 0 )
@@ -3069,6 +3192,17 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
 
       return this;
     }
+  }
+  else if ( eff.subtype() == A_MOD_SUPPORT_STAT )
+  {
+    auto misc   = eff.misc_value1();
+    stat_e stat = STAT_NONE;
+
+    if ( misc == 1 )
+      stat = player->convert_hybrid_stat( STAT_STR_AGI_INT );
+
+    if ( stat != STAT_NONE )
+      return add_stat( stat, a, c );
   }
 
   return do_error( "STAT_NONE" );
@@ -3314,7 +3448,7 @@ void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining
     player->absorb_buff_list.erase( it );
 }
 
-double absorb_buff_t::consume( double amount )
+double absorb_buff_t::consume( double amount, player_t* attacker )
 {
   // Limit the consumption to the current size of the buff.
   amount = std::min( amount, current_value );
@@ -3329,7 +3463,7 @@ double absorb_buff_t::consume( double amount )
 
   sim->print_debug( "{} {} absorbs {} (remaining: {})", *player, *this, amount, current_value );
 
-  absorb_used( amount );
+  absorb_used( amount, attacker );
 
   if ( current_value <= 0 )
     expire();
@@ -3404,7 +3538,7 @@ absorb_buff_t* absorb_buff_t::set_cumulative( bool c )
 
 bool movement_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
-  if ( player->buffs.norgannons_sagacity_stacks )
+  if ( player->buffs.norgannons_sagacity_stacks && player->buffs.norgannons_sagacity )
   {
     auto sagacity = player->buffs.norgannons_sagacity_stacks->check();
 
@@ -3527,6 +3661,39 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
       sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
       sim->print_debug( "{} damage buff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
     }
+    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+    {
+      if ( e.property_type() == P_GENERIC )
+      {
+        if ( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
+          set_direct_mod( spell, idx, multiplier );
+
+        assert( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) 
+                && "Additional label modifiers do not match the existing direct effect value" );
+
+        direct_mod.labels.push_back( e.misc_value2() );
+      }
+      else if ( e.property_type() == P_TICK_DAMAGE )
+      {
+        if ( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 )
+          set_periodic_mod( spell, idx, multiplier );
+
+        assert( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier )
+                && "Additional label modifiers do not match the existing periodic effect value" );
+
+        periodic_mod.labels.push_back( e.misc_value2() );
+      }
+    }
+    else if ( e.subtype() == A_ADD_FLAT_LABEL_MODIFIER && e.property_type() == P_CRIT )
+    {
+      if ( crit_chance_mod.multiplier == 1.0 && crit_chance_mod.effect_idx == 0 )
+        set_crit_chance_mod( spell, idx, multiplier );
+
+      assert( crit_chance_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier )
+              && "Additional label modifiers do not match the existing crit chance effect value" );
+
+      crit_chance_mod.labels.push_back( e.misc_value2() );
+    }
   }
 
   return this;
@@ -3555,6 +3722,10 @@ damage_buff_t* damage_buff_t::apply_mod_affecting_effect( damage_buff_modifier_t
       }
     }
   }
+
+  // TODO -- Need to post-validate that modifiers are correctly applied to label effects as well
+  // As Blizzard has started mixing whitelist and label modifiers in the same buffs, these may go out of sync
+  // For now, just assume the side-by-side label modifiers are correct. May need to split out in the future
 
   return this;
 }
@@ -3634,6 +3805,12 @@ bool damage_buff_t::is_affecting_direct( const spell_data_t* s )
   if ( s->affected_by_label( direct_mod.s_data->effectN( direct_mod.effect_idx ) ) )
     return true;
 
+  for ( int label : direct_mod.labels )
+  {
+    if ( s->affected_by_label( label ) )
+      return true;
+  }
+
   return false;
 }
 
@@ -3648,6 +3825,12 @@ bool damage_buff_t::is_affecting_periodic( const spell_data_t* s )
   if ( s->affected_by_label( periodic_mod.s_data->effectN( periodic_mod.effect_idx ) ) )
     return true;
 
+  for ( int label : periodic_mod.labels )
+  {
+    if ( s->affected_by_label( label ) )
+      return true;
+  }
+
   return false;
 }
 
@@ -3661,6 +3844,12 @@ bool damage_buff_t::is_affecting_crit_chance( const spell_data_t* s )
 
   if ( s->affected_by_label( crit_chance_mod.s_data->effectN( crit_chance_mod.effect_idx ) ) )
     return true;
+
+  for ( int label : crit_chance_mod.labels )
+  {
+    if ( s->affected_by_label( label ) )
+      return true;
+  }
 
   return false;
 }

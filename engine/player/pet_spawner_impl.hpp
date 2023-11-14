@@ -182,20 +182,6 @@ pet_spawner_t<T, O>&  pet_spawner_t<T, O>::set_replacement_strategy( pet_replace
 { m_replacement_strategy = new_; return *this; }
 
 // Despawners
-
-template <typename T, typename O>
-size_t pet_spawner_t<T, O>::despawn()
-{
-  update_state();
-  size_t despawned = m_active_pets.size();
-  while ( m_active_pets.size() )
-  {
-    m_active_pets.front() -> dismiss();
-  }
-
-  return despawned;
-}
-
 template <typename T, typename O>
 bool pet_spawner_t<T, O>::despawn( T* obj )
 {
@@ -262,30 +248,6 @@ size_t pet_spawner_t<T, O>::despawn( const check_arg_fn_t& fn )
   } );
 
   return despawned;
-}
-
-// Time adjustments
-
-template <typename T, typename O>
-void pet_spawner_t<T, O>::extend_expiration( timespan_t adjustment )
-{
-  if ( adjustment <= timespan_t::zero() )
-  {
-    return;
-  }
-
-  for ( auto pet : m_active_pets )
-  {
-    if ( ! pet->expiration )
-    {
-      continue;
-    }
-
-    timespan_t new_duration = pet -> remains();
-    new_duration += adjustment;
-
-    pet -> expiration -> reschedule( new_duration );
-  }
 }
 
 // Spawning

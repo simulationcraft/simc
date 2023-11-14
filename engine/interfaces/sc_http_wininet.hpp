@@ -16,7 +16,7 @@
 
 namespace http
 {
-static bool parse_url( const std::string& url_in, URL_COMPONENTSA& url_out );
+[[maybe_unused]] static bool parse_url( const std::string& url_in, URL_COMPONENTSA& url_out );
 
 class wininet_handle_t : public http_handle_t
 {

@@ -46,10 +46,10 @@ struct rng_t;
 }
 
 
-using buff_tick_callback_t = std::function<void(buff_t*, int, timespan_t)>;
+using buff_tick_callback_t = std::function<void(buff_t* buff, int current_tick, timespan_t tick_time)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
 using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, timespan_t)>;
-using buff_stack_change_callback_t = std::function<void(buff_t*, int, int)>;
+using buff_stack_change_callback_t = std::function<void(buff_t*, int old_stack, int new_stack)>;
 
 // Buffs ====================================================================
 
@@ -89,9 +89,10 @@ public:
    */
   bool activated;
   bool reactable;
-  bool reverse, constant, quiet, overridden, can_cancel;
+  bool reverse, constant, quiet, overridden, can_cancel, is_fallback;
   bool requires_invalidation;
   bool expire_at_max_stack;
+  bool ignore_time_modifier;
 
   int reverse_stack_reduction; /// Number of stacks reduced when reverse = true
 
@@ -102,6 +103,8 @@ public:
   double buff_duration_multiplier;
   double default_chance;
   double manual_chance; // user-specified "overridden" proc-chance
+  double base_time_duration_multiplier;
+  double dynamic_time_duration_multiplier;
   std::vector<timespan_t> stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
 
@@ -145,7 +148,7 @@ public:
   simple_sample_data_t benefit_pct, trigger_pct;
   simple_sample_data_t avg_start, avg_refresh, avg_expire;
   simple_sample_data_t avg_overflow_count, avg_overflow_total;
-  simple_sample_data_t uptime_pct;
+  simple_sample_data_with_min_max_t uptime_pct;
   simple_sample_data_with_min_max_t start_intervals, trigger_intervals, duration_lengths;
   std::vector<uptime_simple_t> stack_uptime;
 
@@ -195,7 +198,7 @@ public:
   virtual double value()
   {
     stack();
-    return current_value;
+    return check_value();
   }
 
   /**
@@ -209,7 +212,7 @@ public:
   /**
    * Get current buff value + NO benefit tracking.
    */
-  double check_value() const
+  virtual double check_value() const
   {
     return current_value;
   }
@@ -302,6 +305,34 @@ public:
   static buff_t* find( sim_t*, util::string_view name );
   static buff_t* find( player_t*, util::string_view name, player_t* source = nullptr );
   static buff_t* find_expressable( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
+  static buff_t* make_fallback( player_t* player, std::string_view name, player_t* source = nullptr );
+
+  // If first argument is true, create a buff per normal
+  // If first argument is false, add name to fallback buffs and return the generic sim fallback
+  // NOTE: this returns a base buff_t* pointer as the generic fallback buff is type buff_t
+  template <typename Buff, typename Player, typename... Args>
+  static buff_t* make_buff_fallback( bool true_buff, Player&& player, std::string_view name, Args&&... args )
+  {
+    static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
+    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
+                   std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
+                   "Player must be derived from player_t or actor_pair_t" );
+
+    if ( true_buff )
+    {
+      if constexpr ( std::is_constructible_v<Buff, Player, Args...> )
+        return new Buff( std::forward<Player>( player ), std::forward<Args>( args )... );
+      else
+        return new Buff( std::forward<Player>( player ), name, std::forward<Args>( args )... );
+    }
+    else
+    {
+      if constexpr ( std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>> )
+        return make_fallback( player.target, name, player.source );
+      else
+        return make_fallback( player, name, player );
+    }
+  }
 
   const char* name() const { return name_str.c_str(); }
   const char* name_reporting() const;
@@ -309,6 +340,8 @@ public:
   int max_stack() const { return _max_stack; }
   int initial_stack() const { return _initial_stack; }
   const spell_data_t* get_trigger_data() const { return trigger_data; }
+  double get_dynamic_time_duration_multiplier() const { return dynamic_time_duration_multiplier; };
+  double get_time_duration_multiplier() const { return base_time_duration_multiplier * dynamic_time_duration_multiplier; };
 
   rng::rng_t& rng();
 
@@ -318,6 +351,7 @@ public:
   buff_t* set_duration( timespan_t duration );
   buff_t* modify_duration( timespan_t duration );
   buff_t* set_duration_multiplier( double );
+  buff_t* set_dynamic_time_duration_multiplier( double multiplier );
   buff_t* set_max_stack( int max_stack );
   buff_t* modify_max_stack( int max_stack );
   buff_t* set_initial_stack( int initial_stack );
@@ -414,7 +448,6 @@ struct stat_buff_t : public buff_t
   void bump     ( int stacks = 1, double value = -1.0 ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-  double value() override { stack(); return stats[ 0 ].current_value; }
 
   stat_buff_t* add_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
   stat_buff_t* set_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
@@ -441,14 +474,14 @@ protected:
 
   // Hook for derived classes to recieve notification when some of the absorb is consumed.
   // Called after the adjustment to current_value.
-  virtual void absorb_used( double /* amount */ ) {}
+  virtual void absorb_used( double, player_t* ) {}
 
 public:
   void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
   void refresh( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
-  virtual double consume( double amount );
+  virtual double consume( double amount, player_t* attacker = nullptr );
   absorb_buff_t* set_absorb_gain( gain_t* );
   absorb_buff_t* set_absorb_source( stats_t* );
   absorb_buff_t* set_absorb_school( school_e );
@@ -488,6 +521,7 @@ struct damage_buff_t : public buff_t
     const spell_data_t* s_data = nullptr;
     size_t effect_idx = 0;
     double multiplier = 1.0;
+    std::vector<int> labels;
   };
 
   bool is_stacking;
@@ -629,8 +663,12 @@ protected:
 template <typename Buff = buff_t, typename... Args>
 inline Buff* make_buff( Args&&... args )
 {
-  static_assert( std::is_base_of<buff_t, Buff>::value,
-                 "Buff must be derived from buff_t" );
-  return new Buff( std::forward<Args>(args)... );
+  static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
+  return new Buff( std::forward<Args>( args )... );
 }
 
+template <typename Buff = buff_t, typename... Args>
+inline buff_t* make_buff_fallback( Args&&... args )
+{
+  return buff_t::make_buff_fallback<Buff>( std::forward<Args>( args )... );
+}

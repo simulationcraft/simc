@@ -20,6 +20,7 @@ std::string temporary_enchant( const player_t* );
 void discipline( player_t* );
 void holy( player_t* );
 void shadow( player_t* );
+void shadow_ptr( player_t* );
 void no_spec( player_t* );
 
 }  // namespace priest_apl

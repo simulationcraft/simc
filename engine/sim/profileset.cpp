@@ -139,7 +139,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
     return;
   }
 
-  const auto player = profile_sim -> player_no_pet_list.data().front();
+  const auto player = profile_sim -> player_no_pet_list[ parent->profileset_report_player_index ];
   auto progress = profile_sim -> progress( nullptr, 0 );
 
   range::for_each( parent -> profileset_metric, [ & ]( scale_metric_e metric ) {
@@ -159,7 +159,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 
   if ( ! parent -> profileset_output_data.empty() )
   {
-    const auto parent_player = parent -> player_no_pet_list.data().front();
+    const auto parent_player = parent -> player_no_pet_list[ parent->profileset_report_player_index ];
     range::for_each( parent -> profileset_output_data, [ & ]( const std::string& option ) {
         save_output_data( set, parent_player, player, option );
     } );
@@ -175,16 +175,16 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
   set.cleanup_options();
 }
 
-// Figure out if the option is the beginning of a player-scope option
-bool in_player_scope( const option_tuple_t& opt )
+// Figure out if the option defines new actor(s) with their own scope
+bool is_actor_scope( const option_tuple_t& opt )
 {
-  static constexpr std::array<util::string_view, 15> player_scope_opts { {
-    "demonhunter", "deathknight", "druid", "evoker", "hunter", "mage", "monk",
-    "paladin", "priest", "rogue", "shaman", "warrior", "warlock",
-    "armory", "local_json"
+  static constexpr std::array<util::string_view, 21> actor_scope_opts { {
+    "deathknight", "demonhunter", "druid", "evoker", "hunter", "mage", "monk",
+    "paladin", "priest", "rogue", "shaman", "warlock", "warrior", "enemy",
+    "tank_dummy", "pet", "guardian", "copy", "armory", "local_json", "guild"
   } };
 
-  return range::any_of( player_scope_opts, [ &opt ]( util::string_view name ) {
+  return range::any_of( actor_scope_opts, [ &opt ]( util::string_view name ) {
     return util::str_compare_ci( opt.name, name );
   } );
 }
@@ -204,7 +204,8 @@ size_t profilesets_t::done_profilesets() const
 }
 
 sim_control_t* profilesets_t::create_sim_options( const sim_control_t*            original,
-                                                  const std::vector<std::string>& opts )
+                                                  const std::vector<std::string>& opts,
+                                                  unsigned main_actor_index )
 {
   if ( original == nullptr )
   {
@@ -222,36 +223,31 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
     return nullptr;
   }
 
-  // Find the insertion index only once, and cache the position to speed up init. 0 denotes "no
-  // enemy found".
-  if ( m_insert_index == -1 )
+  // Find the insertion indices only once, and cache the positions to speed up init.
+  if ( m_actor_indices.empty() )
   {
-    // Find a suitable player-scope variable to start looking for an "enemy" option. "spec" option
-    // must be always defined, so we can start the search below from it.
-    auto it = range::find_if( original -> options, []( const option_tuple_t& opt ) {
-      return in_player_scope( opt );
-    } );
+    for ( size_t i = 0; i < original -> options.size(); i++ )
+    {
+      if ( is_actor_scope( original -> options[ i ] ) )
+        m_actor_indices.push_back( i );
+    }
 
-    if ( it == original -> options.end() )
+    if ( m_actor_indices.empty() )
     {
       std::cerr << "ERROR! No start of player-scope defined for the simulation" << std::endl;
       return nullptr;
     }
 
-    // Then, find the first enemy= line from the original options. The profileset options need to be
-    // inserted after the original player definition, but before any enemy options are defined.
-    auto enemy_it = std::find_if( it, original -> options.end(), []( const option_tuple_t& opt ) {
-      return util::str_compare_ci( opt.name, "enemy" );
-    } );
+    if ( main_actor_index >= m_actor_indices.size() )
+    {
+      std::cerr << "ERROR! Option profileset_main_actor_index=" << main_actor_index << " is out of range. Only "
+                << m_actor_indices.size() << " actors are defined." << std::endl;
+      return nullptr;
+    }
 
-    if ( enemy_it == original -> options.end() )
-    {
-      m_insert_index = 0;
-    }
-    else
-    {
-      m_insert_index = std::distance( original -> options.begin(), enemy_it );
-    }
+    // Also append an index for the past-the-end iterator,
+    // which is used for consistency in implementation below.
+    m_actor_indices.push_back( original->options.size() );
   }
 
   auto options_copy = new sim_control_t( *original );
@@ -259,9 +255,11 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
 
   // Filter profileset options so that any option overridable in the base options is
   // overriden, and the rest are inserted at the correct position
+  size_t profileset_actor_start_index = m_actor_indices[ main_actor_index ];
+  size_t profileset_actor_end_index = m_actor_indices[ main_actor_index + 1 ];
   for ( const option_tuple_t& t : new_options.options )
   {
-    if ( in_player_scope( t ) )
+    if ( is_actor_scope( t ) )
     {
       std::cerr << fmt::format("ERROR! Profilesets cannot define additional actors: {}={}", t.name, t.value) << std::endl;
       return nullptr;
@@ -275,43 +273,25 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
     // set and replace if so
     else
     {
-      // Note, replace the last occurrence of the option to ensure the profileset option
-      // will be set
-      auto it = std::find_if( options_copy->options.rbegin(), options_copy->options.rend(),
-        [&t]( const option_tuple_t& orig_t ) {
-          return orig_t.name == t.name;
-      } );
-
-      if ( it != options_copy->options.rend() )
-      {
+      // Note, replace the last occurrence of the option to ensure the profileset option will be set
+      auto end_it = std::reverse_iterator( options_copy->options.begin() + profileset_actor_start_index );
+      auto start_it = std::reverse_iterator( options_copy->options.begin() + profileset_actor_end_index );
+      auto it = std::find_if( start_it, end_it, [&t]( const option_tuple_t& orig_t ) { return orig_t.name == t.name; } );
+      if ( it != end_it )
         it->value = t.value;
-      }
       else
-      {
         filtered_opts.push_back( t );
-      }
     }
   }
 
-  // No enemy option defined, insert filtered profileset options to the end of the
-  // original options
-  if ( m_insert_index == 0 )
-  {
-    options_copy -> options.insert( options_copy -> options.end(),
-                                    filtered_opts.begin(), filtered_opts.end() );
-  }
-  // Enemy option found, insert filtered profileset options just before the enemy option
-  else
-  {
-    options_copy -> options.insert( options_copy -> options.begin() + m_insert_index,
-                                    filtered_opts.begin(), filtered_opts.end() );
-  }
+  options_copy -> options.insert( options_copy -> options.begin() + profileset_actor_end_index,
+                                  filtered_opts.begin(), filtered_opts.end() );
 
   return options_copy;
 }
 
 profilesets_t::profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
-    m_original( nullptr ), m_insert_index( -1 ),
+    m_original( nullptr ), m_actor_indices(),
     m_work_index( 0 ),
     m_control_lock( m_mutex, std::defer_lock ),
     m_max_workers( 0 ), 
@@ -552,17 +532,6 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
   }
 }
 
-bool profilesets_t::validate( sim_t* ps_sim )
-{
-  if ( ps_sim -> player_no_pet_list.size() > 1 )
-  {
-    ps_sim -> errorf( "Profileset simulations must have only one actor in the baseline sim" );
-    return false;
-  }
-
-  return true;
-}
-
 // Ensure profileset options are valid, and also perform basic simulator initialization for the
 // profileset to ensure that we can launch it when the time comes
 bool profilesets_t::parse( sim_t* sim )
@@ -591,7 +560,7 @@ bool profilesets_t::parse( sim_t* sim )
 
     m_mutex.unlock();
 
-    auto control = create_sim_options( m_original.get(), profileset_opts );
+    auto control = create_sim_options( m_original.get(), profileset_opts, sim->profileset_main_actor_index );
     if ( control == nullptr )
     {
       set_state( DONE );
@@ -658,10 +627,11 @@ void profilesets_t::initialize( sim_t* sim )
     return;
   }
 
-  if ( ! validate( sim ) )
+  if ( sim->profileset_report_player_index >= sim->player_no_pet_list.size() )
   {
-    set_state( DONE );
-    return;
+    sim->errorf( "Option profileset_report_player_index=%d is out of range for a Profileset with %d players.",
+      sim->profileset_report_player_index, sim->player_no_pet_list.size() );
+    sim->cancel();
   }
 
   if ( sim -> profileset_init_threads < 1 )
@@ -946,6 +916,9 @@ bool profilesets_t::is_parallel() const
 void create_options( sim_t* sim )
 {
   sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
+  sim -> add_option( opt_uint( "profileset_main_actor_index", sim -> profileset_main_actor_index ) );
+  sim -> add_option( opt_uint( "profileset_report_player_index", sim -> profileset_report_player_index ) );
+  sim -> add_option( opt_string( "profileset_multiactor_base_name", sim -> profileset_multiactor_base_name ) );
   sim -> add_option( opt_func( "profileset_metric", []( sim_t*             sim,
                                                         util::string_view,
                                                         util::string_view value ) {
@@ -1008,6 +981,7 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
     case SCALE_METRIC_ETMI:      return collect( d.effective_theck_meloree_index );
     case SCALE_METRIC_DEATHS:    return collect( d.deaths );
     case SCALE_METRIC_TIME:      return collect( d.fight_length );
+    case SCALE_METRIC_RAID_DPS:  return collect( player->sim->raid_dps );
     case SCALE_METRIC_HAPS:
     {
       auto hps = collect( d.hps );

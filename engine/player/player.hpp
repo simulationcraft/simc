@@ -68,6 +68,7 @@ struct stats_t;
 struct spell_data_t;
 struct player_talent_points_t;
 struct uptime_t;
+struct ground_aoe_params_t;
 namespace azerite {
     class azerite_state_t;
     class azerite_essence_state_t;
@@ -138,7 +139,10 @@ struct player_t : public actor_t
   // dynamic attributes - things which change during combat
   player_t*   target;
   bool        initialized;
+  bool        precombat_initialized;
   bool        potion_used;
+  double      leech_pool;  // for leech batching
+
 
   std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
@@ -277,6 +281,7 @@ struct player_t : public actor_t
   timespan_t off_gcd_ready;
   timespan_t cast_while_casting_ready;
   bool in_combat;
+  unsigned in_boss_encounter;
   bool action_queued;
   bool first_cast;
   action_t* last_foreground_action;
@@ -294,6 +299,7 @@ struct player_t : public actor_t
   std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
   std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
   std::vector<std::function<void( player_t* )>> callbacks_on_kill;
+  std::vector<std::function<void( player_t*, bool )>> callbacks_on_combat_state;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -334,20 +340,22 @@ struct player_t : public actor_t
   std::string tmi_debug_file_str;
   double tmi_window;
 
-  auto_dispose< std::vector<buff_t*> > buff_list;
-  auto_dispose< std::vector<proc_t*> > proc_list;
-  auto_dispose< std::vector<gain_t*> > gain_list;
-  auto_dispose< std::vector<stats_t*> > stats_list;
-  auto_dispose< std::vector<benefit_t*> > benefit_list;
-  auto_dispose< std::vector<uptime_t*> > uptime_list;
-  auto_dispose< std::vector<cooldown_t*> > cooldown_list;
-  auto_dispose< std::vector<target_specific_cooldown_t*> > target_specific_cooldown_list;
-  auto_dispose< std::vector<real_ppm_t*> > rppm_list;
-  auto_dispose< std::vector<shuffled_rng_t*> > shuffled_rng_list;
+  auto_dispose<std::vector<buff_t*>> buff_list;
+  // buff_t::find( player, name, source ) will return pointer to sim.auras.fallback
+  std::vector<std::pair<std::string, player_t*>> fallback_buff_names;
+  auto_dispose<std::vector<proc_t*>> proc_list;
+  auto_dispose<std::vector<gain_t*>> gain_list;
+  auto_dispose<std::vector<stats_t*>> stats_list;
+  auto_dispose<std::vector<benefit_t*>> benefit_list;
+  auto_dispose<std::vector<uptime_t*>> uptime_list;
+  auto_dispose<std::vector<cooldown_t*>> cooldown_list;
+  auto_dispose<std::vector<target_specific_cooldown_t*>> target_specific_cooldown_list;
+  auto_dispose<std::vector<real_ppm_t*>> rppm_list;
+  auto_dispose<std::vector<shuffled_rng_t*>> shuffled_rng_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
-  std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
-  std::vector<std::vector<plot_data_t> > reforge_plot_data;
-  auto_dispose< std::vector<sample_data_helper_t*> > sample_data_list;
+  std::array<std::vector<plot_data_t>, STAT_MAX> dps_plot_data;
+  std::vector<std::vector<plot_data_t>> reforge_plot_data;
+  auto_dispose<std::vector<sample_data_helper_t*>> sample_data_list;
   std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
 
   // All Data collected during / end of combat
@@ -382,14 +390,8 @@ struct player_t : public actor_t
   std::unique_ptr<set_bonus_t> sets;
   meta_gem_e meta_gem;
   bool matching_gear;
-  bool karazhan_trinkets_paired;
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
-  cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
-
-  // Warlord's Unseeing Eye (6.2 Trinket)
-  double warlords_unseeing_eye;
-  stats_t* warlords_unseeing_eye_stats;
 
   // Misc Multipliers
   // auto attack modifier and multiplier (for Jeweled Signet of Melandrus and similar effects)
@@ -427,57 +429,38 @@ struct player_t : public actor_t
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
-    buff_t* mongoose_mh;
-    buff_t* mongoose_oh;
     buff_t* nitro_boosts;
     buff_t* pain_suppression;
     buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
-    buff_t* close_to_heart_leech_aura;
-    buff_t* generous_pour_avoidance_aura;
+    buff_t* close_to_heart_aura;
+    buff_t* generous_pour_aura;
     buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
-    buff_t* embrace_of_paku;
+    buff_t* symbol_of_hope; // Priest spell
 
     buff_t* berserking;
     buff_t* bloodlust;
     buff_t* windfury_totem;
-
-    buff_t* cooldown_reduction;
-    buff_t* amplification;
-    buff_t* amplification_2;
 
     // Legendary meta stuff
     buff_t* courageous_primal_diamond_lucidity;
     buff_t* tempus_repit;
     buff_t* fortitude;
 
-    buff_t* archmages_greater_incandescence_str;
-    buff_t* archmages_greater_incandescence_agi;
-    buff_t* archmages_greater_incandescence_int;
-    buff_t* archmages_incandescence_str;
-    buff_t* archmages_incandescence_agi;
-    buff_t* archmages_incandescence_int;
     buff_t* legendary_aoe_ring; // Legendary ring buff.
-    buff_t* legendary_tank_buff;
 
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
 
     // 7.1
-    buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
     buff_t* nefarious_pact; // Whispers in the dark good buff
     buff_t* devils_due; // Whispers in the dark bad buff
-
-    // 6.2 trinket proxy buffs
-    buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
-    buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
-    buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
 
@@ -497,25 +480,15 @@ struct player_t : public actor_t
     // Azerite power
     buff_t* normalization_increase;
 
-    // Uldir
-    buff_t* reorigination_array;
-
     /// 8.2 Azerite Essences
-    stat_buff_t* memory_of_lucid_dreams;
-    stat_buff_t* lucid_dreams; // Versatility Buff from Rank 3
-    buff_t* reckless_force; // The Unbound Force minor - crit chance
-    buff_t* reckless_force_counter; // The Unbound Force minor - max 20 stack counter
-    stat_buff_t* lifeblood; // Worldvein Resonance - grant primary stat per shard, max 4
+    buff_t* memory_of_lucid_dreams;
+    buff_t* lucid_dreams; // Versatility Buff from Rank 3
     buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
-    stat_buff_t* reality_shift; // Ripple in Space minor - primary stat on moving 25yds
-    buff_t* guardian_of_azeroth; // Condensed Life-Force major - R3 stacking haste on pet cast
 
     // 8.2 misc
     buff_t* damage_to_aberrations; // Benthic belt special effect
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
-    buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
-    buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
 
     // 9.0 class buffs
     buff_t* focus_magic; // Mage talent
@@ -575,11 +548,6 @@ struct player_t : public actor_t
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
 
     // 10.1 buffs
-    buff_t* anvil_strike_combat;
-    buff_t* anvil_strike_no_combat;
-
-    // Season 1 Thundering M+ Affix
-    buff_t* mark_of_lightning;
   } buffs;
 
   struct debuffs_t
@@ -607,6 +575,7 @@ struct player_t : public actor_t
     bool focus_magic;
     double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
+    std::vector<timespan_t> symbol_of_hope;
     std::vector<timespan_t> blessing_of_summer;
     std::vector<timespan_t> blessing_of_autumn;
     std::vector<timespan_t> blessing_of_winter;
@@ -626,16 +595,13 @@ struct player_t : public actor_t
   struct gains_t
   {
     gain_t* arcane_torrent;
-    gain_t* endurance_of_niuzao;
     std::array<gain_t*, RESOURCE_MAX> resource_regen;
     gain_t* health;
     gain_t* mana_potion;
     gain_t* restore_mana;
     gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
-    gain_t* warlords_unseeing_eye;
     gain_t* embrace_of_bwonsamdi;
-    gain_t* urh_restoration;
 
     gain_t* leech;
   } gains;
@@ -698,10 +664,13 @@ struct player_t : public actor_t
   } passive_values;
 
   bool active_during_iteration;
+  const spell_data_t* spec_spell;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
   player_stat_cache_t cache;
   auto_dispose<std::vector<action_variable_t*>> variables;
   std::vector<std::string> action_map;
+  std::vector<std::string> dot_map;
+  auto_dispose<std::vector<ground_aoe_params_t*>> ground_aoe_params_cache;
 
   regen_type resource_regeneration;
 
@@ -722,7 +691,6 @@ struct player_t : public actor_t
 
   /// Current execution type
   execute_type current_execute_type;
-
 
   using resource_callback_function_t = std::function<void()>;
 
@@ -784,6 +752,26 @@ struct player_t : public actor_t
     player_option_t<std::string> spoils_of_neltharus_initial_type = "";
     /// Chance for igenous flowstone lave wave to hit twice
     player_option_t<double> igneous_flowstone_double_lava_wave_chance;
+    /// Enable Voice of the Silent Star's proc
+    player_option_t<bool> voice_of_the_silent_star_enable = true;
+    // Force the extra damage from Nymue's Unraveling Spindle against Immobilized targets
+    player_option_t<bool> nymue_forced_immobilized = false;
+    // Option to control the timing to pick up each orb for the Witherbarks Branch Trinket.
+    timespan_t witherbarks_branch_timing[ 3 ]      = { 1_s, 1_s, 1_s };
+    // Enable Rallied to Victory Ally estimation
+    bool rallied_to_victory_ally_estimate = false;
+    // Set the minimum number of allies buffed by Rallied to Victory
+    double rallied_to_victory_min_allies = 0;
+    // Set if the haste debuff for ashes of the embersoul can be prevented
+    bool embersoul_debuff_immune = false;
+    // Rallied to victory skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate losing some to healers.
+    double rallied_to_victory_multi_actor_skip_chance = 0.2;
+    // Enable String of Delicacies Ally Estimation
+    bool string_of_delicacies_ally_estimate = false;
+    // Set the minimum number of allies buffed by STrong of Delicacies
+    double string_of_delicacies_min_allies = 0;
+    // String of Delicacies skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate loosing some to healers.
+    double string_of_delicacies_multi_actor_skip_chance = 0.2;
   } dragonflight_opts;
 
 private:
@@ -840,6 +828,7 @@ public:
 
   bool is_moving() const;
   double composite_block_dr( double extra_block ) const;
+  bool is_player() const { return type > PLAYER_NONE && type < PLAYER_PET; }
   bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD || type == ENEMY_ADD_BOSS; }
   bool is_enemy() const { return _is_enemy( type ); }
   bool is_boss() const { return type == ENEMY || type == ENEMY_ADD_BOSS; }
@@ -932,6 +921,7 @@ public:
   sample_data_helper_t* find_sample_data( util::string_view name ) const;
   action_priority_list_t* find_action_priority_list( util::string_view name ) const;
   int find_action_id( util::string_view name ) const;
+  int find_dot_id( util::string_view name ) const;
 
   cooldown_t* get_cooldown( util::string_view name, action_t* action = nullptr );
   target_specific_cooldown_t* get_target_specific_cooldown( util::string_view name, timespan_t duration = timespan_t::zero() );
@@ -949,6 +939,7 @@ public:
   sample_data_helper_t* get_sample_data( util::string_view name );
   action_priority_list_t* get_action_priority_list( util::string_view name, util::string_view comment = {} );
   int get_action_id( util::string_view name );
+  int get_dot_id( util::string_view name );
   cooldown_waste_data_t* get_cooldown_waste_data( const cooldown_t* cd );
 
 
@@ -1010,6 +1001,7 @@ public:
   virtual void reset();
   virtual void combat_begin();
   virtual void combat_end();
+  virtual void precombat_init();
   virtual void merge( player_t& other );
   virtual void datacollection_begin();
   virtual void datacollection_end();
@@ -1149,9 +1141,12 @@ public:
   virtual void schedule_cwc_ready( timespan_t delta_time = timespan_t::min() );
   virtual void arise();
   virtual void demise();
+  virtual void enter_combat();
+  virtual void leave_combat();
   virtual timespan_t available() const;
   virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
   virtual action_t* execute_action();
+
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,
@@ -1184,6 +1179,7 @@ public:
   virtual void assess_damage_imminent( school_e, result_amount_type, action_state_t* );
   virtual void do_damage( action_state_t* );
   virtual void assess_heal( school_e, result_amount_type, action_state_t* );
+  virtual void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* );
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 
@@ -1293,9 +1289,9 @@ public:
 private:
   std::vector<unsigned> active_dots;
 public:
-  void add_active_dot( unsigned action_id );
-  void remove_active_dot( unsigned action_id );
-  unsigned get_active_dots( unsigned action_id ) const;
+  void add_active_dot( const dot_t* dot );
+  void remove_active_dot( const dot_t* dot );
+  unsigned get_active_dots( const dot_t* dot ) const;
   virtual void adjust_dynamic_cooldowns();
   virtual void adjust_global_cooldown(gcd_haste_type type );
   virtual void adjust_auto_attack(gcd_haste_type type );
@@ -1347,6 +1343,7 @@ public:
   void register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn );
   void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
   void register_on_kill_callback( std::function<void( player_t* )> fn );
+  void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

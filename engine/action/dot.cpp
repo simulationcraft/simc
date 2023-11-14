@@ -65,7 +65,8 @@ dot_t::dot_t( util::string_view n, player_t* t, player_t* s )
     state(),
     current_tick(),
     max_stack(),
-    name_str( n )
+    name_str( n ),
+    internal_id( s->get_dot_id( n ) )
 {
 }
 
@@ -163,12 +164,11 @@ void dot_t::refresh_duration( uint32_t state_flags )
 void dot_t::reset()
 {
   if ( ticking )
-    source->remove_active_dot( state->action->internal_id );
+    source->remove_active_dot( this );
 
   event_t::cancel( tick_event );
   event_t::cancel( end_event );
   tick_time        = 0_ms;
-  ticking          = false;
   current_tick     = 0;
   stack            = 0;
   extra_time       = 0_ms;
@@ -313,7 +313,7 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_ac
       new_duration = remains();
 
       // Add an active dot on the source, since we are starting a new one
-      source->add_active_dot( copy_action->internal_id );
+      source->add_active_dot( other_dot );
     }
 
     sim.print_log( "{} cloning {} from {} to {} on {}: source_remains={:.3f} target_remains={:.3f} target_duration={:.3f}",
@@ -861,7 +861,7 @@ void dot_t::start( timespan_t duration )
   state->original_x = target->x_position;
   state->original_y = target->y_position;
 
-  source->add_active_dot( current_action->internal_id );
+  source->add_active_dot( this );
 
   schedule_tick();
   check_tick_zero( true );
@@ -1048,11 +1048,11 @@ void dot_t::dot_tick_event_t::execute()
   dot->tick_event = nullptr;
   dot->current_tick++;
 
-  if (dot->current_action->channeled &&
-    dot->current_action->action_skill < 1.0 &&
-    dot->remains() >= dot->current_action->tick_time(dot->state))
+  if ( dot->current_action->channeled &&
+       dot->current_action->action_skill < 1.0 &&
+       dot->remains() >= dot->current_action->tick_time( dot->state ) )
   {
-    if (rng().roll(std::max(0.0, dot->current_action->action_skill - dot->current_action->player->current.skill_debuff)))
+    if ( rng().roll( std::max( 0.0, dot->current_action->action_skill - dot->current_action->player->current.skill_debuff ) ) )
     {
       dot->tick();
     }
@@ -1065,15 +1065,15 @@ void dot_t::dot_tick_event_t::execute()
   // Some dots actually cancel themselves mid-tick. If this happens, we presume
   // that the cancel has been "proper", and just stop event execution here, as
   // the dot no longer exists.
-  if (!dot->is_ticking())
+  if ( !dot->is_ticking() )
     return;
 
-  if (!dot->current_action->consume_cost_per_tick(*dot))
+  if ( !dot->current_action->consume_cost_per_tick( *dot ) )
   {
     return;
   }
 
-  if (dot->channel_interrupt())
+  if ( dot->channel_interrupt() )
   {
     return;
   }

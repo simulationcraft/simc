@@ -61,7 +61,8 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
     expiration( nullptr ),
     duration( timespan_t::zero() ),
     npc_id(),
-    owner_coeff()
+    owner_coeff(),
+    current_pet_stats()
 {
   default_target = owner -> default_target;
   target = owner -> target;
@@ -146,9 +147,9 @@ void pet_t::init()
 {
   player_t::init();
 
-  if (resource_regeneration == regen_type::DYNAMIC && owner ->resource_regeneration == regen_type::DISABLED )
+  if ( resource_regeneration == regen_type::DYNAMIC && owner->resource_regeneration == regen_type::DISABLED )
   {
-    sim -> error( "{} has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", *this );
+    sim->error( "{} has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", *this );
     resource_regeneration = regen_type::DISABLED;
   }
 }
@@ -205,8 +206,53 @@ void pet_t::summon( timespan_t summon_duration )
   }
 
   arise();
+  update_stats();
+  owner->trigger_ready();
+}
 
-  owner -> trigger_ready();
+void pet_t::update_stats()
+{
+  if ( owner_coeff.ap_from_ap > 0 )
+  {
+    current_pet_stats.attack_power_from_ap =
+        owner->cache.total_melee_attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+    sim->print_debug( "{} refreshed AP from owner (ap={})", name(), composite_melee_attack_power() );
+  }
+
+  if ( owner_coeff.ap_from_sp > 0 )
+  {
+    current_pet_stats.attack_power_from_sp =
+        owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
+    sim->print_debug( "{} refreshed AP from owner (ap={}) ", name(), composite_melee_attack_power() );
+  }
+
+  if ( owner_coeff.sp_from_ap > 0 )
+  {
+    current_pet_stats.spell_power_from_ap =
+        owner->cache.attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+    sim->print_debug( "{} refreshed SP from owner (sp={}) ", name(), composite_spell_power( SCHOOL_MAX ) );
+  }
+
+  if ( owner_coeff.sp_from_sp > 0 )
+  {
+    current_pet_stats.spell_power_from_sp =
+        owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
+    sim->print_debug( "{} refreshed SP from owner (sp={})", name(), composite_spell_power( SCHOOL_MAX ) );
+  }
+
+  current_pet_stats.composite_melee_crit = owner->cache.attack_crit_chance();
+  current_pet_stats.composite_spell_crit = owner->cache.spell_crit_chance();
+  sim->print_debug( "{} refreshed Critical Strike from owner (crit={})", name(), current_pet_stats.composite_melee_crit,
+                    owner->cache.attack_crit_chance() );
+
+  current_pet_stats.composite_melee_haste = owner->cache.attack_haste();
+  current_pet_stats.composite_spell_haste = owner->cache.spell_haste();
+  sim->print_debug( "{} refreshed Haste from owner (haste={})", name(), current_pet_stats.composite_melee_haste,
+                    owner->cache.attack_haste() );
+
+  current_pet_stats.composite_melee_speed = owner->cache.attack_speed();
+  current_pet_stats.composite_spell_speed = owner->cache.spell_speed();
+  this->adjust_dynamic_cooldowns();
 }
 
 void pet_t::dismiss( bool expired )
@@ -344,6 +390,15 @@ void pet_t::assess_damage( school_e       school,
   return base_t::assess_damage( school, type, s );
 }
 
+void pet_t::trigger_callbacks( proc_types type, proc_types2 type2, action_t* action, action_state_t* state )
+{
+  player_t::trigger_callbacks( type, type2, action, state );
+
+  // currently only works for pets and guardians.
+  if ( this->type == PLAYER_GUARDIAN || this->type == PLAYER_PET )
+    action_callback_t::trigger( owner->callbacks.pet_procs[ type ][ type2 ], action, state );
+}
+
 void pet_t::init_finished()
 {
   player_t::init_finished();
@@ -393,7 +448,7 @@ double pet_t::hit_exp() const
 
 double pet_t::pet_crit() const
 {
-  return std::max( owner -> cache.attack_crit_chance(), owner -> cache.spell_crit_chance() );
+  return std::max( current_pet_stats.composite_melee_crit, current_pet_stats.composite_spell_crit );
 }
 
 double pet_t::composite_melee_attack_power() const
@@ -402,29 +457,58 @@ double pet_t::composite_melee_attack_power() const
 
   if ( owner_coeff.ap_from_ap > 0.0 )
   {
-    // Use owner's default attack power type for the inheritance
-    ap += owner -> composite_melee_attack_power_by_type( owner -> default_ap_type() ) *
-          owner -> composite_attack_power_multiplier() *
-          owner_coeff.ap_from_ap;
+    ap += current_pet_stats.attack_power_from_ap;
   }
 
   if ( owner_coeff.ap_from_sp > 0.0 )
-    ap += owner -> cache.spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
+  {
+    ap += current_pet_stats.attack_power_from_sp;
+  }
 
   return ap;
 }
 
-double pet_t::composite_spell_power( school_e school ) const
+double pet_t::composite_spell_power( school_e ) const
 {
   double sp = 0;
 
   if ( owner_coeff.sp_from_ap > 0.0 )
-    sp += owner -> cache.attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+  {
+    sp += current_pet_stats.spell_power_from_ap;
+  }
 
   if ( owner_coeff.sp_from_sp > 0.0 )
-    sp += owner -> cache.spell_power( school ) * owner -> composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
+  {
+    sp += current_pet_stats.spell_power_from_sp;
+  }
 
   return sp;
+}
+
+double pet_t::composite_melee_speed() const
+{
+  return current_pet_stats.composite_melee_speed;
+}
+
+double pet_t::composite_melee_haste() const
+{
+  return current_pet_stats.composite_melee_haste;
+}
+
+void pet_t::adjust_auto_attack( gcd_haste_type type ) 
+{
+  player_t::adjust_auto_attack( type );
+  current_attack_speed = current_pet_stats.composite_melee_speed;
+}
+
+double pet_t::composite_spell_haste() const
+{
+  return current_pet_stats.composite_spell_haste;
+}
+
+double pet_t::composite_spell_speed() const
+{
+  return current_pet_stats.composite_spell_speed;
 }
 
 double pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const

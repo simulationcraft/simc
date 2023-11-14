@@ -14,8 +14,5 @@ std::string temporary_enchant( const player_t* );
 void assassination( player_t* );
 void outlaw( player_t* );
 void subtlety( player_t* );
-void assassination_df( player_t* );
-void outlaw_df( player_t* );
-void subtlety_df( player_t* );
 
 } // namespace rogue_apl

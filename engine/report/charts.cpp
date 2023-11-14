@@ -102,7 +102,7 @@ enum metric_e
   METRIC_DTPS,
   METRIC_TMI,
   METRIC_APM,
-  METRIC_VARIANCE,
+  METRIC_STDDEV,
   METRIC_MAX
 };
 
@@ -136,7 +136,7 @@ double apm_player_mean( const player_t* p )
   return 0;
 }
 
-double variance( const player_t* p )
+double stddev( const player_t* p )
 {
   return p->collected_data.dps.mean() > 0
     ? ( p->collected_data.dps.std_dev / p->collected_data.dps.pretty_mean() * 100 )
@@ -202,14 +202,14 @@ metric_e populate_player_list( std::string_view type, const sim_t& sim,
     source_list = &sim.players_by_apm;
     m           = METRIC_APM;
   }
-  else if ( util::str_compare_ci( type, "variance" ) )
+  else if ( util::str_compare_ci( type, "stddev" ) )
   {
-    // Variance implies there is DPS output in the simulator
+    // Standard deviation implies there is DPS output in the simulator
     if ( sim.raid_dps.mean() > 0 )
     {
-      name        = "DPS Variance Percentage";
+      name        = "DPS Standard Deviation Percentage";
       source_list = &sim.players_by_variance;
-      m           = METRIC_VARIANCE;
+      m           = METRIC_STDDEV;
     }
   }
 
@@ -261,7 +261,7 @@ std::vector<double> get_data_summary( const player_collected_data_t& container,
       break;
     // APM is gonna have a mean only
     case METRIC_APM:
-    case METRIC_VARIANCE:
+    case METRIC_STDDEV:
     default:
       return data;
   }
@@ -313,7 +313,7 @@ double get_data_value( const player_collected_data_t& container,
       }
       return 0;
     }
-    case METRIC_VARIANCE:
+    case METRIC_STDDEV:
     {
       if ( val != VALUE_MEAN )
       {
@@ -398,8 +398,8 @@ struct player_list_comparator_t
       // APM has no full data collection, so sort always based on mean
       case METRIC_APM:
         return apm_player_mean( p1 ) > apm_player_mean( p2 );
-      case METRIC_VARIANCE:
-        return variance( p1 ) > variance( p2 );
+      case METRIC_STDDEV:
+        return stddev( p1 ) > stddev( p2 );
       default:
         return true;
     }
@@ -516,6 +516,7 @@ void profilesets_populate_chart_data( highchart::bar_chart_t& profileset,
                           size_t max_chart_entries,
                           util::span<const profileset::profile_set_t*> results,
                           const player_t* baseline,
+                          std::string_view base_name,
                           scale_metric_e metric,
                           const color::rgb c,
                           bool mean = false )
@@ -531,7 +532,7 @@ void profilesets_populate_chart_data( highchart::bar_chart_t& profileset,
 
       if ( !inserted && ( mean ? data.mean() : data.median() ) <= baseline_value )
       {
-        profilesets_insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
+        profilesets_insert_data( profileset, base_name, c, baseline_data, true, baseline_value, mean );
         inserted = true;
       }
 
@@ -541,7 +542,7 @@ void profilesets_populate_chart_data( highchart::bar_chart_t& profileset,
 
     if ( !inserted )
     {
-      profilesets_insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
+      profilesets_insert_data( profileset, base_name, c, baseline_data, true, baseline_value, mean );
     }
 }
 
@@ -1089,11 +1090,9 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
   // Add a map of colors so we save some space in data
   add_color_data( bc, player_list );
 
-  // Figure out what decimal precision we show in the charts. Only variance uses
-  // a single digit at
-  // the moment
+  // Figure out what decimal precision we show in the charts. Only standard deviation uses a single digit at the moment
   size_t precision = 0;
-  if ( chart_metric == METRIC_VARIANCE )
+  if ( chart_metric == METRIC_STDDEV )
   {
     precision = 1;
   }
@@ -1718,11 +1717,13 @@ void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim
                                         util::span<const profileset::profile_set_t*> results,
                                         util::span<const profileset::profile_set_t*> results_mean )
 {
+  bool is_multiactor_metric = util::scale_metric_is_raid( sim.profileset_metric.front() ) && sim.player_no_pet_list.size() > 1;
+  const auto* baseline = sim.player_no_pet_list[ sim.profileset_report_player_index ];
+
   // Bar color
-  const auto& c          = color::class_color( sim.player_no_pet_list.data().front()->type );
+  const auto& c          = is_multiactor_metric ? color::GREY3 : color::class_color( baseline->type );
   std::string chart_name = util::scale_metric_type_string( sim.profileset_metric.front() );
 
-  const auto* baseline = sim.player_no_pet_list.data().front();
   auto base_offset     = chart_id * MAX_PROFILESET_CHART_ENTRIES;
 
   int data_label_width     = sim.chart_show_relative_difference ? 140 : 80;
@@ -1786,11 +1787,11 @@ void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim
 
   // All attempts to escape the apostrophe failed, the JSON library gets
   // in our way. Just remove them.
-  std::string name = util::encode_html( baseline->name_str );
-  util::replace_all( name, "'", "" );
+  std::string base_name = util::encode_html( is_multiactor_metric ? sim.profileset_multiactor_base_name : baseline->name() );
+  util::replace_all( base_name, "'", "" );
 
   std::string functor = "function () {";
-  functor += "  if (this.value === '" + name + "') {";
+  functor += "  if (this.value === '" + base_name + "') {";
   functor += "    return '<span style=\"color:#AA0000;font-weight:bold;\">' + this.value + '</span>';";
   functor += "  }";
   functor += "  else {";
@@ -1810,7 +1811,7 @@ void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim
   }
 
   profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results, baseline,
-                                   sim.profileset_metric.front(), c );
+                                   base_name, sim.profileset_metric.front(), c );
   profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results_mean, baseline,
-                                   sim.profileset_metric.front(), c, true );
+                                   base_name, sim.profileset_metric.front(), c, true );
 }

@@ -25,6 +25,7 @@ SRC += \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_paladin.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_priest.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_rogue.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_warrior.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)warlock.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk.cpp \
@@ -58,6 +59,7 @@ SRC += \
     dbc$(PATHSEP)client_data.cpp \
     dbc$(PATHSEP)client_hotfix_entry.cpp \
     dbc$(PATHSEP)covenant_data.cpp \
+    dbc$(PATHSEP)expected_stat.cpp \
     dbc$(PATHSEP)gem_data.cpp \
     dbc$(PATHSEP)item_armor.cpp \
     dbc$(PATHSEP)item_bonus.cpp \
@@ -97,7 +99,6 @@ SRC += \
     interfaces$(PATHSEP)wowhead.cpp \
     item$(PATHSEP)enchants.cpp \
     item$(PATHSEP)item.cpp \
-    item$(PATHSEP)item_targetdata_initializer.cpp \
     item$(PATHSEP)special_effect.cpp \
     lib$(PATHSEP)fmt$(PATHSEP)format.cpp \
     lib$(PATHSEP)fmt$(PATHSEP)os.cpp \
@@ -124,6 +125,7 @@ SRC += \
     player$(PATHSEP)spawner_base.cpp \
     player$(PATHSEP)talent.cpp \
     player$(PATHSEP)target_specific.cpp \
+    player$(PATHSEP)targetdata_initializer.cpp \
     player$(PATHSEP)unique_gear.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \
     player$(PATHSEP)unique_gear_dragonflight.cpp \

@@ -28,12 +28,6 @@ public:
     int shards_used = as<int>( cost() );
     int base_cost = as<int>( destruction_spell_t::cost() ); // Power Overwhelming is ignoring any cost changes
 
-    // The shard cost reduction from Crashing Chaos is "undone" for Impending Ruin stacking
-    // This can be observed during the free Ritual of Ruin cast, which always increments by 1 stack regardless of spell
-    // TOCHECK: Does this apply for Rain of Chaos draws?
-    if ( p()->buffs.crashing_chaos->check() )
-      shards_used -= as<int>( p()->buffs.crashing_chaos->check_value() );
-
     // Do cost changes reduce number of draws appropriately? This may be difficult to check
     if ( resource_current == RESOURCE_SOUL_SHARD && p()->buffs.rain_of_chaos->check() && shards_used > 0 )
     {
@@ -161,16 +155,9 @@ struct shadowburn_t : public destruction_spell_t
     chaos_incarnate = p->talents.chaos_incarnate->ok();
 
     base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
-  }
 
-  double cost() const override
-  {
-    double c = destruction_spell_t::cost();
-
-    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
-      c += p()->buffs.crashing_chaos->check_value();
-
-    return c;        
+    if ( p->talents.chaosbringer->ok() )
+      base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 3 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -204,8 +191,6 @@ struct shadowburn_t : public destruction_spell_t
 
     if ( p()->talents.burn_to_ashes->ok() )
       p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
-
-    p()->buffs.crashing_chaos->decrement();
   }
 
   double action_multiplier() const override
@@ -310,7 +295,7 @@ struct immolate_t : public destruction_spell_t
       {
         double increment_max = 0.07;
 
-        increment_max *= std::pow( p()->get_active_dots( internal_id ), -2.0 / 3.0 );
+        increment_max *= std::pow( p()->get_active_dots( d ), -2.0 / 3.0 );
 
         p()->cdf_accumulator += rng().range( 0.0, increment_max );
 
@@ -321,6 +306,30 @@ struct immolate_t : public destruction_spell_t
           p()->cdf_accumulator -= 1.0;
         }
       }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        double increment_max = 0.16;
+
+        increment_max *= std::pow( p()->get_active_dots( d ), -4.0 / 9.0 );
+
+        p()->dimensional_accumulator += rng().range( 0.0, increment_max );
+
+        if ( p()->dimensional_accumulator >= 1.0 )
+        {
+          p()->cooldowns.dimensional_rift->reset( true, 1 );
+          p()->procs.dimensional_refund->occur();
+          p()->dimensional_accumulator -= 1.0;
+        }
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      if ( p()->get_active_dots( d ) == 1 )
+        p()->dimensional_accumulator = rng().range( 0.0, 0.99 );
+
+      destruction_spell_t::last_tick( d );
     }
   };
 
@@ -693,6 +702,9 @@ struct chaos_bolt_t : public destruction_spell_t
     can_havoc = true;
     chaos_incarnate = p->talents.chaos_incarnate->ok();
 
+    if ( p->talents.chaosbringer->ok() )
+      base_dd_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 1 ).percent();
+
     if ( p->talents.internal_combustion->ok() )
     {
       internal_combustion = new internal_combustion_t( p );
@@ -712,9 +724,6 @@ struct chaos_bolt_t : public destruction_spell_t
 
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 2 ).percent();
-
-    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
-      c += p()->buffs.crashing_chaos->check_value();
 
     return c;      
   }
@@ -742,6 +751,9 @@ struct chaos_bolt_t : public destruction_spell_t
 
     if ( p()->talents.madness_of_the_azjaqir->ok() )
       m *= 1.0 + p()->buffs.madness_cb->check_value();
+
+    if ( p()->buffs.crashing_chaos->check() )
+      m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
 
     return m;
   }
@@ -862,6 +874,9 @@ struct summon_infernal_t : public destruction_spell_t
     may_crit = false;
     impact_action = new infernal_awakening_t( p );
     add_child( impact_action );
+
+    if ( p->min_version_check( VERSION_10_2_0 ) && p->talents.grand_warlocks_design->ok() )
+      cooldown->duration += p->talents.grand_warlocks_design->effectN( 3 ).time_value();
   }
 
   void execute() override
@@ -886,6 +901,10 @@ struct rain_of_fire_t : public destruction_spell_t
       background = dual = direct_tick = true;
       radius = p->talents.rain_of_fire->effectN( 1 ).radius();
       base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+
+      if ( p->talents.chaosbringer->ok() )
+        base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 2 ).percent();
+
       chaos_incarnate = p->talents.chaos_incarnate->ok();
     }
 
@@ -903,6 +922,16 @@ struct rain_of_fire_t : public destruction_spell_t
 
       if ( p()->talents.pyrogenics->ok() )
         td( s->target )->debuffs_pyrogenics->trigger();
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double m = destruction_spell_t::composite_persistent_multiplier( s );
+
+      if ( p()->buffs.crashing_chaos->check() )
+        m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+
+      return m;
     }
 
     double action_multiplier() const override
@@ -939,9 +968,6 @@ struct rain_of_fire_t : public destruction_spell_t
 
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 5 ).percent();
-    
-    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
-      c += p()->buffs.crashing_chaos->check_value();
 
     return c;        
   }
@@ -1002,8 +1028,7 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
     aoe = -1;
-    if ( !( p->min_version_check( VERSION_10_1_0 ) ) )
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+
     base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
     travel_speed = p->talents.channel_demonfire_travel->missile_speed();
@@ -1043,12 +1068,10 @@ struct channel_demonfire_tick_t : public destruction_spell_t
 struct channel_demonfire_t : public destruction_spell_t
 {
   channel_demonfire_tick_t* channel_demonfire;
-  int immolate_action_id;
 
   channel_demonfire_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire ),
-      channel_demonfire( new channel_demonfire_tick_t( p ) ),
-      immolate_action_id( 0 )
+      channel_demonfire( new channel_demonfire_tick_t( p ) )
   {
     parse_options( options_str );
     channeled = true;
@@ -1071,7 +1094,6 @@ struct channel_demonfire_t : public destruction_spell_t
     destruction_spell_t::init();
 
     cooldown->hasted = true;
-    immolate_action_id = p()->find_action_id( "immolate" );
   }
 
   std::vector<player_t*>& target_list() const override
@@ -1119,7 +1141,7 @@ struct channel_demonfire_t : public destruction_spell_t
 
   bool ready() override
   {
-    double active_immolates = p()->get_active_dots( immolate_action_id );
+    unsigned active_immolates = p()->get_active_dots( td( target )->dots_immolate );
 
     if ( active_immolates == 0 )
       return false;
@@ -1213,6 +1235,17 @@ struct cataclysm_t : public destruction_spell_t
   }
 };
 
+struct dimensional_cinder_t : public destruction_spell_t
+{
+  dimensional_cinder_t( warlock_t* p ) : destruction_spell_t( "Dimensional Cinder", p, p->tier.dimensional_cinder )
+  {
+    destro_mastery = may_crit = false;
+    background = dual = true;
+    aoe = -1;
+    base_dd_min = base_dd_max = 0.0;
+  }
+};
+
 // Dimensional Rift's portals are "pet damage" according to combat log behavior, but appear to be benefitting from
 // buffs to the *Warlock's* damage specifically (i.e. Grimoire of Synergy). For now, we will model them as Warlock spells
 
@@ -1220,13 +1253,30 @@ struct shadowy_tear_t : public destruction_spell_t
 {
   struct rift_shadow_bolt_t : public destruction_spell_t
   {
+    dimensional_cinder_t* cinder;
+
     rift_shadow_bolt_t( warlock_t* p ) : destruction_spell_t( "Rift Shadow Bolt", p, p->talents.rift_shadow_bolt )
     {
       destro_mastery = false;
       background = dual = true;
 
       // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
-      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
     }
   };
 
@@ -1259,13 +1309,30 @@ struct unstable_tear_t : public destruction_spell_t
   // TOCHECK: Partial ticks are not matching up in game!
   struct chaos_barrage_tick_t : public destruction_spell_t
   {
+    dimensional_cinder_t* cinder;
+
     chaos_barrage_tick_t( warlock_t* p ) : destruction_spell_t( "Chaos Barrage (tick)", p, p->talents.chaos_barrage_tick )
     {
       destro_mastery = false;
       background = dual = true;
 
       // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
-      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
     }
   };
 
@@ -1291,13 +1358,17 @@ struct chaos_tear_t : public destruction_spell_t
 {
   struct rift_chaos_bolt_t : public destruction_spell_t
   {
+    dimensional_cinder_t* cinder;
+
     rift_chaos_bolt_t( warlock_t* p ) : destruction_spell_t( "Rift Chaos Bolt", p, p->talents.rift_chaos_bolt )
     {
       destro_mastery = false;
       background = true;
 
       // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
-      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent(); 
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
     }
 
     double composite_crit_chance() const override
@@ -1313,6 +1384,19 @@ struct chaos_tear_t : public destruction_spell_t
 
       return state->result_total;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
+    }
   };
 
   chaos_tear_t( warlock_t* p ) : destruction_spell_t( "Chaos Tear", p, p->talents.chaos_tear_summon )
@@ -1323,11 +1407,73 @@ struct chaos_tear_t : public destruction_spell_t
   }
 };
 
+struct flame_rift_t : public destruction_spell_t
+{
+  struct searing_bolt_t : public destruction_spell_t
+  {
+    dimensional_cinder_t* cinder;
+
+    searing_bolt_t( warlock_t* p ) : destruction_spell_t( "Searing Bolt", p, p->tier.searing_bolt )
+    {
+      destro_mastery = false;
+      background = true;
+      dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+
+      // Though this behaves like a direct damage spell, it is also whitelisted under the periodic spec aura and benefits as such in game
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
+
+      cinder = new dimensional_cinder_t( p );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      auto raw_damage = s->result_total;
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B2 ) )
+      {
+        cinder->base_dd_min = cinder->base_dd_max = raw_damage * p()->sets->set( WARLOCK_DESTRUCTION, T31, B2 )->effectN( 1 ).percent();
+        cinder->execute_on_target( s->target );
+      }
+    }
+  };
+
+  searing_bolt_t* bolt;
+
+  flame_rift_t( warlock_t* p ) : destruction_spell_t( "Flame Rift", p, p->tier.flame_rift )
+  {
+    background = true;
+    may_miss = false;
+
+    bolt = new searing_bolt_t( p );
+    add_child( bolt );
+  }
+
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    // Flame Rift fires 20 Searing Bolts erratically
+    timespan_t min_delay = 0_ms;
+    timespan_t max_delay = timespan_t::from_seconds( p()->sets->set( WARLOCK_DESTRUCTION, T31, B4 )->effectN( 1 ).base_value() );
+    player_t* tar = target;
+
+    for ( int i = 0; i < p()->sets->set( WARLOCK_DESTRUCTION, T31, B4 )->effectN( 1 ).base_value(); i++ )
+    {
+      timespan_t delay = rng().gauss( i * 500_ms, 500_ms );
+      delay = std::min( std::max( delay, min_delay ), max_delay );
+      make_event( *sim, delay, [ this, tar ] { this->bolt->execute_on_target( tar ); } );
+    }
+  }
+};
+
 struct dimensional_rift_t : public destruction_spell_t
 {
   shadowy_tear_t* shadowy_tear;
   unstable_tear_t* unstable_tear;
   chaos_tear_t* chaos_tear;
+  flame_rift_t* flame_rift;
 
   dimensional_rift_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
@@ -1342,18 +1488,19 @@ struct dimensional_rift_t : public destruction_spell_t
     shadowy_tear = new shadowy_tear_t( p );
     unstable_tear = new unstable_tear_t( p );
     chaos_tear = new chaos_tear_t( p );
+    flame_rift = new flame_rift_t( p );
 
     add_child( shadowy_tear );
     add_child( unstable_tear );
     add_child( chaos_tear );
+    add_child( flame_rift );
   }
 
   void execute() override
   {
     destruction_spell_t::execute();
 
-    // TOCHECK: Are all rift types equally likely?
-    int rift = rng().range( 3 );
+    int rift = rng().range( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T31, B4 ) ? 4 : 3 );
 
     switch ( rift )
     {
@@ -1365,6 +1512,9 @@ struct dimensional_rift_t : public destruction_spell_t
       break;
     case 2:
       chaos_tear->execute_on_target( target );
+      break;
+    case 3:
+      flame_rift->execute_on_target( target );
       break;
     default:
       break;
@@ -1517,9 +1667,8 @@ void warlock_t::create_buffs_destruction()
                          ->set_default_value( talents.flashpoint->effectN( 1 ).percent() );
 
   buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
-                             ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 1 ).base_value() ), 1 ) )
-                             ->set_reverse( true )
-                             ->set_default_value( talents.crashing_chaos_buff->effectN( 1 ).base_value() / 10.0 );
+                               ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
+                               ->set_reverse( true );
 
   buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
@@ -1640,7 +1789,7 @@ void warlock_t::init_spells_destruction()
   talents.ritual_of_ruin_buff = find_spell( 387157 );
 
   talents.crashing_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Crashing Chaos" ); // Should be ID 387355
-  talents.crashing_chaos_buff = find_spell( 387356 );
+  talents.crashing_chaos_buff = find_spell( 417282 );
 
   talents.infernal_brand = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Brand" ); // Should be ID 387475
 
@@ -1651,6 +1800,8 @@ void warlock_t::init_spells_destruction()
   talents.madness_cb = find_spell( 387409 );
   talents.madness_rof = find_spell( 387413 );
   talents.madness_sb = find_spell( 387414 );
+
+  talents.chaosbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Chaosbringer" ); // Should be ID 422057
 
   talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
 
@@ -1685,6 +1836,11 @@ void warlock_t::init_spells_destruction()
   tier.channel_demonfire = find_spell( 409890 );
   tier.umbrafire_embers = find_spell( 409652 );
 
+  // T31 (Amirdrassil, the Dream's Hope)
+  tier.dimensional_cinder = find_spell( 427285 );
+  tier.flame_rift = find_spell( 423874 );
+  tier.searing_bolt = find_spell( 423886 );
+
   // Proc action initialization
   proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
   proc_actions.channel_demonfire = new channel_demonfire_tier_t( this );
@@ -1714,6 +1870,7 @@ void warlock_t::init_procs_destruction()
   procs.rain_of_chaos = get_proc( "rain_of_chaos" );
   procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
   procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
+  procs.dimensional_refund = get_proc( "dimensional_refund" );
 }
 
 }  // namespace warlock

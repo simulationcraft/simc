@@ -306,7 +306,8 @@ double spelleffect_data_t::default_multiplier() const
               return 0.01;  // percent
 
             case P_RESOURCE_COST:
-            case P_RESOURCE_GEN:
+            case P_RESOURCE_COST_1:
+            case P_RESOURCE_COST_2:
               return resource_multiplier( resource_gain_type() );
 
             default:
@@ -440,7 +441,7 @@ bool spell_data_t::affected_by_category( int category_ ) const
 bool spell_data_t::affected_by_label( const spelleffect_data_t& effect ) const
 {
   if ( effect.subtype() == A_MOD_RECHARGE_RATE_LABEL || effect.subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL ||
-       effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+       effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL || effect.subtype() == A_MOD_TIME_RATE_BY_SPELL_LABEL )
     return affected_by_label( effect.misc_value1() );
   else
     return affected_by_label( effect.misc_value2() );
@@ -522,6 +523,34 @@ const spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
   if ( it != __data.end() )
     return &*it;
   return nullptr;
+}
+
+const spelleffect_data_t& spell_data_t::find_spelleffect( const spell_data_t& spell, effect_type_t type,
+                                                          effect_subtype_t subtype, int misc )
+{
+  for ( const auto& e : spell.effects() )
+  {
+    if ( e.type() == type && ( subtype == A_MAX || e.subtype() == subtype ) &&
+         ( misc == std::numeric_limits<int>::min() || e.misc_value1() == misc ) )
+    {
+      return e;
+    }
+  }
+  return spelleffect_data_t::nil();
+}
+
+const spelleffect_data_t& spell_data_t::find_spelleffect( const spell_data_t& spell, const spell_data_t& affected,
+                                                          effect_type_t type, effect_subtype_t subtype, int misc )
+{
+  for ( const auto& e : spell.effects() )
+  {
+    if ( e.type() == type && ( subtype == A_MAX || e.subtype() == subtype ) &&
+         ( misc == std::numeric_limits<int>::min() || e.misc_value1() == misc ) && affected.affected_by_all( e ) )
+    {
+      return e;
+    }
+  }
+  return spelleffect_data_t::nil();
 }
 
 util::span<const spell_data_t> spell_data_t::data( bool ptr )

@@ -62,7 +62,7 @@ struct agony_t : public affliction_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    if ( p()->get_active_dots( internal_id ) == 1 )
+    if ( p()->get_active_dots( d ) == 1 )
     {
       p()->agony_accumulator = rng().range( 0.0, 0.99 );
     }
@@ -110,8 +110,13 @@ struct agony_t : public affliction_spell_t
     // code, please also update the Time_to_Shard expression in sc_warlock.cpp.
     double increment_max = 0.368;
 
-    double active_agonies = p()->get_active_dots( internal_id );
+    double active_agonies = p()->get_active_dots( d );
     increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
+
+    // 2023-09-01: Recent test noted that Creeping Death is once again renormalizing shard generation to be neutral with/without the talent.
+    // Unclear if this was changed/bugfixed since beta or if previous beta tests were inaccurate.
+    if ( p()->talents.creeping_death->ok() )
+      increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
 
     p()->agony_accumulator += rng().range( 0.0, increment_max );
 
@@ -164,7 +169,6 @@ struct unstable_affliction_t : public affliction_spell_t
     if ( p()->ua_target && p()->ua_target != target )
     {
       td( p()->ua_target )->dots_unstable_affliction->cancel();
-      p()->buffs.malefic_affliction->expire();
     }
 
     p()->ua_target = target;
@@ -187,7 +191,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::tick( d );
 
-    if ( p()->talents.souleaters_gluttony->ok() )
+    if ( !p()->min_version_check( VERSION_10_2_0 ) && p()->talents.souleaters_gluttony->ok() )
     {
       timespan_t adjustment = timespan_t::from_seconds( p()->talents.souleaters_gluttony->effectN( 1 ).base_value() );
       adjustment = adjustment / p()->talents.souleaters_gluttony->effectN( 2 ).base_value();
@@ -199,18 +203,7 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
 
-    p()->buffs.malefic_affliction->expire();
     p()->ua_target = nullptr;
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double m = affliction_spell_t::composite_ta_multiplier( s );
-
-    if ( p()->talents.malefic_affliction->ok() && p()->buffs.malefic_affliction->check() )
-      m *= 1.0 + p()->buffs.malefic_affliction->check_stack_value();
-
-    return m;
   }
 };
 
@@ -223,6 +216,9 @@ struct summon_darkglare_t : public affliction_spell_t
     harmful = true; // This is currently set to true specifically for the 10.1 class trinket
     callbacks = true; // 2023-04-22 This was recently modified to false in spell data but we need it to be true for 10.1 trinket
     may_crit = may_miss = false;
+
+    if ( p->min_version_check( VERSION_10_2_0 ) && p->talents.grand_warlocks_design->ok() )
+      cooldown->duration += p->talents.grand_warlocks_design->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -248,117 +244,161 @@ struct summon_darkglare_t : public affliction_spell_t
 
 struct malefic_rapture_t : public affliction_spell_t
 {
-    struct malefic_rapture_damage_t : public affliction_spell_t
+  struct malefic_rapture_damage_t : public affliction_spell_t
+  {
+    timespan_t t31_soulstealer_extend;
+
+    malefic_rapture_damage_t( warlock_t* p )
+      : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg ),
+        t31_soulstealer_extend( p->sets->set( WARLOCK_AFFLICTION, T31, B4 )->effectN( 1 ).time_value() )
     {
-      malefic_rapture_damage_t( warlock_t* p )
-        : affliction_spell_t( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
-      {
-        background = dual = true;
-        spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
-        callbacks = false; // Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
-      }
-
-      double composite_da_multiplier( const action_state_t* s ) const override
-      {
-        double m = affliction_spell_t::composite_da_multiplier( s );
-
-        m *= p()->get_target_data( s->target )->count_affliction_dots();
-
-        m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
-
-        if ( p()->talents.focused_malignancy->ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
-          m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
-
-        return m;
-      }
-
-      void impact ( action_state_t* s ) override
-      {
-        affliction_spell_t::impact( s );
-
-        if ( p()->talents.malefic_affliction->ok() )
-        {
-          auto target_data = td( s->target );
-
-          if ( target_data->dots_unstable_affliction->is_ticking() )
-          {
-            if ( p()->talents.dread_touch->ok() && ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
-              target_data->debuffs_dread_touch->trigger();
-
-            p()->buffs.malefic_affliction->trigger();
-          }
-        }
-      }
-
-      void execute() override
-      {
-        int d = p()->get_target_data( target )->count_affliction_dots() - 1;
-        assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
-
-        if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
-        {
-          p()->procs.malefic_rapture[ d ]->occur();
-        }
-
-        affliction_spell_t::execute();
-      }
-    };
-
-    malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : affliction_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
-    {
-      parse_options( options_str );
-      aoe = -1;
-
-      impact_action = new malefic_rapture_damage_t( p );
-      add_child( impact_action );
+      background = dual = true;
+      spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
+      callbacks = false; // Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
     }
 
-    double cost() const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double c = affliction_spell_t::cost();
+      double m = affliction_spell_t::composite_da_multiplier( s );
 
-      if ( p()->buffs.tormented_crescendo->check() )
-        c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
-        
-      return c;      
+      m *= p()->get_target_data( s->target )->count_affliction_dots();
+
+      m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
+
+      if ( p()->talents.focused_malignancy->ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
+        m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
+
+      if ( p()->buffs.umbrafire_kindling->check() )
+        m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 1 ).percent();
+
+      return m;
     }
 
-    timespan_t execute_time() const override
+    void impact( action_state_t* s ) override
     {
-      timespan_t t = affliction_spell_t::execute_time();
+      affliction_spell_t::impact( s );
 
-      if ( p()->buffs.tormented_crescendo->check() )
-        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
+      auto target_data = td( s->target );
 
-      return t;
-    }
+      if ( p()->talents.dread_touch->ok() )
+      {
+        if ( target_data->dots_unstable_affliction->is_ticking() )
+          target_data->debuffs_dread_touch->trigger();
+      }
 
-    bool ready() override
-    {
-      if ( !affliction_spell_t::ready() )
-       return false;
+      if ( p()->buffs.umbrafire_kindling->check() )
+      {
+        if ( target_data->dots_agony->is_ticking() )
+          target_data->dots_agony->adjust_duration( t31_soulstealer_extend );
 
-      target_cache.is_valid = false;
-      return target_list().size() > 0;
+        if ( target_data->dots_corruption->is_ticking() )
+          target_data->dots_corruption->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_siphon_life->is_ticking() )
+          target_data->dots_siphon_life->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_unstable_affliction->is_ticking() )
+          target_data->dots_unstable_affliction->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->debuffs_haunt->up() )
+          target_data->debuffs_haunt->extend_duration( p(), t31_soulstealer_extend );
+
+        if ( target_data->dots_vile_taint->is_ticking() )
+          target_data->dots_vile_taint->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_phantom_singularity->is_ticking() )
+          target_data->dots_phantom_singularity->adjust_duration( t31_soulstealer_extend );
+      }
     }
 
     void execute() override
     {
+      int d = p()->get_target_data( target )->count_affliction_dots() - 1;
+      assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
+
+      if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
+      {
+        p()->procs.malefic_rapture[ d ]->occur();
+      }
+
       affliction_spell_t::execute();
-
-      p()->buffs.tormented_crescendo->decrement();
-      p()->buffs.cruel_epiphany->decrement();
     }
+  };
 
-    size_t available_targets( std::vector<player_t*>& tl ) const override
+  malefic_rapture_t( warlock_t* p, util::string_view options_str )
+    : affliction_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
+  {
+    parse_options( options_str );
+    aoe = -1;
+
+    impact_action = new malefic_rapture_damage_t( p );
+    add_child( impact_action );
+  }
+
+  double cost() const override
+  {
+    double c = affliction_spell_t::cost();
+
+    if ( p()->buffs.tormented_crescendo->check() )
     {
-      affliction_spell_t::available_targets( tl );
-
-      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
-
-      return tl.size();
+      if ( p()->min_version_check( VERSION_10_2_0 ) )
+      {
+        c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
+      }
+      else
+      {
+        c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
+      }
     }
+
+    return c;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t t = affliction_spell_t::execute_time();
+
+    if ( p()->buffs.tormented_crescendo->check() )
+    {
+      if ( p()->min_version_check( VERSION_10_2_0 ) )
+      {
+        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
+      }
+      else
+      {
+        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
+      }
+    }
+
+    return t;
+  }
+
+  bool ready() override
+  {
+    if ( !affliction_spell_t::ready() )
+      return false;
+
+    target_cache.is_valid = false;
+    return target_list().size() > 0;
+  }
+
+  void execute() override
+  {
+    affliction_spell_t::execute();
+
+    p()->buffs.tormented_crescendo->decrement();
+    p()->buffs.cruel_epiphany->decrement();
+    p()->buffs.umbrafire_kindling->decrement(); // 2023-09-11: On PTR spell-queuing with an instant MR can cause this to decrement without giving the extensions. NOT CURRENTLY IMPLEMENTED
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    affliction_spell_t::available_targets( tl );
+
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) { return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+
+    return tl.size();
+  }
 };
 
 struct drain_soul_t : public affliction_spell_t
@@ -418,7 +458,7 @@ struct drain_soul_t : public affliction_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t dur = dot_duration * s->haste;
+    timespan_t dur = dot_duration * ( ( base_tick_time * s->haste ) / base_tick_time );
 
     if ( p()->buffs.nightfall->check() )
       dur *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
@@ -484,9 +524,6 @@ struct haunt_t : public affliction_spell_t
     if ( result_is_hit( s->result ) )
     {
       td( s->target )->debuffs_haunt->trigger();
-
-      if ( p()->talents.shadow_embrace->ok() )
-        td( s->target )->debuffs_shadow_embrace->trigger();
     }
   }
 };
@@ -525,17 +562,6 @@ struct phantom_singularity_t : public affliction_spell_t
       if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
         base_dd_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 3 ).percent();
     }
-
-    void impact( action_state_t* s ) override
-    {
-      affliction_spell_t::impact( s );
-
-      if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
-        // Debuff lasts 2 seconds but refreshes on every tick. 2023-04-04 PTR: Currently only applies to target with PS DoT
-        td( s->target )->debuffs_infirmity->trigger();
-      }
-    }
   };
   
   phantom_singularity_t( warlock_t* p, util::string_view options_str )
@@ -563,6 +589,31 @@ struct phantom_singularity_t : public affliction_spell_t
   {
     return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration ;
   }
+
+  // 2023-07-06 PTR: PS applying Infirmity is currently EXTREMELY bugged, doing such things as applying to
+  // player's current focused target rather than the enemy the DoT is ticking on. There are also conflicting
+  // behaviors regarding whether it applies a variable duration per-tick (matching the remaining duration of PS)
+  // or a single infinite duration on application (like Vile Taint). Implementing like Vile Taint for now
+  // TOCHECK: A week or two after 10.1.5 goes live, verify if fixed
+  void impact( action_state_t* s ) override
+  {
+    affliction_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( s->target )->debuffs_infirmity->trigger();
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    affliction_spell_t::last_tick( d );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( d->target )->debuffs_infirmity->expire();
+    }
+  }
 };
 
 struct vile_taint_t : public affliction_spell_t
@@ -581,13 +632,13 @@ struct vile_taint_t : public affliction_spell_t
         base_td_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 4 ).percent();
     }
 
-    void tick( dot_t* d ) override
+    void last_tick( dot_t* d ) override
     {
-      affliction_spell_t::tick( d );
+      affliction_spell_t::last_tick( d );
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
       {
-        td( d->target )->debuffs_infirmity->trigger();
+        td( d->target )->debuffs_infirmity->expire();
       }
     }
   };
@@ -609,6 +660,16 @@ struct vile_taint_t : public affliction_spell_t
     {
       impact_action->execute_action = nullptr; // Only want to apply Vile Taint DoT, not secondary effects
       aoe = 1;
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    affliction_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( s->target )->debuffs_infirmity->trigger();
     }
   }
 };
@@ -656,7 +717,6 @@ struct soul_swap_t : public affliction_spell_t
     {
       p()->soul_swap_state.unstable_affliction.action_copied = true;
       p()->soul_swap_state.unstable_affliction.duration = tar->dots_unstable_affliction->remains();
-      p()->soul_swap_state.unstable_affliction.stacks = p()->buffs.malefic_affliction->check(); // While there are no stacks for UA, Soul Swap *will* reapply Malefic Affliction if UA is put on another target
       tar->dots_unstable_affliction->cancel();
     }
 
@@ -760,11 +820,6 @@ struct soul_swap_exhale_t : public affliction_spell_t
 
       p()->soul_swap_state.unstable_affliction.action->execute_on_target( s->target );
       td( s->target )->dots_unstable_affliction->adjust_duration( p()->soul_swap_state.unstable_affliction.duration - td( s->target)->dots_unstable_affliction->remains() );
-
-      if ( p()->soul_swap_state.unstable_affliction.stacks > 0 )
-      {
-        p()->buffs.malefic_affliction->trigger( p()->soul_swap_state.unstable_affliction.stacks );
-      }
     }
 
     if ( p()->soul_swap_state.siphon_life.action_copied )
@@ -877,9 +932,6 @@ void warlock_t::create_buffs_affliction()
 
   buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
-  buffs.malefic_affliction = make_buff( this, "malefic_affliction", talents.malefic_affliction_buff )
-                                 ->set_default_value( talents.malefic_affliction->effectN( 1 ).percent() );
-
   buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
                            ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
 
@@ -903,6 +955,9 @@ void warlock_t::create_buffs_affliction()
 
   buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
                              ->set_default_value_from_effect( 1 );
+
+  buffs.umbrafire_kindling = make_buff( this, "umbrafire_kindling", tier.umbrafire_kindling )
+                                 ->set_reverse( true );
 }
 
 void warlock_t::init_spells_affliction()
@@ -919,8 +974,6 @@ void warlock_t::init_spells_affliction()
   
   talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
   talents.nightfall_buff = find_spell( 264571 );
-  
-  talents.xavian_teachings = find_talent_spell( talent_tree::SPECIALIZATION, "Xavian Teachings" ); // Should be ID 317031
 
   talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
   
@@ -932,9 +985,6 @@ void warlock_t::init_spells_affliction()
   talents.dark_virtuosity = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Virtuosity" ); // Should be ID 405327
 
   talents.kindled_malice = find_talent_spell( talent_tree::SPECIALIZATION, "Kindled Malice" );  // Should be ID 405330
-
-  talents.harvester_of_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Harvester of Souls" ); // Should be ID 201424
-  talents.harvester_of_souls_dmg = find_spell( 218615 ); // Damage and projectile data
 
   talents.agonizing_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Corruption" ); // Should be ID 386922
 
@@ -978,9 +1028,8 @@ void warlock_t::init_spells_affliction()
   talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare" ); // Should be ID 205180
 
   talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
- 
-  talents.malefic_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Affliction" ); // Should be ID 389761
-  talents.malefic_affliction_buff = find_spell( 389845 ); // Buff data, infinite duration, cancelled by UA ending
+
+  talents.xavius_gambit = find_talent_spell( talent_tree::SPECIALIZATION, "Xavius' Gambit" ); // Should be ID 416615
 
   talents.tormented_crescendo = find_talent_spell( talent_tree::SPECIALIZATION, "Tormented Crescendo" ); // Should be ID 387075
   talents.tormented_crescendo_buff = find_spell( 387079 );
@@ -995,7 +1044,7 @@ void warlock_t::init_spells_affliction()
   talents.souleaters_gluttony = find_talent_spell( talent_tree::SPECIALIZATION, "Soul-Eater's Gluttony" ); // Should be ID 389630
 
   talents.doom_blossom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" ); // Should be ID 389764
-  talents.doom_blossom_proc = find_spell( 389869 ); // AoE damage data
+  talents.doom_blossom_proc = find_spell( 416699 ); // AoE damage data
 
   talents.dread_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Touch" ); // Should be ID 389775
   talents.dread_touch_debuff = find_spell( 389868 ); // Applied to target on proc
@@ -1016,6 +1065,9 @@ void warlock_t::init_spells_affliction()
 
   // T30 (Aberrus, the Shadowed Crucible)
   tier.infirmity = find_spell( 409765 );
+
+  // T31 (Amirdrassil, the Dream's Hope)
+  tier.umbrafire_kindling = find_spell( 423765 );
 }
 
 void warlock_t::create_soul_swap_actions()
@@ -1068,7 +1120,6 @@ void warlock_t::init_rng_affliction()
 void warlock_t::init_procs_affliction()
 {
   procs.nightfall = get_proc( "nightfall" );
-  procs.harvester_of_souls = get_proc( "harvester_of_souls" );
   procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
   procs.tormented_crescendo = get_proc( "tormented_crescendo" );
   procs.doom_blossom = get_proc( "doom_blossom" );

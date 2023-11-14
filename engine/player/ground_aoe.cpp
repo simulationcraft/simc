@@ -49,6 +49,26 @@ ground_aoe_params_t& ground_aoe_params_t::action(action_t* a)
   return *this;
 }
 
+const ground_aoe_params_t* ground_aoe_event_t::get_params( player_t* p, const ground_aoe_params_t& params )
+{
+  if ( p->ground_aoe_params_cache.empty() )
+    return new ground_aoe_params_t( params );
+
+  auto cached = p->ground_aoe_params_cache.back();
+  p->ground_aoe_params_cache.pop_back();
+  *cached = params;
+  return cached;
+}
+
+void ground_aoe_event_t::release_params( player_t* p, const ground_aoe_params_t*& params )
+{
+  if ( !params )
+    return;
+
+  p->ground_aoe_params_cache.push_back( const_cast<ground_aoe_params_t*>( params ) );
+  params = nullptr;
+}
+
 // Internal constructor to schedule next pulses, not to be used outside of the struct (or derived
 // structs)
 
@@ -86,7 +106,7 @@ ground_aoe_event_t::ground_aoe_event_t(player_t* p, const ground_aoe_params_t* p
 // Make a copy of the parameters, and use that object until this event expires
 
 ground_aoe_event_t::ground_aoe_event_t(player_t* p, const ground_aoe_params_t& param, bool immediate_pulse) :
-  ground_aoe_event_t(p, new ground_aoe_params_t(param), nullptr, immediate_pulse)
+  ground_aoe_event_t(p, get_params( p, param ), nullptr, immediate_pulse)
 {
   if (params->state_callback())
   {
@@ -99,7 +119,7 @@ ground_aoe_event_t::ground_aoe_event_t(player_t* p, const ground_aoe_params_t& p
 
 ground_aoe_event_t::~ground_aoe_event_t()
 {
-  delete params;
+  release_params( p(), params );
   if (pulse_state)
   {
     action_state_t::release(pulse_state);

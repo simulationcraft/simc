@@ -651,8 +651,8 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   highchart::bar_chart_t raid_apm( "raid_apm", sim );
   bool has_aps = chart::generate_raid_aps( raid_apm, sim, "apm" );
 
-  highchart::bar_chart_t raid_variance( "raid_variance", sim );
-  bool has_variance = chart::generate_raid_aps( raid_variance, sim, "variance" );
+  highchart::bar_chart_t raid_stddev( "raid_stddev", sim );
+  bool has_stddev = chart::generate_raid_aps( raid_stddev, sim, "stddev" );
 
   highchart::bar_chart_t raid_tmi( "raid_tmi", sim );
   bool has_tmi = chart::generate_raid_aps( raid_tmi, sim, "tmi" );
@@ -660,7 +660,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   highchart::bar_chart_t raid_waiting( "raid_waiting", sim );
   bool has_waiting = chart::generate_raid_downtime( raid_waiting, sim );
 
-  if ( has_aps || has_variance || has_tmi || has_waiting )
+  if ( has_aps || has_stddev || has_tmi || has_waiting )
   {
     os << "<div id=\"apm-summary\" class=\"section\">\n"
        << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Additional Raid Information</h2>\n"
@@ -673,11 +673,11 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
       sim.add_chart_data( raid_apm );
     }
 
-    if ( has_variance )
+    if ( has_stddev )
     {
-      raid_variance.set_toggle_id( "apm-summary-toggle" );
-      os << raid_variance.to_target_div();
-      sim.add_chart_data( raid_variance );
+      raid_stddev.set_toggle_id( "apm-summary-toggle" );
+      os << raid_stddev.to_target_div();
+      sim.add_chart_data( raid_stddev );
     }
 
     if ( has_tmi )
