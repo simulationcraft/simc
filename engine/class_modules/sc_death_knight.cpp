@@ -7231,12 +7231,9 @@ struct raise_dead_t final : public death_knight_spell_t
     // Sacrificial Pact doesn't despawn risen skulker, so make sure it's not already up before spawning it
     if ( p()->talent.unholy.all_will_serve.ok() )
     {
-      for ( auto& skulker : p()->pets.risen_skulker )
+      if( p()->pets.risen_skulker.active_pet() == nullptr )
       {
-        if ( skulker->is_sleeping() )
-        {
-          p()->pets.risen_skulker.spawn( 0_ms );
-        }
+        p()->pets.risen_skulker.spawn();
       }
     }
   }
