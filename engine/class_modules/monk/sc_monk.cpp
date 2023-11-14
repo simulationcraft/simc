@@ -6508,7 +6508,7 @@ namespace monk
 
           if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
           {
-            double accumulated = p()->buff.brewmaster_t31_4p_accumulator->check_value();
+            double accumulated = p()->buff.brewmaster_t31_4p_accumulator->check_value() * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
             p()->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, accumulated );
           }
 
