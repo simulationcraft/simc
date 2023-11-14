@@ -725,7 +725,7 @@ void incandescent_essence( special_effect_t& e )
   };
 
   auto tank_damage = create_proc_action<blazing_rage_t>( "blazing_rage", e );
-  auto tank_buff   = create_buff<buff_t>( e.player, "blazing_rage_buff", e.player->find_spell( 426289 ) );
+  auto tank_buff   = create_buff<buff_t>( e.player, "blazing_rage", e.player->find_spell( 426289 ) );
 
   auto blazing_rage            = new special_effect_t( e.player );
   blazing_rage->spell_id       = 426289;
@@ -780,35 +780,43 @@ void incandescent_essence( special_effect_t& e )
     }
   };
 
-  struct tindrals_fowl_fantasia_t : public generic_proc_t
+  struct tindrals_fowl_fantasia_t : public action_t
   {
-    action_t* main_damage;
-    buff_t* buff;
+    action_t* echo;  // 426431, hits twice 1s apart
+    action_t* last;  // 426486, hits once 1s later
+
+    // tindrals_fowl_fantasia_t is a proxy holder action
     tindrals_fowl_fantasia_t( const special_effect_t& e )
-      : generic_proc_t( e, "tindrals_fowl_fantasia", 426341 ),
-      main_damage( create_proc_action<generic_aoe_proc_t>( "denizen_of_the_flame", e, "denizen_of_the_flame",
-                   e.player->find_spell( 426486 ), true ) ),
-      buff( make_buff<buff_t>( e.player, "tindrals_fowl_fantasia", e.player->find_spell( 426431 ) ) )
+      : action_t( action_e::ACTION_OTHER, "tindrals_fowl_fantasia", e.player, e.player->find_spell( 426341 ) )
     {
-      auto secondary_damage = create_proc_action<generic_aoe_proc_t>(
-        "denizen_of_the_flame_secondary", e, "denizen_of_the_flame_secondary", e.player->find_spell( 426431 ), true );
-      secondary_damage->base_dd_min = secondary_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 6 ).average( e.item );
-      main_damage->base_dd_min = main_damage->base_dd_max = e.player->find_spell( 425838 )->effectN( 8 ).average( e.item );
+      background = true;
 
-      buff->set_quiet( true );
-      buff->set_duration( 2_s );
-      buff->set_period( 1_s );
-      buff->set_tick_callback( [ secondary_damage ]( buff_t*, int, timespan_t ) { secondary_damage->execute(); } );
+      auto coeffs = player->find_spell( 425838 );
 
-      add_child( main_damage );
-      add_child( secondary_damage );
+      echo = create_proc_action<generic_aoe_proc_t>(
+          "denizen_of_the_flame", e, "denizen_of_the_flame", player->find_spell( 426431 ), true );
+      echo->base_dd_min = echo->base_dd_max = coeffs->effectN( 6 ).average( e.item );
+      add_child( echo );
+
+      last = create_proc_action<generic_aoe_proc_t>(
+          "denizen_of_the_flame_final", e, "denizen_of_the_flame_final", player->find_spell( 426486 ), true );
+      last->name_str_reporting = "Final";
+      last->base_dd_min = last->base_dd_max = coeffs->effectN( 8 ).average( e.item );
+      add_child( last );
+    }
+
+    result_e calculate_result( action_state_t* ) const override
+    {
+      return result_e::RESULT_NONE;
     }
 
     void execute() override
     {
-      generic_proc_t::execute();
-      main_damage->execute();
-      buff->trigger();
+      action_t::execute();
+
+      echo->execute_on_target( target );
+      make_event( sim, 1_s, [ this, t = target ] { echo->execute_on_target( t ); } );
+      make_event( sim, 2_s, [ this, t = target ] { last->execute_on_target( t ); } );
     }
   };
 
@@ -5829,105 +5837,58 @@ void pips_emerald_friendship_badge( special_effect_t& e )
   // Buffs value is equal to drvier effect 1 value / duration in seconds
   // Emulating in game behavior by creating 2 buffs for each, a static one that stays until the next procs
   // and one with 11 stacks, that decrement every 1s as it does in game.
-  auto pips = make_buff<stat_buff_t>( e.player, "best_friends_with_pip", e.player->find_spell( 426647 ) );
-  auto pips_static = make_buff<stat_buff_t>( e.player, "best_friends_with_pip_static", e.player->find_spell( 426647 ) );
-  auto aerwynn = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn", e.player->find_spell( 426676 ) );
-  auto aerwynn_static = make_buff<stat_buff_t>( e.player, "best_friends_with_aerwynn_static", e.player->find_spell( 426676 ) );
-  auto urctos = make_buff<stat_buff_t>( e.player, "best_friends_with_urctos", e.player->find_spell( 426672 ) );
-  auto urctos_static = make_buff<stat_buff_t>( e.player, "best_friends_with_urctos_static", e.player->find_spell( 426672 ) );
+  using buff_list = std::array<std::pair<buff_t*, buff_t*>, 3>;
 
+  buff_list buffs;
   auto max_stacks = 12;
-  auto buff_value = e.player->find_spell( 422858 )->effectN( 1 ).average( e.item ) / max_stacks;
+  auto buff_value = e.driver()->effectN( 1 ).average( e.item ) / max_stacks;
 
-  pips->set_stat_from_effect( 1, buff_value );
-  pips->set_max_stack( max_stacks - 1 );
-  pips->set_period( pips->data().effectN( 2 ).period() );
-  pips->set_reverse( true );
+  static constexpr unsigned id_list[] = { 426647, 426676, 426672 };
 
-  pips_static->set_stat_from_effect( 1, buff_value );
-  pips_static->set_duration( 0_ms );
-
-  aerwynn->set_stat_from_effect( 1, buff_value );
-  aerwynn->set_max_stack( max_stacks - 1 );
-  aerwynn->set_period( aerwynn->data().effectN( 2 ).period() );
-  aerwynn->set_reverse( true );
-
-  aerwynn_static->set_stat_from_effect( 1, buff_value );
-  aerwynn_static->set_duration( 0_ms );
-
-  urctos->set_stat_from_effect( 1, buff_value );
-  urctos->set_max_stack( max_stacks - 1 );
-  urctos->set_period( urctos->data().effectN( 2 ).period() );
-  urctos->set_reverse( true );
-
-  urctos_static->set_stat_from_effect( 1, buff_value );
-  urctos_static->set_duration( 0_ms );
-
-  e.player->register_combat_begin( [ pips_static, aerwynn_static, urctos_static ]( player_t* p )
+  for ( size_t i = 0; i < 3; i++ )
   {
-    double chance = p->rng().real();
+    auto data = e.player->find_spell( id_list[ i ] );
 
-    if ( chance < 0.3333 )
-    {
-      pips_static->trigger();
-    }
-    else if ( chance < 0.6666 )
-    {
-      aerwynn_static->trigger();
-    }
-    else
-    {
-      urctos_static->trigger();
-    }
+    auto _static = create_buff<stat_buff_t>( e.player, data )
+      ->set_stat_from_effect( 1, buff_value )
+      ->set_duration( 0_ms );
+
+    auto _empowered = create_buff<stat_buff_t>( e.player, _static->name_str + "_empowered", data )
+      ->set_stat_from_effect( 1, buff_value )
+      ->set_max_stack( max_stacks - 1 )
+      ->set_period( spell_data_t::find_spelleffect( *data, E_APPLY_AURA, A_PERIODIC_DUMMY ).period() )
+      ->set_reverse( true )
+      ->set_name_reporting( "Empowered" );
+
+    buffs[ i ] = std::make_pair( _static, _empowered );
+  }
+
+  e.player->register_combat_begin( [ buffs ]( player_t* p ) {
+    buffs.at( p->rng().range( buffs.size() ) ).first->trigger();
   } );
 
   struct pips_cb_t : public dbc_proc_callback_t
   {
-    buff_t* pips;
-    buff_t* pips_static;
-    buff_t* aerwynn;
-    buff_t* aerwynn_static;
-    buff_t* urctos;
-    buff_t* urctos_static;
+    buff_list buffs;
     int max_stacks;
 
-    pips_cb_t( const special_effect_t& e, buff_t* pips, buff_t* pips_static, buff_t* aerwynn, buff_t* aerwynn_static, buff_t* urctos, buff_t* urctos_static, int i )
-      : dbc_proc_callback_t( e.player, e ),
-        pips( pips ), pips_static( pips_static ),
-        aerwynn( aerwynn ), aerwynn_static( aerwynn_static ),
-        urctos( urctos ), urctos_static( urctos_static ),
-        max_stacks( i )
+    pips_cb_t( const special_effect_t& e, buff_list b, int i )
+      : dbc_proc_callback_t( e.player, e ), buffs( b ), max_stacks( i )
     {}
 
-    void execute( action_t* /*a*/, action_state_t* /*s*/) override
+    void execute( action_t*, action_state_t* ) override
     {
-      double chance = rng().real();
+      rng().shuffle( buffs.begin(), buffs.end() );
 
-      if (chance < 0.3333 )
-      {
-        pips->trigger( max_stacks - 1 );
-        pips_static->trigger();
-        aerwynn_static->expire();
-        urctos_static->expire();
-      }
-      else if (chance < 0.6666 )
-      {
-        aerwynn->trigger( max_stacks - 1 );
-        aerwynn_static->trigger();
-        pips_static->expire();
-        urctos_static->expire();
-      }
-      else
-      {
-        urctos->trigger( max_stacks - 1 );
-        urctos_static->trigger();
-        aerwynn_static->expire();
-        pips_static->expire();
-      }
+      buffs[ 0 ].second->trigger( max_stacks - 1 );
+      buffs[ 0 ].first->trigger();
+
+      buffs[ 1 ].first->expire();
+      buffs[ 2 ].first->expire();
     }
   };
 
-  new pips_cb_t( e, pips, pips_static, aerwynn, aerwynn_static, urctos, urctos_static, max_stacks );
+  new pips_cb_t( e, buffs, max_stacks );
 }
 
 // Ashes of the Embersoul
@@ -6060,12 +6021,16 @@ void ashes_of_the_embersoul( special_effect_t& e )
     auto dire_buff = create_proc_action<blazing_soul_t>( "blazing_soul_proc", e );
 
     e.player->register_combat_begin( [ dire_buff ]( player_t* p ) {
-      make_repeating_event( *p->sim, p->sim->dragonflight_opts.embersoul_dire_interval, [ dire_buff, p ] {
-        if ( dire_buff->ready() && p->rng().roll(p->sim->dragonflight_opts.embersoul_dire_chance))
-        {
-          dire_buff->execute();
-        }
-      } );
+      auto pct = p->sim->dragonflight_opts.embersoul_dire_chance;
+      auto dur = p->sim->dragonflight_opts.embersoul_dire_interval;
+      auto std = p->sim->dragonflight_opts.embersoul_dire_interval_stddev;
+
+      make_repeating_event( *p->sim,
+          [ p, dur, std ] { return p->rng().gauss( dur, std ); },
+          [ dire_buff, p, pct ] {
+            if ( dire_buff->ready() && p->rng().roll( pct ) )
+              dire_buff->execute();
+          } );
     } );
 
     e.player->register_on_combat_state_callback( [ dire_buff ]( player_t* p, bool c ) {
@@ -6214,6 +6179,9 @@ void coiled_serpent_idol( special_effect_t& e )
   } );
 
   e.proc_flags2_ = PF2_CRIT;
+  // Hard to confirm if this is an ICD, a que for events, or some other type of system
+  // But, does not seem to be able to proc before the previous one expired.
+  e.cooldown_ = dot->data().duration();
 
   new serpent_cb_t( e, dot );
 }
@@ -6590,17 +6558,27 @@ void nymues_unraveling_spindle( special_effect_t& effect )
 // Buff: 426553
 void augury_of_the_primal_flame( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "annihilating_flame" );
-  if ( !buff )
+  struct annihilating_flame_buff_t : public buff_t
   {
-    // Use the cap as the default value to be decremented as you trigger
-    buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
-               ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
-  }
+    annihilating_flame_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : buff_t( p, n, e.driver()->effectN( 3 ).trigger() )
+    {
+      // Use the cap as the default value to be decremented as you trigger
+      set_default_value( e.driver()->effectN( 1 ).average( e.item ) );
+    }
 
-  auto damage         = create_proc_action<generic_aoe_proc_t>( "annihilating_flame", effect, "annihilating_flame",
-                                                        effect.player->find_spell( 426564 ), true );
-  damage->may_crit    = true;
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      if ( check() )
+        v = current_value + default_value;
+
+      return buff_t::trigger( s, v, c, d );
+    }
+  };
+
+  auto buff = create_buff<annihilating_flame_buff_t>( effect.player, "annihilating_flame", effect );
+  auto damage = create_proc_action<generic_aoe_proc_t>(
+      "annihilating_flame", effect, "annihilating_flame", effect.player->find_spell( 426564 ), true );
   damage->base_dd_min = damage->base_dd_max = 1;  // allow the action to scale with modifiers like vers
 
   // Damage events trigger additional damage based off the original amount
@@ -6619,12 +6597,12 @@ void augury_of_the_primal_flame( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* state ) override
     {
-      double amount       = state->result_amount * mod;
-      damage->base_dd_min = damage->base_dd_max = amount;
-
       // Remove from the cap before modifiers are added (crit/vers/targets)
       if ( buff->check() )
       {
+        double amount       = state->result_amount * mod;
+        damage->base_dd_min = damage->base_dd_max = amount;
+
         // After the hit occurs calculate how much is left or expire if needed
         if ( buff->current_value > amount )
         {
@@ -6643,10 +6621,10 @@ void augury_of_the_primal_flame( special_effect_t& effect )
           damage->base_dd_min = damage->base_dd_max = buff->current_value;
           buff->expire();
         }
-      }
 
-      // Always trigger the damage event if you have gotten to this point, even if buff was expired
-      damage->execute_on_target( state->target );
+        // Always trigger the damage event if you have gotten to this point, even if buff was expired
+        damage->execute_on_target( state->target );
+      }
     }
   };
 
@@ -6892,7 +6870,6 @@ void infernal_signet_brand( special_effect_t& e )
       base_td           = base_damage * player_mod;
       target            = effect.player;
       hasted_ticks      = false;
-      dot_behavior      = DOT_REFRESH_PANDEMIC;
       stats->type       = stats_e::STATS_NEUTRAL;
     }
 
@@ -6945,7 +6922,6 @@ void infernal_signet_brand( special_effect_t& e )
     {
       base_td      = base_damage;
       hasted_ticks = false;
-      dot_behavior = DOT_REFRESH_PANDEMIC;
       add_child( aoe_damage );
     }
 
@@ -7895,6 +7871,24 @@ void dreambinder_loom_of_the_great_cycle( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<dreambinder_loom_of_the_great_cycle_t>( "web_of_dreams", effect );
+}
+
+// Fystia's Fiery Kris
+// 424073 Driver/Values
+// 424075 DoT
+void fystias_fiery_kris( special_effect_t& effect )
+{
+  struct fystias_fiery_kris_t : public generic_proc_t
+  {
+    fystias_fiery_kris_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "fystias_fiery_kris", effect.driver()->effectN( 1 ).trigger() )
+    {
+      base_td = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+  };
+
+  effect.execute_action = create_proc_action<fystias_fiery_kris_t>( "fystias_fiery_kris", effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Thorncaller Claw
@@ -8964,22 +8958,22 @@ void verdant_conduit( special_effect_t& effect )
   // Check if this is the first time we've added stats
   bool first = !crit->manual_stats_added;
   crit->add_stat_from_effect( 1, amount );
-  crit->set_name_reporting( util::inverse_tokenize( "verdant_conduit_crit" ) );
+  crit->set_name_reporting( "Crit" );
   buffs.push_back( crit );
 
   auto haste = create_buff<stat_buff_t>( effect.player, "verdant_conduit_haste", buff_spell );
   haste->add_stat_from_effect( 2, amount );
-  haste->set_name_reporting( util::inverse_tokenize( "verdant_conduit_haste" ) );
+  haste->set_name_reporting( "Haste" );
   buffs.push_back( haste );
 
   auto mastery = create_buff<stat_buff_t>( effect.player, "verdant_conduit_mastery", buff_spell );
   mastery->add_stat_from_effect( 3, amount );
-  mastery->set_name_reporting( util::inverse_tokenize( "verdant_conduit_mastery" ) );
+  mastery->set_name_reporting( "Mastery" );
   buffs.push_back( mastery );
 
   auto vers = create_buff<stat_buff_t>( effect.player, "verdant_conduit_vers", buff_spell );
   vers->add_stat_from_effect( 4, amount );
-  vers->set_name_reporting( util::inverse_tokenize( "verdant_conduit_vers" ) );
+  vers->set_name_reporting( "Vers" );
   buffs.push_back( vers );
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -10216,6 +10210,7 @@ void register_special_effects()
   register_special_effect( 424320, items::hungering_shadowflame );              // Hungering Shadowflame - Unnamed 1h axe
   register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
   register_special_effect( 424406, items::thorncaller_claw );                   // Thorncaller Claw
+  register_special_effect( 424073, items::fystias_fiery_kris );                 // Fystia's Fiery Kris
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );

@@ -1569,7 +1569,15 @@ void player_t::init_base_stats()
     // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
     base.armor_coeff = dbc->armor_mitigation_constant( level() );
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
+  }
 
+  // initialize sp->ap and ap->sp overrides for hybrid specs
+  if ( is_player() && spec_spell->ok() )
+  {
+    base.attack_power_per_spell_power =
+        spell_data_t::find_spelleffect( *spec_spell, E_APPLY_AURA, A_OVERRIDE_AP_PER_SP ).percent();
+    base.spell_power_per_attack_power =
+        spell_data_t::find_spelleffect( *spec_spell, E_APPLY_AURA, A_OVERRIDE_SP_PER_AP ).percent();
   }
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
@@ -4192,19 +4200,26 @@ double player_t::composite_melee_speed() const
 
 double player_t::composite_melee_attack_power() const
 {
+  if ( current.attack_power_per_spell_power > 0 )
+  {
+    return current.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
+  }
+
   double ap = current.stats.attack_power;
 
   ap += current.attack_power_per_strength * cache.strength();
   ap += current.attack_power_per_agility * cache.agility();
-
-  if ( current.attack_power_per_spell_power > 0 )
-    ap += std::floor( current.attack_power_per_spell_power * cache.spell_power( SCHOOL_MAX ) );
 
   return ap;
 }
 
 double player_t::composite_melee_attack_power_by_type( attack_power_type type ) const
 {
+  if ( current.attack_power_per_spell_power > 0 )
+  {
+    return current.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
+  }
+
   double base_ap = cache.attack_power();
   double ap = 0;
   bool has_mh = main_hand_weapon.type != WEAPON_NONE;
@@ -4275,12 +4290,12 @@ double player_t::composite_melee_attack_power_by_type( attack_power_type type ) 
 
 double player_t::composite_attack_power_multiplier() const
 {
-  double m = current.attack_power_multiplier;
-
-  if ( is_pet() || is_enemy() || type == HEALING_ENEMY )
+  if ( is_pet() || is_enemy() || type == HEALING_ENEMY || current.attack_power_per_spell_power > 0 )
   {
     return 1.0;
   }
+
+  double m = current.attack_power_multiplier;
 
   m *= 1.0 + sim->auras.battle_shout->check_value();
 
@@ -4560,18 +4575,27 @@ double player_t::composite_spell_speed() const
 
 double player_t::composite_spell_power( school_e /* school */ ) const
 {
+  if ( current.spell_power_per_attack_power > 0 )
+  {
+    return current.spell_power_per_attack_power *
+           composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
+           composite_attack_power_multiplier();
+  }
+
   double sp = current.stats.spell_power;
 
   sp += current.spell_power_per_intellect * cache.intellect();
-
-  if ( current.spell_power_per_attack_power > 0 )
-    sp += std::floor( current.spell_power_per_attack_power * cache.attack_power() );
 
   return sp;
 }
 
 double player_t::composite_spell_power_multiplier() const
 {
+  if ( is_pet() || is_enemy() || type == HEALING_ENEMY || current.spell_power_per_attack_power > 0 )
+  {
+    return 1.0;
+  }
+
   return current.spell_power_multiplier;
 }
 
@@ -10616,13 +10640,15 @@ static player_talent_t create_talent_obj(
     return std::get<1>( entry ) == trait->id_trait_node_entry;
   } );
 
-  bool is_starter = range::find( trait->id_spec_starter,
-      spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end();
+  // check if the trait is a free class trait for the spec, or the initial starting node on the spec tree (1,1)
+  bool is_starter =
+      range::find( trait->id_spec_starter, spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end() ||
+      trait->tree_index == static_cast<unsigned>( talent_tree::SPECIALIZATION ) && trait->col == 1 && trait->row == 1;
 
   if ( ( it != player->player_traits.end() && std::get<2>( *it ) == 0U ) ||
       ( it == player->player_traits.end() && !is_starter ) )
   {
-    return { player };
+    return { player };  // Trait not found on player
   }
 
   return { player, trait, is_starter ? trait->max_ranks : std::get<2>( *it ) };
@@ -10652,6 +10678,7 @@ player_talent_t player_t::find_talent_spell(
   {
     sim->print_debug( "Player {}: Can't find {} talent with name '{}'.", this->name(),
         util::talent_tree_string( tree ), name );
+    return {};  // Invalid trait
   }
 
   return create_talent_obj( this, s, trait );
@@ -10671,7 +10698,7 @@ player_talent_t player_t::find_talent_spell(
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
         util::talent_tree_string( tree ), spell_id );
-    return { this };
+    return {};  // Invalid trait
   }
 
   return create_talent_obj( this, s, traits[ 0 ] );
@@ -10680,6 +10707,13 @@ player_talent_t player_t::find_talent_spell(
 player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, specialization_e s ) const
 {
   const trait_data_t* trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
+  if ( trait == &trait_data_t::nil() )
+  {
+    sim->print_debug( "Player {}: Can't find talent with node_entry_id '{}'.", this->name(),
+        trait_node_entry_id );
+    return {};  // Invalid trait
+  }
+
   return create_talent_obj( this, s, trait );
 }
 
@@ -11440,7 +11474,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       if ( action )
       {
         return make_fn_expr( expression_str, [ this, action ] {
-          return get_active_dots( action->get_dot() );
+          return !action->data().ok() ? 0 : get_active_dots( action->get_dot() );
         } );
       }
       throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
@@ -11588,7 +11622,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     const auto stalent = find_talent_spell( talent_tree::SPECIALIZATION,
         splits[ 1 ], specialization(), true );
 
-    if ( ctalent.spell() == spell_data_t::nil() && stalent.spell() == spell_data_t::nil() )
+    if ( ctalent.invalid() && stalent.invalid() )
     {
       throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
     }
@@ -13226,7 +13260,7 @@ void player_t::do_update_movement( double yards )
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
                                                                          timespan_t ts, timespan_t wait,
                                                                          const player_t* p )
-  : action( a ), target( t ), time( ts ), wait_time( wait ), queue_failed( false )
+  : action( a ), target( t ), target_name( t ? t->name_str : "" ), time( ts ), wait_time( wait ), queue_failed( false )
 {
   for ( buff_t* b : p->buff_list )
   {

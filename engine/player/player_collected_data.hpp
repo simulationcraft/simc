@@ -132,6 +132,7 @@ struct player_collected_data_t
 
     const action_t* action;
     const player_t* target;
+    std::string target_name;
     const timespan_t time;
     timespan_t wait_time;
     bool queue_failed;

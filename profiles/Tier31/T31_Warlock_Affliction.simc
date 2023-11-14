@@ -10,7 +10,7 @@ talents=BkQAAAAAAAAAAAAAAAAAAAAAAASSSkkAppoEpdgkESJAAAAQDAAAAAAgERLEJJSikWSEAQC
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=iced_phial_of_corrupting_rage_3
-food=fated_fortune_cookie
+food=thousandbone_tongueslicer
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:howling_rune_3
 
@@ -87,7 +87,8 @@ actions.aoe+=/soul_rot,if=variable.vt_up&variable.ps_up
 actions.aoe+=/seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)
 actions.aoe+=/agony,target_if=min:remains,if=active_dot.agony<8&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5
 actions.aoe+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
-actions.aoe+=/malefic_rapture,if=buff.umbrafire_kindling.up&(pet.darkglare.active|!talent.doom_blossom)
+# Because of the STS feature with 10.2, we want to use umbrafire kindling with MR
+actions.aoe+=/malefic_rapture,if=buff.umbrafire_kindling.up
 actions.aoe+=/seed_of_corruption,if=talent.sow_the_seeds
 actions.aoe+=/malefic_rapture,if=((cooldown.summon_darkglare.remains>15|soul_shard>3)&!talent.sow_the_seeds)|buff.tormented_crescendo.up
 actions.aoe+=/drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10

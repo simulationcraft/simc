@@ -35,11 +35,22 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  std::string frost_food = ( p->true_level >= 61 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
+  std::string frost_food;
+  std::string unholy_food;
+  std::string blood_food;
 
-  std::string unholy_food = ( p->true_level >= 61 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
-
-  std::string blood_food = ( p->true_level >= 60 ) ? "fated_fortune_cookie" : "disabled";
+  if ( p->true_level >= 61 )
+  {
+    frost_food  = ( p->dual_wield() ) ? "thousandbone_tongueslicer" : "sizzling_seafood_medley";
+    unholy_food = "sizzling_seafood_medley";
+    blood_food  = "great_cerulean_sea";
+  }
+  else
+  {
+    frost_food  = "feast_of_gluttonous_hedonism";
+    unholy_food = "feast_of_gluttonous_hedonism";
+    blood_food  = "feast_of_gluttonous_hedonism";
+  }
 
   switch ( p->specialization() )
   {
@@ -293,10 +304,9 @@ void frost( player_t* p )
   obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
   obliteration->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
   obliteration->add_action( "howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking|buff.rime.react&set_bonus.tier30_2pc&!variable.rp_buffs)" );
-  obliteration->add_action( "glacial_advance,if=!buff.killing_machine.react&(!death_knight.runeforge.razorice&(!talent.avalanche|debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|(variable.rp_buffs&active_enemies>1))" );
+  obliteration->add_action( "glacial_advance,if=!buff.killing_machine.react&(!death_knight.runeforge.razorice&(!talent.avalanche|debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|((variable.rp_buffs|rune<2)&active_enemies>1))" );
   obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
   obliteration->add_action( "howling_blast,if=buff.rime.react&!buff.killing_machine.react" );
-  obliteration->add_action( "glacial_advance,if=!variable.pooling_runic_power&variable.rp_buffs&!buff.killing_machine.react&active_enemies>=2" );
   obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
   obliteration->add_action( "howling_blast,if=!buff.killing_machine.react&runic_power<25" );
   obliteration->add_action( "arcane_torrent,if=rune<1&runic_power<25" );

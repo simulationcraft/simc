@@ -18,7 +18,7 @@ from helper import Test, TestGroup, run, find_profiles
 FIGHT_STYLES = ("Patchwerk", "DungeonSlice", "HeavyMovement",)
 SEASON = Season.Season.SEASON_2
 
-
+# Test all trinkets
 def test_trinkets(klass: str, path: str, enable: dict):
     spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     trinkets = Trinket.get_trinkets_for_spec(spec)
@@ -46,9 +46,34 @@ def test_trinkets(klass: str, path: str, enable: dict):
             ],
         )
 
+# Test baseline profile & no-talent profile
+def test_baseline(klass: str, path: str, enable: dict):
+    spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
+    fight_style = "Patchwerk"
+    grp = TestGroup(
+        "{}/{}/baseline".format(profile, fight_style),
+        fight_style=fight_style,
+        profile=path,
+    )
+    tests.append(grp)
+    Test(
+        "baseline profile",
+        group=grp,
+    )
+    Test(
+        "no talents",
+        group=grp,
+        args=[
+            (
+                "talents",
+                "",
+            )
+        ],
+    )
 
 available_tests = {
     "trinket": test_trinkets,
+    "baseline": test_baseline,
 }
 
 parser = argparse.ArgumentParser(description="Run simc tests.")

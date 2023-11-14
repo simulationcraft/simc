@@ -1198,7 +1198,7 @@ enum effect_subtype_t : unsigned {
     A_363 = 363,
     A_364 = 364,
     A_365 = 365,
-    A_366 = 366,
+    A_OVERRIDE_SP_PER_AP = 366,
     A_367 = 367,
     A_371 = 371,
     A_372 = 372,
@@ -1221,7 +1221,7 @@ enum effect_subtype_t : unsigned {
     A_400 = 400,
     A_402 = 402,
     A_403 = 403,
-    A_404 = 404,
+    A_OVERRIDE_AP_PER_SP = 404,
     A_405 = 405, // Misc value seems to be a mask that holds the modified ratings.
     A_406 = 406,
     A_407 = 407,

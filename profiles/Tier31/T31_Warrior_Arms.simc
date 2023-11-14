@@ -148,10 +148,10 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_b
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
 actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
-head=verdant_plate_crown,id=109986,bonus_id=6808/4786/9888/6935,gem_id=192982,enchant_id=7052
+head=verdant_plate_crown,id=109986,bonus_id=6808/4786/9888/6935,gem_id=192982,enchant=incandescent_essence
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/1520/8782,gem_id=192919/192919/192919
 shoulders=molten_vanguards_shouldervents,id=207180,bonus_id=7187/1520
-back=undulating_sporecloak,id=205025,bonus_id=9500/9405/8960,enchant=graceful_avoidance_3
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,enchant=graceful_avoidance_3,crafted_stats=36/40
 chest=molten_vanguards_plackart,id=207185,bonus_id=7187/1520,enchant=waking_stats_3
 wrists=allied_wristguard_of_companionship,id=190526,bonus_id=9500/9405/8960/6935,gem_id=192919,enchant=devotion_of_avoidance_3
 hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520
@@ -161,7 +161,7 @@ feet=molten_vanguards_greatboots,id=207184,bonus_id=7187/1520,enchant=watchers_l
 finger1=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192919,enchant=devotion_of_haste_3
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1514/3326/6646/6935,gem_id=192919,enchant=devotion_of_haste_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-trinket2=coiled_serpent_idol,id=207175,bonus_id=7187/1520
+trinket2=rezans_gleaming_eye,id=158712,bonus_id=1514/3317/6646
 main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 # Gear Summary
@@ -169,9 +169,9 @@ main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=wafting_de
 # gear_strength=9780
 # gear_stamina=39006
 # gear_crit_rating=3937
-# gear_haste_rating=6509
-# gear_mastery_rating=2829
-# gear_versatility_rating=1753
+# gear_haste_rating=6797
+# gear_mastery_rating=2558
+# gear_versatility_rating=1737
 # gear_avoidance_rating=325
 # gear_armor=11397
 # gear_bonus_armor=141

@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52106 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52129 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -837,7 +837,6 @@ Effects          :
 #21 (id=1119178)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3043 (Label) | Target: Self (1)
                    Affected Spells (Label): Fragile Echoes (215266)
-Hotfixed         : NEW EFFECT
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown (1465) Evoker
@@ -7021,6 +7020,7 @@ Description      : $@spelldesc393645
 Tooltip          : Next Living Flame's cast time reduced by $s1% and deals $s2% increased damage or healing.
 
 Name             : Ebon Might (desc=Black) (id=395152) [Spell Family (224)] 
+Hotfixed         : Description, Variables
 Talent Entry     : Augmentation [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -7045,16 +7045,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ ...x.
                  : Exclude Caster (51), Ignore Line of Sight (66), Only On Player (104), Limit N (165), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 6.5 | Scaled Value: 6.5 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : Base Value (8 -> 6.5)
 #2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
-Description      : Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.
+Description      : Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.
 
 May only affect $i allies at once, and prefers to imbue damage dealers.
 
 Eruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.
 Tooltip          : $pri increased by $w2.
-Variables        : $stat=${$INT*($s1/100)}
+Variables        : $stat=${$INT*($s1/100)}
+$amount=${6.5}.1
 
 Name             : Sands of Time (id=395153) [Spell Family (224), Passive] 
 Class            : Augmentation Evoker
@@ -7175,13 +7177,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Raid Instances (203), Not in Battleground (284), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1036936)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ebon Might (395152), Ebon Might (395296), Temporal Wound (409560)
                    Family Flags: 56
+Hotfixed         : Base Value (20 -> 10)
 #2 (id=1097602)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Ebon Might (395152), Ebon Might (395296), Temporal Wound (409560)
                    Family Flags: 56
+Hotfixed         : Base Value (20 -> 10)
 Description      : $@spellname395152 and $@spellname403631 are $s1% more effective when not in a raid.
 
 Name             : Augmentation Evoker (id=396186) [Spell Family (224), Passive, Hidden] 
@@ -7477,7 +7481,6 @@ $@spellicon403264$@spellname403264: You and your $s2 nearest allies have $403264
 $@spellicon403265$@spellname403265:You and your $s2 nearest allies have $403265s1% increased movement speed.
 
 Name             : Aerial Halt (desc=Racial) (id=403216) 
-Hotfixed         : Attributes
 Class            : Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
@@ -7497,7 +7500,6 @@ Attributes       : ........ ........ ........ x......x   ........ ........ .....
 Effects          :
 #1 (id=1050035)  : Apply Aura (6) | Unknown(513)
                    Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Type (3 -> 6), Sub Type (0 -> 513), Base Value (0 -> 10000)
 Description      : Flap back, reducing forward movement.
 
 Name             : Black Attunement (desc=Black) (id=403264) [Spell Family (224)] 
@@ -7999,7 +8001,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1055273)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : SP Coefficient (0.4 -> 0.34)
 #2 (id=1082679)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Blistering Scales (360827), Obsidian Scales (363916), Source of Magic (369459), Twin Guardian (370889), Leaping Flames (370901), Zephyr (374227), Renewing Blaze (374348), Time Spiral (375234), Essence Burst (392268), Ebon Might (395152), Ebon Might (395296), Nourishing Sands (406043), Spatial Paradox (406732), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Momentum Shift (408005), Prescience (409311), Temporal Wound (409560), Prescience (410089), Reactive Hide (410256), Inferno's Blessing (410263), Molten Blood (410651), Symbiotic Bloom (410686), Timelessness (412710), Shifting Sands (413984)
@@ -9542,7 +9545,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Only On Player (104), Do Not Display Range (126), Aura Points On Client (268), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1082678)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Misc Value: 6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34000 | PvP Coefficient: 1.00000 | Misc Value: 6 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.4 -> 0.34)
 #2 (id=1082696)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc406380
@@ -9806,10 +9810,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098470)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (40 -> 50)
 #2 (id=1104181)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (5 -> 3)
 Description      : Empower spells cast up to $s2 Living Flames at enemies or allies struck at $s1% effectiveness.
 
 Name             : Evoker Preservation 10.2 Class Set 4pc (id=422873) [Spell Family (224), Passive, Hidden] 
@@ -9832,7 +9834,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098471)  : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 70)
 Description      : Living Flame has a chance to apply Echo at $s1% effectiveness on allies healed, or a nearby ally who doesn't already have Echo.
 
 Name             : Emerald Trance (id=424155) [Spell Family (224)] 

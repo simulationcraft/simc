@@ -757,7 +757,7 @@ struct player_t : public actor_t
     // Force the extra damage from Nymue's Unraveling Spindle against Immobilized targets
     player_option_t<bool> nymue_forced_immobilized = false;
     // Option to control the timing to pick up each orb for the Witherbarks Branch Trinket.
-    timespan_t witherbarks_branch_timing[ 3 ]      = { 1_s, 1_s, 1_s };
+    timespan_t witherbarks_branch_timing[ 3 ] = { 1_s, 1_s, 7_s };
     // Enable Rallied to Victory Ally estimation
     bool rallied_to_victory_ally_estimate = false;
     // Set the minimum number of allies buffed by Rallied to Victory

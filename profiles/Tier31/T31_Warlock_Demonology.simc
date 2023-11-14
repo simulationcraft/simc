@@ -5,12 +5,12 @@ level=70
 race=Dwarf
 role=spell
 position=ranged_back
-talents=BoQAAAAAAAAAAAAAAAAAAAAAAAHgkEJJQaKQaJJh0CAAAAAa5ABSioERIJSaaJJJEAAAAAAkI
+talents=BoQAAAAAAAAAAAAAAAAAAAAAAAHgkEJJQaKQaJJh0CAAAAAIBSikSEhkIpolkkQAAAAAAQiA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
 flask=iced_phial_of_corrupting_rage_3
-food=fated_fortune_cookie
+food=thousandbone_tongueslicer
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:howling_rune_3
 
@@ -54,7 +54,7 @@ actions+=/call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains
 actions+=/call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<15&(buff.vilefiend.up|!talent.summon_vilefiend&(buff.grimoire_felguard.up|cooldown.grimoire_felguard.up|!set_bonus.tier30_2pc))&(!variable.shadow_timings|variable.tyrant_cd<15|fight_remains<40|buff.power_infusion.up)
 actions+=/summon_demonic_tyrant,if=buff.vilefiend.up|buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>90
 actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>45
-actions+=/demonbolt,target_if=(!debuff.doom_brand.up|action.hand_of_guldan.in_flight&debuff.doom_brand.remains<=3),if=buff.demonic_core.up&(((!talent.soul_strike|cooldown.soul_strike.remains>gcd.max*2)&soul_shard<4)|soul_shard<3)&!prev_gcd.1.demonbolt&set_bonus.tier31_2pc
+actions+=/demonbolt,target_if=(!debuff.doom_brand.up|action.hand_of_guldan.in_flight&debuff.doom_brand.remains<=3),if=buff.demonic_core.up&(((!talent.soul_strike|cooldown.soul_strike.remains>gcd.max*2)&soul_shard<4)|soul_shard<(4-(active_enemies>2)))&!prev_gcd.1.demonbolt&set_bonus.tier31_2pc
 actions+=/power_siphon,if=!buff.demonic_core.up&(!debuff.doom_brand.up|(!action.hand_of_guldan.in_flight&debuff.doom_brand.remains<gcd.max+action.demonbolt.travel_time)|(action.hand_of_guldan.in_flight&debuff.doom_brand.remains<gcd.max+action.demonbolt.travel_time+3))&set_bonus.tier31_2pc
 actions+=/demonic_strength,if=buff.nether_portal.remains<gcd.max&(fight_remains>63&!(fight_remains>cooldown.summon_demonic_tyrant.remains+69)|cooldown.summon_demonic_tyrant.remains>30|variable.shadow_timings|buff.rite_of_ruvaraad.up|!talent.summon_demonic_tyrant|!talent.grimoire_felguard|!set_bonus.tier30_2pc)
 actions+=/bilescourge_bombers
@@ -90,8 +90,8 @@ actions.fight_end+=/implosion,if=fight_remains<2*gcd.max
 
 actions.items=use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!pet.demonic_tyrant.active&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(pet.demonic_tyrant.active)&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
 actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(!pet.demonic_tyrant.active&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(pet.demonic_tyrant.active)&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
-actions.items+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!pet.demonic_tyrant.active|!trinket.1.cast_time>0)|cooldown.demonic_tyrant.remains_expected>20)
-actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!pet.demonic_tyrant.active|!trinket.2.cast_time>0)|cooldown.demonic_tyrant.remains_expected>20)
+actions.items+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!pet.demonic_tyrant.active|!trinket.1.cast_time>0)|cooldown.summon_demonic_tyrant.remains_expected>20)
+actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!pet.demonic_tyrant.active|!trinket.2.cast_time>0)|cooldown.summon_demonic_tyrant.remains_expected>20)
 actions.items+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 actions.items+=/use_item,name=nymues_unraveling_spindle,if=pet.demonic_tyrant.active&!cooldown.demonic_strength.ready|fight_remains<22
 actions.items+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)
@@ -108,7 +108,7 @@ actions.tyrant+=/call_action_list,name=items,if=variable.pet_expire>0&variable.p
 actions.tyrant+=/call_action_list,name=racials,if=variable.pet_expire>0&variable.pet_expire<action.summon_demonic_tyrant.execute_time+(buff.demonic_core.down*action.shadow_bolt.execute_time+buff.demonic_core.up*gcd.max)+gcd.max,use_off_gcd=1
 actions.tyrant+=/potion,if=variable.pet_expire>0&variable.pet_expire<action.summon_demonic_tyrant.execute_time+(buff.demonic_core.down*action.shadow_bolt.execute_time+buff.demonic_core.up*gcd.max)+gcd.max,use_off_gcd=1
 actions.tyrant+=/summon_demonic_tyrant,if=variable.pet_expire>0&variable.pet_expire<action.summon_demonic_tyrant.execute_time+(buff.demonic_core.down*action.shadow_bolt.execute_time+buff.demonic_core.up*gcd.max)+gcd.max
-actions.tyrant+=/implosion,if=pet_count>2&(buff.dreadstalkers.down&buff.grimoire_felguard.down&buff.vilefiend.down)&(active_enemies>3|active_enemies>2&talent.grand_warlocks_design)
+actions.tyrant+=/implosion,if=pet_count>2&(buff.dreadstalkers.down&buff.grimoire_felguard.down&buff.vilefiend.down)&(active_enemies>3|active_enemies>2&talent.grand_warlocks_design)&!prev_gcd.1.implosion
 actions.tyrant+=/shadow_bolt,if=prev_gcd.1.grimoire_felguard&time>30&buff.nether_portal.down&buff.demonic_core.down
 actions.tyrant+=/power_siphon,if=buff.demonic_core.stack<4&(!buff.vilefiend.up|!talent.summon_vilefiend&(!buff.dreadstalkers.up))&(buff.nether_portal.down)
 actions.tyrant+=/shadow_bolt,if=buff.vilefiend.down&buff.nether_portal.down&buff.dreadstalkers.down&soul_shard<5-buff.demonic_core.stack
@@ -117,7 +117,7 @@ actions.tyrant+=/summon_vilefiend,if=(soul_shard=5|buff.nether_portal.up)&cooldo
 actions.tyrant+=/call_dreadstalkers,if=(buff.vilefiend.up|!talent.summon_vilefiend&(!talent.nether_portal|buff.nether_portal.up|cooldown.nether_portal.remains>30)&(buff.nether_portal.up|buff.grimoire_felguard.up|soul_shard=5))&cooldown.summon_demonic_tyrant.remains<11&variable.np
 actions.tyrant+=/grimoire_felguard,if=buff.vilefiend.up|!talent.summon_vilefiend&(!talent.nether_portal|buff.nether_portal.up|cooldown.nether_portal.remains>30)&(buff.nether_portal.up|buff.dreadstalkers.up|soul_shard=5)&variable.np
 actions.tyrant+=/hand_of_guldan,if=soul_shard>2&(buff.vilefiend.up|!talent.summon_vilefiend&buff.dreadstalkers.up)&(soul_shard>2|buff.vilefiend.remains<gcd.max*2+2%spell_haste)
-actions.tyrant+=/demonbolt,cycle_targets=1,if=soul_shard<4&buff.demonic_core.up&(buff.vilefiend.up|!talent.summon_vilefiend&buff.dreadstalkers.up)
+actions.tyrant+=/demonbolt,cycle_targets=1,if=soul_shard<4&(buff.demonic_core.stack>1&set_bonus.tier31_2pc|buff.demonic_core.up&!set_bonus.tier31_2pc)&(buff.vilefiend.up|!talent.summon_vilefiend&buff.dreadstalkers.up)
 actions.tyrant+=/power_siphon,if=buff.demonic_core.stack<3&variable.pet_expire>action.summon_demonic_tyrant.execute_time+gcd.max*3|variable.pet_expire=0
 actions.tyrant+=/shadow_bolt
 
@@ -132,33 +132,32 @@ actions.variables+=/variable,name=impl,op=set,value=buff.tyrant.remains<6,if=act
 actions.variables+=/variable,name=impl,op=set,value=buff.tyrant.remains<8,if=active_enemies>4+(talent.sacrificed_souls.enabled)
 actions.variables+=/variable,name=pool_cores_for_tyrant,op=set,value=cooldown.summon_demonic_tyrant.remains<20&variable.tyrant_cd<20&(buff.demonic_core.stack<=2|!buff.demonic_core.up)&cooldown.summon_vilefiend.remains<gcd.max*5&cooldown.call_dreadstalkers.remains<gcd.max*5
 
-head=devout_ashdevils_grimhorns,id=207272,bonus_id=6652/9599/7979/9563/9513/1494/8767/1808,ilevel=489,gem_id=192982,enchant_id=7052
-neck=amulet_of_eonars_chosen,id=208445,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/8782,ilevel=489,gem_id=192938/192938/192938
+head=devout_ashdevils_grimhorns,id=207272,bonus_id=6652/9599/7979/9563/9513/1494/8767/1808,ilevel=489,gem_id=192988,enchant_id=7052
+neck=amulet_of_eonars_chosen,id=208445,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/8782,ilevel=489,gem_id=192932/192932/192932
 shoulders=devout_ashdevils_hatespikes,id=207270,bonus_id=6652/7979/9562/9511/1491/8767,ilevel=489
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960,ilevel=486,enchant_id=6592,crafted_stats=40/49
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/8960/8795,ilevel=486,crafted_stats=32/36
 chest=devout_ashdevils_razorhide,id=207275,bonus_id=6652/7979/9562/9515/1491/8767,ilevel=489,enchant_id=6625
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8960,ilevel=486,gem_id=192938,enchant_id=6574,crafted_stats=40/36
+wrists=anguished_restraints,id=207120,bonus_id=523,ilevel=489,gem_id=192932
 hands=devout_ashdevils_claws,id=207273,bonus_id=6652/8783/8784/9515/9514/9513/9512/9511/9599/9600/10244/10245/4800/4786/1520/9576
-waist=urctoss_hibernal_dial,id=207119,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192938,enchant_id=6574,crafted_stats=40/32
-legs=elders_volcanic_wrap,id=207118,bonus_id=4800/4786/1520/9576,enchant_id=6830
-feet=lifewoven_slippers,id=207123,bonus_id=4800/4786/1520/9576,enchant_id=6607
-finger1=band_of_burning_thorns,id=207159,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192938,enchant_id=6568
-finger2=signet_of_the_last_elder,id=207162,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,ilevel=489,gem_id=192938,enchant_id=6550
+waist=urctoss_hibernal_dial,id=207119,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192932,enchant_id=6574,crafted_stats=40/32
+legs=leggings_of_the_new_dawn,id=207928,ilevel=489,enchant_id=6830
+feet=vibrant_wildercloth_slippers,id=193519,bonus_id=9379/8960/8792,ilevel=486,crafted_stats=32/36
+finger1=band_of_burning_thorns,id=207159,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,gem_id=192932,enchant_id=6568
+finger2=signet_of_the_last_elder,id=207162,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,ilevel=489,gem_id=192932,enchant_id=6550
 trinket1=nymues_unraveling_spindle,id=208615,ilevel=489
 trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
 main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
 
 # Gear Summary
 # gear_ilvl=488.60
-# gear_stamina=38769
-# gear_intellect=12992
-# gear_crit_rating=4149
-# gear_haste_rating=4768
-# gear_mastery_rating=2494
-# gear_versatility_rating=3659
-# gear_speed_rating=250
-# gear_avoidance_rating=525
-# gear_armor=3251
+# gear_stamina=38744
+# gear_intellect=12987
+# gear_crit_rating=4635
+# gear_haste_rating=4636
+# gear_mastery_rating=1168
+# gear_versatility_rating=4627
+# gear_avoidance_rating=200
+# gear_armor=3249
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
 default_pet=felguard

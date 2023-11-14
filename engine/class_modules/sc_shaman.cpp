@@ -1014,8 +1014,6 @@ public:
   double composite_melee_speed() const override;
   double composite_melee_haste() const override;
   double composite_spell_crit_chance() const override;
-  double composite_spell_power( school_e school ) const override;
-  double composite_spell_power_multiplier() const override;
   double composite_spell_haste() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
@@ -11732,42 +11730,6 @@ double shaman_t::composite_spell_haste() const
   }
 
   return haste;
-}
-
-// shaman_t::composite_spell_power ==========================================
-
-double shaman_t::composite_spell_power( school_e school ) const
-{
-  double sp = 0;
-  if ( specialization() == SHAMAN_ENHANCEMENT )
-  {
-    double added_spell_power = 0;
-    if ( main_hand_weapon.type != WEAPON_NONE )
-    {
-      added_spell_power = main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
-    }
-    else
-    {
-      added_spell_power = 0.5 * WEAPON_POWER_COEFFICIENT;
-    }
-
-    sp = composite_attack_power_multiplier() * ( cache.attack_power() + added_spell_power ) *
-         spec.enhancement_shaman->effectN( 4 ).percent();
-  }
-  else
-    sp = player_t::composite_spell_power( school );
-
-  return sp;
-}
-
-// shaman_t::composite_spell_power_multiplier ===============================
-
-double shaman_t::composite_spell_power_multiplier() const
-{
-  if ( specialization() == SHAMAN_ENHANCEMENT )
-    return 1.0;
-
-  return player_t::composite_spell_power_multiplier();
 }
 
 // shaman_t::composite_player_multiplier ====================================

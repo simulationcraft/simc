@@ -20,7 +20,7 @@ temporary_enchant=main_hand:hissing_rune_3
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
-# Balance APL can be found at https://balance-simc.github.io/Balance-SimC/balance.txt
+# Balance APL can be found at https://www.dreamgrove.gg/sims/owl/balance.txt
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask

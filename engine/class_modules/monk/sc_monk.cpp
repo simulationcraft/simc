@@ -6508,7 +6508,7 @@ namespace monk
 
           if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
           {
-            double accumulated = p()->buff.brewmaster_t31_4p_accumulator->check_value();
+            double accumulated = p()->buff.brewmaster_t31_4p_accumulator->check_value() * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
             p()->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, accumulated );
           }
 
@@ -9477,48 +9477,6 @@ namespace monk
     return e;
   }
 
-  // monk_t::composite_melee_attack_power ==================================
-
-  double monk_t::composite_melee_attack_power() const
-  {
-    if ( base.attack_power_per_spell_power > 0 )
-      return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-    return player_t::composite_melee_attack_power();
-  }
-
-  // monk_t::composite_melee_attack_power_by_type ==================================
-
-  double monk_t::composite_melee_attack_power_by_type( attack_power_type type ) const
-  {
-    if ( base.attack_power_per_spell_power > 0 )
-      return base.attack_power_per_spell_power * composite_spell_power_multiplier() * cache.spell_power( SCHOOL_MAX );
-
-    return player_t::composite_melee_attack_power_by_type( type );
-  }
-
-  // monk_t::composite_spell_power ==============================================
-
-  double monk_t::composite_spell_power( school_e school ) const
-  {
-    if ( base.spell_power_per_attack_power > 0 )
-      return base.spell_power_per_attack_power *
-      composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
-      composite_attack_power_multiplier();
-
-    return player_t::composite_spell_power( school );
-  }
-
-  // monk_t::composite_spell_power_multiplier ================================
-
-  double monk_t::composite_spell_power_multiplier() const
-  {
-    if ( specialization() == MONK_BREWMASTER || specialization() == MONK_WINDWALKER )
-      return 1.0;
-
-    return player_t::composite_spell_power_multiplier();
-  }
-
   // monk_t::composite_attack_power_multiplier() ==========================
 
   double monk_t::composite_attack_power_multiplier() const
@@ -10944,19 +10902,18 @@ namespace monk
 
     void register_hotfixes() const override
     {
-      /*    hotfix::register_effect( "Monk", "2020-11-21",
-                                   "Manually set Direct Damage Windwalker Monk Two-Hand Adjustment by 2%", 872417 )
-              .field( "base_value" )
-              .operation( hotfix::HOTFIX_ADD )
-              .modifier( 2 )
-              .verification_value( 0 );
-          hotfix::register_effect( "Monk", "2020-11-21",
-                                   "Manually set Periodic Damage Windwalker Monk Two-Hand Adjustment by 2%", 872418 )
-              .field( "base_value" )
-              .operation( hotfix::HOTFIX_ADD )
-              .modifier( 2 )
-              .verification_value( 0 );
-      */
+/*
+      hotfix::register_effect( "Monk", "2023-11-14", "Manually apply BrM-T31-2p Buff", 1098484)
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 40 )
+        .verification_value( 20 );
+      hotfix::register_effect( "Monk", "2023-11-14", "Manually apply BrM-T31-4p Buff", 1098485)
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 15 )
+        .verification_value( 10 );
+*/
     }
 
     void init( player_t *p ) const override

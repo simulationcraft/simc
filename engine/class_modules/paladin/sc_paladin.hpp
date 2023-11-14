@@ -586,8 +586,6 @@ public:
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_bonus_armor() const override;
-  virtual double    composite_melee_attack_power() const override;
-  virtual double    composite_melee_attack_power_by_type(attack_power_type ap_type ) const override;
   virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_damage_versatility() const override;
@@ -597,8 +595,6 @@ public:
   virtual double    composite_melee_haste() const override;
   virtual double    composite_melee_speed() const override;
   virtual double    composite_spell_haste() const override;
-  virtual double    composite_spell_power( school_e school ) const override;
-  virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_parry() const override;
   virtual double    composite_parry_rating() const override;
