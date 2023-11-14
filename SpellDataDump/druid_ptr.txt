@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52106 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52129 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1430,6 +1430,7 @@ Usable while stunned, frozen, incapacitated, feared, or asleep, and in all shape
 Tooltip          : All damage taken reduced by $w1%.
 
 Name             : Frenzied Regeneration (id=22842) [Spell Family (7)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Guardian), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
@@ -1447,12 +1448,12 @@ Family Flags     : 62
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Sheath (18), No Threat (42), Can't Crit (93), Extra Initial Period (169), Ignore Healing Modifiers (219), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442)
+                 : Is Ability (4), Do Not Sheath (18), No Threat (42), Can't Crit (93), Extra Initial Period (169), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=13048)    : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.62600 | Target: Self (1)
@@ -7673,19 +7674,21 @@ Effects          :
 Description      : $@spelldesc203962
 
 Name             : Blood Frenzy (id=203962) [Spell Family (7), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Guardian [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
 Spell Type       : None
+Labels           : 3097: Circle of Life and Death (391969 effect#6)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Passive (6), Not In Spellbook (143), Spell Haste Affects Periodic (173), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300974)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -17701,6 +17704,10 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Primal Wrath (285381)
                    Family Flags: 93
+#6 (id=1120516)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 19 | Misc Value 2: 3097 (Label)
+                   Affected Spells (Label): Blood Frenzy (203962)
+Hotfixed         : NEW EFFECT
 Description      : Your damage over time effects deal their damage in $s1% less time, and your healing over time effects in $s2% less time.
 
 Name             : Lion's Strength (id=391972) [Spell Family (7), Passive] 
