@@ -6179,6 +6179,9 @@ void coiled_serpent_idol( special_effect_t& e )
   } );
 
   e.proc_flags2_ = PF2_CRIT;
+  // Hard to confirm if this is an ICD, a que for events, or some other type of system
+  // But, does not seem to be able to proc before the previous one expired.
+  e.cooldown_ = dot->data().duration();
 
   new serpent_cb_t( e, dot );
 }
