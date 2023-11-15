@@ -3194,7 +3194,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -40 | Target: Unknown(25)
                    Affected School(s): All
 #2 (id=727831)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.66667 | Misc Value: 127 | Target: Unknown(25)
+Hotfixed         : PvP Coefficient (1 -> 1.66667)
 Description      : $@spelldesc196718
 Tooltip          : Attacks against you have a $w2% chance to inflict no damage.
 
