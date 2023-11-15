@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52129 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52148 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -118,6 +118,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23810 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.22045 -> 0.2381)
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=282)      : Energize Power (30)
@@ -3583,6 +3584,7 @@ Effects          :
 #25 (id=1113620)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3043 (Label) | Target: Self (1)
                    Affected Spells (Label): Fragile Echoes (215266)
+Hotfixed         : Base Value (-30 -> -40)
 #26 (id=1120675)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079)
@@ -3740,10 +3742,12 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023)
                    Family Flags: 54
+Hotfixed         : Base Value (11 -> 5)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023)
                    Family Flags: 54
+Hotfixed         : Base Value (11 -> 5)
 #3 (id=191057)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191058)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -3859,6 +3863,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031)
                    Family Flags: 20
+Hotfixed         : NEW EFFECT
 
 Name             : Marked for Death (id=137619) [Spell Family (8)] 
 Class            : Rogue
@@ -4410,9 +4415,11 @@ Effects          :
 #6 (id=1118466)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 3052 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (429951)
+Hotfixed         : NEW EFFECT
 #7 (id=1118467)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3052 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (429951)
+Hotfixed         : NEW EFFECT
 Description      : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage for the duration of Roll the Bones.
 Tooltip          : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage.
 
@@ -5496,6 +5503,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1099019)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
 Description      : While above $s1% of maximum Energy your Garrote, Rupture, and Crimson Tempest consume $s2 Energy to duplicate $s3% of any damage dealt.
 
 Name             : Blunderbuss (id=202848) [Spell Family (8)] 
@@ -9715,6 +9723,7 @@ Description      : Finishing move that launches explosive Black Powder at all ne
 
 
 Name             : Black Powder (id=319190) [Spell Family (8)] 
+Hotfixed         : Attributes, Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -9734,6 +9743,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
 Effects          :
 #1 (id=805486)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.08780 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+Hotfixed         : Delta (0 -> 0.05), AP Coefficient (0 -> 0.0878)
 Description      : $@spelldesc319175
 
 Name             : Mastery: Potent Assassin (desc=Rank 2) (id=319473) [Spell Family (8), Passive] 
@@ -10115,6 +10125,7 @@ Attacking with Serrated Bone Spike causes all of your active bone spikes to frac
 Tooltip          : Bleeding for $w2 every $t sec.
 
 Name             : Eviscerate (id=328082) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -12245,6 +12256,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=897169)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.352 -> 0.4)
 #2 (id=1033882)  : Trigger Spell (64): Deathmark
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394331 | Target: Self (1)
 Description      : Carve a deathmark into an enemy, dealing $o1 Bleed damage over $d. While marked your Garrote, Rupture, and Lethal poisons applied to the target are duplicated, dealing $?a134735[${100+$394331s1+$394331s3}%][${100+$394331s1}%] of normal damage.
@@ -12301,6 +12313,7 @@ Attributes       : ....x... ........ x.x..x.. ........   .....x.. .x...... .....
 Effects          :
 #1 (id=898195)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23810 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.22045 -> 0.2381)
 #2 (id=898196)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc360194
@@ -12923,6 +12936,7 @@ Effects          :
 #2 (id=1118463)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3052 (Label)
                    Affected Spells (Label): Blade Flurry (429951)
+Hotfixed         : NEW EFFECT
 Description      : Increases the critical strike chance of your attacks that generate combo points by $s1%.
 
 Name             : Virulent Poisons (id=381543) [Spell Family (8), Passive] 
@@ -13756,9 +13770,11 @@ Effects          :
 #3 (id=1118464)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3052 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (429951)
+Hotfixed         : NEW EFFECT
 #4 (id=1118465)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 3052 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (429951)
+Hotfixed         : NEW EFFECT
 Description      : Attacks that generate combo points deal $s1% increased damage.
 
 Name             : Triple Threat (id=381894) [Spell Family (8), Passive] 
@@ -16948,12 +16964,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1096991)  : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Base Value (35 -> 45)
 #2 (id=1096994)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc421975
 Tooltip          : $w1% of Poison damage taken from $@auracaster splashes onto other nearby enemies.
 
 Name             : Caustic Spatter (id=421979) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Nature
 Spell Type       : Melee
@@ -16969,9 +16987,10 @@ Attributes       : ....x... ........ ..x..x.. ........   .....x.. ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow While Stealthed (37), Allow Dead Target (64), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Do Not Display Range (126), Treat as Area Effect (175), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore PvP Power (365), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1096995)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=1097661)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Target 1 (0 -> 6)
 Description      : $@spelldesc319606
 
 Name             : Rogue Assassination 10.2 Class Set 2pc (id=422905) [Passive, Hidden] 
@@ -17047,6 +17066,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Sinister Strike (193315), Sinister Strike (197834), Sinister Strike (341541)
                    Family Flags: 98
+Hotfixed         : Base Value (15 -> 10)
 Description      : Sinister Strike has an additional $s1% chance of striking an additional time.
 Tooltip          : Sinister Strike has an additional $s1% chance of striking an additional time.
 
@@ -17085,6 +17105,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098507)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 20)
 #2 (id=1098598)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your shadow clones deal $s1% increased damage with all attacks and grant you $s2 combo points per clone when summoned.
@@ -17108,6 +17129,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098508)  : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 70)
 Description      : Using Eviscerate, Rupture, or Black Powder has a chance to summon a shadow clone to echo your finishing move for $s1% additional Shadow damage.
 
 Name             : Path of Blood (id=423054) [Spell Family (8), Passive] 
@@ -17433,6 +17455,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1101506)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Period (1000 -> 2000), Base Value (0.003118 -> 0)
 Description      : Finishing move that tears open the target, dealing Shadow damage over time.
 Tooltip          : Bleeding for $w1 Shadow damage every $t1 sec.
 
@@ -17543,6 +17566,7 @@ Description      : Increases healing received by $s1%.
 
 
 Name             : Natureblight (id=426568) [Spell Family (8)] 
+Hotfixed         : Max stacks (15 -> 12)
 Class            : Rogue
 School           : Nature
 Spell Type       : None
@@ -17575,6 +17599,7 @@ Description      : Increases Attack Speed by $s1% and your Nature damage by $s2%
 Tooltip          : Increases Attack Speed by $s1% and your Nature damage by $s2% for $d. Multiple instances of Natureblight may overlap, up to $u.
 
 Name             : Envenomous Explosion (id=426581) [Spell Family (8)] 
+Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Nature
 Spell Type       : Magic
@@ -17594,7 +17619,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1105178)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90000 | PvP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.45 -> 0.9)
+Hotfixed         : AP Coefficient (0.33 -> 0.9)
 Description      : $@spelldesc422906
 
 Name             : Stunning Secret (id=426588) [Spell Family (8), Passive] 
