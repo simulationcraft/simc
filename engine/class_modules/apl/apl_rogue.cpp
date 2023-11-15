@@ -153,8 +153,8 @@ void assassination( player_t* p )
   stealthed->add_action( "envenom,if=effective_combo_points>=4&buff.master_assassin_aura.up&!buff.shadow_dance.up&variable.single_target", "Envenom during Master Assassin in single target" );
   stealthed->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=3&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6", "Crimson Tempest on 3+ targets to snapshot Nightstalker" );
   stealthed->add_action( "garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<(12-buff.sepsis_buff.remains)|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2", "Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Sepsis buff time and Indiscriminate Carnage" );
-  stealthed->add_action( "garrote,if=stealthed.improved_garrote&!buff.shadow_dance.up&(pmultiplier<=1|dot.deathmark.ticking&buff.master_assassin_aura.remains<3)&combo_points.deficit>=5" );
-  stealthed->add_action( "garrote,if=stealthed.improved_garrote&(pmultiplier<=1|dot.deathmark.ticking)&combo_points.deficit>=5" );
+  stealthed->add_action( "garrote,if=stealthed.improved_garrote&!buff.shadow_dance.up&(pmultiplier<=1|dot.deathmark.ticking&buff.master_assassin_aura.remains<3)&combo_points.deficit>=1+2*talent.shrouded_suffocation" );
+  stealthed->add_action( "garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remains<12)&combo_points.deficit>=1+2*talent.shrouded_suffocation" );
   stealthed->add_action( "rupture,if=effective_combo_points>=4&(pmultiplier<=1)&(buff.shadow_dance.up|debuff.deathmark.up)", "Rupture in Shadow Dance to snapshot Nightstalker as a final resort" );
 
   vanish->add_action( "pool_resource,for_next=1,extra_amount=45", "Stealth Cooldowns   Vanish Sync for Improved Garrote with Deathmark" );
