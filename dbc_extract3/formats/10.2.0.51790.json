@@ -569,9 +569,15 @@
   "ItemBonus": {
     "fields": [
       { "data_type": "i", "field": "val", "elements": 4, "formats": { "cpp": "%7d" } },
-      { "data_type": "H", "field": "id_node", "formats": { "cpp": "%4u" } },
+      { "data_type": "H", "field": "id_node", "formats": { "cpp": "%4u" }, "ref": "ItemBonusList" },
       { "data_type": "B", "field": "type",    "formats": { "cpp": "%2u" } },
       { "data_type": "B", "field": "index",   "formats": { "cpp": "%2u" } }
+    ]
+  },
+  "ItemBonusList": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "flags" }
     ]
   },
   "ItemBonusListGroup": {
@@ -628,16 +634,23 @@
       { "data_type": "i", "field": "unk_4" }
     ]
   },
+  "ItemBonusTree": {
+    "fields": [
+        { "data_type": "i", "field": "flags" },
+        { "data_type": "i", "field": "slot_mask" }
+    ]
+  },
   "ItemBonusTreeNode": {
+    "parent": "ItemBonusTree",
     "fields": [
       { "data_type": "B", "field": "index",    "formats": { "cpp": "%2u" } },
       { "data_type": "H", "field": "id_child", "formats": { "cpp": "%4u" }, "ref": "ItemBonusTreeNode" },
-      { "data_type": "H", "field": "id_node",  "formats": { "cpp": "%4u" } },
-      { "data_type": "H", "field": "unk"                                   },
-      { "data_type": "i", "field": "unk_2"                                 },
-      { "data_type": "i", "field": "unk_3"                                 },
-      { "data_type": "i", "field": "unk_4"                                 },
-      { "data_type": "i", "field": "unk_5"                                 }
+      { "data_type": "H", "field": "id_node",  "formats": { "cpp": "%4u" }, "ref": "ItemBonusList" },
+      { "data_type": "H", "field": "id_level_selector" },
+      { "data_type": "i", "field": "id_node_group" },
+      { "data_type": "i", "field": "id_group_point_mod_set" },
+      { "data_type": "i", "field": "min_mythic_plus_level" },
+      { "data_type": "i", "field": "max_mythic_plus_level" }
     ]
   },
   "ItemChildEquipment": {
@@ -1013,8 +1026,8 @@
   "ModifiedCraftingReagentItem": {
     "fields": [
       { "data_type": "S", "field": "description" },
-      { "data_type": "i", "field": "id_modified_crafting_category" },
-      { "data_type": "i", "field": "id_tree", "ref": "ItemBonusTreeNode" },
+      { "data_type": "i", "field": "id_modified_crafting_category", "ref": "ModifiedCraftingCategory" },
+      { "data_type": "i", "field": "id_tree", "ref": "ItemBonusTree" },
       { "data_type": "i", "field": "flags" },
       { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "item_context_offset" }
