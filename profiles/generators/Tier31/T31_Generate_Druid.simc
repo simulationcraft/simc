@@ -47,7 +47,7 @@ legs=benevolent_embersages_leggings,id=207253,bonus_id=4795,enchant_id=6830,ilev
 feet=grove_darkeners_treads,id=134429,bonus_id=4795,ilevel=489
 finger1=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489
 finger2=lord_waycrests_signet,id=158362,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489
-trinket1=witherbarks_branch,id=109999,ilevel=489
+trinket1=ashes_of_the_embersoul,id=207167,ilevel=489
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=4795,ilevel=489
 main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=4795,enchant_id=6655,ilevel=489
 
