@@ -14,6 +14,7 @@ void fury( player_t* p )
   action_priority_list_t* multi_target = p->get_action_priority_list( "multi_target" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -49,8 +50,8 @@ void fury( player_t* p )
   default_->add_action( "recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.spear_of_bastion.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
   default_->add_action( "recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12" );
   default_->add_action( "spear_of_bastion,if=buff.enrage.up&((buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)&raid_event.adds.in>15" );
-  default_->add_action( "call_action_list,name=multi_target,if=raid_event.adds.exists|active_enemies>2" );
-  default_->add_action( "call_action_list,name=single_target,if=!raid_event.adds.exists" );
+  default_->add_action( "call_action_list,name=multi_target,if=active_enemies>=2" );
+  default_->add_action( "call_action_list,name=single_target,if=active_enemies=1" );
 
   multi_target->add_action( "recklessness,if=raid_event.adds.in>15|active_enemies>1|target.time_to_die<12" );
   multi_target->add_action( "odyns_fury,if=active_enemies>1&talent.titanic_rage&(!buff.meat_cleaver.up|buff.avatar.up|buff.recklessness.up)" );
@@ -121,6 +122,9 @@ void fury( player_t* p )
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)", "If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown." );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)" );
+
+  variables->add_action( "variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)", "Variables" );
+  variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>5)" );
 }
 //fury_apl_end
 
@@ -135,6 +139,7 @@ void arms( player_t* p )
   action_priority_list_t* hac = p->get_action_priority_list( "hac" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -164,11 +169,11 @@ void arms( player_t* p )
   default_->add_action( "blood_fury,if=debuff.colossus_smash.up" );
   default_->add_action( "fireblood,if=debuff.colossus_smash.up" );
   default_->add_action( "ancestral_call,if=debuff.colossus_smash.up" );
-  default_->add_action( "run_action_list,name=hac,if=raid_event.adds.up&active_enemies>2|!raid_event.adds.up&active_enemies>2" );
+  default_->add_action( "run_action_list,name=hac,if=active_enemies>=3" );
   default_->add_action( "call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
-  default_->add_action( "run_action_list,name=single_target,if=!raid_event.adds.exists" );
+  default_->add_action( "run_action_list,name=single_target,if=active_enemies<=2" );
 
-  execute->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1" );
+  execute->add_action( "sweeping_strikes,if=active_enemies>=2&variable.adds_remain" );
   execute->add_action( "rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12" );
   execute->add_action( "avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20" );
   execute->add_action( "warbreaker" );
@@ -215,13 +220,12 @@ void arms( player_t* p )
   hac->add_action( "rend,if=active_enemies=1&dot.rend.remains<duration*0.3" );
   hac->add_action( "whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1" );
   hac->add_action( "cleave,if=!talent.crushing_force" );
-  hac->add_action( "ignore_pain,if=talent.battlelord&talent.anger_management&rage>30&(target.health.pct>20|talent.massacre&target.health.pct>35)" );
   hac->add_action( "slam,if=talent.crushing_force&rage>30&(talent.fervor_of_battle&active_enemies=1|!talent.fervor_of_battle)" );
   hac->add_action( "shockwave,if=talent.sonic_boom" );
   hac->add_action( "bladestorm,if=raid_event.adds.in>30" );
   hac->add_action( "wrecking_throw" );
 
-  single_target->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1" );
+  single_target->add_action( "sweeping_strikes,if=active_enemies>=2" );
   single_target->add_action( "execute,if=buff.sudden_death.react" );
   single_target->add_action( "mortal_strike" );
   single_target->add_action( "thunder_clap,if=!dot.rend.remains" );
@@ -256,6 +260,9 @@ void arms( player_t* p )
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)", "If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown." );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)" );
+
+  variables->add_action( "variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)", "Variables" );
+  variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>5)" );
 }
 //arms_apl_end
 
