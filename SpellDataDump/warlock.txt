@@ -17134,10 +17134,11 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Hand of Gul'dan (86040)
                    Family Flags: 86
-#2 (id=1086681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+#2 (id=1086681)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Hand of Gul'dan (86040)
                    Family Flags: 86
+Hotfixed         : Sub Type (108 -> 107)
 Description      : Increases Hand of Gul'dan damage by $s1% and the critical strike chance of Hand of Gul'dan by $s2%.
 
 Name             : Xavius' Gambit (id=416615) [Spell Family (5), Passive] 
