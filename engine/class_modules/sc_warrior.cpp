@@ -3830,7 +3830,7 @@ struct thunder_clap_t : public warrior_attack_t
 
   // T31 constructor
   thunder_clap_t( warrior_t* p )
-    : warrior_attack_t( "thunder_clap_t31", p, p->talents.warrior.thunder_clap ),
+    : warrior_attack_t( "thunder_clap_t31", p, p->find_spell( 396719 ) ),
       from_t31( true ),
       blood_and_thunder( nullptr ),
       blood_and_thunder_target_cap( 0 ),
