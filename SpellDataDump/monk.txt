@@ -4753,9 +4753,9 @@ Attributes       : ........ ........ x....... ........   ..x...x. ..x..... .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), No Threat (42), No Aura Icon (60), Name in Channel Bar (61), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence Font every 0.167 seconds
+#1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence Font every 0.2 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 191840 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 5)
+Hotfixed         : Period (167 -> 200)
 Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1}.1 sec for $d. Each bolt heals a target for $191840s1, plus an additional $191840o2 over $191840d.
 
 Gust of Mists will heal affected targets twice. Castable while moving.$?a337209[
@@ -7761,7 +7761,8 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), No Aura Cancel (31), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=727676)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 5)
 #2 (id=727677)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Essence Font (191840)
