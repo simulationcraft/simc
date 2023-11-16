@@ -162,8 +162,8 @@ actions.stealthed+=/envenom,if=effective_combo_points>=4&buff.master_assassin_au
 actions.stealthed+=/crimson_tempest,target_if=min:remains,if=spell_targets>=3&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6
 # Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Sepsis buff time and Indiscriminate Carnage
 actions.stealthed+=/garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<(12-buff.sepsis_buff.remains)|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2
-actions.stealthed+=/garrote,if=stealthed.improved_garrote&!buff.shadow_dance.up&(pmultiplier<=1|dot.deathmark.ticking&buff.master_assassin_aura.remains<3)&combo_points.deficit>=5
-actions.stealthed+=/garrote,if=stealthed.improved_garrote&(pmultiplier<=1|dot.deathmark.ticking)&combo_points.deficit>=5
+actions.stealthed+=/garrote,if=stealthed.improved_garrote&!buff.shadow_dance.up&(pmultiplier<=1|dot.deathmark.ticking&buff.master_assassin_aura.remains<3)&combo_points.deficit>=1+2*talent.shrouded_suffocation
+actions.stealthed+=/garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remains<12)&combo_points.deficit>=1+2*talent.shrouded_suffocation
 # Rupture in Shadow Dance to snapshot Nightstalker as a final resort
 actions.stealthed+=/rupture,if=effective_combo_points>=4&(pmultiplier<=1)&(buff.shadow_dance.up|debuff.deathmark.up)
 
