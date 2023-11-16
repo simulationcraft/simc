@@ -153,8 +153,8 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       double m = demonology_spell_t::composite_crit_chance();
 
-      if ( p()->talents.malefic_impact->ok() && !p()->bugs )
-        m += p()->talents.malefic_impact->effectN( 2 ).percent(); // TOCHECK: As of 2023-06-21 PTR, this portion of the talent seems to not be applying in-game
+      if ( p()->talents.malefic_impact->ok() )
+        m += p()->talents.malefic_impact->effectN( 2 ).percent();
 
       return m;
     }
