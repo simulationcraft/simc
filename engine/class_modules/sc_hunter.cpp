@@ -2055,7 +2055,6 @@ public:
     ab::background = true;
     ab::proc = true;
     
-    ab::attack_power_mod.direct = ab::o() -> talents.kill_command -> effectN( 2 ).percent();
     ab::base_dd_multiplier *= 1 + ab::o() -> talents.alpha_predator -> effectN( 2 ).percent();
 
     if ( ab::o() -> talents.killer_instinct.ok() )
@@ -2064,12 +2063,6 @@ public:
       killer_instinct.multiplier = 1 + ab::o() -> talents.killer_instinct -> effectN( 1 ).percent();
       killer_instinct.benefit = ab::o() -> get_benefit( "killer_instinct" );
     }
-  }
-
-  double composite_attack_power() const override
-  {
-    // Kill Command for both Survival & Beast Mastery uses player AP directly
-    return ab::o() -> cache.attack_power() * ab::o() -> composite_attack_power_multiplier();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -2100,6 +2093,9 @@ public:
   }
 };
 
+//16-11-2023
+//426703 does not have an AP coefficient and doesn't scale like the other Kill Command spells
+//It uses the old way of calculating damage of kill command instead.
 struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
 {
   struct {
@@ -2109,10 +2105,17 @@ struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
   } killer_instinct;
 
   kill_command_db_t( dire_critter_t* p ) :
-    kill_command_base_t( p, p -> find_spell( 83381 ) )
+    kill_command_base_t( p, p -> find_spell( 426703 ) )
   {
+    attack_power_mod.direct = o() -> talents.kill_command -> effectN( 2 ).percent();
     // Effect 1 dummy value seems to be a damage modifier.
     base_multiplier *= 1.0 - o() -> tier_set.t31_bm_4pc -> effectN( 1 ).percent();
+  }
+
+  double composite_attack_power() const override
+  {
+    // Kill Command for Dire Beast uses player AP directly
+    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
   }
 
   void impact( action_state_t* s ) override
@@ -2187,9 +2190,6 @@ struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
   kill_command_sv_t( hunter_main_pet_base_t* p ) :
     kill_command_base_t( p, p -> find_spell( 259277 ) )
   {
-    attack_power_mod.direct = o() -> talents.kill_command -> effectN( 1 ).percent();
-    attack_power_mod.tick = o() -> talents.bloodseeker -> effectN( 1 ).percent();
-
     if ( ! o() -> talents.bloodseeker.ok() )
       dot_duration = 0_ms;
   }
@@ -2363,7 +2363,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     parse_options( options_str );
 
     school = SCHOOL_PHYSICAL;
-    attack_power_mod.direct = 1 / 3.0;
 
     auto wild_hunt_spell = p -> find_spell( 62762 );
     wild_hunt.cost_pct = 1 + wild_hunt_spell -> effectN( 2 ).percent();
@@ -2372,10 +2371,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     p -> active.basic_attack = this;
   }
-
-  // Override behavior so that Basic Attacks use hunter's attack power rather than the pet's
-  double composite_attack_power() const override
-  { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 
   bool use_wild_hunt() const
   {
@@ -2453,12 +2448,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   {
     background = true;
 
-    parse_effect_data( o() -> find_spell( 269752 ) -> effectN( 1 ) );
-  }
-
-  double composite_attack_power() const override
-  {
-    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
+    parse_effect_data( o() -> find_spell( 259516 ) -> effectN( 1 ) );
   }
 };
 
