@@ -34,4 +34,9 @@ const embellishment_data_t& embellishment_data_t::find( std::string_view name, b
       return util::str_compare_ci( e.name, name );
     }
   } );
+
+  if ( it != __data.end() )
+    return *it;
+  else
+    return nil();
 }

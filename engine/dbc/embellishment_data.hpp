@@ -17,7 +17,11 @@ struct embellishment_data_t
   unsigned effect_id;
 
   static util::span<const embellishment_data_t> data( bool ptr );
+
   static const embellishment_data_t& find( std::string_view name, bool ptr, bool tokenized );
+
+  static const embellishment_data_t& nil()
+  { return dbc::nil<embellishment_data_t>; }
 };
 
 #endif
