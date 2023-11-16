@@ -399,6 +399,18 @@ struct demonbolt_t : public demonology_spell_t
       if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
         td( target )->debuffs_doom_brand->trigger();
     }
+    else
+    {
+      if ( p()->talents.immutable_hatred->ok() && p()->bugs )
+      {
+        auto active_pet = p()->warlock_pet_list.active;
+
+        if ( active_pet->pet_type == PET_FELGUARD )
+        {
+          debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
+        }
+      }
+    }
 
     p()->buffs.demonic_core->decrement();
 
