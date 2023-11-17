@@ -1729,8 +1729,8 @@
     "fields": [
       { "data_type": "S", "field": "name" },
       { "data_type": "S", "field": "horde_name" },
-      { "data_type": "h", "field": "id_skill_line" },
-      { "data_type": "h", "field": "id_parent_trade_skill_category" },
+      { "data_type": "h", "field": "id_parent_trade_skill_category", "ref": "TradeSkillCategory" },
+      { "data_type": "h", "field": "id_skill_line", "ref": "SkillLine" },
       { "data_type": "h", "field": "order" },
       { "data_type": "b", "field": "flags" }
     ]
