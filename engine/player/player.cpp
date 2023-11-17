@@ -12774,6 +12774,10 @@ void player_t::create_options()
   add_option( opt_float( "dragonflight.string_of_delicacies_min_allies", dragonflight_opts.string_of_delicacies_min_allies, 0.0, 4 ) );
   add_option( opt_float( "dragonflight.string_of_delicacies_multi_actor_skip_chance",
                          dragonflight_opts.string_of_delicacies_multi_actor_skip_chance, 0.0, 1 ) );
+  add_option( opt_string( "dragonflight.balefire_branch_loss_rng_type", dragonflight_opts.balefire_branch_loss_rng_type ) );
+  add_option( opt_float( "dragonflight.balefire_branch_loss_rppm", dragonflight_opts.balefire_branch_loss_rppm, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "dragonflight.balefire_branch_loss_percent", dragonflight_opts.balefire_branch_loss_rppm, 0.0, 1.0 ) );
+  add_option( opt_int( "dragonflight.balefire_branch_loss_stacks", dragonflight_opts.balefire_branch_loss_stacks, 0, 20 ) );
 
   // Obsolete options
 

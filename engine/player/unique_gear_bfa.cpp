@@ -1816,9 +1816,38 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
 
 void items::balefire_branch( special_effect_t& effect )
 {
-  effect.reverse                 = true;
-  effect.tick                    = effect.driver()->effectN( 2 ).period();
-  effect.reverse_stack_reduction = 5;  // Nowhere to be seen in the spell data
+  if ( unique_gear::create_fallback_buffs( effect, { "kindled_soul" } ) )
+    return;
+
+  struct kindled_soul_t : public stat_buff_t
+  {
+    kindled_soul_t( player_t* p, std::string_view n, const spell_data_t* s, const special_effect_t& e )
+      : stat_buff_t( p, n, s, e.item )
+    {
+      set_period( 1_s );
+      set_reverse( true );
+      set_reverse_stack_count( as<int>( max_stack() / buff_duration().total_seconds() ) );
+
+      if ( p->dragonflight_opts.balefire_branch_loss_rng_type == "rppm" )
+      {
+        auto _rppm = p->get_rppm( "balefire_branch_loss", p->dragonflight_opts.balefire_branch_loss_rppm );
+
+        set_tick_callback( [ _rppm ]( buff_t* b, int, timespan_t ) {
+          if ( _rppm->trigger() )
+            make_event( b->sim, [ b ] { b->decrement( b->player->dragonflight_opts.balefire_branch_loss_stacks ); } );
+        } );
+      }
+      else if ( p->dragonflight_opts.balefire_branch_loss_rng_type == "percent" )
+      {
+        set_tick_callback( []( buff_t* b, int, timespan_t ) {
+          if ( b->rng().roll( b->player->dragonflight_opts.balefire_branch_loss_percent ) )
+            make_event( b->sim, [ b ] { b->decrement( b->player->dragonflight_opts.balefire_branch_loss_stacks ); } );
+        } );
+      }
+    }
+  };
+
+  effect.custom_buff = create_buff<kindled_soul_t>( effect.player, effect.trigger(), effect );
 }
 
 // Frenetic Corpuscle =======================================================
