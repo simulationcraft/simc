@@ -378,7 +378,7 @@ struct seed_of_corruption_t : public warlock_spell_t
       if ( p()->buffs.cruel_epiphany->check() && cruel_epiphany )
         m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
 
-      if ( umbrafire_kindling && ( !p()->bugs || s->chain_target == 0 ) )
+      if ( umbrafire_kindling )
         m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 2 ).percent();
 
       return m;

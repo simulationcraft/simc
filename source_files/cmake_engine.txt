@@ -41,6 +41,7 @@ dbc/covenant_data.hpp
 dbc/data_definitions.hh
 dbc/data_enums.hh
 dbc/dbc.hpp
+dbc/embellishment_data.hpp
 dbc/expected_stat.hpp
 dbc/gem_data.hpp
 dbc/item_armor.hpp
@@ -248,6 +249,7 @@ dbc/azerite.cpp
 dbc/client_data.cpp
 dbc/client_hotfix_entry.cpp
 dbc/covenant_data.cpp
+dbc/embellishment_data.cpp
 dbc/expected_stat.cpp
 dbc/gem_data.cpp
 dbc/item_armor.cpp

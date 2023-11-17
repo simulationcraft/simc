@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52129 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -16282,10 +16282,8 @@ Effects          :
                    Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Glacial Spike (199786), Glacial Spike (228600)
                    Family Flags: 64
-Hotfixed         : Base Value (10 -> 16)
 #2 (id=1100601)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 15)
 #3 (id=1100921)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Glacial Spike damage increased by $s1% and it explodes when it Shatters a frozen target, dealing $s2% of its damage dealt to nearby enemies. Deals reduced damage beyond $s3 targets.

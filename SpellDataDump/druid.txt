@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52129 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1430,7 +1430,6 @@ Usable while stunned, frozen, incapacitated, feared, or asleep, and in all shape
 Tooltip          : All damage taken reduced by $w1%.
 
 Name             : Frenzied Regeneration (id=22842) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Guardian), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
@@ -1737,7 +1736,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=290296)   : Energize Power (30)
                    Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Hotfixed         : Base Value (100 -> 120)
 Description      : Mangle the target for $s2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
 
 |cFFFFFFFFGenerates ${$m4/10} Rage.|r
@@ -5085,27 +5083,22 @@ Effects          :
                    Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
-Hotfixed         : NEW EFFECT
 #27 (id=1120676)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
                    Family Flags: 108
-Hotfixed         : NEW EFFECT
 #28 (id=1120677)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shred (5221)
                    Family Flags: 15
-Hotfixed         : NEW EFFECT
 #29 (id=1120681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
-Hotfixed         : NEW EFFECT
 #30 (id=1120682)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
-Hotfixed         : NEW EFFECT
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
@@ -6544,7 +6537,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=340934)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Hotfixed         : Base Value (35 -> 50)
 Description      : You gain:
 
 $@spellicon131768 $@spellname131768
@@ -7701,7 +7693,6 @@ Effects          :
 Description      : $@spelldesc203962
 
 Name             : Blood Frenzy (id=203962) [Spell Family (7), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Guardian [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
@@ -17734,7 +17725,6 @@ Effects          :
 #6 (id=1120516)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 19 | Misc Value 2: 3097 (Label)
                    Affected Spells (Label): Blood Frenzy (203962)
-Hotfixed         : NEW EFFECT
 Description      : Your damage over time effects deal their damage in $s1% less time, and your healing over time effects in $s2% less time.
 
 Name             : Lion's Strength (id=391972) [Spell Family (7), Passive] 

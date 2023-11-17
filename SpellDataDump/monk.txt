@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52129 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4750,8 +4750,9 @@ Attributes       : ........ ........ x....... ........   ..x...x. ..x..... .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), No Threat (42), No Aura Icon (60), Name in Channel Bar (61), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence Font every 0.167 seconds
+#1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence Font every 0.2 seconds
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 191840 | Target: Self (1)
+Hotfixed         : Period (167 -> 200)
 Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1}.1 sec for $d. Each bolt heals a target for $191840s1, plus an additional $191840o2 over $191840d.
 
 Gust of Mists will heal affected targets twice. Castable while moving.$?a337209[
@@ -7755,7 +7756,8 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), No Aura Cancel (31), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=727676)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 5)
 #2 (id=727677)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Essence Font (191840)
@@ -18536,7 +18538,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 40)
 #2 (id=1103007)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Breath of Fire deals $s1% bonus damage as Shadowflame and causes you to heal for $s2% of your Fire damage dealt.
@@ -18557,7 +18558,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098485)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 15)
 #2 (id=1103027)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your attacks against targets afflicted by Breath of Fire have a chance to deal $s1% extra damage as Shadowflame, and each Celestial Brew also grants a Stagger absorb for $s2% of the Shadowflame damage you have dealt, causing damage delayed by Stagger to instead be prevented.
@@ -18618,7 +18618,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098489)  : Apply Aura (6) | Proc Trigger Spell (42): Blackout Reinforcement
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Trigger Spell: 424454 | Target: Self (1)
-Hotfixed         : Base Value (150 -> 200)
 Description      : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 Tooltip          : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 
@@ -18695,7 +18694,6 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-Hotfixed         : Base Value (150 -> 200)
 Description      : $@spelldesc422891
 Tooltip          : Blackout Kick damage increased by $w1%.
 $?a422892[Cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch reduced by $422892s1 sec.][]

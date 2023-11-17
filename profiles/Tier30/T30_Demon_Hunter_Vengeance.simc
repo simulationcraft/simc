@@ -37,10 +37,15 @@ actions+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|tr
 actions+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
 # Don't spend fury when fel dev soon to maximize fel dev uptime
 actions+=/variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(action.soul_cleave.execute_time+gcd.remains))&fury<80
+# Check if fiery demise is active and spread
+actions+=/variable,name=fd_ready,value=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0
+# Don't spend fury when fel dev soon to maximize fel dev uptime
+actions+=/variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(action.soul_cleave.execute_time+gcd.remains))&fury<80
 # When to use Spirit Bomb with Focused Cleave
-actions+=/variable,name=can_spb_focused_cleave,op=setif,condition=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0,value=(spell_targets.spirit_bomb=1&(soul_fragments>=5&talent.burning_blood))|(spell_targets.spirit_bomb=2&(soul_fragments>=5|(soul_fragments>=4&talent.burning_blood)))|(spell_targets.spirit_bomb>=3&soul_fragments>=4)|(spell_targets.spirit_bomb>=6&(soul_fragments>=3)),value_else=(spell_targets.spirit_bomb>=4&talent.burning_blood&soul_fragments>=5)|(spell_targets.spirit_bomb=6&(soul_fragments>=5|(soul_fragments>=4&talent.burning_blood)))|(spell_targets.spirit_bomb=7&soul_fragments>=4)|(spell_targets.spirit_bomb>=8&soul_fragments>=3)
-# When to use Spirit Bomb without Focused Cleave
-actions+=/variable,name=can_spb_no_focused_cleave,op=setif,condition=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0,value=soul_fragments>=4|(spell_targets.spirit_bomb>=3&soul_fragments>=3&talent.burning_blood)|(spell_targets.spirit_bomb>=6&soul_fragments>=3),value_else=soul_fragments>=5|(spell_targets.spirit_bomb>=6&soul_fragments>=4)
+actions+=/variable,name=single_target,value=spell_targets.spirit_bomb=1
+actions+=/variable,name=small_aoe,value=spell_targets.spirit_bomb>=2&spell_targets.spirit_bomb<=5
+actions+=/variable,name=big_aoe,value=spell_targets.spirit_bomb>=6
+actions+=/variable,name=can_spb,op=setif,condition=variable.fd_ready,value=(variable.single_target&soul_fragments>=5)|(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3),value_else=(variable.small_aoe&soul_fragments>=5)|(variable.big_aoe&soul_fragments>=4)
 actions+=/auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
@@ -51,9 +56,9 @@ actions+=/call_action_list,name=externals
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0
 actions+=/call_action_list,name=maintenance
-actions+=/run_action_list,name=single_target,if=active_enemies<=1
-actions+=/run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5
-actions+=/run_action_list,name=big_aoe,if=active_enemies>=6
+actions+=/run_action_list,name=single_target,if=variable.single_target
+actions+=/run_action_list,name=small_aoe,if=variable.small_aoe
+actions+=/run_action_list,name=big_aoe,if=variable.big_aoe
 
 # 6+ targets
 actions.big_aoe=fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames
@@ -79,7 +84,7 @@ actions.fiery_demise+=/fel_devastation
 actions.fiery_demise+=/soul_carver
 actions.fiery_demise+=/the_hunt
 actions.fiery_demise+=/elysian_decree,line_cd=1.85
-actions.fiery_demise+=/spirit_bomb,if=talent.focused_cleave&variable.can_spb_focused_cleave|!talent.focused_cleave&variable.can_spb_no_focused_cleave
+actions.fiery_demise+=/spirit_bomb,if=variable.can_spb
 
 # Filler
 actions.filler=sigil_of_chains,if=talent.cycle_of_binding&talent.sigil_of_chains
@@ -93,7 +98,7 @@ actions.maintenance=fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0
 actions.maintenance+=/sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0
 actions.maintenance+=/immolation_aura
 actions.maintenance+=/bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2
-actions.maintenance+=/spirit_bomb,if=talent.focused_cleave&variable.can_spb_focused_cleave|!talent.focused_cleave&variable.can_spb_no_focused_cleave
+actions.maintenance+=/spirit_bomb,if=variable.can_spb
 actions.maintenance+=/felblade,if=(fury.deficit>=40&active_enemies=1)|((cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50)
 actions.maintenance+=/fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
 actions.maintenance+=/shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
@@ -120,10 +125,10 @@ actions.small_aoe+=/elysian_decree,line_cd=1.85
 actions.small_aoe+=/fel_devastation
 actions.small_aoe+=/soul_carver
 actions.small_aoe+=/spirit_bomb,if=soul_fragments>=5
-actions.small_aoe+=/soul_cleave,if=talent.focused_cleave&soul_fragments<=2&!variable.dont_cleave
+actions.small_aoe+=/soul_cleave,if=talent.focused_cleave&soul_fragments<=1&!variable.dont_cleave
 actions.small_aoe+=/fracture
 actions.small_aoe+=/shear
-actions.small_aoe+=/soul_cleave,if=soul_fragments<=2&!variable.dont_cleave
+actions.small_aoe+=/soul_cleave,if=soul_fragments<=1&!variable.dont_cleave
 actions.small_aoe+=/call_action_list,name=filler
 
 # Trinkets prioritize damage dealing on use trinkets over trinkets that give buffs

@@ -262,13 +262,7 @@ public:
   // Total count of active DoT effects that contribute towards the Lethal Dose talent
   int lethal_dose_count() const
   {
-    int count = total_bleeds() + total_poisons();
-    if ( source->bugs )
-    {
-      count -= ( dots.serrated_bone_spike->is_ticking() +
-                 dots.crimson_tempest->is_ticking() );
-    }
-    return count;
+    return total_bleeds() + total_poisons();
   }
 };
 
@@ -365,7 +359,7 @@ public:
     buff_t* envenom;
     // Outlaw
     buffs::rogue_buff_t* adrenaline_rush;
-    damage_buff_t* between_the_eyes;
+    buff_t* between_the_eyes;
     buffs::rogue_buff_t* blade_flurry;
     buff_t* blade_rush;
     buff_t* opportunity;
@@ -2410,43 +2404,29 @@ public:
 
     spend_combo_points( ab::execute_state );
 
-    if ( ab::current_resource() == RESOURCE_ENERGY )
+    if ( ab::current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
     {
-      // Early PTR builds counted base energy cost of Blindside abilities, so can't use last_resource_cost
-      // 2023-11-06 -- Latest PTR build, however, doesn't seem to give any stacks from Blindside
-      if ( p()->set_bonuses.t31_assassination_2pc->ok() )
+      if ( !ab::hit_any_target )
       {
-        p()->t31_assassination_2pc_accumulator += ( p()->bugs ? ab::last_resource_cost :
-                                                    std::max( ab::cost(), ab::last_resource_cost ) );
-        const double threshold = p()->set_bonuses.t31_assassination_2pc->effectN( 3 ).base_value();
-        int trigger_stacks = 0;
-        while ( p()->t31_assassination_2pc_accumulator >= threshold )
-        {
-          p()->t31_assassination_2pc_accumulator -= threshold;
-          trigger_stacks++;
-        }
-        if ( trigger_stacks > 0 )
-        {
-          p()->buffs.t31_assassination_2pc->trigger( trigger_stacks );
-
-          // 2023-11-06 -- Currently, removal of stacks appears to be scheduled regardless of if stacks are maxed/refreshed
-          //               This causes removal of stacks that may not originate from the initial trigger and lower expected uptime
-          if ( p()->bugs )
-          {
-            make_event( *p()->sim, 6_s, [ this, trigger_stacks ] { p()->buffs.t31_assassination_2pc->decrement( trigger_stacks ); } );
-          }
-        }
+        trigger_energy_refund();
       }
-
-      if ( ab::last_resource_cost > 0 )
+      else
       {
-        if ( !ab::hit_any_target )
+        // Energy Spend Mechanics
+        if ( p()->set_bonuses.t31_assassination_2pc->ok() )
         {
-          trigger_energy_refund();
-        }
-        else
-        {
-          // Energy Spend Mechanics
+          p()->t31_assassination_2pc_accumulator += ab::last_resource_cost;
+          const double threshold = p()->set_bonuses.t31_assassination_2pc->effectN( 3 ).base_value();
+          int trigger_stacks = 0;
+          while ( p()->t31_assassination_2pc_accumulator >= threshold )
+          {
+            p()->t31_assassination_2pc_accumulator -= threshold;
+            trigger_stacks++;
+          }
+          if ( trigger_stacks > 0 )
+          {
+            p()->buffs.t31_assassination_2pc->trigger( trigger_stacks );
+          }
         }
       }
     }
@@ -4009,17 +3989,7 @@ struct deathmark_t : public rogue_attack_t
       tdata->dots.garrote->copy( state->target, DOT_COPY_CLONE, p()->active.deathmark.garrote );
     
     if ( tdata->dots.rupture->is_ticking() )
-    {
       tdata->dots.rupture->copy( state->target, DOT_COPY_CLONE, p()->active.deathmark.rupture );
-
-      // 2023-11-10 -- Currently applies Internal Bleeding on Deathmark cast equal to the player's current CP
-      // This means it can overwrite existing Internal Bleeding casts with smaller CP values
-      if ( p()->bugs && p()->active.internal_bleeding )
-      {
-        p()->active.internal_bleeding->trigger_secondary_action( state->target,
-                                                                 cast_state( state )->get_combo_points( true ) );
-      }
-    }
 
     if ( tdata->debuffs.amplifying_poison->check() )
     {
@@ -4476,7 +4446,8 @@ struct garrote_t : public rogue_attack_t
     // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
     //               Additionally works every global of Improved Garrote regardless of Subterfuge
     // 2023-01-28 -- However, this does not work with Improved Garrote triggered by Sepsis
-    if ( p()->talent.assassination.shrouded_suffocation->ok() &&
+    // 2023-11-14 -- Shrouded Suffocation is no longer triggered by Deathmark Garrotes
+    if ( p()->talent.assassination.shrouded_suffocation->ok() && !is_secondary_action() &&
          ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) &&
          ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) ||
            ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) && !p()->buffs.sepsis->check() ) ) )
@@ -5243,10 +5214,10 @@ struct rupture_t : public rogue_attack_t
       return;
 
     const int current_stacks = p()->buffs.scent_of_blood->check();
-    int desired_stacks = p()->get_active_dots( this->get_dot() );
+    int desired_stacks = p()->get_active_dots( td( this->target )->dots.rupture );
     if ( p()->active.deathmark.rupture )
     {
-      desired_stacks += p()->get_active_dots( p()->active.deathmark.rupture->get_dot() );
+      desired_stacks += p()->get_active_dots( td( this->target )->dots.rupture_deathmark );
     }
     desired_stacks = std::min( p()->buffs.scent_of_blood->max_stack(),
                                desired_stacks * as<int>( p()->talent.assassination.scent_of_blood->effectN( 1 ).base_value() ) );
@@ -6192,7 +6163,7 @@ struct internal_bleeding_t : public rogue_attack_t
   internal_bleeding_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spec.internal_bleeding_debuff )
   {
-    affected_by.lethal_dose = !p->bugs; // 2023-10-31 -- Testing shows this is not affected
+    affected_by.lethal_dose = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -6280,7 +6251,7 @@ struct doomblade_t : public residual_action::residual_periodic_action_t<spell_t>
     double m = residual_action_t::composite_da_multiplier( state );
 
     // 2023-11-10 -- Doomblade is intended to be dynamically affected by Lethal Dose
-    if ( !rogue->bugs && rogue->talent.assassination.lethal_dose->ok() )
+    if ( rogue->talent.assassination.lethal_dose->ok() )
     {
       m *= 1.0 + ( rogue->talent.assassination.lethal_dose->effectN( 1 ).percent() *
                    rogue->get_target_data( state->target )->lethal_dose_count() );
@@ -6582,7 +6553,7 @@ struct sepsis_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.shared.sepsis, options_str )
   {
     affected_by.broadside_cp = true; // 2021-04-22 -- Not in the whitelist but confirmed as working in-game
-    affected_by.lethal_dose = !p->bugs; // 2023-06-11 -- Recent testing indicates this is no longer affected
+    affected_by.lethal_dose = true;
     affected_by.zoldyck_insignia = false;
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
@@ -10564,12 +10535,11 @@ void rogue_t::create_buffs()
 
   // Outlaw =================================================================
 
-  buffs.between_the_eyes = debug_cast<damage_buff_t*>( make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes )
+  buffs.between_the_eyes = make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_refresh_behavior( buff_refresh_behavior::MAX ) );
+    ->set_refresh_behavior( buff_refresh_behavior::MAX );
   buffs.adrenaline_rush = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry = new buffs::blade_flurry_t( this );
 
@@ -10906,13 +10876,8 @@ void rogue_t::create_buffs()
   buffs.t31_assassination_2pc = make_buff<damage_buff_t>( this, "natureblight", spec.t31_assassination_2pc_buff )
     ->set_is_stacking_mod( true );
   buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED )
-    ->add_invalidate( CACHE_ATTACK_SPEED );
-  // 2023-11-06 -- Manually decremented with bugs, see comment in consume_resource()
-  if ( !this->bugs )
-  {
-    buffs.t31_assassination_2pc->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  }
-
+    ->add_invalidate( CACHE_ATTACK_SPEED )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
 // rogue_t::invalidate_cache =========================================

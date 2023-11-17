@@ -110,7 +110,7 @@ void affliction( player_t* p )
   aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)" );
   aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<8&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5" );
   aoe->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
-  aoe->add_action( "malefic_rapture,if=buff.umbrafire_kindling.up", "Because of the STS feature with 10.2, we want to use umbrafire kindling with MR" );
+  aoe->add_action( "malefic_rapture,if=buff.umbrafire_kindling.up&(pet.darkglare.active|!talent.doom_blossom)" );
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   aoe->add_action( "malefic_rapture,if=((cooldown.summon_darkglare.remains>15|soul_shard>3)&!talent.sow_the_seeds)|buff.tormented_crescendo.up" );
   aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
@@ -197,8 +197,8 @@ void demonology( player_t* p )
   precombat->add_action( "variable,name=next_tyrant,op=set,value=14+talent.grimoire_felguard+talent.summon_vilefiend" );
   precombat->add_action( "variable,name=shadow_timings,default=0,op=reset" );
   precombat->add_action( "variable,name=shadow_timings,op=set,value=0,if=cooldown.invoke_power_infusion_0.duration!=120" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.mirror_of_fractured_tomorrows" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.mirror_of_fractured_tomorrows" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.spoils_of_neltharus" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.spoils_of_neltharus" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.nymues_unraveling_spindle" );
