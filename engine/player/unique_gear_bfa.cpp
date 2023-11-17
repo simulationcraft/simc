@@ -1844,6 +1844,16 @@ void items::balefire_branch( special_effect_t& effect )
             make_event( b->sim, [ b ] { b->decrement( b->player->dragonflight_opts.balefire_branch_loss_stacks ); } );
         } );
       }
+      else if ( p->dragonflight_opts.balefire_branch_loss_rng_type == "constant" )
+      {
+        p->register_combat_begin( [ tick = p->dragonflight_opts.balefire_branch_loss_tick, this ]( player_t* ) {
+          make_event( sim, rng().range( 0_ms, tick ), [ tick, this ] {
+            make_repeating_event( sim, tick, [ this ] {
+              make_event( sim, [ this ] { decrement( player->dragonflight_opts.balefire_branch_loss_stacks ); } );
+            } );
+          } );
+        } );
+      }
     }
   };
 

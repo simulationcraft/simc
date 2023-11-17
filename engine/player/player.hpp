@@ -707,6 +707,7 @@ struct player_t : public actor_t
 
     operator T&() { return current_value; }
     operator T&() const { return current_value; }
+    bool operator==( T other ) { return current_value == other; }
 
     template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
     operator std::string_view() const { return current_value; }
@@ -772,13 +773,15 @@ struct player_t : public actor_t
     double string_of_delicacies_min_allies = 0;
     // String of Delicacies skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate loosing some to healers.
     double string_of_delicacies_multi_actor_skip_chance = 0.2;
-    // Which random method to use to determine Balefire Branch stack loss from damage. Accepts "rppm" or "percent"
-    std::string balefire_branch_loss_rng_type = "rppm";
+    // Which random method to use to determine Balefire Branch stack loss from damage. Accepts "rppm", "percent", or "constant"
+    player_option_t<std::string> balefire_branch_loss_rng_type = "constant";
     // Set RPPM when "rppm" method is selected
-    double balefire_branch_loss_rppm = 1;
-    // Set percent change when "percent" method is selected
-    double balefire_branch_loss_percent = 0.1;
-    // How many stacks to lose
+    double balefire_branch_loss_rppm = 2;
+    // Set percent chance when "percent" method is selected
+    double balefire_branch_loss_percent = 0.2;
+    // Set period of constant ticking loss when "constant" method is selected
+    timespan_t balefire_branch_loss_tick = 2_s;
+    // How many stacks to lose per loss
     int balefire_branch_loss_stacks = 2;
   } dragonflight_opts;
 

@@ -1423,6 +1423,13 @@ void player_t::init()
                 util::fight_style_string( sim->fight_style ) );
   }
 
+  // Fight style dependent option defaults. Note that these options must be of type player_option_t<T>
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+  {
+    if ( dragonflight_opts.balefire_branch_loss_rng_type.is_default() )
+      dragonflight_opts.balefire_branch_loss_rng_type = "rppm";
+  }
+
   // Ensure the precombat and default lists are the first listed
   auto pre_combat = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
   pre_combat->used = true;
@@ -12777,6 +12784,7 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.balefire_branch_loss_rng_type", dragonflight_opts.balefire_branch_loss_rng_type ) );
   add_option( opt_float( "dragonflight.balefire_branch_loss_rppm", dragonflight_opts.balefire_branch_loss_rppm, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "dragonflight.balefire_branch_loss_percent", dragonflight_opts.balefire_branch_loss_rppm, 0.0, 1.0 ) );
+  add_option( opt_timespan( "dragonflight.balefire_branch_loss_tick", dragonflight_opts.balefire_branch_loss_tick, 1_ms, 20_s ) );
   add_option( opt_int( "dragonflight.balefire_branch_loss_stacks", dragonflight_opts.balefire_branch_loss_stacks, 0, 20 ) );
 
   // Obsolete options
