@@ -4282,6 +4282,29 @@ struct item_is_expr_t : public expr_t
   }
 };
 
+struct item_lvl_expr_t : public item_effect_expr_t
+{
+  double ilvl;
+  item_lvl_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression )
+    : item_effect_expr_t( player, slots, full_expression )
+  {
+    for (auto slot : slots)
+    {
+      ilvl = player.items[ slot ].item_level();
+    }
+  }
+
+  bool is_constant() override
+  {
+    return true;
+  }
+
+  double evaluate() override
+  {
+    return ilvl;
+  }
+};
+
 struct item_cooldown_exists_expr_t : public item_effect_expr_t
 {
   double v;
@@ -4504,6 +4527,11 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
   {
     return std::make_unique<item_is_expr_t>( player, slots, splits[ expr_idx - 1 ] );
+  }
+
+  if (util::str_compare_ci( splits[ ptype_idx ], "ilvl" ))
+  {
+    return std::make_unique<item_lvl_expr_t>( player, slots, name_str );
   }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "has_use_buff" ) )

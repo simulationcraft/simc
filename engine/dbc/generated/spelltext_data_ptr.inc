@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52188
-static const std::array<spelltext_data_t, 20510> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20511> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12923,6 +12923,7 @@ static const std::array<spelltext_data_t, 20510> __ptr_spelltext_data { {
   { 317260, "$@spelldesc317257", 0, 0 },
   { 317262, "$@spelldesc317257", 0, 0 },
   { 317265, "$@spelldesc317257", "Damage taken from Infinite Stars increased by $w3%.", 0 },
+  { 317273, "Collect the weapon enchantment appearance of Void Edge.", 0, 0 },
   { 317290, "Your attacks have a chance to lash your target with a living tentacle, dealing $s1 Shadow damage and snaring them by $s2% for $s3 sec.", 0, 0 },
   { 317320, "Learn Condemn, replacing Execute. Condemn deals Shadow damage, can be used on enemies who are above 80% health or below 20% health, and weakens the target preventing some of the damage they would deal to you.", 0, "Venthyr" },
   { 317349, "Condemn a foe to suffer for their sins, causing up to $<damage> Shadow damage. Only usable on enemies who are above 80% health or below 20% health.\r\n\r\nThe primary target is weakened, preventing up to $<absorb> damage they would deal to you.$?s231830[\r\n\r\nIf your foe survives, $s2% of the Rage spent is refunded.][]", 0, "Venthyr" },
