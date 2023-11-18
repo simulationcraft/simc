@@ -265,7 +265,7 @@ struct adds_event_t final : public raid_event_t
 
   void regenerate_cache()
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       // Invalidate target caches
       for ( size_t i = 0, end = p->action_list.size(); i < end; i++ )
@@ -337,7 +337,7 @@ struct adds_event_t final : public raid_event_t
 
     if ( enemy_type == ENEMY_ADD_BOSS )
     {
-      for ( auto p : affected_players )
+      for ( auto p : affected_players() )
       {
         p->in_boss_encounter++;
       }
@@ -357,7 +357,7 @@ struct adds_event_t final : public raid_event_t
 
     if ( enemy_type == ENEMY_ADD_BOSS )
     {
-      for ( auto p : affected_players )
+      for ( auto p : affected_players() )
       {
         assert( p->in_boss_encounter );
         p->in_boss_encounter--;
@@ -367,7 +367,7 @@ struct adds_event_t final : public raid_event_t
     // trigger leave combat state callbacks if no adds are remaining
     if ( sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_SLICE && !sim->target_non_sleeping_list.size() )
     {
-      for ( auto p : affected_players )
+      for ( auto p : affected_players() )
         p->leave_combat();
     }
   }
@@ -604,6 +604,11 @@ struct pull_event_t final : raid_event_t
     }
   }
 
+  const std::vector<player_t*>& affected_players() override
+  {
+    return sim->player_non_sleeping_list.data();
+  }
+
   void on_demise()
   {
     // don't schedule another pull until all adds from this one are dead
@@ -623,17 +628,20 @@ struct pull_event_t final : raid_event_t
 
     if ( has_boss )
     {
-      for ( auto p : affected_players )
+      for ( auto p : affected_players() )
       {
-        assert( p->in_boss_encounter );
-        p->in_boss_encounter--;
+        if ( p->is_player() )
+        {
+          assert( p->in_boss_encounter );
+          p->in_boss_encounter--;
+        }
       }
     }
 
     // trigger leave combat state callbacks if no adds are remaining
     if ( !sim->target_non_sleeping_list.size() )
     {
-      for ( auto p : affected_players )
+      for ( auto p : affected_players() )
         p->leave_combat();
     }
 
@@ -650,7 +658,7 @@ struct pull_event_t final : raid_event_t
 
   void regenerate_cache()
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       for ( size_t i = 0, end = p->action_list.size(); i < end; i++ )
         p->action_list[ i ]->target_cache.is_valid = false;
@@ -778,9 +786,12 @@ struct pull_event_t final : raid_event_t
 
     if ( has_boss )
     {
-      for ( auto p : affected_players )
+      for ( auto p : affected_players() )
       {
-        p->in_boss_encounter++;
+        if ( p->is_player() )
+        {
+          p->in_boss_encounter++;
+        }
       }
     }
   }
@@ -830,7 +841,7 @@ struct move_enemy_t final : public raid_event_t
 
   void regenerate_cache()
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       // Invalidate target caches
       for ( size_t i = 0, end = p->action_list.size(); i < end; i++ )
@@ -908,7 +919,7 @@ struct distraction_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       p->current.skill_debuff += skill;
     }
@@ -916,7 +927,7 @@ struct distraction_event_t final : public raid_event_t
 
   void _finish() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       p->current.skill_debuff -= skill;
     }
@@ -1175,7 +1186,7 @@ struct movement_event_t final : public raid_event_t
     if ( move <= 0.0 )
       return;
 
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       p->trigger_movement( move, m );
 
@@ -1186,9 +1197,9 @@ struct movement_event_t final : public raid_event_t
       p->moving();
     }
 
-    if ( !affected_players.empty() )
+    if ( !affected_players().empty() )
     {
-      make_event<movement_ticker_t>( *sim, *sim, affected_players );
+      make_event<movement_ticker_t>( *sim, *sim, affected_players() );
     }
   }
 
@@ -1208,7 +1219,7 @@ struct stun_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       p->buffs.stunned->increment();
       p->in_combat =
@@ -1219,7 +1230,7 @@ struct stun_event_t final : public raid_event_t
 
   void _finish() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       p->buffs.stunned->decrement();
     }
@@ -1237,7 +1248,7 @@ struct interrupt_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       p->interrupt();
     }
@@ -1294,7 +1305,7 @@ struct damage_event_t final : public raid_event_t
       raid_damage->init();
     }
 
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       raid_damage->base_dd_min = raid_damage->base_dd_max =
           sim->rng().range( amount - amount_range, amount + amount_range );
@@ -1352,7 +1363,7 @@ struct heal_event_t final : public raid_event_t
       raid_heal->init();
     }
 
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       double amount_to_heal = 0.0;
 
@@ -1413,7 +1424,7 @@ struct damage_taken_debuff_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, *this );
 
@@ -1442,7 +1453,7 @@ struct damage_done_buff_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       if ( p->buffs.damage_done )
         p->buffs.damage_done->increment( 1, multiplier );
@@ -1451,7 +1462,7 @@ struct damage_done_buff_event_t final : public raid_event_t
 
   void _finish() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       if ( p->buffs.damage_done )
         p->buffs.damage_done->decrement();
@@ -1481,7 +1492,7 @@ struct buff_raid_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       auto& b = buff_list[ p->actor_index ];
       if ( !b )
@@ -1562,7 +1573,7 @@ struct position_event_t : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       if ( p->position() == POSITION_BACK )
         p->change_position( POSITION_FRONT );
@@ -1573,7 +1584,7 @@ struct position_event_t : public raid_event_t
 
   void _finish() override
   {
-    for ( auto p : affected_players )
+    for ( auto p : affected_players() )
     {
       p->change_position( p->initial.position );
     }
@@ -1759,6 +1770,11 @@ bool raid_event_t::up() const
   return is_up;
 }
 
+const std::vector<player_t*>& raid_event_t::affected_players()
+{
+  return _affected_players;
+}
+
 void raid_event_t::start()
 {
   sim->print_log( "{} starts.", *this );
@@ -1766,7 +1782,7 @@ void raid_event_t::start()
   num_starts++;
   is_up = true;
 
-  affected_players.clear();
+  _affected_players.clear();
 
   for ( auto& p : sim->player_non_sleeping_list )
   {
@@ -1793,7 +1809,7 @@ void raid_event_t::start()
       continue;
     }
 
-    affected_players.push_back( p );
+    _affected_players.push_back( p );
   }
 
   _start();
@@ -1803,8 +1819,8 @@ void raid_event_t::finish()
 {
   // Make sure we dont have any players which were active on start, but are now sleeping
   auto filter_sleeping = []( const player_t* p ) { return p->is_sleeping(); };
-  affected_players.erase( std::remove_if( affected_players.begin(), affected_players.end(), filter_sleeping ),
-                          affected_players.end() );
+  _affected_players.erase( std::remove_if( _affected_players.begin(), _affected_players.end(), filter_sleeping ),
+                           _affected_players.end() );
 
   is_up = false;
 
@@ -2011,7 +2027,7 @@ void raid_event_t::reset()
   if ( duration_max == timespan_t::zero() )
     duration_max = duration * 1.5;
 
-  affected_players.clear();
+  _affected_players.clear();
 }
 
 // raid_event_t::parse_options ==============================================
