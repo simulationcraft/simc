@@ -235,7 +235,7 @@ void arms( player_t* p )
   single_target->add_action( "colossus_smash" );
   single_target->add_action( "skullsplitter,if=!talent.test_of_might&dot.deep_wounds.remains&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)" );
   single_target->add_action( "skullsplitter,if=talent.test_of_might&dot.deep_wounds.remains" );
-  single_target->add_action( "thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|debuff.colossus_smash.up|cooldown.colossus_smash.remains<3|buff.avatar.up" );
+  single_target->add_action( "thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|cooldown.colossus_smash.remains<3|buff.avatar.up" );
   single_target->add_action( "whirlwind,if=talent.storm_of_swords&talent.test_of_might&rage.pct>80&debuff.colossus_smash.up" );
   single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&!talent.tide_of_blood" );
   single_target->add_action( "bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
