@@ -783,6 +783,8 @@ struct player_t : public actor_t
     timespan_t balefire_branch_loss_tick = 2_s;
     // How many stacks to lose per loss
     int balefire_branch_loss_stacks = 2;
+    // Amount of allies using Verdant Conduit to increase the amount and reduce RPPM
+    unsigned int verdant_conduit_allies = 0;
   } dragonflight_opts;
 
 private:

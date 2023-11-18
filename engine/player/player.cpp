@@ -12786,6 +12786,7 @@ void player_t::create_options()
   add_option( opt_float( "dragonflight.balefire_branch_loss_percent", dragonflight_opts.balefire_branch_loss_percent, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.balefire_branch_loss_tick", dragonflight_opts.balefire_branch_loss_tick, 1_ms, 20_s ) );
   add_option( opt_int( "dragonflight.balefire_branch_loss_stacks", dragonflight_opts.balefire_branch_loss_stacks, 0, 20 ) );
+  add_option( opt_uint( "dragonflight.verdant_conduit_allies", dragonflight_opts.verdant_conduit_allies, 0, 2 ) );
 
   // Obsolete options
 

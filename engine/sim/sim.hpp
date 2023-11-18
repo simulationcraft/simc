@@ -527,8 +527,6 @@ struct sim_t : private sc_thread_t
     timespan_t dreamtenders_charm_update_interval = 10_s;
     // Standard Deviation of interval
     timespan_t dreamtenders_charm_update_interval_stddev = 2.5_s;
-    // Amount of allies using Verdant Embrace to increase the amount and reduce RPPM
-    unsigned int verdant_embrace_allies = 0;
     // Sets the chance for Ashes of the Embersoul's "Dire" condition to proc on the interval
     double embersoul_dire_chance = 0.0;
     // Sets the interval for ashes of the embersouls "dire" condition to attempt to proc
