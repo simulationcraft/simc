@@ -46,6 +46,7 @@ actions.cooldowns+=/moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|
 actions.cooldowns+=/divine_toll,if=spell_targets.shield_of_the_righteous>=3
 actions.cooldowns+=/bastion_of_light,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains<=30
 actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up
+actions.cooldowns+=/fireblood,if=buff.avenging_wrath.remains>8
 
 actions.standard=consecration,if=buff.sanctification.stack=buff.sanctification.max_stack
 # Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD). Don't use it when on max Sanctification Stacks (Very next GCD will trigger Consecration, so we want the bonus damage)
