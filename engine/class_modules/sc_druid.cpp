@@ -11226,7 +11226,7 @@ void druid_t::init_special_effects()
 
       void trigger( action_t* a, action_state_t* s ) override
       {
-        if ( a->id <= 0 || s->result_total <= 0 )
+        if ( a->id <= 0 || s->result_total <= 0 || a->harmful )
           return;
 
         auto heal = debug_cast<heal_t*>( a );
