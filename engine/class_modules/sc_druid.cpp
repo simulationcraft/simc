@@ -1147,7 +1147,6 @@ public:
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* ) override;
-  void assess_heal( school_e, result_amount_type, action_state_t* ) override;
   void recalculate_resource_max( resource_e, gain_t* source = nullptr ) override;
   void create_options() override;
   std::string create_profile( save_e type ) override;
@@ -1158,7 +1157,6 @@ public:
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
   void moving() override;
-  void trigger_natures_guardian( const action_state_t* );
   double calculate_expected_max_health() const;
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
@@ -5539,6 +5537,7 @@ struct natures_guardian_t : public druid_heal_t
   natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
   {
     background = true;
+    callbacks = false;
     target = p;
   }
 
@@ -11219,6 +11218,41 @@ void druid_t::init_special_effects()
   }
 
   // Guardian
+  if ( mastery.natures_guardian->ok() )
+  {
+    struct natures_guardian_cb_t : public druid_cb_t
+    {
+      natures_guardian_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        if ( a->id <= 0 || s->result_total <= 0 )
+          return;
+
+        auto heal = debug_cast<heal_t*>( a );
+        if ( heal->base_pct_heal || heal->tick_pct_heal )
+          return;
+
+        druid_cb_t::trigger( a, s );
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        auto amount = s->result_total * p()->cache.mastery_value();
+        p()->active.natures_guardian->base_dd_min = p()->active.natures_guardian->base_dd_max = amount;
+        p()->active.natures_guardian->schedule_execute();
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = "natures_guardian";
+    driver->spell_id = mastery.natures_guardian->id();
+    driver->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_HEAL;
+    special_effects.push_back( driver);
+
+    new natures_guardian_cb_t( this, *driver );
+  }
+
   if ( talent.elunes_favored.ok() )
   {
     struct elunes_favored_cb_t : public druid_cb_t
@@ -12406,13 +12440,6 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
   }
 }
 
-void druid_t::assess_heal( school_e school, result_amount_type dmg_type, action_state_t* s )
-{
-  player_t::assess_heal( school, dmg_type, s );
-
-  trigger_natures_guardian( s );
-}
-
 void druid_t::shapeshift( form_e f )
 {
   if ( get_form() == f )
@@ -12552,31 +12579,6 @@ void druid_t::moving()
 {
   if ( ( executing && !executing->usable_moving() ) || ( channeling && !channeling->usable_moving() ) )
     player_t::interrupt();
-}
-
-void druid_t::trigger_natures_guardian( const action_state_t* s )
-{
-  if ( !mastery.natures_guardian->ok() )
-    return;
-
-  // don't display amount from tank_heal & other raid events, as we're mainly interested in benefit from actions
-  if ( s->action->id <= 0 )
-    return;
-
-  if ( s->result_total <= 0 )
-    return;
-
-  if ( s->action == active.natures_guardian || s->action == active.yseras_gift ||
-       s->action->id == 22842 )  // Frenzied Regeneration
-    return;
-
-  active.natures_guardian->base_dd_min = active.natures_guardian->base_dd_max = s->result_total * cache.mastery_value();
-
-  action_state_t* new_state = active.natures_guardian->get_state();
-  new_state->target = this;
-
-  active.natures_guardian->snapshot_state( new_state, result_amount_type::HEAL_DIRECT );
-  active.natures_guardian->schedule_execute( new_state );
 }
 
 double druid_t::calculate_expected_max_health() const
