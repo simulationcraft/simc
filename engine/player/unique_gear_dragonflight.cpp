@@ -6558,6 +6558,8 @@ void nymues_unraveling_spindle( special_effect_t& effect )
 // Buff: 426553
 void augury_of_the_primal_flame( special_effect_t& effect )
 {
+  // In-game the buff itself adjusts the cap after each damage event as Versatility changes
+  // TODO: consider refactoring to adjusting the buff cap as you cast spells
   struct annihilating_flame_buff_t : public buff_t
   {
     annihilating_flame_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
@@ -6601,20 +6603,18 @@ void augury_of_the_primal_flame( special_effect_t& effect )
       if ( buff->check() )
       {
         // The amount hit is simply the crit amount * the mod (and then can roll crit + apply vers)
-        // The amount removed from the cap is just the base damage hit before any crit or vers calculations
+        // We take this same amount and remove it from the cap before it rolls crit or applies vers
         double amount           = state->result_amount * mod;
-        double amount_to_remove = state->result_amount / ( 1 + state->result_crit_bonus ) / ( state->versatility );
         damage->base_dd_min = damage->base_dd_max = amount;
 
         // After the hit occurs calculate how much is left or expire if needed
-        if ( buff->current_value > amount_to_remove )
+        if ( buff->current_value > amount )
         {
-          buff->current_value -= amount_to_remove;
+          buff->current_value -= amount;
 
           effect.player->sim->print_debug(
-              "{} annihilating_flame accumulates {} damage. {} remains (crit bonus: {}, vers: {})",
-              effect.player->name(), amount_to_remove, buff->current_value, state->result_crit_bonus,
-              state->versatility );
+              "{} annihilating_flame accumulates {} damage. {} remains (original crit amount: {})",
+              effect.player->name(), amount, buff->current_value, state->result_amount );
         }
         else
         {
