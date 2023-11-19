@@ -119,7 +119,7 @@ actions.single_target+=/warbreaker
 actions.single_target+=/colossus_smash
 actions.single_target+=/skullsplitter,if=!talent.test_of_might&dot.deep_wounds.remains&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)
 actions.single_target+=/skullsplitter,if=talent.test_of_might&dot.deep_wounds.remains
-actions.single_target+=/thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|debuff.colossus_smash.up|cooldown.colossus_smash.remains<3|buff.avatar.up
+actions.single_target+=/thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|cooldown.colossus_smash.remains<3|buff.avatar.up
 actions.single_target+=/whirlwind,if=talent.storm_of_swords&talent.test_of_might&rage.pct>80&debuff.colossus_smash.up
 actions.single_target+=/thunder_clap,if=dot.rend.remains<=gcd&!talent.tide_of_blood
 actions.single_target+=/bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)
