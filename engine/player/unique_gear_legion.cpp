@@ -6092,6 +6092,9 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 225601, consumables::pepper_breath );
   register_special_effect( 201336, consumables::pepper_breath );
   register_special_effect( 185786, consumables::darkmoon_faire_food );
+
+  /* Disabled Effects */
+  register_special_effect( 214224, DISABLED_EFFECT ); // Writhing Heart of Darkness
 }
 
 void unique_gear::register_hotfixes_legion()
