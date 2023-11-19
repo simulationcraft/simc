@@ -6600,16 +6600,21 @@ void augury_of_the_primal_flame( special_effect_t& effect )
       // Remove from the cap before modifiers are added (crit/vers/targets)
       if ( buff->check() )
       {
-        double amount       = state->result_amount * mod;
+        // The amount hit is simply the crit amount * the mod (and then can roll crit + apply vers)
+        // The amount removed from the cap is just the base damage hit before any crit or vers calculations
+        double amount           = state->result_amount * mod;
+        double amount_to_remove = state->result_amount / ( 1 + state->result_crit_bonus ) / ( state->versatility );
         damage->base_dd_min = damage->base_dd_max = amount;
 
         // After the hit occurs calculate how much is left or expire if needed
-        if ( buff->current_value > amount )
+        if ( buff->current_value > amount_to_remove )
         {
-          buff->current_value -= amount;
+          buff->current_value -= amount_to_remove;
 
-          effect.player->sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains",
-                                           effect.player->name(), amount, buff->current_value );
+          effect.player->sim->print_debug(
+              "{} annihilating_flame accumulates {} damage. {} remains (crit bonus: {}, vers: {})",
+              effect.player->name(), amount_to_remove, buff->current_value, state->result_crit_bonus,
+              state->versatility );
         }
         else
         {
