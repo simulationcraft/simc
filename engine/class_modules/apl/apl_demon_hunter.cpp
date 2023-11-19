@@ -187,13 +187,7 @@ void vengeance( player_t* p )
   action_priority_list_t* big_aoe = p->get_action_priority_list( "big_aoe" );
   action_priority_list_t* filler = p->get_action_priority_list( "filler" );
   action_priority_list_t* externals = p->get_action_priority_list( "externals" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  default_->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)", "Check if trinkets have buff effects" );
-  default_->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)" );
-  default_->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
-  default_->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
-  default_->add_action( "variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(action.soul_cleave.execute_time+gcd.remains))&fury<80", "Don't spend fury when fel dev soon to maximize fel dev uptime" );
   default_->add_action( "variable,name=fd_ready,value=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0", "Check if fiery demise is active and spread" );
   default_->add_action( "variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(action.soul_cleave.execute_time+gcd.remains))&fury<80", "Don't spend fury when fel dev soon to maximize fel dev uptime" );
   default_->add_action( "variable,name=single_target,value=spell_targets.spirit_bomb=1", "When to use Spirit Bomb with Focused Cleave" );
@@ -212,10 +206,10 @@ void vengeance( player_t* p )
   default_->add_action( "disrupt,if=target.debuff.casting.react" );
   default_->add_action( "infernal_strike,use_off_gcd=1" );
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
-  default_->add_action( "metamorphosis" );
+  default_->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up" );
   default_->add_action( "potion,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=externals" );
-  default_->add_action( "call_action_list,name=trinkets" );
+  default_->add_action( "use_items,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
   default_->add_action( "call_action_list,name=maintenance" );
   default_->add_action( "run_action_list,name=single_target,if=variable.single_target" );
@@ -231,15 +225,15 @@ void vengeance( player_t* p )
   maintenance->add_action( "fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   maintenance->add_action( "shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   maintenance->add_action( "spirit_bomb,if=fury.deficit<=30&spell_targets>1&soul_fragments>=4", "Don't overcap fury" );
-  maintenance->add_action( "soul_cleave,if=fury.deficit<=30" );
+  maintenance->add_action( "soul_cleave,if=fury.deficit<=40" );
 
   fiery_demise->add_action( "immolation_aura", "Fiery demise window" );
   fiery_demise->add_action( "sigil_of_flame" );
   fiery_demise->add_action( "felblade,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   fiery_demise->add_action( "fel_devastation" );
-  fiery_demise->add_action( "soul_carver" );
+  fiery_demise->add_action( "soul_carver,if=soul_fragments.total<3" );
   fiery_demise->add_action( "the_hunt" );
-  fiery_demise->add_action( "elysian_decree,line_cd=1.85" );
+  fiery_demise->add_action( "elysian_decree,line_cd=1.85,if=fury>=40" );
   fiery_demise->add_action( "spirit_bomb,if=variable.can_spb" );
 
   single_target->add_action( "the_hunt", "Single Target" );
@@ -247,29 +241,26 @@ void vengeance( player_t* p )
   single_target->add_action( "fel_devastation,if=talent.collective_anguish|(talent.stoke_the_flames&talent.burning_blood)" );
   single_target->add_action( "elysian_decree" );
   single_target->add_action( "fel_devastation" );
-  single_target->add_action( "soul_cleave,if=talent.focused_cleave&!variable.dont_cleave" );
+  single_target->add_action( "soul_cleave,if=!variable.dont_cleave" );
   single_target->add_action( "fracture" );
   single_target->add_action( "shear" );
-  single_target->add_action( "soul_cleave,if=!variable.dont_cleave" );
   single_target->add_action( "call_action_list,name=filler" );
 
   small_aoe->add_action( "the_hunt", "2-5 targets" );
   small_aoe->add_action( "fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)" );
-  small_aoe->add_action( "elysian_decree,line_cd=1.85" );
+  small_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   small_aoe->add_action( "fel_devastation" );
-  small_aoe->add_action( "soul_carver" );
-  small_aoe->add_action( "spirit_bomb,if=soul_fragments>=5" );
-  small_aoe->add_action( "soul_cleave,if=talent.focused_cleave&soul_fragments<=1&!variable.dont_cleave" );
+  small_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
+  small_aoe->add_action( "soul_cleave,if=soul_fragments<=1&!variable.dont_cleave" );
   small_aoe->add_action( "fracture" );
   small_aoe->add_action( "shear" );
-  small_aoe->add_action( "soul_cleave,if=soul_fragments<=1&!variable.dont_cleave" );
   small_aoe->add_action( "call_action_list,name=filler" );
 
   big_aoe->add_action( "fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames", "6+ targets" );
   big_aoe->add_action( "the_hunt" );
-  big_aoe->add_action( "elysian_decree,line_cd=1.85" );
+  big_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   big_aoe->add_action( "fel_devastation" );
-  big_aoe->add_action( "soul_carver" );
+  big_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   big_aoe->add_action( "spirit_bomb,if=soul_fragments>=4" );
   big_aoe->add_action( "fracture" );
   big_aoe->add_action( "shear" );
@@ -284,12 +275,6 @@ void vengeance( player_t* p )
 
   externals->add_action( "invoke_external_buff,name=symbol_of_hope", "External buffs" );
   externals->add_action( "invoke_external_buff,name=power_infusion" );
-
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs", "Trinkets prioritize damage dealing on use trinkets over trinkets that give buffs" );
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs" );
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=main_hand,if=(variable.trinket_1_buffs|trinket.1.cooldown.remains)&(variable.trinket_2_buffs|trinket.2.cooldown.remains)" );
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_2_exclude|trinket.2.cooldown.remains|!trinket.2.has_cooldown|variable.trinket_2_buffs)" );
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_1_exclude|trinket.1.cooldown.remains|!trinket.1.has_cooldown|variable.trinket_1_buffs)" );
 }
 //vengeance_apl_end
 
