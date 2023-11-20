@@ -155,10 +155,6 @@ namespace runeforge {
   void unending_thirst( special_effect_t& ); // Effect only procs on killing blows, NYI
 }
 
-namespace debuffs {
-  struct chill_streak_debuff_t;
-}
-
 enum runeforge_apocalypse { DEATH, FAMINE, PESTILENCE, WAR, MAX };
 
 // ==========================================================================

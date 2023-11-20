@@ -2663,6 +2663,11 @@ void buff_t::expire( timespan_t delay )
     expire_count++;
   }
 
+  if ( expire_callback )
+  {
+    expire_callback( this, remaining_duration, expiration_stacks );
+  }
+
   expire_override( expiration_stacks, remaining_duration );  // virtual expire call
 
   current_value = 0;
@@ -2676,11 +2681,6 @@ void buff_t::expire( timespan_t delay )
   if ( stack_change_callback )
   {
     stack_change_callback( this, old_stack, current_stack );
-  }
-
-  if ( expire_callback )
-  {
-    expire_callback( this, remaining_duration, expiration_stacks );
   }
 
   if ( player )
