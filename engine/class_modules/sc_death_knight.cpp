@@ -9063,6 +9063,7 @@ void death_knight_t::chill_streak_bounce( player_t* t )
         {
           dk->active_spells.chill_streak_damage->set_target( target );
           dk->active_spells.chill_streak_damage->schedule_execute();
+          return;
         }
       }
     }
