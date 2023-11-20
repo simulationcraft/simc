@@ -113,6 +113,20 @@
       { "data_type": "B", "field": "azerite_level" }
     ]
   },
+  "CharacterLoadout": {
+    "fields": [
+      { "data_type": "q", "field": "race_mask" },
+      { "data_type": "b", "field": "id_class", "ref": "ChrClasses" },
+      { "data_type": "i", "field": "purpose" },
+      { "data_type": "b", "field": "id_mod" }
+    ]
+  },
+  "CharacterLoadoutItem": {
+    "fields": [
+      { "data_type": "H", "field": "id_loadout", "ref": "CharacterLoadout" },
+      { "data_type": "I", "field": "id_item", "ref": "Item" }
+    ]
+  },
   "ChatChannels": {
     "fields": [
       { "data_type": "S", "field": "name" },
