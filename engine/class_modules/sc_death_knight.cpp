@@ -1393,7 +1393,7 @@ public:
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void      consume_killing_machine( proc_t* proc );
   void      trigger_runic_empowerment( double rpcost );
-  void      chill_streak_bounce( player_t* target, int max_bounces = 0 );
+  void      chill_streak_bounce( player_t* target );
   // Unholy
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( player_t* target, unsigned n = 1 );
@@ -1485,14 +1485,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.chill_streak = make_buff( *this, "chill_streak", p->spell.chill_streak_damage )
                             -> set_expire_callback( [ target, p ]( buff_t*, timespan_t d, int s ) 
                             {
-                              unsigned max_hits = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );
-                              if (p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B4 ))
-                              {
-                                max_hits += as<int>( p->sets->set( DEATH_KNIGHT_FROST, T31, B4 )->effectN( 1 ).base_value() );
-                              }
                               if( d == timespan_t::zero() )
                               {
-                                p -> chill_streak_bounce( target, max_hits );
+                                p -> chill_streak_bounce( target );
                               }
                             } );
 
@@ -4867,17 +4862,18 @@ private:
 
 struct chill_streak_damage_t final : public death_knight_spell_t
 {
+  int current;
+  int max_bounces;
   chill_streak_damage_t( util::string_view n, death_knight_t* p ) :
-    death_knight_spell_t( n, p, p -> spell.chill_streak_damage )
+    death_knight_spell_t( n, p, p -> spell.chill_streak_damage ), 
+    current( 0 )
   {
     background = proc = true;
-  }
-
-  void execute() override
-  {
-    // Setting a variable min travel time to more accurately emulate in game variance
-    min_travel_time = rng().gauss( 0.5, 0.2 );
-    death_knight_spell_t::execute();
+    max_bounces = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );
+    if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B4 ) )
+    {
+      max_bounces += as<int>( p->sets->set( DEATH_KNIGHT_FROST, T31, B4 )->effectN( 1 ).base_value() );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4895,7 +4891,17 @@ struct chill_streak_damage_t final : public death_knight_spell_t
 
     auto td = get_td( state->target );
 
-    td->debuff.chill_streak->trigger();
+    if ( current < max_bounces )
+    {
+      td->debuff.chill_streak->trigger();
+      current++;
+    }
+
+    if ( p()->talent.frost.enduring_chill.ok() && rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
+    {
+      current--;
+      p()->procs.enduring_chill->occur();
+    }
 
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) )
     {
@@ -4940,6 +4946,12 @@ struct chill_streak_t final : public death_knight_spell_t
     impact_action = damage;
     aoe = 0;
     track_cd_waste = true;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    debug_cast< chill_streak_damage_t* >( damage )->current = 0;
   }
 private:
   action_t* damage;
@@ -9019,17 +9031,15 @@ void death_knight_t::start_cold_heart()
   } );
 }
 
-void death_knight_t::chill_streak_bounce( player_t* t, int max )
+void death_knight_t::chill_streak_bounce( player_t* t )
 {
   struct cs_bounce_t : public event_t
   {
-    int max_bounces;
-    int current;
     player_t* t;
     death_knight_t* dk;
 
-    cs_bounce_t( death_knight_t* dk, player_t* target, int max, int cur ) :
-      event_t( *dk, 0_ms ), max_bounces( max ), t( target ), dk( dk ), current( cur )
+    cs_bounce_t( death_knight_t* dk, player_t* target ) :
+      event_t( *dk, 0_ms ), t( target ), dk( dk )
     {
     }
 
@@ -9040,41 +9050,26 @@ void death_knight_t::chill_streak_bounce( player_t* t, int max )
     
     void execute() override
     {
-      if (current < max_bounces)
+      vector_with_callback<player_t*> target_list = dk->sim->target_non_sleeping_list;
+
+      if ( dk->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2 )
       {
-        vector_with_callback<player_t*> target_list = dk->sim->target_non_sleeping_list;
-
-        if (dk->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2)
-        {
-          target_list.push_back( dk );
-        }
-
-        for (const auto target : target_list)
-        {
-          if (target != t)
-          {
-            dk->active_spells.chill_streak_damage->set_target( target );
-            dk->active_spells.chill_streak_damage->schedule_execute();
-            current++;
-          }
-        }
-
-        if (dk->talent.frost.enduring_chill.ok() &&
-             rng().roll( dk->talent.frost.enduring_chill->effectN( 1 ).percent() ))
-        {
-          current--;
-          dk->procs.enduring_chill->occur();
-        }
+        target_list.push_back( dk );
       }
-      else
+
+      for ( const auto target : target_list )
       {
-        current = 0;
+        if ( target != t )
+        {
+          dk->active_spells.chill_streak_damage->set_target( target );
+          dk->active_spells.chill_streak_damage->schedule_execute();
+        }
       }
     }
   };
 
   const death_knight_td_t* td = get_target_data( t );
-  make_event<cs_bounce_t>( *sim, this, t, max, current );
+  make_event<cs_bounce_t>( *sim, this, t );
 }
 
 // ==========================================================================
