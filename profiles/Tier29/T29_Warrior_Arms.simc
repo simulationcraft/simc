@@ -53,11 +53,11 @@ actions+=/berserking,if=target.time_to_die>180&buff.avatar.up|target.time_to_die
 actions+=/blood_fury,if=debuff.colossus_smash.up
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
-actions+=/run_action_list,name=hac,if=raid_event.adds.up&active_enemies>2|!raid_event.adds.up&active_enemies>2
+actions+=/run_action_list,name=hac,if=active_enemies>=3
 actions+=/call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
-actions+=/run_action_list,name=single_target,if=!raid_event.adds.exists
+actions+=/run_action_list,name=single_target,if=active_enemies<=2
 
-actions.execute=sweeping_strikes,if=spell_targets.whirlwind>1
+actions.execute=sweeping_strikes,if=active_enemies>=2&variable.adds_remain
 actions.execute+=/rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12
 actions.execute+=/avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20
 actions.execute+=/warbreaker
@@ -104,13 +104,12 @@ actions.hac+=/mortal_strike
 actions.hac+=/rend,if=active_enemies=1&dot.rend.remains<duration*0.3
 actions.hac+=/whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1
 actions.hac+=/cleave,if=!talent.crushing_force
-actions.hac+=/ignore_pain,if=talent.battlelord&talent.anger_management&rage>30&(target.health.pct>20|talent.massacre&target.health.pct>35)
 actions.hac+=/slam,if=talent.crushing_force&rage>30&(talent.fervor_of_battle&active_enemies=1|!talent.fervor_of_battle)
 actions.hac+=/shockwave,if=talent.sonic_boom
 actions.hac+=/bladestorm,if=raid_event.adds.in>30
 actions.hac+=/wrecking_throw
 
-actions.single_target=sweeping_strikes,if=spell_targets.whirlwind>1
+actions.single_target=sweeping_strikes,if=active_enemies>=2
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/mortal_strike
 actions.single_target+=/thunder_clap,if=!dot.rend.remains
@@ -147,6 +146,10 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_bu
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
 actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
+
+# Variables
+actions.variables=variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)
+actions.variables+=/variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>5)
 
 head=casque_of_the_walking_mountain,id=200426,bonus_id=4800/4786/1498/7935,ilevel=424,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=8782/8960,ilevel=418,gem_id=192919/192919/192919,crafted_stats=32/36

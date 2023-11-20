@@ -6,7 +6,7 @@ spec=protection
 position=front
 talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSiWTSiESIBAAIAAAAAAAASEJNBSQSKCJJAACIAEIAB
 
-head=zealous_pyreknights_barbute,id=207191,bonus_id=1520/6935/7187/8767,enchant_id=7052,gem_id=192935
+head=zealous_pyreknights_barbute,id=207191,bonus_id=1520/6935/7187/8767,enchant=incandescent_essence,gem_id=192935
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=1520/7187/8767/8782,gem_id=192985/192935/192935
 shoulders=zealous_pyreknights_ailettes,bonus_id=1520/7187/8767,id=207189
 back=shadowfeather_shawl,id=136977,bonus_id=9882/7187/8767,enchant=homebound_speed_3
@@ -19,7 +19,7 @@ feet=primal_molten_sabatons,id=190496,bonus_id=8790/8960/9379/9405/9500,enchant=
 finger1=band_of_burning_thorns,id=207159,bonus_id=1520/6935/7187/8767,enchant=devotion_of_haste_3,gem_id=192935
 finger2=thornwoven_band,id=162548,bonus_id=6935/7187/8767/9853,enchant=devotion_of_haste_3,gem_id=192935
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=1520/7187/8767
-trinket2=fyrakks_tainted_rageheart,id=207174,bonus_id=1527/7187/8767
+trinket2=augury_of_the_primal_flame,id=208614,bonus_id=1527/7187/8767
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=1520/7187/8767,enchant=shadowflame_wreathe_3
 off_hand=defender_of_the_ancient,id=207797,bonus_id=1520/7187/8767
 

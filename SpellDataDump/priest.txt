@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52106 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1301,7 +1301,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.22216 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.177725 -> 0.222156), PvP Coefficient (1.25 -> 1)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 #4 (id=841601)   : School Damage (2): shadow
@@ -1430,7 +1429,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39726)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1028367)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Critical heals create a protective shield on the target, absorbing $s1% of the amount healed. Lasts $47753d.
@@ -2035,7 +2034,6 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
 Effects          :
 #1 (id=59238)    : Apply Aura (6) | Periodic Trigger Spell (23): Symbol of Hope every 1 seconds
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Trigger Spell: 265144 | Target: Self (1)
-Hotfixed         : Base Value (40 -> 30)
 #2 (id=709101)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Bolster the morale of raid members within $265144a1 yds. They each recover $s1 sec of cooldown of a major defensive ability, and regain ${$s2*($d/$t1+1)}% of their missing mana, over $d.
@@ -2281,7 +2279,6 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.06660 | Target: Self (1)
-Hotfixed         : Base Value (35 -> 40), PvP Coefficient (1.25 -> 1.0666)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 #3 (id=1104540)  : Dummy (3)
@@ -3556,7 +3553,7 @@ Effects          :
                    Base Value: -67 | Scaled Value: -67 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 580 (Label) | Target: Self (1)
                    Affected Spells (Label): Death Throes (278659)
 #11 (id=871789)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Inescapable Torment (373427), Inescapable Torment (373442)
                    Family Flags: 23
 #12 (id=876302)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -5530,19 +5527,19 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 9 seconds
 Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Malicious Intent (372969 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2)
 Family Flags     : 56, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Ignore Line of Sight (66), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=318771)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -6485,19 +6482,15 @@ Effects          :
 #2 (id=759288)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1284 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Label): Divine Protection (498), Shield Wall (871), Desperate Prayer (19236), Barkskin (22812), Ardent Defender (31850), Icebound Fortitude (48792), Mirror Image (55342), Unending Resolve (104773), Astral Shift (108271), Exhilaration (109304), Fortifying Brew (115203), Die by the Sword (118038), Enraged Regeneration (184364), Crimson Vial (185311), Blur (198589), Fiery Brand (204021), Blur (212800), Obsidian Scales (363916), Divine Protection (403876)
-Hotfixed         : Base Value (1000 -> 750)
 #3 (id=888372)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1929 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Category): Shield Wall (871)
-Hotfixed         : Base Value (1000 -> 750)
 #4 (id=1041993)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 2100 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Category): Obsidian Scales (363916)
-Hotfixed         : Base Value (1000 -> 750)
 #5 (id=1083835)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1541 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Category): Fiery Brand (204021)
-Hotfixed         : Base Value (1000 -> 750)
 Description      : $@spelldesc64901
 Tooltip          : Rapidly recovering a major defensive ability, and regaining $64901s2% missing mana every $64901t1 sec.
 
@@ -7915,7 +7908,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737897)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (40 -> 20), PvP Coefficient (0.5 -> 1)
 Description      : Your damage is increased by up to $s1%, diminishing for each ally affected by your Atonement.
 
 Name             : Sins of the Many (id=280398) [Spell Family (6)] 
@@ -17161,7 +17153,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... .....
 Effects          :
 #1 (id=1081317)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.20570 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.174845 -> 0.2057), PvP Coefficient (1.18 -> 1)
 Description      : $@spelldesc341491
 
 Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 
@@ -17349,7 +17340,6 @@ Effects          :
 Description      : $@spelldesc421453
 
 Name             : Ultimate Penitence (id=421453) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Discipline [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Priest
 School           : Holy
@@ -17373,13 +17363,11 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=1095752)  : Trigger Spell (64): Ultimate Penitence
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 432154 | Target: Self (1)
-Hotfixed         : Type (254 -> 64), Base Value (2 -> 0), Misc Value (852 -> 0), Trigger Spell (0 -> 432154), Target 2 (18 -> 0)
 #3 (id=1102232)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #4 (id=1120477)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.
 
 While ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.
@@ -17698,7 +17686,6 @@ Effects          :
                    Base Value: 225 | Scaled Value: 225 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Hotfixed         : Base Value (200 -> 225)
 #2 (id=1099950)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc422904
@@ -17781,7 +17768,6 @@ Tooltip          : All magical damage taken reduced by $w1%.
 All physical damage taken reduced by $w2%.
 
 Name             : Ultimate Penitence (id=432154) [Spell Family (6)] 
-Hotfixed         : NEW SPELL
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -17799,7 +17785,6 @@ Attributes       : ........ ........ ........ ........   ........ .......x .....
 Effects          :
 #1 (id=1120482)  : Unknown(254)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 852 | Target: Self (1) -> Custom (18)
-Hotfixed         : NEW EFFECT
 Description      : Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.
 
 While ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.

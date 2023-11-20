@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.0.52106
+// Spell text, wow build 10.2.0.52188
 static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -12923,6 +12923,7 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 317260, "$@spelldesc317257", 0, 0 },
   { 317262, "$@spelldesc317257", 0, 0 },
   { 317265, "$@spelldesc317257", "Damage taken from Infinite Stars increased by $w3%.", 0 },
+  { 317273, "Collect the weapon enchantment appearance of Void Edge.", 0, 0 },
   { 317290, "Your attacks have a chance to lash your target with a living tentacle, dealing $s1 Shadow damage and snaring them by $s2% for $s3 sec.", 0, 0 },
   { 317320, "Learn Condemn, replacing Execute. Condemn deals Shadow damage, can be used on enemies who are above 80% health or below 20% health, and weakens the target preventing some of the damage they would deal to you.", 0, "Venthyr" },
   { 317349, "Condemn a foe to suffer for their sins, causing up to $<damage> Shadow damage. Only usable on enemies who are above 80% health or below 20% health.\r\n\r\nThe primary target is weakened, preventing up to $<absorb> damage they would deal to you.$?s231830[\r\n\r\nIf your foe survives, $s2% of the Rage spent is refunded.][]", 0, "Venthyr" },
@@ -19008,7 +19009,7 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 395041, "$?a388114[Chaos][Shadow]", 0, 0 },
   { 395042, "$?a388114[Chaos][Nature]", 0, 0 },
   { 395110, "$@spelldesc394094", "The next Eclipse you enter will trigger Sundered Firmament.\r\n\r\n$@spellicon394094$@spellname394094\r\n$@spelldesc394094", 0 },
-  { 395152, "Increase your $i nearest allies' primary stat by $s1% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "$pri increased by $w2.", "Black" },
+  { 395152, "Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.\r\n\r\nMay only affect $i allies at once, and prefers to imbue damage dealers.\r\n\r\nEruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.", "$pri increased by $w2.", "Black" },
   { 395153, "$@spellname395160 $?s414969[or $@spellname355913 ][]increases the duration of your active Ebon Might effects by ${$s1/1000} sec.\r\n\r\nYour empower spells increase the duration of your active Ebon Might effects by ${$s2/1000} sec.\r\n\r\n$?s403631[$@spellname403631][$@spellname357210] increases the duration of your active Ebon Might effects by ${$s3/1000} sec.\r\n\r\nThis effect can critically strike, increasing the duration of Ebon Might by an additional $s4%.", 0, 0 },
   { 395157, "$@spelldesc199471", 0, 0 },
   { 395160, "Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[\r\n\r\nIncreases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]", 0, "Black" },
@@ -20078,7 +20079,6 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 417713, "$@spelldesc417710", "Damage taken from $@auracaster's attacks increased by $s1%.", 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
-  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417939, "Activate the Tyrstone, recording $s1% of your healing done over the next $d, up to $417959s2 healing done.", "Recording $w1% of all healing done.", 0 },
@@ -20163,14 +20163,14 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 422090, "Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.", 0, 0 },
   { 422094, "Instantly heal an ally for $s1.", 0, 0 },
   { 422146, "Unleash a solar maelstrom, slowing yourself and nearby enemies before erupting in flames after 2 sec to deal $422141s1 Fire damage split between all enemies and $422141s2 Fire damage to you over $425417d.\r\n\r\nCastable while moving. Damage increased per enemy struck, up to 5.", 0, 0 },
-  { 422303, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "After $422297s3 sec, the blade ignites with Shadowflame and return to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", 0 },
+  { 422303, "Plunge a twisted blade into your target, dealing $422297s1 Physical damage. After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297s2 Shadowflame damage split between the target and all enemies in its path.\r\n\r\nDamage increased per enemy struck, up to 5.", "After $422297s3 sec, the blade ignites with Shadowflame and returns to you, dealing $422297w2 Shadowflame damage split between the target and all enemies in its path.", 0 },
   { 422382, "Heals up to $s2 injured allies within $A1 yards of the target for $o1 over $d. Healing starts high and declines over the duration.", "Heals $w1 damage every $t1 sec.", 0 },
   { 422441, "Summon $s7 roots to draw on their power for $d, slowing you by ${$422440s2/4}% per root. Your next $s7 melee abilities each sever a root, dealing $422440s1 additional Shadowflame damage split between nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.", "Melee abilities sever a root, dealing $422440w1 additional Shadowflame damage split between nearby enemies.\r\n\r\nSlowed by $w2%.", 0 },
   { 422479, "Your melee attacks and abilities have a chance to viciously brand your target, dealing ${$s1*((1+$s3/100)^(1-$s5))} Fire damage over 6 sec, and grant you $@spellname425153, stacking up to 15 times. Damage increased per stack to a maximum of ${$s1*((1+$s3/100)^($s2-$s5))}.\r\n\r\nWhile above 5 stacks, also deals $s4% of its damage to you. At 15 stacks, enemies near your target suffer $s6% of the damage dealt split between them. $@spellname425153 decays every $425153t2 sec while out of combat and fades entirely after $s8 sec.", 0, 0 },
   { 422652, "Deal $s0 Shadowflame damage to you and nearby enemies every 3 sec while in combat.\r\n\r\n", 0, 0 },
   { 422747, "Feral Frenzy grants Smoldering Frenzy, increasing all damage you deal by $422751s1% for $422751d.", 0, 0 },
   { 422748, "Feral Frenzy's cooldown is reduced by ${$s1/-1000} sec. During Smoldering Frenzy, enemies burn for $422751s6% of damage you deal as Fire over $422779d.", 0, 0 },
-  { 422750, "Give in to the Rageheart for $d, absorbing $422652s3 damage but suffering $422652s2 Shadowflame damage and lashing out at a nearby enemy every $t1 sec to deal $422652s4 Shadowflame damage split between nearby enemies. \r\n\r\nDamage increased per enemy struck, up to 5.", "Suffering $422652w2 Shadowflame damage and dealing $422652w4 Shadowflame damage split between nearby enemies every second.", 0 },
+  { 422750, "Give in to the Rageheart, absorbing $422652s3 damage for $425571d. Suffer $422652s2 Shadowflame damage and lash out at a nearby enemy every $t1 sec for $d to deal $422652s4 Shadowflame damage split between nearby enemies. \r\n\r\nDamage increased per enemy struck, up to 5.", "Suffering $422652w2 Shadowflame damage and targeting a nearby enemy with $@spellname425701 every $t1 sec.", 0 },
   { 422751, "$@spelldesc422747", "Damage dealt increased by $s1%.", 0 },
   { 422779, "$@spelldesc422748", "Deals $w1 Fire damage every $t1 sec.", 0 },
   { 422850, "Consuming Runic Power has a chance to cause your next Heart Strike to apply Ashen Decay, reducing damage dealt to you by $425719s1% and increasing your damage dealt to afflicted targets by $425719s2% for $425719d.", 0, 0 },
@@ -20264,7 +20264,7 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 423585, "$@spelldesc422920", 0, 0 },
   { 423590, "$@spelldesc424572", "Your next Holy Power ability will echo its damage effect at $s1% effectiveness.", 0 },
   { 423593, "$@spelldesc53385", 0, 0 },
-  { 423611, "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every 3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat.", "$pri increased by $w1.", 0 },
+  { 423611, "Draw power from the remnants of the Embersoul, gaining $423021s1 $pri for $d, decaying every $t3 sec. Once this effect ends, become Burned Out, losing $423021s2 Haste for 60 sec before recovering.\r\n\r\nWhen circumstances are dire your soul ignites, granting this bonus again without decaying. This effect may only occur once per combat.", "$pri increased by $w1.", 0 },
   { 423618, "Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.", 0, 0 },
   { 423647, "Feint has $m1 additional $Lcharge:charges;.\r\n", 0, 0 },
   { 423662, "Shroud of Concealment has $s1% reduced cooldown.\r\n", 0, 0 },
@@ -20383,14 +20383,14 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 426115, "Grants access to the following abilities:\r\n\r\n$@spellicon264178 $@spellname264178\r\n$@spelldesc264178\r\n\r\n$@spellicon267102 $@spellname267102\r\n$@spelldesc267102", 0, 0 },
   { 426196, "Create a piece of Verdant Gladiator's equipment at Unranked rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 426262, "Your healing has a chance to apply Bramble Barrier to your target, absorbing $425838s2 damage and causing $425838s5 Nature damage to attackers when struck. If the barrier is broken, the target is healed for ${$425838s4*($426321d/$426321t1)} over $426321d. If it expires without breaking, the target gains $425838s3 Versatility for $426322d.", "Your healing has a chance to apply Bramble Barrier to your target, absorbing $425838w2 damage and causing $425838w5 Nature damage to attackers when struck. If the barrier is broken, the target is healed for $425838w4 over $426321d. If it expires without breaking, the target gains $425838w3 Versatility for $426322d.", 0 },
-  { 426269, "@$spelldesc426262", "Absorbing $w1 damage and dealing $w3 Nature damage to nearby attackers.", 0 },
+  { 426269, "$@spelldesc426262", "Absorbing $w1 damage and dealing $w3 Nature damage to nearby attackers.", 0 },
   { 426284, "$@spelldesc422924", "Bleeding for $w1 every $t1 sec.", 0 },
   { 426288, "Taking damage has a chance to fill you with $@spellname426289, causing your abilities to deal $425838s1 additional Fire damage split between nearby enemies for $426289d and shielding you for the damage dealt.\r\n\r\nDamage increased per enemy struck, up to 5.", "Taking damage has a chance to fill you with $@spellname426289, causing your abilities to deal $425838w1 additional Fire damage split between nearby enemies for $426289d and shielding you for the damage dealt.\r\n\r\nDamage increased per enemy struck, up to 5.", 0 },
   { 426289, "$@spelldesc426288", "Your abilities deal $425838w1 additional Fire damage split between nearby enemies and shield you for the damage dealt by this effect.", 0 },
   { 426293, "Create a soulbound Mythic+ Dungeon item appropriate for your loot specialization ($@lootspec) during Dragonflight Season 3.", 0, 0 },
   { 426306, "$@spelldesc426288", 0, 0 },
   { 426321, "$@spelldesc426262", "Healing for $w1 every second.", 0 },
-  { 426322, "@$spelldesc426262", "Versatility increased by $w1.", 0 },
+  { 426322, "$@spelldesc426262", "Versatility increased by $w1.", 0 },
   { 426327, "Permanently imbue a helm with the fiery dreams of your vanquished foes. This effect changes based on your specialization. This item is not consumed on use.", 0, 0 },
   { 426339, "Your attacks have a low chance to draw torment from your victim to manifest a cruel blade based on the number of nearby enemies, dealing ${$425838s8*($426527d/$426527t1)} Shadowflame damage over $426527d to solitary foes or ${$425838s9} Fire damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.\r\n", "Your attacks have a low chance to draw torment from your victim to manifest a cruel blade based on the number of nearby enemies, dealing ${$425838w8*($426527d/$426527t1)} Shadowflame damage over $426527d to solitary foes or ${$425838w9} Fire damage split between all nearby enemies.\r\n\r\nDamage increased per enemy struck, up to 5.", 0 },
   { 426341, "Your harmful spells and abilities have a chance to summon a parliament of blazing spirit owls to divebomb your target, dealing ${$425838w6*2+$425838w8} Fire damage split between all nearby targets.\r\nDamage increased per enemy struck, up to 5.", "Your harmful spells and abilities have a chance to summon a parliament of blazing spirit owls to divebomb your target, dealing ${$425838w6*2+$425838w8} Fire damage split between all nearby targets.\r\nDamage increased per enemy struck, up to 5.", 0 },
@@ -20445,7 +20445,7 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 427058, "$@spelldesc426827", 0, 0 },
   { 427059, "$@spelldesc426827", 0, 0 },
   { 427072, "$@spelldesc422956", "Mastery increased by $w1.", 0 },
-  { 427113, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Not effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", 0, 0 },
+  { 427113, "Weave a web of dreams beneath your target after $d, dealing $427110s1 Nature damage split between all enemies within 8 yds. Your target is immobilized for $427215d while additional enemies are slowed by $427110s2%. Less effective against enemy players.\r\n\r\nDamage increased per enemy struck, up to 5. ", 0, 0 },
   { 427161, "$@spelldesc422956", 0, 0 },
   { 427209, "$@spelldesc427113", 0, 0 },
   { 427212, "$@spelldesc427113", "Slowed by $w1%.", 0 },
@@ -20485,7 +20485,7 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 428455, "$@spelldesc428351", 0, 0 },
   { 428464, "$@spelldesc422879", "Your next Wildfire Bomb will not incur a cooldown.", 0 },
   { 428486, "Your finishing moves heal you for $s1% of damage done. At full health gain shielding instead, absorbing up to $s2% of your maximum health.", 0, 0 },
-  { 428492, "Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. ", 0, 0 },
+  { 428492, "Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;.", 0, 0 },
   { 428493, "$@spelldesc428492", 0, 0 },
   { 428557, "Sigil skills have $s2 additional $lcharge:charges;.\r\n\r\nYou have $s6% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.", 0, 0 },
   { 428603, "Sigil of Flame's initial damage is increased by $s2%.\r\n\r\nMultiple applications of Sigil of Flame may overlap.", 0, 0 },
@@ -20501,7 +20501,7 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 429246, "$@spelldesc429244", "Critical Strike increased by $s1.", 0 },
   { 429257, "Draw a set of aqueous spheres towards you that envelop you on contact, increasing your Mastery by $429262s1 for $429262d, stacking up to $429262u times.", 0, 0 },
   { 429262, "$@spelldesc429257", "Mastery increased by $s1.", 0 },
-  { 429267, "Taking damage has a chance to call Xeri'tac's brood your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", 0, 0 },
+  { 429267, "Taking damage has a chance to call Xeri'tac's brood to your aid, attacking your foes and covering you in protective webbing which absorbs $s1 damage.", 0, 0 },
   { 429271, "Envelop an ally in ancient protection, absorbing up to $s1 damage. If the protection is fully consumed, the ally gains an ancient resurgence, increasing Versatility by $429272s1 for $429272d.", "Absorbs $w1 damage.", 0 },
   { 429272, "$@spelldesc429271", "Versatility increased by $s1.", 0 },
   { 429364, "Plant a banner representing your successes against the Dreaming.", 0, 0 },
@@ -20513,12 +20513,13 @@ static const std::array<spelltext_data_t, 20511> __spelltext_data { {
   { 432154, "Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.\r\n\r\nWhile ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.", "Absorbing $w3 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.52106
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  {  426321,  0, "@$spelldesc426262", "$@spelldesc426262" },
+// spelltext hotfix entries, wow build 10.2.0.52188
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {  422750,  0, "Give in to the Rageheart for $d, absorbing $422652s3 damage but suffering $422652s2 Shadowflame damage and lashing out at a nearby enemy every $t1 sec to deal $422652s4 Shadowflame damage split between nearby enemies. \r\n\r\nDamage increased per enemy struck, up to 5.", "Give in to the Rageheart, absorbing $422652s3 damage for $425571d. Suffer $422652s2 Shadowflame damage and lash out at a nearby enemy every $t1 sec for $d to deal $422652s4 Shadowflame damage split between nearby enemies. \r\n\r\nDamage increased per enemy struck, up to 5." },
+  {  422750,  1, "Suffering $422652w2 Shadowflame damage and dealing $422652w4 Shadowflame damage split between nearby enemies every second.", "Suffering $422652w2 Shadowflame damage and targeting a nearby enemy with $@spellname425701 every $t1 sec." },
 } };
 
-// Spell description variables, wow build 10.2.0.52106
+// Spell description variables, wow build 10.2.0.52188
 static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20905,7 +20906,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  393400, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
   {  394352, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
-  {  395152, "$stat=${$INT*($s1/100)}" },
+  {  395152, "$stat=${$INT*($s1/100)}\r\n$classset=$?s414878[${$414878s1)}][${0}]\r\n$amount=${6.5+$<classset>}.1" },
   {  396286, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   {  403631, "$emDur=${5}" },
@@ -20934,7 +20935,8 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.52106
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.2.0.52188
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  395152,  0, "$stat=${$INT*($s1/100)}\r\n$amount=${6.5}.1", "$stat=${$INT*($s1/100)}\r\n$classset=$?s414878[${$414878s1)}][${0}]\r\n$amount=${6.5+$<classset>}.1" },
 } };
 

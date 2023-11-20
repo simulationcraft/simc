@@ -13,8 +13,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( p -> true_level > 60 && p -> specialization() == HUNTER_MARKSMANSHIP ) ? "iced_phial_of_corrupting_rage_3" : 
-         ( p -> true_level > 60 ) ? "phial_of_tepid_versatility_3" :
+  return ( p -> true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : 
          ( p -> true_level > 50 ) ? "spectral_flask_of_power" :
          ( p -> true_level >= 40 ) ? "greater_flask_of_the_currents" :
          "disabled";
@@ -552,7 +551,7 @@ void survival_ptr( player_t* p )
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame" );
-  cleave->add_action( "fury_of_the_eagle,if=cooldown.butchery.full_recharge_time>cast_time&raid_event.adds.exists|!talent.butchery" );
+  cleave->add_action( "fury_of_the_eagle,if=raid_event.adds.exists" );
   cleave->add_action( "butchery,if=raid_event.adds.exists" );
   cleave->add_action( "butchery,if=(full_recharge_time<gcd|dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd|raid_event.adds.remains<10))&!raid_event.adds.exists" );
   cleave->add_action( "fury_of_the_eagle,if=!raid_event.adds.exists" );

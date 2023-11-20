@@ -262,13 +262,7 @@ public:
   // Total count of active DoT effects that contribute towards the Lethal Dose talent
   int lethal_dose_count() const
   {
-    int count = total_bleeds() + total_poisons();
-    if ( source->bugs )
-    {
-      count -= ( dots.serrated_bone_spike->is_ticking() +
-                 dots.crimson_tempest->is_ticking() );
-    }
-    return count;
+    return total_bleeds() + total_poisons();
   }
 };
 
@@ -365,7 +359,7 @@ public:
     buff_t* envenom;
     // Outlaw
     buffs::rogue_buff_t* adrenaline_rush;
-    damage_buff_t* between_the_eyes;
+    buff_t* between_the_eyes;
     buffs::rogue_buff_t* blade_flurry;
     buff_t* blade_rush;
     buff_t* opportunity;
@@ -558,11 +552,9 @@ public:
 
     // Background Spells
     const spell_data_t* alacrity_buff;
-    const spell_data_t* find_weakness_debuff;
     const spell_data_t* leeching_poison_buff;
     const spell_data_t* nightstalker_buff;
     const spell_data_t* recuperator_heal;
-    const spell_data_t* sting_like_a_bee_debuff;
     const spell_data_t* sepsis_buff;
     const spell_data_t* sepsis_expire_damage;
     const spell_data_t* shadowstep_buff;
@@ -640,6 +632,7 @@ public:
     const spell_data_t* killing_spree_oh_attack;
     const spell_data_t* opportunity_buff;
     const spell_data_t* sinister_strike_extra_attack;
+    const spell_data_t* sting_like_a_bee_debuff;
     const spell_data_t* summarily_dispatched_buff;
     const spell_data_t* take_em_by_surprise_buff;
     const spell_data_t* triple_threat_attack;
@@ -668,6 +661,7 @@ public:
     const spell_data_t* danse_macabre_buff;
     const spell_data_t* deeper_daggers_buff;
     const spell_data_t* eviscerate_shadow_attack;
+    const spell_data_t* find_weakness_debuff;
     const spell_data_t* finality_black_powder_buff;
     const spell_data_t* finality_eviscerate_buff;
     const spell_data_t* finality_rupture_buff;
@@ -2141,6 +2135,7 @@ public:
   void trigger_danse_macabre( const action_state_t* state );
   void trigger_sanguine_blades( const action_state_t* state, rogue_attack_t* action );
   void trigger_caustic_spatter( const action_state_t* state );
+  void trigger_caustic_spatter_debuff( const action_state_t* state );
   void trigger_shadowcraft( const action_state_t* state );
   virtual bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
 
@@ -2409,43 +2404,29 @@ public:
 
     spend_combo_points( ab::execute_state );
 
-    if ( ab::current_resource() == RESOURCE_ENERGY )
+    if ( ab::current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
     {
-      // Early PTR builds counted base energy cost of Blindside abilities, so can't use last_resource_cost
-      // 2023-11-06 -- Latest PTR build, however, doesn't seem to give any stacks from Blindside
-      if ( p()->set_bonuses.t31_assassination_2pc->ok() )
+      if ( !ab::hit_any_target )
       {
-        p()->t31_assassination_2pc_accumulator += ( p()->bugs ? ab::last_resource_cost :
-                                                    std::max( ab::cost(), ab::last_resource_cost ) );
-        const double threshold = p()->set_bonuses.t31_assassination_2pc->effectN( 3 ).base_value();
-        int trigger_stacks = 0;
-        while ( p()->t31_assassination_2pc_accumulator >= threshold )
-        {
-          p()->t31_assassination_2pc_accumulator -= threshold;
-          trigger_stacks++;
-        }
-        if ( trigger_stacks > 0 )
-        {
-          p()->buffs.t31_assassination_2pc->trigger( trigger_stacks );
-
-          // 2023-11-06 -- Currently, removal of stacks appears to be scheduled regardless of if stacks are maxed/refreshed
-          //               This causes removal of stacks that may not originate from the initial trigger and lower expected uptime
-          if ( p()->bugs )
-          {
-            make_event( *p()->sim, 6_s, [ this, trigger_stacks ] { p()->buffs.t31_assassination_2pc->decrement( trigger_stacks ); } );
-          }
-        }
+        trigger_energy_refund();
       }
-
-      if ( ab::last_resource_cost > 0 )
+      else
       {
-        if ( !ab::hit_any_target )
+        // Energy Spend Mechanics
+        if ( p()->set_bonuses.t31_assassination_2pc->ok() )
         {
-          trigger_energy_refund();
-        }
-        else
-        {
-          // Energy Spend Mechanics
+          p()->t31_assassination_2pc_accumulator += ab::last_resource_cost;
+          const double threshold = p()->set_bonuses.t31_assassination_2pc->effectN( 3 ).base_value();
+          int trigger_stacks = 0;
+          while ( p()->t31_assassination_2pc_accumulator >= threshold )
+          {
+            p()->t31_assassination_2pc_accumulator -= threshold;
+            trigger_stacks++;
+          }
+          if ( trigger_stacks > 0 )
+          {
+            p()->buffs.t31_assassination_2pc->trigger( trigger_stacks );
+          }
         }
       }
     }
@@ -3402,6 +3383,7 @@ struct ambush_t : public rogue_attack_t
     }
 
     trigger_vicious_venoms( state, p()->active.vicious_venoms.ambush );
+    trigger_caustic_spatter_debuff( state );
   }
 
   bool procs_main_gauche() const override
@@ -4095,6 +4077,11 @@ struct envenom_t : public rogue_attack_t
       envenomous_explosion = p->get_background_action<envenomous_explosion_t>( "envenomous_explosion" );
       add_child( envenomous_explosion );
     }
+
+    if ( p->active.poison_bomb )
+    {
+      add_child( p->active.poison_bomb );
+    }
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -4459,7 +4446,8 @@ struct garrote_t : public rogue_attack_t
     // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
     //               Additionally works every global of Improved Garrote regardless of Subterfuge
     // 2023-01-28 -- However, this does not work with Improved Garrote triggered by Sepsis
-    if ( p()->talent.assassination.shrouded_suffocation->ok() &&
+    // 2023-11-14 -- Shrouded Suffocation is no longer triggered by Deathmark Garrotes
+    if ( p()->talent.assassination.shrouded_suffocation->ok() && !is_secondary_action() &&
          ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) &&
          ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) ||
            ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) && !p()->buffs.sepsis->check() ) ) )
@@ -4915,24 +4903,7 @@ struct mutilate_t : public rogue_attack_t
 
       trigger_blindside( execute_state );
       trigger_venom_rush( execute_state );
-
-      // Caustic Spatter is checked after impacts have an opportunity to trigger poisons
-      if ( p()->talent.assassination.caustic_spatter->ok() )
-      {
-        auto tdata = td( execute_state->target );
-        if ( tdata->dots.rupture->is_ticking() && tdata->dots.deadly_poison->is_ticking() )
-        {
-          // Caustic Spatter debuff can only exist on one target at a time
-          tdata->debuffs.caustic_spatter->trigger();
-          for ( auto t : p()->sim->target_non_sleeping_list )
-          {
-            if ( t != execute_state->target )
-            {
-              td( t )->debuffs.caustic_spatter->expire();
-            }
-          }
-        }
-      }
+      trigger_caustic_spatter_debuff( execute_state );
     }
   }
 
@@ -5243,10 +5214,10 @@ struct rupture_t : public rogue_attack_t
       return;
 
     const int current_stacks = p()->buffs.scent_of_blood->check();
-    int desired_stacks = p()->get_active_dots( this->get_dot() );
+    int desired_stacks = p()->get_active_dots( td( this->target )->dots.rupture );
     if ( p()->active.deathmark.rupture )
     {
-      desired_stacks += p()->get_active_dots( p()->active.deathmark.rupture->get_dot() );
+      desired_stacks += p()->get_active_dots( td( this->target )->dots.rupture_deathmark );
     }
     desired_stacks = std::min( p()->buffs.scent_of_blood->max_stack(),
                                desired_stacks * as<int>( p()->talent.assassination.scent_of_blood->effectN( 1 ).base_value() ) );
@@ -6192,7 +6163,7 @@ struct internal_bleeding_t : public rogue_attack_t
   internal_bleeding_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spec.internal_bleeding_debuff )
   {
-    affected_by.lethal_dose = false; // 2023-10-31 -- Testing shows this is not affected
+    affected_by.lethal_dose = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -6205,7 +6176,7 @@ struct internal_bleeding_t : public rogue_attack_t
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = rogue_attack_t::composite_persistent_multiplier( state );
-    m *= cast_state( state )->get_combo_points();
+    m *= std::max( 1, cast_state( state )->get_combo_points() );
     return m;
   }
 
@@ -6267,10 +6238,26 @@ struct cheap_shot_t : public rogue_attack_t
 // Note: Uses spell_t instead of rogue_spell_t to avoid action_state casting issues
 struct doomblade_t : public residual_action::residual_periodic_action_t<spell_t>
 {
+  rogue_t* rogue;
+
   doomblade_t( util::string_view name, rogue_t* p ) :
-    base_t( name, p, p->spec.doomblade_debuff )
+    residual_action_t( name, p, p->spec.doomblade_debuff ), rogue( p )
   {
     dual = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = residual_action_t::composite_da_multiplier( state );
+
+    // 2023-11-10 -- Doomblade is intended to be dynamically affected by Lethal Dose
+    if ( rogue->talent.assassination.lethal_dose->ok() )
+    {
+      m *= 1.0 + ( rogue->talent.assassination.lethal_dose->effectN( 1 ).percent() *
+                   rogue->get_target_data( state->target )->lethal_dose_count() );
+    }
+
+    return m;
   }
 };
 
@@ -6566,7 +6553,7 @@ struct sepsis_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.shared.sepsis, options_str )
   {
     affected_by.broadside_cp = true; // 2021-04-22 -- Not in the whitelist but confirmed as working in-game
-    affected_by.lethal_dose = false; // 2023-06-11 -- Recent testing indicates this is no longer affected
+    affected_by.lethal_dose = true;
     affected_by.zoldyck_insignia = false;
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
@@ -6681,10 +6668,8 @@ struct soulrip_cb_t : public dbc_proc_callback_t
   // Note: Uses spell_t instead of rogue_spell_t to avoid action_state casting issues
   struct soulrip_damage_t : public residual_action::residual_periodic_action_t<spell_t>
   {
-    rogue_t* rogue;
-
     soulrip_damage_t( util::string_view name, rogue_t* p ) :
-      base_t( name, p, p->spec.t30_outlaw_2pc_attack ), rogue( p )
+      residual_action_t( name, p, p->spec.t30_outlaw_2pc_attack )
     {
       dual = true;
     }
@@ -8351,7 +8336,7 @@ void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t*
     if ( duration < td( state->target )->debuffs.find_weakness->remains() )
       duration = td( state->target )->debuffs.find_weakness->remains();
 
-    const double trigger_value = p()->spell.find_weakness_debuff->effectN( 1 ).percent();
+    const double trigger_value = p()->spec.find_weakness_debuff->effectN( 1 ).percent();
     td( state->target )->debuffs.find_weakness->trigger( 1, trigger_value, -1.0, duration );
   }
   else
@@ -8586,7 +8571,29 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_shadowcraft( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_caustic_spatter_debuff( const action_state_t* state )
+{
+  if ( !p()->talent.assassination.caustic_spatter->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  // Caustic Spatter is checked after impacts have an opportunity to trigger poisons
+  auto tdata = td( state->target );
+  if ( tdata->dots.rupture->is_ticking() && tdata->dots.deadly_poison->is_ticking() )
+  {
+    // Caustic Spatter debuff can only exist on one target at a time
+    tdata->debuffs.caustic_spatter->trigger();
+    for ( auto t : p()->sim->target_non_sleeping_list )
+    {
+      if ( t != state->target )
+      {
+        td( t )->debuffs.caustic_spatter->expire();
+      }
+    }
+  }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_shadowcraft( const action_state_t* )
 {
   if ( !p()->talent.subtlety.shadowcraft->ok() || !ab::hit_any_target )
     return;
@@ -8691,10 +8698,10 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->set_cooldown( timespan_t::zero() );
-  debuffs.find_weakness = make_buff( *this, "find_weakness", source->spell.find_weakness_debuff )
+  debuffs.find_weakness = make_buff( *this, "find_weakness", source->spec.find_weakness_debuff )
     ->set_default_value( source->talent.subtlety.find_weakness->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  debuffs.sting_like_a_bee = make_buff( *this, "sting_like_a_bee", source->spell.sting_like_a_bee_debuff )
+  debuffs.sting_like_a_bee = make_buff( *this, "sting_like_a_bee", source->spec.sting_like_a_bee_debuff )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   debuffs.flagellation = make_buff( *this, "flagellation", source->spec.flagellation_buff )
     ->set_initial_stack( 1 )
@@ -10048,7 +10055,6 @@ void rogue_t::init_spells()
   // Class Background Spells
   spell.alacrity_buff = talent.rogue.alacrity->ok() ? find_spell( 193538 ) : spell_data_t::not_found();
   spell.echoing_reprimand = talent.rogue.echoing_reprimand;
-  spell.find_weakness_debuff = talent.subtlety.find_weakness->ok() ? find_spell( 316220 ) : spell_data_t::not_found();
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
   spell.recuperator_heal = talent.rogue.recuperator->ok() ? find_spell( 426605 ) : spell_data_t::not_found();
@@ -10067,7 +10073,7 @@ void rogue_t::init_spells()
   spec.dashing_scoundrel = talent.assassination.dashing_scoundrel->ok() ? talent.assassination.dashing_scoundrel : spell_data_t::not_found();
   spec.dashing_scoundrel_gain = spec.dashing_scoundrel->ok() ? find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY ) : 0.0;
   spec.deadly_poison_instant = talent.assassination.deadly_poison->ok() ? find_spell( 113780 ) : spell_data_t::not_found();
-  spec.doomblade_debuff = talent.assassination.doomblade->ok() ? spec.doomblade_debuff = find_spell( 381672 ) : spell_data_t::not_found();
+  spec.doomblade_debuff = talent.assassination.doomblade->ok() ? find_spell( 381672 ) : spell_data_t::not_found();
   spec.improved_garrote_buff = talent.assassination.improved_garrote->ok() ? find_spell( 392401 ) : spell_data_t::not_found();
   spec.improved_shiv_debuff = ( talent.assassination.improved_shiv->ok() || talent.assassination.arterial_precision->ok() ) ? find_spell( 319504 ) : spell_data_t::not_found();
   spec.indiscriminate_carnage_buff = talent.assassination.indiscriminate_carnage->ok() ? find_spell( 385747 ) : spell_data_t::not_found();
@@ -10114,7 +10120,7 @@ void rogue_t::init_spells()
   spec.take_em_by_surprise_buff = talent.outlaw.take_em_by_surprise->ok() ? find_spell( 385907 ) : spell_data_t::not_found();
   spec.triple_threat_attack = talent.outlaw.triple_threat->ok() ? find_spell( 341541 ) : spell_data_t::not_found();
   spec.ace_up_your_sleeve_energize = talent.outlaw.ace_up_your_sleeve->ok() ? find_spell( 394120 ) : spell_data_t::not_found();
-  spell.sting_like_a_bee_debuff = talent.outlaw.sting_like_a_bee->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
+  spec.sting_like_a_bee_debuff = talent.outlaw.sting_like_a_bee->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
 
   spec.broadside = spec.roll_the_bones->ok() ? find_spell( 193356 ) : spell_data_t::not_found();
   spec.buried_treasure = spec.roll_the_bones->ok() ? find_spell( 199600 ) : spell_data_t::not_found();
@@ -10128,6 +10134,7 @@ void rogue_t::init_spells()
   spec.danse_macabre_buff = talent.subtlety.danse_macabre->ok() ? find_spell( 393969 ) : spell_data_t::not_found();
   spec.deeper_daggers_buff = talent.subtlety.deeper_daggers->effectN( 1 ).trigger();
   spec.eviscerate_shadow_attack = talent.subtlety.shadowed_finishers->ok() ? find_spell( 328082 ) : spell_data_t::not_found();
+  spec.find_weakness_debuff = talent.subtlety.find_weakness->ok() ? find_spell( 316220 ) : spell_data_t::not_found();
   spec.finality_black_powder_buff = talent.subtlety.finality->ok() ? find_spell( 385948 ) : spell_data_t::not_found();
   spec.finality_eviscerate_buff = talent.subtlety.finality->ok() ? find_spell( 385949 ) : spell_data_t::not_found();
   spec.finality_rupture_buff = talent.subtlety.finality->ok() ? find_spell( 385951 ) : spell_data_t::not_found();
@@ -10528,12 +10535,11 @@ void rogue_t::create_buffs()
 
   // Outlaw =================================================================
 
-  buffs.between_the_eyes = debug_cast<damage_buff_t*>( make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes )
+  buffs.between_the_eyes = make_buff<damage_buff_t>( this, "between_the_eyes", spec.between_the_eyes )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_refresh_behavior( buff_refresh_behavior::MAX ) );
+    ->set_refresh_behavior( buff_refresh_behavior::MAX );
   buffs.adrenaline_rush = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry = new buffs::blade_flurry_t( this );
 
@@ -10870,13 +10876,8 @@ void rogue_t::create_buffs()
   buffs.t31_assassination_2pc = make_buff<damage_buff_t>( this, "natureblight", spec.t31_assassination_2pc_buff )
     ->set_is_stacking_mod( true );
   buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_ATTACKSPEED )
-    ->add_invalidate( CACHE_ATTACK_SPEED );
-  // 2023-11-06 -- Manually decremented with bugs, see comment in consume_resource()
-  if ( !this->bugs )
-  {
-    buffs.t31_assassination_2pc->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  }
-
+    ->add_invalidate( CACHE_ATTACK_SPEED )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
 // rogue_t::invalidate_cache =========================================

@@ -32,9 +32,6 @@ public:
 
   void unlock()
   { m.unlock(); }
-
-  std::mutex::native_handle_type primitive()
-  { return m.native_handle(); }
 };
 
 class sc_thread_t::native_t

@@ -12,6 +12,7 @@
 #include "data_enums.hh"
 #include "dbc/azerite.hpp"
 #include "dbc/expected_stat.hpp"
+#include "dbc/embellishment_data.hpp"
 #include "dbc/gem_data.hpp"
 #include "dbc/item_armor.hpp"
 #include "dbc/item_bonus.hpp"

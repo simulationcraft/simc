@@ -493,8 +493,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     }
     else if ( td( d->target )->debuffs_umbrafire_kindling->check() )
     {
-      umbrafire_explosion->set_target( d->target );
-      umbrafire_explosion->schedule_execute();
+      make_event( *sim, 0_ms, [this, t = d->target ] { umbrafire_explosion->execute_on_target( t ); } );
     }
     else
     {

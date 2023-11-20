@@ -596,6 +596,7 @@ public:
   ultimate_penitence_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penance )
   {
+    parse_options( options_str );
     // Channel = 421434
     // Damage bolt = 421543
 

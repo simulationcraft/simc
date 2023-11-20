@@ -28,7 +28,13 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "main_hand:buzzing_rune_3" : "main_hand:shadowcore_oil";
+  switch ( p->specialization() )
+  {
+    case EVOKER_AUGMENTATION:
+      return ( p->true_level > 60 ) ? "main_hand:hissing_rune_3" : "main_hand:shadowcore_oil";
+    default:
+      return ( p->true_level > 60 ) ? "main_hand:buzzing_rune_3" : "main_hand:shadowcore_oil";
+  }
 }
 
 //devastation_apl_start
@@ -73,21 +79,25 @@ void devastation( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
   default_->add_action( "run_action_list,name=st" );
 
-  aoe->add_action( "shattering_star,target_if=max:target.health.pct,if=cooldown.dragonrage.up", "AOE action list; Actually kinda clean now Open with star before DR to save a global and start with a free EB" );
+  aoe->add_action( "use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains>0.5", "AOE action list; This is kind of a mess again and should prolly be rewritten completely" );
+  aoe->add_action( "shattering_star,target_if=max:target.health.pct,if=cooldown.dragonrage.up", "Open with star before DR to save a global and start with a free EB" );
   aoe->add_action( "dragonrage,if=target.time_to_die>=32|fight_remains<30", "Send DR on CD with no regard to the safety of the mobs - DPS loss to hold DR for empowers, in real world scenario maybe you hold if you are going for longer DRs DS optimization: Only cast if current fight will last 32s+ or encounter ends in less than 30s" );
   aoe->add_action( "tip_the_scales,if=buff.dragonrage.up&(active_enemies<=3+3*talent.eternitys_span|!cooldown.fire_breath.up)", "Use tip to get that sweet aggro" );
-  aoe->add_action( "call_action_list,name=fb,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_aoe|!talent.animosity)&(buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up)&(target.time_to_die>=8|fight_remains<30)", "Cast Fire Breath - stagger for swell/blazing shards outside DR DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s" );
-  aoe->add_action( "call_action_list,name=es,if=buff.dragonrage.up|!talent.dragonrage|(cooldown.dragonrage.remains>variable.dr_prep_time_aoe&buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)", "Cast Eternity Surge - stagger for swell/blazing shards outside DR DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s" );
-  aoe->add_action( "deep_breath,if=!buff.dragonrage.up", "Cast DB if not in DR" );
+  aoe->add_action( "call_action_list,name=fb,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_aoe|!talent.animosity)&((buff.power_swell.remains<variable.r1_cast_time|(!talent.volatility&active_enemies=3))&buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up)&(target.time_to_die>=8|fight_remains<30)", "Cast Fire Breath - stagger for swell/blazing shards outside DR DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s" );
+  aoe->add_action( "call_action_list,name=es,if=buff.dragonrage.up|!talent.dragonrage|(cooldown.dragonrage.remains>variable.dr_prep_time_aoe&(buff.power_swell.remains<variable.r1_cast_time|(!talent.volatility&active_enemies=3))&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)", "Cast Eternity Surge - stagger for swell/blazing shards outside DR DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s" );
+  aoe->add_action( "deep_breath,if=!buff.dragonrage.up&essence.deficit>3", "Cast DB if not in DR and not going to overflow essence." );
   aoe->add_action( "shattering_star,target_if=max:target.health.pct,if=buff.essence_burst.stack<buff.essence_burst.max_stack|!talent.arcane_vigor", "Send SS when it doesn't overflow EB, without vigor send on CD" );
   aoe->add_action( "firestorm", "Cast Firestorm before spending ressources" );
-  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=5", "Pyre logic  Pyre 5T+  Pyre 4T with vola or if not playing CB  Pyre on 3T if playing CB and neither EB or blue buff is up  Pyre on 3T if not playing CB aslong as both EB and blue buff isn't up at the same time.  Pyre with 15 stacks of CB" );
-  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=4&(!talent.charged_blast|talent.volatility)" );
-  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility&(talent.charged_blast&!buff.essence_burst.up&!buff.iridescence_blue.up|(!talent.charged_blast&(!buff.essence_burst.up|!buff.iridescence_blue.up)))" );
+  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=5", "Pyre logic  Pyre 5T+  Pyre 4T with if both EB & Irid Blue isn't up or not playing Eternity Span  Pyre 4t if playing Volatility  Pyre on 3T if playing CB+Volatility and neither EB or blue buff is up  Pyre on 3T if not playing Volatility if Irid red is up or EB isn't up.  Pyre with 15 stacks of CB" );
+  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=4&(!buff.essence_burst.up&!buff.iridescence_blue.up|!talent.eternitys_span)" );
+  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=4&talent.volatility" );
+  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility&talent.charged_blast&!buff.essence_burst.up&!buff.iridescence_blue.up" );
+  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility&!talent.charged_blast&(buff.iridescence_red.up|!buff.essence_burst.up)" );
   aoe->add_action( "pyre,target_if=max:target.health.pct,if=buff.charged_blast.stack>=15" );
   aoe->add_action( "living_flame,target_if=max:target.health.pct,if=(!talent.burnout|buff.burnout.up|active_enemies>=4|buff.scarlet_adaptation.up)&buff.leaping_flames.up&!buff.essence_burst.up&essence<essence.max-1", "Cast LF with leaping flames up if: not playing burnout, burnout is up, more than 4 enemies, or scarlet adaptation is up." );
-  aoe->add_action( "disintegrate,target_if=max:target.health.pct,chain=1,early_chain_if=evoker.use_early_chaining&(buff.dragonrage.up|essence.deficit<=1)&ticks>=2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),if=raid_event.movement.in>2|buff.hover.up", "Yoinked the disintegrate logic from ST" );
+  aoe->add_action( "disintegrate,target_if=max:target.health.pct,chain=1,early_chain_if=evoker.use_early_chaining&ticks>=2&essence.deficit<2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(!(buff.power_infusion.up&buff.bloodlust.up)|cooldown.fire_breath.up|cooldown.eternity_surge.up)&(raid_event.movement.in>2|buff.hover.up),if=raid_event.movement.in>2|buff.hover.up", "Yoinked the disintegrate logic from ST" );
   aoe->add_action( "living_flame,target_if=max:target.health.pct,if=talent.snapfire&buff.burnout.up", "Cast LF with burnout and snapfire proc for those juicy insta firestorms" );
+  aoe->add_action( "call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&!buff.dragonrage.up", "Get Ancient Flame as Filler" );
   aoe->add_action( "azure_strike,target_if=max:target.health.pct", "Fallback filler" );
 
   es->add_action( "eternity_surge,empower_to=1,target_if=max:target.health.pct,if=active_enemies<=1+talent.eternitys_span|buff.dragonrage.remains<1.75*spell_haste&buff.dragonrage.remains>=1*spell_haste|buff.dragonrage.up&(active_enemies==5|!talent.eternitys_span&active_enemies>=6|talent.eternitys_span&active_enemies>=8)", "Eternity Surge, use rank most applicable to targets." );
@@ -104,6 +114,7 @@ void devastation( player_t* p )
   green->add_action( "verdant_embrace" );
 
   st->add_action( "use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down&raid_event.movement.in>6", "ST Action List, it's a mess, but it's getting better!" );
+  st->add_action( "use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains>0.5" );
   st->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<2&!buff.hover.up", "Movement Logic, Time spiral logic might need some tweaking actions.st+=/time_spiral,if=raid_event.movement.in<3&cooldown.hover.remains>=3&!buff.hover.up" );
   st->add_action( "firestorm,if=buff.snapfire.up", "Spend firestorm procs ASAP" );
   st->add_action( "dragonrage,if=cooldown.fire_breath.remains<4&cooldown.eternity_surge.remains<10&target.time_to_die>=32|fight_remains<30", "Relaxed Dragonrage Entry Requirements, cannot reliably reach third extend under normal conditions (Bloodlust + Power Infusion/Very high haste gear) DS optimization: Only cast if current fight will last 32s+ or encounter ends in less than 30s" );
@@ -127,7 +138,7 @@ void devastation( player_t* p )
   st->add_action( "azure_strike", "Fallback for movement" );
 
   trinkets->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle", "Use Dreambinder on CD" );
-  trinkets->add_action( "use_item,name=nymues_unraveling_spindle,if=((buff.emerald_trance_stacking.stack>=2&variable.has_external_pi)|(cooldown.dragonrage.remains<=3&cooldown.fire_breath.remains<7&cooldown.eternity_surge.remains<13&target.time_to_die>=35&!variable.has_external_pi))|fight_remains<=20", "Nymues is used before Dragonrage unless you have PI, then it is used on 2 Stacks of Emerald Trance" );
+  trinkets->add_action( "use_item,name=nymues_unraveling_spindle,if=((buff.emerald_trance_stacking.stack>=2&variable.has_external_pi)|(cooldown.dragonrage.remains<=3&cooldown.fire_breath.remains<7&cooldown.eternity_surge.remains<13&target.time_to_die>=35&(!variable.has_external_pi|!set_bonus.tier31_2pc)))|fight_remains<=20", "Nymues is used before Dragonrage unless you have PI, then it is used on 2 Stacks of Emerald Trance" );
   trinkets->add_action( "use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=(gcd.remains>0.5&(trinket.nymues_unraveling_spindle.cooldown.remains|!equipped.nymues_unraveling_spindle))|fight_remains<=20", "Belorrelos is used on CD if not playing Nymues, it is used after Nymues if it is played." );
   trinkets->add_action( "living_flame,if=buff.burnout.up&equipped.belorrelos_the_suncaller&trinket.belorrelos_the_suncaller.cooldown.remains<=gcd.max&cooldown.item_cd_1141.ready&(trinket.nymues_unraveling_spindle.cooldown.remains|!equipped.nymues_unraveling_spindle)", "Fit in a Burnout/Green spell/Azure strike as you cast belorrelos for the 'free' GCD" );
   trinkets->add_action( "call_action_list,name=green,if=talent.ancient_flame&equipped.belorrelos_the_suncaller&trinket.belorrelos_the_suncaller.cooldown.remains<=gcd.max&cooldown.item_cd_1141.ready&(trinket.nymues_unraveling_spindle.cooldown.remains|!equipped.nymues_unraveling_spindle)" );
@@ -143,9 +154,89 @@ void preservation( player_t* /*p*/ )
 {
 }
 
-void augmentation( player_t* /*p*/ )
+//augmentation_apl_start
+void augmentation( player_t* p )
 {
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* ebon_logic = p->get_action_priority_list( "ebon_logic" );
+  action_priority_list_t* opener_filler = p->get_action_priority_list( "opener_filler" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* fb = p->get_action_priority_list( "fb" );
+  action_priority_list_t* filler = p->get_action_priority_list( "filler" );
+
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "variable,name=spam_heal,default=1,op=reset" );
+  precombat->add_action( "variable,name=minimum_opener_delay,op=reset,default=0" );
+  precombat->add_action( "variable,name=opener_delay,value=variable.minimum_opener_delay,if=!talent.interwoven_threads" );
+  precombat->add_action( "variable,name=opener_delay,value=variable.minimum_opener_delay+variable.opener_delay,if=talent.interwoven_threads" );
+  precombat->add_action( "variable,name=opener_cds_detected,op=reset,default=0" );
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.irideus_fragment|trinket.1.is.balefire_branch|trinket.1.is.ashes_of_the_embersoul|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.spoils_of_neltharus" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.irideus_fragment|trinket.2.is.balefire_branch|trinket.2.is.ashes_of_the_embersoul|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.spoils_of_neltharus" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.irideus_fragment|trinket.1.is.balefire_branch|trinket.1.is.ashes_of_the_embersoul|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.spoils_of_neltharus|trinket.1.is.beacon_to_the_beyond|trinket.1.is.belorrelos_the_suncaller" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.irideus_fragment|trinket.2.is.balefire_branch|trinket.2.is.ashes_of_the_embersoul|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.spoils_of_neltharus|trinket.2.is.beacon_to_the_beyond|trinket.2.is.belorrelos_the_suncaller" );
+  precombat->add_action( "blistering_scales,target_if=target.role.tank" );
+  precombat->add_action( "living_flame" );
+
+  ebon_logic->add_action( "ebon_might,if=raid_event.adds.remains>10|raid_event.adds.in>20" );
+
+  opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay>?variable.minimum_opener_delay,if=!variable.opener_cds_detected&evoker.allied_cds_up>0" );
+  opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay-1" );
+  opener_filler->add_action( "variable,name=opener_cds_detected,value=1,if=!variable.opener_cds_detected&evoker.allied_cds_up>0" );
+  opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay-2,if=equipped.nymues_unraveling_spindle&trinket.nymues_unraveling_spindle.cooldown.up" );
+  opener_filler->add_action( "use_item,name=nymues_unraveling_spindle,if=cooldown.breath_of_eons.remains<=3" );
+  opener_filler->add_action( "living_flame,if=active_enemies=1|talent.pupil_of_alexstrasza" );
+  opener_filler->add_action( "azure_strike" );
+
+  items->add_action( "use_item,name=nymues_unraveling_spindle,if=cooldown.breath_of_eons.remains<=3" );
+  items->add_action( "use_item,name=irideus_fragment,if=debuff.temporal_wound.up|fight_remains<=30&buff.ebon_might_self.up" );
+  items->add_action( "use_item,name=ashes_of_the_embersoul,if=debuff.temporal_wound.up|fight_remains<=30&buff.ebon_might_self.up" );
+  items->add_action( "use_item,name=mirror_of_fractured_tomorrows,if=debuff.temporal_wound.up|fight_remains<=30&buff.ebon_might_self.up" );
+  items->add_action( "use_item,name=balefire_branch,if=debuff.temporal_wound.up|fight_remains<=30&buff.ebon_might_self.up" );
+  items->add_action( "use_item,name=spoils_of_neltharus,if=buff.spoils_of_neltharus_mastery.up&(!((trinket.1.is.irideus_fragment|trinket.1.is.mirror_of_fractured_tomorrows)&trinket.1.cooldown.up|(trinket.is.2.irideus_fragment|trinket.2.is.mirror_of_fractured_tomorrows)&trinket.2.cooldown.up)|!(time%%120<=20|fight_remains>=190&fight_remains<=250&&time%%60<=25|fight_remains<=25))" );
+  items->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>0.1&((!debuff.temporal_wound.up&((trinket.1.cooldown.remains>=20|!variable.trinket_1_exclude)&(trinket.2.cooldown.remains>=20|!variable.trinket_2_exclude))|variable.trinket_1_exclude&variable.trinket_2_exclude))&(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|raid_event.adds.in>60)|fight_remains<20" );
+  items->add_action( "use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=gcd.remains>0.1&((!debuff.temporal_wound.up&((trinket.1.cooldown.remains>=20|!variable.trinket_1_exclude)&(trinket.2.cooldown.remains>=20|!variable.trinket_2_exclude))|variable.trinket_1_exclude&variable.trinket_2_exclude))&(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|raid_event.adds.in>60)|fight_remains<20" );
+  items->add_action( "use_item,slot=trinket1,if=!debuff.temporal_wound.up&(cooldown.breath_of_eons.remains>=30|!variable.trinket_2_exclude)&!variable.trinket_1_manual" );
+  items->add_action( "use_item,slot=trinket2,if=!debuff.temporal_wound.up&(cooldown.breath_of_eons.remains>=30|!variable.trinket_1_exclude)&!variable.trinket_2_manual" );
+  items->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=gcd.remains>=gcd.max*0.6" );
+
+  default_->add_action( "variable,name=temp_wound,value=debuff.temporal_wound.remains,target_if=max:debuff.temporal_wound.remains" );
+  default_->add_action( "prescience,target_if=min:debuff.prescience.remains+1000*(target=self&active_allies>2)+1000*target.spec.augmentation,if=(full_recharge_time<=gcd.max*3|cooldown.ebon_might.remains<=gcd.max*3&(buff.ebon_might_self.remains-gcd.max*3)<=buff.ebon_might_self.duration*0.4|variable.temp_wound>=(gcd.max+action.eruption.cast_time)|fight_remains<=30)&(buff.trembling_earth.stack+evoker.prescience_buffs)<=(5+(full_recharge_time<=gcd.max*3))" );
+  default_->add_action( "call_action_list,name=ebon_logic,if=(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*0.4&(active_enemies>0|raid_event.adds.in<=3)&(evoker.prescience_buffs>=2&time<=10|evoker.prescience_buffs>=3|buff.ebon_might_self.remains>=action.ebon_might.cast_time|active_allies<=2)" );
+  default_->add_action( "run_action_list,name=opener_filler,if=variable.opener_delay>0&!equipped.nymues_unraveling_spindle" );
+  default_->add_action( "potion,if=debuff.temporal_wound.up&buff.ebon_might_self.up" );
+  default_->add_action( "call_action_list,name=items" );
+  default_->add_action( "deep_breath" );
+  default_->add_action( "call_action_list,name=fb,if=cooldown.time_skip.up&talent.time_skip&!talent.interwoven_threads" );
+  default_->add_action( "upheaval,target_if=target.time_to_die>duration+0.2,empower_to=1,if=buff.ebon_might_self.remains>duration&cooldown.time_skip.up&talent.time_skip&!talent.interwoven_threads" );
+  default_->add_action( "breath_of_eons,if=(cooldown.ebon_might.remains<=4|buff.ebon_might_self.up)&target.time_to_die>15&raid_event.adds.in>15&(!equipped.nymues_unraveling_spindle|trinket.nymues_unraveling_spindle.cooldown.remains>=10|fight_remains<30)|fight_remains<30,line_cd=117" );
+  default_->add_action( "living_flame,if=buff.leaping_flames.up&cooldown.fire_breath.up" );
+  default_->add_action( "call_action_list,name=fb,if=(raid_event.adds.remains>13|evoker.allied_cds_up>0|!raid_event.adds.exists)" );
+  default_->add_action( "upheaval,target_if=target.time_to_die>duration+0.2,empower_to=1,if=buff.ebon_might_self.remains>duration&(raid_event.adds.remains>13|!raid_event.adds.exists)" );
+  default_->add_action( "time_skip,if=(cooldown.fire_breath.remains+cooldown.upheaval.remains+cooldown.prescience.full_recharge_time)>=35" );
+  default_->add_action( "emerald_blossom,if=talent.dream_of_spring&buff.essence_burst.up&(variable.spam_heal=2|variable.spam_heal=1&!buff.ancient_flame.up)&(buff.ebon_might_self.up|essence.deficit=0|buff.essence_burst.stack=buff.essence_burst.max_stack&cooldown.ebon_might.remains>4)" );
+  default_->add_action( "eruption,if=buff.ebon_might_self.remains>execute_time|essence.deficit=0|buff.essence_burst.stack=buff.essence_burst.max_stack&cooldown.ebon_might.remains>4" );
+  default_->add_action( "blistering_scales,target_if=target.role.tank,if=!evoker.scales_up&buff.ebon_might_self.down" );
+  default_->add_action( "emerald_blossom,if=!buff.ebon_might_self.up&talent.ancient_flame&talent.scarlet_adaptation&!talent.dream_of_spring&!buff.ancient_flame.up&active_enemies=1" );
+  default_->add_action( "verdant_embrace,if=!buff.ebon_might_self.up&talent.ancient_flame&talent.scarlet_adaptation&!buff.ancient_flame.up&(!talent.dream_of_spring|mana>=200000)&active_enemies=1" );
+  default_->add_action( "run_action_list,name=filler" );
+
+  fb->add_action( "tip_the_scales,if=cooldown.fire_breath.ready&buff.ebon_might_self.up" );
+  fb->add_action( "fire_breath,empower_to=1,target_if=target.time_to_die>16,if=buff.ebon_might_self.remains>duration&equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=2,target_if=target.time_to_die>12,if=buff.ebon_might_self.remains>duration&equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=3,target_if=target.time_to_die>8,if=buff.ebon_might_self.remains>duration&equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=4,target_if=target.time_to_die>4,if=talent.font_of_magic&(buff.ebon_might_self.remains>duration|buff.tip_the_scales.up)" );
+  fb->add_action( "fire_breath,empower_to=3,target_if=target.time_to_die>8,if=(buff.ebon_might_self.remains>duration|buff.tip_the_scales.up)&!equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=2,target_if=target.time_to_die>12,if=buff.ebon_might_self.remains>duration&!equipped.neltharions_call_to_chaos" );
+  fb->add_action( "fire_breath,empower_to=1,target_if=target.time_to_die>16,if=buff.ebon_might_self.remains>duration&!equipped.neltharions_call_to_chaos" );
+
+  filler->add_action( "living_flame,if=(buff.ancient_flame.up|mana>=200000|!talent.dream_of_spring|variable.spam_heal=0)&(active_enemies=1|talent.pupil_of_alexstrasza)" );
+  filler->add_action( "azure_strike" );
 }
+//augmentation_apl_end
 
 void no_spec( player_t* /*p*/ )
 {

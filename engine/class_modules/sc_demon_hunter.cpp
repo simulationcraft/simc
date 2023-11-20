@@ -2374,7 +2374,7 @@ struct chaotic_disposition_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t::trigger( a, state );
   }
 
-  void execute( action_t* a, action_state_t* s ) override
+  void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_sleeping() )
       return;
@@ -2706,7 +2706,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
   }
 
   // Fel Devastation is always a 2s channel
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return dot_duration;
   }
@@ -2839,6 +2839,9 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
+      if (!data().ok())
+        return nullptr;
+
       if ( !t )
         t = target;
       if ( !t )
@@ -2894,15 +2897,18 @@ struct fiery_brand_t : public demon_hunter_spell_t
   {
     use_off_gcd = true;
 
-    // Merge the action stats for simplified reporting if we aren't using T30, otherwise split out
-    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
-    if ( !p->set_bonuses.t30_vengeance_4pc->ok() )
+    if ( data().ok() )
     {
-      dot_action->stats = stats;
-    }
-    else if ( !from_t30 )
-    {
-      add_child( dot_action );
+      // Merge the action stats for simplified reporting if we aren't using T30, otherwise split out
+      dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+      if ( !p->set_bonuses.t30_vengeance_4pc->ok() )
+      {
+        dot_action->stats = stats;
+      }
+      else if ( !from_t30 )
+      {
+        add_child( dot_action );
+      }
     }
   }
 
@@ -2935,6 +2941,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   dot_t* get_dot( player_t* t ) override
   {
+    if (!data().ok())
+      return nullptr;
     return dot_action->get_dot( t );
   }
 };
@@ -4147,9 +4155,12 @@ struct sigil_of_misery_t : public demon_hunter_spell_t
   sigil_of_misery_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_misery", p, p->spec.sigil_of_misery, options_str ), sigil( nullptr )
   {
-    sigil = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil", p->spec.sigil_of_misery_debuff,
-                                                               ground_aoe_duration );
-    sigil->stats = stats;
+    if ( data().ok() )
+    {
+      sigil = p->get_background_action<sigil_of_misery_sigil_t>( "sigil_of_misery_sigil",
+                                                                 p->spec.sigil_of_misery_debuff, ground_aoe_duration );
+      sigil->stats = stats;
+    }
   }
 
   void execute() override
@@ -4190,9 +4201,12 @@ struct sigil_of_silence_t : public demon_hunter_spell_t
   sigil_of_silence_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_silence", p, p->spec.sigil_of_silence, options_str ), sigil( nullptr )
   {
-    sigil        = p->get_background_action<sigil_of_silence_sigil_t>( "sigil_of_silence_sigil",
-                                                                p->spec.sigil_of_silence_debuff, ground_aoe_duration );
-    sigil->stats = stats;
+    if ( data().ok() )
+    {
+      sigil = p->get_background_action<sigil_of_silence_sigil_t>( "sigil_of_silence_sigil",
+                                                                  p->spec.sigil_of_silence_debuff, ground_aoe_duration );
+      sigil->stats = stats;
+    }
   }
 
   void execute() override
@@ -4233,9 +4247,12 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   sigil_of_chains_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_chains", p, p->spec.sigil_of_chains, options_str ), sigil( nullptr )
   {
-    sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil", p->spec.sigil_of_chains_debuff,
-                                                               ground_aoe_duration );
-    sigil->stats = stats;
+    if ( data().ok() )
+    {
+      sigil = p->get_background_action<sigil_of_chains_sigil_t>( "sigil_of_chains_sigil",
+                                                                 p->spec.sigil_of_chains_debuff, ground_aoe_duration );
+      sigil->stats = stats;
+    }
   }
 
   void execute() override
@@ -5458,7 +5475,7 @@ struct fracture_t : public demon_hunter_attack_t
       // t30 4pc proc happens after main hand execute but before offhand execute
       // this matters because the offhand hit benefits from Fiery Demise that may be
       // applied because of the t30 4pc proc
-      if ( p()->buff.t30_vengeance_4pc->up() )
+      if ( p()->buff.t30_vengeance_4pc->up() && p()->active.fiery_brand_t30 )
       {
         p()->active.fiery_brand_t30->execute_on_target( s->target );
         p()->buff.t30_vengeance_4pc->expire();
@@ -5534,7 +5551,7 @@ struct shear_t : public demon_hunter_attack_t
       }
     }
 
-    if ( p()->buff.t30_vengeance_4pc->up() )
+    if ( p()->buff.t30_vengeance_4pc->up() && p()->active.fiery_brand_t30 )
     {
       p()->active.fiery_brand_t30->execute_on_target( s->target );
       p()->buff.t30_vengeance_4pc->expire();
@@ -7754,6 +7771,7 @@ void demon_hunter_t::init_spells()
     chaotic_disposition_effect->type         = SPECIAL_EFFECT_EQUIP;
     chaotic_disposition_effect->spell_id     = talent.havoc.chaotic_disposition->id();
     chaotic_disposition_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+    chaotic_disposition_effect->proc_chance_ = 1.0; // 2023-11-14 -- Proc chance removed from talent spell
     special_effects.push_back( chaotic_disposition_effect );
 
     auto chaotic_disposition_cb = new chaotic_disposition_cb_t( this, *chaotic_disposition_effect );
@@ -7793,7 +7811,7 @@ void demon_hunter_t::init_spells()
     active.retaliation = get_background_action<retaliation_t>( "retaliation" );
   }
 
-  if ( set_bonuses.t30_vengeance_4pc->ok() )
+  if ( set_bonuses.t30_vengeance_4pc->ok() && talent.vengeance.fiery_brand->ok() )
   {
     fiery_brand_t* fiery_brand_t30 = get_background_action<fiery_brand_t>( "fiery_brand_t30", "", true );
     fiery_brand_t30->internal_cooldown->base_duration = 0_s;
@@ -8415,6 +8433,15 @@ void demon_hunter_t::combat_begin()
   if ( talent.vengeance.spirit_bomb->ok() )
   {
     frailty_driver = make_event<frailty_event_t>( *sim, this, true );
+  }  
+
+  // Cap starting fury
+  double fury_cap     = 20.0;
+  double current_fury = resources.current[ RESOURCE_FURY ];
+  if ( in_boss_encounter && current_fury > fury_cap )
+  {
+    resources.current[ RESOURCE_FURY ] = fury_cap;
+    sim->print_debug( "Fury for {} capped at combat start to {} (was {})", *this, fury_cap, current_fury );
   }
 }
 

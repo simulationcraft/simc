@@ -55,7 +55,6 @@ public:
   std::string player_if_expr_str;
 
   timespan_t saved_duration;
-  std::vector<player_t*> affected_players;
   std::unordered_map<size_t, std::unique_ptr<expr_t>> player_expressions;
   std::vector<std::unique_ptr<option_t>> options;
 
@@ -87,6 +86,7 @@ public:
   {
     return distance_max;
   }
+  virtual const std::vector<player_t*>& affected_players();
   void schedule();
   virtual void reset();
   void parse_options( util::string_view options_str );
@@ -108,6 +108,8 @@ private:
   void combat_begin();
   void start();
   void finish();
+
+  std::vector<player_t*> _affected_players;
 
   bool is_up;
   enum class activation_status_e

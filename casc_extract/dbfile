@@ -1021,6 +1021,7 @@
 4545612, DBFilesClient\CraftingDataItemQuality.db2
 4548446, DBFilesClient\ItemSalvage.db2
 4549058, DBFilesClient\ItemSalvageLoot.db2
+4550228, DBFilesClient\WorldLayerMapSet.db2
 4556715, DBFilesClient\ProfessionEffectType.db2
 4566929, DBFilesClient\ChrRacesCreateScreenIcon.db2
 4572795, DBFilesClient\ActionBarGroup.db2
@@ -1078,6 +1079,7 @@
 5156219, DBFilesClient\AltMinimapFiledata.db2
 5156220, DBFilesClient\AltMinimapWMO.db2
 5159897, DBFilesClient\CollectableSourceVendorSparse.db2
+5161908, DBFilesClient\MusicOverride.db2
 5163410, DBFilesClient\CollectableSourceVendor.db2
 5202058, DBFilesClient\QuestLabel.db2
 5205183, DBFilesClient\CollectableSourceQuest.db2
@@ -1086,5 +1088,13 @@
 5226140, DBFilesClient\ArenaTrackedItem.db2
 5228217, DBFilesClient\JournalInstanceQueueLoc.db2
 5228481, DBFilesClient\JournalInstanceEntrance.db2
+5319042, DBFilesClient\UiTextureAtlasElementSliceData.db2
 5320971, DBFilesClient\ChrRacesPing.db2
 5330797, DBFilesClient\PerksActivityXHolidays.db2
+5345180, DBFilesClient\ConditionalItemAppearance.db2
+5347591, DBFilesClient\ChrCustomizationGlyphPet.db2
+5386256, DBFilesClient\PerksVendorItemUIGroup.db2
+5387095, DBFilesClient\ChrCustGeoComponentLink.db2
+5389878, DBFilesClient\PerksUITheme.db2
+5390446, DBFilesClient\WeeklyRewardChestActivityTier.db2
+5475699, DBFilesClient\ItemFixupAction.db2

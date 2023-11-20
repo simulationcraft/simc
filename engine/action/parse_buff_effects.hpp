@@ -594,18 +594,7 @@ public:
 
   void parsed_html_report( report::sc_html_stream& os )
   {
-    auto ta_mul_c = ta_multiplier_buffeffects.size();
-    auto da_mul_c = da_multiplier_buffeffects.size();
-    auto exec_time_c = execute_time_buffeffects.size();
-    auto dot_dur_c = dot_duration_buffeffects.size();
-    auto tick_time_c = tick_time_buffeffects.size();
-    auto recharge_c = recharge_multiplier_buffeffects.size();
-    auto cost_c = cost_buffeffects.size();
-    auto flat_cost_c = flat_cost_buffeffects.size();
-    auto crit_c = crit_chance_buffeffects.size();
-    auto tgt_mul_c = target_multiplier_dotdebuffs.size();
-
-    if ( ta_mul_c + da_mul_c + exec_time_c + dot_dur_c + tick_time_c + recharge_c + cost_c + flat_cost_c + crit_c + tgt_mul_c == 0 )
+    if ( !total_buffeffects_count() )
       return;
 
     os << "<div>\n"
@@ -622,24 +611,42 @@ public:
        << "<th class=\"small\">Notes</th>\n"
        << "</tr>\n";
 
-    print_parsed_type( os, da_multiplier_buffeffects, da_mul_c, "Direct Damage" );
-    print_parsed_type( os, ta_multiplier_buffeffects, ta_mul_c, "Periodic Damage" );
-    print_parsed_type( os, crit_chance_buffeffects, crit_c, "Critical Strike Chance" );
-    print_parsed_type( os, execute_time_buffeffects, exec_time_c, "Execute Time" );
-    print_parsed_type( os, dot_duration_buffeffects, dot_dur_c, "Dot Duration" );
-    print_parsed_type( os, tick_time_buffeffects, tick_time_c, "Tick Time" );
-    print_parsed_type( os, recharge_multiplier_buffeffects, recharge_c, "Recharge Multiplier" );
-    print_parsed_type( os, flat_cost_buffeffects, flat_cost_c, "Flat Cost" );
-    print_parsed_type( os, cost_buffeffects, cost_c, "Percent Cost" );
-    print_parsed_type( os, target_multiplier_dotdebuffs, tgt_mul_c, "Dot / Debuff on Target" );
+    print_parsed_type( os, da_multiplier_buffeffects, "Direct Damage" );
+    print_parsed_type( os, ta_multiplier_buffeffects, "Periodic Damage" );
+    print_parsed_type( os, crit_chance_buffeffects, "Critical Strike Chance" );
+    print_parsed_type( os, execute_time_buffeffects, "Execute Time" );
+    print_parsed_type( os, dot_duration_buffeffects, "Dot Duration" );
+    print_parsed_type( os, tick_time_buffeffects, "Tick Time" );
+    print_parsed_type( os, recharge_multiplier_buffeffects, "Recharge Multiplier" );
+    print_parsed_type( os, flat_cost_buffeffects, "Flat Cost" );
+    print_parsed_type( os, cost_buffeffects, "Percent Cost" );
+    print_parsed_type( os, target_multiplier_dotdebuffs, "Dot / Debuff on Target" );
+    print_parsed_custom_type( os );
 
     os << "</table>\n"
        << "</div>\n";
   }
 
-  template <typename V>
-  void print_parsed_type( report::sc_html_stream& os, const V& entries, size_t c, std::string_view n )
+  virtual size_t total_buffeffects_count()
   {
+    return ta_multiplier_buffeffects.size() +
+           da_multiplier_buffeffects.size() +
+           execute_time_buffeffects.size() +
+           dot_duration_buffeffects.size() +
+           tick_time_buffeffects.size() +
+           recharge_multiplier_buffeffects.size() +
+           cost_buffeffects.size() +
+           flat_cost_buffeffects.size() +
+           crit_chance_buffeffects.size() +
+           target_multiplier_dotdebuffs.size();
+  }
+
+  virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
+
+  template <typename V>
+  void print_parsed_type( report::sc_html_stream& os, const V& entries, std::string_view n )
+  {
+    auto c = entries.size();
     if ( !c )
       return;
 

@@ -47,7 +47,7 @@ legs=benevolent_embersages_leggings,id=207253,bonus_id=4795,enchant_id=6830,ilev
 feet=grove_darkeners_treads,id=134429,bonus_id=4795,ilevel=489
 finger1=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489
 finger2=lord_waycrests_signet,id=158362,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489
-trinket1=witherbarks_branch,id=109999,ilevel=489
+trinket1=ashes_of_the_embersoul,id=207167,ilevel=489
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=4795,ilevel=489
 main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=4795,enchant_id=6655,ilevel=489
 
@@ -61,16 +61,16 @@ role=tank
 position=front
 talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQikkkUS0iIIKSIRBAkIIIBSSSSSiUgWiDAAAAAAEBEkAA
 
-head=benevolent_embersages_casque,id=207254,bonus_id=4800/4786/1520/9576/1808,gem_id=192985
+head=benevolent_embersages_casque,id=207254,bonus_id=4800/4786/1520/9576/1808,gem_id=192985,enchant_id=7052
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=4800/4786/1520/9576/8782,gem_id=192945/192945/192945
-shoulders=benevolent_embersages_wisdom,id=207252,bonus_id=4800/4786/1520/9576
+shoulder=benevolent_embersages_wisdom,id=207252,bonus_id=4800/4786/1520/9576
 back=shadowfeather_shawl,id=136977,bonus_id=4795,ilevel=489
 chest=benevolent_embersages_robe,id=207257,bonus_id=4800/4786/1520/9576,enchant_id=6625
-wrists=lifebound_bindings,id=193419,bonus_id=1576/8797/8960/1808,gem_id=192945,crafted_stats=32/36
+wrist=lifebound_bindings,id=193419,bonus_id=1576/8797/8960/1808,gem_id=192945,crafted_stats=32/36,ilevel=486
 hands=fading_chronogrips,id=207903,bonus_id=4795,ilevel=489
 waist=bloody_dragonhide_belt,id=207131,bonus_id=4800/4786/1520/9576/1808,gem_id=192945,enchant_id=6904
 legs=benevolent_embersages_leggings,id=207253,bonus_id=4800/4786/1520/9576,enchant_id=6490
-feet=toxic_thorn_footwraps,id=193452,bonus_id=1576,enchant_id=6606
+feet=toxic_thorn_footwraps,id=193452,bonus_id=1576,enchant_id=6606,ilevel=486
 finger1=seal_of_the_regal_loa,id=159458,bonus_id=4795/1808,ilevel=489,gem_id=192945,enchant_id=6556
 finger2=band_of_burning_thorns,id=207159,bonus_id=4795/1808,ilevel=489,gem_id=192945,enchant_id=6556
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=4800/4786/1520/9576

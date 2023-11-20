@@ -53,11 +53,11 @@ actions+=/berserking,if=target.time_to_die>180&buff.avatar.up|target.time_to_die
 actions+=/blood_fury,if=debuff.colossus_smash.up
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
-actions+=/run_action_list,name=hac,if=raid_event.adds.up&active_enemies>2|!raid_event.adds.up&active_enemies>2
+actions+=/run_action_list,name=hac,if=active_enemies>=3
 actions+=/call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
-actions+=/run_action_list,name=single_target,if=!raid_event.adds.exists
+actions+=/run_action_list,name=single_target,if=active_enemies<=2
 
-actions.execute=sweeping_strikes,if=spell_targets.whirlwind>1
+actions.execute=sweeping_strikes,if=active_enemies>=2&variable.adds_remain
 actions.execute+=/rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12
 actions.execute+=/avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20
 actions.execute+=/warbreaker
@@ -104,13 +104,12 @@ actions.hac+=/mortal_strike
 actions.hac+=/rend,if=active_enemies=1&dot.rend.remains<duration*0.3
 actions.hac+=/whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1
 actions.hac+=/cleave,if=!talent.crushing_force
-actions.hac+=/ignore_pain,if=talent.battlelord&talent.anger_management&rage>30&(target.health.pct>20|talent.massacre&target.health.pct>35)
 actions.hac+=/slam,if=talent.crushing_force&rage>30&(talent.fervor_of_battle&active_enemies=1|!talent.fervor_of_battle)
 actions.hac+=/shockwave,if=talent.sonic_boom
 actions.hac+=/bladestorm,if=raid_event.adds.in>30
 actions.hac+=/wrecking_throw
 
-actions.single_target=sweeping_strikes,if=spell_targets.whirlwind>1
+actions.single_target=sweeping_strikes,if=active_enemies>=2
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/mortal_strike
 actions.single_target+=/thunder_clap,if=!dot.rend.remains
@@ -120,7 +119,7 @@ actions.single_target+=/warbreaker
 actions.single_target+=/colossus_smash
 actions.single_target+=/skullsplitter,if=!talent.test_of_might&dot.deep_wounds.remains&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>3)
 actions.single_target+=/skullsplitter,if=talent.test_of_might&dot.deep_wounds.remains
-actions.single_target+=/thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|debuff.colossus_smash.up|cooldown.colossus_smash.remains<3|buff.avatar.up
+actions.single_target+=/thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|cooldown.colossus_smash.remains<3|buff.avatar.up
 actions.single_target+=/whirlwind,if=talent.storm_of_swords&talent.test_of_might&rage.pct>80&debuff.colossus_smash.up
 actions.single_target+=/thunder_clap,if=dot.rend.remains<=gcd&!talent.tide_of_blood
 actions.single_target+=/bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)
@@ -148,10 +147,14 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_b
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
 actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
-head=verdant_plate_crown,id=109986,bonus_id=6808/4786/9888/6935,gem_id=192982,enchant_id=7052
+# Variables
+actions.variables=variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)
+actions.variables+=/variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>5)
+
+head=verdant_plate_crown,id=109986,bonus_id=6808/4786/9888/6935,gem_id=192982,enchant=incandescent_essence
 neck=amulet_of_eonars_chosen,id=208445,bonus_id=7187/1520/8782,gem_id=192919/192919/192919
 shoulders=molten_vanguards_shouldervents,id=207180,bonus_id=7187/1520
-back=undulating_sporecloak,id=205025,bonus_id=9500/9405/8960,enchant=graceful_avoidance_3
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,enchant=graceful_avoidance_3,crafted_stats=36/40
 chest=molten_vanguards_plackart,id=207185,bonus_id=7187/1520,enchant=waking_stats_3
 wrists=allied_wristguard_of_companionship,id=190526,bonus_id=9500/9405/8960/6935,gem_id=192919,enchant=devotion_of_avoidance_3
 hands=molten_vanguards_crushers,id=207183,bonus_id=7187/1520
@@ -161,7 +164,7 @@ feet=molten_vanguards_greatboots,id=207184,bonus_id=7187/1520,enchant=watchers_l
 finger1=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192919,enchant=devotion_of_haste_3
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1514/3326/6646/6935,gem_id=192919,enchant=devotion_of_haste_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-trinket2=coiled_serpent_idol,id=207175,bonus_id=7187/1520
+trinket2=rezans_gleaming_eye,id=158712,bonus_id=1514/3317/6646
 main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 # Gear Summary
@@ -169,9 +172,9 @@ main_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=wafting_de
 # gear_strength=9780
 # gear_stamina=39006
 # gear_crit_rating=3937
-# gear_haste_rating=6509
-# gear_mastery_rating=2829
-# gear_versatility_rating=1753
+# gear_haste_rating=6797
+# gear_mastery_rating=2558
+# gear_versatility_rating=1737
 # gear_avoidance_rating=325
 # gear_armor=11397
 # gear_bonus_armor=141

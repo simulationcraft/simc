@@ -1116,9 +1116,9 @@ struct shadow_word_death_t final : public priest_spell_t
 protected:
   struct swd_data
   {
-    int chain_number  = 0;
-    int max_chain     = 2;
-    bool deathspeaker = false;
+    int chain_number        = 0;
+    int max_chain           = 2;
+    bool deathspeaker       = false;
   };
   using state_t = priest_action_state_t<swd_data>;
   using ab      = priest_spell_t;
@@ -1130,8 +1130,9 @@ public:
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
+  timespan_t execute_override;
 
-  shadow_word_death_t( priest_t& p )
+  shadow_word_death_t( priest_t& p, timespan_t execute_override = timespan_t::min() )
     : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
@@ -1139,7 +1140,8 @@ public:
                                                             : 1.0 ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
-      child_searing_light( priest().background_actions.searing_light )
+      child_searing_light( priest().background_actions.searing_light ),
+      execute_override( execute_override )
   {
     affected_by_shadow_weaving = true;
 
@@ -1177,6 +1179,14 @@ public:
   const state_t* cast_state( const action_state_t* s ) const
   {
     return static_cast<const state_t*>( s );
+  }
+
+  timespan_t execute_time() const
+  {
+    if ( execute_override > timespan_t::min() )
+      return execute_override;
+
+    return ab::execute_time();
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -1299,7 +1309,7 @@ public:
 
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
-          make_event( sim, 200_ms, [ state, child_death ] { child_death->schedule_execute( state ); } );
+          child_death->schedule_execute( state );
         }
       }
 
@@ -2732,7 +2742,7 @@ void priest_t::init_background_actions()
   player_t::init_background_actions();
 
   background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
-  background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this );
+  background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this, 200_ms );
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
   background_actions.atonement           = new actions::heals::atonement_t( *this );
