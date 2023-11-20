@@ -2665,7 +2665,7 @@ void buff_t::expire( timespan_t delay )
 
   if ( expire_callback )
   {
-    expire_callback( this, remaining_duration, expiration_stacks );
+    expire_callback( this, expiration_stacks, remaining_duration );
   }
 
   expire_override( expiration_stacks, remaining_duration );  // virtual expire call

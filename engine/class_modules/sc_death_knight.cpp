@@ -1480,7 +1480,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.chill_streak = make_buff( *this, "chill_streak", p->spell.chill_streak_damage )
                             -> set_quiet( true )
-                            -> set_expire_callback( [ target, p ]( buff_t*, timespan_t d, int ) 
+                            -> set_expire_callback( [ target, p ]( buff_t*, int, timespan_t d )
                             {
                               // Chill streak doesnt bounce if the target dies before the debuff expires
                               if( d == timespan_t::zero() )
@@ -7388,6 +7388,7 @@ struct sacrificial_pact_t final : public death_knight_heal_t
     target = p;
     base_pct_heal = data().effectN( 1 ).percent();
     parse_options( options_str );
+    cooldown->duration = p->talent.sacrificial_pact->cooldown();
     damage = get_action<sacrificial_pact_damage_t>( "sacrificial_pact_damage", p );
   }
 
@@ -7396,20 +7397,14 @@ struct sacrificial_pact_t final : public death_knight_heal_t
     death_knight_heal_t::execute();
 
     damage -> execute_on_target( player -> target );
-    for (auto& ghoul : p()->pets.ghoul_pet)
-    {
-      ghoul->dismiss();
-    }
+    p()->pets.ghoul_pet.active_pet()->dismiss();
   }
 
   bool ready() override
   {
-    for ( auto& ghoul : p()->pets.ghoul_pet )
+    if ( p()->pets.ghoul_pet.active_pet() == nullptr || p()->pets.ghoul_pet.active_pet()->is_sleeping() )
     {
-      if (!ghoul->is_sleeping())
-        return true;
-      else
-        return false;
+      return false;
     }
 
     return death_knight_heal_t::ready();

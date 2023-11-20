@@ -50,7 +50,7 @@ using buff_tick_callback_t = std::function<void(buff_t* buff, int current_tick, 
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
 using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, timespan_t)>;
 using buff_stack_change_callback_t = std::function<void(buff_t*, int old_stack, int new_stack)>;
-using buff_expire_callback_t = std::function<void( buff_t* buff, timespan_t duration, int stacks )>;
+using buff_expire_callback_t = std::function<void( buff_t* buff, int stacks, timespan_t duration )>;
 
 // Buffs ====================================================================
 
