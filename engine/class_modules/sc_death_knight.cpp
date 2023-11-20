@@ -4854,6 +4854,13 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     background = proc = true;
   }
 
+  void execute() override
+  {
+    // Setting a variable min travel time to more accurately emulate in game variance
+    min_travel_time = rng().gauss( 0.5, 0.2 );
+    death_knight_spell_t::execute();
+  }
+
   void impact( action_state_t* state ) override
   {
     if ( state -> target -> is_player() )
@@ -4905,8 +4912,6 @@ struct chill_streak_damage_t final : public death_knight_spell_t
 
 struct chill_streak_debuff_t final : public buff_t
 {
-  int hit_count;
-
   chill_streak_debuff_t( death_knight_td_t& td, player_t* t, death_knight_t* p ) :
     buff_t( td, "chill_streak_debuff", p -> spell.chill_streak_damage ),
     damage( get_action<chill_streak_damage_t>( "chill_streak_damage", p ) ), 
@@ -4936,8 +4941,6 @@ struct chill_streak_debuff_t final : public buff_t
       {
         if ( target != tar )
         {
-          // Setting a variable min travel time to more accurately emulate in game variance
-          damage->min_travel_time = rng().gauss( 0.5, 0.2 );
           damage->set_target( target );
           damage->schedule_execute();
           hit_count++;
@@ -4952,13 +4955,24 @@ struct chill_streak_debuff_t final : public buff_t
         player->procs.enduring_chill->occur();
       }
     }
+    else
+    {
+      hit_count = 0;
+    }
     buff_t::expire_override( s, d );
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+    hit_count = 0;
   }
 private:
   action_t* damage;
   player_t* tar;
   death_knight_t* player;
   int max_hits;
+  int hit_count;
 };
 
 struct chill_streak_t final : public death_knight_spell_t
@@ -4973,17 +4987,8 @@ struct chill_streak_t final : public death_knight_spell_t
     aoe = 0;
     track_cd_waste = true;
   }
-
-  void execute() override
-  {
-    auto td = get_td( target );
-    debuff = td->debuff.chill_streak;
-    debug_cast<chill_streak_debuff_t*>( debuff )->hit_count = 0;
-    death_knight_spell_t::execute();
-  }
 private:
   action_t* damage;
-  buff_t* debuff;
 };
 
 // Consumption ==============================================================
