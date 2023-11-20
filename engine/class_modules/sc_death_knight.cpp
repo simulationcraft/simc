@@ -1479,8 +1479,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                             -> set_default_value( p -> spell.lingering_chill -> effectN( 1 ).percent() );
 
   debuff.chill_streak = make_buff( *this, "chill_streak", p->spell.chill_streak_damage )
-                            -> set_expire_callback( [ target, p ]( buff_t*, timespan_t d, int s ) 
+                            -> set_quiet( true )
+                            -> set_expire_callback( [ target, p ]( buff_t*, timespan_t d, int ) 
                             {
+                              // Chill streak doesnt bounce if the target dies before the debuff expires
                               if( d == timespan_t::zero() )
                               {
                                 p -> chill_streak_bounce( target );
@@ -9064,7 +9066,6 @@ void death_knight_t::chill_streak_bounce( player_t* t )
     }
   };
 
-  const death_knight_td_t* td = get_target_data( t );
   make_event<cs_bounce_t>( *sim, this, t );
 }
 
