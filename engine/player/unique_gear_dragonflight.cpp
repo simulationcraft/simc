@@ -7122,6 +7122,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
   {
     effect.proc_flags_    = PF_DAMAGE_TAKEN;
     effect.proc_flags2_   = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
+    effect.cooldown_      = 3_s; // No longer in spell data, manually setting to value in tooltip
     effect.execute_action = action;
 
     new dbc_proc_callback_t( effect.player, effect );
@@ -7129,7 +7130,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     // Attempt to trigger Gift of Ursine Vengeance roughly every max GCD on top of the damage taken
     // procs in order to more accurately represent the damage done during Fury of Urctos.
     timespan_t period      = ( effect.player->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
-                                        effect.player->rng().range( 0_s, 750_ms ) /
+                                        effect.player->rng().range( 0_s, 3_s ) /
                                             ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
     make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
   }
