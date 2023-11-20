@@ -4915,7 +4915,7 @@ struct chill_streak_debuff_t final : public buff_t
   chill_streak_debuff_t( death_knight_td_t& td, player_t* t, death_knight_t* p ) :
     buff_t( td, "chill_streak_debuff", p -> spell.chill_streak_damage ),
     damage( get_action<chill_streak_damage_t>( "chill_streak_damage", p ) ), 
-    player( p ), tar( t )
+    player( p ), tar( t ), hit_count( 0 )
   {
     max_hits = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );
     if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B4 ) )
