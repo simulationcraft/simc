@@ -1475,7 +1475,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.lingering_chill = make_buff( *this, "lingering_chill", p -> spell.lingering_chill )
                             -> set_default_value( p -> spell.lingering_chill -> effectN( 1 ).percent() );
 
-  debuff.chill_streak = new chill_streak_debuff_t( target, p );
+  debuff.chill_streak = new chill_streak_debuff_t( *this, target, p );
 
   // Unholy
   debuff.festering_wound  = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
@@ -4907,8 +4907,8 @@ struct chill_streak_debuff_t final : public buff_t
 {
   int hit_count;
 
-  chill_streak_debuff_t( player_t* t, death_knight_t* p ) :
-    buff_t( t, "chill_streak_debuff", p -> spell.chill_streak_damage ),
+  chill_streak_debuff_t( death_knight_td_t& td, player_t* t, death_knight_t* p ) :
+    buff_t( td, "chill_streak_debuff", p -> spell.chill_streak_damage ),
     damage( get_action<chill_streak_damage_t>( "chill_streak_damage", p ) ), 
     player( p ), tar( t )
   {
