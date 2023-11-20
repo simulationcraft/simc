@@ -4874,13 +4874,6 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     }
   }
 
-  void execute() override
-  {
-    // Setting a variable min travel time to more accurately emulate in game variance
-    min_travel_time = rng().gauss( 0.5, 0.2 );
-    death_knight_spell_t::execute();
-  }
-
   void impact( action_state_t* state ) override
   {
     if ( state -> target -> is_player() )
