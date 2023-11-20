@@ -4874,6 +4874,13 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     }
   }
 
+  void execute() override
+  {
+    // Setting a variable min travel time to more accurately emulate in game variance
+    min_travel_time = rng().gauss( 0.5, 0.2 );
+    death_knight_spell_t::execute();
+  }
+
   void impact( action_state_t* state ) override
   {
     if ( state -> target -> is_player() )
@@ -4881,10 +4888,17 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       state->result_raw = state->result_amount = state->result_total = 0;
     }
     death_knight_spell_t::impact( state );
+    current++;
 	
     if ( ! state -> action -> result_is_hit( state -> result ) )
     {
       return;
+    }
+
+    if ( p()->talent.frost.enduring_chill.ok() && rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
+    {
+      current--;
+      p()->procs.enduring_chill->occur();
     }
 
     auto td = get_td( state->target );
@@ -4892,13 +4906,6 @@ struct chill_streak_damage_t final : public death_knight_spell_t
     if ( current < max_bounces )
     {
       td->debuff.chill_streak->trigger();
-      current++;
-    }
-
-    if ( p()->talent.frost.enduring_chill.ok() && rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
-    {
-      current--;
-      p()->procs.enduring_chill->occur();
     }
 
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) )
