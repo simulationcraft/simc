@@ -511,6 +511,7 @@ struct death_knight_td_t : public actor_target_data_t {
     propagate_const<buff_t*> piercing_chill;
     propagate_const<buff_t*> everfrost;
     propagate_const<buff_t*> lingering_chill;
+    propagate_const<buff_t*> chill_streak;
 	
     // Unholy
     propagate_const<buff_t*> festering_wound;
@@ -1473,6 +1474,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.lingering_chill = make_buff( *this, "lingering_chill", p -> spell.lingering_chill )
                             -> set_default_value( p -> spell.lingering_chill -> effectN( 1 ).percent() );
+
+  debuff.chill_streak = new chill_streak_debuff_t( target, p );
 
   // Unholy
   debuff.festering_wound  = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
@@ -4845,19 +4848,10 @@ private:
 
 struct chill_streak_damage_t final : public death_knight_spell_t
 {
-  int hit_count;
-  int max_hits;
-
   chill_streak_damage_t( util::string_view n, death_knight_t* p ) :
     death_knight_spell_t( n, p, p -> spell.chill_streak_damage )
   {
     background = proc = true;
-    max_hits = as<int>( p -> talent.frost.chill_streak -> effectN( 1 ).base_value() );
-    travel_delay = p->spell.chill_streak_damage->duration().total_seconds(); 
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) )
-    {
-      max_hits += as<int>( p -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 1 ).base_value() );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -4867,30 +4861,24 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       state->result_raw = state->result_amount = state->result_total = 0;
     }
     death_knight_spell_t::impact( state );
-    hit_count++;
-    // Setting a variable min travel time to more accurately emulate in game variance
-    min_travel_time = rng().gauss( 0.5, 0.2 );
-
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) ) 
-    {
-      p() -> buffs.chilling_rage->trigger();
-    }
-
-    if ( p()->talent.frost.enduring_chill.ok() &&
-         rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
-    {
-      hit_count--;
-      p() -> procs.enduring_chill -> occur();
-    }
 	
     if ( ! state -> action -> result_is_hit( state -> result ) )
     {
       return;
     }
 
+    auto td = get_td( state->target );
+
+    td->debuff.chill_streak->trigger();
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) )
+    {
+      p()->buffs.chilling_rage->trigger();
+    }
+
     if ( p() -> talent.frost.piercing_chill.ok() )
     {
-      get_td( state -> target ) -> debuff.piercing_chill -> trigger();
+      td -> debuff.piercing_chill -> trigger();
     }
 
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B4) && rng().roll( p() -> sets -> set( DEATH_KNIGHT_FROST, T31, B4 ) -> effectN( 4 ).base_value() / 100 ) )
@@ -4912,30 +4900,69 @@ struct chill_streak_damage_t final : public death_knight_spell_t
         p() -> procs.t31_4pc_rune -> occur();
       }
     }
+  }
+};
 
-    vector_with_callback<player_t*> target_list = sim -> target_non_sleeping_list;
+struct chill_streak_debuff_t final : public buff_t
+{
+  int hit_count;
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2 )
+  chill_streak_debuff_t( player_t* t, death_knight_t* p ) :
+    buff_t( t, "chill_streak_debuff", p -> spell.chill_streak_damage ),
+    damage( get_action<chill_streak_damage_t>( "chill_streak_damage", p ) ), 
+    player( p ), tar( t )
+  {
+    max_hits = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );
+    if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B4 ) )
     {
-      target_list.push_back( p() );      
-    }
-
-    for ( const auto target : target_list )
-    {
-      if ( target != state -> target && hit_count < max_hits )
-      {
-        this -> set_target( target );
-        this -> schedule_execute();
-        return;
-       }
+      max_hits += as<int>( p->sets->set( DEATH_KNIGHT_FROST, T31, B4 )->effectN( 1 ).base_value() );
     }
   }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    // Check if buff expired naturally, if so, execute the next bounce
+    // Will not execute the next bounce if the target dies with it present
+    if( d == timespan_t::zero() && hit_count < max_hits )
+    {
+      vector_with_callback<player_t*> target_list = sim->target_non_sleeping_list;
+
+      if ( player->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2 )
+      {
+        target_list.push_back( player );
+      }
+
+      for ( const auto target : target_list )
+      {
+        if ( target != tar )
+        {
+          // Setting a variable min travel time to more accurately emulate in game variance
+          damage->min_travel_time = rng().gauss( 0.5, 0.2 );
+          damage->set_target( target );
+          damage->schedule_execute();
+          hit_count++;
+          return;
+        }
+      }
+
+      if ( player->talent.frost.enduring_chill.ok() &&
+           rng().roll( player->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
+      {
+        hit_count--;
+        player->procs.enduring_chill->occur();
+      }
+    }
+    buff_t::expire_override( s, d );
+  }
+private:
+  action_t* damage;
+  player_t* tar;
+  death_knight_t* player;
+  int max_hits;
 };
 
 struct chill_streak_t final : public death_knight_spell_t
 {
-  action_t* damage;
-
   chill_streak_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "chill_streak", p, p -> talent.frost.chill_streak ),
     damage( get_action<chill_streak_damage_t>( "chill_streak_damage", p ) )
@@ -4949,9 +4976,14 @@ struct chill_streak_t final : public death_knight_spell_t
 
   void execute() override
   {
-    debug_cast<chill_streak_damage_t*>( damage )->hit_count = 0;
+    auto td = get_td( target );
+    debuff = td->debuff.chill_streak;
+    debug_cast<chill_streak_debuff_t*>( debuff )->hit_count = 0;
     death_knight_spell_t::execute();
   }
+private:
+  action_t* damage;
+  buff_t* debuff;
 };
 
 // Consumption ==============================================================
