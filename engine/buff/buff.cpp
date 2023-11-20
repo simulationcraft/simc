@@ -1370,6 +1370,16 @@ buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& c
   return this;
 }
 
+buff_t* buff_t::set_expire_callback( const buff_expire_callback_t& cb )
+{
+  if (!is_fallback)
+  {
+    expire_callback = cb;
+  }
+
+  return this;
+}
+
 buff_t* buff_t::set_reverse_stack_count( int count )
 {
   reverse_stack_reduction = count;
@@ -2666,6 +2676,11 @@ void buff_t::expire( timespan_t delay )
   if ( stack_change_callback )
   {
     stack_change_callback( this, old_stack, current_stack );
+  }
+
+  if ( expire_callback )
+  {
+    expire_callback( this, remaining_duration, expiration_stacks );
   }
 
   if ( player )

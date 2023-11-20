@@ -127,6 +127,7 @@ namespace { // UNNAMED NAMESPACE
 
 using namespace unique_gear;
 
+// Foorward Declarations
 struct death_knight_t;
 struct runes_t;
 struct rune_t;
@@ -152,6 +153,10 @@ namespace runeforge {
   void spellwarding( special_effect_t& );
   void stoneskin_gargoyle( special_effect_t& );
   void unending_thirst( special_effect_t& ); // Effect only procs on killing blows, NYI
+}
+
+namespace debuffs {
+  struct chill_streak_debuff_t;
 }
 
 enum runeforge_apocalypse { DEATH, FAMINE, PESTILENCE, WAR, MAX };
@@ -688,6 +693,7 @@ public:
     action_t* frost_strike_offhand;
     action_t* frost_strike_sb_main;
     action_t* frost_strike_sb_offhand;
+    action_t* chill_streak_damage;
 
     // Unholy
     propagate_const<action_t*> bursting_sores;
@@ -1387,6 +1393,7 @@ public:
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void      consume_killing_machine( proc_t* proc );
   void      trigger_runic_empowerment( double rpcost );
+  void      chill_streak_bounce( player_t* target, int max_bounces = 0 );
   // Unholy
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( player_t* target, unsigned n = 1 );
@@ -1475,7 +1482,19 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.lingering_chill = make_buff( *this, "lingering_chill", p -> spell.lingering_chill )
                             -> set_default_value( p -> spell.lingering_chill -> effectN( 1 ).percent() );
 
-  debuff.chill_streak = new chill_streak_debuff_t( *this, target, p );
+  debuff.chill_streak = make_buff( *this, "chill_streak", p->spell.chill_streak_damage )
+                            -> set_expire_callback( [ target, p ]( buff_t*, timespan_t d, int s ) 
+                            {
+                              unsigned max_hits = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );
+                              if (p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B4 ))
+                              {
+                                max_hits += as<int>( p->sets->set( DEATH_KNIGHT_FROST, T31, B4 )->effectN( 1 ).base_value() );
+                              }
+                              if( d == timespan_t::zero() )
+                              {
+                                p -> chill_streak_bounce( target, max_hits );
+                              }
+                            } );
 
   // Unholy
   debuff.festering_wound  = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
@@ -4908,71 +4927,6 @@ struct chill_streak_damage_t final : public death_knight_spell_t
       }
     }
   }
-};
-
-struct chill_streak_debuff_t final : public buff_t
-{
-  chill_streak_debuff_t( death_knight_td_t& td, player_t* t, death_knight_t* p ) :
-    buff_t( td, "chill_streak_debuff", p -> spell.chill_streak_damage ),
-    damage( get_action<chill_streak_damage_t>( "chill_streak_damage", p ) ), 
-    player( p ), tar( t ), hit_count( 0 )
-  {
-    max_hits = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );
-    if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B4 ) )
-    {
-      max_hits += as<int>( p->sets->set( DEATH_KNIGHT_FROST, T31, B4 )->effectN( 1 ).base_value() );
-    }
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    // Check if buff expired naturally, if so, execute the next bounce
-    // Will not execute the next bounce if the target dies with it present
-    if( d == timespan_t::zero() && hit_count < max_hits )
-    {
-      vector_with_callback<player_t*> target_list = sim->target_non_sleeping_list;
-
-      if ( player->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2 )
-      {
-        target_list.push_back( player );
-      }
-
-      for ( const auto target : target_list )
-      {
-        if ( target != tar )
-        {
-          damage->set_target( target );
-          damage->schedule_execute();
-          hit_count++;
-          return;
-        }
-      }
-
-      if ( player->talent.frost.enduring_chill.ok() &&
-           rng().roll( player->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
-      {
-        hit_count--;
-        player->procs.enduring_chill->occur();
-      }
-    }
-    else
-    {
-      hit_count = 0;
-    }
-    buff_t::expire_override( s, d );
-  }
-
-  void reset() override
-  {
-    buff_t::reset();
-    hit_count = 0;
-  }
-private:
-  action_t* damage;
-  player_t* tar;
-  death_knight_t* player;
-  int max_hits;
-  int hit_count;
 };
 
 struct chill_streak_t final : public death_knight_spell_t
@@ -9065,6 +9019,64 @@ void death_knight_t::start_cold_heart()
   } );
 }
 
+void death_knight_t::chill_streak_bounce( player_t* t, int max )
+{
+  struct cs_bounce_t : public event_t
+  {
+    int max_bounces;
+    int current;
+    player_t* t;
+    death_knight_t* dk;
+
+    cs_bounce_t( death_knight_t* dk, player_t* target, int max, int cur ) :
+      event_t( *dk, 0_ms ), max_bounces( max ), t( target ), dk( dk ), current( cur )
+    {
+    }
+
+    const char* name() const override
+    {
+      return "chill_streak_bounce";
+    }
+    
+    void execute() override
+    {
+      if (current < max_bounces)
+      {
+        vector_with_callback<player_t*> target_list = dk->sim->target_non_sleeping_list;
+
+        if (dk->sets->has_set_bonus( DEATH_KNIGHT_FROST, T31, B2 ) && target_list.size() < 2)
+        {
+          target_list.push_back( dk );
+        }
+
+        for (const auto target : target_list)
+        {
+          if (target != t)
+          {
+            dk->active_spells.chill_streak_damage->set_target( target );
+            dk->active_spells.chill_streak_damage->schedule_execute();
+            current++;
+          }
+        }
+
+        if (dk->talent.frost.enduring_chill.ok() &&
+             rng().roll( dk->talent.frost.enduring_chill->effectN( 1 ).percent() ))
+        {
+          current--;
+          dk->procs.enduring_chill->occur();
+        }
+      }
+      else
+      {
+        current = 0;
+      }
+    }
+  };
+
+  const death_knight_td_t* td = get_target_data( t );
+  make_event<cs_bounce_t>( *sim, this, t, max, current );
+}
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -9149,6 +9161,11 @@ void death_knight_t::create_actions()
       {
         active_spells.frost_strike_sb_main = get_action<frost_strike_strike_t>( "frost_strike_sb", this, &( main_hand_weapon ), mh_data, true );
       }
+    }
+
+    if (talent.frost.chill_streak.ok())
+    {
+      active_spells.chill_streak_damage = get_action<chill_streak_damage_t>( "chill_streak_damage", this );
     }
   }
 
@@ -9872,7 +9889,6 @@ void death_knight_t::init_spells()
   // Frost
   spell.murderous_efficiency_gain     = find_spell( 207062 );
   spell.rage_of_the_frozen_champion   = find_spell( 341725 );
-  spell.piercing_chill_debuff         = find_spell( 377359 );
   spell.runic_empowerment_chance      = find_spell( 81229 );
   spell.gathering_storm_buff          = find_spell( 211805 );
   spell.inexorable_assault_buff       = find_spell( 253595 );
