@@ -7396,12 +7396,9 @@ struct sacrificial_pact_t final : public death_knight_heal_t
 
   bool ready() override
   {
-    for ( auto& ghoul : p()->pets.ghoul_pet )
+    if ( p()->pets.ghoul_pet.active_pet() == nullptr || p()->pets.ghoul_pet.active_pet()->is_sleeping() )
     {
-      if (!ghoul->is_sleeping())
-        return true;
-      else
-        return false;
+      return false;
     }
 
     return death_knight_heal_t::ready();
