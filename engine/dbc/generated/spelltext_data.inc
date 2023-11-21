@@ -20895,8 +20895,8 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  387624, "$reduc=${$AP*$387625s2/100}" },
   {  387625, "$reduc=${$AP*$387625s2/100}" },
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
-  {  388023, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
-  {  388026, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
+  {  388023, "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
+  {  388026, "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
   {  388917, "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
   {  389359, "$health=${5}\r\n$cdr=${10}" },
   {  389880, "$duration= ${$s1/1000}.1" },
@@ -20906,7 +20906,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  393400, "$dmg=${.9*5*$AP*(1+$@versadmg)*(1+$137023s2/100)}\r\n$ptadmg=${$<dmg>*$abs($418359s3)/100}" },
   {  394352, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  394354, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
-  {  395152, "$stat=${$INT*($s1/100)}\r\n$classset=$?s414878[${$414878s1)}][${0}]\r\n$amount=${6.5+$<classset>}.1" },
+  {  395152, "$stat=${$INT*($s1/100)}\r\n$amount=${6.5}.1" },
   {  396286, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   {  403631, "$emDur=${5}" },
@@ -20936,7 +20936,8 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.2.0.52188
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
-  {  395152,  0, "$stat=${$INT*($s1/100)}\r\n$amount=${6.5}.1", "$stat=${$INT*($s1/100)}\r\n$classset=$?s414878[${$414878s1)}][${0}]\r\n$amount=${6.5+$<classset>}.1" },
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
+  {  388023,  0, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$s1*$<pvp>}]", "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
+  {  388026,  0, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]", "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
 } };
 
