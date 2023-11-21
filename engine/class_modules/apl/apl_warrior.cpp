@@ -173,6 +173,7 @@ void arms( player_t* p )
   default_->add_action( "run_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
   default_->add_action( "run_action_list,name=single_target" );
 
+  execute->add_action( "whirlwind,if=buff.collateral_damage.up&cooldown.sweeping_strikes.remains<3" );
   execute->add_action( "sweeping_strikes,if=active_enemies>1" );
   execute->add_action( "mortal_strike,if=dot.rend.remains<=gcd&talent.bloodletting" );
   execute->add_action( "rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12" );
@@ -195,6 +196,7 @@ void arms( player_t* p )
   execute->add_action( "wrecking_throw" );
 
   aoe->add_action( "execute,if=buff.juggernaut.up&buff.juggernaut.remains<gcd" );
+  aoe->add_action( "whirlwind,if=buff.collateral_damage.up&cooldown.sweeping_strikes.remains<3" );
   aoe->add_action( "thunder_clap,if=talent.thunder_clap&talent.blood_and_thunder&talent.rend&dot.rend.remains<=dot.rend.duration*0.3" );
   aoe->add_action( "sweeping_strikes,if=cooldown.bladestorm.remains>15|talent.improved_sweeping_strikes&cooldown.bladestorm.remains>21|!talent.bladestorm|!talent.bladestorm&talent.blademasters_torment&cooldown.avatar.remains>15|!talent.bladestorm&talent.blademasters_torment&talent.improved_sweeping_strikes&cooldown.avatar.remains>21" );
   aoe->add_action( "avatar,if=raid_event.adds.in>15|talent.blademasters_torment|target.time_to_die<20|buff.hurricane.remains<3" );
@@ -222,6 +224,7 @@ void arms( player_t* p )
   aoe->add_action( "shockwave" );
   aoe->add_action( "wrecking_throw" );
 
+  single_target->add_action( "whirlwind,if=buff.collateral_damage.up&cooldown.sweeping_strikes.remains<3" );
   single_target->add_action( "sweeping_strikes,if=active_enemies>1" );
   single_target->add_action( "execute,if=(buff.juggernaut.up&buff.juggernaut.remains<gcd)|(buff.sudden_death.react&dot.deep_wounds.remains&set_bonus.tier31_2pc|buff.sudden_death.react&!dot.rend.remains&set_bonus.tier31_4pc)" );
   single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.blood_and_thunder&talent.blademasters_torment" );
