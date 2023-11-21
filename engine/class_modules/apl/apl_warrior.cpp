@@ -178,7 +178,7 @@ void arms( player_t* p )
   execute->add_action( "rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12" );
   execute->add_action( "avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20" );
   execute->add_action( "spear_of_bastion,if=cooldown.colossus_smash.remains<=gcd" );
-  execute->add_action( "warbreaker" );
+  execute->add_action( "warbreaker,if=raid_event.adds.in>22" );
   execute->add_action( "colossus_smash" );
   execute->add_action( "execute,if=buff.sudden_death.react&dot.deep_wounds.remains" );
   execute->add_action( "thunderous_roar,if=(talent.test_of_might&rage<40)|(!talent.test_of_might&(buff.avatar.up|debuff.colossus_smash.up)&rage<70)" );
