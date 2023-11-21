@@ -7020,7 +7020,6 @@ Description      : $@spelldesc393645
 Tooltip          : Next Living Flame's cast time reduced by $s1% and deals $s2% increased damage or healing.
 
 Name             : Ebon Might (desc=Black) (id=395152) [Spell Family (224)] 
-Hotfixed         : Variables
 Talent Entry     : Augmentation [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -7055,8 +7054,7 @@ May only affect $i allies at once, and prefers to imbue damage dealers.
 Eruption, $?s403631[Breath of Eons][Deep Breath], and your empower spells extend the duration of these effects.
 Tooltip          : $pri increased by $w2.
 Variables        : $stat=${$INT*($s1/100)}
-$classset=$?s414878[${$414878s1)}][${0}]
-$amount=${6.5+$<classset>}.1
+$amount=${6.5}.1
 
 Name             : Sands of Time (id=395153) [Spell Family (224), Passive] 
 Class            : Augmentation Evoker
