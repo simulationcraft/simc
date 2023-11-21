@@ -72,6 +72,7 @@ namespace item
   void cunning_of_the_cruel( special_effect_t& );
   void felmouth_frenzy( special_effect_t& );
   void matrix_restabilizer( special_effect_t& );
+  void blazefury_medallion( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -987,6 +988,49 @@ struct lfr_harmful_spell_t : public spell_t
 }
 
 // Items ====================================================================
+
+// Blazefury Medallion
+// 243988 Driver
+// 243991 Damage spell 
+void item::blazefury_medallion( special_effect_t& effect )
+{
+  struct blazefury_medallion_t : public generic_proc_t
+  {
+    blazefury_medallion_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "blazefury_medallion", effect.driver()->effectN( 1 ).trigger() )
+    {
+    }
+  };
+
+  struct blazefury_medallion_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    double base_damage;
+
+    blazefury_medallion_cb_t( player_t* p, const special_effect_t& e, action_t* a ) :
+      dbc_proc_callback_t( e.player, e ),
+      damage( a ),
+      base_damage( e.driver()->effectN( 1 ).trigger()->effectN( 1 ).average( e.item ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( a->result_is_hit( s->result ) )
+      {
+        // Currently only uses MH weapon speed, not the speed of the triggering weapon
+        // Leaving this in a CB handler just in case this changes at some point via hotfix
+        // TOCHECK -- Unclear if this uses equipped weapon speed for Feral or not
+        double speed_mod = ( a->player->main_hand_weapon.type == WEAPON_NONE ? 2.0 :
+                             a->player->main_hand_weapon.swing_time.total_seconds() );
+        damage->execute_on_target( s->target, base_damage * speed_mod );
+      }
+    }
+  };
+
+  auto damage = create_proc_action<blazefury_medallion_t>( "blazefury_medallion", effect );
+  new blazefury_medallion_cb_t( effect.player, effect, damage );
+}
 
 void item::rune_of_reorigination( special_effect_t& effect )
 {
@@ -4875,6 +4919,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 108006, item::cunning_of_the_cruel           );
   register_special_effect( 109799, item::cunning_of_the_cruel           );
   register_special_effect( 109801, item::cunning_of_the_cruel           );
+  register_special_effect( 243988, item::blazefury_medallion            ); /* Kazzak Neck */
 
   /* Misc effects */
   register_special_effect( 188534, item::felmouth_frenzy                );
