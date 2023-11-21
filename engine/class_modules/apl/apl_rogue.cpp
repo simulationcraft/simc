@@ -139,7 +139,7 @@ void assassination( player_t* p )
 
   dot->add_action( "variable,name=scent_effective_max_stacks,value=(spell_targets.fan_of_knives*talent.scent_of_blood.rank*2)>?20", "Damage over time abilities  Check what the maximum Scent of Blood stacks is currently" );
   dot->add_action( "variable,name=scent_saturation,value=buff.scent_of_blood.stack>=variable.scent_effective_max_stacks", "We are Scent Saturated when our stack count is hitting the maximum" );
-  dot->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=2&refreshable&pmultiplier<=1&effective_combo_points>=4&energy.regen_combined>25&!cooldown.deathmark.ready&target.time_to_die-remains>6", "Crimson Tempest on 2+ Targets if we have enough energy regen and it is not snapshot from stealth already" );
+  dot->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=set_bonus.tier31_4pc&refreshable&pmultiplier<=1&effective_combo_points>=4&energy.regen_combined>25&!cooldown.deathmark.ready&target.time_to_die-remains>6", "Crimson Tempest on 4+ Targets if we have enough energy regen and it is not snapshot from stealth already" );
   dot->add_action( "garrote,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&target.time_to_die-remains>12", "Garrote upkeep, also uses it in AoE to reach energy saturation" );
   dot->add_action( "garrote,cycle_targets=1,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&!variable.regen_saturated&spell_targets.fan_of_knives>=2&target.time_to_die-remains>12" );
   dot->add_action( "rupture,if=effective_combo_points>=4&(pmultiplier<=1)&refreshable&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))", "Rupture upkeep, also uses it in AoE to reach energy saturation" );
@@ -151,7 +151,7 @@ void assassination( player_t* p )
   stealthed->add_action( "kingsbane,if=buff.shadow_dance.remains>=2&buff.envenom.up", "Kingsbane in Shadow Dance for snapshotting Nightstalker" );
   stealthed->add_action( "envenom,if=effective_combo_points>=4&dot.kingsbane.ticking&buff.envenom.remains<=2", "Envenom to maintain the buff during Shadow Dance" );
   stealthed->add_action( "envenom,if=effective_combo_points>=4&buff.master_assassin_aura.up&!buff.shadow_dance.up&variable.single_target", "Envenom during Master Assassin in single target" );
-  stealthed->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=3&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6", "Crimson Tempest on 3+ targets to snapshot Nightstalker" );
+  stealthed->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=3+set_bonus.tier31_4pc&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6", "Crimson Tempest on 4+ targets to snapshot Nightstalker" );
   stealthed->add_action( "garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<(12-buff.sepsis_buff.remains)|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2", "Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Sepsis buff time and Indiscriminate Carnage" );
   stealthed->add_action( "garrote,if=stealthed.improved_garrote&!buff.shadow_dance.up&(pmultiplier<=1|dot.deathmark.ticking&buff.master_assassin_aura.remains<3)&combo_points.deficit>=1+2*talent.shrouded_suffocation" );
   stealthed->add_action( "garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remains<12)&combo_points.deficit>=1+2*talent.shrouded_suffocation" );
