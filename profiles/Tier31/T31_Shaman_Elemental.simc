@@ -241,33 +241,33 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=morningscale_cowl,id=109984,bonus_id=1808/9888,gem_id=192988,enchant=incandescent_essence
-neck=raven_filigree_pendant,id=134499,bonus_id=9882,gem_id=192964/192964/192964
-shoulders=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520
-back=shadowfeather_shawl,id=136977,bonus_id=9882,enchant=graceful_avoidance_3
-chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520,enchant=waking_stats_3
-wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=192964
-hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520
-waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520,gem_id=192964,enchant=shadowed_belt_clasp_3
-legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=frozen_spellthread_3
-feet=acidic_hailstone_treads,id=193466,bonus_id=9500/9405/8960,enchant=watchers_loam_3
-finger1=signet_of_titanic_insight,id=192999,bonus_id=9500/9405/8793,gem_id=192964,enchant=devotion_of_versatility_3
-finger2=archdruids_tainted_seal,id=134487,bonus_id=9882,gem_id=192964,enchant=devotion_of_versatility_3
-trinket1=balefire_branch,id=159630,bonus_id=9853
-trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520
-main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520,enchant=wafting_devotion_3
-off_hand=verdant_matrix_beacon,id=207798,bonus_id=7187/1520
+head=morningscale_cowl,id=109984,bonus_id=9888/9576,gem_id=192988,enchant=incandescent_essence
+neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520/9576,gem_id=192961/192961/192961
+shoulders=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520/9576
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=9853/9576,enchant=graceful_avoidance_3
+chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520/9576,enchant=waking_stats_3
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=192961,enchant=devotion_of_avoidance_3
+hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520/9576
+waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520/9576,gem_id=192961,enchant=shadowed_belt_clasp_3
+legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520/9576,enchant=frozen_spellthread_3
+feet=acidic_hailstone_treads,id=193466,bonus_id=8836/1576/8960,enchant=watchers_loam_3
+finger1=thornwoven_band,id=162548,bonus_id=9853/9576,gem_id=192961,enchant=devotion_of_mastery_3
+finger2=archdruids_tainted_seal,id=134487,bonus_id=9882/9576,gem_id=192961,enchant=devotion_of_mastery_3
+trinket1=sea_star,id=133201,bonus_id=9466/1514/8767/9576
+trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520/9576
+main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520/9576,enchant=wafting_devotion_3
+off_hand=disc_of_indomitable_will,id=158713,bonus_id=9853/9576
 
 # Gear Summary
-# gear_ilvl=488.44
+# gear_ilvl=488.63
 # gear_strength=469
-# gear_stamina=39037
+# gear_stamina=39112
 # gear_intellect=12117
 # gear_crit_rating=1256
-# gear_haste_rating=4171
-# gear_mastery_rating=6909
-# gear_versatility_rating=3082
-# gear_avoidance_rating=125
+# gear_haste_rating=4190
+# gear_mastery_rating=6878
+# gear_versatility_rating=3119
+# gear_avoidance_rating=325
 # gear_armor=13516
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
