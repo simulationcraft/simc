@@ -71,11 +71,11 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=opener_min_mana,default=-1,op=set,if=variable.opener_min_mana=-1,value=225000-(25000*!talent.arcane_harmony+200000*!variable.totm_on_last_spark_stack)" );
   precombat->add_action( "variable,name=totm_on_last_spark_stack,default=0,op=set,if=variable.totm_on_last_spark_stack=-1,value=set_bonus.tier29_4pc", "Variable used to swap rotation from using totm on the last stack of Spark or the 1st or 2nd" );
   precombat->add_action( "variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.erupting_spear_fragment|equipped.spoils_of_neltharus|equipped.tome_of_unstable_power|equipped.timebreaching_talon|equipped.horn_of_valor|equipped.mirror_of_fractured_tomorrows|equipped.ashes_of_the_embersoul|equipped.balefire_branch|equipped.time_theifs_gambit|equipped.nymues_unraveling_spindle", "Variable indicates use of a trinket that boosts stats during burst" );
-  precombat->add_action( "variable,name=mirror_double_on_use,op=set,value=0+((equipped.ashes_of_the_embersoul&equipped.mirror_of_fractured_tomorrows)|(equipped.nymues_unraveling_spindle&equipped.mirror_of_fractured_tomorrows))", "Variable indicates double on use trinket setups" );
-  precombat->add_action( "variable,name=balefire_double_on_use,op=set,value=0+((equipped.ashes_of_the_embersoul&equipped.balefire_branch)|(equipped.nymues_unraveling_spindle&equipped.balefire_branch)|(equipped.mirror_of_fractured_tomorrows&equipped.balefire_branch))" );
-  precombat->add_action( "variable,name=ashes_double_on_use,op=set,value=0+(equipped.nymues_unraveling_spindle&equipped.ashes_of_the_embersoul)" );
-  precombat->add_action( "variable,name=badgebalefire_double_on_use,op=set,value=0+(equipped.balefire_branch&equipped.obsidian_gladiators_badge_of_ferocity)" );
-  precombat->add_action( "variable,name=irideus_double_on_use,op=set,value=0+(equipped.timebreaching_talon&equipped.irideus_fragment)" );
+  precombat->add_action( "variable,name=mirror_double_on_use,op=set,value=((equipped.ashes_of_the_embersoul&equipped.mirror_of_fractured_tomorrows)|(equipped.nymues_unraveling_spindle&equipped.mirror_of_fractured_tomorrows))", "Variable indicates double on use trinket setups" );
+  precombat->add_action( "variable,name=balefire_double_on_use,op=set,value=((equipped.ashes_of_the_embersoul&equipped.balefire_branch)|(equipped.nymues_unraveling_spindle&equipped.balefire_branch)|(equipped.mirror_of_fractured_tomorrows&equipped.balefire_branch))" );
+  precombat->add_action( "variable,name=ashes_double_on_use,op=set,value=(equipped.nymues_unraveling_spindle&equipped.ashes_of_the_embersoul)" );
+  precombat->add_action( "variable,name=badgebalefire_double_on_use,op=set,value=(equipped.balefire_branch&equipped.obsidian_gladiators_badge_of_ferocity)" );
+  precombat->add_action( "variable,name=irideus_double_on_use,op=set,value=(equipped.timebreaching_talon&equipped.irideus_fragment)" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "arcane_blast,if=!talent.siphon_storm" );
@@ -124,7 +124,7 @@ void arcane( player_t* p )
   default_->add_action( "conjure_mana_gem,if=debuff.touch_of_the_magi.down&buff.arcane_surge.down&cooldown.arcane_surge.remains<30&cooldown.arcane_surge.remains<fight_remains&!mana_gem_charges", "Make a new gem if the encounter is long enough and use it after surge to recoup mana quickly" );
   default_->add_action( "use_mana_gem,if=talent.cascading_power&buff.clearcasting.stack<2&buff.arcane_surge.up" );
   default_->add_action( "use_mana_gem,if=!talent.cascading_power&(prev_gcd.1.arcane_surge&!variable.surge_last_spark_stack|variable.surge_last_spark_stack&prev_gcd.2.arcane_surge)" );
-  default_->add_action( "call_action_list,name=cooldown_phase,if=!variable.totm_on_last_spark_stack&(cooldown.arcane_surge.remains<=(gcd.max*(1+(talent.nether_tempest&talent.arcane_echo)))|(buff.arcane_surge.remains>(0+(3*(set_bonus.tier30_2pc&!set_bonus.tier30_4pc))))|buff.arcane_overload.up)&cooldown.evocation.remains>45&((cooldown.touch_of_the_magi.remains<gcd.max*4)|cooldown.touch_of_the_magi.remains>20)&active_enemies<variable.aoe_target_count", "Enter cooldown phase when cds are available or coming off cooldown otherwise default to rotation priority" );
+  default_->add_action( "call_action_list,name=cooldown_phase,if=!variable.totm_on_last_spark_stack&(cooldown.arcane_surge.remains<=(gcd.max*(1+(talent.nether_tempest&talent.arcane_echo)))|(buff.arcane_surge.remains>(3*(set_bonus.tier30_2pc&!set_bonus.tier30_4pc)))|buff.arcane_overload.up)&cooldown.evocation.remains>45&((cooldown.touch_of_the_magi.remains<gcd.max*4)|cooldown.touch_of_the_magi.remains>20)&active_enemies<variable.aoe_target_count", "Enter cooldown phase when cds are available or coming off cooldown otherwise default to rotation priority" );
   default_->add_action( "call_action_list,name=cooldown_phase,if=!variable.totm_on_last_spark_stack&cooldown.arcane_surge.remains>30&(cooldown.radiant_spark.ready|dot.radiant_spark.remains|debuff.radiant_spark_vulnerability.up)&(cooldown.touch_of_the_magi.remains<=(gcd.max*3)|debuff.touch_of_the_magi.up)&active_enemies<variable.aoe_target_count" );
   default_->add_action( "call_action_list,name=aoe_spark_phase,if=talent.radiant_spark&variable.aoe_spark_phase" );
   default_->add_action( "call_action_list,name=spark_phase,if=variable.totm_on_last_spark_stack&talent.radiant_spark&variable.spark_phase" );
@@ -134,7 +134,7 @@ void arcane( player_t* p )
   default_->add_action( "call_action_list,name=rotation" );
 
   cooldown_phase->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage" );
-  cooldown_phase->add_action( "variable,name=conserve_mana,op=set,if=cooldown.radiant_spark.ready,value=0+(cooldown.arcane_surge.remains<10)" );
+  cooldown_phase->add_action( "variable,name=conserve_mana,op=set,if=cooldown.radiant_spark.ready,value=(cooldown.arcane_surge.remains<10)" );
   cooldown_phase->add_action( "shifting_power,if=buff.arcane_surge.down&!talent.radiant_spark" );
   cooldown_phase->add_action( "arcane_orb,if=cooldown.radiant_spark.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   cooldown_phase->add_action( "arcane_blast,if=cooldown.radiant_spark.ready&(buff.arcane_charge.stack<2|(buff.arcane_charge.stack<buff.arcane_charge.max_stack&cooldown.arcane_orb.remains>=gcd.max))" );
@@ -204,7 +204,7 @@ void arcane( player_t* p )
   aoe_touch_phase->add_action( "arcane_explosion" );
 
   rotation->add_action( "arcane_orb,if=buff.arcane_charge.stack<3&(buff.bloodlust.down|mana.pct>70|(variable.totm_on_last_spark_stack&cooldown.touch_of_the_magi.remains>30))" );
-  rotation->add_action( "variable,name=conserve_mana,op=set,if=cooldown.arcane_surge.remains>30,value=0+(cooldown.touch_of_the_magi.remains>10)" );
+  rotation->add_action( "variable,name=conserve_mana,op=set,if=cooldown.arcane_surge.remains>30,value=(cooldown.touch_of_the_magi.remains>10)" );
   rotation->add_action( "variable,name=conserve_mana,op=set,if=cooldown.arcane_surge.remains<30,value=0" );
   rotation->add_action( "nether_tempest,if=equipped.belorrelos_the_suncaller&cooldown.belorrelos_the_suncaller.ready&buff.siphon_storm.down&buff.arcane_surge.down&equipped.nymues_unraveling_spindle,line_cd=120" );
   rotation->add_action( "shifting_power,if=variable.totm_on_last_spark_stack&(!talent.evocation|cooldown.evocation.remains>12)&(!talent.arcane_surge|cooldown.arcane_surge.remains>12)&(!talent.touch_of_the_magi|cooldown.touch_of_the_magi.remains>12)&fight_remains>15" );
