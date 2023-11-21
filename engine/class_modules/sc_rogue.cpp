@@ -9132,12 +9132,14 @@ std::unique_ptr<expr_t> rogue_t::create_action_expression( action_t& action, std
   {
     return make_fn_expr( name_str, [ this, &action ]() {
       rogue_td_t* tdata = get_target_data( action.get_expression_target() );
-      return tdata->dots.garrote->is_ticking() +
-        tdata->dots.internal_bleeding->is_ticking() +
-        tdata->dots.rupture->is_ticking() +
-        tdata->dots.crimson_tempest->is_ticking() +
-        tdata->dots.mutilated_flesh->is_ticking() +
-        tdata->dots.serrated_bone_spike->is_ticking();
+      return tdata->total_bleeds();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "poisons" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      rogue_td_t* tdata = get_target_data( action.get_expression_target() );
+      return tdata->total_poisons();
     } );
   }
   // exsanguinated.(garrote|internal_bleeding|rupture|crimson_tempest)
@@ -9267,7 +9269,6 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         if ( tdata->is_lethal_poisoned() )
         {
           poisoned_bleeds +=
-            tdata->dots.internal_bleeding->is_ticking() +
             tdata->dots.garrote->is_ticking() +
             tdata->dots.garrote_deathmark->is_ticking() +
             tdata->dots.rupture->is_ticking() +
@@ -9645,7 +9646,7 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
               if ( tdata->is_lethal_poisoned() )
               {
                 lethal_poisons++;
-                auto bleeds = { tdata->dots.internal_bleeding, tdata->dots.garrote, tdata->dots.garrote_deathmark,
+                auto bleeds = { tdata->dots.garrote, tdata->dots.garrote_deathmark,
                                 tdata->dots.rupture, tdata->dots.rupture_deathmark };
                 for ( auto bleed : bleeds )
                 {

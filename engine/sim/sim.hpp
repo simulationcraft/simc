@@ -534,7 +534,7 @@ struct sim_t : private sc_thread_t
     // Standard Deviation of interval
     timespan_t embersoul_dire_interval_stddev = 2.5_s;
     // Sets the base interval for Gift of Ursine Vengeance to attempt to proc
-    timespan_t gift_of_ursine_vengeance_period = 750_ms;
+    timespan_t gift_of_ursine_vengeance_period = 3_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs

@@ -129,6 +129,7 @@ public:
     buff_t* bounding_stride;
     buff_t* brace_for_impact;
     buff_t* charge_movement;
+    buff_t* collateral_damage;
     buff_t* concussive_blows;
     buff_t* dancing_blades;
     buff_t* defensive_stance;
@@ -293,7 +294,6 @@ public:
     gain_t* booming_voice;
     gain_t* thunder_clap;
     gain_t* endless_rage;
-    gain_t* collateral_damage;
     gain_t* instigate;
     gain_t* war_machine_demise;
 
@@ -1364,6 +1364,11 @@ public:
   void execute() override
   {
     ab::execute();
+
+    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes -> up() && ab::num_targets_hit >= 2 )
+    {
+      p() -> buff.collateral_damage -> trigger();
+    }
   }
 
   bool ready() override
@@ -6383,12 +6388,27 @@ struct whirlwind_arms_damage_t : public warrior_attack_t
     {
       am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
     }
+
+    if ( !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() )
+    {
+      am *= 1.0 + p()->buff.collateral_damage->stack_value();
+    }
     return am;
   }
 
   double tactician_cost() const override
   {
     return 0;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p()->talents.arms.collateral_damage.ok() && !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() && data().id() == 411547 )
+    {
+      p() -> buff.collateral_damage -> expire();
+    }
   }
 };
 
@@ -8994,6 +9014,9 @@ void warrior_t::create_buffs()
       ->set_chance(1)
       ->set_cooldown( timespan_t::zero() );
 
+  buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
+      -> set_default_value_from_effect( 1 );
+
   buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes )
       ->set_default_value( talents.warrior.wild_strikes->effectN( 2 ).base_value() / 100.0 )
       ->set_duration( find_spell( 392778 )->duration() )
@@ -9332,7 +9355,6 @@ void warrior_t::init_gains()
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.whirlwind                        = get_gain( "whirlwind" );
-  gain.collateral_damage                = get_gain( "collateral_damage" );
   gain.instigate                        = get_gain( "instigate" );
   gain.war_machine_demise               = get_gain( "war_machine_demise" );
 

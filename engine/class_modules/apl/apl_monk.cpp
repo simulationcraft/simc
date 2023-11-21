@@ -516,6 +516,7 @@ namespace monk_apl
 
     // Snapshot stats
     pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+    pre->add_action( "variable,name=sync_serenity,default=0,value=1,if=equipped.neltharions_call_to_dominance|equipped.ashes_of_the_embersoul|equipped.mirror_of_fractured_tomorrows|equipped.witherbarks_branche" );
 
     pre->add_action( "summon_white_tiger_statue" );
     pre->add_action( "expel_harm,if=chi<chi.max" );
@@ -550,7 +551,6 @@ namespace monk_apl
     def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
     def->add_action( "variable,name=hold_xuen,op=set,value=!talent.invoke_xuen_the_white_tiger|cooldown.invoke_xuen_the_white_tiger.duration>fight_remains" );
     def->add_action( "variable,name=hold_tp_rsk,op=set,value=!debuff.skyreach_exhaustion.remains<1&cooldown.rising_sun_kick.remains<1&(set_bonus.tier30_2pc|active_enemies<5)" );
-    def->add_action( "variable,name=sync_serenity,op=set,value=equipped.neltharions_call_to_dominance|equipped.ashes_of_the_embersoul|equipped.mirror_of_fractured_tomorrows|equipped.witherbarks_branche" );
 
     // Potion
     if ( p->sim->allow_potions )

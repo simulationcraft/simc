@@ -4078,7 +4078,7 @@ void sim_t::create_options()
   add_option( opt_float( "dragonflight.embersoul_dire_chance", dragonflight_opts.embersoul_dire_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.embersoul_dire_interval", dragonflight_opts.embersoul_dire_interval, 1_s, timespan_t::max() ) );
   add_option( opt_timespan( "dragonflight.embersoul_dire_interval_stddev", dragonflight_opts.embersoul_dire_interval_stddev, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "dragonflight.gift_of_ursine_vengeance_period", dragonflight_opts.gift_of_ursine_vengeance_period, 0_s, timespan_t::max() ) );
+  add_option( opt_timespan( "dragonflight.gift_of_ursine_vengeance_period", dragonflight_opts.gift_of_ursine_vengeance_period, 3_s, timespan_t::max() ) );
 }
 
 // sim_t::parse_option ======================================================
