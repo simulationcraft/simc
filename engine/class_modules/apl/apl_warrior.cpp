@@ -201,7 +201,7 @@ void arms( player_t* p )
   aoe->add_action( "warbreaker,if=raid_event.adds.in>22|active_enemies>1" );
   aoe->add_action( "colossus_smash,cycle_targets=1,if=(target.health.pct<20|talent.massacre&target.health.pct<35)" );
   aoe->add_action( "colossus_smash" );
-  aoe->add_action( "execute,,if=buff.sudden_death.react&set_bonus.tier31_4pc" );
+  aoe->add_action( "execute,if=buff.sudden_death.react&set_bonus.tier31_4pc" );
   aoe->add_action( "cleave,if=buff.martial_prowess.stack=2" );
   aoe->add_action( "mortal_strike,if=talent.sharpened_blades&buff.sweeping_strikes.up&buff.martial_prowess.stack=2&active_enemies<=8" );
   aoe->add_action( "thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains" );
@@ -236,7 +236,6 @@ void arms( player_t* p )
   single_target->add_action( "spear_of_bastion,if=buff.test_of_might.up|debuff.colossus_smash.up" );
   single_target->add_action( "skullsplitter" );
   single_target->add_action( "execute,if=buff.sudden_death.react" );
-  single_target->add_action( "avatar,if=talent.warlords_torment&(cooldown.colossus_smash.ready|debuff.colossus_smash.up|buff.test_of_might.up)|!talent.warlords_torment&(cooldown.colossus_smash.ready|debuff.colossus_smash.up)" );
   single_target->add_action( "shockwave,if=talent.sonic_boom.enabled" );
   single_target->add_action( "whirlwind,if=talent.storm_of_swords&talent.test_of_might&cooldown.colossus_smash.remains>gcd*7" );
   single_target->add_action( "overpower,if=charges=2&!talent.battlelord|talent.battlelord" );
