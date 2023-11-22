@@ -7085,12 +7085,6 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       fury_of_urctos_heal->background = fury_of_urctos_heal->dual = true;
       fury_of_urctos_heal->base_dd_min = fury_of_urctos_heal->base_dd_max = e.driver()->effectN( 3 ).average( e.item );
 
-      fury_of_urctos_buff->set_stack_change_callback( [ this ]( buff_t* /* buff */, int /* old */, int new_ ) {
-        if ( !new_ )
-        {
-          rising_rage_buff->expire();
-        }
-      } );
       fury_of_urctos_buff->set_period( 1_s );
       fury_of_urctos_buff->set_tick_callback(
           [ this, fury_of_urctos_heal ]( buff_t* /* buff */, int /* tick */, timespan_t /* tick_time */ ) {
