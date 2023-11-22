@@ -1924,6 +1924,7 @@ void item::witherbarks_branch( special_effect_t& effect )
   };
 
   effect.custom_buff = new aqueous_dowsing_t( effect.player, effect );
+  effect.stat = STAT_MASTERY_RATING;
 }
 
 void item::black_blood_of_yshaarj( special_effect_t& effect )

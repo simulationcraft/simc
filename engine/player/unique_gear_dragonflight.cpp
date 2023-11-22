@@ -5471,6 +5471,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
   e.disable_buff();
   e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_t>( "mirror_of_fractured_tomorrows", e );
+  e.stat = STAT_ALL;
 }
 
 // Accelerating Sandglass
