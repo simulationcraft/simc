@@ -7070,6 +7070,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
         if ( buff->at_max_stacks() && !fury_of_urctos_buff->up() )
         {
           fury_of_urctos_buff->trigger();
+          buff->expire();
         }
         // This should be "closest target" but we'll just pick whoever the player is targeting for now.
         if ( player->target && new_ >= old )
