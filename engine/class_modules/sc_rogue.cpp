@@ -8527,10 +8527,7 @@ void actions::rogue_action_t<Base>::trigger_sanguine_blades( const action_state_
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), additional_cost, RESOURCE_ENERGY,
                        *action, p()->resources.current[ RESOURCE_ENERGY ] );
 
-  // Target multipliers do not replicate to secondary targets, need to reverse them out
-  double target_ta_multiplier = ( 1.0 / state->target_ta_multiplier );
-
-  double amount = state->result_amount * target_ta_multiplier * p()->talent.assassination.sanguine_blades->effectN( 3 ).percent();
+  double amount = state->result_amount * p()->talent.assassination.sanguine_blades->effectN( 3 ).percent();
   action->execute_on_target( state->target, amount );
 }
 
