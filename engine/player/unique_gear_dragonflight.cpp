@@ -7091,8 +7091,8 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
             fury_of_urctos_heal->execute_on_target( player );
           } );
 
-      rising_rage_cooldown->duration    = e.driver()->internal_cooldown();
-      fury_of_urctos_cooldown->duration = fury_of_urctos_buff->data().internal_cooldown();
+      rising_rage_cooldown->duration    = 3_s; // No longer in spell data, setting manually from tooltip
+      fury_of_urctos_cooldown->duration = 100_ms; // Has a 100ms cd during fury
     }
 
     void execute() override
@@ -7117,7 +7117,6 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
   {
     effect.proc_flags_    = PF_DAMAGE_TAKEN;
     effect.proc_flags2_   = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
-    effect.cooldown_      = 3_s; // No longer in spell data, manually setting to value in tooltip
     effect.execute_action = action;
 
     new dbc_proc_callback_t( effect.player, effect );
