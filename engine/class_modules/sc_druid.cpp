@@ -1793,9 +1793,9 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
     return base_t::trigger( s, v, c, d );    
   }
 
-  double consume( double a, player_t* t ) override
+  double consume( double a, action_state_t* s ) override
   {
-    return base_t::consume( a * absorb_pct, t );
+    return base_t::consume( a * absorb_pct, s );
   }
 
   void absorb_used( double a, player_t* t ) override
