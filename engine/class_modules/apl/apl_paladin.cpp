@@ -112,6 +112,7 @@ void protection( player_t* p )
   cooldowns->add_action( "divine_toll,if=spell_targets.shield_of_the_righteous>=3" );
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains<=30" );
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
+  cooldowns->add_action( "fireblood,if=buff.avenging_wrath.remains>8" );
 
   standard->add_action( "consecration,if=buff.sanctification.stack=buff.sanctification.max_stack" );
   standard->add_action( "shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&(!buff.sanctification.up|buff.sanctification.stack<buff.sanctification.max_stack)", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD). Don't use it when on max Sanctification Stacks (Very next GCD will trigger Consecration, so we want the bonus damage)" );
