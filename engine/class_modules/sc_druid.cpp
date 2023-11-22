@@ -1795,6 +1795,10 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
 
   double consume( double a, action_state_t* s ) override
   {
+    // TODO: T31 is bugged and the shield does not absorb melee auto attacks
+    if ( p()->bugs && !s->action->special )
+      return 0;
+
     return base_t::consume( a * absorb_pct, s );
   }
 
