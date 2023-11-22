@@ -7067,7 +7067,6 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       rising_rage_buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
       rising_rage_buff->set_cooldown( 0_ms );
       rising_rage_buff->set_expire_at_max_stack( true );
-      rising_rage_buff->set_refresh_behavior( buff_refresh_behavior::MAX );
       rising_rage_buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
         if ( !new_ )
         {
