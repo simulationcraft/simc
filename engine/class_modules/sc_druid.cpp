@@ -12371,10 +12371,10 @@ void druid_t::init_absorb_priority()
 
   player_t::init_absorb_priority();
 
-  absorb_priority.push_back( buff.dream_thorns->data().id() );
+  absorb_priority.push_back( talent.brambles->id() );           // brambles always goes first
+  absorb_priority.push_back( buff.dream_thorns->data().id() );  // note dream_thorns is misc_value1 -1, higher than EW
+  absorb_priority.push_back( talent.earthwarden->id() );        // unknown if EW or RotS comes first
   absorb_priority.push_back( talent.rage_of_the_sleeper->id() );
-  absorb_priority.push_back( talent.earthwarden->id() );
-  absorb_priority.push_back( talent.brambles->id() );
 }
 
 void druid_t::target_mitigation( school_e school, result_amount_type type, action_state_t* s )
