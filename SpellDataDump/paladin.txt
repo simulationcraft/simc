@@ -3686,15 +3686,15 @@ While Aura Mastery is active, heals all allies within ${$210291A1+$31821s5} yds 
 Tooltip          : Restores health to $210291s2 injured allies within $210291A1 yards every $t1 sec.
 
 Name             : Retribution Aura (id=183435) [Spell Family (10)] 
-Hotfixed         : Attributes
+Hotfixed         : Proc Flags 1 (664232 -> 2148164264), Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...xx. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting spells : Retribution Aura (317906 effect#1)
 Family Flags     : 94
 Attributes       : ........ x....... x.x..... x..x....   ........ ........ ........ ........ 
