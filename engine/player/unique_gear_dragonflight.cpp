@@ -7044,6 +7044,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     {
       background = dual = may_crit = true;
       may_miss                     = false;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
   };
 
@@ -7053,29 +7054,23 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     cooldown_t* fury_of_urctos_cooldown;
     stat_buff_t* rising_rage_buff;
     buff_t* fury_of_urctos_buff;
+    action_t* ursine_reprisal;
 
     gift_buffs_t( const special_effect_t& e )
       : proc_spell_t( "gift_of_ursine_vengeance", e.player, e.player->find_spell( 421990 ), e.item ),
         rising_rage_cooldown( e.player->get_cooldown( "rising_rage" ) ),
         fury_of_urctos_cooldown( e.player->get_cooldown( "fury_of_urctos" ) ),
         rising_rage_buff( create_buff<stat_buff_t>( e.player, e.player->find_spell( 421994 ) ) ),
-        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) )
+        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) ),
+        ursine_reprisal( create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e ) )
     {
-      auto ursine_reprisal         = create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e );
-      ursine_reprisal->base_dd_min = ursine_reprisal->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-
       rising_rage_buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
       rising_rage_buff->set_cooldown( 0_ms );
-      rising_rage_buff->set_stack_change_callback( [ this, ursine_reprisal ]( buff_t* buff, int old, int new_ ) {
+      rising_rage_buff->set_stack_change_callback( [ this ]( buff_t* buff, int old, int new_ ) {
         if ( buff->at_max_stacks() && !fury_of_urctos_buff->up() )
         {
           fury_of_urctos_buff->trigger();
           buff->expire();
-        }
-        // This should be "closest target" but we'll just pick whoever the player is targeting for now.
-        if ( player->target && new_ >= old )
-        {
-          ursine_reprisal->execute_on_target( player->target );
         }
       } );
 
@@ -7101,12 +7096,13 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       if ( fury_of_urctos_buff->up() && fury_of_urctos_cooldown->up() )
       {
         fury_of_urctos_cooldown->start();
-        rising_rage_buff->trigger();
+        ursine_reprisal->execute_on_target( player->target );
       }
       else if ( rising_rage_cooldown->up() )
       {
         rising_rage_cooldown->start();
         rising_rage_buff->trigger();
+        ursine_reprisal->execute_on_target( player->target );
       }
     }
   };
