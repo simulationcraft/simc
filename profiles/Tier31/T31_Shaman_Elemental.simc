@@ -250,24 +250,23 @@ wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=19
 hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520/9576
 waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520/9576,gem_id=192961,enchant=shadowed_belt_clasp_3
 legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520/9576,enchant=frozen_spellthread_3
-feet=acidic_hailstone_treads,id=193466,bonus_id=8836/1576/8960,enchant=watchers_loam_3
-finger1=thornwoven_band,id=162548,bonus_id=9853/9576,gem_id=192961,enchant=devotion_of_mastery_3
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=9882/9576,enchant=watchers_loam_3
+finger1=thornwoven_band,id=162548,bonus_id=9853/9576,gem_id=192961,enchant=devotion_of_versatility_3
 finger2=archdruids_tainted_seal,id=134487,bonus_id=9882/9576,gem_id=192961,enchant=devotion_of_mastery_3
 trinket1=sea_star,id=133201,bonus_id=9466/1514/8767/9576
 trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520/9576
 main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520/9576,enchant=wafting_devotion_3
-off_hand=disc_of_indomitable_will,id=158713,bonus_id=9853/9576
+off_hand=witherrot_tome,id=193496,bonus_id=9500/9405/8960,crafted_stats=36/49
 
 # Gear Summary
 # gear_ilvl=488.63
-# gear_strength=469
-# gear_stamina=39112
-# gear_intellect=12117
-# gear_crit_rating=1256
-# gear_haste_rating=4190
-# gear_mastery_rating=6878
-# gear_versatility_rating=3119
+# gear_stamina=39145
+# gear_intellect=12098
+# gear_crit_rating=818
+# gear_haste_rating=4520
+# gear_mastery_rating=6915
+# gear_versatility_rating=3201
 # gear_avoidance_rating=325
-# gear_armor=13516
+# gear_armor=7703
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
