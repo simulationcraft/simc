@@ -1260,6 +1260,7 @@ public:
     bool individual_pet_reporting = false;
     std::vector<timespan_t> amz_use_time;
     bool amz_specified = false;
+    double average_cs_travel_time = 0.4;
   } options;
 
   // Runes
@@ -4877,7 +4878,7 @@ struct chill_streak_damage_t final : public death_knight_spell_t
   void execute() override
   {
     // Setting a variable min travel time to more accurately emulate in game variance
-    min_travel_time = rng().gauss( 0.4, 0.2 );
+    min_travel_time = rng().gauss( p()->options.average_cs_travel_time, 0.2);
     death_knight_spell_t::execute();
   }
 
@@ -8601,6 +8602,7 @@ void death_knight_t::create_options()
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent, 0.0, 1.0 ) );
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
+  add_option( opt_float( "deathknight.average_cs_travel_time", options.average_cs_travel_time, 0.0, 5 ) );
   add_option( opt_specified_buff_times( "deathknight.amz_use_time", options.amz_use_time ) );
 }
 
