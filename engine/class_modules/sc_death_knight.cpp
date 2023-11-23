@@ -4289,8 +4289,15 @@ struct army_of_the_dead_t final : public death_knight_spell_t
 
     void execute() override
     {
+      ++n_ghoul;
+      if ( n_ghoul < 3 )
+      {
+        // First 2 ghouls seem to have an odd duration offset, +1s for the first ghoul.
+        // +0.5s for the 2nd ghoul, increasing summon duration
+        summon_duration += 1_s / n_ghoul;
+      }
       p -> pets.army_ghouls.spawn( summon_duration, 1 );
-      if ( ++n_ghoul < 8 )
+      if ( n_ghoul < 8 )
       {
         make_event<summon_army_event_t>( sim(), p, n_ghoul, summon_interval, summon_duration );
       }
@@ -4374,13 +4381,13 @@ struct army_of_the_dead_t final : public death_knight_spell_t
       timespan_t duration_penalty = timespan_t::from_seconds( precombat_time ) - summon_interval;
       while ( duration_penalty >= 0_s && n_ghoul < 8 )
       {
+        n_ghoul++;
         // Spawn with a duration penalty, and adjust the spawn/travel delay by the penalty
-        auto pet = p() -> pets.army_ghouls.spawn( summon_duration - duration_penalty, 1 ).front();
+        auto pet = p() -> pets.army_ghouls.spawn( summon_duration + ( n_ghoul < 3 ? 1_s / n_ghoul : 0_s ) - duration_penalty, 1 ).front();
         pet -> precombat_spawn_adjust = duration_penalty;
         pet -> precombat_spawn = true;
         // For each pet, reduce the duration penalty by the 0.5s interval
         duration_penalty -= summon_interval;
-        n_ghoul++;
       }
 
       // Adjust the cooldown based on the precombat time
@@ -4402,7 +4409,8 @@ struct army_of_the_dead_t final : public death_knight_spell_t
 
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
     {
-      p()->pets.army_magus.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
+      // Magus of the Dead seems to have a 31s duration, rather than the 30 listed in spell data
+      p()->pets.army_magus.spawn( ( summon_duration + 1_s ) - timespan_t::from_seconds( precombat_time ), 1 );
     }
 
     if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) )
