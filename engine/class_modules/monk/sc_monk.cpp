@@ -5937,6 +5937,7 @@ namespace monk
 
           target = player;
           may_combo_strike = true;
+          cast_during_sck = true;
 
           cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
 
