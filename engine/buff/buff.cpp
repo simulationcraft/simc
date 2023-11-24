@@ -6,24 +6,24 @@
 #include "buff.hpp"
 
 #include "action/action.hpp"
+#include "action/action_state.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/spell_data.hpp"
-#include "player/expansion_effects.hpp"
 #include "player/covenant.hpp"
+#include "player/expansion_effects.hpp"
 #include "player/player.hpp"
 #include "player/stats.hpp"
 #include "player/target_specific.hpp"
-#include "sim/event.hpp"
-#include "sim/real_ppm.hpp"
 #include "sim/cooldown.hpp"
+#include "sim/event.hpp"
 #include "sim/expressions.hpp"
+#include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
 
 #include <sstream>
 #include <utility>
-
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -3463,7 +3463,7 @@ void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining
     player->absorb_buff_list.erase( it );
 }
 
-double absorb_buff_t::consume( double amount, player_t* attacker )
+double absorb_buff_t::consume( double amount, action_state_t* state )
 {
   // Limit the consumption to the current size of the buff.
   amount = std::min( amount, current_value );
@@ -3478,7 +3478,7 @@ double absorb_buff_t::consume( double amount, player_t* attacker )
 
   sim->print_debug( "{} {} absorbs {} (remaining: {})", *player, *this, amount, current_value );
 
-  absorb_used( amount, attacker );
+  absorb_used( amount, state ? state->action->player : nullptr );
 
   if ( current_value <= 0 )
     expire();

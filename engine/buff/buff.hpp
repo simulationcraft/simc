@@ -484,7 +484,7 @@ public:
   void refresh( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
-  virtual double consume( double amount, player_t* attacker = nullptr );
+  virtual double consume( double amount, action_state_t* state = nullptr );
   absorb_buff_t* set_absorb_gain( gain_t* );
   absorb_buff_t* set_absorb_source( stats_t* );
   absorb_buff_t* set_absorb_school( school_e );

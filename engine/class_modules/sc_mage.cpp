@@ -1701,7 +1701,7 @@ public:
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
         if ( p()->talents.arcane_echo.ok() && this != p()->action.arcane_echo )
-          make_event( *sim, [ this, t = p()->bugs && p()->target ? p()->target : s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
+          make_event( *sim, [ this, t = s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
       }
     }
   }

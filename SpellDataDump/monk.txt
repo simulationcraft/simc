@@ -4042,9 +4042,10 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 245 | Scaled Value: 245 | PvP Coefficient: 0.53200
+                   Base Value: 245 | Scaled Value: 245 | PvP Coefficient: 0.34300
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
+Hotfixed         : PvP Coefficient (0.532 -> 0.343)
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 184 | Scaled Value: 184 | PvP Coefficient: 1.00000
                    Affected Spells: Spinning Crane Kick (107270)
@@ -14383,6 +14384,7 @@ Effects          :
 Description      : Gust of Mists has a $s2% chance to do $s1% more healing.
 
 Name             : Ancient Teachings (id=388023) [Spell Family (53), Passive] 
+Hotfixed         : Variables
 Talent Entry     : Mistweaver [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -14405,7 +14407,7 @@ Effects          :
 #2 (id=1070189)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After casting Essence Font or Faeline Stomp, your Tiger Palm, Blackout Kick, and Rising Sun Kick heal up to $s2 injured allies within $388024A1 yds for $<healing>% of the damage done, split evenly among them. Lasts $388026d.
-Variables        : $pvp=$?a134735[${2.2}][${1}]}
+Variables        : $pvp=$?a134735[${2.75}][${1}]}
 $healing=[${$s1*$<pvp>}]
 
 Name             : Ancient Teachings (id=388024) [Spell Family (53)] 
@@ -14427,10 +14429,12 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Reset Combat Timers (81), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore School Lockout (306), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023473)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.20000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.75000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
+Hotfixed         : PvP Coefficient (2.2 -> 2.75)
 Description      : $@spelldesc388023
 
 Name             : Ancient Teachings (id=388026) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -14449,7 +14453,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc388023
 Tooltip          : Tiger Palm, Blackout Kick, and Rising Sun Kick heal up to $388023s2 injured allies within $388024A1 yards for $<healing>% of the damage done, split evenly among them.
-Variables        : $pvp=$?a134735[${2.2}][${1}]}
+Variables        : $pvp=$?a134735[${2.75}][${1}]}
 $healing=[${$388023s1*$<pvp>}]
 
 Name             : Jade Bond (id=388031) [Spell Family (53), Passive] 

@@ -5471,6 +5471,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
   e.disable_buff();
   e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_t>( "mirror_of_fractured_tomorrows", e );
+  e.stat = STAT_ALL;
 }
 
 // Accelerating Sandglass
@@ -7044,6 +7045,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     {
       background = dual = may_crit = true;
       may_miss                     = false;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
   };
 
@@ -7053,28 +7055,23 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     cooldown_t* fury_of_urctos_cooldown;
     stat_buff_t* rising_rage_buff;
     buff_t* fury_of_urctos_buff;
+    action_t* ursine_reprisal;
 
     gift_buffs_t( const special_effect_t& e )
       : proc_spell_t( "gift_of_ursine_vengeance", e.player, e.player->find_spell( 421990 ), e.item ),
         rising_rage_cooldown( e.player->get_cooldown( "rising_rage" ) ),
         fury_of_urctos_cooldown( e.player->get_cooldown( "fury_of_urctos" ) ),
         rising_rage_buff( create_buff<stat_buff_t>( e.player, e.player->find_spell( 421994 ) ) ),
-        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) )
+        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) ),
+        ursine_reprisal( create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e ) )
     {
-      auto ursine_reprisal         = create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e );
-      ursine_reprisal->base_dd_min = ursine_reprisal->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-
       rising_rage_buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
       rising_rage_buff->set_cooldown( 0_ms );
-      rising_rage_buff->set_stack_change_callback( [ this, ursine_reprisal ]( buff_t* buff, int old, int new_ ) {
-        if ( buff->at_max_stacks() && !fury_of_urctos_buff->up() )
+      rising_rage_buff->set_expire_at_max_stack( true );
+      rising_rage_buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
         {
           fury_of_urctos_buff->trigger();
-        }
-        // This should be "closest target" but we'll just pick whoever the player is targeting for now.
-        if ( player->target && new_ >= old )
-        {
-          ursine_reprisal->execute_on_target( player->target );
         }
       } );
 
@@ -7084,20 +7081,14 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       fury_of_urctos_heal->background = fury_of_urctos_heal->dual = true;
       fury_of_urctos_heal->base_dd_min = fury_of_urctos_heal->base_dd_max = e.driver()->effectN( 3 ).average( e.item );
 
-      fury_of_urctos_buff->set_stack_change_callback( [ this ]( buff_t* /* buff */, int /* old */, int new_ ) {
-        if ( !new_ )
-        {
-          rising_rage_buff->expire();
-        }
-      } );
       fury_of_urctos_buff->set_period( 1_s );
       fury_of_urctos_buff->set_tick_callback(
           [ this, fury_of_urctos_heal ]( buff_t* /* buff */, int /* tick */, timespan_t /* tick_time */ ) {
             fury_of_urctos_heal->execute_on_target( player );
           } );
 
-      rising_rage_cooldown->duration    = e.driver()->internal_cooldown();
-      fury_of_urctos_cooldown->duration = fury_of_urctos_buff->data().internal_cooldown();
+      rising_rage_cooldown->duration    = 3_s; // No longer in spell data, setting manually from tooltip
+      fury_of_urctos_cooldown->duration = 100_ms; // Has a 100ms cd during fury
     }
 
     void execute() override
@@ -7106,12 +7097,13 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       if ( fury_of_urctos_buff->up() && fury_of_urctos_cooldown->up() )
       {
         fury_of_urctos_cooldown->start();
-        rising_rage_buff->trigger();
+        ursine_reprisal->execute_on_target( player->target );
       }
       else if ( rising_rage_cooldown->up() )
       {
         rising_rage_cooldown->start();
         rising_rage_buff->trigger();
+        ursine_reprisal->execute_on_target( player->target );
       }
     }
   };
@@ -7122,7 +7114,6 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
   {
     effect.proc_flags_    = PF_DAMAGE_TAKEN;
     effect.proc_flags2_   = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
-    effect.cooldown_      = 3_s; // No longer in spell data, manually setting to value in tooltip
     effect.execute_action = action;
 
     new dbc_proc_callback_t( effect.player, effect );

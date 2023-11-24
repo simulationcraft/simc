@@ -1782,6 +1782,7 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
   {
     set_absorb_source( p->get_stats( has_4pc ? "Blazing Thorns" : "Dream Thorns" ) );
     set_absorb_high_priority( true );
+    set_absorb_gain( p->get_gain( util::inverse_tokenize( name_str ) + " (absorb)") );
   }
 
   // triggered with rage spent as value
@@ -1793,9 +1794,17 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
     return base_t::trigger( s, v, c, d );    
   }
 
-  double consume( double a, player_t* t ) override
+  double consume( double a, action_state_t* s ) override
   {
-    return base_t::consume( a * absorb_pct, t );
+    // TODO: T31 is bugged and the shield does not absorb melee auto attacks, but its does reflect
+    if ( p()->bugs && !s->action->special )
+    {
+      absorb_used( a * absorb_pct, s ? s->action->player : nullptr );
+
+      return 0;
+    }
+
+    return base_t::consume( a * absorb_pct, s );
   }
 
   void absorb_used( double a, player_t* t ) override
@@ -12362,10 +12371,10 @@ void druid_t::init_absorb_priority()
 
   player_t::init_absorb_priority();
 
-  absorb_priority.push_back( buff.dream_thorns->data().id() );
+  absorb_priority.push_back( talent.brambles->id() );           // brambles always goes first
+  absorb_priority.push_back( buff.dream_thorns->data().id() );  // note dream_thorns is misc_value1 -1, higher than EW
+  absorb_priority.push_back( talent.earthwarden->id() );        // unknown if EW or RotS comes first
   absorb_priority.push_back( talent.rage_of_the_sleeper->id() );
-  absorb_priority.push_back( talent.earthwarden->id() );
-  absorb_priority.push_back( talent.brambles->id() );
 }
 
 void druid_t::target_mitigation( school_e school, result_amount_type type, action_state_t* s )
