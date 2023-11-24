@@ -119,7 +119,6 @@ void shadow( player_t* p )
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
   filler->add_action( "divine_star", "Use Divine Star while moving as a low-priority action" );
   filler->add_action( "shadow_word_death", "Use Shadow Word: Death while moving as a low-priority action" );
-  filler->add_action( "power_word_shield,if=set_bonus.tier31_4pc", "Use Power Word: Shield while moving with the T31 tier set" );
   filler->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   main->add_action( "call_action_list,name=main_variables" );
@@ -246,7 +245,6 @@ void shadow_ptr( player_t* p )
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
   filler->add_action( "divine_star", "Use Divine Star while moving as a low-priority action" );
   filler->add_action( "shadow_word_death", "Use Shadow Word: Death while moving as a low-priority action" );
-  filler->add_action( "power_word_shield,if=set_bonus.tier31_4pc", "Use Power Word: Shield while moving with the T31 tier set" );
   filler->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   main->add_action( "call_action_list,name=main_variables" );
