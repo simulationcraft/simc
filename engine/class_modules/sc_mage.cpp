@@ -4313,6 +4313,7 @@ struct glacial_blast_t final : public spell_t
 struct glacial_spike_t final : public frost_mage_spell_t
 {
   action_t* glacial_blast = nullptr;
+  shatter_source_t* cleave_source = nullptr;
 
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.glacial_spike )
@@ -4341,7 +4342,11 @@ struct glacial_spike_t final : public frost_mage_spell_t
   void init_finished() override
   {
     proc_brain_freeze = p()->get_proc( "Brain Freeze from Glacial Spike" );
+
     frost_mage_spell_t::init_finished();
+
+    if ( sim->report_details != 0 && p()->talents.splitting_ice.ok() )
+      cleave_source = p()->get_shatter_source( "Glacial Spike cleave" );
   }
 
   bool ready() override
@@ -4403,16 +4408,22 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    if ( !result_is_hit( s->result ) )
+      return;
+
     if ( s->chain_target == 0 && p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
       p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 3 ).time_value() );
 
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
 
-    if ( glacial_blast && result_is_hit( s->result ) && cast_state( s )->frozen )
+    if ( glacial_blast && cast_state( s )->frozen )
     {
       double pct = p()->sets->set( MAGE_FROST, T31, B2 )->effectN( 2 ).percent();
       glacial_blast->execute_on_target( s->target, pct * s->result_total );
     }
+
+    if ( s->chain_target != 0 )
+      record_shatter_source( s, cleave_source );
   }
 };
 
@@ -4468,13 +4479,11 @@ struct ice_lance_state_t final : public mage_spell_state_t
 
 struct ice_lance_t final : public frost_mage_spell_t
 {
-  shatter_source_t* extension_source;
-  shatter_source_t* cleave_source;
+  shatter_source_t* extension_source = nullptr;
+  shatter_source_t* cleave_source = nullptr;
 
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.ice_lance ),
-    extension_source(),
-    cleave_source()
+    frost_mage_spell_t( n, p, p->talents.ice_lance )
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
