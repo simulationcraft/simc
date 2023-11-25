@@ -285,7 +285,7 @@ void fire( player_t* p )
   default_->add_action( "use_item,name=ashes_of_the_embersoul,if=(variable.time_to_combustion<=3&buff.fury_of_the_sun_king.up)|(buff.combustion.up&buff.combustion.remains>11)" );
   default_->add_action( "use_item,name=nymues_unraveling_spindle,if=variable.time_to_combustion<=9" );
   default_->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle" );
-  default_->add_action( "use_item,use_off_gcd=1,slot=main_hand,if=gcd.remains>=0.6*gcd.max&equipped.iridal_the_earths_master", "Iridal can and should be used while on the GCD" );
+  default_->add_action( "use_item,name=iridal_the_earths_master,use_off_gcd=1,slot=main_hand,if=gcd.remains>=0.6*gcd.max", "Iridal can and should be used while on the GCD" );
   default_->add_action( "use_item,name=belorrelos_the_suncaller,if=(!variable.steroid_trinket_equipped&buff.combustion.down)|(variable.steroid_trinket_equipped&trinket.1.has_cooldown&trinket.1.cooldown.remains>20&buff.combustion.down)|(variable.steroid_trinket_equipped&trinket.2.has_cooldown&trinket.2.cooldown.remains>20&buff.combustion.down)" );
   default_->add_action( "use_items,if=!variable.item_cutoff_active" );
   default_->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=fire_blast_pooling,value=buff.combustion.down&action.fire_blast.charges_fractional+(variable.time_to_combustion+action.shifting_power.full_reduction*variable.shifting_power_before_combustion)%cooldown.fire_blast.duration-1<cooldown.fire_blast.max_charges+variable.overpool_fire_blasts%cooldown.fire_blast.duration-(buff.combustion.duration%cooldown.fire_blast.duration)%%1&variable.time_to_combustion<fight_remains", "Pool as many Fire Blasts as possible for Combustion." );
