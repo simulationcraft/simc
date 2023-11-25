@@ -789,7 +789,7 @@ void incandescent_essence( special_effect_t& e )
     tindrals_fowl_fantasia_t( const special_effect_t& e )
       : action_t( action_e::ACTION_OTHER, "tindrals_fowl_fantasia", e.player, e.player->find_spell( 426341 ) )
     {
-      background = true;
+      background = proc = true;
 
       auto coeffs = player->find_spell( 425838 );
 
