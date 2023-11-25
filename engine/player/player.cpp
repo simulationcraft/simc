@@ -1423,6 +1423,13 @@ void player_t::init()
                 util::fight_style_string( sim->fight_style ) );
   }
 
+  // Fight style dependent option defaults. Note that these options must be of type player_option_t<T>
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+  {
+    if ( dragonflight_opts.balefire_branch_loss_rng_type.is_default() )
+      dragonflight_opts.balefire_branch_loss_rng_type = "rppm";
+  }
+
   // Ensure the precombat and default lists are the first listed
   auto pre_combat = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
   pre_combat->used = true;
@@ -7490,7 +7497,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
                         dbc::is_school( ab->absorb_school, school ) ) )  // Otherwise check by school
                  && ab->up() )
             {
-              double absorbed = ab->consume( s->result_amount, s->action->player );
+              double absorbed = ab->consume( s->result_amount, s );
 
               s->result_amount -= absorbed;
 
@@ -12774,6 +12781,12 @@ void player_t::create_options()
   add_option( opt_float( "dragonflight.string_of_delicacies_min_allies", dragonflight_opts.string_of_delicacies_min_allies, 0.0, 4 ) );
   add_option( opt_float( "dragonflight.string_of_delicacies_multi_actor_skip_chance",
                          dragonflight_opts.string_of_delicacies_multi_actor_skip_chance, 0.0, 1 ) );
+  add_option( opt_string( "dragonflight.balefire_branch_loss_rng_type", dragonflight_opts.balefire_branch_loss_rng_type ) );
+  add_option( opt_float( "dragonflight.balefire_branch_loss_rppm", dragonflight_opts.balefire_branch_loss_rppm, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_float( "dragonflight.balefire_branch_loss_percent", dragonflight_opts.balefire_branch_loss_percent, 0.0, 1.0 ) );
+  add_option( opt_timespan( "dragonflight.balefire_branch_loss_tick", dragonflight_opts.balefire_branch_loss_tick, 1_ms, 20_s ) );
+  add_option( opt_int( "dragonflight.balefire_branch_loss_stacks", dragonflight_opts.balefire_branch_loss_stacks, 0, 20 ) );
+  add_option( opt_uint( "dragonflight.verdant_conduit_allies", dragonflight_opts.verdant_conduit_allies, 0, 2 ) );
 
   // Obsolete options
 

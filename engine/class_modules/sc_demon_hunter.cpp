@@ -7771,6 +7771,7 @@ void demon_hunter_t::init_spells()
     chaotic_disposition_effect->type         = SPECIAL_EFFECT_EQUIP;
     chaotic_disposition_effect->spell_id     = talent.havoc.chaotic_disposition->id();
     chaotic_disposition_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+    chaotic_disposition_effect->proc_chance_ = 1.0; // 2023-11-14 -- Proc chance removed from talent spell
     special_effects.push_back( chaotic_disposition_effect );
 
     auto chaotic_disposition_cb = new chaotic_disposition_cb_t( this, *chaotic_disposition_effect );

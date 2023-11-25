@@ -725,7 +725,7 @@ void incandescent_essence( special_effect_t& e )
   };
 
   auto tank_damage = create_proc_action<blazing_rage_t>( "blazing_rage", e );
-  auto tank_buff   = create_buff<buff_t>( e.player, "blazing_rage_buff", e.player->find_spell( 426289 ) );
+  auto tank_buff   = create_buff<buff_t>( e.player, "blazing_rage", e.player->find_spell( 426289 ) );
 
   auto blazing_rage            = new special_effect_t( e.player );
   blazing_rage->spell_id       = 426289;
@@ -789,7 +789,7 @@ void incandescent_essence( special_effect_t& e )
     tindrals_fowl_fantasia_t( const special_effect_t& e )
       : action_t( action_e::ACTION_OTHER, "tindrals_fowl_fantasia", e.player, e.player->find_spell( 426341 ) )
     {
-      background = true;
+      background = proc = true;
 
       auto coeffs = player->find_spell( 425838 );
 
@@ -5471,6 +5471,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
   e.disable_buff();
   e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_t>( "mirror_of_fractured_tomorrows", e );
+  e.stat = STAT_ALL;
 }
 
 // Accelerating Sandglass
@@ -6179,6 +6180,9 @@ void coiled_serpent_idol( special_effect_t& e )
   } );
 
   e.proc_flags2_ = PF2_CRIT;
+  // Hard to confirm if this is an ICD, a que for events, or some other type of system
+  // But, does not seem to be able to proc before the previous one expired.
+  e.cooldown_ = dot->data().duration();
 
   new serpent_cb_t( e, dot );
 }
@@ -6555,17 +6559,29 @@ void nymues_unraveling_spindle( special_effect_t& effect )
 // Buff: 426553
 void augury_of_the_primal_flame( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "annihilating_flame" );
-  if ( !buff )
+  // In-game the buff itself adjusts the cap after each damage event as Versatility changes
+  // TODO: consider refactoring to adjusting the buff cap as you cast spells
+  struct annihilating_flame_buff_t : public buff_t
   {
-    // Use the cap as the default value to be decremented as you trigger
-    buff = create_buff<buff_t>( effect.player, "annihilating_flame", effect.driver()->effectN( 3 ).trigger() )
-               ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
-  }
+    annihilating_flame_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : buff_t( p, n, e.driver()->effectN( 3 ).trigger() )
+    {
+      // Use the cap as the default value to be decremented as you trigger
+      set_default_value( e.driver()->effectN( 1 ).average( e.item ) );
+    }
 
-  auto damage         = create_proc_action<generic_aoe_proc_t>( "annihilating_flame", effect, "annihilating_flame",
-                                                        effect.player->find_spell( 426564 ), true );
-  damage->may_crit    = true;
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      if ( check() )
+        v = current_value + default_value;
+
+      return buff_t::trigger( s, v, c, d );
+    }
+  };
+
+  auto buff = create_buff<annihilating_flame_buff_t>( effect.player, "annihilating_flame", effect );
+  auto damage = create_proc_action<generic_aoe_proc_t>(
+      "annihilating_flame", effect, "annihilating_flame", effect.player->find_spell( 426564 ), true );
   damage->base_dd_min = damage->base_dd_max = 1;  // allow the action to scale with modifiers like vers
 
   // Damage events trigger additional damage based off the original amount
@@ -6584,19 +6600,22 @@ void augury_of_the_primal_flame( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* state ) override
     {
-      double amount       = state->result_amount * mod;
-      damage->base_dd_min = damage->base_dd_max = amount;
-
       // Remove from the cap before modifiers are added (crit/vers/targets)
       if ( buff->check() )
       {
+        // The amount hit is simply the crit amount * the mod (and then can roll crit + apply vers)
+        // We take this same amount and remove it from the cap before it rolls crit or applies vers
+        double amount           = state->result_amount * mod;
+        damage->base_dd_min = damage->base_dd_max = amount;
+
         // After the hit occurs calculate how much is left or expire if needed
         if ( buff->current_value > amount )
         {
           buff->current_value -= amount;
 
-          effect.player->sim->print_debug( "{} annihilating_flame accumulates {} damage. {} remains",
-                                           effect.player->name(), amount, buff->current_value );
+          effect.player->sim->print_debug(
+              "{} annihilating_flame accumulates {} damage. {} remains (original crit amount: {})",
+              effect.player->name(), amount, buff->current_value, state->result_amount );
         }
         else
         {
@@ -6608,10 +6627,10 @@ void augury_of_the_primal_flame( special_effect_t& effect )
           damage->base_dd_min = damage->base_dd_max = buff->current_value;
           buff->expire();
         }
-      }
 
-      // Always trigger the damage event if you have gotten to this point, even if buff was expired
-      damage->execute_on_target( state->target );
+        // Always trigger the damage event if you have gotten to this point, even if buff was expired
+        damage->execute_on_target( state->target );
+      }
     }
   };
 
@@ -7026,6 +7045,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     {
       background = dual = may_crit = true;
       may_miss                     = false;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
   };
 
@@ -7035,28 +7055,23 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     cooldown_t* fury_of_urctos_cooldown;
     stat_buff_t* rising_rage_buff;
     buff_t* fury_of_urctos_buff;
+    action_t* ursine_reprisal;
 
     gift_buffs_t( const special_effect_t& e )
       : proc_spell_t( "gift_of_ursine_vengeance", e.player, e.player->find_spell( 421990 ), e.item ),
         rising_rage_cooldown( e.player->get_cooldown( "rising_rage" ) ),
         fury_of_urctos_cooldown( e.player->get_cooldown( "fury_of_urctos" ) ),
         rising_rage_buff( create_buff<stat_buff_t>( e.player, e.player->find_spell( 421994 ) ) ),
-        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) )
+        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) ),
+        ursine_reprisal( create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e ) )
     {
-      auto ursine_reprisal         = create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e );
-      ursine_reprisal->base_dd_min = ursine_reprisal->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-
       rising_rage_buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
       rising_rage_buff->set_cooldown( 0_ms );
-      rising_rage_buff->set_stack_change_callback( [ this, ursine_reprisal ]( buff_t* buff, int old, int new_ ) {
-        if ( buff->at_max_stacks() && !fury_of_urctos_buff->up() )
+      rising_rage_buff->set_expire_at_max_stack( true );
+      rising_rage_buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
         {
           fury_of_urctos_buff->trigger();
-        }
-        // This should be "closest target" but we'll just pick whoever the player is targeting for now.
-        if ( player->target && new_ >= old )
-        {
-          ursine_reprisal->execute_on_target( player->target );
         }
       } );
 
@@ -7066,20 +7081,14 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       fury_of_urctos_heal->background = fury_of_urctos_heal->dual = true;
       fury_of_urctos_heal->base_dd_min = fury_of_urctos_heal->base_dd_max = e.driver()->effectN( 3 ).average( e.item );
 
-      fury_of_urctos_buff->set_stack_change_callback( [ this ]( buff_t* /* buff */, int /* old */, int new_ ) {
-        if ( !new_ )
-        {
-          rising_rage_buff->expire();
-        }
-      } );
       fury_of_urctos_buff->set_period( 1_s );
       fury_of_urctos_buff->set_tick_callback(
           [ this, fury_of_urctos_heal ]( buff_t* /* buff */, int /* tick */, timespan_t /* tick_time */ ) {
             fury_of_urctos_heal->execute_on_target( player );
           } );
 
-      rising_rage_cooldown->duration    = e.driver()->internal_cooldown();
-      fury_of_urctos_cooldown->duration = fury_of_urctos_buff->data().internal_cooldown();
+      rising_rage_cooldown->duration    = 3_s; // No longer in spell data, setting manually from tooltip
+      fury_of_urctos_cooldown->duration = 100_ms; // Has a 100ms cd during fury
     }
 
     void execute() override
@@ -7088,12 +7097,13 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       if ( fury_of_urctos_buff->up() && fury_of_urctos_cooldown->up() )
       {
         fury_of_urctos_cooldown->start();
-        rising_rage_buff->trigger();
+        ursine_reprisal->execute_on_target( player->target );
       }
       else if ( rising_rage_cooldown->up() )
       {
         rising_rage_cooldown->start();
         rising_rage_buff->trigger();
+        ursine_reprisal->execute_on_target( player->target );
       }
     }
   };
@@ -7111,7 +7121,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     // Attempt to trigger Gift of Ursine Vengeance roughly every max GCD on top of the damage taken
     // procs in order to more accurately represent the damage done during Fury of Urctos.
     timespan_t period      = ( effect.player->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
-                                        effect.player->rng().range( 0_s, 750_ms ) /
+                                        effect.player->rng().range( 0_s, 3_s ) /
                                             ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
     make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
   }
@@ -8921,22 +8931,17 @@ void verdant_conduit( special_effect_t& effect )
   std::vector<buff_t*> buffs;
   double amount = effect.driver()->effectN( 2 ).average( effect.item );
 
-  // Proc Data is all stored in the Trigger (418523)
-  effect.proc_flags_          = effect.trigger()->_proc_flags;
-  effect.proc_flags2_         = PF2_ALL_CAST;
-  effect.proc_chance_         = effect.trigger()->_proc_chance;
-  effect.ppm_                 = -( effect.trigger()->_rppm );
-  effect.cooldown_            = effect.trigger()->internal_cooldown();
-  auto verdant_embrace_allies = effect.player->sim->dragonflight_opts.verdant_embrace_allies;
-
-  if ( verdant_embrace_allies > 0 )
+  if ( auto allies = effect.player->dragonflight_opts.verdant_conduit_allies )
   {
     auto ally_coef = effect.driver()->effectN( 3 ).percent();
-    // You get 20% more stat per ally that also has it
-    amount *= 1.0 + ( ally_coef * verdant_embrace_allies );
-    // Empirically testing this is lowered by roughly 20% per ally
-    effect.rppm_modifier_ = 1.0 - ( ally_coef * verdant_embrace_allies );
+    // You get 10% more stat per ally that also has it
+    amount *= 1.0 + ( ally_coef * allies );
+    // Empirically testing this is lowered by roughly 10% per ally
+    effect.rppm_modifier_ = 1.0 - ( ally_coef * allies );
   }
+
+  // Proc Data is all stored in the Trigger (418523)
+  effect.spell_id = effect.trigger()->id();
 
   // Spell data uses Misc Value's to set the effect, all under the same buff
   // Manually creating 4 buffs for better tracking
@@ -8945,22 +8950,22 @@ void verdant_conduit( special_effect_t& effect )
   // Check if this is the first time we've added stats
   bool first = !crit->manual_stats_added;
   crit->add_stat_from_effect( 1, amount );
-  crit->set_name_reporting( util::inverse_tokenize( "verdant_conduit_crit" ) );
+  crit->set_name_reporting( "Crit" );
   buffs.push_back( crit );
 
   auto haste = create_buff<stat_buff_t>( effect.player, "verdant_conduit_haste", buff_spell );
   haste->add_stat_from_effect( 2, amount );
-  haste->set_name_reporting( util::inverse_tokenize( "verdant_conduit_haste" ) );
+  haste->set_name_reporting( "Haste" );
   buffs.push_back( haste );
 
   auto mastery = create_buff<stat_buff_t>( effect.player, "verdant_conduit_mastery", buff_spell );
   mastery->add_stat_from_effect( 3, amount );
-  mastery->set_name_reporting( util::inverse_tokenize( "verdant_conduit_mastery" ) );
+  mastery->set_name_reporting( "Mastery" );
   buffs.push_back( mastery );
 
   auto vers = create_buff<stat_buff_t>( effect.player, "verdant_conduit_vers", buff_spell );
   vers->add_stat_from_effect( 4, amount );
-  vers->set_name_reporting( util::inverse_tokenize( "verdant_conduit_vers" ) );
+  vers->set_name_reporting( "Vers" );
   buffs.push_back( vers );
 
   new dbc_proc_callback_t( effect.player, effect );

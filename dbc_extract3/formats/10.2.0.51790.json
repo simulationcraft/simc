@@ -113,6 +113,20 @@
       { "data_type": "B", "field": "azerite_level" }
     ]
   },
+  "CharacterLoadout": {
+    "fields": [
+      { "data_type": "q", "field": "race_mask" },
+      { "data_type": "b", "field": "id_class", "ref": "ChrClasses" },
+      { "data_type": "i", "field": "purpose" },
+      { "data_type": "b", "field": "id_mod" }
+    ]
+  },
+  "CharacterLoadoutItem": {
+    "fields": [
+      { "data_type": "H", "field": "id_loadout", "ref": "CharacterLoadout" },
+      { "data_type": "I", "field": "id_item", "ref": "Item" }
+    ]
+  },
   "ChatChannels": {
     "fields": [
       { "data_type": "S", "field": "name" },
@@ -346,7 +360,7 @@
     "fields": [
       { "data_type": "S", "field": "desc" },
       { "data_type": "i", "field": "id" },
-      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "api_season" },
       { "data_type": "i", "field": "expansion_season" },
       { "data_type": "i", "field": "id_expansion" },
       { "data_type": "i", "field": "unk_2" }
@@ -569,9 +583,15 @@
   "ItemBonus": {
     "fields": [
       { "data_type": "i", "field": "val", "elements": 4, "formats": { "cpp": "%7d" } },
-      { "data_type": "H", "field": "id_node", "formats": { "cpp": "%4u" } },
+      { "data_type": "H", "field": "id_node", "formats": { "cpp": "%4u" }, "ref": "ItemBonusList" },
       { "data_type": "B", "field": "type",    "formats": { "cpp": "%2u" } },
       { "data_type": "B", "field": "index",   "formats": { "cpp": "%2u" } }
+    ]
+  },
+  "ItemBonusList": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "flags" }
     ]
   },
   "ItemBonusListGroup": {
@@ -628,16 +648,23 @@
       { "data_type": "i", "field": "unk_4" }
     ]
   },
+  "ItemBonusTree": {
+    "fields": [
+        { "data_type": "i", "field": "flags" },
+        { "data_type": "i", "field": "slot_mask" }
+    ]
+  },
   "ItemBonusTreeNode": {
+    "parent": "ItemBonusTree",
     "fields": [
       { "data_type": "B", "field": "index",    "formats": { "cpp": "%2u" } },
       { "data_type": "H", "field": "id_child", "formats": { "cpp": "%4u" }, "ref": "ItemBonusTreeNode" },
-      { "data_type": "H", "field": "id_node",  "formats": { "cpp": "%4u" } },
-      { "data_type": "H", "field": "unk"                                   },
-      { "data_type": "i", "field": "unk_2"                                 },
-      { "data_type": "i", "field": "unk_3"                                 },
-      { "data_type": "i", "field": "unk_4"                                 },
-      { "data_type": "i", "field": "unk_5"                                 }
+      { "data_type": "H", "field": "id_node",  "formats": { "cpp": "%4u" }, "ref": "ItemBonusList" },
+      { "data_type": "H", "field": "id_level_selector" },
+      { "data_type": "i", "field": "id_node_group" },
+      { "data_type": "i", "field": "id_group_point_mod_set" },
+      { "data_type": "i", "field": "min_mythic_plus_level" },
+      { "data_type": "i", "field": "max_mythic_plus_level" }
     ]
   },
   "ItemChildEquipment": {
@@ -974,6 +1001,17 @@
       { "data_type": "i", "field": "flags", "elements": 3 }
     ]
   },
+  "MapChallengeMode": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_map", "ref": "Map" },
+      { "data_type": "B", "field": "flags" },
+      { "data_type": "I", "field": "expansion_level" },
+      { "data_type": "I", "field": "unk_1" },
+      { "data_type": "H", "field": "criteria_count", "elements": 3 }
+    ]
+  },
   "MapDifficulty": {
     "parent": "Map",
     "fields": [
@@ -1013,8 +1051,8 @@
   "ModifiedCraftingReagentItem": {
     "fields": [
       { "data_type": "S", "field": "description" },
-      { "data_type": "i", "field": "id_modified_crafting_category" },
-      { "data_type": "i", "field": "id_tree", "ref": "ItemBonusTreeNode" },
+      { "data_type": "i", "field": "id_modified_crafting_category", "ref": "ModifiedCraftingCategory" },
+      { "data_type": "i", "field": "id_tree", "ref": "ItemBonusTree" },
       { "data_type": "i", "field": "flags" },
       { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "item_context_offset" }
@@ -1046,6 +1084,12 @@
       { "data_type": "i", "field": "milestone_season" },
       { "data_type": "i", "field": "id_expansion" },
       { "data_type": "i", "field": "heroic_lfg_dungeon_min_gear" }
+    ]
+  },
+  "MythicPlusSeasonTrackedMap": {
+    "parent": "DisplaySeason",
+    "fields": [
+      { "data_type": "i", "field": "id_map_challenge_mode", "ref": "MapChallengeMode" }
     ]
   },
   "MythicPlusSeasonRewardLevels": {
@@ -1699,8 +1743,8 @@
     "fields": [
       { "data_type": "S", "field": "name" },
       { "data_type": "S", "field": "horde_name" },
-      { "data_type": "h", "field": "id_skill_line" },
-      { "data_type": "h", "field": "id_parent_trade_skill_category" },
+      { "data_type": "h", "field": "id_parent_trade_skill_category", "ref": "TradeSkillCategory" },
+      { "data_type": "h", "field": "id_skill_line", "ref": "SkillLine" },
       { "data_type": "h", "field": "order" },
       { "data_type": "b", "field": "flags" }
     ]

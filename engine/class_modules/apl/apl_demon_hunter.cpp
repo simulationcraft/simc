@@ -92,8 +92,8 @@ void havoc( player_t* p )
   precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
-  precombat->add_action( "sigil_of_flame,if=!equipped.algethar_puzzle_box" );
   precombat->add_action( "immolation_aura" );
+  precombat->add_action( "sigil_of_flame,if=!equipped.algethar_puzzle_box" );
 
   default_->add_action( "auto_attack,if=!buff.out_of_range.up" );
   default_->add_action( "retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound<(spell_targets>?3)" );
@@ -107,7 +107,7 @@ void havoc( player_t* p )
   default_->add_action( "immolation_aura,if=talent.ragefire&active_enemies>=3&(cooldown.blade_dance.remains|debuff.essence_break.down)" );
   default_->add_action( "disrupt" );
   default_->add_action( "immolation_aura,if=talent.a_fire_inside&talent.inertia&buff.unbound_chaos.down&full_recharge_time<gcd.max*2&debuff.essence_break.down" );
-  default_->add_action( "fel_rush,if=buff.unbound_chaos.up&action.immolation_aura.charges=2&debuff.essence_break.down" );
+  default_->add_action( "fel_rush,if=buff.unbound_chaos.up&(action.immolation_aura.charges=2&debuff.essence_break.down|prev_gcd.1.eye_beam&buff.inertia.up&buff.inertia.remains<3)" );
   default_->add_action( "the_hunt,if=time<10&buff.potion.up&(!talent.inertia|buff.metamorphosis.up&debuff.essence_break.down)" );
   default_->add_action( "immolation_aura,if=talent.inertia&(cooldown.eye_beam.remains<gcd.max*2|buff.metamorphosis.up)&cooldown.essence_break.remains<gcd.max*3&buff.unbound_chaos.down&buff.inertia.down&debuff.essence_break.down" );
   default_->add_action( "immolation_aura,if=talent.inertia&buff.unbound_chaos.down&(full_recharge_time<cooldown.essence_break.remains|!talent.essence_break)&debuff.essence_break.down&(buff.metamorphosis.down|buff.metamorphosis.remains>6)&cooldown.blade_dance.remains&(fury<75|cooldown.blade_dance.remains<gcd.max*2)" );
@@ -125,9 +125,9 @@ void havoc( player_t* p )
   default_->add_action( "vengeful_retreat,use_off_gcd=1,if=talent.initiative&!talent.essence_break&time>1&((!buff.initiative.up|prev_gcd.1.death_sweep&cooldown.metamorphosis.up&talent.chaotic_transformation)&talent.initiative)" );
   default_->add_action( "fel_rush,if=talent.momentum.enabled&buff.momentum.remains<gcd.max*2&cooldown.eye_beam.remains<=gcd.max&debuff.essence_break.down&cooldown.blade_dance.remains" );
   default_->add_action( "fel_rush,if=talent.inertia.enabled&!buff.inertia.up&buff.unbound_chaos.up&(buff.metamorphosis.up|cooldown.eye_beam.remains>action.immolation_aura.recharge_time&cooldown.eye_beam.remains>4)&debuff.essence_break.down&cooldown.blade_dance.remains" );
-  default_->add_action( "the_hunt,if=debuff.essence_break.down&(time<10|cooldown.metamorphosis.remains>10|!equipped.algethar_puzzle_box)&(raid_event.adds.in>90|active_enemies>3|time_to_die<10)&(debuff.essence_break.down&(!talent.furious_gaze|buff.furious_gaze.up|set_bonus.tier31_4pc)|!set_bonus.tier30_2pc)&time>10" );
   default_->add_action( "essence_break,if=(active_enemies>desired_targets|raid_event.adds.in>40)&(buff.metamorphosis.remains>gcd.max*3|cooldown.eye_beam.remains>10)&(!talent.tactical_retreat|buff.tactical_retreat.up|time<10)&(buff.vengeful_retreat_movement.remains<gcd.max*0.5|time>0)&cooldown.blade_dance.remains<=3.1*gcd.max|fight_remains<6" );
   default_->add_action( "death_sweep,if=variable.blade_dance&(!talent.essence_break|cooldown.essence_break.remains>gcd.max*2)&buff.fel_barrage.down" );
+  default_->add_action( "the_hunt,if=debuff.essence_break.down&(time<10|cooldown.metamorphosis.remains>10|!equipped.algethar_puzzle_box)&(raid_event.adds.in>90|active_enemies>3|time_to_die<10)&(debuff.essence_break.down&(!talent.furious_gaze|buff.furious_gaze.up|set_bonus.tier31_4pc)|!set_bonus.tier30_2pc)&time>10" );
   default_->add_action( "fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30&fury.deficit<20&buff.metamorphosis.down" );
   default_->add_action( "glaive_tempest,if=(active_enemies>desired_targets|raid_event.adds.in>10)&(debuff.essence_break.down|active_enemies>1)&buff.fel_barrage.down" );
   default_->add_action( "annihilation,if=buff.inner_demon.up&cooldown.eye_beam.remains<=gcd&buff.fel_barrage.down" );
@@ -139,13 +139,13 @@ void havoc( player_t* p )
   default_->add_action( "immolation_aura,if=active_enemies>=2&fury<70&debuff.essence_break.down" );
   default_->add_action( "annihilation,if=!variable.pooling_for_blade_dance&(cooldown.essence_break.remains|!talent.essence_break)&buff.fel_barrage.down|set_bonus.tier30_2pc" );
   default_->add_action( "felblade,if=fury.deficit>=40&talent.any_means_necessary&debuff.essence_break.down|talent.any_means_necessary&debuff.essence_break.down" );
-  default_->add_action( "sigil_of_flame,if=fury.deficit>=30&talent.any_means_necessary" );
+  default_->add_action( "sigil_of_flame,if=fury.deficit>=40&talent.any_means_necessary" );
   default_->add_action( "throw_glaive,if=talent.soulscar&(active_enemies>desired_targets|raid_event.adds.in>full_recharge_time+9)&spell_targets>=(2-talent.furious_throws)&!debuff.essence_break.up&!set_bonus.tier31_2pc" );
   default_->add_action( "immolation_aura,if=buff.immolation_aura.stack<buff.immolation_aura.max_stack&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)&buff.out_of_range.down&(!buff.unbound_chaos.up|!talent.unbound_chaos)&(recharge_time<cooldown.essence_break.remains|!talent.essence_break&cooldown.eye_beam.remains>recharge_time)" );
   default_->add_action( "throw_glaive,if=talent.soulscar&cooldown.throw_glaive.full_recharge_time<cooldown.blade_dance.remains&set_bonus.tier31_2pc&buff.fel_barrage.down&!variable.pooling_for_eye_beam" );
   default_->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam&buff.fel_barrage.down" );
   default_->add_action( "sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30&buff.out_of_range.down" );
-  default_->add_action( "felblade,if=fury.deficit>=40&buff.out_of_range.down" );
+  default_->add_action( "felblade,if=fury.deficit>=40" );
   default_->add_action( "fel_rush,if=!talent.momentum&talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))&(buff.unbound_chaos.down)&(recharge_time<cooldown.essence_break.remains|!talent.essence_break)" );
   default_->add_action( "demons_bite,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&debuff.burning_wound.remains<4&active_dot.burning_wound<(spell_targets>?3)" );
   default_->add_action( "fel_rush,if=!talent.momentum&!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))&(buff.unbound_chaos.down)" );
@@ -157,7 +157,7 @@ void havoc( player_t* p )
   default_->add_action( "throw_glaive,if=(talent.demon_blades|buff.out_of_range.up)&!debuff.essence_break.up&buff.out_of_range.down&!set_bonus.tier31_2pc" );
 
   cooldown->add_action( "metamorphosis,if=!talent.demonic&((!talent.chaotic_transformation|cooldown.eye_beam.remains>20)&active_enemies>desired_targets|raid_event.adds.in>60|fight_remains<25)" );
-  cooldown->add_action( "metamorphosis,if=talent.demonic&(!talent.chaotic_transformation&cooldown.eye_beam.remains|cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25+talent.shattered_destiny*70&cooldown.eye_beam.remains&cooldown.blade_dance.remains)&buff.inner_demon.down" );
+  cooldown->add_action( "metamorphosis,if=talent.demonic&(!talent.chaotic_transformation&cooldown.eye_beam.remains|cooldown.eye_beam.remains>20&(!variable.blade_dance|prev_gcd.1.death_sweep|prev_gcd.2.death_sweep)|fight_remains<25+talent.shattered_destiny*70&cooldown.eye_beam.remains&cooldown.blade_dance.remains)&buff.inner_demon.down" );
   cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|buff.metamorphosis.up&cooldown.metamorphosis.ready|fight_remains<60|time>0.1&time<10" );
   cooldown->add_action( "elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)&debuff.essence_break.down" );
   cooldown->add_action( "use_item,name=manic_grieftorch,use_off_gcd=1,if=buff.vengeful_retreat_movement.down&((buff.initiative.remains>2&debuff.essence_break.down&cooldown.essence_break.remains>gcd.max&time>14|time_to_die<10|time<1&!equipped.algethar_puzzle_box|fight_remains%%120<5)&!prev_gcd.1.essence_break)" );
@@ -187,15 +187,13 @@ void vengeance( player_t* p )
   action_priority_list_t* big_aoe = p->get_action_priority_list( "big_aoe" );
   action_priority_list_t* filler = p->get_action_priority_list( "filler" );
   action_priority_list_t* externals = p->get_action_priority_list( "externals" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  default_->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)", "Check if trinkets have buff effects" );
-  default_->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)" );
-  default_->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
-  default_->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
+  default_->add_action( "variable,name=fd_ready,value=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0", "Check if fiery demise is active and spread" );
   default_->add_action( "variable,name=dont_cleave,value=(cooldown.fel_devastation.remains<=(action.soul_cleave.execute_time+gcd.remains))&fury<80", "Don't spend fury when fel dev soon to maximize fel dev uptime" );
-  default_->add_action( "variable,name=can_spb_focused_cleave,op=setif,condition=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0,value=(spell_targets.spirit_bomb=1&(soul_fragments>=5&talent.burning_blood))|(spell_targets.spirit_bomb=2&(soul_fragments>=5|(soul_fragments>=4&talent.burning_blood)))|(spell_targets.spirit_bomb>=3&soul_fragments>=4)|(spell_targets.spirit_bomb>=6&(soul_fragments>=3)),value_else=(spell_targets.spirit_bomb>=4&talent.burning_blood&soul_fragments>=5)|(spell_targets.spirit_bomb=6&(soul_fragments>=5|(soul_fragments>=4&talent.burning_blood)))|(spell_targets.spirit_bomb=7&soul_fragments>=4)|(spell_targets.spirit_bomb>=8&soul_fragments>=3)", "When to use Spirit Bomb with Focused Cleave" );
-  default_->add_action( "variable,name=can_spb_no_focused_cleave,op=setif,condition=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0,value=soul_fragments>=4|(spell_targets.spirit_bomb>=3&soul_fragments>=3&talent.burning_blood)|(spell_targets.spirit_bomb>=6&soul_fragments>=3),value_else=soul_fragments>=5|(spell_targets.spirit_bomb>=6&soul_fragments>=4)", "When to use Spirit Bomb without Focused Cleave" );
+  default_->add_action( "variable,name=single_target,value=spell_targets.spirit_bomb=1", "When to use Spirit Bomb with Focused Cleave" );
+  default_->add_action( "variable,name=small_aoe,value=spell_targets.spirit_bomb>=2&spell_targets.spirit_bomb<=5" );
+  default_->add_action( "variable,name=big_aoe,value=spell_targets.spirit_bomb>=6" );
+  default_->add_action( "variable,name=can_spb,op=setif,condition=variable.fd_ready,value=(variable.single_target&soul_fragments>=5)|(variable.small_aoe&soul_fragments>=4)|(variable.big_aoe&soul_fragments>=3),value_else=(variable.small_aoe&soul_fragments>=5)|(variable.big_aoe&soul_fragments>=4)" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
@@ -208,64 +206,61 @@ void vengeance( player_t* p )
   default_->add_action( "disrupt,if=target.debuff.casting.react" );
   default_->add_action( "infernal_strike,use_off_gcd=1" );
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
-  default_->add_action( "metamorphosis" );
+  default_->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up" );
   default_->add_action( "potion,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=externals" );
-  default_->add_action( "call_action_list,name=trinkets" );
+  default_->add_action( "use_items,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=fiery_demise,if=talent.fiery_brand&talent.fiery_demise&active_dot.fiery_brand>0" );
   default_->add_action( "call_action_list,name=maintenance" );
-  default_->add_action( "run_action_list,name=single_target,if=active_enemies<=1" );
-  default_->add_action( "run_action_list,name=small_aoe,if=active_enemies>1&active_enemies<=5" );
-  default_->add_action( "run_action_list,name=big_aoe,if=active_enemies>=6" );
+  default_->add_action( "run_action_list,name=single_target,if=variable.single_target" );
+  default_->add_action( "run_action_list,name=small_aoe,if=variable.small_aoe" );
+  default_->add_action( "run_action_list,name=big_aoe,if=variable.big_aoe" );
 
   maintenance->add_action( "fiery_brand,if=talent.fiery_brand&((active_dot.fiery_brand=0&(cooldown.sigil_of_flame.remains<=(execute_time+gcd.remains)|cooldown.soul_carver.remains<=(execute_time+gcd.remains)|cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))|(talent.down_in_flames&full_recharge_time<=(execute_time+gcd.remains)))", "Maintenance & upkeep" );
   maintenance->add_action( "sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0" );
   maintenance->add_action( "immolation_aura" );
   maintenance->add_action( "bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2" );
-  maintenance->add_action( "spirit_bomb,if=talent.focused_cleave&variable.can_spb_focused_cleave|!talent.focused_cleave&variable.can_spb_no_focused_cleave" );
+  maintenance->add_action( "spirit_bomb,if=variable.can_spb" );
   maintenance->add_action( "felblade,if=(fury.deficit>=40&active_enemies=1)|((cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50)" );
   maintenance->add_action( "fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   maintenance->add_action( "shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   maintenance->add_action( "spirit_bomb,if=fury.deficit<=30&spell_targets>1&soul_fragments>=4", "Don't overcap fury" );
-  maintenance->add_action( "soul_cleave,if=fury.deficit<=30" );
+  maintenance->add_action( "soul_cleave,if=fury.deficit<=40" );
 
   fiery_demise->add_action( "immolation_aura", "Fiery demise window" );
   fiery_demise->add_action( "sigil_of_flame" );
   fiery_demise->add_action( "felblade,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   fiery_demise->add_action( "fel_devastation" );
-  fiery_demise->add_action( "soul_carver" );
+  fiery_demise->add_action( "soul_carver,if=soul_fragments.total<3" );
   fiery_demise->add_action( "the_hunt" );
-  fiery_demise->add_action( "elysian_decree,line_cd=1.85" );
-  fiery_demise->add_action( "spirit_bomb,if=talent.focused_cleave&variable.can_spb_focused_cleave|!talent.focused_cleave&variable.can_spb_no_focused_cleave" );
+  fiery_demise->add_action( "elysian_decree,line_cd=1.85,if=fury>=40" );
+  fiery_demise->add_action( "spirit_bomb,if=variable.can_spb" );
 
   single_target->add_action( "the_hunt", "Single Target" );
   single_target->add_action( "soul_carver" );
   single_target->add_action( "fel_devastation,if=talent.collective_anguish|(talent.stoke_the_flames&talent.burning_blood)" );
   single_target->add_action( "elysian_decree" );
   single_target->add_action( "fel_devastation" );
-  single_target->add_action( "soul_cleave,if=talent.focused_cleave&!variable.dont_cleave" );
+  single_target->add_action( "soul_cleave,if=!variable.dont_cleave" );
   single_target->add_action( "fracture" );
   single_target->add_action( "shear" );
-  single_target->add_action( "soul_cleave,if=!variable.dont_cleave" );
   single_target->add_action( "call_action_list,name=filler" );
 
   small_aoe->add_action( "the_hunt", "2-5 targets" );
   small_aoe->add_action( "fel_devastation,if=talent.collective_anguish.enabled|(talent.stoke_the_flames.enabled&talent.burning_blood.enabled)" );
-  small_aoe->add_action( "elysian_decree,line_cd=1.85" );
+  small_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   small_aoe->add_action( "fel_devastation" );
-  small_aoe->add_action( "soul_carver" );
-  small_aoe->add_action( "spirit_bomb,if=soul_fragments>=5" );
-  small_aoe->add_action( "soul_cleave,if=talent.focused_cleave&soul_fragments<=2&!variable.dont_cleave" );
+  small_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
+  small_aoe->add_action( "soul_cleave,if=soul_fragments<=1&!variable.dont_cleave" );
   small_aoe->add_action( "fracture" );
   small_aoe->add_action( "shear" );
-  small_aoe->add_action( "soul_cleave,if=soul_fragments<=2&!variable.dont_cleave" );
   small_aoe->add_action( "call_action_list,name=filler" );
 
   big_aoe->add_action( "fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames", "6+ targets" );
   big_aoe->add_action( "the_hunt" );
-  big_aoe->add_action( "elysian_decree,line_cd=1.85" );
+  big_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   big_aoe->add_action( "fel_devastation" );
-  big_aoe->add_action( "soul_carver" );
+  big_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   big_aoe->add_action( "spirit_bomb,if=soul_fragments>=4" );
   big_aoe->add_action( "fracture" );
   big_aoe->add_action( "shear" );
@@ -280,12 +275,6 @@ void vengeance( player_t* p )
 
   externals->add_action( "invoke_external_buff,name=symbol_of_hope", "External buffs" );
   externals->add_action( "invoke_external_buff,name=power_infusion" );
-
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs", "Trinkets prioritize damage dealing on use trinkets over trinkets that give buffs" );
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs" );
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=main_hand,if=(variable.trinket_1_buffs|trinket.1.cooldown.remains)&(variable.trinket_2_buffs|trinket.2.cooldown.remains)" );
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_2_exclude|trinket.2.cooldown.remains|!trinket.2.has_cooldown|variable.trinket_2_buffs)" );
-  trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(buff.metamorphosis.up|cooldown.metamorphosis.remains>20)&(variable.trinket_1_exclude|trinket.1.cooldown.remains|!trinket.1.has_cooldown|variable.trinket_1_buffs)" );
 }
 //vengeance_apl_end
 

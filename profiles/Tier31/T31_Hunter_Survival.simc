@@ -9,8 +9,8 @@ talents=B8PAAAAAAAAAAAAAAAAAAAAAAIHAahkwBoEEkEJRSCQSkWkIAAAAAQIRRoJkEBJOAaAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
-food=fated_fortune_cookie
+flask=iced_phial_of_corrupting_rage_3
+food=revenge_served_cold
 augmentation=draconic
 temporary_enchant=main_hand:howling_rune_3
 
@@ -61,7 +61,7 @@ actions.cleave+=/coordinated_assault,if=(cooldown.fury_of_the_eagle.remains|!tal
 actions.cleave+=/explosive_shot
 actions.cleave+=/carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2
 actions.cleave+=/use_item,name=djaruun_pillar_of_the_elder_flame
-actions.cleave+=/fury_of_the_eagle,if=cooldown.butchery.full_recharge_time>cast_time&raid_event.adds.exists|!talent.butchery
+actions.cleave+=/fury_of_the_eagle,if=raid_event.adds.exists
 actions.cleave+=/butchery,if=raid_event.adds.exists
 actions.cleave+=/butchery,if=(full_recharge_time<gcd|dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd|raid_event.adds.remains<10))&!raid_event.adds.exists
 actions.cleave+=/fury_of_the_eagle,if=!raid_event.adds.exists

@@ -822,12 +822,13 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 34> options { {
+  std::array<std::unique_ptr<option_t>, 35> options { {
     opt_uint("id", parsed.data.id),
     opt_obsoleted("upgrade"),
     opt_string("stats", option_stats_str),
     opt_string("gems", option_gems_str),
     opt_string("enchant", option_enchant_str),
+    opt_string("embellishment", option_embellishment_str ),
     opt_string("addon", option_addon_str),
     opt_string("equip", option_equip_str),
     opt_string("use", option_use_str),
@@ -881,7 +882,7 @@ void item_t::parse_options()
   }
   catch ( const std::exception& )
   {
-    std::throw_with_nested(std::invalid_argument(fmt::format("Cannot parse option from '{}'", options_str)));
+    std::throw_with_nested( std::invalid_argument( fmt::format( "Cannot parse option from '{}'", options_str ) ) );
   }
 
   util::tokenize( option_name_str );
@@ -901,7 +902,7 @@ void item_t::parse_options()
   util::tolower( option_ilevel_str           );
   util::tolower( option_quality_str          );
 
-  if ( ! option_gem_id_str.empty() )
+  if ( !option_gem_id_str.empty() )
   {
     auto spl = util::string_split<util::string_view>( option_gem_id_str, ":/" );
     for ( size_t i = 0, end = std::min( std::size( parsed.gem_id ), spl.size() ); i < end; i++ )
@@ -912,7 +913,7 @@ void item_t::parse_options()
     }
   }
 
-  if ( ! option_gem_bonus_id_str.empty() )
+  if ( !option_gem_bonus_id_str.empty() )
   {
     auto gem_bonus_split = util::string_split<util::string_view>( option_gem_bonus_id_str, "/" );
     size_t gem_slot = 0;
@@ -932,10 +933,9 @@ void item_t::parse_options()
 
       gem_slot++;
     }
-
   }
 
-  if ( ! option_gem_ilevel_str.empty() )
+  if ( !option_gem_ilevel_str.empty() )
   {
     auto split = util::string_split<util::string_view>( option_gem_ilevel_str, "/:" );
     auto gem_idx = 0U;
@@ -951,7 +951,7 @@ void item_t::parse_options()
     }
   }
 
-  if ( ! option_azerite_powers_str.empty() )
+  if ( !option_azerite_powers_str.empty() )
   {
     auto split = util::string_split<util::string_view>( option_azerite_powers_str, "/:" );
     for ( const auto& power_str : split )
@@ -973,41 +973,41 @@ void item_t::parse_options()
     }
   }
 
-  if ( ! option_enchant_id_str.empty() )
+  if ( !option_enchant_id_str.empty() )
     parsed.enchant_id = util::to_unsigned( option_enchant_id_str );
 
-  if ( ! option_addon_id_str.empty() )
+  if ( !option_addon_id_str.empty() )
     parsed.addon_id = util::to_unsigned( option_addon_id_str );
 
-  if ( ! option_bonus_id_str.empty() )
+  if ( !option_bonus_id_str.empty() )
   {
     try
     {
       auto split = util::string_split<util::string_view>( option_bonus_id_str, "/:" );
-      for (auto & elem : split)
+      for ( auto& elem : split )
       {
         int bonus_id = util::to_int( elem );
         if ( bonus_id <= 0 )
         {
-          throw std::invalid_argument("Negative or 0 bonus id.");
+          throw std::invalid_argument( "Negative or 0 bonus id." );
         }
 
         parsed.bonus_id.push_back( bonus_id );
       }
     }
-    catch (const std::exception&)
+    catch ( const std::exception& )
     {
-      std::throw_with_nested(std::runtime_error("Bonus ID"));
+      std::throw_with_nested( std::runtime_error( "Bonus ID" ) );
     }
   }
 
-  if ( ! option_initial_cd_str.empty() )
+  if ( !option_initial_cd_str.empty() )
     parsed.initial_cd = timespan_t::from_seconds( std::stod( option_initial_cd_str ) );
 
-  if ( ! option_drop_level_str.empty() )
+  if ( !option_drop_level_str.empty() )
     parsed.drop_level = util::to_unsigned( option_drop_level_str );
 
-  if ( ! option_azerite_level_str.empty() )
+  if ( !option_azerite_level_str.empty() )
     parsed.azerite_level = util::to_unsigned( option_azerite_level_str );
 
   if ( !option_crafted_stat_str.empty() )
@@ -1036,8 +1036,7 @@ void item_t::parse_options()
           }
           else
           {
-            sim->error( "Unsupported Blizzard item modifier {} on '{}'",
-              stat_str, name() );
+            sim->error( "Unsupported Blizzard item modifier {} on '{}'", stat_str, name() );
           }
         }
         else
@@ -1105,15 +1104,15 @@ std::string item_t::encoded_item() const
     }
   }
 
-  if ( ! option_ilevel_str.empty() )
+  if ( !option_ilevel_str.empty() )
     s << ",ilevel=" << option_ilevel_str;
 
-  if ( ! option_azerite_level_str.empty() )
+  if ( !option_azerite_level_str.empty() )
     s << ",azerite_level=" << option_azerite_level_str;
   else if ( parsed.azerite_level > 0 )
     s << ",azerite_level=" << parsed.azerite_level;
 
-  if ( ! option_armor_type_str.empty() )
+  if ( !option_armor_type_str.empty() )
     s << ",type=" << util::armor_type_string( parsed.data.item_subclass );
 
   if ( !option_warforged_str.empty() )
@@ -1122,30 +1121,30 @@ std::string item_t::encoded_item() const
   if ( !option_lfr_str.empty() )
     s << ",lfr=" << ( parsed.data.lfr() ? 1 : 0 );
 
-  if ( ! option_heroic_str.empty() )
+  if ( !option_heroic_str.empty() )
     s << ",heroic=" << ( parsed.data.heroic() ? 1 : 0 );
 
-  if ( ! option_mythic_str.empty() )
+  if ( !option_mythic_str.empty() )
     s << ",mythic=" << ( parsed.data.mythic() ? 1 : 0 );
 
-  if ( ! option_quality_str.empty() )
+  if ( !option_quality_str.empty() )
     s << ",quality=" << util::item_quality_string( parsed.data.quality );
 
-  if ( ! option_stats_str.empty() )
+  if ( !option_stats_str.empty() )
     s << ",stats=" << encoded_stats();
 
-  if ( ! option_weapon_str.empty() )
+  if ( !option_weapon_str.empty() )
     s << ",weapon=" << encoded_weapon();
 
   // If gems= is given, always print it out
-  if ( ! option_gems_str.empty() )
+  if ( !option_gems_str.empty() )
     s << ",gems=" << encoded_gems();
   // Print out gems= string to profiles, if there is no gem_id= given, and
   // there are gems to spit out.  Note that gem_id= option is also always
   // printed below, and if present, the gems= string will be found in "gear
   // comments" (enabled by save_gear_comments=1 option).
-  else if ( option_gem_id_str.empty() && ( !parsed.gem_stats.empty() ||
-      ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) ) )
+  else if ( option_gem_id_str.empty() &&
+            ( !parsed.gem_stats.empty() || ( slot == SLOT_HEAD && player->meta_gem != META_GEM_NONE ) ) )
     s << ",gems=" << encoded_gems();
 
   auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned>& v ) {
@@ -1156,7 +1155,7 @@ std::string item_t::encoded_item() const
     return id != 0;
   } );
 
-  if ( ! option_gem_id_str.empty() )
+  if ( !option_gem_id_str.empty() )
     s << ",gem_id=" << option_gem_id_str;
   else if ( gem_it != parsed.gem_id.end() && parsed.gem_stats.empty() )
   {
@@ -1210,7 +1209,7 @@ std::string item_t::encoded_item() const
     s << ",gem_ilevel=" << option_gem_ilevel_str;
   }
 
-  if ( ! option_azerite_powers_str.empty() )
+  if ( !option_azerite_powers_str.empty() )
   {
     s << ",azerite_powers=" << option_azerite_powers_str;
   }
@@ -1219,44 +1218,45 @@ std::string item_t::encoded_item() const
     s << ",azerite_powers=" << util::string_join( parsed.azerite_ids, "/" );
   }
 
-  if ( ! option_enchant_str.empty() )
+  if ( !option_enchant_str.empty() )
     s << ",enchant=" << encoded_enchant();
-  else if ( option_enchant_id_str.empty() &&
-            ( !parsed.enchant_stats.empty() || ! parsed.encoded_enchant.empty() ) )
+  else if ( option_enchant_id_str.empty() && ( !parsed.enchant_stats.empty() || !parsed.encoded_enchant.empty() ) )
     s << ",enchant=" << encoded_enchant();
 
-  if ( ! option_enchant_id_str.empty() )
+  if ( !option_embellishment_str.empty() )
+    s << ",embellishment=" << option_embellishment_str;
+
+  if ( !option_enchant_id_str.empty() )
     s << ",enchant_id=" << option_enchant_id_str;
 
-  if ( ! option_addon_str.empty() )
+  if ( !option_addon_str.empty() )
     s << ",addon=" << encoded_addon();
-  else if (  option_addon_id_str.empty() &&
-        ( !parsed.addon_stats.empty() || ! parsed.encoded_addon.empty() ) )
+  else if ( option_addon_id_str.empty() && ( !parsed.addon_stats.empty() || !parsed.encoded_addon.empty() ) )
     s << ",addon=" << encoded_addon();
 
-  if ( ! option_addon_id_str.empty() )
+  if ( !option_addon_id_str.empty() )
     s << ",addon_id=" << option_addon_id_str;
 
-  if ( ! option_equip_str.empty() )
+  if ( !option_equip_str.empty() )
     s << ",equip=" << option_equip_str;
 
-  if ( ! option_use_str.empty() )
+  if ( !option_use_str.empty() )
     s << ",use=" << option_use_str;
 
-  if ( ! option_data_source_str.empty() )
+  if ( !option_data_source_str.empty() )
     s << ",source=" << option_data_source_str;
 
-  if ( ! option_initial_cd_str.empty() )
+  if ( !option_initial_cd_str.empty() )
     s << ",initial_cd=" << option_initial_cd_str;
 
-  if ( ! option_drop_level_str.empty() )
+  if ( !option_drop_level_str.empty() )
     s << ",drop_level=" << option_drop_level_str;
   else if ( parsed.drop_level > 0 )
   {
     s << ",drop_level=" << parsed.drop_level;
   }
 
-  if ( ! option_crafted_stat_str.empty() )
+  if ( !option_crafted_stat_str.empty() )
   {
     s << ",crafted_stats=" << option_crafted_stat_str;
   }
@@ -1550,6 +1550,7 @@ void item_t::init()
   decode_use_effect();
   decode_enchant();
   decode_addon();
+  decode_embellishment();
 
   if ( ! option_name_str.empty() && ( option_name_str != name_str ) )
   {
@@ -1912,8 +1913,7 @@ void item_t::decode_enchant()
     return;
   }
 
-  const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this,
-    option_enchant_str );
+  const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this, option_enchant_str );
 
   if ( enchant_data.id > 0 )
   {
@@ -2076,6 +2076,36 @@ void item_t::decode_weapon()
     w -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
     w -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
   }
+}
+
+// item_t::decode_embellishment =============================================
+
+void item_t::decode_embellishment()
+{
+  if ( option_embellishment_str.empty() || option_embellishment_str == "none" )
+    return;
+
+  const auto& emb = embellishment_data_t::find( option_embellishment_str, is_ptr, true );
+  if ( emb.bonus_id == 0 )
+  {
+    player->sim->error( "Player {} item '{}' unknown embellishment '{}', ignoring",
+                        player->name(), name(), option_embellishment_str );
+    return;
+  }
+
+  const auto& effect = item_effect_t::find( emb.effect_id, is_ptr );
+  if ( effect.id == 0 )
+  {
+    player->sim->error( "Player {} item '{}' embellishment {} has no effect, ignoring",
+                        player->name(), name(), emb.name );
+    return;
+  }
+
+  parsed.data.add_effect( effect );
+
+  player->sim->print_debug( "Player {} itme '{}' adding embellishment {}", player->name(), name(), emb.name );
+
+  return;
 }
 
 // item_t::decode_data_source ===============================================

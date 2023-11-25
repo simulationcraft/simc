@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52106 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -581,7 +581,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can Cause Silence (236), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=8519)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.41510 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.55 -> 0.4151)
 Description      : Claw the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has $62762s3 or more Focus.
 Variables        : $aotb=$?s191384[${1+($191384s1/100)}][${1.0}]
 $beastMasterTalent=$?s378007[${1+($378007s1/100)}][${1}]
@@ -613,7 +614,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can Cause Silence (236), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=8994)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.41510 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.55 -> 0.4151)
 Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has $62762s3 or more Focus.
 Variables        : $aotb=$?s191384[${1+($191384s1/100)}][${1.0}]
 $beastMasterTalent=$?s378007[${1+($378007s1/100)}][${1}]
@@ -1256,7 +1258,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can Cause Silence (236), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=42080)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.41510 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.55 -> 0.4151)
 Description      : Smack the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has $62762s3 or more Focus.
 Variables        : $aotb=$?s191384[${1+($191384s1/100)}][${1.0}]
 $beastMasterTalent=$?s378007[${1+($378007s1/100)}][${1}]
@@ -1949,7 +1952,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=83776)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.62300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (2.15 -> 1.623)
 Description      : $@spelldesc34026
 
 Name             : Mail Specialization (desc=Passive) (id=86538) [Passive, Hidden] 
@@ -2280,7 +2284,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : No AutoCast (AI) (49), Active Threat (94), PvP Enabling (96), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=101379)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12100 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.16 -> 0.121)
 Description      : The Worm burrows into the earth, shaking the ground above dealing $<damage> Nature damage over $93433d.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
@@ -2304,7 +2309,8 @@ Attributes       : ........ ........ x....x.. ........   .......x ........ .x...
                  : Not Shapeshifted (16), No Active Defense (21), No Reflection (39), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), PvP Enabling (96), Taps immediately (215), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=101401)   : School Damage (2): froststorm
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18100 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Unknown(24)
+Hotfixed         : AP Coefficient (0.24 -> 0.181)
 Description      : $@spelldesc92380
 
 Name             : Posthaste (id=109215) [Spell Family (9), Passive] 
@@ -3729,7 +3735,8 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Duration (170), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=269119)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.78400 | PvP Coefficient: 1.25000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.78400 | PvP Coefficient: 1.35000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.35)
 Description      : A quick shot that causes $sw2 Arcane damage.$?s260393[
 
 Arcane Shot has a $260393h% chance to reduce the cooldown of Rapid Fire by ${$260393m1/10}.1 sec.][]
@@ -5856,7 +5863,8 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Uses Ranged Slot (1), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Durability Loss (101), Not a Proc (105), Bouncy Chain Missiles (146), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51000 | PvP Coefficient: 1.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51000 | PvP Coefficient: 1.20000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.4 -> 1.2)
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -6077,9 +6085,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=483696)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.98500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (2.63 -> 1.985)
 #2 (id=485325)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12600 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.167 -> 0.126)
 Description      : $@spelldesc259489
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -6261,7 +6271,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Hide Channel Bar (109), Not an Attack (194), Taps immediately (215), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=484009)   : Dummy (3)
-                   Base Value: 158 | Scaled Value: 158 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 158 | Scaled Value: 158 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=484010)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=484059)   : Energize Power (30)
@@ -6333,7 +6343,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=484062)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.09400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (4.1 -> 3.094)
 #2 (id=718233)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: focus | Target: Self (1)
 Description      : $@spelldesc269751
@@ -13257,7 +13268,8 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=868192)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81300 | PvP Coefficient: 1.16000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81300 | PvP Coefficient: 1.35000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.16 -> 1.35)
 Description      : $@spelldesc342049
 
 Name             : Chimaera Shot (id=344121) [Spell Family (9)] 
@@ -13281,7 +13293,8 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=868193)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81300 | PvP Coefficient: 1.16000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81300 | PvP Coefficient: 1.35000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.16 -> 1.35)
 Description      : $@spelldesc342049
 
 Name             : Spore Cloud (desc=Special Ability) (id=344347) [Spell Family (9)] 
@@ -14567,11 +14580,6 @@ Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, max_rank=1, req_poin
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-GCD              : 1.5 seconds
-Cooldown         : 120 seconds
-Proc Chance      : 25%
-Proc Flags       : ....x... x.x.x.x. x....... ........   ........ ........ ........ ........   
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17388,7 +17396,6 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Thrill of the Hunt (257946), Frenzy (272790), Thrill of the Hunt (312365)
                    Family Flags: 78, 126
-Hotfixed         : Affects Spells
 Description      : Kill Command damage is increased by $s1%. Barbed Shot lasts ${$m2/1000}.1 sec longer.
 
 Name             : Master Handler (id=424558) [Spell Family (9), Passive] 
@@ -17423,13 +17430,14 @@ Duration         : 8 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : DoT Stacking Rule (103)
 Effects          :
 #1 (id=1101636)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -17587,7 +17595,6 @@ Description      : $@spelldesc422879
 Tooltip          : Your next Wildfire Bomb will not incur a cooldown.
 
 Name             : Rapid Reload (id=431156) [Spell Family (9)] 
-Hotfixed         : NEW SPELL
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17603,20 +17610,19 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1118738)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.40000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rapid Fire (257044)
                    Family Flags: 118
-Hotfixed         : NEW EFFECT
+Hotfixed         : PvP Coefficient (0.6 -> 0.4)
 #2 (id=1118739)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.40000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rapid Fire (257044)
                    Family Flags: 118
-Hotfixed         : NEW EFFECT
+Hotfixed         : PvP Coefficient (0.6 -> 0.4)
 Description      : Your next Rapid Fire will shoot $s1% additional shots during its channel.
 Tooltip          : Your next Rapid Fire will shoot $s1% additional shots during its channel.
 
 Name             : Hunter Marksmanship 10.2 Class Set 2pc (id=431168) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17631,20 +17637,18 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1118757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rapid Fire (257045)
                    Family Flags: 3
-Hotfixed         : NEW EFFECT
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1118758)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1118759)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Rapid Fire deals $s1% additional damage. Trick Shots causes Rapid Fire to launch a Volley for $s2 sec, dealing $s3% of normal damage.
 
 Name             : Hunter Marksmanship 10.2 Class Set 4pc (id=431172) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17663,13 +17667,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1118763)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #2 (id=1118764)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1118765)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Every $s1 Focus you spend has a ${$m2/10}.1% chance to reset the cooldown of Rapid Fire and cause your next Rapid Fire to shoot $431156s1% additional shots during its channel.
 
 

@@ -527,8 +527,6 @@ struct sim_t : private sc_thread_t
     timespan_t dreamtenders_charm_update_interval = 10_s;
     // Standard Deviation of interval
     timespan_t dreamtenders_charm_update_interval_stddev = 2.5_s;
-    // Amount of allies using Verdant Embrace to increase the amount and reduce RPPM
-    unsigned int verdant_embrace_allies = 0;
     // Sets the chance for Ashes of the Embersoul's "Dire" condition to proc on the interval
     double embersoul_dire_chance = 0.0;
     // Sets the interval for ashes of the embersouls "dire" condition to attempt to proc
@@ -536,7 +534,7 @@ struct sim_t : private sc_thread_t
     // Standard Deviation of interval
     timespan_t embersoul_dire_interval_stddev = 2.5_s;
     // Sets the base interval for Gift of Ursine Vengeance to attempt to proc
-    timespan_t gift_of_ursine_vengeance_period = 750_ms;
+    timespan_t gift_of_ursine_vengeance_period = 3_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs

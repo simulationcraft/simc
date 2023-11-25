@@ -2055,7 +2055,6 @@ public:
     ab::background = true;
     ab::proc = true;
     
-    ab::attack_power_mod.direct = ab::o() -> talents.kill_command -> effectN( 2 ).percent();
     ab::base_dd_multiplier *= 1 + ab::o() -> talents.alpha_predator -> effectN( 2 ).percent();
 
     if ( ab::o() -> talents.killer_instinct.ok() )
@@ -2064,12 +2063,6 @@ public:
       killer_instinct.multiplier = 1 + ab::o() -> talents.killer_instinct -> effectN( 1 ).percent();
       killer_instinct.benefit = ab::o() -> get_benefit( "killer_instinct" );
     }
-  }
-
-  double composite_attack_power() const override
-  {
-    // Kill Command for both Survival & Beast Mastery uses player AP directly
-    return ab::o() -> cache.attack_power() * ab::o() -> composite_attack_power_multiplier();
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -2100,6 +2093,9 @@ public:
   }
 };
 
+//16-11-2023
+//426703 does not have an AP coefficient and doesn't scale like the other Kill Command spells
+//It uses the old way of calculating damage of kill command instead.
 struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
 {
   struct {
@@ -2109,10 +2105,17 @@ struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
   } killer_instinct;
 
   kill_command_db_t( dire_critter_t* p ) :
-    kill_command_base_t( p, p -> find_spell( 83381 ) )
+    kill_command_base_t( p, p -> find_spell( 426703 ) )
   {
+    attack_power_mod.direct = o() -> talents.kill_command -> effectN( 2 ).percent();
     // Effect 1 dummy value seems to be a damage modifier.
     base_multiplier *= 1.0 - o() -> tier_set.t31_bm_4pc -> effectN( 1 ).percent();
+  }
+
+  double composite_attack_power() const override
+  {
+    // Kill Command for Dire Beast uses player AP directly
+    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
   }
 
   void impact( action_state_t* s ) override
@@ -2187,9 +2190,6 @@ struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
   kill_command_sv_t( hunter_main_pet_base_t* p ) :
     kill_command_base_t( p, p -> find_spell( 259277 ) )
   {
-    attack_power_mod.direct = o() -> talents.kill_command -> effectN( 1 ).percent();
-    attack_power_mod.tick = o() -> talents.bloodseeker -> effectN( 1 ).percent();
-
     if ( ! o() -> talents.bloodseeker.ok() )
       dot_duration = 0_ms;
   }
@@ -2363,7 +2363,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     parse_options( options_str );
 
     school = SCHOOL_PHYSICAL;
-    attack_power_mod.direct = 1 / 3.0;
 
     auto wild_hunt_spell = p -> find_spell( 62762 );
     wild_hunt.cost_pct = 1 + wild_hunt_spell -> effectN( 2 ).percent();
@@ -2372,10 +2371,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     p -> active.basic_attack = this;
   }
-
-  // Override behavior so that Basic Attacks use hunter's attack power rather than the pet's
-  double composite_attack_power() const override
-  { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 
   bool use_wild_hunt() const
   {
@@ -2453,12 +2448,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   {
     background = true;
 
-    parse_effect_data( o() -> find_spell( 269752 ) -> effectN( 1 ) );
-  }
-
-  double composite_attack_power() const override
-  {
-    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
+    parse_effect_data( o() -> find_spell( 259516 ) -> effectN( 1 ) );
   }
 };
 
@@ -3810,12 +3800,9 @@ struct multishot_bm_t: public hunter_ranged_attack_t
       for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
         pet -> buffs.beast_cleave -> trigger();
 
-      if ( p() -> tier_set.t31_bm_4pc.ok() )
+      if ( p() -> tier_set.t31_bm_4pc.ok() && !( p() -> pets.dire_beast.active_pets().empty() ) )
       {
-        if ( !( p() -> pets.dire_beast.active_pets().empty() ) )
-        {
-            p() -> pets.dire_beast.active_pets().back() -> buffs.beast_cleave -> trigger();
-        }
+        p() -> pets.dire_beast.active_pets().back() -> buffs.beast_cleave -> trigger();
       }
     }
 
@@ -3832,7 +3819,6 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
   const timespan_t kill_command_reduction;
-  action_t* cotw_serpent_sting = nullptr;
 
   cobra_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "cobra_shot", p, p -> talents.cobra_shot ),
@@ -3844,9 +3830,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    if ( cotw_serpent_sting && p() -> buffs.call_of_the_wild -> up() )
-      cotw_serpent_sting -> execute_on_target( target );
 
     if ( p() -> talents.killer_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
@@ -5512,12 +5495,9 @@ struct kill_command_t: public hunter_spell_t
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
       pet -> active.kill_command -> execute_on_target( target );
 
-    if ( p() -> tier_set.t31_bm_4pc.ok() )
+    if ( p() -> tier_set.t31_bm_4pc.ok() && !( p() -> pets.dire_beast.active_pets().empty() ) )
     {
-      if ( !( p() -> pets.dire_beast.active_pets().empty() ) )
-      {
-        p() -> pets.dire_beast.active_pets().back() -> active.kill_command -> execute_on_target( target );
-      }
+      p() -> pets.dire_beast.active_pets().back() -> active.kill_command -> execute_on_target( target );
     }
     p() -> buffs.tip_of_the_spear -> trigger();
 
@@ -5666,7 +5646,7 @@ struct dire_beast_t: public hunter_spell_t
 
     p() -> pets.dire_beast.spawn( summon_duration );
 
-    //If beast cleave (from multi-shot) is up, the dire beast inherits the buff with the same duration as the existing buff.
+    //If beast cleave is active on the player, the dire beast inherits the buff with the same duration as the existing buff.
     if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> buffs.beast_cleave -> up() )
     {
       timespan_t duration =  p() -> buffs.beast_cleave -> remains();
@@ -5693,7 +5673,7 @@ struct dire_command_summon_t final : hunter_spell_t
 
     p() -> pets.dire_beast.spawn( pets::dire_beast_duration( p() ).first );
     
-    //If beast cleave (from multi-shot) is up, the dire beast inherits the buff with the same duration as the existing buff.
+    //If beast cleave is active on the player, the dire beast inherits the buff with the same duration as the existing buff.
     if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> buffs.beast_cleave -> up() )
     {
       timespan_t duration =  p() -> buffs.beast_cleave -> remains();
@@ -5755,7 +5735,7 @@ struct bestial_wrath_t: public hunter_spell_t
     {
       p() -> pets.dire_beast.spawn( timespan_t::from_seconds( p() -> tier_set.t31_bm_2pc -> effectN( 1 ).base_value() ) );
       
-      //If beast cleave (from multi-shot) is up, the dire beast inherits the buff with the same duration as the existing buff.
+      //If beast cleave is active on the player, the dire beast inherits the buff with the same duration as the existing buff.
       if ( p() -> tier_set.t31_bm_4pc -> ok() && p() -> buffs.beast_cleave -> up() )
       {
         timespan_t duration =  p() -> buffs.beast_cleave -> remains();
@@ -5792,9 +5772,14 @@ struct call_of_the_wild_t: public hunter_spell_t
     p() -> buffs.call_of_the_wild -> trigger();
     p() -> pets.cotw_stable_pet.spawn( data().duration(), as<int>( data().effectN( 1 ).base_value() ) );
 
+    //2023-11-14 
+    //When wasting Call of the Wild with Bloody Frenzy talented it will apply beast cleave to the player, the main pet, AC pet and all call of the wild pets
+    //It does NOT apply to most recently summoned Dire Beast that should be affected based on T31 4piece. 
+    //However summoning a dire beast after Call of the Wild will apply beast cleave to the dire beast as intended.
     if ( p() -> talents.bloody_frenzy -> ok() )
     {
       timespan_t duration = p() -> buffs.call_of_the_wild -> remains();
+      p() -> buffs.beast_cleave -> trigger( duration ); 
       for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
         pet -> buffs.beast_cleave -> trigger( duration );
 
@@ -7214,25 +7199,34 @@ void hunter_t::create_buffs()
         [ this ]( buff_t*, int, timespan_t ) {
           pets.cotw_stable_pet.spawn( talents.call_of_the_wild -> effectN( 2 ).trigger() -> duration(), 1 );
 
-
           double percent_reduction = talents.call_of_the_wild -> effectN( 3 ).base_value() / 100.0; 
           cooldowns.kill_command -> adjust( -( cooldowns.kill_command -> duration * percent_reduction ) );
           cooldowns.barbed_shot -> adjust( -( cooldowns.barbed_shot -> duration * percent_reduction ) );
 
           if( talents.bloody_frenzy.ok() )
           {
+            //In-game this (re)application of beast_cleave happens multiple times a second and applies to the player once per pet active 
+            //Since the regular Beast Cleave buff is longer than the time between ticks, we can get by with just refreshing once per tick
+            timespan_t duration = buffs.call_of_the_wild -> remains();
+            if ( duration > 0_ms )
+            {
+              buffs.beast_cleave -> trigger( duration );
+            }
             for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( pets.main, pets.animal_companion ) )
             {
               pet -> active.stomp -> execute();
+              if ( duration > 0_ms )
+              {
+                pet -> pets::hunter_pet_t::buffs.beast_cleave -> trigger( duration );
+              }
             }
             for ( auto pet : ( pets.cotw_stable_pet.active_pets() ) )
             {
               pet -> active.stomp -> execute();
-            }
-            if ( !pets.cotw_stable_pet.active_pets().empty() )
-            {
-              timespan_t duration = buffs.call_of_the_wild -> remains();
-              pets.cotw_stable_pet.active_pets().back() -> buffs.beast_cleave -> trigger( duration );
+              if ( duration > 0_ms )
+              {
+                pet -> pets::hunter_pet_t::buffs.beast_cleave -> trigger( duration );
+              }
             }
           }
         } );

@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52106 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -68,7 +68,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can Cause Silence (236), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=8994)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.41510 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.55 -> 0.4151)
 Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has $62762s3 or more Focus.
 Variables        : $aotb=$?s191384[${1+($191384s1/100)}][${1.0}]
 $beastMasterTalent=$?s378007[${1+($378007s1/100)}][${1}]
@@ -656,7 +657,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Not a Proc (105), Always Hit (114), Not In Spellbook (143), Do Not Consume Resources (197), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.63736 | PvP Coefficient: 1.90000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70110 | PvP Coefficient: 1.70000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.9 -> 1.7)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -1692,7 +1694,7 @@ Effects          :
 #1 (id=48018)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=48019)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.62400 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68640 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=48020)    : Trigger Spell (64): Scourge Strike
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 70890 | Target: Enemy (6)
 #4 (id=840915)   : Dummy (3)
@@ -2365,7 +2367,7 @@ Effects          :
 #1 (id=64510)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=214692)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.34374 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.37811 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
@@ -3684,13 +3686,15 @@ Effects          :
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
 #11 (id=1012734)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 67 | Scaled Value: 67 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
+Hotfixed         : Base Value (45 -> 67)
 #12 (id=1012737)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -31 | Scaled Value: -31 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
+Hotfixed         : Base Value (-31 -> -40)
 #13 (id=1026048)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
@@ -3724,15 +3728,21 @@ Effects          :
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
 #22 (id=1070607)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 37 | Scaled Value: 37 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 57 | Scaled Value: 57 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
+Hotfixed         : Base Value (37 -> 57)
 #23 (id=1070608)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
 #24 (id=1074562)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+#25 (id=1122010)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
+                   Family Flags: 1, 34, 63, 101
+Hotfixed         : NEW EFFECT
 Description      : Elemental Shaman baseline passive
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
@@ -4180,7 +4190,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.10000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.10000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -4251,7 +4261,7 @@ Attributes       : ........ ........ ........ ...x....   ...x...x ........ .....
                  : Allow While Sitting (27), No Redirection (35), No Reflection (39), Not an Action (92), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not an Attack (194), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281173)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28800 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc191587
 
 Name             : Runic Empowerment (id=193486) 
@@ -5973,7 +5983,7 @@ Effects          :
 #1 (id=306601)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.91521 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00673 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 

@@ -6,8 +6,9 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
 from dbc.constants import Class
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet, PermanentEnchantItemSet, ExpectedStatModSet
-from dbc.filter import TraitSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet
+from dbc.filter import SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
+from dbc.filter import PermanentEnchantItemSet, ExpectedStatModSet, TraitSet, EmbellishmentSet, CharacterLoadoutSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -4873,6 +4874,50 @@ class ExpectedStatModGenerator(DataGenerator):
                                   'mod_armor_constant', 'mod_creature_spell_damage')
             fields += [str(esm[1])]
 
+            self.output_record(fields)
+
+        self.output_footer()
+
+class EmbellishmentGenerator(DataGenerator):
+    def filter(self):
+        return EmbellishmentSet(self._options).get()
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Embellishment data',
+            type = 'embellishment_data_t',
+            array = 'embellishment',
+            length = len(data))
+
+        for emb in data:
+            fields = [str(emb[0]), str(emb[1]), str(emb[2])]
+            self.output_record(fields)
+
+        self.output_footer()
+
+class CharacterLoadoutGenerator(DataGenerator):
+    def filter(self):
+        return CharacterLoadoutSet(self._options).get()
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Character Loadout data',
+            type = 'character_loadout_data_t',
+            array = 'character_loadout',
+            length = len(data))
+
+        spec_idx = defaultdict(list)
+
+        for _, loadout in data:
+            spec_idx[loadout.id_class].append(loadout.id)
+
+        for k, v in spec_idx.items():
+            spec_idx[k] = sorted(list(set(v)))
+
+        for cli, loadout in data:
+            fields = loadout.field('id', 'id_class')
+            fields += [str(spec_idx[loadout.id_class].index(loadout.id))]
+            fields += cli.field('id_item')
             self.output_record(fields)
 
         self.output_footer()

@@ -6,22 +6,22 @@ spec=elemental
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSpUSCgDk0SShSgkkEBAAAAAoEgUSCpJpg0SSaKBIkEgA
 # https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFRBBBSKJBUhBRDEUANVRRRVFSJVBoAUDAQA
 
-head=morningscale_cowl,id=109984,bonus_id=1808/9888,enchant=incandescent_essence,gem_id=192988
-neck=raven_filigree_pendant,id=134499,bonus_id=9882,gem_id=192964/192964/192964
-shoulder=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520
-back=shadowfeather_shawl,id=136977,bonus_id=9882,enchant=graceful_avoidance_3
-chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520,enchant=waking_stats_3
-wrist=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=192964
-hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520
-waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520,enchant=shadowed_belt_clasp_3,gem_id=192964
-legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520,enchant=frozen_spellthread_3
-feet=acidic_hailstone_treads,id=193466,bonus_id=9500/9405/8960,enchant=watchers_loam_3
-finger1=signet_of_titanic_insight,id=192999,bonus_id=9500/9405/8793,enchant=devotion_of_versatility_3,gem_id=192964
-finger2=archdruids_tainted_seal,id=134487,bonus_id=9882,enchant=devotion_of_versatility_3,gem_id=192964
-trinket1=balefire_branch,id=159630,bonus_id=9853
-trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520
-main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520,enchant=wafting_devotion_3
-off_hand=verdant_matrix_beacon,id=207798,bonus_id=7187/1520
+head=morningscale_cowl,id=109984,bonus_id=9888/9576,enchant=incandescent_essence,gem_id=192988
+neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520/9576,gem_id=192961/192961/192961
+shoulder=greatwolf_outcasts_companions,id=207207,bonus_id=7187/1520/9576
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=9853/9576,enchant=graceful_avoidance_3
+chest=greatwolf_outcasts_harness,id=207212,bonus_id=7187/1520/9576,enchant=waking_stats_3
+wrist=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405/8960,gem_id=192961,enchant=devotion_of_avoidance_3
+hands=greatwolf_outcasts_grips,id=207210,bonus_id=7187/1520/9576
+waist=jeweled_sash_of_the_viper,id=207146,bonus_id=7187/1520/9576,enchant=shadowed_belt_clasp_3,gem_id=192961
+legs=greatwolf_outcasts_furlined_kilt,id=207208,bonus_id=7187/1520/9576,enchant=frozen_spellthread_3
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=9882/9576,enchant=watchers_loam_3
+finger1=thornwoven_band,id=162548,bonus_id=9853/9576,enchant=devotion_of_versatility_3,gem_id=192961
+finger2=archdruids_tainted_seal,id=134487,bonus_id=9882/9576,enchant=devotion_of_mastery_3,gem_id=192961
+trinket1=sea_star,id=133201,bonus_id=9466/1514/8767/9576
+trinket2=belorrelos_the_suncaller,id=207172,bonus_id=7187/1520/9576
+main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=7187/1520/9576,enchant=wafting_devotion_3
+off_hand=witherrot_tome,id=193496,bonus_id=9500/9405/8960,crafted_stats=36/49
 
 save=T31_Shaman_Elemental.simc
 

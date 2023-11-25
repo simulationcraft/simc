@@ -1,4 +1,4 @@
-SimulationCraft 1015-01 for World of Warcraft 10.2.0.52095 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -359,11 +359,11 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=229227)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672)
                    Family Flags: 16, 70
 #2 (id=479919)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672)
                    Family Flags: 16, 70
 #3 (id=479920)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2205,7 +2205,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 5 seconds
 Affecting spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 33
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2309,7 +2309,6 @@ Deals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldes
 Tooltip          : Sigil of Flame is active.
 
 Name             : Sigil of Flame (id=204598) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -2335,10 +2334,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48510 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #2 (id=301972)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30360 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.1518 -> 0.3036)
 #3 (id=738599)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30360 | PvP Coefficient: 1.00000
-Hotfixed         : AP Coefficient (0.1518 -> 0.3036)
 #4 (id=1113254)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc204596
@@ -3037,11 +3034,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=308737)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #2 (id=479917)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #3 (id=479918)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3194,7 +3191,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -40 | Target: Unknown(25)
                    Affected School(s): All
 #2 (id=727831)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.66667 | Misc Value: 127 | Target: Unknown(25)
+Hotfixed         : PvP Coefficient (1 -> 1.66667)
 Description      : $@spelldesc196718
 Tooltip          : Attacks against you have a $w2% chance to inflict no damage.
 
@@ -3397,8 +3395,8 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #3, #8), Burning Blood (390213 effects: #1, #2), Demon Hide (428241 effects: #1, #3)
-Family Flags     : 32, 43, 55
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #3, #8), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3)
+Family Flags     : 16, 32, 43, 55
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3526,11 +3524,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #2 (id=315236)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #3 (id=315237)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4358,7 +4356,6 @@ $?s203513[Shear has a chance to reset the cooldown of Felblade.
 |cFFFFFFFFGenerates $213243s3 Fury.|r]
 
 Name             : First of the Illidari (id=235893) [Spell Family (107), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4537,11 +4534,11 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self (1)
 #2 (id=464520)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #3 (id=479915)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #4 (id=479916)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4943,7 +4940,6 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x .x...... .....
 Effects          :
 #1 (id=483170)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.26855 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : AP Coefficient (0.2919 -> 0.268548)
 #2 (id=1042623)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc258920
@@ -4967,7 +4963,6 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=483172)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10028 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : AP Coefficient (0.109 -> 0.10028)
 #2 (id=483173)   : Energize Power (30)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 #3 (id=807415)   : Energize Power (30)
@@ -5024,7 +5019,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=483180)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35100 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.373422 -> 0.351)
 #2 (id=819793)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258925
@@ -7440,7 +7434,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=785367)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.78000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (3.4 -> 3.78)
 #2 (id=839432)   : Trigger Spell (64): Elysian Decree
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 339893 | Target: Unknown(87)
 Description      : $@spelldesc306830
@@ -10166,11 +10159,11 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=875343)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672)
                    Family Flags: 16, 70
 #2 (id=875344)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Sigil of Flame (425672)
                    Family Flags: 16, 70
 #3 (id=875345)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -10836,26 +10829,6 @@ Description      : Damaging an enemy before they damage you increases your criti
 
 Vengeful Retreat refreshes your potential to trigger this effect on any enemies you are in combat with.
 
-Name             : Misery in Defeat (id=388110) [Spell Family (107), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0]
-Class            : Demon Hunter
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1023600)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Description      : You deal $391369s1% increased damage to enemies for $391369d after Sigil of Misery's effect on them ends.
-
 Name             : Demon Muzzle (id=388111) [Spell Family (107), Passive] 
 Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=20]
 Class            : Demon Hunter
@@ -10982,7 +10955,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1026897)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 12)
 Description      : The duration of your active demon form is extended by ${$s1/1000}.1 sec per $s2 Fury spent.
 
 Name             : Know Your Enemy (id=388118) [Spell Family (107), Passive] 
@@ -11792,7 +11764,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1026374)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.78000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (3.4 -> 3.78)
 #2 (id=1026375)  : Trigger Spell (64): Elysian Decree
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 339893 | Target: Unknown(87)
 Description      : $@spelldesc306830
@@ -12124,7 +12095,6 @@ Description      : Immolation Aura's damage increases by $s1% each time it deals
 
 Name             : Elysian Decree (id=390163) [Spell Family (107)] 
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
-                 : Vengeance [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Arcane
 Spell Type       : None
@@ -12600,28 +12570,6 @@ Effects          :
                    Family Flags: 5
 Description      : Throw Glaive deals $s2% increased damage, reduced by ${$s2/2}% for each previous enemy hit.
 
-Name             : Misery in Defeat (id=391369) [Spell Family (107)] 
-Class            : Demon Hunter
-School           : Physical
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 5 seconds
-Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
-                 : ..x..... ......x. ........ ....x...   ........ ........ ........ ......x. 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Effects          :
-#1 (id=1028838)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
-                   Affected School(s): All
-Description      : $@spelldesc388110
-Tooltip          : Damage taken from $@auracaster increased by $s1%.
-
 Name             : Blade Dance (id=391374) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
@@ -12808,7 +12756,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1031649)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : $@spelldesc337546
 Tooltip          : Magic damage taken reduced by $s1%.
@@ -13136,11 +13084,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1034997)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #2 (id=1034998)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 Description      : $@spelldesc393629
 Tooltip          : Damage increased by $s1%.
@@ -13374,10 +13322,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053843)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 60)
 #2 (id=1074772)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 3)
 #3 (id=1074773)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
                    Affected Spells: Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
@@ -13623,7 +13569,6 @@ Description      : When you attack a target afflicted by Sigil of Flame, your da
 Tooltip          : Damage and healing increased by $s1%. Stamina increased by $s3%.
 
 Name             : Sigil of Flame (id=425672) [Spell Family (107)] 
-Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -13643,7 +13588,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1103666)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75900 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60720 | PvP Coefficient: 0.50000 | Target: Enemy (6)
 Description      : $@spelldesc422861
 
 Name             : Inertia (id=427640) [Spell Family (107), Passive] 
@@ -13688,11 +13633,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1107237)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #2 (id=1107238)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #3 (id=1107239)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -13874,7 +13819,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Inner Demon (390137), Elysian Decree (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672)
                    Family Flags: 11, 24, 33, 43, 44, 49, 61, 72, 81, 82, 83, 86, 87, 90, 92
-Hotfixed         : Base Value (5 -> 3), Affects Spells
 #2 (id=1108535)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -13882,7 +13826,6 @@ Hotfixed         : Base Value (5 -> 3), Affects Spells
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (389860), Inner Demon (390137), Elysian Decree (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Sigil of Flame (425672)
                    Family Flags: 11, 24, 33, 43, 44, 49, 61, 72, 81, 82, 83, 86, 87, 90, 92
-Hotfixed         : NEW EFFECT
 Description      : Magical damage increased by $s1%, and Physical damage taken reduced by $s2%.
 
 Name             : Chaotic Disposition (id=428492) [Spell Family (107), Passive] 
@@ -13891,7 +13834,6 @@ Talent Entry     : Havoc [tree=spec, row=9, col=3, max_rank=2, req_points=20]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -13910,7 +13852,7 @@ Effects          :
                    Base Value: 777 | Scaled Value: 777 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1109363)  : Apply Aura (6) | Dummy (4)
                    Base Value: 17 | Scaled Value: 17 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each time you deal Chaos damage, there is a ${$s2/100}.2% chance to duplicate $s3% of the damage, up to $m1 total $Ltime:times;. 
+Description      : Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;.
 
 Name             : Chaotic Disposition (id=428493) [Spell Family (8)] 
 Class            : Demon Hunter
@@ -13962,7 +13904,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1887 | Target: Self (1)
                    Affected Spells (Category): Elysian Decree (306830), Elysian Decree (327839), Elysian Decree (389815), Elysian Decree (389858), Elysian Decree (390163), Elysian Decree (394985)
 #6 (id=1113242)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3036 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3036 (Label) | Target: Self (1)
                    Affected Spells (Label): Sigil of Flame (204598)
 Description      : Sigil skills have $s2 additional $lcharge:charges;.
 
@@ -13986,7 +13928,6 @@ Effects          :
 #1 (id=1109563)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 2381 (Label) | Target: Self (1)
                    Affected Spells (Label): Sigil of Flame (204598), Sigil of Flame (425672)
-Hotfixed         : Base Value (10 -> 5)
 #2 (id=1109564)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 2381 (Label) | Target: Self (1)
                    Affected Spells (Label): Sigil of Flame (204598), Sigil of Flame (425672)

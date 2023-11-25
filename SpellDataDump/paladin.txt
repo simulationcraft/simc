@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52106 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -606,7 +606,6 @@ Effects          :
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Hammer of Wrath (id=24275) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Retribution), tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -2505,7 +2504,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=128372)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.45000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: At Enemy (53) -> AOE friendly (31)
-Hotfixed         : SP Coefficient (1.75 -> 2.45)
 #3 (id=128388)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: At Enemy (53) -> AOE Custom (8)
 Description      : $@spelldesc114165
@@ -2534,7 +2532,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.90000 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (3.5 -> 4.9)
 #2 (id=128397)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE enemy (instant) (16)
 #3 (id=128398)   : Server Side Script (77)
@@ -2854,6 +2851,16 @@ Effects          :
                    Family Flags: 36
 #6 (id=1032357)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#7 (id=1122160)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Blast Wave (157981)
+                   Family Flags: 38
+Hotfixed         : NEW EFFECT
+#8 (id=1122161)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Blast Wave (157981)
+                   Family Flags: 38
+Hotfixed         : NEW EFFECT
 
 Name             : Paladin (id=137026) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -2909,11 +2916,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590)
                    Family Flags: 65
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590)
                    Family Flags: 65
 #3 (id=191093)   : Apply Aura (6) | Hasted Cooldown Duration (416)
@@ -3126,12 +3133,10 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Touch of Light (385352), Crusader's Reprieve (403044), Lightforged Blessing (403460), Lightforged Blessing (407467), Seal of the Crusader (416771), Holy Reverberation (423377)
                    Family Flags: 46, 90
-Hotfixed         : Base Value (-18 -> -20)
 #2 (id=191084)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 22
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Touch of Light (385352), Crusader's Reprieve (403044), Lightforged Blessing (403460), Lightforged Blessing (407467), Seal of the Crusader (416771), Holy Reverberation (423377)
                    Family Flags: 46
-Hotfixed         : Base Value (-18 -> -20)
 #3 (id=191085)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Denounce (2812), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Blade of Justice (184575), Divine Hammer (198034), Light of Dawn (225311), Execution Sentence (343527), Final Reckoning (343721), Focused Enmity (378845), Expurgation (383344), Execution Sentence (387113), Blade of Justice (404358), Shield of the Righteous (415091)
@@ -3681,25 +3686,26 @@ While Aura Mastery is active, heals all allies within ${$210291A1+$31821s5} yds 
 Tooltip          : Restores health to $210291s2 injured allies within $210291A1 yards every $t1 sec.
 
 Name             : Retribution Aura (id=183435) [Spell Family (10)] 
+Hotfixed         : Proc Flags 1 (664232 -> 2148164264), Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...xx. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting spells : Retribution Aura (317906 effect#1)
 Family Flags     : 94
 Attributes       : ........ x....... x.x..... x..x....   ........ ........ ........ ........ 
-                 : ..x.x... ........ ........ ........   ........ ........ ....x... ........ 
+                 : ..x.x... ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ..x.....   ........ ........ ........ ......x. 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ....x... 
+                 : .x...x.. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
+                 : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Use Shapeshift Bar (68), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=265677)   : Apply Raid Aura (65) | Modify Attack Power (99)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
@@ -13584,7 +13590,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Holy Shock (20473), Hammer of Wrath (24275), Holy Shock (25912), Crusader Strike (35395), Hammer of the Righteous (53595), Blade of Justice (184575), Judgment (197277), Blessed Hammer (204019), Blessed Hammer (204301), Bestow Faith (223306), Wake of Ashes (255937), Judgment (275773), Judgment (275779), Divine Toll (304971), Bestow Faith (343618), Divine Toll (375576), Expurgation (383344), Radiant Decree (383469), Divine Resonance (386731), Divine Resonance (387896), Truth's Wake (403695), Blessed Hammers (404139), Blessed Hammers (404140), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Templar Strike (407480)
                    Family Flags: 21, 23, 33, 39, 47, 50, 68, 70, 92, 97, 117, 126
-Hotfixed         : Affects Spells
 #4 (id=1034388)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1570 | Target: Self (1)
                    Affected Spells (Category): Hammer of the Righteous (53595)
@@ -16124,7 +16129,6 @@ Effects          :
 Description      : Templar's Verdict, Final Verdict and Justicar's Vengeance have a $h% chance to reset the cooldown of Blade of Justice.
 
 Name             : Righteous Cause (id=402916) [Spell Family (10)] 
-Hotfixed         : Proc Flags 2 (0 -> 4)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -17402,7 +17406,6 @@ Effects          :
 Description      : Your auto attacks have a $h% chance to reset the cooldown of Blade of Justice.
 
 Name             : Art of War (id=406086) [Spell Family (10)] 
-Hotfixed         : Proc Flags 2 (0 -> 4)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -19344,11 +19347,9 @@ Effects          :
 #1 (id=1101532)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value: 22 | Misc Value 2: 2901 (Label) | Target: Self (1)
                    Affected Spells (Label): Expurgation (383346)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1101533)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Misc Value 2: 2901 (Label) | Target: Self (1)
                    Affected Spells (Label): Expurgation (383346)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1101887)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Expurgation lasts an additional ${$s2/1000} sec and deals $s1% increased damage. Casting Judgment or Divine Toll on a target with Expurgation causes Wrathful Sanction, damaging the target for $424590s1 Holy damage and resonating ${$424590s1/$424590s2} Holy damage to up to $s3 nearby enemies.
@@ -19369,7 +19370,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1101645)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Wrathful Sanction grants you Echoes of Wrath, causing your next Templar's Verdict or Divine Storm to deal damage a second time at $s1% effectiveness. This effect does not consume Judgment.
 
 Name             : Wrathful Sanction (id=424590) [Spell Family (10)] 
@@ -19393,7 +19393,6 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=1101687)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1101693)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1106597)  : Dummy (3)
@@ -19549,7 +19548,6 @@ Effects          :
 #5 (id=1117928)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2655 (Label) | Target: Self (1)
                    Affected Spells (Label): Blessing of Sacrifice (6940)
-Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 

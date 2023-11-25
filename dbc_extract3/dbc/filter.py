@@ -855,5 +855,64 @@ class ExpectedStatModSet(DataSet):
         return mods
 
     def ids(self, **kwargs):
-        return list(set(v.id for v in self.get()))
+        return list(set(v[0].id for v in self.get()))
 
+class EmbellishmentSet(DataSet):
+    def _filter(self, **kwargs):
+        _data = []
+
+        emb_mcrs = [
+            e.id for e in self.db('ModifiedCraftingReagentSlot').values()
+                if e.name == "Add Embellishment"
+        ]
+
+        emb_mcc = [
+            e.id_modified_crafting_category for e in self.db('MCRSlotXMCRCategory').values()
+                if e.id_parent in emb_mcrs
+        ]
+
+        emb_mcri = [
+            e for e in self.db('ModifiedCraftingReagentItem').values()
+                if e.id_modified_crafting_category in emb_mcc
+        ]
+
+        for mcri in emb_mcri:
+            bonus_list = [
+                b.ref('id_node').child_ref('ItemBonus') for b in mcri.ref('id_tree').children('ItemBonusTreeNode')
+            ]
+
+            if len(bonus_list) == 0:
+                continue
+
+            for bonus in bonus_list:
+                if bonus.type == 23:
+                    _name = mcri.child_refs('ItemSparse')[-1].name
+                    _bonus_id = bonus.id_node
+                    _effect_id = bonus.val_1
+
+                    _data.append([f'"{_name}"', _bonus_id, _effect_id])
+
+        return _data
+
+    def ids(self, **kwargs):
+        return list(set(v[1] for v in self.get()))
+
+class CharacterLoadoutSet(DataSet):
+    def _filter(self, **kwargs):
+        _data = []
+
+        for cli in self.db('CharacterLoadoutItem').values():
+            loadout = cli.ref('id_loadout')
+            if loadout.purpose != 14:
+                continue
+
+            item = cli.ref('id_item')
+            if item.classs == 2 or item.classs == 4:
+                _data.append([cli, loadout])
+
+        _data.sort(key = lambda e: (e[1].id_class, e[1].id, e[0].id_item ))
+
+        return _data
+
+    def ids(self, **kwargs):
+        return (list(v[0].id for v in self.get()))

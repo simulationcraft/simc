@@ -72,6 +72,7 @@ namespace item
   void cunning_of_the_cruel( special_effect_t& );
   void felmouth_frenzy( special_effect_t& );
   void matrix_restabilizer( special_effect_t& );
+  void blazefury_medallion( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -988,6 +989,49 @@ struct lfr_harmful_spell_t : public spell_t
 
 // Items ====================================================================
 
+// Blazefury Medallion
+// 243988 Driver
+// 243991 Damage spell 
+void item::blazefury_medallion( special_effect_t& effect )
+{
+  struct blazefury_medallion_t : public generic_proc_t
+  {
+    blazefury_medallion_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "blazefury_medallion", effect.driver()->effectN( 1 ).trigger() )
+    {
+    }
+  };
+
+  struct blazefury_medallion_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    double base_damage;
+
+    blazefury_medallion_cb_t( player_t* p, const special_effect_t& e, action_t* a ) :
+      dbc_proc_callback_t( e.player, e ),
+      damage( a ),
+      base_damage( e.driver()->effectN( 1 ).trigger()->effectN( 1 ).average( e.item ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( a->result_is_hit( s->result ) )
+      {
+        // Currently only uses MH weapon speed, not the speed of the triggering weapon
+        // Leaving this in a CB handler just in case this changes at some point via hotfix
+        // TOCHECK -- Unclear if this uses equipped weapon speed for Feral or not
+        double speed_mod = ( a->player->main_hand_weapon.type == WEAPON_NONE ? 2.0 :
+                             a->player->main_hand_weapon.swing_time.total_seconds() );
+        damage->execute_on_target( s->target, base_damage * speed_mod );
+      }
+    }
+  };
+
+  auto damage = create_proc_action<blazefury_medallion_t>( "blazefury_medallion", effect );
+  new blazefury_medallion_cb_t( effect.player, effect, damage );
+}
+
 void item::rune_of_reorigination( special_effect_t& effect )
 {
   struct rune_of_reorigination_callback_t : public dbc_proc_callback_t
@@ -1880,6 +1924,7 @@ void item::witherbarks_branch( special_effect_t& effect )
   };
 
   effect.custom_buff = new aqueous_dowsing_t( effect.player, effect );
+  effect.stat = STAT_MASTERY_RATING;
 }
 
 void item::black_blood_of_yshaarj( special_effect_t& effect )
@@ -4282,6 +4327,29 @@ struct item_is_expr_t : public expr_t
   }
 };
 
+struct item_lvl_expr_t : public item_effect_expr_t
+{
+  double ilvl;
+  item_lvl_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression )
+    : item_effect_expr_t( player, slots, full_expression )
+  {
+    for (auto slot : slots)
+    {
+      ilvl = player.items[ slot ].item_level();
+    }
+  }
+
+  bool is_constant() override
+  {
+    return true;
+  }
+
+  double evaluate() override
+  {
+    return ilvl;
+  }
+};
+
 struct item_cooldown_exists_expr_t : public item_effect_expr_t
 {
   double v;
@@ -4504,6 +4572,11 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
   {
     return std::make_unique<item_is_expr_t>( player, slots, splits[ expr_idx - 1 ] );
+  }
+
+  if (util::str_compare_ci( splits[ ptype_idx ], "ilvl" ))
+  {
+    return std::make_unique<item_lvl_expr_t>( player, slots, name_str );
   }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "has_use_buff" ) )
@@ -4847,6 +4920,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 108006, item::cunning_of_the_cruel           );
   register_special_effect( 109799, item::cunning_of_the_cruel           );
   register_special_effect( 109801, item::cunning_of_the_cruel           );
+  register_special_effect( 243988, item::blazefury_medallion            ); /* Kazzak Neck */
 
   /* Misc effects */
   register_special_effect( 188534, item::felmouth_frenzy                );

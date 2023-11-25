@@ -231,7 +231,16 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
     proc_types pt = s->proc_type();
     proc_types2 pt2 = s->impact_proc_type2();
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+    {
       player->trigger_callbacks( pt, pt2, this, s );
+
+      // trigger healing taken callbacks
+      proc_types pt_taken = static_cast<proc_types>( pt + 1 );
+      if ( pt == PROC1_HELPFUL_PERIODIC )
+        pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
+
+      s->target->trigger_callbacks( pt_taken, pt2, this, s );
+    }
   }
 
   if ( record_healing )

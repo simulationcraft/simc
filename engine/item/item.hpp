@@ -140,6 +140,7 @@ struct item_t
   std::string option_stats_str;
   std::string option_gems_str;
   std::string option_enchant_str;
+  std::string option_embellishment_str;
   std::string option_addon_str;
   std::string option_equip_str;
   std::string option_use_str;
@@ -222,6 +223,7 @@ struct item_t
   void decode_data_source();
   void decode_equip_effect();
   void decode_use_effect();
+  void decode_embellishment();
 
 
   bool verify_slot();
