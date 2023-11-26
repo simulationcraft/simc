@@ -2842,7 +2842,7 @@ void alltotem_of_the_master( special_effect_t& effect )
 
   action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
 
-  if ( effect.player->role == ROLE_TANK )
+  if ( effect.player->primary_role() == ROLE_TANK )
   {
     effect.player->register_combat_begin( [ &effect, action ]( player_t* ) {
     timespan_t base_period = effect.driver()->internal_cooldown();
@@ -4807,7 +4807,7 @@ void ward_of_the_faceless_ire( special_effect_t& e )
                          } );
   // If the player is a tank, properly model the absorb buff by casting it on themselves
   // Otherwise, emulate it as if the player is casting it on a player who instantly breaks the shield
-  if ( e.player->role == ROLE_TANK )
+  if ( e.player->primary_role() == ROLE_TANK )
   {
     e.custom_buff = absorb_buff;
   }
@@ -7110,7 +7110,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 
   action_t* action = create_proc_action<gift_buffs_t>( "gift_of_ursine_vengeance", effect );
 
-  if ( effect.player->role == ROLE_TANK )
+  if ( effect.player->primary_role() == ROLE_TANK )
   {
     effect.proc_flags_    = PF_DAMAGE_TAKEN;
     effect.proc_flags2_   = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
