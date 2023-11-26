@@ -11162,10 +11162,10 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=active_enemies=3&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Lava burst is top prio on 3 targets.");
     aoe->add_action(
-        "earthquake,if=buff.master_of_the_elements.up&(buff.magma_chamber.stack>15&active_enemies>=(7-talent.unrelenting_calamity.enabled)|talent.splintered_elements.enabled&active_enemies>=(10-talent.unrelenting_calamity.enabled)|talent.mountains_will_fall.enabled&active_enemies>=9)&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc),
-        "{T31 fire} Earthquake is still good with Mote and either 15+ Magma Chamber stacks on 6(7)+ targets or 9+ targets");
-    aoe->add_action("lava_beam,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used.); 
-    aoe->add_action("chain_lightning,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used.);
+        "earthquake,if=buff.master_of_the_elements.up&(buff.magma_chamber.stack>15&active_enemies>=(7-talent.unrelenting_calamity.enabled)|talent.splintered_elements.enabled&active_enemies>=(10-talent.unrelenting_calamity.enabled)|talent.mountains_will_fall.enabled&active_enemies>=9)&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)",
+        "{T31 fire} Earthquake is still good with Mote and either 15+ Magma Chamber stacks on 6(7)+ targets or 9+ targets.");
+    aoe->add_action("lava_beam,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used."); 
+    aoe->add_action("chain_lightning,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used.");
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Lava Surge is strong.");
     aoe->add_action(
