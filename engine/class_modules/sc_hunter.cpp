@@ -6345,7 +6345,7 @@ struct wildfire_bomb_t: public hunter_spell_t
     if ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() )
       p() -> resource_gain( RESOURCE_FOCUS, p() -> talents.coordinated_kill -> effectN( 2 ).base_value(), p() -> gains.coordinated_kill, this);
 
-    if ( p() -> buffs.light_the_fuse -> check() )
+    if ( p() -> buffs.light_the_fuse -> check() && !background )
     {
       p() -> buffs.light_the_fuse -> expire();
       p() -> cooldowns.wildfire_bomb -> reset( false );
