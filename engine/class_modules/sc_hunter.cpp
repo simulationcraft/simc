@@ -5062,7 +5062,10 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 
   void execute() override
   {
-    p() -> actions.wildfire_bomb_t31 -> execute_on_target( target );
+    if( p() -> tier_set.t31_sv_4pc -> ok() ) 
+    {
+      p() -> actions.wildfire_bomb_t31 -> execute_on_target( target );
+    }
 
     hunter_melee_attack_t::execute();
   }
