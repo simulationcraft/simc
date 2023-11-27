@@ -1357,6 +1357,8 @@ struct heal_event_t final : public raid_event_t
           background  = true;
           trigger_gcd = timespan_t::zero();
         }
+
+        bool has_amount_result() const override { return true; }
       };
 
       raid_heal = new raid_heal_t( name.empty() ? type : name, sim->target );
