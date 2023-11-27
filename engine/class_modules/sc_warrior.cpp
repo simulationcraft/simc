@@ -45,7 +45,6 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_concussive_blows;
   buff_t* debuffs_executioners_precision;
-  buff_t* debuffs_exploiter;
   buff_t* debuffs_fatal_mark;
   buff_t* debuffs_skullsplitter;
   buff_t* debuffs_demoralizing_shout;
@@ -2168,9 +2167,6 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
 
     p()->buff.crushing_advance->expire();
     p()->buff.martial_prowess->expire();
-
-    warrior_td_t* td = this->td( execute_state->target );
-    td->debuffs_exploiter->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2231,15 +2227,6 @@ struct mortal_strike_t : public warrior_attack_t
     return am;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warrior_attack_t::composite_target_multiplier( target );
-
-    m *= 1.0 + td( target )->debuffs_exploiter->check_value();
-
-    return m;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2269,9 +2256,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     p()->buff.crushing_advance->expire();
     p()->buff.martial_prowess->expire();
-
-    warrior_td_t* td = this->td( execute_state->target );
-    td->debuffs_exploiter->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -7842,11 +7826,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
     ->set_default_value( p.talents.protection.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
-
-  debuffs_exploiter = make_buff( *this , "exploiter", p.find_spell( 335452 ) )
-                               ->set_default_value( p.find_spell( 335451 )->effectN( 1 ).percent() )
-                               ->set_duration( p.find_spell( 335452 )->duration() )
-                               ->set_cooldown( timespan_t::zero() );
 }
 
 void warrior_td_t::target_demise()
