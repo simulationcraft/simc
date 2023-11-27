@@ -7121,7 +7121,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     // Attempt to trigger Gift of Ursine Vengeance roughly every max GCD on top of the damage taken
     // procs in order to more accurately represent the damage done during Fury of Urctos.
     timespan_t period      = ( effect.player->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
-                                        effect.player->rng().range( 0_s, 3_s ) /
+                                        effect.player->rng().range( 0_s, 750_ms ) /
                                             ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
     make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
   }
