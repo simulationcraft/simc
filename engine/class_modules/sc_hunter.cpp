@@ -787,6 +787,7 @@ public:
   void      merge( player_t& other ) override;
   void      arise() override;
   void      combat_begin() override;
+  void      leave_combat() override;
 
   void datacollection_begin() override;
   void datacollection_end() override;
@@ -7631,6 +7632,14 @@ void hunter_t::combat_begin()
   }
 
   player_t::combat_begin();
+}
+
+void hunter_t::leave_combat()
+{
+  player_t::leave_combat();
+
+  // 27-11-23: Windrunner's Guidance stacks are resetting when combat drops
+  buffs.windrunners_guidance -> expire();
 }
 
 // hunter_t::datacollection_begin ===========================================
