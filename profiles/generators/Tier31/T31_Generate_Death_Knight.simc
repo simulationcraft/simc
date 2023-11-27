@@ -100,7 +100,7 @@ waist=unwinding_eon_girdle,id=207858,bonus_id=1582/6536/6646/6935,gem_id=192922
 legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent_armor_kit_3
 feet=fused_obsidian_sabatons,id=207156,bonus_id=7187/1520
 finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
-finger2=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
+finger2=seal_of_the_regal_loa,id=159458,bonus_id=3317/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 trinket2=mirror_of_fractured_tomorrows,id=207581,bonus_id=6536/1540/6646
 main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fallen_crusader
