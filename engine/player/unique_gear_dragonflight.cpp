@@ -8042,7 +8042,7 @@ void fyralath_the_dream_render( special_effect_t& e )
       if ( was_channeling && !player->readying )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
 
-      charge_impact->execute_on_target( d->target );
+      charge_impact->execute();
     }
   };
 
@@ -8050,7 +8050,6 @@ void fyralath_the_dream_render( special_effect_t& e )
   auto charge_impact     = new explosive_rage_t( "explosive_rage", e, e.player->find_spell( 413584 ) );
   auto dot               = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath",e.player->find_spell(414532));
   auto channel            = new rage_channel_t( "rage_of_fyralath_channel", e, charge, charge_impact, dot );
-  charge->execute_action = charge_impact;
   dot->add_child( charge );
   dot->add_child( charge_impact );
 
