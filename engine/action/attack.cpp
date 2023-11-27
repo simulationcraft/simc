@@ -52,7 +52,7 @@ timespan_t attack_t::execute_time() const
 
 result_amount_type attack_t::amount_type( const action_state_t*, bool periodic ) const
 {
-  if ( periodic )
+  if ( periodic || treat_as_periodic )
     return result_amount_type::DMG_OVER_TIME;
   else
     return result_amount_type::DMG_DIRECT;

@@ -204,7 +204,7 @@ double spell_t::miss_chance( double hit, player_t* t ) const
 
 result_amount_type spell_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
-  if ( periodic )
+  if ( periodic || treat_as_periodic )
     return result_amount_type::DMG_OVER_TIME;
   else
     return result_amount_type::DMG_DIRECT;
