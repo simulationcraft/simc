@@ -48,8 +48,8 @@ actions.precombat+=/variable,name=erw_pooling_time,op=setif,value=25,value_else=
 actions=auto_attack
 # Choose Action list to run
 actions+=/call_action_list,name=variables
-actions+=/call_action_list,name=high_prio_actions
 actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=high_prio_actions
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=racials
 actions+=/call_action_list,name=cold_heart,if=talent.cold_heart&(!buff.killing_machine.up|talent.breath_of_sindragosa)&((debuff.razorice.stack=5|!death_knight.runeforge.razorice&!talent.glacial_advance&!talent.avalanche)|fight_remains<=gcd)

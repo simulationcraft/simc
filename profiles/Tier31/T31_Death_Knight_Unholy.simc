@@ -26,7 +26,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/raise_dead
-actions.precombat+=/army_of_the_dead,precombat_time=2
+actions.precombat+=/army_of_the_dead,precombat_time=2,if=!equipped.fyralath_the_dreamrender
 actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
 actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
 actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)&!variable.trinket_1_exclude
@@ -98,14 +98,12 @@ actions.cooldowns+=/soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.
 
 # Garg Setup
 actions.garg_setup=apocalypse,if=debuff.festering_wound.stack>=4&(buff.commander_of_the_dead.up&pet.gargoyle.remains<23|!talent.commander_of_the_dead)
-actions.garg_setup+=/army_of_the_dead,if=talent.commander_of_the_dead&(cooldown.dark_transformation.remains<3|buff.commander_of_the_dead.up)|!talent.commander_of_the_dead&talent.unholy_assault&cooldown.unholy_assault.remains<10|!talent.unholy_assault&!talent.commander_of_the_dead
 actions.garg_setup+=/soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5
+actions.garg_setup+=/any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>0
 actions.garg_setup+=/summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead.up|!talent.commander_of_the_dead&runic_power>=40
 actions.garg_setup+=/empower_rune_weapon,if=pet.gargoyle.active&pet.gargoyle.remains<=23
 actions.garg_setup+=/unholy_assault,if=pet.gargoyle.active&pet.gargoyle.remains<=23
-actions.garg_setup+=/potion,if=(30>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60|cooldown.summon_gargoyle.ready)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)
 actions.garg_setup+=/dark_transformation,if=talent.commander_of_the_dead&runic_power>40|!talent.commander_of_the_dead
-actions.garg_setup+=/any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>0
 actions.garg_setup+=/festering_strike,if=debuff.festering_wound.stack=0|!talent.apocalypse|runic_power<40&!pet.gargoyle.active
 actions.garg_setup+=/death_coil,if=rune<=1
 
@@ -116,13 +114,14 @@ actions.high_prio_actions+=/antimagic_zone,if=!death_knight.amz_specified&(death
 actions.high_prio_actions+=/antimagic_zone,if=death_knight.amz_specified&buff.amz_timing.up
 # Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=49206/summon-gargoyle'>Gargoyle</a> is up, as well as <a href='https://www.wowhead.com/spell=275699/apocalypse'>Apocalypse</a> or with <a href='https://www.wowhead.com/spell=63560/dark-transformation'>Dark Transformation</a> if <a href='https://www.wowhead.com/spell=275699/apocalypse'>Apocalypse</a> or <a href='https://www.wowhead.com/spell=49206/summon-gargoyle'>Gargoyle</a> are not talented
 actions.high_prio_actions+=/invoke_external_buff,name=power_infusion,if=variable.st_planning&(pet.gargoyle.active&pet.gargoyle.remains<=22|!talent.summon_gargoyle&talent.army_of_the_dead&pet.army_ghoul.active&pet.army_ghoul.remains<=18|!talent.summon_gargoyle&!talent.army_of_the_dead&buff.dark_transformation.up|!talent.summon_gargoyle&buff.dark_transformation.up|!pet.gargoyle.active&cooldown.summon_gargoyle.remains+10>cooldown.invoke_external_buff.duration|active_enemies>=3&(buff.dark_transformation.up|death_and_decay.ticking))
-actions.high_prio_actions+=/potion,if=(30>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60|cooldown.summon_gargoyle.ready)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)|fight_remains<=30
-actions.high_prio_actions+=/army_of_the_dead,if=talent.summon_gargoyle&cooldown.summon_gargoyle.remains<2|!talent.summon_gargoyle|fight_remains<35
+actions.high_prio_actions+=/potion,if=(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)|fight_remains<=30
+actions.high_prio_actions+=/army_of_the_dead,if=!equipped.fyralath_the_dreamrender&(talent.summon_gargoyle&cooldown.summon_gargoyle.remains<2|!talent.summon_gargoyle|fight_remains<35)
 actions.high_prio_actions+=/death_coil,if=(active_enemies<=3|!talent.epidemic)&(pet.gargoyle.active&talent.commander_of_the_dead&buff.commander_of_the_dead.up&cooldown.apocalypse.remains<5&buff.commander_of_the_dead.remains>27|debuff.death_rot.up&debuff.death_rot.remains<gcd)
 actions.high_prio_actions+=/epidemic,if=active_enemies>=4&(talent.commander_of_the_dead&buff.commander_of_the_dead.up&cooldown.apocalypse.remains<5|debuff.death_rot.up&debuff.death_rot.remains<gcd)
 actions.high_prio_actions+=/wound_spender,if=(cooldown.apocalypse.remains>variable.apoc_timing+3|active_enemies>=3)&talent.plaguebringer&(talent.superstrain|talent.unholy_blight)&buff.plaguebringer.remains<gcd
 actions.high_prio_actions+=/unholy_blight,if=variable.st_planning&((!talent.apocalypse|cooldown.apocalypse.remains)&talent.morbidity|!talent.morbidity)|variable.adds_remain|fight_remains<21
 actions.high_prio_actions+=/outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever_superstrain.refreshable|dot.blood_plague_superstrain.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))
+actions.high_prio_actions+=/army_of_the_dead,if=equipped.fyralath_the_dreamrender&(talent.summon_gargoyle&cooldown.summon_gargoyle.remains<2|!talent.summon_gargoyle|fight_remains<35)
 
 # Racials
 actions.racials=arcane_torrent,if=runic_power.deficit>20&(cooldown.summon_gargoyle.remains<gcd|!talent.summon_gargoyle.enabled|pet.gargoyle.active&rune<2&debuff.festering_wound.stack<1)
@@ -176,7 +175,7 @@ waist=unwinding_eon_girdle,id=207858,bonus_id=1582/6536/6646/6935,gem_id=192922
 legs=greaves_of_the_risen_nightmare,id=207199,bonus_id=7187/1520,enchant=lambent_armor_kit_3
 feet=fused_obsidian_sabatons,id=207156,bonus_id=7187/1520
 finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
-finger2=ring_of_contempt,id=134490,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
+finger2=seal_of_the_regal_loa,id=159458,bonus_id=3317/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 trinket2=mirror_of_fractured_tomorrows,id=207581,bonus_id=6536/1540/6646
 main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fallen_crusader
@@ -186,9 +185,9 @@ main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fall
 # gear_strength=9822
 # gear_stamina=39120
 # gear_crit_rating=1988
-# gear_haste_rating=6167
+# gear_haste_rating=5634
 # gear_mastery_rating=5577
-# gear_versatility_rating=1366
+# gear_versatility_rating=1899
 # gear_armor=11397
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
