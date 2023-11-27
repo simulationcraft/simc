@@ -8042,7 +8042,7 @@ void fyralath_the_dream_render( special_effect_t& e )
       if ( was_channeling && !player->readying )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
 
-      charge_impact->execute();
+      charge_impact->execute_on_target( d->target );
     }
   };
 
