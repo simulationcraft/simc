@@ -11295,22 +11295,58 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
-  /*
+  
   void register_hotfixes() const override
   {
-    hotfix::register_spell("Death Knight", "2023-11-10", "Gargoyle Strike Cast time increased to 2.5s", 51963, hotfix::HOTFIX_FLAG_LIVE)
-    .field( "cast_time" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 2500 )
-    .verification_value( 2000 );
+    hotfix::register_effect( "Death Knight", "2023-11-27", "T31 4pc Chill Streak bounces increased by 1", 1098450, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 2 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-10", "Death Coil buffed by 10%", 39872, hotfix::HOTFIX_FLAG_LIVE )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "T31 4pc chance increased to 35%", 1101082, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 35 )
+      .verification_value( 30 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Chill Streak Damage increased by 10%", 301316, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.7010938 )
-      .verification_value( 0.637358 );
+      .modifier( 0.93555 )
+      .verification_value( 0.8505 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Obliterate MH Damage increased by 8%", 331344, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.6712416 )
+      .verification_value( 0.62152 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Obliterate OH Damage increased by 8%", 60372, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.6712416 )
+      .verification_value( 0.62152 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Obliterate 2H Damage increased by 8%", 815754, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.9936 )
+      .verification_value( 0.92 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Enduring Chill Chance increased to 25%", 1005185, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 25 )
+      .verification_value( 20 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Piercing Chill increased to 12%", 1005150, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 12 )
+      .verification_value( 10 );
   }
-  */
+  
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}
