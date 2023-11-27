@@ -47,7 +47,6 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_executioners_precision;
   buff_t* debuffs_exploiter;
   buff_t* debuffs_fatal_mark;
-  buff_t* debuffs_siegebreaker;
   buff_t* debuffs_skullsplitter;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
@@ -97,10 +96,6 @@ public:
     action_t* deep_wounds_ARMS;
     action_t* deep_wounds_PROT;
     action_t* fatality;
-    action_t* signet_avatar;
-    action_t* signet_bladestorm_a;
-    action_t* signet_bladestorm_f;
-    action_t* signet_recklessness;
     action_t* torment_avatar;
     action_t* torment_bladestorm;
     action_t* torment_odyns_fury;
@@ -233,7 +228,6 @@ public:
     cooldown_t* warbreaker;
     cooldown_t* conquerors_banner;
     cooldown_t* spear_of_bastion;
-    cooldown_t* signet_of_tormented_kings;
     cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
     cooldown_t* t31_fury_4pc_icd;
@@ -310,7 +304,6 @@ public:
     const spell_data_t* concussive_blows_debuff;
     const spell_data_t* recklessness_buff;
     const spell_data_t* shield_block_buff;
-    const spell_data_t* siegebreaker_debuff;
     const spell_data_t* whirlwind_buff;
     const spell_data_t* aftershock_duration;
     const spell_data_t* shield_wall;
@@ -832,8 +825,7 @@ struct warrior_action_t : public Base
   struct affected_by_t
   {
     // mastery/buff damage increase.
-    bool fury_mastery_direct, fury_mastery_dot, arms_mastery,
-    siegebreaker;
+    bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
     bool avatar, sweeping_strikes, booming_voice, bloodcraze, executioners_precision,
     ashen_juggernaut, recklessness, slaughtering_strikes, colossus_smash,
@@ -851,7 +843,6 @@ struct warrior_action_t : public Base
       : fury_mastery_direct( false ),
         fury_mastery_dot( false ),
         arms_mastery( false ),
-        siegebreaker( false ),
         avatar( false ),
         sweeping_strikes( false ),
         booming_voice( false ),
@@ -999,7 +990,6 @@ public:
     affected_by.colossus_smash           = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
     affected_by.executioners_precision   = ab::data().affected_by( p()->spell.executioners_precision_debuff->effectN( 1 ) );
     affected_by.merciless_bonegrinder    = ab::data().affected_by( p()->find_spell( 383316 )->effectN( 1 ) );
-    affected_by.siegebreaker             = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.avatar                   = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
@@ -1074,11 +1064,6 @@ public:
     if ( affected_by.arms_mastery && td->dots_deep_wounds->is_ticking() )
     {
       m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.siegebreaker && td->debuffs_siegebreaker->check() )
-    {
-      m *= 1.0 + ( td->debuffs_siegebreaker->value() );
     }
 
     if ( td -> debuffs_demoralizing_shout -> up() && p()->talents.protection.booming_voice->ok() &&
@@ -1650,7 +1635,6 @@ struct devastator_t : warrior_attack_t
 struct melee_t : public warrior_attack_t
 {
   warrior_attack_t* annihilator;
-  warrior_attack_t* reckless_flurry;
   warrior_attack_t* sidearm;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
@@ -1659,7 +1643,6 @@ struct melee_t : public warrior_attack_t
   melee_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ),
       annihilator( nullptr ),
-      reckless_flurry( nullptr ),
       sidearm( nullptr),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
@@ -1703,7 +1686,6 @@ struct melee_t : public warrior_attack_t
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.arms_mastery        = p()->mastery.deep_wounds_ARMS->ok();
     affected_by.colossus_smash      = p()->talents.arms.colossus_smash->ok();
-    affected_by.siegebreaker        = p()->spell.siegebreaker_debuff->ok();
     affected_by.booming_voice       = p()->talents.protection.booming_voice->ok();
     affected_by.avatar = true;
     affected_by.t29_arms_4pc = true;
@@ -1808,12 +1790,6 @@ struct melee_t : public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-
-    if ( reckless_flurry && result_is_hit( s->result ) )
-    {
-      reckless_flurry->set_target( s->target );
-      reckless_flurry->execute();
-    }
 
     if ( annihilator && result_is_hit( s->result ) )
     {
@@ -7092,7 +7068,6 @@ void warrior_t::init_spells()
   spec.bloodbath                = find_spell(335096);
   spec.crushing_blow            = find_spell(335097);
   spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
-  spell.siegebreaker_debuff     = find_spell( 280773 );
   spell.sudden_death_fury       = find_spell( 280776 );
   spell.furious_bloodthirst     = find_spell( 423211 );
 
@@ -7839,11 +7814,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_fatal_mark = make_buff( *this, "fatal_mark" ) 
           ->set_duration( p.spell.fatal_mark_debuff->duration() )
           ->set_max_stack( p.spell.fatal_mark_debuff->max_stacks() );
-
-  debuffs_siegebreaker = make_buff( *this , "siegebreaker" )
-    ->set_default_value( p.spell.siegebreaker_debuff->effectN( 2 ).percent() )
-    ->set_duration( p.spell.siegebreaker_debuff->duration() )
-    ->set_cooldown( timespan_t::zero() );
 
   debuffs_skullsplitter = make_buff( *this, "skullsplitter",  p.find_spell( 427040 ) )
                             ->set_default_value( p.find_spell( 427040 ) -> effectN( 1 ).percent() )
