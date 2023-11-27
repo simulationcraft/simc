@@ -8008,6 +8008,9 @@ void fyralath_the_dream_render( special_effect_t& e )
       channeled = tick_zero = true;
       hasted_ticks          = false;
       target_cache.is_valid = false;
+      add_child( damage );
+      add_child( charge_impact );
+      add_child( dot );
     }
     
     void tick( dot_t* d ) override
@@ -8050,8 +8053,6 @@ void fyralath_the_dream_render( special_effect_t& e )
   auto charge_impact     = new explosive_rage_t( "explosive_rage", e, e.player->find_spell( 413584 ) );
   auto dot               = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath",e.player->find_spell(414532));
   auto channel            = new rage_channel_t( "rage_of_fyralath_channel", e, charge, charge_impact, dot );
-  dot->add_child( charge );
-  dot->add_child( charge_impact );
 
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;
