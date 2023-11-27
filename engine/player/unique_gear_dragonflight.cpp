@@ -789,7 +789,7 @@ void incandescent_essence( special_effect_t& e )
     tindrals_fowl_fantasia_t( const special_effect_t& e )
       : action_t( action_e::ACTION_OTHER, "tindrals_fowl_fantasia", e.player, e.player->find_spell( 426341 ) )
     {
-      background = true;
+      background = proc = true;
 
       auto coeffs = player->find_spell( 425838 );
 
@@ -2842,7 +2842,7 @@ void alltotem_of_the_master( special_effect_t& effect )
 
   action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
 
-  if ( effect.player->role == ROLE_TANK )
+  if ( effect.player->primary_role() == ROLE_TANK )
   {
     effect.player->register_combat_begin( [ &effect, action ]( player_t* ) {
     timespan_t base_period = effect.driver()->internal_cooldown();
@@ -4807,7 +4807,7 @@ void ward_of_the_faceless_ire( special_effect_t& e )
                          } );
   // If the player is a tank, properly model the absorb buff by casting it on themselves
   // Otherwise, emulate it as if the player is casting it on a player who instantly breaks the shield
-  if ( e.player->role == ROLE_TANK )
+  if ( e.player->primary_role() == ROLE_TANK )
   {
     e.custom_buff = absorb_buff;
   }
@@ -5471,6 +5471,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
 
   e.disable_buff();
   e.execute_action = create_proc_action<mirror_of_fractured_tomorrows_t>( "mirror_of_fractured_tomorrows", e );
+  e.stat = STAT_ALL;
 }
 
 // Accelerating Sandglass
@@ -7044,6 +7045,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     {
       background = dual = may_crit = true;
       may_miss                     = false;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
     }
   };
 
@@ -7053,28 +7055,23 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
     cooldown_t* fury_of_urctos_cooldown;
     stat_buff_t* rising_rage_buff;
     buff_t* fury_of_urctos_buff;
+    action_t* ursine_reprisal;
 
     gift_buffs_t( const special_effect_t& e )
       : proc_spell_t( "gift_of_ursine_vengeance", e.player, e.player->find_spell( 421990 ), e.item ),
         rising_rage_cooldown( e.player->get_cooldown( "rising_rage" ) ),
         fury_of_urctos_cooldown( e.player->get_cooldown( "fury_of_urctos" ) ),
         rising_rage_buff( create_buff<stat_buff_t>( e.player, e.player->find_spell( 421994 ) ) ),
-        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) )
+        fury_of_urctos_buff( create_buff<buff_t>( e.player, e.player->find_spell( 422016 ) ) ),
+        ursine_reprisal( create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e ) )
     {
-      auto ursine_reprisal         = create_proc_action<ursine_reprisal_t>( "ursine_reprisal", e );
-      ursine_reprisal->base_dd_min = ursine_reprisal->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-
       rising_rage_buff->set_stat_from_effect( 1, e.driver()->effectN( 2 ).average( e.item ) );
       rising_rage_buff->set_cooldown( 0_ms );
-      rising_rage_buff->set_stack_change_callback( [ this, ursine_reprisal ]( buff_t* buff, int old, int new_ ) {
-        if ( buff->at_max_stacks() && !fury_of_urctos_buff->up() )
+      rising_rage_buff->set_expire_at_max_stack( true );
+      rising_rage_buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
         {
           fury_of_urctos_buff->trigger();
-        }
-        // This should be "closest target" but we'll just pick whoever the player is targeting for now.
-        if ( player->target && new_ >= old )
-        {
-          ursine_reprisal->execute_on_target( player->target );
         }
       } );
 
@@ -7084,20 +7081,14 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       fury_of_urctos_heal->background = fury_of_urctos_heal->dual = true;
       fury_of_urctos_heal->base_dd_min = fury_of_urctos_heal->base_dd_max = e.driver()->effectN( 3 ).average( e.item );
 
-      fury_of_urctos_buff->set_stack_change_callback( [ this ]( buff_t* /* buff */, int /* old */, int new_ ) {
-        if ( !new_ )
-        {
-          rising_rage_buff->expire();
-        }
-      } );
       fury_of_urctos_buff->set_period( 1_s );
       fury_of_urctos_buff->set_tick_callback(
           [ this, fury_of_urctos_heal ]( buff_t* /* buff */, int /* tick */, timespan_t /* tick_time */ ) {
             fury_of_urctos_heal->execute_on_target( player );
           } );
 
-      rising_rage_cooldown->duration    = e.driver()->internal_cooldown();
-      fury_of_urctos_cooldown->duration = fury_of_urctos_buff->data().internal_cooldown();
+      rising_rage_cooldown->duration    = 3_s; // No longer in spell data, setting manually from tooltip
+      fury_of_urctos_cooldown->duration = 100_ms; // Has a 100ms cd during fury
     }
 
     void execute() override
@@ -7106,23 +7097,23 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
       if ( fury_of_urctos_buff->up() && fury_of_urctos_cooldown->up() )
       {
         fury_of_urctos_cooldown->start();
-        rising_rage_buff->trigger();
+        ursine_reprisal->execute_on_target( player->target );
       }
       else if ( rising_rage_cooldown->up() )
       {
         rising_rage_cooldown->start();
         rising_rage_buff->trigger();
+        ursine_reprisal->execute_on_target( player->target );
       }
     }
   };
 
   action_t* action = create_proc_action<gift_buffs_t>( "gift_of_ursine_vengeance", effect );
 
-  if ( effect.player->role == ROLE_TANK )
+  if ( effect.player->primary_role() == ROLE_TANK )
   {
     effect.proc_flags_    = PF_DAMAGE_TAKEN;
     effect.proc_flags2_   = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
-    effect.cooldown_      = 3_s; // No longer in spell data, manually setting to value in tooltip
     effect.execute_action = action;
 
     new dbc_proc_callback_t( effect.player, effect );
@@ -7952,6 +7943,128 @@ void thorncaller_claw( special_effect_t& effect ) {
   effect.execute_action = thorn_spirit;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+// 417131 Use Driver
+// 420248 Values & Passive Driver
+// 417132 Charge Buff
+// 417134 Charge Damage
+// 414532 DoT
+// 413584 Charge Impact Damage
+// Speculative implementation based off spell data until testing is done
+void fyralath_the_dream_render( special_effect_t& e )
+{
+  struct explosive_rage_t : public generic_proc_t
+  {
+    double dot_increase;
+    double dots_consumed;
+    explosive_rage_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
+      : generic_proc_t( effect, n, s ),
+        dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
+        dots_consumed( 0 )
+    {
+      background = proc = true;
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      m *= 1.0 + dot_increase * dots_consumed;
+
+      return m;
+    }
+  };
+
+  struct rage_of_fyralath_t : public generic_proc_t
+  {
+    double dot_increase;
+    double dots_consumed;
+    rage_of_fyralath_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
+      : generic_proc_t( effect, n, s ),
+        dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
+        dots_consumed( 0 )
+    {
+      background = proc = true;
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      m *= 1.0 + dot_increase * dots_consumed;
+
+      return m;
+    }
+  };
+
+  struct rage_channel_t : public proc_spell_t
+  {
+    action_t* damage;
+    action_t* charge_impact;
+    action_t* dot;
+    rage_channel_t( util::string_view n, const special_effect_t& e, action_t* dam, action_t* imp, action_t* d )
+      : proc_spell_t( n, e.player, e.player->find_spell( 417132 ), e.item ), damage( dam ), charge_impact( imp ), dot( d )
+    {
+      channeled = tick_zero = true;
+      hasted_ticks          = false;
+      target_cache.is_valid = false;
+      add_child( damage );
+      add_child( charge_impact );
+    }
+    
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+      damage->execute();
+    }
+
+    void execute() override
+    {
+      auto counter = player->get_active_dots( dot->get_dot( nullptr ) );
+      debug_cast<explosive_rage_t*>( charge_impact )->dots_consumed = counter; 
+      debug_cast<rage_of_fyralath_t*>( damage )->dots_consumed = counter;
+
+      range::for_each( player->sim->target_non_sleeping_list,
+                       [ this ]( player_t* target ) {
+                         if( dot->get_dot( target ) -> is_ticking() )
+                           dot->get_dot( target )->cancel();
+                       } );
+      proc_spell_t::execute();
+
+      event_t::cancel( player->readying );
+      player->delay_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+
+      charge_impact->execute_on_target( d->target );
+    }
+  };
+
+  auto charge            = new rage_of_fyralath_t( "rage_of_fyralath", e, e.player->find_spell( 417134 ) );
+  auto charge_impact     = new explosive_rage_t( "explosive_rage", e, e.player->find_spell( 413584 ) );
+  auto dot               = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath",e.player->find_spell(414532));
+  auto channel            = new rage_channel_t( "rage_of_fyralath_channel", e, charge, charge_impact, dot );
+
+  auto driver            = new special_effect_t( e.player );
+  driver->type           = SPECIAL_EFFECT_EQUIP;
+  driver->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+  driver->spell_id       = 420248;
+  driver->execute_action = dot;
+  e.player->special_effects.push_back( driver );
+
+  auto cb = new dbc_proc_callback_t( e.player, *driver );
+  cb->initialize();
+  cb->activate();
+
+  e.execute_action = channel;
 }
 
 // Armor
@@ -10212,6 +10325,7 @@ void register_special_effects()
   register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
   register_special_effect( 424406, items::thorncaller_claw );                   // Thorncaller Claw
   register_special_effect( 424073, items::fystias_fiery_kris );                 // Fystia's Fiery Kris
+  register_special_effect( 417131, items::fyralath_the_dream_render );          // Fyr'alath the Dream Render 
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );

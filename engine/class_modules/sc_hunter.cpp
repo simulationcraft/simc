@@ -735,7 +735,6 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     bool separate_wfi_stats = false;
-    int dire_pack_start = 0;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -788,6 +787,7 @@ public:
   void      merge( player_t& other ) override;
   void      arise() override;
   void      combat_begin() override;
+  void      leave_combat() override;
 
   void datacollection_begin() override;
   void datacollection_end() override;
@@ -5062,19 +5062,12 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 
   void execute() override
   {
+    if( p() -> tier_set.t31_sv_4pc -> ok() ) 
+    {
+      p() -> actions.wildfire_bomb_t31 -> execute_on_target( target );
+    }
+
     hunter_melee_attack_t::execute();
-
-    if ( p() -> tier_set.t31_sv_2pc.ok() )
-    {
-      p() -> buffs.fury_strikes -> trigger();
-    }
-
-    if ( p() -> tier_set.t31_sv_4pc.ok() )
-    {
-      p() -> buffs.contained_explosion -> trigger();
-      p() -> actions.wildfire_bomb_t31 -> execute_on_target( execute_state -> target );
-      p() -> buffs.light_the_fuse -> trigger();
-    }
   }
 
   void tick( dot_t* dot ) override
@@ -6345,7 +6338,7 @@ struct wildfire_bomb_t: public hunter_spell_t
     if ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() )
       p() -> resource_gain( RESOURCE_FOCUS, p() -> talents.coordinated_kill -> effectN( 2 ).base_value(), p() -> gains.coordinated_kill, this);
 
-    if ( p() -> buffs.light_the_fuse -> check() )
+    if ( p() -> buffs.light_the_fuse -> check() && !background )
     {
       p() -> buffs.light_the_fuse -> expire();
       p() -> cooldowns.wildfire_bomb -> reset( false );
@@ -7611,11 +7604,6 @@ void hunter_t::reset()
   // Active
   pets.main = nullptr;
   state = {};
-
-  if ( options.dire_pack_start > 0 )
-    state.dire_pack_counter = options.dire_pack_start;
-  else
-    state.dire_pack_counter = rng().range( as<int>( talents.dire_pack -> effectN( 1 ).base_value() ) );
 }
 
 // hunter_t::merge ==========================================================
@@ -7644,6 +7632,14 @@ void hunter_t::combat_begin()
   }
 
   player_t::combat_begin();
+}
+
+void hunter_t::leave_combat()
+{
+  player_t::leave_combat();
+
+  // 27-11-23: Windrunner's Guidance stacks are resetting when combat drops
+  buffs.windrunners_guidance -> expire();
 }
 
 // hunter_t::datacollection_begin ===========================================
@@ -7931,7 +7927,7 @@ void hunter_t::create_options()
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
   add_option( opt_bool( "hunter.separate_wfi_stats", options.separate_wfi_stats ) );
-  add_option( opt_int( "hunter.dire_pack_start", options.dire_pack_start, 0, 4 ) );
+  add_option( opt_obsoleted( "hunter.dire_pack_start" ) );
 }
 
 // hunter_t::create_profile =================================================
@@ -7949,7 +7945,6 @@ std::string hunter_t::create_profile( save_e stype )
   print_option( &options_t::summon_pet_str, "summon_pet" );
   print_option( &options_t::pet_attack_speed, "hunter.pet_attack_speed" );
   print_option( &options_t::pet_basic_attack_delay, "hunter.pet_basic_attack_delay" );
-  print_option( &options_t::dire_pack_start, "hunter.dire_pack_start" );
 
   return profile_str;
 }

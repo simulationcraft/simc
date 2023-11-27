@@ -7289,7 +7289,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
   }
 
   // Custom consume implementation to allow minimum absorb amount.
-  double consume( double amount, player_t* ) override
+  double consume( double amount, action_state_t* ) override
   {
     // IP only absorbs up to 55% of the damage taken
     amount *= debug_cast< warrior_t* >( player ) -> talents.protection.ignore_pain -> effectN( 2 ).percent();

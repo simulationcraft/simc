@@ -1157,7 +1157,7 @@ Resource         : 0 Energy (3) and 15 Energy (3) per tick (id=265683) w/ Windwa
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#27), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#24), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#27), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#24), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1)
 Family Flags     : 24, 48
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ......x.   ........ ........ ........ ........ 
@@ -1360,7 +1360,7 @@ Charges          : 1 (180 seconds cooldown)
 Category         : 1933: Benevolent Faerie (327710 effect#6)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
                  : 2706: Spatial Paradox (406732 effect#10)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 60
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -1741,7 +1741,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#25), Mistweaver Monk (137024 effects: #1, #2, #22), Windwalker Monk (137025 effect#21), Improved Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Escape from Reality (343249 effect#3), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2), Save Them All (390105 effects: #1, #2), Vivacious Vivification (392883 effect#1), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Soulfang Vitality (410082 effects: #1, #2)
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#25), Mistweaver Monk (137024 effects: #1, #2, #22), Windwalker Monk (137025 effect#21), Improved Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Escape from Reality (343249 effect#3), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2), Save Them All (390105 effects: #1, #2), Vivacious Vivification (392883 effect#1), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1)
 Family Flags     : 26, 48
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2336,7 +2336,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 20 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2)
+Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Shelter of Rin (281301 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1)
 Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... .x...... ........   ........ .x...... ........ ..x...x. 
@@ -3278,7 +3278,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#6), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2)
+Affecting spells : Thunder Focus Tea (116680 effect#6), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -3668,7 +3668,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #14, #19, #26, #29), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #12, #22), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #14, #19, #26, #29), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #12, #22), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 38, 48, 89
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3690,7 +3690,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #19, #26), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#22), Storm, Earth, and Fire (137639 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #19, #26), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effect#22), Storm, Earth, and Fire (137639 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 58
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
@@ -4538,7 +4538,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Labels           : 2706: Spatial Paradox (406732 effect#10)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Triggered by     : Refreshing Jade Wind (196725)
 Family Flags     : 48, 85
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4769,7 +4769,7 @@ Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Font of Life (337209 effect#2), Enveloping Mist (344008 effect#2), Grandiose Font (364417 effects: #1, #2), Save Them All (390105 effects: #1, #2), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Font of Life (337209 effect#2), Enveloping Mist (344008 effect#2), Grandiose Font (364417 effects: #1, #2), Save Them All (390105 effects: #1, #2), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Triggered by     : Essence Font (191837)
 Family Flags     : 48, 108
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4795,7 +4795,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -5388,7 +5388,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Accumulating Mist (388566 effect#1), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Accumulating Mist (388566 effect#1), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 18, 48, 90
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -5411,7 +5411,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 60 yards
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -6012,7 +6012,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 25, 48
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7632,7 +7632,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7721,7 +7721,7 @@ Name             : Rising Mist (id=274912) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Triggered by     : Rising Mist (274909)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9463,7 +9463,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9583,7 +9583,7 @@ Spell Level      : 8
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 15 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2, #32), Windwalker Monk (137025 effects: #12, #23), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Reverse Harm (342928 effects: #1, #2), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Vigorous Expulsion (392900 effects: #1, #2), Profound Rebuttal (392910 effect#1), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Mistweaver Monk (428200 effect#3)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effects: #1, #2, #32), Windwalker Monk (137025 effects: #12, #23), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Reverse Harm (342928 effects: #1, #2), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Vigorous Expulsion (392900 effects: #1, #2), Profound Rebuttal (392910 effect#1), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effect#3)
 Triggered by     : Healing Sphere (224863)
 Family Flags     : 17, 48, 95
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -10249,7 +10249,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#6), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2)
+Affecting spells : Thunder Focus Tea (116680 effect#6), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Soothing Mist (209525 effect#2), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Enveloping Mist (344008 effect#2), Clouded Focus (388048 effects: #1, #2, #3), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -10279,7 +10279,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 115
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10612,7 +10612,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 60 yards
 Duration         : 4 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -10718,7 +10718,7 @@ School           : Shadow
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 50000 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -12244,7 +12244,7 @@ Spell Type       : Magic
 Spell Level      : 42
 Range            : 60 yards
 Duration         : 4.5 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -12335,7 +12335,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -12388,7 +12388,7 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 40 yards
 Duration         : 6 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -12591,7 +12591,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Save Them All (390105 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Fae Exposure (395413 effect#1), Fae Exposure (395414 effect#1), Lesson of Doubt (400097 effect#1), Press the Advantage (418361 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Save Them All (390105 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Fae Exposure (395413 effect#1), Fae Exposure (395414 effect#1), Lesson of Doubt (400097 effect#1), Press the Advantage (418361 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ...xx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14416,7 +14416,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 2706: Spatial Paradox (406732 effect#10)
-Affecting spells : Enveloping Mist (124682 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Chi Harmony (423439 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. .x.x.... .....x..   ........ ........ ........ ......x. 
@@ -14525,7 +14525,7 @@ Name             : Yu'lon's Whisper (id=388044) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Triggered by     : Yu'lon's Whisper (388040)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14664,7 +14664,7 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Labels           : 3053: Mistweaver Monk (428200 effect#8)
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Save Them All (390105 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Fae Exposure (395413 effect#1), Fae Exposure (395414 effect#1), Lesson of Doubt (400097 effect#1), Press the Advantage (418361 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Save Them All (390105 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Fae Exposure (395413 effect#1), Fae Exposure (395414 effect#1), Lesson of Doubt (400097 effect#1), Press the Advantage (418361 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ...xx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15225,7 +15225,7 @@ Charges          : 1 (180 seconds cooldown)
 Category         : 1933: Benevolent Faerie (327710 effect#6)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
                  : 2706: Spatial Paradox (406732 effect#10)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48, 60
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -15329,7 +15329,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Accumulating Mist (388566 effect#1), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Accumulating Mist (388566 effect#1), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 18, 48, 90
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -17651,7 +17651,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17679,7 +17679,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Labels           : 2545: Legacy of Wisdom (404408 effect#1), Legacy of Wisdom (404408 effect#2)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18214,7 +18214,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2), Save Them All (390105 effects: #1, #2), Fae Exposure (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : .......x ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -18669,8 +18669,11 @@ Attributes       : ........ ........ ........ ...x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Is Buff (140), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=1099439)  : Apply Aura (6) | Unknown(504)
+#1 (id=1099439)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Friend (21)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Ancient Teachings (388024), Yu'lon's Whisper (388044), Faeline Stomp (388207), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058)
+                   Family Flags: 48, 102
+Hotfixed         : Sub Type (504 -> 283), Affects Spells
 Description      : $@spelldesc422889
 Tooltip          : Healing taken increased by $s1%.
 

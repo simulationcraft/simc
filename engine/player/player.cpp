@@ -7497,7 +7497,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
                         dbc::is_school( ab->absorb_school, school ) ) )  // Otherwise check by school
                  && ab->up() )
             {
-              double absorbed = ab->consume( s->result_amount, s->action->player );
+              double absorbed = ab->consume( s->result_amount, s );
 
               s->result_amount -= absorbed;
 

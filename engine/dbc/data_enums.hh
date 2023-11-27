@@ -1319,6 +1319,7 @@ enum spell_attribute : unsigned
   SX_TICK_MAY_CRIT                  = 265u,
   SX_DURATION_HASTED                = 273u,
   SX_DOT_HASTED_MELEE               = 278u,
+  SX_MASTERY_AFFECTS_POINTS         = 285u,
   SX_FIXED_TRAVEL_TIME              = 292u,
   SX_DISABLE_PLAYER_HEALING_MULT    = 312u,
   SX_DISABLE_TARGET_POSITIVE_MULT   = 321u,
