@@ -8010,7 +8010,6 @@ void fyralath_the_dream_render( special_effect_t& e )
       target_cache.is_valid = false;
       add_child( damage );
       add_child( charge_impact );
-      add_child( dot );
     }
     
     void tick( dot_t* d ) override
