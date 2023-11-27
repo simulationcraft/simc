@@ -7944,6 +7944,74 @@ void thorncaller_claw( special_effect_t& effect ) {
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+// 417131 Use Driver
+// 420248 Values & Passive Driver
+// 417132 Charge Buff
+// 417134 Charge Damage
+// 414532 DoT
+// 413584 Charge Impact Damage
+// Speculative implementation based off spell data until testing is done
+void fyralath_the_dream_render( special_effect_t& e )
+{
+  struct explosive_shadowflame_t: public generic_proc_t
+  {
+    double dot_increase;
+    double dots_consumed; 
+    explosive_shadowflame_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
+      : generic_proc_t( effect, "explosive_rage", effect.player->find_spell( 413584 ) ),
+        dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
+        dots_consumed ( 0 )
+    {}
+
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      m *= 1.0 + dot_increase * dots_consumed;
+
+      return m;
+    }
+  };
+
+  auto dot = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
+  auto charge = create_proc_action<generic_aoe_proc_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ) );
+  auto charge_impact = new explosive_shadowflame_t( "explosive_shadowflame", e, e.player->find_spell( 413584 ) );
+  charge->impact_action = charge_impact;
+  dot->add_child( charge );
+  dot->add_child( charge_impact );
+  auto charge_buff = create_buff<buff_t>( e.player, e.player->find_spell( 417132 ) );
+
+  charge_buff->set_stack_change_callback( [ e, dot, charge_impact ]( buff_t*, int, int new_ ) {
+    double counter;
+    if ( new_ )
+      range::for_each( e.player->sim->target_non_sleeping_list, [ e, dot, charge_impact, &counter ]( player_t* target ) {
+      if ( dot->get_dot( target )->is_ticking() )
+      {
+        counter++;
+        dot->get_dot( target )->cancel();
+      }
+      debug_cast< explosive_shadowflame_t* >( charge_impact )->dots_consumed = counter;
+    } );
+  } );
+  charge_buff->set_tick_callback( [ charge ]( buff_t* b, int, timespan_t ) {
+      charge->execute();
+  } );
+
+
+  auto driver = new special_effect_t( e.player );
+  driver->type = SPECIAL_EFFECT_EQUIP;
+  driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  driver->spell_id = 420248;
+  driver->execute_action = dot;
+  e.player->special_effects.push_back( driver );
+
+  auto cb = new dbc_proc_callback_t( e.player, *driver );
+  cb->initialize();
+  cb->activate();
+
+  e.custom_buff = charge_buff;
+}
 
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
@@ -10203,6 +10271,7 @@ void register_special_effects()
   register_special_effect( 427113, items::dreambinder_loom_of_the_great_cycle ); // Dreambinder, Loom of the Great Cycle
   register_special_effect( 424406, items::thorncaller_claw );                   // Thorncaller Claw
   register_special_effect( 424073, items::fystias_fiery_kris );                 // Fystia's Fiery Kris
+  register_special_effect( 417131, items::fyralath_the_dream_render );          // Fyr'alath the Dream Render 
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
