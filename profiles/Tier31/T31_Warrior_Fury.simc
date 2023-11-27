@@ -152,16 +152,16 @@ finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/6935,gem_id=192964
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1514/3326/6646/6935,gem_id=192964,enchant=devotion_of_mastery_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 trinket2=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527
-main_hand=gorehowl_might_of_the_warchief,id=208193,bonus_id=1611,enchant=wafting_devotion_3
+main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=wafting_devotion_3
 off_hand=gnarlroots_bonecrusher,id=207800,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 # Gear Summary
-# gear_ilvl=489.06
-# gear_strength=9804
-# gear_stamina=42841
-# gear_crit_rating=2464
-# gear_haste_rating=3574
-# gear_mastery_rating=5790
+# gear_ilvl=489.50
+# gear_strength=9868
+# gear_stamina=43192
+# gear_crit_rating=2385
+# gear_haste_rating=4241
+# gear_mastery_rating=5229
 # gear_versatility_rating=5342
 # gear_avoidance_rating=325
 # gear_armor=11397

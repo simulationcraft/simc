@@ -69,11 +69,11 @@ actions.cleave+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.cleave+=/arcane_torrent,if=(focus+focus.regen+30)<focus.max
 
 actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)
-actions.st+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator
 actions.st+=/call_of_the_wild
+actions.st+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator
 actions.st+=/stampede
-actions.st+=/bloodshed
 actions.st+=/bestial_wrath
+actions.st+=/bloodshed
 actions.st+=/death_chakram
 actions.st+=/kill_command
 actions.st+=/a_murder_of_crows

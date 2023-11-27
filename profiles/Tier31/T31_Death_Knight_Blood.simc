@@ -116,16 +116,16 @@ finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520,gem_id=192935,ench
 finger2=band_of_burning_thorns,id=207159,bonus_id=7187/1520,gem_id=192935,enchant=devotion_of_haste_3
 trinket1=rezans_gleaming_eye,id=158712,bonus_id=3317/1514
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-main_hand=incandescent_soulcleaver,id=207799,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
+main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=488.60
-# gear_strength=9780
-# gear_stamina=39006
-# gear_crit_rating=2793
-# gear_haste_rating=5780
+# gear_ilvl=489.07
+# gear_strength=9844
+# gear_stamina=39357
+# gear_crit_rating=2456
+# gear_haste_rating=6447
 # gear_mastery_rating=2194
-# gear_versatility_rating=4265
+# gear_versatility_rating=3962
 # gear_speed_rating=250
 # gear_armor=11397
 # set_bonus=tier31_2pc=1
