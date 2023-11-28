@@ -1535,7 +1535,6 @@ public:
     bool lethal_dose = false;
     bool maim_mangle = false;           // Renamed Systemic Failure for DF talent
     bool master_assassin = false;
-    bool nightstalker = false;
     bool relentless_strikes = false;    // Trigger
     bool ruthlessness = false;          // Trigger
     bool sepsis = false;                // Stance Mask
@@ -3347,10 +3346,11 @@ struct ambush_t : public rogue_attack_t
   };
 
   hidden_opportunity_extra_attack_t* extra_attack;
+  ambush_t* audacity_extra_attack;
 
   ambush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.ambush, options_str ),
-    extra_attack( nullptr )
+    extra_attack( nullptr ), audacity_extra_attack( nullptr )
   {
     if ( p->talent.outlaw.hidden_opportunity->ok() )
     {
@@ -3362,6 +3362,19 @@ struct ambush_t : public rogue_attack_t
     if ( p->talent.assassination.vicious_venoms->ok() )
     {
       add_child( p->active.vicious_venoms.ambush );
+    }
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // 2023-11-24 -- Self-trigger Ambush proc for Audacy override spell bug
+    if ( p()->bugs && !is_secondary_action() && p()->talent.outlaw.hidden_opportunity->ok() && p()->talent.outlaw.audacity->ok() )
+    {
+      audacity_extra_attack = p()->get_secondary_trigger_action<ambush_t>(
+        secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity_audacity" );
+      add_child( audacity_extra_attack );
     }
   }
 
@@ -3379,7 +3392,12 @@ struct ambush_t : public rogue_attack_t
 
     if ( p()->talent.outlaw.hidden_opportunity->ok() )
     {
-      trigger_opportunity( state, extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
+      // 2023-11-24 -- The Audacity replacement spell currently triggers the normal Ambush spell from HO
+      //               This allows it to trigger up to twice, rather than just a single time
+      if ( p()->bugs && audacity_extra_attack && p()->buffs.audacity->check() )
+        trigger_opportunity( state, audacity_extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
+      else
+        trigger_opportunity( state, extra_attack, p()->talent.outlaw.hidden_opportunity->effectN( 1 ).percent() );
     }
 
     trigger_vicious_venoms( state, p()->active.vicious_venoms.ambush );
@@ -4050,7 +4068,7 @@ struct envenom_t : public rogue_attack_t
 
       if ( target_list().size() == 1 )
       {
-        m *= 1.0 + p()->set_bonuses.t31_assassination_4pc->effectN(3).percent();
+        m *= 1.0 + p()->set_bonuses.t31_assassination_4pc->effectN( 3 ).percent();
       }
 
       return m;
