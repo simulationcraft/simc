@@ -1841,7 +1841,8 @@ Effects          :
 #1 (id=902036)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=902037)   : School Damage (2): spellfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75500 | PvP Coefficient: 1.20000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75500 | PvP Coefficient: 1.68000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1.2 -> 1.68)
 #3 (id=1017809)  : Trigger Spell (64): Azure Strike
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 355627 | Target: Self (1)
 Description      : Project intense energy onto $s1 enemies, dealing $s2 Spellfrost damage to them.
@@ -1887,9 +1888,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : DoT Stacking Rule (103), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=902905)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 2.00000 | Radius: 8 yards | Target: AOE friendly (31)
+Hotfixed         : PvP Coefficient (1 -> 2)
 #2 (id=999067)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.40000 | PvP Coefficient: 2.00000 | Radius: 8 yards | Target: AOE friendly (31)
+Hotfixed         : PvP Coefficient (1 -> 2)
 Description      : $@spelldesc359816
 Tooltip          : Healing for $w1 every $t1 sec.
 
@@ -7116,7 +7119,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1035409)  : School Damage (2): firestorm
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 1.25000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 1.43750 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1.25 -> 1.4375)
 Description      : Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[
 
 Increases the duration of your active Ebon Might effects by ${$395153s1/1000} sec.][]
@@ -7358,7 +7362,8 @@ Effects          :
 #1 (id=1037394)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1037395)  : School Damage (2): firestorm
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.30000 | PvP Coefficient: 1.25000 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.30000 | PvP Coefficient: 1.12500 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1.25 -> 1.125)
 #3 (id=1052932)  : Unknown(144)
                    Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Misc Value: -20 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=1053498)  : Unknown(144)
@@ -7979,12 +7984,13 @@ Effects          :
 Description      : $@spelldesc406041
 
 Name             : Mastery: Timewalker (id=406380) [Spell Family (224), Passive] 
+Hotfixed         : Internal Cooldown (500 -> 100)
 Class            : Augmentation Evoker
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Internal Cooldown: 0.5 seconds
+Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
