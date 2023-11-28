@@ -108,7 +108,7 @@ double heal_t::composite_versatility( const action_state_t* state ) const
 
 result_amount_type heal_t::amount_type( const action_state_t* /* state */, bool periodic ) const
 {
-  if ( periodic )
+  if ( periodic || treat_as_periodic )
     return result_amount_type::HEAL_OVER_TIME;
   else
     return result_amount_type::HEAL_DIRECT;

@@ -30,7 +30,7 @@ level=70
 race=human
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAIikEJiERISSIkIJRECkERikkkkkkWOAAAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkAAiIJRiIREikECJSSEhgWSEJSSSSSSa5AAAAAAAAAAAAAA
 deathknight.ams_absorb_percent=1
 deathknight.amz_absorb_percent=1
 
@@ -59,7 +59,7 @@ level=70
 race=tauren
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAICACSSkISEhkkECJSSEJAJhkERSSSSKJBAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAISAIIJRiIRESSSIkIJRkAaRIJHQkkkkkSSAAAAAAAAAAAAA
 deathknight.ams_absorb_percent=1
 deathknight.amz_absorb_percent=1
 

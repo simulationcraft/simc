@@ -362,6 +362,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     ignore_false_positive(),
     action_skill( p->base.skill ),
     direct_tick(),
+    treat_as_periodic(),
     ignores_armor(),
     repeating(),
     harmful( true ),
@@ -631,7 +632,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
   rolling_periodic    = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
-  ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+  treat_as_periodic   = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+  ignores_armor       = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
   may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
   allow_class_ability_procs         = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
