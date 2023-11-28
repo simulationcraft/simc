@@ -2512,12 +2512,6 @@ struct bloodthirst_heal_t : public warrior_heal_t
     background    = true;
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_heal_t::action_multiplier();
-
-    return am;
-  }
   resource_e current_resource() const override
   {
     return RESOURCE_NONE;
@@ -4668,7 +4662,6 @@ struct overpower_t : public warrior_attack_t
 {
   double battlelord_chance;
   double rage_from_strength_of_arms, rage_from_battlelord;
-  warrior_attack_t* seismic_wave;
   warrior_attack_t* dreadnaught;
 
   overpower_t( warrior_t* p, util::string_view options_str )
@@ -4676,7 +4669,6 @@ struct overpower_t : public warrior_attack_t
       battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
       rage_from_strength_of_arms( p->find_spell( 400806 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_battlelord( p->find_spell( 386631 )->effectN( 1 ).base_value() / 10.0 ),
-      seismic_wave( nullptr ),
       dreadnaught( nullptr )
   {
     parse_options( options_str );
@@ -4699,11 +4691,6 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( seismic_wave && result_is_hit( s->result ) )
-    {
-      seismic_wave->set_target( s->target );
-      seismic_wave->execute();
-    }
     if ( dreadnaught && result_is_hit( s->result ) )
     {
       dreadnaught->set_target( s->target );
@@ -6719,30 +6706,6 @@ struct ignore_pain_t : public warrior_spell_t
       p()->buff.ignore_pain->trigger( 1, new_ip );
     }
   }
-};
-
-// A free Ignore Pain from Bastion of Might when Avatar is cast
-struct ignore_pain_bom_t : public ignore_pain_t
-{
-  ignore_pain_bom_t( warrior_t* p )
-    : ignore_pain_t( p, "" )
-  {
-    may_crit     = false;
-    range        = -1;
-    target       = player;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-    //p()->buff.vengeance_revenge->trigger(); // this IP does trigger vengeance but doesnt consume it
-  }
-
-  double cost( ) const override
-  {
-    return 0.0;
-  }
-
 };
 
 // Shield Block =============================================================
