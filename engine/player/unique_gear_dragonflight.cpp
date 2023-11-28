@@ -7962,7 +7962,7 @@ void fyralath_the_dream_render( special_effect_t& e )
         dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
         dots_consumed( 0 )
     {
-      background = proc = true;
+      background = proc = split_aoe_damage = true;
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -7984,7 +7984,7 @@ void fyralath_the_dream_render( special_effect_t& e )
         dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
         dots_consumed( 0 )
     {
-      background = proc = true;
+      background = split_aoe_damage = proc = true;
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
