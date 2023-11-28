@@ -8024,7 +8024,7 @@ void fyralath_the_dream_render( special_effect_t& e )
 
     void execute() override
     {
-      auto counter = player->get_active_dots( dot->get_dot( nullptr ) );
+      auto counter = std::min( as<int>(player->get_active_dots( dot->get_dot( nullptr ) ) ), 5 );
       debug_cast<explosive_rage_t*>( charge_impact )->dots_consumed = counter;
       debug_cast<rage_of_fyralath_t*>( damage )->dots_consumed      = counter;
 
