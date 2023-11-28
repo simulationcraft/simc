@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52188
-static const std::array<spelltext_data_t, 20526> __spelltext_data { {
+static const std::array<spelltext_data_t, 20527> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20050,6 +20050,7 @@ static const std::array<spelltext_data_t, 20526> __spelltext_data { {
   { 416771, "$@spelldesc416770", "$@spellaura416770", 0 },
   { 416799, "Your allies with Glimmer of Light take $s1% reduced damage, split evenly among them.", 0, 0 },
   { 416869, "Hammer of Wrath has $s1 extra charge and on enemies below $s2% health generates ${$403081s1} additional Holy Power.  ", 0, 0 },
+  { 417000, "Wield the might of The Blazing, becoming enveloped in its Shadowflame.", 0, 0 },
   { 417049, "$@spelldesc417050", 0, 0 },
   { 417050, "Sustaining fatal damage throws you $s1 seconds into the past, restoring up to $s2 health lost during that time.\r\n\r\nFor the next $417139d, your Haste is increased by $s4 and enemies responsible for your untimely demise deal $s3% less damage to you.\r\n\r\nThis effect can only occur once every $417069d.", 0, 0 },
   { 417069, "$@spelldesc417050", "Your past was rewound too recently for the Prophetic Stonescale to trigger again.", 0 },
