@@ -49,6 +49,7 @@ actions.cooldowns+=/use_item,slot=trinket2,if=(buff.avenging_wrath.up&cooldown.a
 actions.cooldowns+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs|!buff.crusade.up&cooldown.crusade.remains>20|!buff.avenging_wrath.up&cooldown.avenging_wrath.remains>20)
 actions.cooldowns+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|!buff.crusade.up&cooldown.crusade.remains>20|!buff.avenging_wrath.up&cooldown.avenging_wrath.remains>20)
 actions.cooldowns+=/use_item,name=shadowed_razing_annihilator,if=(trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)
+actions.cooldowns+=/use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&!buff.avenging_wrath.up&!buff.crusade.up
 actions.cooldowns+=/shield_of_vengeance,if=fight_remains>15&(!talent.execution_sentence|!debuff.execution_sentence.up)
 actions.cooldowns+=/execution_sentence,if=(!buff.crusade.up&cooldown.crusade.remains>15|buff.crusade.stack=10|cooldown.avenging_wrath.remains<0.75|cooldown.avenging_wrath.remains>15)&(holy_power>=4&time<5|holy_power>=3&time>5|holy_power>=2&talent.divine_auxiliary)&(target.time_to_die>8&!talent.executioners_will|target.time_to_die>12)
 actions.cooldowns+=/avenging_wrath,if=holy_power>=4&time<5|holy_power>=3&time>5|holy_power>=2&talent.divine_auxiliary&(cooldown.execution_sentence.remains=0|cooldown.final_reckoning.remains=0)
@@ -86,30 +87,30 @@ actions.generators+=/arcane_torrent
 actions.generators+=/consecration
 actions.generators+=/divine_hammer
 
-head=zealous_pyreknights_barbute,id=207191,bonus_id=7187/1520/6935,gem_id=192985,enchant_id=7052
+head=mask_of_the_unbidden_grim,id=208426,bonus_id=7187/1520/6935,gem_id=192985,enchant_id=7052
 neck=ouroboreal_necklet,id=210214,bonus_id=7187/1520/6935/6935/6935,gem_id=192935/192935/192935
 shoulders=zealous_pyreknights_ailettes,id=207189,bonus_id=7187/1520
-back=inflammable_drapeleaf,id=207160,bonus_id=7187/1520
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=9379/9500/9405,crafted_stats=40/36
 chest=zealous_pyreknights_warplate,id=207194,bonus_id=7187/1520,enchant_id=6625
 wrists=primal_molten_vambraces,id=190502,bonus_id=9379/9500/9405,gem_id=192935,crafted_stats=40/36
 hands=zealous_pyreknights_jeweled_gauntlets,id=207192,bonus_id=7187/1520
-waist=primal_molten_greatbelt,id=190501,bonus_id=9379/9500/9405/6935,gem_id=192935,enchant_id=6904,crafted_stats=40/36
+waist=unwinding_eon_girdle,id=207858,bonus_id=1540/1514/6646/6935,gem_id=192935,enchant_id=6904
 legs=zealous_pyreknights_cuisses,id=207190,bonus_id=7187/1520,enchant_id=6830
-feet=fused_obsidian_sabatons,id=207156,bonus_id=7187/1520
+feet=insurgent_flame_warboots,id=208427,bonus_id=7187/1520
 finger1=band_of_burning_thorns,id=207159,bonus_id=7187/1520/6935,gem_id=192935,enchant=devotion_of_haste_3
 finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/6935,gem_id=192935,enchant=devotion_of_haste_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-trinket2=rezans_gleaming_eye,id=158712,bonus_id=3317/1514/6646
-main_hand=incandescent_soulcleaver,id=207799,bonus_id=7187/1520,enchant=sophic_devotion_3
+trinket2=augury_of_the_primal_flame,id=208614,bonus_id=7187/1527
+main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=wafting_devotion_3
 
 # Gear Summary
-# gear_ilvl=488.60
-# gear_strength=9753
-# gear_stamina=38850
-# gear_crit_rating=2605
-# gear_haste_rating=5430
-# gear_mastery_rating=1102
-# gear_versatility_rating=5930
-# gear_armor=11381
+# gear_ilvl=489.53
+# gear_strength=8930
+# gear_stamina=39226
+# gear_crit_rating=4024
+# gear_haste_rating=5103
+# gear_mastery_rating=793
+# gear_versatility_rating=5934
+# gear_armor=11397
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
