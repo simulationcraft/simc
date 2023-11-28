@@ -7957,7 +7957,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   struct explosive_rage_t : public generic_proc_t
   {
     double dot_increase;
-    double dots_consumed;
+    int dots_consumed;
     explosive_rage_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
       : generic_proc_t( effect, n, s ),
         dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
@@ -7979,7 +7979,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   struct rage_of_fyralath_t : public generic_proc_t
   {
     double dot_increase;
-    double dots_consumed;
+    int dots_consumed;
     rage_of_fyralath_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
       : generic_proc_t( effect, n, s ),
         dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
@@ -8024,7 +8024,8 @@ void fyralath_the_dream_render( special_effect_t& e )
 
     void execute() override
     {
-      auto counter = player->get_active_dots( dot->get_dot( nullptr ) );
+      // Caps at 5 Dotted targets for some unknown reason. 
+      auto counter = std::min( as<int>( player->get_active_dots( dot->get_dot( nullptr ) ) ), 5 );
       debug_cast<explosive_rage_t*>( charge_impact )->dots_consumed = counter;
       debug_cast<rage_of_fyralath_t*>( damage )->dots_consumed      = counter;
 
