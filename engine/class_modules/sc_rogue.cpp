@@ -3352,13 +3352,6 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spell.ambush, options_str ),
     extra_attack( nullptr ), audacity_extra_attack( nullptr )
   {
-    if ( p->talent.outlaw.hidden_opportunity->ok() )
-    {
-      extra_attack = p->get_secondary_trigger_action<hidden_opportunity_extra_attack_t>(
-        secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity" );
-      add_child( extra_attack );
-    }
-
     if ( p->talent.assassination.vicious_venoms->ok() )
     {
       add_child( p->active.vicious_venoms.ambush );
@@ -3369,12 +3362,23 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
-    // 2023-11-24 -- Self-trigger Ambush proc for Audacy override spell bug
-    if ( p()->bugs && !is_secondary_action() && p()->talent.outlaw.hidden_opportunity->ok() && p()->talent.outlaw.audacity->ok() )
+    if ( p()->talent.outlaw.hidden_opportunity->ok() )
     {
-      audacity_extra_attack = p()->get_secondary_trigger_action<ambush_t>(
-        secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity_audacity" );
-      add_child( audacity_extra_attack );
+      extra_attack = p()->get_secondary_trigger_action<hidden_opportunity_extra_attack_t>(
+        secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity" );
+
+      if ( !is_secondary_action() )
+      {
+        add_child( extra_attack );
+
+        // 2023-11-24 -- Self-trigger Ambush proc for Audacy override spell bug
+        if ( p()->bugs && p()->talent.outlaw.audacity->ok() )
+        {
+          audacity_extra_attack = p()->get_secondary_trigger_action<ambush_t>(
+            secondary_trigger::HIDDEN_OPPORTUNITY, "ambush_hidden_opportunity_audacity" );
+          add_child( audacity_extra_attack );
+        }
+      }
     }
   }
 
