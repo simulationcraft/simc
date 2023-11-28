@@ -11296,7 +11296,6 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
 
-  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2023-11-27", "T31 4pc Chill Streak bounces increased by 1", 1098450, hotfix::HOTFIX_FLAG_LIVE )
@@ -11347,7 +11346,6 @@ struct death_knight_module_t : public module_t {
       .modifier( 12 )
       .verification_value( 10 );
   }
-  */
   
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
