@@ -7979,12 +7979,13 @@ Effects          :
 Description      : $@spelldesc406041
 
 Name             : Mastery: Timewalker (id=406380) [Spell Family (224), Passive] 
+Hotfixed         : Internal Cooldown (500 -> 100)
 Class            : Augmentation Evoker
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Internal Cooldown: 0.5 seconds
+Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
