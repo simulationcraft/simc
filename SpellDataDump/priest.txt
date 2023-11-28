@@ -57,7 +57,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #14, #21), Discipline Priest (137032 effects: #1, #2, #18, #19), Shadow Priest (137033 effect#26), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3, #4), Twist of Fate (390978 effects: #1, #2), Rapid Recovery (391368 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #14, #21, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2, #18, #19), Shadow Priest (137033 effect#26), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3, #4), Twist of Fate (390978 effects: #1, #2), Rapid Recovery (391368 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 6, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ...x.... ........   .......x ........ ........ ........ 
@@ -273,7 +273,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Sanctified Prayers (196490 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Prayer Circle (321379 effects: #1, #2), Divine Conversation (363727 effect#2), Unwavering Will (373456 effect#1), Twist of Fate (390978 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Sanctified Prayers (196490 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Prayer Circle (321379 effects: #1, #2), Divine Conversation (363727 effect#2), Unwavering Will (373456 effect#1), Twist of Fate (390978 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 9, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -364,7 +364,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1673: Miracle Worker (235587 effect#1)
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Divine Conversation (363727 effect#3), Divine Word (372760 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Divine Conversation (363727 effect#3), Divine Word (372760 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2)
 Family Flags     : 10, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -394,7 +394,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Complete Healing (184914 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Flash Concentration (336267 effects: #1, #2), Divine Conversation (363727 effect#2), Divine Favor: Serenity (372791 effects: #1, #3, #4), Unwavering Will (373456 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Lightweaver (390993 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Complete Healing (184914 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Flash Concentration (336267 effects: #1, #2), Divine Conversation (363727 effect#2), Divine Favor: Serenity (372791 effects: #1, #3, #4), Unwavering Will (373456 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Lightweaver (390993 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 12, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -424,7 +424,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
 Stance Mask      : 0x88000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4), Holy Priest (137031 effects: #1, #2, #16, #17), Discipline Priest (137032 effects: #1, #2, #17), Shadow Priest (137033 effect#16), Complete Healing (184914 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Serenity (372791 effects: #1, #3, #4), Unwavering Will (373456 effects: #1, #3), From Darkness Comes Light (390617 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surge of Light (114255 effects: #1, #2, #3, #4), Holy Priest (137031 effects: #1, #2, #16, #17, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2, #17), Shadow Priest (137033 effect#16), Complete Healing (184914 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Rammal's Ulterior Motive (234711 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Measured Contemplation (341824 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Serenity (372791 effects: #1, #3, #4), Unwavering Will (373456 effects: #1, #3), From Darkness Comes Light (390617 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Improved Flash Heal (393870 effect#1), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Triggered by     : Surge of Light (114255)
 Family Flags     : 11, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1128,7 +1128,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #15), Discipline Priest (137032 effects: #1, #2), Shadow Priest (137033 effect#27), Light of T'uure (208065 effect#1), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #15, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Shadow Priest (137033 effect#27), Light of T'uure (208065 effect#1), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 117, 126
 Attributes       : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -1250,7 +1250,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 2075: Miracle Worker (235587 effect#2)
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Divine Conversation (363727 effect#3), Divine Word (372760 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2)
+Affecting spells : Renew (139 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Divine Conversation (363727 effect#3), Divine Word (372760 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2)
 Family Flags     : 28, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
@@ -1593,7 +1593,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 48, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
@@ -1990,7 +1990,7 @@ Duration         : 15 seconds
 Labels           : 2706: Spatial Paradox (406732 effect#10)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#3), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Gales of Song (372370 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#3), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Gales of Song (372370 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Triggered by     : Divine Hymn (64843)
 Family Flags     : 66, 126
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -2705,7 +2705,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 2931: Holy Priest (137031 effect#23)
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 98, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -2998,7 +2998,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 2932: Holy Priest (137031 effect#24)
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 97, 126
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... ........ ......xx 
@@ -3501,6 +3501,26 @@ Effects          :
 #24 (id=1104020)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value 2: 2932 (Label) | Target: Self (1)
                    Affected Spells (Label): Halo (120692)
+#25 (id=1123085)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676)
+                   Family Flags: 126
+Hotfixed         : NEW EFFECT
+#26 (id=1123086)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676)
+                   Family Flags: 126
+Hotfixed         : NEW EFFECT
+#27 (id=1123087)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676)
+                   Family Flags: 126
+Hotfixed         : NEW EFFECT
+#28 (id=1123088)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676)
+                   Family Flags: 126
+Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -4222,7 +4242,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1690: Light's Promise (322115 effect#1), Bright Pupil (390684 effect#1)
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Shining Radiance (337778 effect#1), Enduring Luminescence (390685 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effect#2), Radiant Providence (410638 effects: #2, #3), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Shining Radiance (337778 effect#1), Enduring Luminescence (390685 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effect#2), Radiant Providence (410638 effects: #2, #3), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 22, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4481,7 +4501,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4503,7 +4523,7 @@ School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Max Targets      : 5
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4570,7 +4590,7 @@ School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Velocity         : 15 yards/sec
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4592,7 +4612,7 @@ School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5121,7 +5141,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Divine Conversation (363727 effect#4), Healing Chorus (390885 effect#1), Orison (390947 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Divine Conversation (363727 effect#4), Healing Chorus (390885 effect#1), Orison (390947 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 86, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6012,7 +6032,7 @@ School           : Holy
 Spell Type       : None
 Spell Level      : 1
 Labels           : 2706: Spatial Paradox (406732 effect#10)
-Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#3), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Spirit of Redemption (27827 effect#3), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 93, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -6519,7 +6539,7 @@ GCD              : 1.5 seconds
 Cooldown         : 720 seconds
 Labels           : 2706: Spatial Paradox (406732 effect#10)
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Pontifex (390989 effect#1), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 21, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ........ 
@@ -8421,7 +8441,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Spell Level      : 17
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Rhapsody (390636 effect#2), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Rhapsody (390636 effect#2), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Triggered by     : Holy Nova (132157)
 Family Flags     : 26, 126
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -9363,7 +9383,7 @@ GCD              : 1.5 seconds
 Velocity         : 15 yards/sec
 Cooldown         : 60 seconds
 Labels           : 976
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -9474,7 +9494,7 @@ Class            : Priest
 School           : Arcane
 Spell Type       : Magic
 Spell Level      : 48
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Triggered by     : Ascended Nova (325020)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9500,7 +9520,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Labels           : 1102: Festering Transfusion (337979 effect#1), Festering Transfusion (337979 effect#2)
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Triggered by     : Unholy Transfusion (325203)
 Family Flags     : 126
 Attributes       : ........ ........ ..x....x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -10119,7 +10139,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11400,7 +11420,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 40 yards
 Labels           : 976
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Triggered by     : Unholy Nova (324724)
 Family Flags     : 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -12512,7 +12532,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -12659,7 +12679,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 78, 126
 Attributes       : ........ ........ ..x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -13733,7 +13753,7 @@ GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 79, 126
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -15036,7 +15056,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 97, 126
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ ........ ........ ......xx 
@@ -15168,7 +15188,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 98, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -15560,7 +15580,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -16531,7 +16551,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 48, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
@@ -17247,7 +17267,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -17268,7 +17288,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -17415,7 +17435,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Trinity (290793 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 48, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -17492,7 +17512,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Range            : 40 yards
-Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
+Affecting spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26, #27, #28), Discipline Priest (137032 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
