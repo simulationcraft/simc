@@ -1746,8 +1746,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Mutilate (5374), Mutilate (27576)
                    Family Flags: 33, 34
-#6 (id=882804)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
+#6 (id=882804)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (226 -> 4), Period (5000 -> 0)
 #7 (id=1035106)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Leeching Poison (108211), Deadly Poison (113780), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Amplifying Poison (381664), Amplifying Poison (383414), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
@@ -3603,6 +3604,16 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
+#31 (id=1122758)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618)
+                   Family Flags: 118
+Hotfixed         : NEW EFFECT
+#32 (id=1122759)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618)
+                   Family Flags: 118
+Hotfixed         : NEW EFFECT
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
