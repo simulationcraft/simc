@@ -6332,7 +6332,7 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       add_child( mh_sb );
     }
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p->off_hand_weapon.type != WEAPON_NONE && p->main_hand_weapon.group() != WEAPON_2H )
     {
       add_child( oh );
       if( p -> talent.frost.shattering_blade.ok() )
