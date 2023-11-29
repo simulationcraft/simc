@@ -5822,9 +5822,10 @@ struct death_strike_t final : public death_knight_melee_attack_t
     // No spelldata either, just "increase damage based on target's missing health"
     // Update 2021-06-16 Changed from 1% to 1.25% damage increase
     // Testing shows a linear 1.25% damage increase for every 1% missing health, up to 100% damage increase
+    // Unholy Bond increases this by 10% per point, with the formula 1 + ( 0.25 * ( 1 + unholy_bond % ) )
     if ( p() -> runeforge.rune_of_sanguination )
     {
-      auto buff_amount = ( 1.0 - target -> health_percentage() / 100 ) * 1.25;
+      auto buff_amount = ( 1.0 - target -> health_percentage() / 100 ) * ( 1 + ( 0.25 * ( 1 + p()->talent.unholy_bond->effectN( 1 ).percent() ) ) );
       buff_amount = std::min( buff_amount, 1.0 );  // Max 100% bonus damage
       m *= 1.0 + buff_amount;
     }
