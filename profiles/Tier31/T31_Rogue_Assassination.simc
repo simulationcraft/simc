@@ -82,8 +82,7 @@ actions.cds+=/call_action_list,name=misc_cds
 actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
 actions.cds+=/cold_blood,if=combo_points>=4
 
-# Direct Damage Abilities 
-# Envenom at 4+ CP if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe
+# Direct Damage Abilities   Envenom at 4+ CP if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe
 actions.direct=envenom,if=effective_combo_points>=4+cooldown.deathmark.ready&(variable.not_pooling|debuff.amplifying_poison.stack>=20|effective_combo_points>cp_max_spend|!variable.single_target)
 # Check if we should be using a filler
 actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|variable.not_pooling|!variable.single_target
@@ -109,8 +108,7 @@ actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.ampli
 # Fallback Mutilate
 actions.direct+=/mutilate,if=variable.use_filler
 
-# Damage over time abilities 
-# Check what the maximum Scent of Blood stacks is currently
+# Damage over time abilities   Check what the maximum Scent of Blood stacks is currently
 actions.dot=variable,name=scent_effective_max_stacks,value=(spell_targets.fan_of_knives*talent.scent_of_blood.rank*2)>?20
 # We are Scent Saturated when our stack count is hitting the maximum
 actions.dot+=/variable,name=scent_saturation,value=buff.scent_of_blood.stack>=variable.scent_effective_max_stacks
@@ -140,8 +138,7 @@ actions.misc_cds+=/berserking,if=debuff.deathmark.up
 actions.misc_cds+=/fireblood,if=debuff.deathmark.up
 actions.misc_cds+=/ancestral_call,if=(!talent.kingsbane&debuff.deathmark.up&debuff.shiv.up)|(talent.kingsbane&debuff.deathmark.up&dot.kingsbane.ticking&dot.kingsbane.remains<8)
 
-# Shiv 
-# Shiv if talented into Kingsbane; Always sync, or prioritize the last 8 seconds
+# Shiv   Shiv if talented into Kingsbane; Always sync, or prioritize the last 8 seconds
 actions.shiv=shiv,if=talent.kingsbane&!talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking&dot.kingsbane.remains<8|cooldown.kingsbane.remains>=24)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
 actions.shiv+=/shiv,if=talent.kingsbane&talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking|cooldown.kingsbane.remains<=1)|fight_remains<=charges*8
 # Shiv cases for Sepsis/Arterial in special circumstances
@@ -168,8 +165,7 @@ actions.stealthed+=/garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remain
 # Rupture in Shadow Dance to snapshot Nightstalker as a final resort
 actions.stealthed+=/rupture,if=effective_combo_points>=4&(pmultiplier<=1)&(buff.shadow_dance.up|debuff.deathmark.up)
 
-# Stealth Cooldowns 
-# Vanish Sync for Improved Garrote with Deathmark
+# Stealth Cooldowns   Vanish Sync for Improved Garrote with Deathmark
 actions.vanish=pool_resource,for_next=1,extra_amount=45
 # Shadow Dance for non-Kingsbane setups
 actions.vanish+=/shadow_dance,if=!talent.kingsbane&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<12|cooldown.deathmark.remains>60)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)

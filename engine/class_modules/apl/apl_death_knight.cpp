@@ -215,7 +215,7 @@ void frost( player_t* p )
   precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box" );
   precombat->add_action( "variable,name=rw_buffs,value=talent.gathering_storm|talent.everfrost" );
   precombat->add_action( "variable,name=2h_check,value=main_hand.2h" );
-  precombat->add_action( "variable,name=erw_pooling_time,op=setif,value=25,value_else=45,condition=death_knight.ams_absorb_percent>0.59", "Protects Breath from starving itself on ERW charges depending on anticipated resource gains. More resources enable more aggressive use." );
+  precombat->add_action( "variable,name=erw_pooling_time,op=setif,value=30,value_else=45,condition=death_knight.ams_absorb_percent>0.59", "Protects Breath from starving itself on ERW charges depending on anticipated resource gains. More resources enable more aggressive use." );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=variables", "Choose Action list to run" );
@@ -240,12 +240,11 @@ void frost( player_t* p )
   aoe->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>25" );
   aoe->add_action( "arcane_torrent,if=runic_power.deficit>25" );
 
-  breath->add_action( "howling_blast,if=variable.rime_buffs&runic_power>(45-talent.rage_of_the_frozen_champion*8)", "Breath Active Rotation" );
-  breath->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>25" );
+  breath->add_action( "howling_blast,if=variable.rime_buffs&runic_power>(45-((talent.rage_of_the_frozen_champion*8)+(5*buff.rune_of_hysteria.up)))", "Breath Active Rotation" );
+  breath->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>25+(5*buff.rune_of_hysteria.up)" );
   breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
-  breath->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
-  breath->add_action( "frostscythe,if=variable.frostscythe_priority&runic_power>45" );
-  breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up&runic_power.deficit>17" );
+  breath->add_action( "frostscythe,if=variable.frostscythe_priority&(buff.killing_machine.react|runic_power>45)" );
+  breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up" );
   breath->add_action( "death_and_decay,if=runic_power<36&rune.time_to_2>runic_power%18" );
   breath->add_action( "remorseless_winter,if=runic_power<36&rune.time_to_2>runic_power%18" );
   breath->add_action( "howling_blast,if=runic_power<36&rune.time_to_2>runic_power%18" );
@@ -276,9 +275,9 @@ void frost( player_t* p )
   cooldowns->add_action( "chill_streak,if=set_bonus.tier31_2pc&buff.chilling_rage.remains<3" );
   cooldowns->add_action( "chill_streak,if=!set_bonus.tier31_2pc&active_enemies>=2&(!death_and_decay.ticking&talent.cleaving_strikes|!talent.cleaving_strikes|active_enemies<=5)" );
   cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&(variable.adds_remain|variable.st_planning)&(buff.empower_rune_weapon.up|cooldown.empower_rune_weapon.remains)|fight_remains<12" );
-  cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)&(!talent.icecap&(runic_power>70|cooldown.breath_of_sindragosa.remains>40)|talent.icecap&(cooldown.breath_of_sindragosa.remains>10|buff.breath_of_sindragosa.up))" );
+  cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)&(!talent.icecap&(runic_power>70|cooldown.breath_of_sindragosa.remains>40)|talent.icecap&(cooldown.breath_of_sindragosa.remains>5))|buff.breath_of_sindragosa.up" );
   cooldowns->add_action( "pillar_of_frost,if=talent.icecap&!talent.obliteration&!talent.breath_of_sindragosa&(variable.adds_remain|variable.st_planning)" );
-  cooldowns->add_action( "breath_of_sindragosa,if=!buff.breath_of_sindragosa.up&runic_power>60&(variable.adds_remain|variable.st_planning|fight_remains<30)" );
+  cooldowns->add_action( "breath_of_sindragosa,if=!buff.breath_of_sindragosa.up&(runic_power>50&cooldown.empower_rune_weapon.ready|runic_power>60&cooldown.empower_rune_weapon.remains_expected<30|runic_power>80&cooldown.empower_rune_weapon.remains_expected>30)&(variable.adds_remain|variable.st_planning|fight_remains<30)" );
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies=1&(talent.pillar_of_frost&buff.pillar_of_frost.remains<gcd*2&buff.pillar_of_frost.up&!talent.obliteration|!talent.pillar_of_frost)&(!raid_event.adds.exists|(raid_event.adds.in>15+raid_event.adds.duration|talent.absolute_zero&raid_event.adds.in>15+raid_event.adds.duration))|fight_remains<3" );
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies>=2&(talent.pillar_of_frost&buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.up&raid_event.adds.in>cooldown.pillar_of_frost.remains_expected-raid_event.adds.in-raid_event.adds.duration)&(buff.pillar_of_frost.remains<gcd*2|raid_event.adds.exists&raid_event.adds.remains<gcd*2)" );
   cooldowns->add_action( "frostwyrms_fury,if=talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!variable.2h_check|!buff.pillar_of_frost.up&variable.2h_check&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&((buff.pillar_of_frost.remains<gcd|buff.unholy_strength.up&buff.unholy_strength.remains<gcd)&(debuff.razorice.stack=5|!death_knight.runeforge.razorice&!talent.glacial_advance))" );
@@ -326,13 +325,13 @@ void frost( player_t* p )
   racials->add_action( "bag_of_tricks,if=talent.obliteration&!buff.pillar_of_frost.up&buff.unholy_strength.up" );
   racials->add_action( "bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&(buff.unholy_strength.up&buff.unholy_strength.remains<gcd*3|buff.pillar_of_frost.remains<gcd*3)" );
 
-  single_target->add_action( "frost_strike,if=buff.killing_machine.react<2&runic_power.deficit<20&!variable.2h_check", "Single Target Rotation" );
+  single_target->add_action( "frost_strike,if=buff.killing_machine.react<2&runic_power.deficit<20+(4*buff.rune_of_hysteria.up)&!variable.2h_check", "Single Target Rotation" );
   single_target->add_action( "howling_blast,if=buff.rime.react&set_bonus.tier30_2pc&buff.killing_machine.stack<2" );
   single_target->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
   single_target->add_action( "obliterate,if=buff.killing_machine.react" );
   single_target->add_action( "howling_blast,if=buff.rime.react&talent.icebreaker.rank=2" );
-  single_target->add_action( "horn_of_winter,if=rune<4&runic_power.deficit>25&talent.obliteration&talent.breath_of_sindragosa" );
-  single_target->add_action( "frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25|debuff.razorice.stack=5&talent.shattering_blade)" );
+  single_target->add_action( "horn_of_winter,if=rune<4&runic_power.deficit>25+(5*buff.rune_of_hysteria.up)&talent.obliteration&talent.breath_of_sindragosa" );
+  single_target->add_action( "frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25+(5*buff.rune_of_hysteria.up)|debuff.razorice.stack=5&talent.shattering_blade)" );
   single_target->add_action( "howling_blast,if=variable.rime_buffs" );
   single_target->add_action( "glacial_advance,if=!variable.pooling_runic_power&!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)" );
   single_target->add_action( "obliterate,if=!variable.pooling_runes" );
@@ -355,7 +354,7 @@ void frost( player_t* p )
   variables->add_action( "variable,name=cooldown_check,value=talent.pillar_of_frost&buff.pillar_of_frost.up&(talent.obliteration&buff.pillar_of_frost.remains<6|!talent.obliteration)|!talent.pillar_of_frost&buff.empower_rune_weapon.up|!talent.pillar_of_frost&!talent.empower_rune_weapon|active_enemies>=2&buff.pillar_of_frost.up" );
   variables->add_action( "variable,name=frostscythe_priority,value=talent.frostscythe&(buff.killing_machine.react|active_enemies>=3)&(!talent.improved_obliterate&!talent.frigid_executioner|!talent.cleaving_strikes|talent.cleaving_strikes&(active_enemies>6|!death_and_decay.ticking&active_enemies>3))" );
   variables->add_action( "variable,name=oblit_pooling_time,op=setif,value=((cooldown.pillar_of_frost.remains_expected+1)%gcd.max)%((rune+3)*(runic_power+5))*100,value_else=3,condition=runic_power<35&rune<2&cooldown.pillar_of_frost.remains_expected<10", "Formulaic approach to determine the time before these abilities come off cooldown that the simulation should star to pool resources. Capped at 15s in the run_action_list call." );
-  variables->add_action( "variable,name=breath_pooling_time,op=setif,value=((cooldown.breath_of_sindragosa.remains+1)%gcd.max)%((rune+1)*(runic_power+20))*100,value_else=3,condition=runic_power.deficit>10&cooldown.breath_of_sindragosa.remains<10" );
+  variables->add_action( "variable,name=breath_pooling_time,op=setif,value=((cooldown.breath_of_sindragosa.remains+1)%gcd.max)%((rune+1)*(runic_power+20))*100,value_else=2,condition=runic_power.deficit>10&cooldown.breath_of_sindragosa.remains<10" );
   variables->add_action( "variable,name=pooling_runes,value=rune<4&talent.obliteration&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time" );
   variables->add_action( "variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<variable.breath_pooling_time|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time" );
 }
