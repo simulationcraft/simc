@@ -5827,7 +5827,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
     {
       auto increase = 1 + ( 0.25 * ( 1 + p()->talent.unholy_bond->effectN( 1 ).percent() ) );
       auto buff_amount = ( 1.0 - target->health_percentage() / 100 ) * increase;
-      buff_amount = std::min( buff_amount, increase * 80 );  // Caps at 80% of target's hp missing
+      buff_amount = std::min( buff_amount, ( increase * 80 ) / 100 );  // Caps at 80% of target's hp missing
       m *= 1.0 + buff_amount;
     }
 
