@@ -5765,8 +5765,13 @@ struct call_of_the_wild_t: public hunter_spell_t
     p() -> buffs.call_of_the_wild -> trigger();
     p() -> pets.cotw_stable_pet.spawn( data().duration(), as<int>( data().effectN( 1 ).base_value() ) );
 
+    double percent_reduction = p() -> talents.call_of_the_wild -> effectN( 3 ).base_value() / 100.0; 
+    double on_cast_reduction = percent_reduction * as<int>( data().effectN( 1 ).base_value() );
+    p() -> cooldowns.kill_command -> adjust( -( p() -> cooldowns.kill_command -> duration * on_cast_reduction ) );
+    p() -> cooldowns.barbed_shot -> adjust( -( p() -> cooldowns.barbed_shot -> duration * on_cast_reduction ) );
+
     //2023-11-14 
-    //When wasting Call of the Wild with Bloody Frenzy talented it will apply beast cleave to the player, the main pet, AC pet and all call of the wild pets
+    //When casting Call of the Wild with Bloody Frenzy talented it will apply beast cleave to the player, the main pet, AC pet and all call of the wild pets
     //It does NOT apply to most recently summoned Dire Beast that should be affected based on T31 4piece. 
     //However summoning a dire beast after Call of the Wild will apply beast cleave to the dire beast as intended.
     if ( p() -> talents.bloody_frenzy -> ok() )
