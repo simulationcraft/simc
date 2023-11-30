@@ -443,7 +443,7 @@ void frost( player_t* p )
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<60" );
   cds->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle,if=(equipped.nymues_unraveling_spindle&prev_gcd.1.nymues_unraveling_spindle)|fight_remains>2" );
   cds->add_action( "use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=(gcd.remains>gcd.max-0.1|fight_remains<5)&time>5" );
-  cds->add_action( "use_item,name=balefire_branch,if=remaining_winters_chill=1&cooldown.ray_of_frost.up&time>1|fight_remains<20" );
+  cds->add_action( "use_item,name=balefire_branch,if=(!talent.ray_of_frost&active_enemies<=2&buff.icy_veins.up&prev_gcd.1.glacial_spike|remaining_winters_chill=1&cooldown.ray_of_frost.up&time>1&active_enemies<=2|cooldown.cone_of_cold.up&prev_gcd.1.comet_storm&active_enemies>=3)|fight_remains<20" );
   cds->add_action( "flurry,if=time=0&active_enemies<=2" );
   cds->add_action( "icy_veins" );
   cds->add_action( "use_items,if=!equipped.balefire_branch|time>5" );
