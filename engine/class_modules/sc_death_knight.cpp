@@ -9929,7 +9929,7 @@ void death_knight_t::init_action_list()
     return;
   }
 
-  if ( main_hand_weapon.type == WEAPON_2H && off_hand_weapon.type != WEAPON_NONE )
+  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.type != WEAPON_NONE)
   {
     if ( !quiet )
       sim->errorf( "Player %s has an Off-Hand weapon equipped with a 2h.", name() );
