@@ -1353,13 +1353,12 @@ struct holy_power_consumer_t : public Base
     if ( ab::background && is_divine_storm )
       return;
 
-    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || (is_wog && p->buffs.shining_light_free->up());
+    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) || (is_divine_storm && p->buffs.empyrean_power->up());
 
     int num_hopo_spent = holy_power_consumer_t::cost();
     // Free spenders seem to count as 3 Holy Power, regardless the cost
     if ( isFreeSLDPSpender )
       num_hopo_spent = 3;
-
     if ( p->talents.relentless_inquisitor->ok() )
       p->buffs.relentless_inquisitor->trigger();
 
