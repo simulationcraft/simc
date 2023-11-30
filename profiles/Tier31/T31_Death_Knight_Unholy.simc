@@ -164,7 +164,7 @@ actions.variables+=/variable,name=st_planning,op=setif,value=1,value_else=0,cond
 actions.variables+=/variable,name=adds_remain,op=setif,value=1,value_else=0,condition=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)
 actions.variables+=/variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&(!set_bonus.tier31_4pc|set_bonus.tier31_4pc&!(pet.apoc_magus.active|pet.army_magus.active)|runic_power.deficit<20|rune<3)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|cooldown.apocalypse.remains<10&debuff.festering_wound.stack>3|!variable.pop_wounds&debuff.festering_wound.stack>=4))
 
-head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192985,enchant=incandescent_essence
+head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192982,enchant=incandescent_essence
 neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520/8782,gem_id=192922/192922/192922
 shoulders=skewers_of_the_risen_nightmare,id=207198,bonus_id=7187/1520
 back=vibrant_wildercloth_shawl,id=193511,bonus_id=9500/9405/9379/8960,crafted_stats=40/49
@@ -184,8 +184,8 @@ main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fall
 # gear_ilvl=489.07
 # gear_strength=9822
 # gear_stamina=39120
-# gear_crit_rating=1988
-# gear_haste_rating=5634
+# gear_crit_rating=2054
+# gear_haste_rating=5568
 # gear_mastery_rating=5577
 # gear_versatility_rating=1899
 # gear_armor=11397
