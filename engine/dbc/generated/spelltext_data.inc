@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.0.52188
+// Spell text, wow build 10.2.0.52301
 static const std::array<spelltext_data_t, 20527> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -20529,13 +20529,11 @@ static const std::array<spelltext_data_t, 20527> __spelltext_data { {
   { 432154, "Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.\r\n\r\nWhile ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.", "Absorbing $w3 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.52188
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
-  {  422750,  0, "Give in to the Rageheart for $d, absorbing $422652s3 damage but suffering $422652s2 Shadowflame damage and lashing out at a nearby enemy every $t1 sec to deal $422652s4 Shadowflame damage split between nearby enemies. \r\n\r\nDamage increased per enemy struck, up to 5.", "Give in to the Rageheart, absorbing $422652s3 damage for $425571d. Suffer $422652s2 Shadowflame damage and lash out at a nearby enemy every $t1 sec for $d to deal $422652s4 Shadowflame damage split between nearby enemies. \r\n\r\nDamage increased per enemy struck, up to 5." },
-  {  422750,  1, "Suffering $422652w2 Shadowflame damage and dealing $422652w4 Shadowflame damage split between nearby enemies every second.", "Suffering $422652w2 Shadowflame damage and targeting a nearby enemy with $@spellname425701 every $t1 sec." },
+// spelltext hotfix entries, wow build 10.2.0.52301
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.0.52188
+// Spell description variables, wow build 10.2.0.52301
 static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20951,10 +20949,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.52188
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
-  {  388023,  0, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$s1*$<pvp>}]", "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
-  {  388026,  0, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]", "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
-  {  395152,  0, "$stat=${$INT*($s1/100)}\r\n$amount=${6.5}.1", "$stat=${$INT*($s1/100)}\r\n$classset=$?s414878[${$414878s1)}][${0}]\r\n$amount=${6.5+$<classset>}.1" },
+// spelldesc_vars hotfix entries, wow build 10.2.0.52301
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
