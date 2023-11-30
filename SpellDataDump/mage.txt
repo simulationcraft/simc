@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -160,7 +160,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=91)       : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.18030 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.12 -> 1.3)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -417,7 +416,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=882)      : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.24400 | PvP Coefficient: 2.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.45 -> 2)
 Description      : Scorches an enemy for $s1 Fire damage. Castable while moving.$?a383604[
 
 Scorch critical strikes increase your movement speed by $236060s1% for $236060d.][]
@@ -2028,7 +2026,6 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=85629)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.11132 | PvP Coefficient: 1.75000 | Radius: 9.5 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1.3044 -> 1.75)
 #2 (id=818474)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc84714
@@ -2472,7 +2469,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=129889)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=133111)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 #4 (id=163932)   : Dummy (3)
@@ -2992,12 +2988,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981)
                    Family Flags: 38
-Hotfixed         : NEW EFFECT
 #19 (id=1122159)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981)
                    Family Flags: 38
-Hotfixed         : NEW EFFECT
 
 Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden] 
 Class            : Frost Mage
@@ -3032,21 +3026,17 @@ Effects          :
 #6 (id=260847)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Tick Time (19)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 19 | Misc Value 2: 2744 (Label) | Target: Self (1)
                    Affected Spells (Label): Freezing Winds (382106)
-Hotfixed         : Sub Type (4 -> 219), Base Value (0 -> 2000), Misc Value (0 -> 19), Misc Value 2 (0 -> 2744)
 #7 (id=260848)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Tick Time (19)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 0.00000 | Misc Value: 19 | Misc Value 2: 2744 (Label) | Target: Self (1)
                    Affected Spells (Label): Freezing Winds (382106)
-Hotfixed         : Sub Type (4 -> 219), Base Value (0 -> -2000), Misc Value (0 -> 19), Misc Value 2 (0 -> 2744), PvP Coefficient (1 -> 0)
 #8 (id=260849)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981)
                    Family Flags: 38
-Hotfixed         : Sub Type (4 -> 107), Base Value (0 -> 20), Misc Value (0 -> 12), Affects Spells
 #9 (id=260850)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981)
                    Family Flags: 38
-Hotfixed         : Sub Type (4 -> 107), Base Value (0 -> -20), Misc Value (0 -> 12), Affects Spells, PvP Coefficient (1 -> 0)
 #10 (id=260851)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=260852)   : Apply Aura (6) | Dummy (4)
@@ -3063,7 +3053,6 @@ Hotfixed         : Sub Type (4 -> 107), Base Value (0 -> -20), Misc Value (0 -> 
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #17 (id=1121979)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
 Class            : Arcane Paladin, Mage
@@ -3102,12 +3091,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981)
                    Family Flags: 38
-Hotfixed         : NEW EFFECT
 #8 (id=1122161)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981)
                    Family Flags: 38
-Hotfixed         : NEW EFFECT
 
 Name             : Glyph of Evaporation (desc=Frost) (id=146662) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -3276,7 +3263,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=212872)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.45925 | PvP Coefficient: 1.40000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1.15 -> 1.4)
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 
@@ -5417,7 +5403,6 @@ Effects          :
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=343735)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.34610 | PvP Coefficient: 1.20000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.08 -> 1.2)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $w1%.
 
@@ -5491,7 +5476,6 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344285)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.37910 | PvP Coefficient: 1.35000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.15 -> 1.35)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : $@spelldesc30455
@@ -5974,7 +5958,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=357235)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc235711
 Tooltip          : Movement speed increased by $s1%.
 

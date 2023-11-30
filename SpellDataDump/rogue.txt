@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -14755,12 +14755,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1019023)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.40000 | PvP Coefficient: 0.80000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.89 -> 0.8)
 #3 (id=1019024)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1019025)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22121 | PvP Coefficient: 0.80000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.89 -> 0.8)
 #5 (id=1019026)  : Apply Aura (6) | Proc Trigger Spell (42): Kingsbane
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 394095 | Target: Self (1)
 #6 (id=1019027)  : Energize Power (30)
@@ -16710,7 +16708,6 @@ Effects          :
 Description      : Enables Worgen to switch between Worgen and Human forms.
 
 Name             : Poisoned Edges (id=409483) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Nature
 Spell Type       : Magic
@@ -17313,7 +17310,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1099910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.66700 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.667)
 Description      : Between the Eyes has no cooldown and also Dispatches the target for $s1% of normal damage when used from Stealth.
 
 Name             : Underhanded Upper Hand (id=424044) [Spell Family (8), Passive] 
@@ -17697,7 +17693,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=1105225)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.70000 | PvP Coefficient: 0.90000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : $@spelldesc426591
 
 Name             : Goremaw's Bite (id=426593) [Spell Family (8)] 
@@ -17794,7 +17789,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.80000 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Goremaw's Bite (209783), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354838), Echoing Reprimand (385616), Goremaw's Bite (426591), Goremaw's Bite (426592)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc382518
 Tooltip          : At $394254u stacks, your next attack that generates combo points deals $w1% increased damage.
 

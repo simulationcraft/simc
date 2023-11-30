@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3192,7 +3192,6 @@ Effects          :
                    Affected School(s): All
 #2 (id=727831)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.66667 | Misc Value: 127 | Target: Unknown(25)
-Hotfixed         : PvP Coefficient (1 -> 1.66667)
 Description      : $@spelldesc196718
 Tooltip          : Attacks against you have a $w2% chance to inflict no damage.
 
@@ -5019,7 +5018,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=483180)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35100 | PvP Coefficient: 0.80000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=819793)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258925
@@ -7585,7 +7583,6 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.62500 | Target: Enemy (6)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 6, 14, 25, 37, 50, 127
-Hotfixed         : PvP Coefficient (0.8125 -> 0.625)
 Description      : $@spelldesc258860
 Tooltip          : The Demon Hunter's Chaos Strike and Blade Dance inflict $s2% additional damage.
 
@@ -8966,7 +8963,6 @@ Attributes       : ........ ........ ..x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=836037)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.43571 | PvP Coefficient: 0.90000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : Throw a demonic glaive at the target, dealing $s1 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. 
 
 Name             : Fel Bombardment (id=337849) [Spell Family (107)] 
@@ -10651,7 +10647,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=982578)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 4.50000 | PvP Coefficient: 0.72000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.8 -> 0.72)
 #2 (id=982579)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
@@ -10734,7 +10729,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.06565 | PvP Coefficient: 0.72000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.8 -> 0.72)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
 
@@ -11769,7 +11763,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1026374)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.78000 | PvP Coefficient: 0.80000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=1026375)  : Trigger Spell (64): Elysian Decree
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 339893 | Target: Unknown(87)
 Description      : $@spelldesc306830
@@ -13641,15 +13634,12 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.67000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
-Hotfixed         : PvP Coefficient (1 -> 0.67)
 #2 (id=1107238)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.67000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
-Hotfixed         : PvP Coefficient (1 -> 0.67)
 #3 (id=1107239)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.67000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.67)
 Description      : $@spelldesc427640
 Tooltip          : Damage done increased by $w1%.
 

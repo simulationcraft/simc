@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3501,12 +3501,10 @@ Effects          :
                    Base Value: 67 | Scaled Value: 67 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
-Hotfixed         : Base Value (45 -> 67)
 #12 (id=1012737)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
-Hotfixed         : Base Value (-31 -> -40)
 #13 (id=1026048)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
@@ -3543,7 +3541,6 @@ Hotfixed         : Base Value (-31 -> -40)
                    Base Value: 57 | Scaled Value: 57 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
-Hotfixed         : Base Value (37 -> 57)
 #23 (id=1070608)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
@@ -3554,7 +3551,6 @@ Hotfixed         : Base Value (37 -> 57)
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
-Hotfixed         : NEW EFFECT
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
@@ -6457,7 +6453,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=312134)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.63350 | PvP Coefficient: 1.85000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.85)
 #2 (id=312135)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 225 | Scaled Value: 225 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
@@ -6720,7 +6715,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=326661)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.63350 | PvP Coefficient: 1.85000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.85)
 #2 (id=326662)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: maelstrom | Target: Self (1)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage.
@@ -14709,7 +14703,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=1012742)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.83430 | PvP Coefficient: 0.89000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (2.67387 -> 2.8343), PvP Coefficient (0.9434 -> 0.89)
 Description      : $@spelldesc8042
 
 Name             : Mountains Will Fall (id=381726) [Passive, Hidden] 
@@ -17847,7 +17840,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1, 34, 63, 96, 101
-Hotfixed         : Base Value (50 -> 30)
 #2 (id=1075581)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1075582)  : Dummy (3)
