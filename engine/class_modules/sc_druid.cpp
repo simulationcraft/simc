@@ -6544,8 +6544,8 @@ struct celestial_alignment_base_t : public druid_spell_t
 
     buff->trigger();
 
-    // Check if this changes as it could be unintended
-    p()->buff.dreamstate->trigger();
+    if ( p()->eclipse_handler.state == IN_LUNAR || p()->eclipse_handler.state == IN_SOLAR )
+      p()->buff.dreamstate->trigger();
 
     p()->buff.balance_t31_4pc_buff_lunar->expire();
     p()->buff.balance_t31_4pc_buff_solar->expire();
