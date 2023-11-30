@@ -77,7 +77,7 @@ waist=urctoss_hibernal_dial,id=207119,bonus_id=8780,ilevel=489,gem_id=192948,enc
 legs=bloodstained_sous_chef_pants,id=159285,ilevel=489,enchant_id=6541
 feet=devilsaur_worshipers_sandals,id=158303,ilevel=489,enchant_id=6613
 finger1=daydreamers_glimmering_ring,id=208442,bonus_id=8780,ilevel=489,gem_id=192958,enchant_id=6556
-finger2=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/9366/9405/9376/8794,ilevel=486,gem_id=192935,enchant_id=6562
+finger2=signet_of_titanic_insight,id=192999,bonus_id=523,ilevel=486,gem_id=192935,enchant_id=6562,crafted_stats=49/40
 trinket1=balefire_branch,id=159630,bonus_id=6652/7979/9563/1494/8767,ilevel=489
 trinket2=belorrelos_the_suncaller,id=207172,bonus_id=6652/7979/9563/1494/8767,ilevel=489
 main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
