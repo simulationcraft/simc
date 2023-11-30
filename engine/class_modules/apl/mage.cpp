@@ -443,10 +443,10 @@ void frost( player_t* p )
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<60" );
   cds->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle,if=(equipped.nymues_unraveling_spindle&prev_gcd.1.nymues_unraveling_spindle)|fight_remains>2" );
   cds->add_action( "use_item,name=belorrelos_the_suncaller,use_off_gcd=1,if=(gcd.remains>gcd.max-0.1|fight_remains<5)&time>5" );
-  cds->add_action( "use_item,name=balefire_branch,if=cooldown.ray_of_frost.up&time>1|fight_remains<20" );
+  cds->add_action( "use_item,name=balefire_branch,if=remaining_winters_chill=1&cooldown.ray_of_frost.up&time>1|fight_remains<20" );
   cds->add_action( "flurry,if=time=0&active_enemies<=2" );
   cds->add_action( "icy_veins" );
-  cds->add_action( "use_items" );
+  cds->add_action( "use_items,if=!equipped.balefire_branch|time>5" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
   cds->add_action( "invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down" );
   cds->add_action( "blood_fury" );
