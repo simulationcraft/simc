@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -6279,7 +6279,6 @@ Effects          :
 Description      : Your Agony, Corruption, Siphon Life, and Unstable Affliction deal damage $s1% faster.
 
 Name             : Soul Strike (id=264057) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -17142,7 +17141,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Hand of Gul'dan (86040)
                    Family Flags: 86
-Hotfixed         : Sub Type (108 -> 107)
 Description      : Increases Hand of Gul'dan damage by $s1% and the critical strike chance of Hand of Gul'dan by $s2%.
 
 Name             : Xavius' Gambit (id=416615) [Spell Family (5), Passive] 
@@ -17753,7 +17751,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1108582)  : Apply Aura Pet (174) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 267964 | Radius: 100 yards | Target: Self (1)
-Hotfixed         : Type (6 -> 174)
 Description      : Teaches your primary Felguard the following ability:
 
 $@spellicon267964 $@spellname267964

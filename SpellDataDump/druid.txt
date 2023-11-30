@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1578,7 +1578,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | PvP Coefficient: 0.88000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 0.88)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1.
 
 May be active on $?s338831[two targets][one target] at a time.
@@ -6175,7 +6174,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=275445)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | PvP Coefficient: 0.88000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 0.88)
 Description      : Heals the target for $o1 over $d.  When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1.
 
 May be active on two targets at a time.$?a392256[
@@ -21326,7 +21324,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1097196)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | PvP Coefficient: 0.85000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=1097197)  : Dummy (3)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.

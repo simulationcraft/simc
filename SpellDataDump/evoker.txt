@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52188 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -7023,7 +7023,6 @@ Description      : $@spelldesc393645
 Tooltip          : Next Living Flame's cast time reduced by $s1% and deals $s2% increased damage or healing.
 
 Name             : Ebon Might (desc=Black) (id=395152) [Spell Family (224)] 
-Hotfixed         : Variables
 Talent Entry     : Augmentation [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -7062,14 +7061,14 @@ $classset=$?s414878[${$414878s1)}][${0}]
 $amount=${6.5+$<classset>}.1
 
 Name             : Sands of Time (id=395153) [Spell Family (224), Passive] 
+Hotfixed         : Proc Flags 1 (2446608 -> 0), Internal Cooldown (100 -> 0), Proc Flags 2 (0 -> 4)
 Class            : Augmentation Evoker
 School           : Physical
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
