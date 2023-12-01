@@ -2378,7 +2378,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       m *= 1.0 + dk() -> buffs.dark_transformation -> value();
 
       if( ghoulish_frenzy -> check() )
-        m *= 1.0 + ( ghoulish_frenzy -> value() / 100 ) ;
+        m *= 1.0 + ghoulish_frenzy -> value();
 
       if( vile_infusion -> check() )
         m *= 1.0 + vile_infusion -> value();
@@ -2465,9 +2465,11 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::create_buffs();
 	  
     ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
-      -> set_default_value_from_effect( 1 )
+      -> set_default_value( dk() -> pet_spell.ghoulish_frenzy -> effectN( 1 ).percent() )
       -> apply_affecting_aura( dk() -> talent.unholy.ghoulish_frenzy )
-      -> set_duration( 0_s );
+      -> set_duration( 0_s )
+      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      -> add_invalidate( CACHE_ATTACK_SPEED );
 
     vile_infusion = make_buff( this, "vile_infusion", dk() -> pet_spell.vile_infusion )
       -> set_duration( dk() -> pet_spell.vile_infusion -> duration() )
@@ -10284,7 +10286,7 @@ void death_knight_t::create_buffs()
   buffs.unholy_pact = new unholy_pact_buff_t( this );
 
   buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
-        -> set_default_value_from_effect( 1 )
+        -> set_default_value( spell.ghoulish_frenzy_player -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         -> apply_affecting_aura( talent.unholy.ghoulish_frenzy );
@@ -10772,7 +10774,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.ghoulish_frenzy -> check() )
   {
-    m *= 1.0 + ( buffs.ghoulish_frenzy -> check_value() / 100 );
+    m *= 1.0 + buffs.ghoulish_frenzy -> check_value();
   }
   
   if ( specialization() == DEATH_KNIGHT_FROST && buffs.bonegrinder_frost->check() && dbc::is_school( school, SCHOOL_FROST ) )
