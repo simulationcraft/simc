@@ -8390,7 +8390,7 @@ static const std::array<item_effect_t, 8665> __item_effect_data { {
   { 178181, 345231, 205781,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
   { 178182, 336135, 205782,   0,   1,    0,      -1,      -1 }, // Adaptation
   { 179814, 417131, 206448,   0,   0,    0,      -1,      -1 }, // Rage of Fyr'alath
-  { 179815, 420248, 206448,   1,   1,    0,      -1,      -1 }, // Fyr'alath the Dream Render
+  { 179815, 420248, 206448,   1,   1,    0,      -1,      -1 }, // Fyr'alath the Dreamrender
   { 179533, 413711, 206475,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Seschenal
   { 179719, 418896, 206475,   1,  10,    0,      -1,      -1 }, // Paracausal Fragment of Seschenal
   { 178523, 265174, 206478,   0,   1,    0,      -1,      -1 }, // Darrowspike
