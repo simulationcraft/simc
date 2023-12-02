@@ -615,7 +615,6 @@ public:
     channel->execute_on_target( s->target );
   }
 };
-
 }  // namespace actions::spells
 
 namespace buffs
@@ -742,6 +741,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.void_summoner    = ST( "Void Summoner" );
   // Row 9
   talents.discipline.divine_aegis          = ST( "Divine Aegis" );
+  talents.discipline.divine_aegis_buff     = find_spell( 47753 );
   talents.discipline.blaze_of_light        = ST( "Blaze of Light" );
   talents.discipline.heavens_wrath         = ST( "Heaven's Wrath" );
   talents.discipline.harsh_discipline      = ST( "Harsh Discipline" );

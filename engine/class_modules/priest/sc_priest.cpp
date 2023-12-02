@@ -1779,6 +1779,7 @@ struct atonement_t final : public priest_heal_t
   {
     priest_heal_t::init();
     snapshot_flags |= STATE_TGT_MUL_DA | STATE_MUL_DA;
+    snapshot_flags &= ~( STATE_CRIT );
   }
 
   int num_targets() const override
@@ -1803,6 +1804,74 @@ struct atonement_t final : public priest_heal_t
     priest_heal_t::activate();
 
     priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+  }
+};
+
+// ==========================================================================
+// Divine Aegis
+// ==========================================================================
+struct divine_aegis_t final : public priest_absorb_t
+{
+
+  double divine_aegis_mult;
+
+  divine_aegis_t( priest_t& p )
+    : priest_absorb_t( "divine_aegis", p, p.talents.discipline.divine_aegis ),
+      divine_aegis_mult( data().effectN( 1 ).percent() )
+  {
+    may_miss = may_crit = callbacks = false;
+    background = proc = true;
+  }
+
+  void init() override
+  {
+    absorb_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
+  absorb_buff_t* create_buff( const action_state_t* s ) override
+  {
+    buff_t* b = buff_t::find( s->target, name_str );
+    if ( b )
+      return debug_cast<absorb_buff_t*>( b );
+
+    std::string stats_obj_name = name_str;
+    if ( s->target != player )
+      stats_obj_name += "_" + player->name_str;
+    stats_t* stats_obj = player->get_stats( stats_obj_name, this );
+    if ( stats != stats_obj )
+    {
+      // Add absorb target stats as a child to the main stats object for reporting
+      stats->add_child( stats_obj );
+    }
+    auto buff = make_buff<absorb_buff_t>( s->target, name_str, p().talents.discipline.divine_aegis_buff );
+    buff->set_absorb_source( stats_obj );
+
+    return buff;
+  }
+
+  void assess_damage( result_amount_type /*heal_type*/, action_state_t* s ) override
+  {
+    if ( target_specific[ s->target ] == nullptr )
+    {
+      target_specific[ s->target ] = create_buff( s );
+    }
+
+    s->result_amount *= divine_aegis_mult;
+
+    if ( result_is_hit( s->result ) )
+    {
+      s->result_amount =
+          std::min( s->target->max_health() * 0.3, target_specific[ s->target ]->check_value() + s->result_amount );
+
+      target_specific[ s->target ]->trigger( 1, s->result_amount );
+
+      sim->print_log( "{} {} applies absorb on {} for {} ({}) ({})", *player, *this, *s->target, s->result_amount,
+                      s->result_total, s->result );
+    }
+
+    stats->add_result( 0.0, s->result_total, result_amount_type::ABSORB, s->result, s->block_result, s->target );
   }
 };
 
@@ -2746,6 +2815,10 @@ void priest_t::init_background_actions()
   background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
   background_actions.atonement           = new actions::heals::atonement_t( *this );
+  if ( talents.discipline.divine_aegis.enabled() )
+  {
+    background_actions.divine_aegis = new actions::heals::divine_aegis_t( *this );
+  }
 
   background_actions.shadow_word_death->background = true;
   background_actions.shadow_word_death->dual       = true;
@@ -3024,7 +3097,19 @@ void priest_t::trigger_atonement( action_state_t* s )
        ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
     r *= 1 + talents.discipline.abyssal_reverie->effectN( 1 ).percent();
 
-  background_actions.atonement->execute_on_target( this, r );
+  auto* state = background_actions.atonement->get_state();
+  background_actions.atonement->snapshot_state( state, background_actions.atonement->amount_type( state ) );
+  state->target      = this;
+  state->crit_chance = s->result == RESULT_CRIT ? 1.0 : 0.0;
+
+  background_actions.atonement->base_dd_min = background_actions.atonement->base_dd_max = r;
+  background_actions.atonement->schedule_execute( state );
+}
+
+// Trigger Divine Aegis
+void priest_t::trigger_divine_aegis( action_state_t* s )
+{
+  background_actions.divine_aegis->execute_on_target( s->target, s->result_amount );
 }
 
 void priest_t::trigger_essence_devourer()

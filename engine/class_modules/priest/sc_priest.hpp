@@ -72,6 +72,7 @@ namespace actions::heals
 {
 struct essence_devourer_t;
 struct atonement_t;
+struct divine_aegis_t;
 }  // namespace actions::heals
 
 /**
@@ -418,6 +419,7 @@ public:
       player_talent_t void_summoner;
       // Row 9
       player_talent_t divine_aegis;
+      const spell_data_t* divine_aegis_buff;
       player_talent_t blaze_of_light;
       player_talent_t heavens_wrath;
       player_talent_t harsh_discipline;
@@ -630,6 +632,7 @@ public:
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
     propagate_const<actions::heals::essence_devourer_t*> essence_devourer;
     propagate_const<actions::heals::atonement_t*> atonement;
+    propagate_const<actions::heals::divine_aegis_t*> divine_aegis;
   } background_actions;
 
   // Items
@@ -759,6 +762,7 @@ public:
   void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_atonement( action_state_t* );
+  void trigger_divine_aegis( action_state_t* );
   void spawn_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
   int number_of_echoing_voids_active();
@@ -1268,6 +1272,11 @@ struct priest_heal_t : public priest_action_t<heal_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
+      }
+
+      if ( s->result == RESULT_CRIT && p().talents.discipline.divine_aegis.enabled() )
+      {
+        p().trigger_divine_aegis( s );
       }
     }
   }
