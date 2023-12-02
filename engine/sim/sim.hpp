@@ -220,6 +220,7 @@ struct sim_t : private sc_thread_t
     // Debuff overrides
     int chaos_brand;
     int mystic_touch;
+    int hunters_mark;
     int mortal_wounds;
     int bleeding;
 
