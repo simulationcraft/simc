@@ -6066,12 +6066,13 @@ struct bursting_sores_t final : public death_knight_spell_t
 struct festering_wound_t final : public death_knight_spell_t
 {
   festering_wound_t( util::string_view n, death_knight_t* p ) :
-    death_knight_spell_t( n, p, p -> spell.festering_wound_damage )
+    death_knight_spell_t( n, p, p -> spell.festering_wound_damage ),
+    bursting_sores( get_action<bursting_sores_t>( "bursting_sores", p ) )
   {
     background = true;
     if( p -> talent.unholy.bursting_sores.ok() )
     {
-      add_child( p->active_spells.bursting_sores );
+      add_child( bursting_sores );
     }
   }
 
@@ -6091,6 +6092,8 @@ struct festering_wound_t final : public death_knight_spell_t
           p()->gains.replenishing_wounds, this );
     }
   }
+private:
+  action_t* bursting_sores;
 };
 
 struct festering_strike_t final : public death_knight_melee_attack_t
