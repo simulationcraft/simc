@@ -211,6 +211,15 @@ struct purge_the_wicked_t final : public priest_spell_t
         trigger_power_of_the_dark_side();
       }
     }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      auto m = priest_spell_t::composite_persistent_multiplier( s );
+
+      m *= 1 + p().buffs.twilight_equilibrium_holy_amp->check_value();
+
+      return m;
+    }
   };
 
   purge_the_wicked_t( priest_t& p, util::string_view options_str )
