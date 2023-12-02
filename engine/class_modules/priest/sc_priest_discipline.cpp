@@ -817,6 +817,24 @@ std::unique_ptr<expr_t> priest_t::create_expression_discipline( util::string_vie
     return make_fn_expr( name_str, [ this ]() { return allies_with_atonement.size(); } );
   }
 
+  if ( name_str == "min_active_atonement" )
+  {
+    if ( !talents.discipline.atonement.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+
+    return make_fn_expr( name_str, [ this ]() {
+      if ( allies_with_atonement.size() < 1 )
+        return 0_s;
+
+      auto min_elem = ( std::min_element(
+          allies_with_atonement.begin(), allies_with_atonement.end(), [ this ]( player_t* a, player_t* b ) {
+            return get_target_data( a )->buffs.atonement->remains() < get_target_data( b )->buffs.atonement->remains();
+          } ) );
+
+      return get_target_data( *min_elem )->buffs.atonement->remains();
+    } );
+  }
+
   return nullptr;
 }
 
