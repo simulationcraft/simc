@@ -2104,8 +2104,6 @@ struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
   kill_command_db_t( dire_critter_t* p ) :
     kill_command_base_t( p, p -> find_spell( 426703 ) )
   {
-    // Effect 1 dummy value seems to be a damage modifier.
-    base_multiplier *= 1.0 - o() -> tier_set.t31_bm_4pc -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
