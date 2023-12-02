@@ -6069,6 +6069,10 @@ struct festering_wound_t final : public death_knight_spell_t
     death_knight_spell_t( n, p, p -> spell.festering_wound_damage )
   {
     background = true;
+    if( p -> talent.unholy.bursting_sores.ok() )
+    {
+      add_child( p->active_spells.bursting_sores );
+    }
   }
 
   void execute() override
@@ -6847,6 +6851,15 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
   void impact( action_state_t* state ) override
   {
+    // Obliterate Cleave with Cleaving Strikes cant proc things
+    if( state -> target != target )
+    {
+      callbacks = false;
+    }
+    else
+    {
+      callbacks = true;
+    }
     death_knight_melee_attack_t::impact( state );
 
     if ( p()->talent.frost.enduring_strength.ok() && p()->buffs.pillar_of_frost->up() &&
