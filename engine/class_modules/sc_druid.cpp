@@ -1112,8 +1112,8 @@ public:
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
   void invalidate_cache( cache_e ) override;
-  void arise() override;
   void reset() override;
+  void precombat_init() override;
   void combat_begin() override;
   void merge( player_t& other ) override;
   void datacollection_begin() override;
@@ -2922,6 +2922,7 @@ struct druid_form_t : public druid_spell_t
   {
     harmful = may_autounshift = reset_melee_swing = false;
     ignore_false_positive = true;
+    target = p;
 
     form_mask = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
   }
@@ -9741,27 +9742,6 @@ void druid_t::init_finished()
         wr->energize_type = action_energize::NONE;
     }
   }
-
-  if ( talent.lycaras_teachings.ok() )
-  {
-    register_combat_begin( [ this ]( player_t* ) {
-      buff.lycaras_teachings->trigger();
-    } );
-  }
-
-  if ( specialization() == DRUID_BALANCE )
-  {
-    if ( options.initial_pulsar_value > 0 && talent.primordial_arcanic_pulsar.ok() )
-    {
-      register_combat_begin( [ this ]( player_t* ) {
-        // Stacks are a purely visual indicator for the sample sequence
-        if ( auto stack = static_cast<int>( options.initial_pulsar_value / 10 ) )
-          buff.primordial_arcanic_pulsar->trigger( stack );
-
-        buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
-      } );
-    }
-  }
 }
 
 // druid_t::init_buffs ======================================================
@@ -11543,24 +11523,22 @@ timespan_t druid_t::available() const
   return std::max( timespan_t::from_seconds( ( 25 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ), 100_ms );
 }
 
-// druid_t::arise ===========================================================
-void druid_t::arise()
+// druid_t::precombat_init (called before precombat apl)=======================
+void druid_t::precombat_init()
 {
-  player_t::arise();
-
-  if ( talent.lycaras_teachings.ok() )
-    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.lycaras_teachings ) );
-
-  if ( timeofday == timeofday_e::DAY_TIME )
-    buff.rising_light_falling_night_day->trigger();
-  else
-    buff.rising_light_falling_night_night->trigger();
+  player_t::precombat_init();
 
   if ( talent.blood_frenzy.ok() )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.blood_frenzy ) );
 
-  buff.elunes_favored->trigger();
-  buff.natures_balance->trigger();
+  if ( talent.elunes_favored.ok() )
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.elunes_favored ) );
+
+  if ( talent.lycaras_teachings.ok() )
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.lycaras_teachings ) );
+
+  if ( talent.natures_balance.ok() )
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.natures_balance ) );
 
   if ( talent.orbit_breaker.ok() )
   {
@@ -11572,7 +11550,28 @@ void druid_t::arise()
       buff.orbit_breaker->trigger( stacks );
   }
 
-  if ( active.shooting_stars )
+  if ( talent.primordial_arcanic_pulsar.ok() && options.initial_pulsar_value > 0 )
+  {
+    // Stacks are a purely visual indicator for the sample sequence
+    auto stacks = static_cast<int>( options.initial_pulsar_value / 10 );
+
+    // TODO: this doesn't work properly for values < 10
+    if ( stacks )
+    {
+      buff.primordial_arcanic_pulsar->trigger( stacks );
+      buff.primordial_arcanic_pulsar->current_value = options.initial_pulsar_value;
+    }
+  }
+
+  if ( talent.rising_light_falling_night.ok() )
+  {
+    if ( timeofday == timeofday_e::DAY_TIME )
+      buff.rising_light_falling_night_day->trigger();
+    else
+      buff.rising_light_falling_night_night->trigger();
+  }
+
+  if ( talent.shooting_stars.ok() )
   {
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.shooting_stars_moonfire ) );
 
@@ -11580,15 +11579,29 @@ void druid_t::arise()
       persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.shooting_stars_sunfire ) );
   }
 
-  if ( active.yseras_gift )
+  if ( talent.yseras_gift.ok() )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
 }
 
+// druid_t::combat_begin (called after precombat apl before default apl)=======
 void druid_t::combat_begin()
 {
   player_t::combat_begin();
 
-  if ( spec.astral_power->ok() )
+  if ( talent.lycaras_teachings.ok() )
+  {
+    switch( get_form() )
+    {
+      case NO_FORM:      buff.lycaras_teachings_haste->trigger(); break;
+      case CAT_FORM:     buff.lycaras_teachings_crit->trigger();  break;
+      case BEAR_FORM:    buff.lycaras_teachings_vers->trigger();  break;
+      case MOONKIN_FORM: buff.lycaras_teachings_mast->trigger();  break;
+      default: break;
+    }
+
+  }
+
+  if ( specialization() == DRUID_BALANCE )
   {
     eclipse_handler.reset_stacks();
 
