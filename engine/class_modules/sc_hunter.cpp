@@ -2093,9 +2093,6 @@ public:
   }
 };
 
-//16-11-2023
-//426703 does not have an AP coefficient and doesn't scale like the other Kill Command spells
-//It uses the old way of calculating damage of kill command instead.
 struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
 {
   struct {
@@ -2107,15 +2104,8 @@ struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
   kill_command_db_t( dire_critter_t* p ) :
     kill_command_base_t( p, p -> find_spell( 426703 ) )
   {
-    attack_power_mod.direct = o() -> talents.kill_command -> effectN( 2 ).percent();
     // Effect 1 dummy value seems to be a damage modifier.
     base_multiplier *= 1.0 - o() -> tier_set.t31_bm_4pc -> effectN( 1 ).percent();
-  }
-
-  double composite_attack_power() const override
-  {
-    // Kill Command for Dire Beast uses player AP directly
-    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
   }
 
   void impact( action_state_t* s ) override
