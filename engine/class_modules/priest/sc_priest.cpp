@@ -2614,7 +2614,7 @@ void priest_t::init_resources( bool force )
     }
     else
     {
-      // Three Divine Stars == 24 Insanity
+      // Four Divine Stars == 24 Insanity
       if ( talents.divine_star.enabled() )
         resources.initial_opt[ RESOURCE_INSANITY ] = ( divine_star_insanity * 4 );
       // One Halo == 10 Insanity
