@@ -465,23 +465,18 @@ public:
     action_t* orbital_strike;
 
     // Feral
-    action_t* burning_frenzy;       // 4t31
     action_t* ferocious_bite_apex;  // free bite from apex predator's crazing
     action_t* frenzied_assault;
     action_t* thrashing_claws;
 
     // Guardian
     action_t* after_the_wildfire_heal;
-    action_t* blazing_thorns;  // 4t31
     action_t* brambles;
     action_t* elunes_favored_heal;
     action_t* galactic_guardian;
     action_t* maul_tooth_and_claw;
     action_t* raze_tooth_and_claw;
-    action_t* moonless_night;
-    action_t* natures_guardian;
     action_t* rage_of_the_sleeper_reflect;
-    action_t* thorns_of_iron;
     action_t* thrash_bear_flashing;
 
     // Restoration
@@ -2835,7 +2830,16 @@ struct celestial_alignment_buff_t : public druid_buff_t
 // Dream Thorns (Guardian Tier 31) ==========================================
 struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
 {
-  action_t*& thorns;
+  struct blazing_thorns_t : public bear_attack_t
+  {
+    blazing_thorns_t( druid_t* p ) : bear_attack_t( "blazing_thorns", p, p->find_spell( 425448 ) )
+    {
+      base_dd_min = base_dd_max = 1.0;
+      proc = true;
+    }
+  };
+
+  action_t* thorns = nullptr;
   double absorb_pct;
   double rage_spent;
   double coeff;
@@ -2843,7 +2847,6 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
 
   dream_thorns_buff_t( druid_t* p, bool has_4pc )
     : base_t( p, has_4pc ? "blazing_thorns" : "dream_thorns", p->find_spell( has_4pc ? 425441 : 425407 ) ),
-      thorns( p->active.blazing_thorns ),
       absorb_pct( data().effectN( 2 ).percent() ),
       rage_spent( p->sets->set( DRUID_GUARDIAN, T31, B2 )->effectN( 1 ).base_value() ),
       coeff( p->sets->set( DRUID_GUARDIAN, T31, B2 )->effectN( 2 ).percent() ),
@@ -2852,6 +2855,9 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
     set_absorb_source( p->get_stats( has_4pc ? "Blazing Thorns" : "Dream Thorns" ) );
     set_absorb_high_priority( true );
     set_absorb_gain( p->get_gain( util::inverse_tokenize( name_str ) + " (absorb)") );
+
+    if ( has_4pc )
+      thorns = p->get_secondary_action<blazing_thorns_t>( "blazing_thorns" );
   }
 
   // triggered with rage spent as value
@@ -3665,15 +3671,6 @@ struct frenzied_assault_t : public residual_action::residual_periodic_action_t<c
   }
 };
 
-// Burning Frenzy (Feral T31) =================================================
-struct burning_frenzy_t : public residual_action::residual_periodic_action_t<cat_attack_t>
-{
-  burning_frenzy_t( druid_t* p ) : residual_action_t( "burning_frenzy", p, p->find_spell( 422779 ) )
-  {
-    proc = true;
-  }
-};
-
 // Lunar Inspiration ========================================================
 struct lunar_inspiration_t : public cat_attack_t
 {
@@ -4402,16 +4399,6 @@ struct incarnation_bear_t : public berserk_bear_base_t
   }
 };
 
-// Blazing Thorns (Guardian T31) ============================================
-struct blazing_thorns_t : public bear_attack_t
-{
-  blazing_thorns_t( druid_t* p ) : bear_attack_t( "blazing_thorns", p, p->find_spell( 425448 ) )
-  {
-    base_dd_min = base_dd_max = 1.0;
-    proc = true;
-  }
-};
-
 // Brambles =================================================================
 struct brambles_t : public bear_attack_t
 {
@@ -4485,6 +4472,44 @@ struct incapacitating_roar_t : public bear_attack_t
 // Ironfur ==================================================================
 struct ironfur_t : public trigger_indomitable_guardian_t<rage_spender_t<>>
 {
+  struct thorns_of_iron_t : public bear_attack_t
+  {
+    double mul;
+
+    thorns_of_iron_t( druid_t* p )
+      : bear_attack_t( "thorns_of_iron", p, find_trigger( p->talent.thorns_of_iron ).trigger() ),
+        mul( find_trigger( p->talent.thorns_of_iron ).percent() )
+    {
+      background = proc = split_aoe_damage = true;
+      aoe = -1;
+
+      // 1 point to allow proper snapshot/update flag parsing
+      base_dd_min = base_dd_max = 1.0;
+    }
+
+    double base_da_min( const action_state_t* ) const override
+    {
+      return p()->cache.armor() * mul;
+    }
+
+    double base_da_max( const action_state_t* ) const override
+    {
+      return p()->cache.armor() * mul;
+    }
+
+    double action_multiplier() const override
+    {
+      auto am = bear_attack_t::action_multiplier();
+      auto lm = p()->buff.ironfur->check();
+
+      if ( lm > 4 )
+        am *= std::pow( 0.955, lm - 4 );  // approx. from testing
+
+      return am;
+    }
+  };
+
+  action_t* thorns = nullptr;
   timespan_t goe_ext;
   double lm_chance;
 
@@ -4497,6 +4522,9 @@ struct ironfur_t : public trigger_indomitable_guardian_t<rage_spender_t<>>
   {
     use_off_gcd = true;
     harmful = may_miss = may_parry = may_dodge = false;
+
+    if ( p->talent.thorns_of_iron.ok() )
+      thorns = p->get_secondary_action<thorns_of_iron_t>( "thorns_of_iron" );
   }
 
   void execute() override
@@ -4522,8 +4550,8 @@ struct ironfur_t : public trigger_indomitable_guardian_t<rage_spender_t<>>
     {
       p()->buff.gory_fur->expire();
 
-      if ( p()->active.thorns_of_iron )
-        p()->active.thorns_of_iron->execute();
+      if ( thorns )
+        thorns->execute();
     }
   }
 };
@@ -4701,16 +4729,6 @@ struct maul_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trig
   }
 };
 
-// Moonless Night ===========================================================
-struct moonless_night_t : public druid_residual_action_t<bear_attack_t>
-{
-  moonless_night_t( druid_t* p ) : base_t( "moonless_night", p, p->find_spell( 400360 ) )
-  {
-    proc = true;
-    residual_mul = p->talent.moonless_night->effectN( 1 ).percent();
-  }
-};
-
 // Pulverize ================================================================
 struct pulverize_t : public bear_attack_t
 {
@@ -4830,44 +4848,6 @@ struct swipe_bear_t : public trigger_gore_t<bear_attack_t>
 
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "swipe";
-  }
-};
-
-// Thorns of Iron ===========================================================
-struct thorns_of_iron_t : public bear_attack_t
-{
-  double mul;
-
-  thorns_of_iron_t( druid_t* p )
-    : bear_attack_t( "thorns_of_iron", p, find_trigger( p->talent.thorns_of_iron ).trigger() ),
-      mul( find_trigger( p->talent.thorns_of_iron ).percent() )
-  {
-    background = proc = split_aoe_damage = true;
-    aoe = -1;
-
-    // 1 point to allow proper snapshot/update flag parsing
-    base_dd_min = base_dd_max = 1.0;
-  }
-
-  double base_da_min( const action_state_t* ) const override
-  {
-    return p()->cache.armor() * mul;
-  }
-
-  double base_da_max( const action_state_t* ) const override
-  {
-    return p()->cache.armor() * mul;
-  }
-
-  double action_multiplier() const override
-  {
-    auto am = bear_attack_t::action_multiplier();
-    auto lm = p()->buff.ironfur->check();
-
-    if ( lm > 4 )
-      am *= std::pow( 0.955, lm - 4 );  // approx. from testing
-
-    return am;
   }
 };
 
@@ -5289,25 +5269,6 @@ struct natures_cure_t : public druid_heal_t
   natures_cure_t( druid_t* p, std::string_view opt )
     : druid_heal_t( "natures_cure", p, p->find_specialization_spell( "Nature's Cure" ), opt )
   {}
-};
-
-// Nature's Guardian ========================================================
-struct natures_guardian_t : public druid_heal_t
-{
-  natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
-  {
-    background = true;
-    callbacks = false;
-    target = p;
-  }
-
-  void init() override
-  {
-    druid_heal_t::init();
-
-    // Not affected by multipliers of any sort.
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-  }
 };
 
 // Nature's Swiftness =======================================================
@@ -10443,9 +10404,6 @@ void druid_t::create_actions()
   if ( talent.berserk_frenzy.ok() )
     active.frenzied_assault = get_secondary_action<frenzied_assault_t>( "frenzied_assault" );
 
-  if ( sets->has_set_bonus( DRUID_FERAL, T31, B4 ) )
-    active.burning_frenzy = get_secondary_action<burning_frenzy_t>( "burning_frenzy " );
-
   if ( talent.thrashing_claws.ok() )
   {
     auto tc = get_secondary_action_n<thrash_cat_dot_t>( "thrashing_claws" );
@@ -10457,9 +10415,6 @@ void druid_t::create_actions()
   // Guardian
   if ( talent.after_the_wildfire.ok() )
     active.after_the_wildfire_heal = get_secondary_action<after_the_wildfire_heal_t>( "after_the_wildfire" );
-
-  if ( sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) )
-    active.blazing_thorns = get_secondary_action<blazing_thorns_t>( "blazing_thorns" );
 
   if ( talent.brambles.ok() )
     active.brambles = get_secondary_action<brambles_t>( "brambles" );
@@ -10475,9 +10430,6 @@ void druid_t::create_actions()
     gg->damage->set_free_cast( free_spell_e::GALACTIC );
     active.galactic_guardian = gg;
   }
-
-  if ( talent.moonless_night.ok() )
-    active.moonless_night = get_secondary_action<moonless_night_t>( "moonless_night" );
 
   if ( talent.tooth_and_claw.ok() )
   {
@@ -10500,9 +10452,6 @@ void druid_t::create_actions()
     }
   }
 
-  if ( mastery.natures_guardian->ok() )
-    active.natures_guardian = new natures_guardian_t( this );
-
   if ( talent.flashing_claws.ok() )
   {
     auto flash = get_secondary_action_n<thrash_bear_t>( "flashing_claws",
@@ -10521,14 +10470,9 @@ void druid_t::create_actions()
     active.rage_of_the_sleeper_reflect = rots;
   }
 
-  if ( talent.thorns_of_iron.ok() )
-  {
-    active.thorns_of_iron = get_secondary_action<thorns_of_iron_t>( "thorns_of_iron" );
-  }
-
   // Restoration
   if ( talent.yseras_gift.ok() )
-    active.yseras_gift = new yseras_gift_t( this );
+    active.yseras_gift = get_secondary_action<yseras_gift_t>( "yseras_gift" );
 
   player_t::create_actions();
 
@@ -11138,17 +11082,26 @@ void druid_t::init_special_effects()
   {
     struct smoldering_frenzy_cb_t : public druid_cb_t
     {
+      struct burning_frenzy_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+      {
+        burning_frenzy_t( druid_t* p ) : residual_action_t( "burning_frenzy", p, p->find_spell( 422779 ) )
+        {
+          proc = true;
+        }
+      };
+
+      action_t* damage;
       double mul;
 
       smoldering_frenzy_cb_t( druid_t* p, const special_effect_t& e )
         : druid_cb_t( p, e ), mul( p->buff.smoldering_frenzy->data().effectN( 6 ).percent() )
-      {}
+      {
+        damage = p->get_secondary_action<burning_frenzy_t>( "burning_frenzy" );
+      }
 
       void execute( action_t*, action_state_t* s ) override
       {
-        auto d = s->result_amount * mul;
-
-        residual_action::trigger( p()->active.burning_frenzy, s->target, d );
+        residual_action::trigger( damage, s->target, s->result_amount * mul );
       }
     };
 
@@ -11175,7 +11128,22 @@ void druid_t::init_special_effects()
   {
     struct natures_guardian_cb_t : public druid_cb_t
     {
-      natures_guardian_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
+      struct natures_guardian_t : public druid_heal_t
+      {
+        natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
+        {
+          background = true;
+          callbacks = false;
+          target = p;
+        }
+      };
+
+      action_t* heal;
+
+      natures_guardian_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e )
+      {
+        heal = p->get_secondary_action<natures_guardian_t>( "natures_guardian" );
+      }
 
       void trigger( action_t* a, action_state_t* s ) override
       {
@@ -11191,9 +11159,8 @@ void druid_t::init_special_effects()
 
       void execute( action_t*, action_state_t* s ) override
       {
-        auto amount = s->result_total * p()->cache.mastery_value();
-        p()->active.natures_guardian->base_dd_min = p()->active.natures_guardian->base_dd_max = amount;
-        p()->active.natures_guardian->schedule_execute();
+        heal->base_dd_min = heal->base_dd_max = s->result_total * p()->cache.mastery_value();
+        heal->schedule_execute();
       }
     };
 
@@ -11274,11 +11241,20 @@ void druid_t::init_special_effects()
   {
     struct moonless_night_cb_t : public druid_cb_t
     {
-      bear_attacks::moonless_night_t* moonless;
+      struct moonless_night_t : public druid_residual_action_t<bear_attack_t>
+      {
+        moonless_night_t( druid_t* p ) : base_t( "moonless_night", p, p->find_spell( 400360 ) )
+        {
+          proc = true;
+          residual_mul = p->talent.moonless_night->effectN( 1 ).percent();
+        }
+      };
+
+      moonless_night_t* moonless;
 
       moonless_night_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e )
       {
-        moonless = debug_cast<bear_attacks::moonless_night_t*>( p->active.moonless_night );
+        moonless = p->get_secondary_action<moonless_night_t>( "moonless_night" );
       }
 
       void trigger( action_t* a, action_state_t* s ) override
