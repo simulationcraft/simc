@@ -2163,6 +2163,13 @@ void priest_t::create_buffs_shadow()
 
   buffs.devoured_despair = make_buff<buffs::devoured_despair_buff_t>( *this );
 
+  buffs.devoured_anger =
+      make_buff( this, "devoured_anger", talents.shadow.devoured_anger )
+          ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
+          ->set_duration( talents.shadow.devoured_pride->duration() )  // Duration is incorrect in spell data
+          ->add_invalidate( CACHE_HASTE )
+          ->set_default_value_from_effect( 1 );
+
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 2 ).trigger() )
                         ->set_default_value_from_effect( 1 );
 
@@ -2306,9 +2313,9 @@ void priest_t::init_spells_shadow()
   // Row 10
   talents.shadow.idol_of_yshaarj   = ST( "Idol of Y'Shaarj" );
   talents.shadow.devoured_pride    = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
-  talents.shadow.devoured_despair  = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
-  talents.shadow.devoured_anger    = find_spell( 373318 );  // Haste - Enrage - NYI
-  talents.shadow.devoured_fear     = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
+  talents.shadow.devoured_despair  = find_spell( 373317 );  // Insanity Generation - Stunned
+  talents.shadow.devoured_anger    = find_spell( 373318 );  // Haste - Enrage - Stubbed
+  talents.shadow.devoured_fear     = find_spell( 373319 );  // Pet Damage, Your Damage - Feared - NYI
   talents.shadow.devoured_violence = find_spell( 373320 );  // Pet Extension - Default
   talents.shadow.idol_of_nzoth     = ST( "Idol of N'Zoth" );
   talents.shadow.idol_of_yoggsaron = ST( "Idol of Yogg-Saron" );

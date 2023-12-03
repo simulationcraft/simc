@@ -621,7 +621,10 @@ struct fiend_melee_t : public priest_pet_melee_t
 
   timespan_t execute_time() const override
   {
-    if ( base_execute_time == timespan_t::zero() )
+    // Check if it is the first swing or not
+    timespan_t swing_time = priest_pet_melee_t::execute_time();
+
+    if ( base_execute_time == timespan_t::zero() || swing_time == timespan_t::zero() )
       return timespan_t::zero();
 
     // Mindbender inherits haste from the player
@@ -1093,6 +1096,7 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
   {
     auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
     buffs.devoured_pride->extend_duration( this, extend );
+    buffs.devoured_anger->extend_duration( this, extend );
     buffs.devoured_despair->extend_duration( this, extend );
     buffs.shadow_covenant->extend_duration( this, extend );
 
@@ -1111,14 +1115,19 @@ void priest_t::trigger_idol_of_yshaarj( player_t* target )
     return;
 
   // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
-
-  if ( target->buffs.stunned->check() )
+  if ( ( target->buffs.stunned->check() && options.forced_yshaarj_type == "default" ) ||
+       options.forced_yshaarj_type == "despair" )
   {
     buffs.devoured_despair->trigger();
   }
-  else if ( target->health_percentage() >= 80.0 )
+  else if ( ( target->health_percentage() >= 80.0 && options.forced_yshaarj_type == "default" ) ||
+            options.forced_yshaarj_type == "pride" )
   {
     buffs.devoured_pride->trigger();
+  }
+  else if ( options.forced_yshaarj_type == "anger" )
+  {
+    buffs.devoured_anger->trigger();
   }
   else
   {

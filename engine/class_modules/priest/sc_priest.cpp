@@ -1116,9 +1116,9 @@ struct shadow_word_death_t final : public priest_spell_t
 protected:
   struct swd_data
   {
-    int chain_number        = 0;
-    int max_chain           = 2;
-    bool deathspeaker       = false;
+    int chain_number  = 0;
+    int max_chain     = 2;
+    bool deathspeaker = false;
   };
   using state_t = priest_action_state_t<swd_data>;
   using ab      = priest_spell_t;
@@ -1812,7 +1812,6 @@ struct atonement_t final : public priest_heal_t
 // ==========================================================================
 struct divine_aegis_t final : public priest_absorb_t
 {
-
   double divine_aegis_mult;
 
   divine_aegis_t( priest_t& p )
@@ -2339,12 +2338,22 @@ double priest_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buffs.dark_reveries->current_value );
   }
 
+  if ( buffs.devoured_anger->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
+  }
+
   return h;
 }
 
 double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
+
+  if ( buffs.devoured_anger->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
+  }
 
   return h;
 }
@@ -3037,6 +3046,7 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
+  add_option( opt_string( "priest.forced_yshaarj_type", options.forced_yshaarj_type ) );
 }
 
 std::string priest_t::create_profile( save_e type )

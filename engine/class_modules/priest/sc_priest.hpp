@@ -188,6 +188,7 @@ public:
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> devoured_pride;
     propagate_const<buff_t*> devoured_despair;
+    propagate_const<buff_t*> devoured_anger;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> mind_melt;
     propagate_const<buff_t*> surge_of_insanity;
@@ -672,6 +673,10 @@ public:
     bool init_insanity = true;
 
     int disc_minimum_allies = 5;
+
+    // Forces Idol of Y'Shaarj to give a particular buff for every cast
+    // default, pride, anger, despair, fear (NYI), violence
+    std::string forced_yshaarj_type = "default";
   } options;
 
   vector_with_callback<player_t*> allies_with_atonement;
@@ -959,19 +964,12 @@ public:
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
-      parse_buff_effects( p().buffs.gathering_shadows,
-                          true );                      // Spell Direct amount for Mind Sear (NOT DP)
-      parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
-
+      parse_buff_effects( p().buffs.devoured_pride );                   // Spell Direct and Periodic amount
       parse_buff_effects( p().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
       parse_buff_effects( p().buffs.shadowform );
       parse_buff_effects( p().buffs.mind_devourer );
       parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-      // TODO: check why we cant use_default=true to get the value correct
       parse_buff_effects( p().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
-      parse_buff_effects( p().buffs.gathering_shadows,
-                          true );                      // Spell Direct amount for Mind Sear (NOT DP)
-      parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_buff_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
