@@ -71,7 +71,7 @@ actions.externals+=/invoke_external_buff,name=power_infusion
 
 # Fiery demise window
 actions.fiery_demise=immolation_aura
-actions.fiery_demise+=/sigil_of_flame
+actions.fiery_demise+=/sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0
 actions.fiery_demise+=/felblade,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
 actions.fiery_demise+=/fel_devastation
 actions.fiery_demise+=/soul_carver,if=soul_fragments.total<3

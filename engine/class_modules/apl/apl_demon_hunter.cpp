@@ -228,7 +228,7 @@ void vengeance( player_t* p )
   maintenance->add_action( "soul_cleave,if=fury.deficit<=40" );
 
   fiery_demise->add_action( "immolation_aura", "Fiery demise window" );
-  fiery_demise->add_action( "sigil_of_flame" );
+  fiery_demise->add_action( "sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0" );
   fiery_demise->add_action( "felblade,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   fiery_demise->add_action( "fel_devastation" );
   fiery_demise->add_action( "soul_carver,if=soul_fragments.total<3" );
