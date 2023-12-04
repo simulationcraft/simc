@@ -7795,6 +7795,8 @@ struct antimagic_shell_buff_t final : public buff_t
 
     max_absorb *= 1.0 + dk -> cache.heal_versatility();
 
+    max_absorb *= 1.0 + dk -> talent.gloom_ward -> effectN( 1 ).percent();
+
     return max_absorb;
   }
 
@@ -7934,6 +7936,8 @@ struct antimagic_zone_buff_t final : public buff_t
     max_absorb *= 1.0 + dk -> talent.assimilation -> effectN( 1 ).percent();
 
     max_absorb *= 1.0 + dk -> cache.heal_versatility();
+
+    max_absorb *= 1.0 + dk -> talent.gloom_ward -> effectN( 1 ).percent();
 
     return max_absorb;
   }
