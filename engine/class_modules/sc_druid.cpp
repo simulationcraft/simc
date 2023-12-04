@@ -1180,6 +1180,43 @@ public:
     return a;
   }
 
+  bool uses_cat_form() const
+  {
+    if ( specialization() == DRUID_FERAL )
+      return true;
+
+    for ( auto a : action_list )
+      if ( !a->dual && ( a->name_str == "cat_form" || a->name_str == "prowl" || a->name_str == "dash" ) )
+        return true;
+
+    return false;
+  }
+
+  bool uses_bear_form() const
+  {
+    if ( specialization() == DRUID_GUARDIAN )
+      return true;
+
+    for ( auto a : action_list )
+      if ( !a->dual && ( a->name_str == "bear_form" || a->name_str == "incapacitating_roar" ||
+                         ( a->name_str == "stampeding_roar" && specialization() != DRUID_FERAL ) ) )
+        return true;
+
+    return false;
+  }
+
+  bool uses_moonkin_form() const
+  {
+    if ( specialization() == DRUID_BALANCE )
+      return true;
+
+    for ( auto a : action_list )
+      if ( !a->dual && ( a->name_str == "moonkin_form" ) )
+        return true;
+
+    return false;
+  }
+
 private:
   void apl_precombat();
   void apl_default();
@@ -8484,13 +8521,13 @@ struct convoke_the_spirits_t : public druid_spell_t
     actions.conv_rejuvenation = get_convoke_action<rejuvenation_t>( "rejuvenation", p()->find_spell( 774 ), "" );
 
     // Call form-specific initialization to create necessary actions & setup variables
-    if ( p()->find_action( "moonkin_form" ) )
+    if ( p()->uses_moonkin_form() )
       _init_moonkin();
 
-    if ( p()->find_action( "bear_form" ) )
+    if ( p()->uses_bear_form() )
       _init_bear();
 
-    if ( p()->find_action( "cat_form" ) )
+    if ( p()->uses_cat_form() )
       _init_cat();
   }
 
@@ -9684,32 +9721,16 @@ void druid_t::init_stats()
   player_t::init_stats();
 
   // enable CP & energy for cat form
-  if ( specialization() != DRUID_FERAL )
+  if ( uses_cat_form() )
   {
-    for ( auto a : { "cat_form", "prowl", "dash" } )
-    {
-      auto action = find_action( a );
-      if ( action && !action->dual )
-      {
-        resources.active_resource[ RESOURCE_COMBO_POINT ] = true;
-        resources.active_resource[ RESOURCE_ENERGY ] = true;
-        break;
-      }
-    }
+      resources.active_resource[ RESOURCE_COMBO_POINT ] = true;
+      resources.active_resource[ RESOURCE_ENERGY ] = true;
   }
 
   // enable rage for bear form
-  if ( specialization() != DRUID_GUARDIAN )
+  if ( uses_bear_form() )
   {
-    for ( auto a : { "bear_form", "incapacitating_roar", "stampeding_roar" } )
-    {
-      auto action = find_action( a );
-      if ( action && !action->dual )
-      {
-        resources.active_resource[ RESOURCE_RAGE ] = true;
-        break;
-      }
-    }
+    resources.active_resource[ RESOURCE_RAGE ] = true;
   }
 }
 
