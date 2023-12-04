@@ -403,7 +403,6 @@ public:
   struct options_t
   {
     // General
-    bool affinity_resources = false;  // activate resources tied to affinities
     bool no_cds = false;
     bool raid_combat = true;
 
@@ -425,11 +424,8 @@ public:
 
     // Feral
     double predator_rppm_rate = 0.0;
-    bool owlweave_cat = true;
 
     // Guardian
-    bool catweave_bear = false;
-    bool owlweave_bear = false;
 
     // Restoration
     double time_spend_healing = 0.0;
@@ -1089,6 +1085,7 @@ public:
   void init_absorb_priority() override;
   void init_action_list() override;
   void init_base_stats() override;
+  void init_stats() override;
   void init_gains() override;
   void init_procs() override;
   void init_uptimes() override;
@@ -9665,20 +9662,12 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100 + find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY ]       = 100 + find_effect( talent.tireless_energy, A_MOD_INCREASE_ENERGY ).resource( RESOURCE_ENERGY );
 
-  // only activate other resources if you have the affinity and affinity_resources = true
+  // only intially activate required resources. others will be dynamcally activated depending on apl
   resources.active_resource[ RESOURCE_HEALTH ]       = specialization() == DRUID_GUARDIAN;
-  resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN || options.affinity_resources;
-  resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION
-                                                    || ( specialization() == DRUID_GUARDIAN && options.owlweave_bear )
-                                                    || ( specialization() == DRUID_FERAL && options.owlweave_cat )
-                                                    || options.affinity_resources;
-  resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
-                                                    || ( specialization() == DRUID_GUARDIAN && options.catweave_bear )
-                                                    || options.affinity_resources;
-  resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL
-                                                    || ( specialization() == DRUID_RESTORATION && role == ROLE_ATTACK )
-                                                    || ( specialization() == DRUID_GUARDIAN && options.catweave_bear )
-                                                    || options.affinity_resources;
+  resources.active_resource[ RESOURCE_RAGE ]         = specialization() == DRUID_GUARDIAN;
+  resources.active_resource[ RESOURCE_MANA ]         = specialization() == DRUID_RESTORATION;
+  resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL;
+  resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL;
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
 
   // Energy Regen
@@ -9688,6 +9677,40 @@ void druid_t::init_base_stats()
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + find_effect( talent.tireless_energy, A_MOD_POWER_REGEN_PERCENT ).percent();
 
   base_gcd = 1.5_s;
+}
+
+void druid_t::init_stats()
+{
+  player_t::init_stats();
+
+  // enable CP & energy for cat form
+  if ( specialization() != DRUID_FERAL )
+  {
+    for ( auto a : { "cat_form", "prowl", "dash" } )
+    {
+      auto action = find_action( a );
+      if ( action && !action->dual )
+      {
+        resources.active_resource[ RESOURCE_COMBO_POINT ] = true;
+        resources.active_resource[ RESOURCE_ENERGY ] = true;
+        break;
+      }
+    }
+  }
+
+  // enable rage for bear form
+  if ( specialization() != DRUID_GUARDIAN )
+  {
+    for ( auto a : { "bear_form", "incapacitating_roar", "stampeding_roar" } )
+    {
+      auto action = find_action( a );
+      if ( action && !action->dual )
+      {
+        resources.active_resource[ RESOURCE_RAGE ] = true;
+        break;
+      }
+    }
+  }
 }
 
 void druid_t::init_finished()
@@ -11947,12 +11970,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
   if ( util::str_compare_ci( splits[ 0 ], "druid" ) && splits.size() == 2 )
   {
-    if ( util::str_compare_ci( splits[ 1 ], "catweave_bear" ) )
-      return expr_t::create_constant( "catweave_bear", options.catweave_bear );
-    if ( util::str_compare_ci( splits[ 1 ], "owlweave_bear" ) )
-      return expr_t::create_constant( "owlweave_bear", options.owlweave_bear );
-    if ( util::str_compare_ci( splits[ 1 ], "owlweave_cat" ) )
-      return expr_t::create_constant( "owlweave_cat", options.owlweave_cat );
     if ( util::str_compare_ci( splits[ 1 ], "no_cds" ) )
       return expr_t::create_constant( "no_cds", options.no_cds );
     if ( util::str_compare_ci( splits[ 1 ], "time_spend_healing" ) )
@@ -12214,7 +12231,6 @@ void druid_t::create_options()
   player_t::create_options();
 
   // General
-  add_option( opt_bool( "druid.affinity_resources", options.affinity_resources ) );
   add_option( opt_bool( "druid.no_cds", options.no_cds ) );
   add_option( opt_bool( "druid.raid_combat", options.raid_combat ) );
 
@@ -12233,14 +12249,17 @@ void druid_t::create_options()
 
   // Feral
   add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
-  add_option( opt_bool( "druid.owlweave_cat", options.owlweave_cat ) );
 
   // Guardian
-  add_option( opt_bool( "druid.catweave_bear", options.catweave_bear ) );
-  add_option( opt_bool( "druid.owlweave_bear", options.owlweave_bear ) );
 
   // Restoration
   add_option( opt_float( "druid.time_spend_healing", options.time_spend_healing ) );
+
+  // TODO: remove
+  add_option( opt_obsoleted( "druid.affinity_resources" ) );
+  add_option( opt_deprecated( "druid.owlweave_cat", "apl_variable.owlweave_cat=1" ) );
+  add_option( opt_deprecated( "druid.catweave_bear", "apl_variable.catweave_bear=1" ) );
+  add_option( opt_deprecated( "druid.owlweave_bear", "apl_variable.owlweave_bear=1" ) );
 }
 
 std::string druid_t::create_profile( save_e type )
