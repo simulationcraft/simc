@@ -3037,6 +3037,7 @@ struct rage_of_the_sleeper_buff_t : public druid_absorb_buff_t
   {
     set_cooldown( 0_ms );
     set_default_value( 1 );
+    set_absorb_high_priority( true );
     add_invalidate( CACHE_LEECH );
     set_stack_change_callback( [ p, this ]( buff_t*, int, int new_ ) {
       if ( new_ )
@@ -4879,8 +4880,6 @@ struct rage_of_the_sleeper_t : public bear_attack_t
     if ( data().ok() )
     {
       damage = p->get_secondary_action<rage_of_the_sleeper_reflect_t>( "rage_of_the_sleeper_reflect" );
-      // rots->s_data_reporting = talent.rage_of_the_sleeper;
-      // rots->name_str_reporting = "rage_of_the_sleeper";
       damage->stats = stats;
       stats->action_list.push_back( damage );
 
@@ -12336,10 +12335,15 @@ resource_e druid_t::primary_resource() const
 
 void druid_t::init_absorb_priority()
 {
-  absorb_priority.push_back( buff.brambles->data().id() );      // brambles always goes first
-  absorb_priority.push_back( buff.dream_thorns->data().id() );  // note dream_thorns is misc_value1 -1, higher than EW
-  absorb_priority.push_back( buff.earthwarden->data().id() );   // unknown if EW or RotS comes first
-  absorb_priority.push_back( buff.rage_of_the_sleeper->data().id() );
+  auto add_absorb = [ this ]( buff_t* b ) {
+    if ( b->data().id() )
+      absorb_priority.push_back( b->data().id() );
+  };
+
+  add_absorb( buff.brambles );      // brambles always goes first
+  add_absorb( buff.dream_thorns );  // note dream_thorns is misc_value1 -1, higher than EW
+  add_absorb( buff.earthwarden );   // unknown if EW or RotS comes first
+  add_absorb( buff.rage_of_the_sleeper );
 }
 
 void druid_t::target_mitigation( school_e school, result_amount_type type, action_state_t* s )
