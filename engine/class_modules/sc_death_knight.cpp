@@ -7896,7 +7896,7 @@ struct antimagic_zone_buff_t final : public buff_t
           double ticks = buff_duration() / tick_time();
           double pct = opt / ticks;
           double pct_of_max_hp = 1.5;
-          damage = p->resources.max[ RESOURCE_HEALTH ] * pct_of_max_hp * ( 1.0 + p -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p->cache.heal_versatility() ) * ( 1.0 + p->talent.gloom_ward->effectN( 1 ).percent() ) * ( 1.0 + p -> cache.heal_versatility() ) * pct;
+          damage = p->resources.max[ RESOURCE_HEALTH ] * pct_of_max_hp * ( 1.0 + p -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p->talent.gloom_ward->effectN( 1 ).percent() ) * ( 1.0 + p -> cache.heal_versatility() ) * pct;
           double absorbed = std::min( damage,
                                   debug_cast< antimagic_zone_buff_t* >( p -> buffs.antimagic_zone ) -> calc_absorb() );
 
