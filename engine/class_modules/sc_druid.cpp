@@ -471,12 +471,10 @@ public:
 
     // Guardian
     action_t* after_the_wildfire_heal;
-    action_t* brambles;
     action_t* elunes_favored_heal;
     action_t* galactic_guardian;
     action_t* maul_tooth_and_claw;
     action_t* raze_tooth_and_claw;
-    action_t* rage_of_the_sleeper_reflect;
     action_t* thrash_bear_flashing;
 
     // Restoration
@@ -605,6 +603,7 @@ public:
     buff_t* after_the_wildfire;
     buff_t* berserk_bear;
     buff_t* blood_frenzy;
+    buff_t* brambles;
     buff_t* bristling_fur;
     buff_t* dream_of_cenarius;
     buff_t* dream_thorns;  // 2t31
@@ -1411,14 +1410,14 @@ protected:
   using base_t = druid_buff_base_t<Base>;
 
 public:
-  druid_buff_base_t( druid_t* p, std::string_view name, const spell_data_t* s = spell_data_t::nil(),
+  druid_buff_base_t( druid_t* p, std::string_view n, const spell_data_t* s = spell_data_t::nil(),
                      const item_t* item = nullptr )
-    : Base( p, name, s, item )
+    : Base( p, n, s, item )
   {}
 
-  druid_buff_base_t( druid_td_t& td, std::string_view name, const spell_data_t* s = spell_data_t::nil(),
+  druid_buff_base_t( druid_td_t& td, std::string_view n, const spell_data_t* s = spell_data_t::nil(),
                      const item_t* item = nullptr )
-    : Base( td, name, s, item )
+    : Base( td, n, s, item )
   {}
 
   druid_t* p() { return static_cast<druid_t*>( Base::source ); }
@@ -2497,6 +2496,39 @@ namespace buffs
 {
 using druid_buff_t = druid_buff_base_t<>;
 
+struct druid_absorb_buff_t : public druid_buff_base_t<absorb_buff_t>
+{
+protected:
+  using base_t = druid_absorb_buff_t;
+
+public:
+  druid_absorb_buff_t( druid_t* p, std::string_view n, const spell_data_t* s ) : druid_buff_base_t( p, n, s )
+  {
+    set_absorb_gain( p->get_gain( absorb_name() ) );
+    set_absorb_source( p->get_stats( absorb_name() ) );
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    auto ret = druid_buff_base_t::trigger( s, v, c, d );
+    if ( ret && !quiet )
+      absorb_source->add_execute( 0_ms, player );
+
+    return ret;
+  }
+
+  std::string absorb_name() const
+  {
+    return util::inverse_tokenize( name_str ) + " (absorb)";
+  }
+
+  double attack_power() const
+  {
+    return p()->composite_melee_attack_power_by_type( attack_power_type::DEFAULT ) *
+           p()->composite_attack_power_multiplier();
+  }
+};
+
 // Shapeshift Form Buffs ====================================================
 
 struct swap_melee_t
@@ -2779,6 +2811,51 @@ struct bt_dummy_buff_t : public druid_buff_t
   }
 };
 
+// Brambles =================================================================
+struct brambles_buff_t : public druid_absorb_buff_t
+{
+  struct brambles_t : public bear_attack_t
+  {
+    brambles_t( druid_t* p ) : bear_attack_t( "brambles", p, p->find_spell( 203958 ) )
+    {
+      background = proc = true;
+
+      base_dd_min = base_dd_max = 1.0;
+    }
+  };
+
+  action_t* damage;
+  double coeff;
+
+  brambles_buff_t( druid_t* p )
+    : base_t( p, "brambles", p->talent.brambles ), coeff( find_effect( this, A_SCHOOL_ABSORB ).ap_coeff() )
+  {
+    set_quiet( true );
+    set_default_value( 1 );
+    set_absorb_high_priority( true );
+
+    damage = p->get_secondary_action<brambles_t>( "brambles" );
+  }
+
+  double consume( double a, action_state_t* s ) override
+  {
+    auto amount = std::min( a, coeff * attack_power() );
+
+    absorb_source->add_result( amount, 0, result_amount_type::ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
+    absorb_gain->add( RESOURCE_HEALTH, amount, 0 );
+
+    sim->print_debug( "{} {} absorbs {}", *player, *this, amount );
+
+    if ( s && s->action->player && s->action->player != player )
+    {
+      damage->base_dd_min = damage->base_dd_max = amount;
+      damage->execute_on_target( s->action->player );
+    }
+
+    return amount;
+  }
+};
+
 // Celestial Alignment / Incarn Buff ========================================
 struct celestial_alignment_buff_t : public druid_buff_t
 {
@@ -2828,7 +2905,7 @@ struct celestial_alignment_buff_t : public druid_buff_t
 };
 
 // Dream Thorns (Guardian Tier 31) ==========================================
-struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
+struct dream_thorns_buff_t : public druid_absorb_buff_t
 {
   struct blazing_thorns_t : public bear_attack_t
   {
@@ -2852,9 +2929,7 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
       coeff( p->sets->set( DRUID_GUARDIAN, T31, B2 )->effectN( 2 ).percent() ),
       thorn_pct( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 2 ).percent() )
   {
-    set_absorb_source( p->get_stats( has_4pc ? "Blazing Thorns" : "Dream Thorns" ) );
     set_absorb_high_priority( true );
-    set_absorb_gain( p->get_gain( util::inverse_tokenize( name_str ) + " (absorb)") );
 
     if ( has_4pc )
       thorns = p->get_secondary_action<blazing_thorns_t>( "blazing_thorns" );
@@ -2863,10 +2938,7 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
   // triggered with rage spent as value
   bool trigger( int s, double v, double c, timespan_t d ) override
   {
-    v *= p()->composite_melee_attack_power_by_type( attack_power_type::DEFAULT ) *
-         p()->composite_attack_power_multiplier() * coeff / rage_spent;
-
-    return base_t::trigger( s, v, c, d );    
+    return base_t::trigger( s, v * attack_power() * coeff / rage_spent, c, d );
   }
 
   double consume( double a, action_state_t* s ) override
@@ -2884,6 +2956,36 @@ struct dream_thorns_buff_t : public druid_buff_base_t<absorb_buff_t>
       thorns->base_dd_min = thorns->base_dd_max = a * thorn_pct;
       thorns->execute_on_target( t );
     }
+  }
+};
+
+// Earthwarden ==============================================================
+struct earthwarden_buff_t : public druid_absorb_buff_t
+{
+  double absorb_pct;
+
+  earthwarden_buff_t( druid_t* p )
+    : base_t( p, "earthwarden", p->find_spell( 203975 ) ), absorb_pct( p->talent.earthwarden->effectN( 1 ).percent() )
+  {
+    set_default_value( 1 );
+    set_absorb_high_priority( true );
+  }
+
+  double consume( double a, action_state_t* s ) override
+  {
+    if ( s->action->special )
+      return 0;
+
+    auto amount = a * absorb_pct;
+
+    absorb_source->add_result( amount, 0, result_amount_type::ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
+    absorb_gain->add( RESOURCE_HEALTH, amount, 0 );
+
+    sim->print_debug( "{} {} absorbs {}", *player, *this, amount );
+
+    decrement();
+
+    return amount;
   }
 };
 
@@ -2907,35 +3009,34 @@ struct fury_of_elune_buff_t : public druid_buff_t
 };
 
 // Matted Fur ================================================================
-struct matted_fur_buff_t : public druid_buff_base_t<absorb_buff_t>
+struct matted_fur_buff_t : public druid_absorb_buff_t
 {
-  double mul;
+  double coeff;
 
-  matted_fur_buff_t( druid_t* p ) : base_t( p, "matted_fur", find_trigger( p->talent.matted_fur ).trigger() )
+  matted_fur_buff_t( druid_t* p )
+    : base_t( p, "matted_fur", find_trigger( p->talent.matted_fur ).trigger() ),
+      coeff( find_trigger( p->talent.matted_fur ).percent() * 1.25 )
+  {}
+
+  bool trigger( int s, double, double c, timespan_t d ) override
   {
-    set_absorb_source( p->get_stats( "Matted Fur (absorb)" ) );
-
-    mul = find_trigger( p->talent.matted_fur ).percent() * 1.25;
-  }
-
-  bool trigger( int s, double v, double c, timespan_t d ) override
-  {
-    v = p()->composite_melee_attack_power_by_type( attack_power_type::DEFAULT ) *
-        p()->composite_attack_power_multiplier() * mul * ( 1.0 + p()->composite_heal_versatility() );
-
-    return base_t::trigger( s, v, c, d );
+    return base_t::trigger( s, attack_power() * coeff * ( 1.0 + p()->composite_heal_versatility() ), c, d );
   }
 };
 
 // Rage of the Sleeper =======================================================
-struct rage_of_the_sleeper_buff_t : public druid_buff_t
+struct rage_of_the_sleeper_buff_t : public druid_absorb_buff_t
 {
+  action_t* damage = nullptr;
+  double absorb_pct;
   double rage_spent = 0;
   timespan_t extensions = 0_ms;
 
-  rage_of_the_sleeper_buff_t( druid_t* p ) : base_t( p, "rage_of_the_sleeper", p->talent.rage_of_the_sleeper )
+  rage_of_the_sleeper_buff_t( druid_t* p )
+    : base_t( p, "rage_of_the_sleeper", p->talent.rage_of_the_sleeper ), absorb_pct( data().effectN( 3 ).percent() )
   {
     set_cooldown( 0_ms );
+    set_default_value( 1 );
     add_invalidate( CACHE_LEECH );
     set_stack_change_callback( [ p, this ]( buff_t*, int, int new_ ) {
       if ( new_ )
@@ -2950,6 +3051,21 @@ struct rage_of_the_sleeper_buff_t : public druid_buff_t
         extensions = 0_ms;
       }
     } );
+  }
+
+  double consume( double a, action_state_t* s ) override
+  {
+    auto amount = a * absorb_pct;
+
+    absorb_source->add_result( amount, 0, result_amount_type::ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
+    absorb_gain->add( RESOURCE_HEALTH, amount, 0 );
+
+    sim->print_debug( "{} {} absorbs {}", *player, *this, amount );
+
+    if ( damage && s && s->action->player && s->action->player != player )
+      damage->execute_on_target( s->action->player );
+
+    return amount;
   }
 };
 
@@ -4399,26 +4515,6 @@ struct incarnation_bear_t : public berserk_bear_base_t
   }
 };
 
-// Brambles =================================================================
-struct brambles_t : public bear_attack_t
-{
-  brambles_t( druid_t* p ) : bear_attack_t( "brambles", p, p->find_spell( 203958 ) )
-  {
-    // Ensure reflect scales with damage multipliers
-    snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA | STATE_MUL_DA;
-    background = proc = may_miss = true;
-  }
-};
-
-struct brambles_pulse_t : public bear_attack_t
-{
-  brambles_pulse_t( druid_t* p, std::string_view n ) : bear_attack_t( n, p, p->find_spell( 213709 ) )
-  {
-    background = proc = dual = true;
-    aoe = -1;
-  }
-};
-
 // Bristling Fur Spell ======================================================
 struct bristling_fur_t : public bear_attack_t
 {
@@ -4762,26 +4858,33 @@ struct pulverize_t : public bear_attack_t
 };
 
 // Rage of the Sleeper ======================================================
-struct rage_of_the_sleeper_reflect_t : public bear_attack_t
-{
-  rage_of_the_sleeper_reflect_t( druid_t* p )
-    : bear_attack_t( "rage_of_the_sleeper_reflect", p, p->find_spell( 219432 ) )
-  {
-    background = proc = dual = true;
-  }
-};
-
 struct rage_of_the_sleeper_t : public bear_attack_t
 {
+  struct rage_of_the_sleeper_reflect_t : public bear_attack_t
+  {
+    rage_of_the_sleeper_reflect_t( druid_t* p )
+      : bear_attack_t( "rage_of_the_sleeper_reflect", p, p->find_spell( 219432 ) )
+    {
+      background = proc = dual = true;
+    }
+  };
+
+  action_t* damage;
+
   rage_of_the_sleeper_t( druid_t* p, std::string_view opt )
     : bear_attack_t( "rage_of_the_sleeper", p, p->talent.rage_of_the_sleeper, opt )
   {
     harmful = may_miss = may_parry = may_dodge = false;
 
-    if ( p->active.rage_of_the_sleeper_reflect )
+    if ( data().ok() )
     {
-      p->active.rage_of_the_sleeper_reflect->stats = stats;
-      stats->action_list.push_back( p->active.rage_of_the_sleeper_reflect );
+      damage = p->get_secondary_action<rage_of_the_sleeper_reflect_t>( "rage_of_the_sleeper_reflect" );
+      // rots->s_data_reporting = talent.rage_of_the_sleeper;
+      // rots->name_str_reporting = "rage_of_the_sleeper";
+      damage->stats = stats;
+      stats->action_list.push_back( damage );
+
+      debug_cast<buffs::rage_of_the_sleeper_buff_t*>( p->buff.rage_of_the_sleeper )->damage = damage;
     }
   }
 
@@ -6412,12 +6515,21 @@ struct astral_smolder_t
 // Barkskin =================================================================
 struct barkskin_t : public druid_spell_t
 {
-  action_t* brambles;
+  struct brambles_pulse_t : public bear_attack_t
+  {
+    brambles_pulse_t( druid_t* p, std::string_view n ) : bear_attack_t( n, p, p->find_spell( 213709 ) )
+    {
+      background = proc = dual = true;
+      aoe = -1;
+    }
+  };
+
+  action_t* brambles = nullptr;
 
   barkskin_t( druid_t* p, std::string_view opt ) : barkskin_t( p, "barkskin", opt ) {}
 
   barkskin_t( druid_t* p, std::string_view n, std::string_view opt )
-    : druid_spell_t( n, p, p->find_class_spell( "Barkskin" ), opt ), brambles( nullptr )
+    : druid_spell_t( n, p, p->find_class_spell( "Barkskin" ), opt )
   {
     harmful = false;
     use_off_gcd = true;
@@ -6425,10 +6537,14 @@ struct barkskin_t : public druid_spell_t
 
     if ( p->talent.brambles.ok() )
     {
-      brambles = p->get_secondary_action_n<bear_attacks::brambles_pulse_t>( name_str + "brambles" );
+      brambles = p->get_secondary_action_n<brambles_pulse_t>( name_str + "_brambles" );
       name_str += "+brambles";
       brambles->stats = stats;
       stats->action_list.push_back( brambles );
+
+      p->buff.barkskin->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+        brambles->execute();
+      } );
     }
   }
 
@@ -6446,13 +6562,6 @@ struct barkskin_t : public druid_spell_t
     check_autoshift();
 
     druid_spell_t::execute();
-
-    if ( brambles )
-    {
-      p()->buff.barkskin->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        brambles->execute();
-      } );
-    }
 
     p()->buff.barkskin->trigger();
 
@@ -8887,70 +8996,6 @@ struct auto_attack_t : public melee_attack_t
 };
 }  // namespace auto_attacks
 
-// ==========================================================================
-// Druid Helper Functions & Structures
-// ==========================================================================
-
-// Brambles Absorb/Reflect Handler ==========================================
-double brambles_handler( const action_state_t* s )
-{
-  auto p = static_cast<druid_t*>( s->target );
-  assert( p->talent.brambles.ok() );
-
-  double attack_power =
-      p->composite_melee_attack_power_by_type( attack_power_type::DEFAULT ) * p->composite_attack_power_multiplier();
-
-  double coeff = p->talent.brambles->effectN( 1 ).ap_coeff();
-
-  // Calculate actual amount absorbed.
-  double amount_absorbed = std::min( s->result_mitigated, coeff * attack_power );
-
-  // Prevent self-harm
-  if ( s->action->player != p )
-  {
-    // Schedule reflected damage.
-    p->active.brambles->base_dd_min = p->active.brambles->base_dd_max = amount_absorbed;
-    action_state_t* ref_s = p->active.brambles->get_state();
-    ref_s->target         = s->action->player;
-    p->active.brambles->snapshot_state( ref_s, result_amount_type::DMG_DIRECT );
-    p->active.brambles->schedule_execute( ref_s );
-  }
-
-  return amount_absorbed;
-}
-
-// Earthwarden Absorb Handler ===============================================
-double earthwarden_handler( const action_state_t* s )
-{
-  if ( s->action->special )
-    return 0;
-
-  auto p = static_cast<druid_t*>( s->target );
-  assert( p->talent.earthwarden.ok() );
-
-  if ( !p->buff.earthwarden->up() )
-    return 0;
-
-  double absorb = s->result_amount * p->buff.earthwarden->check_value();
-  p->buff.earthwarden->decrement();
-
-  return absorb;
-}
-
-// Rage of the Sleeper Absorb/Reflect Handler ===============================
-double rage_of_the_sleeper_handler( const action_state_t* s )
-{
-  auto p = static_cast<druid_t*>( s->target );
-
-  if ( !p->buff.rage_of_the_sleeper->up() )
-    return 0;
-
-  if ( s->action->player != p )
-    p->active.rage_of_the_sleeper_reflect->execute_on_target( s->action->player );
-
-  return s->result_amount * p->talent.rage_of_the_sleeper->effectN( 3 ).percent();
-}
-
 // Persistent Delay Event ===================================================
 // Delay triggering the event a random amount. This prevents fixed-period drivers from ticking at the exact same times
 // on every iteration. Buffs that use the event to activate should implement tick_zero-like behavior.
@@ -10123,13 +10168,15 @@ void druid_t::create_buffs()
   buff.berserk_bear = make_buff_fallback<berserk_bear_buff_t>(
       talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear );
 
-  buff.blood_frenzy = make_buff_fallback<blood_frenzy_buff_t>( talent.blood_frenzy.ok(), this, "blood_frenzy_buff" );
-
   buff.incarnation_bear = make_buff_fallback<berserk_bear_buff_t>(
       talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear, true );
 
+  buff.blood_frenzy = make_buff_fallback<blood_frenzy_buff_t>( talent.blood_frenzy.ok(), this, "blood_frenzy_buff" );
+
+  buff.brambles = make_buff_fallback<brambles_buff_t>( talent.brambles.ok(), this, "brambles" );
+
   buff.bristling_fur = make_buff_fallback( talent.bristling_fur.ok(), this, "bristling_fur", talent.bristling_fur )
-    ->set_cooldown( 0_ms );
+                           ->set_cooldown( 0_ms );
 
   buff.dream_of_cenarius = make_buff_fallback( talent.dream_of_cenarius.ok(),
       this, "dream_of_cenarius", talent.dream_of_cenarius->effectN( 1 ).trigger() )
@@ -10142,8 +10189,7 @@ void druid_t::create_buffs()
   if ( !sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) )
     buff_t::make_fallback( this, "blazing_thorns", this );
 
-  buff.earthwarden = make_buff_fallback( talent.earthwarden.ok(), this, "earthwarden", find_spell( 203975 ) )
-    ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
+  buff.earthwarden = make_buff_fallback<earthwarden_buff_t>( talent.earthwarden.ok(), this, "earthwarden" );
 
   buff.elunes_favored = make_buff_fallback( talent.elunes_favored.ok(), this, "elunes_favored", spec.elunes_favored )
     ->set_quiet( true )
@@ -10208,12 +10254,9 @@ void druid_t::create_buffs()
 
   // TODO: figure out more elegant fallback method
   buff.ursocs_fury =
-      make_buff_fallback<absorb_buff_t>( talent.ursocs_fury.ok(), this, "ursocs_fury", find_spell( 372505 ) );
+      make_buff_fallback<druid_absorb_buff_t>( talent.ursocs_fury.ok(), this, "ursocs_fury", find_spell( 372505 ) );
   if ( talent.ursocs_fury.ok() )
-  {
-    debug_cast<absorb_buff_t*>( buff.ursocs_fury )->set_cumulative( true )
-      ->set_absorb_source( get_stats( "Ursoc's Fury (absorb)" ) );
-  }
+    debug_cast<druid_absorb_buff_t*>( buff.ursocs_fury )->set_cumulative( true );
 
   buff.vicious_cycle_mangle =
       make_buff_fallback( talent.vicious_cycle.ok(), this, "vicious_cycle_mangle", find_spell( 372019 ) )
@@ -10416,9 +10459,6 @@ void druid_t::create_actions()
   if ( talent.after_the_wildfire.ok() )
     active.after_the_wildfire_heal = get_secondary_action<after_the_wildfire_heal_t>( "after_the_wildfire" );
 
-  if ( talent.brambles.ok() )
-    active.brambles = get_secondary_action<brambles_t>( "brambles" );
-
   if ( talent.elunes_favored.ok() )
     active.elunes_favored_heal = get_secondary_action<elunes_favored_heal_t>( "elunes_favored" );
 
@@ -10460,14 +10500,6 @@ void druid_t::create_actions()
     flash->name_str_reporting = "flashing_claws";
     flash->set_free_cast( free_spell_e::FLASHING );
     active.thrash_bear_flashing = flash;
-  }
-
-  if ( talent.rage_of_the_sleeper.ok() )
-  {
-    auto rots = get_secondary_action<rage_of_the_sleeper_reflect_t>( "rage_of_the_sleeper_reflect" );
-    rots->s_data_reporting = talent.rage_of_the_sleeper;
-    rots->name_str_reporting = "rage_of_the_sleeper";
-    active.rage_of_the_sleeper_reflect = rots;
   }
 
   // Restoration
@@ -11479,6 +11511,9 @@ void druid_t::precombat_init()
   if ( talent.blood_frenzy.ok() )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.blood_frenzy ) );
 
+  if ( talent.brambles.ok() )
+    buff.brambles->trigger();
+
   if ( talent.elunes_favored.ok() )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.elunes_favored ) );
 
@@ -12301,33 +12336,10 @@ resource_e druid_t::primary_resource() const
 
 void druid_t::init_absorb_priority()
 {
-  if ( talent.brambles.ok() )
-  {
-    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( talent.brambles->id(),
-      instant_absorb_t( this, talent.brambles, "Brambles (absorb)",
-        &brambles_handler ) ) );
-  }
-
-  if ( talent.earthwarden.ok() )
-  {
-    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( talent.earthwarden->id(),
-      instant_absorb_t( this, &buff.earthwarden->data(), "Earthwarden (absorb)",
-        &earthwarden_handler ) ) );
-  }
-
-  if ( talent.rage_of_the_sleeper.ok() )
-  {
-    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( talent.rage_of_the_sleeper->id(),
-      instant_absorb_t( this, talent.rage_of_the_sleeper, "Rage of the Sleeper (absorb)",
-        &rage_of_the_sleeper_handler ) ) );
-  }
-
-  player_t::init_absorb_priority();
-
-  absorb_priority.push_back( talent.brambles->id() );           // brambles always goes first
+  absorb_priority.push_back( buff.brambles->data().id() );      // brambles always goes first
   absorb_priority.push_back( buff.dream_thorns->data().id() );  // note dream_thorns is misc_value1 -1, higher than EW
-  absorb_priority.push_back( talent.earthwarden->id() );        // unknown if EW or RotS comes first
-  absorb_priority.push_back( talent.rage_of_the_sleeper->id() );
+  absorb_priority.push_back( buff.earthwarden->data().id() );   // unknown if EW or RotS comes first
+  absorb_priority.push_back( buff.rage_of_the_sleeper->data().id() );
 }
 
 void druid_t::target_mitigation( school_e school, result_amount_type type, action_state_t* s )
