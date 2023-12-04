@@ -7759,7 +7759,7 @@ struct antimagic_shell_buff_t final : public buff_t
           double opt = p -> options.ams_absorb_percent;
           double ticks = buff_duration() / tick_time();
           double pct = opt / ticks;
-          damage = ( p->resources.max[ RESOURCE_HEALTH ] * ( p -> talent.antimagic_shell -> effectN( 2 ).percent() ) * ( 1.0 + p -> talent.antimagic_barrier -> effectN( 3 ).percent() ) * ( 1.0 + p -> cache.heal_versatility() ) ) * pct;
+          damage = ( p->resources.max[ RESOURCE_HEALTH ] * ( p -> talent.antimagic_shell -> effectN( 2 ).percent() ) * ( 1.0 + p->cache.heal_versatility() ) * ( 1.0 + p->talent.gloom_ward->effectN( 1 ).percent() ) * ( 1.0 + p -> talent.antimagic_barrier -> effectN( 3 ).percent() ) ) * pct;
           double absorbed = std::min( damage,
                                   debug_cast< antimagic_shell_buff_t* >( p -> buffs.antimagic_shell ) -> calc_absorb() );
 
@@ -7896,7 +7896,7 @@ struct antimagic_zone_buff_t final : public buff_t
           double ticks = buff_duration() / tick_time();
           double pct = opt / ticks;
           double pct_of_max_hp = 1.5;
-          damage = p->resources.max[ RESOURCE_HEALTH ] * pct_of_max_hp * ( 1.0 + p -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p -> cache.heal_versatility() ) * pct;
+          damage = p->resources.max[ RESOURCE_HEALTH ] * pct_of_max_hp * ( 1.0 + p -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p->cache.heal_versatility() ) * ( 1.0 + p->talent.gloom_ward->effectN( 1 ).percent() ) * ( 1.0 + p -> cache.heal_versatility() ) * pct;
           double absorbed = std::min( damage,
                                   debug_cast< antimagic_zone_buff_t* >( p -> buffs.antimagic_zone ) -> calc_absorb() );
 
@@ -11104,6 +11104,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.unholy_bond );
   action.apply_affecting_aura( talent.deaths_echo );
   action.apply_affecting_aura( talent.acclimation );
+  action.apply_affecting_aura( talent.gloom_ward );
 
   // Blood
   action.apply_affecting_aura( talent.blood.improved_heart_strike );
