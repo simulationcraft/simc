@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -19458,7 +19458,6 @@ Description      : $@spelldesc422895
 Tooltip          : Consecration is empowered. Damage taken reduced by $w4%.
 
 Name             : Cleansing Flame (id=425261) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Fire
 Spell Type       : Magic
@@ -19478,7 +19477,6 @@ Effects          :
 Description      : $@spelldesc422896
 
 Name             : Cleansing Flame (id=425262) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Fire
 Spell Type       : Magic

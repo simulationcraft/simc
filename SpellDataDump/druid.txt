@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4943,12 +4943,10 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : Base Value (75 -> 25)
 #5 (id=191157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : Base Value (75 -> 25)
 #6 (id=260767)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Influence (197524)
@@ -4983,12 +4981,10 @@ Hotfixed         : Base Value (75 -> 25)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : NEW EFFECT
 #17 (id=1123096)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-Hotfixed         : NEW EFFECT
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Rogue, Druid
@@ -5115,12 +5111,10 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618)
                    Family Flags: 118
-Hotfixed         : NEW EFFECT
 #32 (id=1122759)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618)
                    Family Flags: 118
-Hotfixed         : NEW EFFECT
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
@@ -8395,7 +8389,6 @@ Description      : $@spelldesc210722
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Fury of Elune (id=211545) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -21629,7 +21622,6 @@ Effects          :
 Description      : Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.
 
 Name             : Dreamstate (id=424248) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Astral
 Spell Type       : None

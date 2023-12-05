@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13849,10 +13849,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1109362)  : Apply Aura (6) | Dummy (4)
                    Base Value: 777 | Scaled Value: 777 | PvP Coefficient: 4.28960 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 4.2896)
 #3 (id=1109363)  : Apply Aura (6) | Dummy (4)
                    Base Value: 17 | Scaled Value: 17 | PvP Coefficient: 0.23530 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.235295)
 Description      : Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;.
 
 Name             : Chaotic Disposition (id=428493) [Spell Family (8)] 

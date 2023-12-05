@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -17533,7 +17533,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=1105419)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.54037 | PvP Coefficient: 0.50000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0 -> 0.54037)
 Description      : $@spelldesc34026
 
 Name             : Hunter's Mark (id=428402) [Spell Family (9), Hidden] 
