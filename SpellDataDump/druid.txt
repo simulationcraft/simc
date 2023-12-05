@@ -2610,7 +2610,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Aura Points On Client (268), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68119)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 0.85000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.85)
 Description      : Your healing is increased by ${$s1}.1% for each of your Restoration heal over time effects on the target.
 
 Name             : Thrash (id=77758) [Spell Family (7)] 
@@ -5088,25 +5089,30 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3043 (Label) | Target: Self (1)
                    Affected Spells (Label): Fragile Echoes (215266)
 #26 (id=1120675)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 104 | Scaled Value: 104 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
+Hotfixed         : Base Value (140 -> 104)
 #27 (id=1120676)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 92 | Scaled Value: 92 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
                    Family Flags: 108
+Hotfixed         : Base Value (140 -> 92)
 #28 (id=1120677)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 140 | Scaled Value: 140 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 116 | Scaled Value: 116 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shred (5221)
                    Family Flags: 15
+Hotfixed         : Base Value (140 -> 116)
 #29 (id=1120681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
+Hotfixed         : Base Value (60 -> 44)
 #30 (id=1120682)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
+Hotfixed         : Base Value (60 -> 44)
 #31 (id=1122758)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618)
@@ -21593,7 +21599,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098465)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.25000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.25)
 #2 (id=1099828)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming Clearcasting now causes your Regrowth to also cast Nourish onto a nearby injured ally at $s1% effectiveness, preferring those with your heal over time effects.
