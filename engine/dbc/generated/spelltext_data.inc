@@ -20620,7 +20620,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  114014, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  114165, "$healmod=$?a405546[${1+$405546s3/100}][${1}]" },
   {  115057, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
-  {  115203, "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
+  {  115203, "$health=$?s322960[${$115203s1}][${$115203s1}]\r\n$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]" },
   {  116670, "$healing=$?c2[${$s1*1.95}][${$s1}]" },
   {  116847, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  116849, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$s3/100*(1+$@versadmg)}" },
@@ -20630,7 +20630,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  120360, "$damageSec=${$120361sw2*11}" },
   {  120517, "$twilightshadowtoholy=$?a390706[${(1+$390706s1/100)}][${1}]\r\n$holyhalodamage=${$120696s1*$<twilightshadowtoholy>}" },
   {  120644, "$twilightholytoshadow=$?a390707[${(1+$390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${(1+$322105s1/100)}][${1}]\r\n$darkascension=$?a391109[${(1+$391109s1/100)}][${1}]\r\n$shadowhalodamage=${$390964s1*$<twilightholytoshadow>*$<shadowcov>*$<darkascension>}" },
-  {  120954, "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
+  {  120954, "$health=$?s322960[${$115203s1}][${$115203s1}]\r\n$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]" },
   {  121253, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  122121, "$twilightholytoshadow=$?a390707[${(1+$390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${(1+$322105s1/100)}][${1}]\r\n$darkascension=$?a391109[${(1+$391109s1/100)}][${1}]\r\n$shadowdstardamage=${$390845s1*$<twilightholytoshadow>*$<shadowcov>*$<darkascension>}" },
   {  123586, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
@@ -20911,7 +20911,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  388023, "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
   {  388026, "$pvp=$?a134735[${2.75}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
-  {  388917, "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]" },
+  {  388917, "$health=$?s322960[${$115203s1}][${$115203s1}]\r\n$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]" },
   {  389359, "$health=${5}\r\n$cdr=${10}" },
   {  389880, "$duration= ${$s1/1000}.1" },
   {  390236, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$damage=${0.44*($390220s1)*(1+$@versadmg)*$<mastery>}" },
@@ -20950,6 +20950,9 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.2.0.52393
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
+  {  115203,  0, "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]", "$health=$?s322960[${$115203s1}][${$115203s1}]\r\n$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]" },
+  {  120954,  0, "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]", "$health=$?s322960[${$115203s1}][${$115203s1}]\r\n$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]" },
+  {  388917,  0, "$health=$?s322960[${20}][${20}]\r\n$pvp=$?a134735[${1.5}][${1}]\r\n$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]", "$health=$?s322960[${$115203s1}][${$115203s1}]\r\n$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]" },
 } };
 
