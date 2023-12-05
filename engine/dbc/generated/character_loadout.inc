@@ -1,4 +1,4 @@
-// Character Loadout data, wow build 10.2.0.52301
+// Character Loadout data, wow build 10.2.0.52393
 static const std::array<character_loadout_data_t, 599> __character_loadout_data { {
   { 1809, 1, 0, 154025 },
   { 1809, 1, 0, 154026 },
