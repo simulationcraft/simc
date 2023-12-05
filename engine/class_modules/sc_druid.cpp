@@ -1144,13 +1144,19 @@ public:
   const druid_td_t* find_target_data( const player_t* target ) const override;
   druid_td_t* get_target_data( player_t* target ) const override;
   void copy_from( player_t* ) override;
+  void moving() override;
+  void apply_affecting_auras( action_t& ) override;
+
+  // utility functions
   form_e get_form() const { return form; }
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
-  void moving() override;
   double calculate_expected_max_health() const;
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive );
-  void apply_affecting_auras( action_t& ) override;
+  bool uses_form( specialization_e spec, std::string_view name, action_t* action ) const;
+  bool uses_cat_form() const;
+  bool uses_bear_form() const;
+  bool uses_moonkin_form() const;
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -1178,43 +1184,6 @@ public:
     auto a = new T( this, n, std::forward<Ts>( args )... );
     secondary_action_list.push_back( a );
     return a;
-  }
-
-  bool uses_cat_form() const
-  {
-    if ( specialization() == DRUID_FERAL )
-      return true;
-
-    for ( auto a : action_list )
-      if ( !a->dual && ( a->name_str == "cat_form" || a->name_str == "prowl" || a->name_str == "dash" ) )
-        return true;
-
-    return false;
-  }
-
-  bool uses_bear_form() const
-  {
-    if ( specialization() == DRUID_GUARDIAN )
-      return true;
-
-    for ( auto a : action_list )
-      if ( !a->dual && ( a->name_str == "bear_form" || a->name_str == "incapacitating_roar" ||
-                         ( a->name_str == "stampeding_roar" && specialization() != DRUID_FERAL ) ) )
-        return true;
-
-    return false;
-  }
-
-  bool uses_moonkin_form() const
-  {
-    if ( specialization() == DRUID_BALANCE )
-      return true;
-
-    for ( auto a : action_list )
-      if ( !a->dual && ( a->name_str == "moonkin_form" ) )
-        return true;
-
-    return false;
   }
 
 private:
@@ -12458,27 +12427,6 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
   }
 }
 
-void druid_t::shapeshift( form_e f )
-{
-  if ( get_form() == f )
-    return;
-
-  buff.bear_form->expire();
-  buff.cat_form->expire();
-  buff.moonkin_form->expire();
-
-  switch ( f )
-  {
-    case BEAR_FORM:    buff.bear_form->trigger();    break;
-    case CAT_FORM:     buff.cat_form->trigger();     break;
-    case MOONKIN_FORM: buff.moonkin_form->trigger(); break;
-    case NO_FORM:                                    break;
-    default: assert( 0 ); break;
-  }
-
-  form = f;
-}
-
 // Target Data ==============================================================
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ), dots(), hots(), debuff(), buff()
@@ -12569,6 +12517,31 @@ druid_td_t* druid_t::get_target_data( player_t* target ) const
   return td;
 }
 
+// ==========================================================================
+// druid_t utility functions
+// ==========================================================================
+
+void druid_t::shapeshift( form_e f )
+{
+  if ( get_form() == f )
+    return;
+
+  buff.bear_form->expire();
+  buff.cat_form->expire();
+  buff.moonkin_form->expire();
+
+  switch ( f )
+  {
+    case BEAR_FORM:    buff.bear_form->trigger();    break;
+    case CAT_FORM:     buff.cat_form->trigger();     break;
+    case MOONKIN_FORM: buff.moonkin_form->trigger(); break;
+    case NO_FORM:                                    break;
+    default: assert( 0 ); break;
+  }
+
+  form = f;
+}
+
 void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
 {
   // use main hand weapon as base
@@ -12591,12 +12564,6 @@ void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
   w.type       = WEAPON_BEAST;
   w.school     = SCHOOL_PHYSICAL;
   w.swing_time = timespan_t::from_seconds( swing_time );
-}
-
-void druid_t::moving()
-{
-  if ( ( executing && !executing->usable_moving() ) || ( channeling && !channeling->usable_moving() ) )
-    player_t::interrupt();
 }
 
 double druid_t::calculate_expected_max_health() const
@@ -12638,6 +12605,46 @@ const spell_data_t* druid_t::apply_override( const spell_data_t* base, const spe
     return base;
 
   return find_spell( as<unsigned>( find_effect( passive, base, A_OVERRIDE_ACTION_SPELL ).base_value() ) );
+}
+
+bool druid_t::uses_form( specialization_e spec, std::string_view name, action_t* action ) const
+{
+  if ( specialization() == spec )
+    return true;
+
+  for ( auto a : action_list )
+  {
+    if ( a->name_str == name && !a->dual )
+      return true;
+
+    if ( auto tmp = dynamic_cast<druid_action_t<melee_attack_t>*>( a ) )
+    {
+      if ( tmp->autoshift == action )
+        return true;
+    }
+    else if ( auto tmp = dynamic_cast<druid_action_t<spell_t>*>( a ) )
+    {
+      if ( tmp->autoshift == action )
+        return true;
+    }
+  }
+
+  return false;
+}
+
+bool druid_t::uses_cat_form() const
+{
+  return uses_form( DRUID_FERAL, "cat_form", active.shift_to_cat );
+}
+
+bool druid_t::uses_bear_form() const
+{
+  return uses_form( DRUID_GUARDIAN, "bear_form", active.shift_to_bear );
+}
+
+bool druid_t::uses_moonkin_form() const
+{
+  return uses_form( DRUID_BALANCE, "moonkin_form", active.shift_to_moonkin );
 }
 
 // Eclipse Handler ==========================================================
@@ -12950,6 +12957,12 @@ void druid_t::copy_from( player_t* source )
 
   options = static_cast<druid_t*>( source )->options;
   prepull_swarm = static_cast<druid_t*>( source )->prepull_swarm;
+}
+
+void druid_t::moving()
+{
+  if ( ( executing && !executing->usable_moving() ) || ( channeling && !channeling->usable_moving() ) )
+    player_t::interrupt();
 }
 
 void druid_t::apply_affecting_auras( action_t& action )
