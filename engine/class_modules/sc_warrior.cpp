@@ -7,6 +7,7 @@
 #include "simulationcraft.hpp"
 #include "player/player_talent_points.hpp"
 #include "class_modules/apl/apl_warrior.hpp"
+#include "action/parse_buff_effects.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -819,7 +820,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
-struct warrior_action_t : public Base
+struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
 {
   struct affected_by_t
   {
@@ -876,6 +877,7 @@ public:
   bool initialized;
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
+      parse_buff_effects_t( this ),
       usable_while_channeling( false ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -894,6 +896,44 @@ public:
     {
       tactician_per_rage += ( player->talents.arms.tactician->effectN( 1 ).percent() / 100 );
     }
+
+    if ( this->data().ok() )
+    {
+      apply_buff_effects();
+
+      if ( this->type == action_e::ACTION_SPELL || this->type == action_e::ACTION_ATTACK )
+      {
+        apply_debuff_effects();
+      }
+
+      if ( this->data().flags( spell_attribute::SX_ABILITY ) || this->trigger_gcd > 0_ms )
+      {
+        this->not_a_proc = true;
+      }
+    }
+  }
+
+  void apply_buff_effects()
+  {
+    // Shared
+
+    // Arms
+
+    // Fury
+    parse_buff_effects( p()->buff.ashen_juggernaut );
+
+    // Protection
+  }
+
+  void apply_debuff_effects()
+  {
+    // Shared
+
+    // Arms
+
+    // Fury
+
+    // Protection
   }
 
   void init() override
@@ -977,7 +1017,6 @@ public:
     ab::apply_affecting_aura( p()->tier_set.t31_fury_2pc );
 
     affected_by.slaughtering_strikes     = ab::data().affected_by( p()->find_spell( 393931 )->effectN( 1 ) );
-    affected_by.ashen_juggernaut         = ab::data().affected_by( p()->talents.fury.ashen_juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.juggernaut               = ab::data().affected_by( p()->talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.juggernaut_prot          = ab::data().affected_by( p()->talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.bloodcraze               = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
@@ -1041,7 +1080,11 @@ public:
   {
     double c = ab::cost();
 
-    return c;
+    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
+
+    c *= get_buff_effects_value( cost_buffeffects, false, false );
+
+    return std::max( 0.0, c );
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -1076,6 +1119,8 @@ public:
       m *= 1.0 + ( td->debuffs_concussive_blows->value() );
     }
 
+    m *= get_debuff_effects_value( td );
+
     return m;
   }
 
@@ -1098,11 +1143,6 @@ public:
   {
     double c = ab::composite_crit_chance();
 
-    if( affected_by.ashen_juggernaut )
-    {
-      c += p()->buff.ashen_juggernaut->stack_value();
-    }
-
     if( affected_by.t30_fury_4pc )
     {
       c += p()->buff.merciless_assault->stack() * p()->find_spell( 409983 )->effectN( 3 ).percent();
@@ -1117,6 +1157,8 @@ public:
     {
       c += p()->buff.recklessness->check_value();
     }
+
+    c += get_buff_effects_value( crit_chance_buffeffects, true );
 
     return c;
   }
@@ -1186,6 +1228,8 @@ public:
       dm *= 1.0 + p()->buff.merciless_assault->stack_value();
     }
 
+    dm *= get_buff_effects_value( da_multiplier_buffeffects );
+
     return dm;
   }
 
@@ -1215,7 +1259,54 @@ public:
       tm *= 1.0 + p()->buff.vanguards_determination->check_value();
     }
 
+    tm *= get_buff_effects_value( ta_multiplier_buffeffects );
+
     return tm;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t m = ab::execute_time();
+
+    m *= get_buff_effects_value( execute_time_buffeffects );
+
+    return std::max( 0_ms, m );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* state ) const override
+  {
+    timespan_t m = ab::composite_dot_duration( state );
+
+    m *= get_buff_effects_value( dot_duration_buffeffects );
+
+    return m;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t m = ab::tick_time( state );
+
+    m *= get_buff_effects_value( tick_time_buffeffects );
+
+    return std::max( 1_ms, m );
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    timespan_t m = ab::cooldown_duration();
+
+    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
+
+    return m;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = ab::recharge_multiplier( cd );
+
+    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
+
+    return m;
   }
 
   void execute() override
@@ -1440,6 +1531,11 @@ public:
         p()->cooldown.avatar->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
     }
+  }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    parsed_html_report( os );
   }
 };
 
@@ -7819,8 +7915,8 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
-  buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", find_spell( 392537 ) )
-      ->set_default_value( find_spell( 392537 )->effectN( 1 ).percent() );
+  buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", talents.fury.ashen_juggernaut->effectN( 1 ).trigger() )
+      ->set_cooldown( talents.fury.ashen_juggernaut->internal_cooldown() );
 
   buff.revenge =
       make_buff( this, "revenge", find_spell( 5302 ) )
