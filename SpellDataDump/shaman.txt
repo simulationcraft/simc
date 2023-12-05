@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -14291,7 +14291,6 @@ Effects          :
 Description      : $@spelldesc378443
 
 Name             : Acid Rain (id=378597) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
