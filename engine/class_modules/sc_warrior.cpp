@@ -293,9 +293,6 @@ public:
     const spell_data_t* victory_rush;
     const spell_data_t* whirlwind;
 
-    // Class Passives
-    const spell_data_t* warrior_aura;
-
     // Extra Spells To Make Things Work
 
     const spell_data_t* colossus_smash_debuff;
@@ -333,6 +330,9 @@ public:
   // Spec Passives
   struct spec_t
   {
+    // Class Aura
+    const spell_data_t* warrior;
+
     // Arms Spells
     const spell_data_t* arms_warrior;
     const spell_data_t* seasoned_soldier;
@@ -950,26 +950,6 @@ public:
           get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p()->cd_waste_cumulative );
       cd_wasted_iter = get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
     }
-
-    //if ( ab::data().affected_by( p()->spec.fury_warrior->effectN( 1 ) ) )
-      //ab::base_dd_multiplier *= 1.0 + p()->spec.fury_warrior->effectN( 1 ).percent();
-    //if ( ab::data().affected_by( p()->spec.fury_warrior->effectN( 2 ) ) )
-      //ab::base_td_multiplier *= 1.0 + p()->spec.fury_warrior->effectN( 2 ).percent();
-
-    //if ( ab::data().affected_by( p()->spec.arms_warrior->effectN( 2 ) ) )
-      //ab::base_dd_multiplier *= 1.0 + p()->spec.arms_warrior->effectN( 2 ).percent();
-    //if ( ab::data().affected_by( p()->spec.arms_warrior->effectN( 3 ) ) )
-      //ab::base_td_multiplier *= 1.0 + p()->spec.arms_warrior->effectN( 3 ).percent();
-
-    //if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 1 ) ) )
-      //ab::base_dd_multiplier *= 1.0 + p()->spec.prot_warrior->effectN( 1 ).percent();
-    //if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 2 ) ) )
-      //ab::base_td_multiplier *= 1.0 + p()->spec.prot_warrior->effectN( 2 ).percent();
-
-    if ( ab::data().affected_by( p()->spell.warrior_aura->effectN( 1 ) ) )
-      ab::cooldown->hasted = true;
-    if ( ab::data().affected_by( p()->spell.warrior_aura->effectN( 2 ) ) )
-      ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
 
     // passive set bonuses
 
@@ -7089,7 +7069,7 @@ void warrior_t::init_spells()
   spell.recklessness_buff       = find_spell( 1719 ); // lookup to allow Warlord to use Reck
 
   // Class Passives
-  spell.warrior_aura            = find_spell( 137047 );
+  spec.warrior                  = find_spell( 137047 );
 
   // Arms Spells
   mastery.deep_wounds_ARMS      = find_mastery_spell( WARRIOR_ARMS );
@@ -7589,7 +7569,7 @@ void warrior_t::init_base_stats()
   resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.protection.indomitable -> effectN( 3 ).percent();
 
   // Warriors gets +7% block from their class aura
-  base.block += spell.warrior_aura -> effectN( 7 ).percent();
+  base.block += spec.warrior -> effectN( 7 ).percent();
 
   // Protection Warriors have a +8% block chance in their spec aura
   base.block += spec.protection_warrior -> effectN( 9 ).percent();
@@ -9255,6 +9235,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
+  action.apply_affecting_aura( spec.warrior );
   action.apply_affecting_aura( spec.arms_warrior );
   action.apply_affecting_aura( spec.fury_warrior );
   action.apply_affecting_aura( spec.protection_warrior );
