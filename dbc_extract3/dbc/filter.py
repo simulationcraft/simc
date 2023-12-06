@@ -915,4 +915,21 @@ class CharacterLoadoutSet(DataSet):
         return _data
 
     def ids(self, **kwargs):
-        return (list(v[0].id for v in self.get()))
+        return (list(set(v[0].id for v in self.get())))
+
+class TraitLoadoutSet(DataSet):
+    def _filter(self, **kwargs):
+        _data = []
+        loadouts = {}
+
+        for e in self.db('TraitTreeLoadout').values():
+            loadouts[e.id_spec] = e.id
+
+        for e in self.db('TraitTreeLoadoutEntry').values():
+            if e.id_trait_tree_loadout in loadouts.values():
+                _data.append(e)
+
+        return _data
+
+    def ids(self, **kwargs):
+        return (list(set(v.id for v in self.get())))
