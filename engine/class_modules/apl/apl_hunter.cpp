@@ -102,11 +102,11 @@ void beast_mastery( player_t* p )
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)" );
-  st->add_action( "call_of_the_wild,if=!talent.wild_instincts" );
   st->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator" );
+  st->add_action( "call_of_the_wild,if=!talent.wild_instincts" );
   st->add_action( "stampede" );
-  st->add_action( "bestial_wrath" );
   st->add_action( "bloodshed" );
+  st->add_action( "bestial_wrath" );
   st->add_action( "death_chakram" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "kill_command" );
@@ -191,11 +191,12 @@ void beast_mastery_ptr( player_t* p )
 
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)" );
   st->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator" );
-  st->add_action( "call_of_the_wild" );
+  st->add_action( "call_of_the_wild,if=!talent.wild_instincts" );
   st->add_action( "stampede" );
   st->add_action( "bloodshed" );
   st->add_action( "bestial_wrath" );
   st->add_action( "death_chakram" );
+  st->add_action( "call_of_the_wild" );
   st->add_action( "kill_command" );
   st->add_action( "a_murder_of_crows" );
   st->add_action( "steel_trap" );
@@ -552,7 +553,7 @@ void survival_ptr( player_t* p )
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame" );
-  cleave->add_action( "fury_of_the_eagle,if=raid_event.adds.exists" );
+  cleave->add_action( "fury_of_the_eagle,if=cooldown.butchery.full_recharge_time>cast_time&raid_event.adds.exists|!talent.butchery" );
   cleave->add_action( "butchery,if=raid_event.adds.exists" );
   cleave->add_action( "butchery,if=(full_recharge_time<gcd|dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd|raid_event.adds.remains<10))&!raid_event.adds.exists" );
   cleave->add_action( "fury_of_the_eagle,if=!raid_event.adds.exists" );
