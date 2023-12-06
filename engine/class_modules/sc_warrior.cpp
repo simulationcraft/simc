@@ -741,6 +741,7 @@ public:
   void interrupt() override;
   void reset() override;
   void moving() override;
+  void create_actions() override;
   void create_options() override;
   std::string create_profile( save_e type ) override;
   void invalidate_cache( cache_e ) override;
@@ -828,7 +829,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
     bool avatar, sweeping_strikes, booming_voice, bloodcraze, executioners_precision,
-    ashen_juggernaut, recklessness, slaughtering_strikes, colossus_smash,
+    recklessness, colossus_smash,
     merciless_bonegrinder, juggernaut, juggernaut_prot;
     // tier
     bool t29_arms_4pc;
@@ -848,9 +849,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         booming_voice( false ),
         bloodcraze( false ),
         executioners_precision( false ),
-        ashen_juggernaut( false ),
         recklessness( false ),
-        slaughtering_strikes( false ),
         colossus_smash( false ),
         merciless_bonegrinder( false ),
         juggernaut( false ),
@@ -921,6 +920,8 @@ public:
 
     // Fury
     parse_buff_effects( p()->buff.ashen_juggernaut );
+    parse_buff_effects( p()->buff.slaughtering_strikes_an );
+    parse_buff_effects( p()->buff.slaughtering_strikes_rb );
 
     // Protection
   }
@@ -996,7 +997,6 @@ public:
     ab::apply_affecting_aura( p()->tier_set.t31_arms_2pc );
     ab::apply_affecting_aura( p()->tier_set.t31_fury_2pc );
 
-    affected_by.slaughtering_strikes     = ab::data().affected_by( p()->find_spell( 393931 )->effectN( 1 ) );
     affected_by.juggernaut               = ab::data().affected_by( p()->talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.juggernaut_prot          = ab::data().affected_by( p()->talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.bloodcraze               = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
@@ -1161,16 +1161,6 @@ public:
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
-    }
-
-    if ( affected_by.slaughtering_strikes && p()->buff.slaughtering_strikes_an->up() )
-    {
-      dm *= 1.0 + p()->buff.slaughtering_strikes_an->stack_value();
-    }
-
-    if ( affected_by.slaughtering_strikes && p()->buff.slaughtering_strikes_rb->up() )
-    {
-      dm *= 1.0 + p()->buff.slaughtering_strikes_rb->stack_value();
     }
 
     if ( affected_by.merciless_bonegrinder && p()->buff.merciless_bonegrinder->up() )
@@ -7429,67 +7419,6 @@ void warrior_t::init_spells()
     auto_attack_multiplier *= 1.0 + talents.warrior.one_handed_weapon_specialization->effectN( 3 ).percent();
   }
 
-  if ( spec.deep_wounds_ARMS->ok() )
-    active.deep_wounds_ARMS = new deep_wounds_ARMS_t( this );
-  if ( spec.deep_wounds_PROT->ok() )
-    active.deep_wounds_PROT = new deep_wounds_PROT_t( this );
-  if ( talents.arms.fatality->ok() )
-    active.fatality = new fatality_t( this );
-  if ( talents.fury.rampage->ok() )
-  {
-    // rampage now hits 4 times instead of 5 and effect indexes shifted
-    rampage_attack_t* first  = new rampage_attack_t( this, talents.fury.rampage->effectN( 2 ).trigger(), "rampage1" );
-    rampage_attack_t* second = new rampage_attack_t( this, talents.fury.rampage->effectN( 3 ).trigger(), "rampage2" );
-    rampage_attack_t* third  = new rampage_attack_t( this, talents.fury.rampage->effectN( 4 ).trigger(), "rampage3" );
-    rampage_attack_t* fourth = new rampage_attack_t( this, talents.fury.rampage->effectN( 5 ).trigger(), "rampage4" );
-
-    // the order for hits is now OH MH OH MH
-    first->weapon  = &( this->off_hand_weapon );
-    second->weapon = &( this->main_hand_weapon );
-    third->weapon  = &( this->off_hand_weapon );
-    fourth->weapon = &( this->main_hand_weapon );
-
-    this->rampage_attacks.push_back( first );
-    this->rampage_attacks.push_back( second );
-    this->rampage_attacks.push_back( third );
-    this->rampage_attacks.push_back( fourth );
-  }
-
-  if ( talents.protection.tough_as_nails->ok() )
-  {
-    active.tough_as_nails = new tough_as_nails_t( this );
-  }
-  if ( talents.warrior.berserkers_torment->ok() )
-  {
-    active.torment_recklessness = new torment_recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ) );
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
-    for ( action_t* action : { active.torment_recklessness, active.torment_avatar } )
-    {
-      action->background  = true;
-      action->trigger_gcd = timespan_t::zero();
-    }
-  }
-  if ( talents.warrior.blademasters_torment->ok() )
-  {
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
-    active.torment_bladestorm   = new torment_bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ));
-    for ( action_t* action : { active.torment_avatar, active.torment_bladestorm } )
-    {
-      action->background  = true;
-      action->trigger_gcd = timespan_t::zero();
-    }
-  }
-  if ( talents.warrior.titans_torment->ok() )
-  {
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
-    active.torment_odyns_fury   = new torment_odyns_fury_t( this, "", "odyns_fury_torment", find_spell( 385059 ) );
-    for ( action_t* action : { active.torment_avatar, active.torment_odyns_fury } )
-    {
-      action->background  = true;
-      action->trigger_gcd = timespan_t::zero();
-    }
-  }
-
   // Cooldowns
   cooldown.avatar         = get_cooldown( "avatar" );
   cooldown.recklessness   = get_cooldown( "recklessness" );
@@ -7896,7 +7825,8 @@ void warrior_t::create_buffs()
   using namespace buffs;
 
   buff.ashen_juggernaut = make_buff( this, "ashen_juggernaut", talents.fury.ashen_juggernaut->effectN( 1 ).trigger() )
-      ->set_cooldown( talents.fury.ashen_juggernaut->internal_cooldown() );
+                            ->set_cooldown( talents.fury.ashen_juggernaut->internal_cooldown() )
+                            ->set_default_value_from_effect( 1 );
 
   buff.revenge =
       make_buff( this, "revenge", find_spell( 5302 ) )
@@ -8043,10 +7973,10 @@ void warrior_t::create_buffs()
     ->set_cooldown( timespan_t::zero() );
 
   buff.slaughtering_strikes_an = make_buff( this, "slaughtering_strikes_an", find_spell( 393943 ) )
-    ->set_default_value( find_spell( 393943 )->effectN( 1 ).percent() );
+                                  ->set_default_value_from_effect( 1 );
 
   buff.slaughtering_strikes_rb = make_buff( this, "slaughtering_strikes_rb", find_spell( 393931 ) )
-    ->set_default_value( find_spell( 393931 )->effectN( 1 ).percent() );
+                                  ->set_default_value_from_effect( 1 );
 
   const spell_data_t* test_of_might_tracker = talents.arms.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
   buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
@@ -8501,6 +8431,73 @@ struct into_the_fray_callback_t
 };
 
 // warrior_t::create_actions ================================================
+
+void warrior_t::create_actions()
+{
+  if ( talents.fury.rampage->ok() )
+  {
+    // rampage now hits 4 times instead of 5 and effect indexes shifted
+    rampage_attack_t* first  = new rampage_attack_t( this, talents.fury.rampage->effectN( 2 ).trigger(), "rampage1" );
+    rampage_attack_t* second = new rampage_attack_t( this, talents.fury.rampage->effectN( 3 ).trigger(), "rampage2" );
+    rampage_attack_t* third  = new rampage_attack_t( this, talents.fury.rampage->effectN( 4 ).trigger(), "rampage3" );
+    rampage_attack_t* fourth = new rampage_attack_t( this, talents.fury.rampage->effectN( 5 ).trigger(), "rampage4" );
+
+    // the order for hits is now OH MH OH MH
+    first->weapon  = &( this->off_hand_weapon );
+    second->weapon = &( this->main_hand_weapon );
+    third->weapon  = &( this->off_hand_weapon );
+    fourth->weapon = &( this->main_hand_weapon );
+
+    this->rampage_attacks.push_back( first );
+    this->rampage_attacks.push_back( second );
+    this->rampage_attacks.push_back( third );
+    this->rampage_attacks.push_back( fourth );
+  }
+
+  if ( spec.deep_wounds_ARMS->ok() )
+    active.deep_wounds_ARMS = new deep_wounds_ARMS_t( this );
+  if ( spec.deep_wounds_PROT->ok() )
+    active.deep_wounds_PROT = new deep_wounds_PROT_t( this );
+  if ( talents.arms.fatality->ok() )
+    active.fatality = new fatality_t( this );
+
+  if ( talents.protection.tough_as_nails->ok() )
+  {
+    active.tough_as_nails = new tough_as_nails_t( this );
+  }
+  if ( talents.warrior.berserkers_torment->ok() )
+  {
+    active.torment_recklessness = new torment_recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ) );
+    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
+    for ( action_t* action : { active.torment_recklessness, active.torment_avatar } )
+    {
+      action->background  = true;
+      action->trigger_gcd = timespan_t::zero();
+    }
+  }
+  if ( talents.warrior.blademasters_torment->ok() )
+  {
+    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
+    active.torment_bladestorm   = new torment_bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ));
+    for ( action_t* action : { active.torment_avatar, active.torment_bladestorm } )
+    {
+      action->background  = true;
+      action->trigger_gcd = timespan_t::zero();
+    }
+  }
+  if ( talents.warrior.titans_torment->ok() )
+  {
+    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
+    active.torment_odyns_fury   = new torment_odyns_fury_t( this, "", "odyns_fury_torment", find_spell( 385059 ) );
+    for ( action_t* action : { active.torment_avatar, active.torment_odyns_fury } )
+    {
+      action->background  = true;
+      action->trigger_gcd = timespan_t::zero();
+    }
+  }
+
+  player_t::create_actions();
+}
 
 void warrior_t::activate()
 {
