@@ -830,7 +830,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     // talents
     bool avatar, sweeping_strikes, booming_voice, bloodcraze, executioners_precision,
     recklessness, colossus_smash,
-    merciless_bonegrinder, juggernaut, juggernaut_prot;
+    juggernaut, juggernaut_prot;
     // tier
     bool t29_arms_4pc;
     bool t29_prot_2pc;
@@ -851,7 +851,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         executioners_precision( false ),
         recklessness( false ),
         colossus_smash( false ),
-        merciless_bonegrinder( false ),
         juggernaut( false ),
         juggernaut_prot( false ),
         t29_arms_4pc ( false ),
@@ -917,6 +916,7 @@ public:
     // Shared
 
     // Arms
+    parse_buff_effects( p()->buff.merciless_bonegrinder );
 
     // Fury
     parse_buff_effects( p()->buff.ashen_juggernaut );
@@ -1007,7 +1007,6 @@ public:
     affected_by.booming_voice            = ab::data().affected_by( p()->talents.protection.demoralizing_shout->effectN( 3 ) );
     affected_by.colossus_smash           = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
     affected_by.executioners_precision   = ab::data().affected_by( p()->spell.executioners_precision_debuff->effectN( 1 ) );
-    affected_by.merciless_bonegrinder    = ab::data().affected_by( p()->find_spell( 383316 )->effectN( 1 ) );
     affected_by.avatar                   = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
@@ -1161,11 +1160,6 @@ public:
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
-    }
-
-    if ( affected_by.merciless_bonegrinder && p()->buff.merciless_bonegrinder->up() )
-    {
-      dm *= 1.0 + p()->buff.merciless_bonegrinder->check_value();
     }
 
     if ( affected_by.juggernaut && p()->buff.juggernaut->up() )
