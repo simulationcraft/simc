@@ -7913,7 +7913,7 @@ std::string demon_hunter_t::default_flask() const
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
-      return is_ptr() ? demon_hunter_apl::flask_vengeance_ptr( this ) : demon_hunter_apl::flask_vengeance( this );
+      return demon_hunter_apl::flask_vengeance( this );
     default:
       return demon_hunter_apl::flask_havoc( this );
   }
@@ -7930,7 +7930,13 @@ std::string demon_hunter_t::default_potion() const
 
 std::string demon_hunter_t::default_food() const
 {
-  return demon_hunter_apl::food( this );
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_VENGEANCE:
+      return demon_hunter_apl::food_vengeance( this );
+    default:
+      return demon_hunter_apl::food_havoc( this );
+  }
 }
 
 // demon_hunter_t::default_rune ====================================================
