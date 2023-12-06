@@ -71,17 +71,27 @@ actions.aoe+=/flame_shock,target_if=refreshable,if=buff.surge_of_power.up&talent
 # Spread Flame Shock using Surge of Power up to 6.
 actions.aoe+=/flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6
 # Spread Flame Shock against low target counts if Master of the Elements was selected up to 6.
-actions.aoe+=/flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6
+actions.aoe+=/flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6
 # Spread Flame Shock to gamble on Deeply Rooted Element procs up to 6.
 actions.aoe+=/flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6
 # Refresh Flame Shock using Surge of Power up to 6.
 actions.aoe+=/flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0
 # Refresh Flame Shock against low target counts if Master of the Elements was selected up to 6.
-actions.aoe+=/flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0
+actions.aoe+=/flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0
 # Refresh Flame Shock to gamble on Deeply Rooted Element procs up to 6.
 actions.aoe+=/flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0
 # JUST DO IT! https://i.kym-cdn.com/entries/icons/mobile/000/018/147/Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___Turner)_0-4_screenshot.jpg
 actions.aoe+=/ascendance
+# {T31 fire} Lava burst is top prio on 3 targets.
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=active_enemies=3&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)
+# {T31 fire} Earthquake is still good with Mote and either 15+ Magma Chamber stacks on 6(7)+ targets or 9+ targets.
+actions.aoe+=/earthquake,if=buff.master_of_the_elements.up&(buff.magma_chamber.stack>15&active_enemies>=(7-talent.unrelenting_calamity.enabled)|talent.splintered_elements.enabled&active_enemies>=(10-talent.unrelenting_calamity.enabled)|talent.mountains_will_fall.enabled&active_enemies>=9)&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)
+# {T31 fire} Stormkeeper is strong and should be used.
+actions.aoe+=/lava_beam,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)
+# {T31 fire} Stormkeeper is strong and should be used.
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)
+# {T31 fire} Lava Surge is strong.
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)
 # Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled&!talent.lightning_rod.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)
 # Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease.

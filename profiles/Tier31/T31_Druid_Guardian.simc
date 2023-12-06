@@ -30,10 +30,12 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
-actions.precombat+=/cat_form,if=(druid.catweave_bear=1&(cooldown.pause_action.remains|time>30))
-actions.precombat+=/moonkin_form,if=(!druid.catweave_bear=1)&(cooldown.pause_action.remains|time>30)
+actions.precombat+=/variable,name=catweave_bear,op=reset
+actions.precombat+=/variable,name=owlweave_bear,op=reset
+actions.precombat+=/cat_form,if=(variable.catweave_bear&(cooldown.pause_action.remains|time>30))
+actions.precombat+=/moonkin_form,if=(!variable.catweave_bear)&(cooldown.pause_action.remains|time>30)
 actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled
-actions.precombat+=/prowl,if=druid.catweave_bear=1&(cooldown.pause_action.remains|time>30)
+actions.precombat+=/prowl,if=variable.catweave_bear&(cooldown.pause_action.remains|time>30)
 actions.precombat+=/bear_form,if=(!buff.prowl.up)
 
 # Executed every time the actor is available.
@@ -42,8 +44,8 @@ actions=auto_attack,if=!buff.prowl.up
 actions+=/use_item,slot=trinket1
 actions+=/use_item,slot=trinket2
 actions+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=dot.moonfire.ticking
-actions+=/potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))
-actions+=/run_action_list,name=catweave,if=(target.cooldown.pause_action.remains|time>=30)&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down)&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=2)|(buff.cat_form.up&energy>25&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5)|(buff.heart_of_the_wild.up&energy>90&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5)
+actions+=/potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!variable.catweave_bear&!variable.owlweave_bear)))
+actions+=/run_action_list,name=catweave,if=(target.cooldown.pause_action.remains|time>=30)&variable.catweave_bear&buff.tooth_and_claw.remains>1.5&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down)&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=2)|(buff.cat_form.up&energy>25&variable.catweave_bear&buff.tooth_and_claw.remains>1.5)|(buff.heart_of_the_wild.up&energy>90&variable.catweave_bear&buff.tooth_and_claw.remains>1.5)
 actions+=/run_action_list,name=bear
 
 actions.bear=bear_form,if=!buff.bear_form.up

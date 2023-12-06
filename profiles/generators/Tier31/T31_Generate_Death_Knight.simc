@@ -20,7 +20,7 @@ finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520,gem_id=192935,ench
 finger2=band_of_burning_thorns,id=207159,bonus_id=7187/1520,gem_id=192935,enchant=devotion_of_haste_3
 trinket1=rezans_gleaming_eye,id=158712,bonus_id=3317/1514
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fallen_crusader
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=rune_of_the_fallen_crusader
 
 save=T31_Death_Knight_Blood.simc
 
@@ -77,7 +77,7 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_
 finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_haste_3
 trinket1=accelerating_sandglass,id=207566,bonus_id=6536/1540/6646
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fallen_crusader
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=rune_of_the_fallen_crusader
 
 save="T31_Death_Knight_Frost_2h.simc"
 
@@ -103,6 +103,6 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_
 finger2=seal_of_the_regal_loa,id=159458,bonus_id=3317/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 trinket2=mirror_of_fractured_tomorrows,id=207581,bonus_id=6536/1540/6646
-main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fallen_crusader
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=rune_of_the_fallen_crusader
 
 save=T31_Death_Knight_Unholy.simc

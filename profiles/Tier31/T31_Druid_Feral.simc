@@ -165,13 +165,13 @@ actions.variables+=/variable,name=force_align_2min,op=reset
 actions.variables+=/variable,name=align_cds,value=(variable.force_align_2min|equipped.witherbarks_branch|equipped.ashes_of_the_embersoul|(time+fight_remains>150&time+fight_remains<200|time+fight_remains>270&time+fight_remains<295|time+fight_remains>395&time+fight_remains<400|time+fight_remains>490&time+fight_remains<495))&talent.convoke_the_spirits.enabled&fight_style.patchwerk&spell_targets.swipe_cat=1&set_bonus.tier31_2pc
 
 head=benevolent_embersages_casque,id=207254,bonus_id=1808,ilevel=489,gem_id=192982,enchant_id=7052
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1537,ilevel=486,gem_id=192922/192922/192922,crafted_stats=32/49
+neck=chain_of_the_green_flight,id=137311,bonus_id=4786/8782/9843/9569,ilevel=489,gem_id=192922/192922/192922
 shoulders=benevolent_embersages_wisdom,id=207252,bonus_id=4795,ilevel=489
-back=inflammable_drapeleaf,id=207160,bonus_id=4795,ilevel=489
-chest=benevolent_embersages_robe,id=207257,bonus_id=4795,ilevel=489,enchant_id=6625
-wrists=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537/9379/8960,ilevel=486,gem_id=192922,crafted_stats=32/49
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=8836/8840/8902/9405/9500/8791/9498/8932/8960,crafted_stats=49/32
+chest=spymasters_wrap,id=211404,bonus_id=4786/3168/9576,enchant_id=6625
+wrists=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537/8932/8960,ilevel=486,gem_id=192922,crafted_stats=32/49
 hands=benevolent_embersages_talons,id=207255,bonus_id=4795,ilevel=489
-waist=belt_of_the_eternal_struggle,id=207874,bonus_id=4795/1808,ilevel=489,gem_id=192922,enchant_id=6904
+waist=vengeful_bladebeak_girdle,id=208432,bonus_id=4800/4786/1520/9576/523,gem_id=192922,enchant_id=6904
 legs=benevolent_embersages_leggings,id=207253,bonus_id=4795,ilevel=489,enchant_id=6830
 feet=grove_darkeners_treads,id=134429,bonus_id=4795,ilevel=489
 finger1=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,ilevel=489,gem_id=192922,enchant_id=6550
@@ -182,12 +182,12 @@ main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=4795,ilevel=489,enchant_i
 
 # Gear Summary
 # gear_ilvl=488.60
-# gear_agility=8881
+# gear_agility=8866
 # gear_stamina=38875
-# gear_crit_rating=5523
-# gear_haste_rating=3640
-# gear_mastery_rating=4400
-# gear_versatility_rating=2224
-# gear_armor=5341
+# gear_crit_rating=4281
+# gear_haste_rating=3236
+# gear_mastery_rating=5879
+# gear_versatility_rating=2411
+# gear_armor=5333
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
