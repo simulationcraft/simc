@@ -9411,7 +9411,7 @@ void death_knight_t::create_pets()
       pets.apoc_ghouls.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
 
-      if ( talent.unholy.magus_of_the_dead.ok() )
+      if ( talent.unholy.magus_of_the_dead.ok() || sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
       {
         pets.apoc_magus.set_creation_callback(
           [] ( death_knight_t* p ) { return new pets::magus_pet_t( p, "apoc_magus" ); });
