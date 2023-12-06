@@ -654,7 +654,6 @@ public:
     cooldown_t* thrash_bear;
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
-    cooldown_t* rage_from_melees;
   } cooldown;
 
   // Gains
@@ -680,9 +679,7 @@ public:
     gain_t* bear_form;
     gain_t* blood_frenzy;
     gain_t* brambles;
-    gain_t* bristling_fur;
     gain_t* gore;
-    gain_t* rage_from_melees;
   } gain;
 
   // Masteries
@@ -1069,8 +1066,6 @@ public:
     cooldown.thrash_bear           = get_cooldown( "thrash_bear" );
     cooldown.tigers_fury           = get_cooldown( "tigers_fury" );
     cooldown.warrior_of_elune      = get_cooldown( "warrior_of_elune" );
-    cooldown.rage_from_melees      = get_cooldown( "rage_from_melees" );
-    cooldown.rage_from_melees->duration = 1_s;
 
     resource_regeneration = regen_type::DYNAMIC;
 
@@ -1157,6 +1152,9 @@ public:
   bool uses_cat_form() const;
   bool uses_bear_form() const;
   bool uses_moonkin_form() const;
+
+  template <typename T>
+  void create_buff_callback( const special_effect_t*, buff_t* );
 
   // secondary actions
   std::vector<action_t*> secondary_action_list;
@@ -9997,10 +9995,8 @@ void druid_t::create_buffs()
     ->set_quiet( true )
     ->set_max_stack( std::max( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
 
-  buff.owlkin_frenzy = make_buff_fallback( talent.moonkin_form.ok() && specialization() == DRUID_BALANCE,
-      this, "owlkin_frenzy", find_spell( 157228 ) )
-          ->set_chance( find_effect( find_specialization_spell( "Owlkin Frenzy" ), A_ADD_FLAT_MODIFIER, P_PROC_CHANCE )
-                            .percent() );
+  buff.owlkin_frenzy = make_buff_fallback( talent.moonkin_form.ok() && talent.moonkin_form->proc_flags(),
+      this, "owlkin_frenzy", find_spell( 157228 ) );
 
   buff.primordial_arcanic_pulsar = make_buff_fallback( talent.primordial_arcanic_pulsar.ok(),
       this, "primordial_arcanic_pulsar", find_spell( 393961 ) )
@@ -10191,8 +10187,7 @@ void druid_t::create_buffs()
                            ->set_cooldown( 0_ms );
 
   buff.dream_of_cenarius = make_buff_fallback( talent.dream_of_cenarius.ok(),
-      this, "dream_of_cenarius", talent.dream_of_cenarius->effectN( 1 ).trigger() )
-          ->set_cooldown( find_spell( 372523 )->duration() );
+      this, "dream_of_cenarius", talent.dream_of_cenarius->effectN( 1 ).trigger() );
 
   buff.dream_thorns =
       make_buff_fallback<dream_thorns_buff_t>( sets->has_set_bonus( DRUID_GUARDIAN, T31, B2 ), this, "dream_thorns",
@@ -10817,9 +10812,7 @@ void druid_t::init_gains()
     gain.bear_form           = get_gain( "Bear Form" );
     gain.blood_frenzy        = get_gain( "Blood Frenzy" );
     gain.brambles            = get_gain( "Brambles" );
-    gain.bristling_fur       = get_gain( "Bristling Fur" );
     gain.gore                = get_gain( "Gore" );
-    gain.rage_from_melees    = get_gain( "Rage from Melees" );
   }
   // Multi-spec
   if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
@@ -10900,6 +10893,26 @@ void druid_t::init_rng()
   rppm.predator = get_rppm( "predator", options.predator_rppm_rate );  // Predator: optional RPPM approximation.
 }
 
+template <typename T>
+void druid_t::create_buff_callback( const special_effect_t* e, buff_t* b )
+{
+  static_assert( std::is_base_of_v<dbc_proc_callback_t, T> );
+
+  if ( b->is_fallback )
+    return;
+
+  auto cb = new T( this, *e );
+  cb->initialize();
+  cb->deactivate();
+
+  b->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+      cb->activate();
+    else
+      cb->deactivate();
+  } );
+}
+
 // druid_t::init_special_effects ============================================
 void druid_t::init_special_effects()
 {
@@ -10911,7 +10924,7 @@ void druid_t::init_special_effects()
   };
 
   // General
-  if ( unique_gear::find_special_effect( this, 388069 ) )
+  if ( unique_gear::find_special_effect( this, 388069 ) )  // Bronzed Grip Wrappings override
   {
     callbacks.register_callback_execute_function( 388069,
       []( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
@@ -10933,6 +10946,34 @@ void druid_t::init_special_effects()
         }
         cb->proc_action->execute_on_target( s->target );
       } );
+  }
+
+  // bear form rage from being attacked
+  if ( uses_bear_form() )
+  {
+    struct rage_from_being_attacked_cb_t : public druid_cb_t
+    {
+      gain_t* gain;
+      double rage;
+
+      rage_from_being_attacked_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ),
+          rage( p->spec.bear_form_passive->effectN( 3 ).base_value() ),
+          gain( p->get_gain( "Rage from being attacked" ) )
+      {}
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        p()->resource_gain( RESOURCE_RAGE, rage, gain );
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = "rage_from_being_attacked";
+    driver->spell_id = spec.bear_form_passive->id();
+    special_effects.push_back( driver );
+
+    create_buff_callback<rage_from_being_attacked_cb_t>( driver, buff.bear_form );
   }
 
   if ( talent.natures_vigil.ok() )
@@ -10978,16 +11019,7 @@ void druid_t::init_special_effects()
 
     special_effects.push_back( driver );
 
-    auto cb = new natures_vigil_cb_t( this, *driver );
-    cb->initialize();
-    cb->deactivate();
-
-    buff.natures_vigil->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
-      if ( new_  )
-        cb->activate();
-      else
-        cb->deactivate();
-    } );
+    create_buff_callback<natures_vigil_cb_t>( driver, buff.natures_vigil );
   }
 
   if ( talent.protector_of_the_pack.ok() )
@@ -11086,6 +11118,30 @@ void druid_t::init_special_effects()
     new denizen_of_the_dream_cb_t( this, *driver );
   }
 
+  if ( talent.moonkin_form.ok() && talent.moonkin_form->proc_flags() )
+  {
+    struct owlkin_frenzy_cb_t : public druid_cb_t
+    {
+      owlkin_frenzy_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        if ( s->n_targets == 1 )
+          druid_cb_t::trigger( a, s );
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = buff.owlkin_frenzy->name();
+    driver->spell_id = talent.moonkin_form->id();
+    driver->proc_chance_ =
+        find_effect( find_specialization_spell( "Owlkin Frenzy" ), A_ADD_FLAT_MODIFIER, P_PROC_CHANCE ).percent();
+    driver->custom_buff = buff.owlkin_frenzy;
+    special_effects.push_back( driver );
+
+    create_buff_callback<owlkin_frenzy_cb_t>( driver, buff.moonkin_form );
+  }
+
   if ( talent.umbral_embrace.ok() )
   {
     struct umbral_embrace_cb_t : public druid_cb_t
@@ -11149,22 +11205,13 @@ void druid_t::init_special_effects()
       }
     };
 
-    const auto driver    = new special_effect_t( this );
-    driver->name_str     = buff.smoldering_frenzy->data().name_cstr();
-    driver->spell_id     = buff.smoldering_frenzy->data().id();
+    const auto driver = new special_effect_t( this );
+    driver->name_str = buff.smoldering_frenzy->data().name_cstr();
+    driver->spell_id = buff.smoldering_frenzy->data().id();
     driver->proc_flags2_ = PF2_ALL_HIT;
     special_effects.push_back( driver );
 
-    auto cb = new smoldering_frenzy_cb_t( this, *driver );
-    cb->initialize();
-    cb->deactivate();
-
-    buff.smoldering_frenzy->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        cb->activate();
-      else
-        cb->deactivate();
-    } );
+    create_buff_callback<smoldering_frenzy_cb_t>( driver, buff.smoldering_frenzy );
   }
 
   // Guardian
@@ -11212,9 +11259,60 @@ void druid_t::init_special_effects()
     driver->name_str = "natures_guardian";
     driver->spell_id = mastery.natures_guardian->id();
     driver->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_HEAL;
-    special_effects.push_back( driver);
+    special_effects.push_back( driver );
 
     new natures_guardian_cb_t( this, *driver );
+  }
+
+  if ( talent.bristling_fur.ok() )
+  {
+    struct bristling_fur_cb_t : public druid_cb_t
+    {
+      gain_t* gain;
+      action_t* action;
+
+      bristling_fur_cb_t( druid_t* p, const special_effect_t& e )
+        : druid_cb_t( p, e ), gain( p->get_gain( "Bristling Fur" ) ), action( p->find_action( "bristling_fur" ) )
+      {}
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        // 1 rage per 1% of maximum health taken
+        p()->resource_gain( RESOURCE_RAGE, s->result_amount / p()->expected_max_health * 100, gain, action );
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = talent.bristling_fur->name_cstr();
+    driver->spell_id = talent.bristling_fur->id();
+    driver->cooldown_ = 0_ms;
+    special_effects.push_back( driver );
+
+    create_buff_callback<bristling_fur_cb_t>( driver, buff.bristling_fur );
+  }
+
+  if ( talent.dream_of_cenarius.ok() )
+  {
+    struct dream_of_cenarius_cb_t : public druid_cb_t
+    {
+      dream_of_cenarius_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        proc_chance = p()->cache.attack_crit_chance();
+
+        druid_cb_t::trigger( a, s );
+      }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = talent.dream_of_cenarius->name_cstr();
+    driver->spell_id = talent.dream_of_cenarius->id();
+    driver->cooldown_ = find_spell( 372523 )->duration();
+    driver->custom_buff = buff.dream_of_cenarius;
+    special_effects.push_back( driver );
+
+    new dream_of_cenarius_cb_t( this, *driver );
   }
 
   if ( talent.elunes_favored.ok() )
@@ -12406,25 +12504,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
   player_t::assess_damage_imminent_pre_absorb( school, dmg, s );
 
   if ( action_t::result_is_hit( s->result ) && s->result_amount > 0 )
-  {
-    // Guardian rage from melees
-    if ( specialization() == DRUID_GUARDIAN && !s->action->special && cooldown.rage_from_melees->up() )
-    {
-      resource_gain( RESOURCE_RAGE, spec.bear_form_passive->effectN( 3 ).base_value(), gain.rage_from_melees );
-      cooldown.rage_from_melees->start( cooldown.rage_from_melees->duration );
-    }
-
-    if ( buff.moonkin_form->check() && s->result_type == result_amount_type::DMG_DIRECT )
-      buff.owlkin_frenzy->trigger();
-
     buff.cenarion_ward->expire();
-
-    if ( buff.bristling_fur->up() )  // 1 rage per 1% of maximum health taken
-      resource_gain( RESOURCE_RAGE, s->result_amount / expected_max_health * 100, gain.bristling_fur );
-
-    if ( talent.dream_of_cenarius.ok() && s->result_type == result_amount_type::DMG_DIRECT )
-      buff.dream_of_cenarius->trigger( -1, buff_t::DEFAULT_VALUE(), cache.attack_crit_chance() );
-  }
 }
 
 // Target Data ==============================================================
