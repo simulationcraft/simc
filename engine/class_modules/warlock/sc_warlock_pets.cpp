@@ -147,6 +147,7 @@ void warlock_pet_t::create_buffs()
   buffs.fury_of_ruvaraad->quiet = true;
   buffs.nerzhuls_volition->quiet = true;
   buffs.demonic_power->quiet = true;
+  buffs.the_expendables->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
