@@ -2266,15 +2266,7 @@ namespace monk
           // The damage only affects the initial Blackout Kick (and any initial cleaved Blackout Kicks).
           // Buff is removed prior to Teaching of the Monastery Blackout Kick procs trigger.
           if ( p()->buff.blackout_reinforcement->up() )
-          {
             p()->buff.blackout_reinforcement->expire();
-
-            timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
-            p()->cooldown.fists_of_fury->adjust( cooldown_reduction );
-            p()->cooldown.rising_sun_kick->adjust( cooldown_reduction );
-            p()->cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
-            p()->cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
-          }
 
           // Teachings of the Monastery
           // Used by both Windwalker and Mistweaver
@@ -7217,6 +7209,18 @@ namespace monk
 
         buff_t::refresh( stacks, value, duration );
       }
+
+      void decrement( int stacks, double value = DEFAULT_VALUE() ) override
+      {
+        timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p().sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
+
+        p().cooldown.fists_of_fury->adjust( cooldown_reduction );
+        p().cooldown.rising_sun_kick->adjust( cooldown_reduction );
+        p().cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
+        p().cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
+
+        base_t::decrement( stacks, value );
+      }
     };
 
     // ===============================================================================
@@ -9034,7 +9038,13 @@ namespace monk
     if ( sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
     {
       create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
-                            []( monk_t * /*p*/, action_state_t * /*state*/ ) { return true; } );
+                            []( monk_t * p, action_state_t * /*state*/ ) {
+        
+        if ( p->bugs && p->buff.blackout_reinforcement->at_max_stacks() )
+          p->buff.blackout_reinforcement->decrement( 1 );
+
+        return true; 
+      } );
     }
 
     // ======================================
