@@ -99,5 +99,6 @@ aoe->add_action( "run_action_list,name=fallthru" );
 
 fallthru->add_action( "starfall,if=variable.is_aoe" );
 fallthru->add_action( "starsurge" );
+fallthru->add_action( "wild_mushroom,if=!variable.is_aoe" );
 fallthru->add_action( "sunfire,target_if=dot.moonfire.remains>remains*22%18" );
 fallthru->add_action( "moonfire" );
