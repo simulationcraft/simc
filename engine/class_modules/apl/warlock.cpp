@@ -63,7 +63,7 @@ void affliction( player_t* p )
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync)*(1-0.5*(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.ashes_of_the_embersoul)))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync)*(1-0.5*(trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.ashes_of_the_embersoul)))" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>3" );
+  precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>2" );
   precombat->add_action( "haunt" );
   precombat->add_action( "unstable_affliction,if=!talent.soul_swap" );
   precombat->add_action( "shadow_bolt" );
@@ -108,6 +108,7 @@ void affliction( player_t* p )
   aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<6&cooldown.summon_darkglare.up" );
   aoe->add_action( "soul_rot,if=variable.vt_up&variable.ps_up" );
   aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)" );
+  aoe->add_action( "corruption,target_if=min:remains,if=remains<5&!talent.seed_of_corruption" );
   aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<8&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5" );
   aoe->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
   aoe->add_action( "malefic_rapture,if=buff.umbrafire_kindling.up&(pet.darkglare.active|!talent.doom_blossom)" );
