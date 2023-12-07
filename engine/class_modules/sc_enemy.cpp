@@ -1469,8 +1469,8 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // A Normal Dungeon estimate was then added below LFR. Prior to this update, it was approximately 3.9, but the rest of the
   // values were a bit lower, so this one was also lowered.
   std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 3.6, 2.8, 2.1, 1.5, 1};
-  int aa_damage_base                                         = 830000;
-  int dummy_strike_base                                      = aa_damage_base * 1.5;
+  int aa_damage_base                                         = 1500000;
+  int dummy_strike_base                                      = aa_damage_base * 2;
   int background_spell_base                                  = aa_damage_base * 0.04;
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
@@ -1482,7 +1482,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
          ",attack_speed=2,cooldown=30,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( floor( background_spell_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
          ",range=" + util::to_string( floor( background_spell_base / tank_dummy_index_scalar[ tank_dummy_index ] * 0.02 ) ) +
-         ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=30,bleed=1";
+         ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60,bleed=1";
   // pause periodically to mimic a tank swap
   als += "/pause_action,duration=30,cooldown=30,if=time>=30";
   return als;
