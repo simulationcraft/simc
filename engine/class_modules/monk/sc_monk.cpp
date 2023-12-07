@@ -9040,8 +9040,8 @@ namespace monk
       create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
                             []( monk_t * p, action_state_t * /*state*/ ) {
         
-        if ( p->bugs && p->buff.blackout_reinforcement->at_max_stacks() )
-          p->buff.blackout_reinforcement->decrement( 1 );
+//        if ( p->bugs && p->buff.blackout_reinforcement->at_max_stacks() )
+//          p->buff.blackout_reinforcement->decrement( 1 );
 
         return true; 
       } );
