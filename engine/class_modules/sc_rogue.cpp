@@ -3670,7 +3670,7 @@ struct between_the_eyes_t : public rogue_attack_t
         }
       }
 
-      if ( p()->talent.outlaw.crackshot->ok() && p()->stealthed( STEALTH_STANCE ) )
+      if ( p()->talent.outlaw.crackshot->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_SEPSIS ) )
       {
         p()->cooldowns.between_the_eyes->reset( false );
         dispatch->trigger_secondary_action( execute_state->target, cp_spend );
