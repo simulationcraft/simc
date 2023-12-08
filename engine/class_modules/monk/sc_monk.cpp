@@ -2685,8 +2685,10 @@ namespace monk
           if ( current_resource() == RESOURCE_CHI && cost() == 0 )
           {
             if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
-              if ( p()->buff.blackout_reinforcement->trigger() )
-                p()->proc.blackout_reinforcement_sck->occur();
+               // This effect does not proc from free spinning crane kicks while the buff is already up.
+              if ( !p()->buff.blackout_reinforcement->at_max_stacks() )
+                  if ( p()->buff.blackout_reinforcement->trigger() )
+                    p()->proc.blackout_reinforcement_sck->occur();
           }
 
           monk_melee_attack_t::execute();
@@ -7207,6 +7209,19 @@ namespace monk
       {
         p().proc.blackout_reinforcement_waste->occur();
 
+        if ( p().bugs )
+        {
+          // Blackout Reinforcement is also causing the CDR effect on refreshes from the RPPM "melee attack" procs.
+          // I am assuming this behavior is unintended so it's under the bugs flag for now
+          
+          timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p().sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
+
+          p().cooldown.fists_of_fury->adjust( cooldown_reduction );
+          p().cooldown.rising_sun_kick->adjust( cooldown_reduction );
+          p().cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
+          p().cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
+        }
+
         buff_t::refresh( stacks, value, duration );
       }
 
@@ -9039,10 +9054,6 @@ namespace monk
     {
       create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
                             []( monk_t * p, action_state_t * /*state*/ ) {
-        
-//        if ( p->bugs && p->buff.blackout_reinforcement->at_max_stacks() )
-//          p->buff.blackout_reinforcement->decrement( 1 );
-
         return true; 
       } );
     }
