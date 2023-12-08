@@ -2941,15 +2941,14 @@ struct dream_thorns_buff_t : public druid_absorb_buff_t
   {
     if ( player->bugs )
     {
-      // Shield = AP * 6.6 * HP_mastery * 1.08
+      // Shield = AP * 6.6 * HP_mastery * Vers
       // * AP only includes raw AP from gear Agility, and DOES NOT include weapon DPS
       // * Some temporary Agility works (potions) and some do not (Ashes)
       // * HP_mastery is the value for the health increase, NOT the value for the AP increase
-      // * The 1.08 multiplier can sometimes be as low as 1.05225 depending on your agility. It's unknown what causes it.
       auto ap = player->cache.attack_power();
       ap *= player->player_t::composite_attack_power_multiplier();
       ap *= 1.0 + player->cache.mastery_value();
-      ap *= 1.08;
+      ap *= 1.0 + player->cache.heal_versatility();
 
       return base_t::trigger( s, v * ap * coeff / rage_spent, c, d );
     }
