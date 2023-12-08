@@ -30,11 +30,8 @@ enum class profile_source
 };
 
 // Attack power computation modes for Battle for Azeroth+
-enum class attack_power_type
+enum class attack_power_type : unsigned
 {
-  // Let SimC figure out BfA attack power mode based on information assigned to the action object.
-  NONE = -1,
-
   // Default mode, Attack power is a composite of power and mainhand weapon dps
   WEAPON_MAINHAND = 0,
 
@@ -46,6 +43,9 @@ enum class attack_power_type
 
   // Attack power is purely based on player power (main stat)
   NO_WEAPON,
+
+  // Let SimC figure out BfA attack power mode based on information assigned to the action object.
+  NONE,
 
   DEFAULT = WEAPON_MAINHAND,
 };
@@ -1073,7 +1073,7 @@ enum cache_e
   CACHE_STR_INT,
   CACHE_SPELL_POWER,
   CACHE_ATTACK_POWER,
-  CACHE_TOTAL_MELEE_ATTACK_POWER,
+  CACHE_WEAPON_DPS,
   CACHE_EXP,
   CACHE_ATTACK_EXP,
   CACHE_HIT,
@@ -1154,6 +1154,9 @@ inline cache_e cache_from_stat( stat_e st )
         return CACHE_SPELL_POWER;
       case STAT_ATTACK_POWER:
         return CACHE_ATTACK_POWER;
+      case STAT_WEAPON_DPS:
+      case STAT_WEAPON_OFFHAND_DPS:
+        return CACHE_WEAPON_DPS;
       case STAT_EXPERTISE_RATING:
       case STAT_EXPERTISE_RATING2:
         return CACHE_EXP;

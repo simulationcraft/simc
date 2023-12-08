@@ -5169,9 +5169,9 @@ namespace monk
           return am;
         }
 
-        double composite_spell_power() const override
+        double composite_total_spell_power() const override
         {
-          return std::max( monk_spell_t::composite_spell_power(), monk_spell_t::composite_attack_power() );
+          return std::max( monk_spell_t::composite_total_spell_power(), monk_spell_t::composite_total_attack_power() );
         }
 
         double composite_persistent_multiplier( const action_state_t *s ) const override

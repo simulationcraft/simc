@@ -1443,9 +1443,9 @@ public:
     cast_state( s )->exec_type = this->exec_type;
   }
 
-  double composite_attack_power() const override
+  double composite_total_attack_power() const override
   {
-    double m = ab::composite_attack_power();
+    double m = ab::composite_total_attack_power();
 
     return m;
   }
@@ -2276,12 +2276,12 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     parse_options( options );
   }
 
-  double composite_spell_power() const override
+  double composite_total_spell_power() const override
   {
-    double sp = base_t::composite_spell_power();
+    double sp = base_t::composite_total_spell_power();
 
     if ( p()->main_hand_weapon.buff_type == EARTHLIVING_IMBUE )
-      sp += p()->main_hand_weapon.buff_value;
+      sp += p()->main_hand_weapon.buff_value * p()->composite_spell_power_multiplier();
 
     return sp;
   }

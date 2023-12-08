@@ -2525,8 +2525,7 @@ public:
 
   double attack_power() const
   {
-    return p()->composite_melee_attack_power_by_type( attack_power_type::DEFAULT ) *
-           p()->composite_attack_power_multiplier();
+    return p()->composite_total_attack_power_by_type( p()->default_ap_type() );
   }
 };
 
@@ -11053,7 +11052,7 @@ void druid_t::init_special_effects()
         if ( !buff->check() )
           buff->trigger();
 
-        auto cap = p()->cache.spell_power( SCHOOL_MAX ) * cap_coeff;
+        auto cap = p()->composite_total_spell_power( SCHOOL_MAX ) * cap_coeff;
         auto cur = buff->check_value();
 
         if ( cur < cap )

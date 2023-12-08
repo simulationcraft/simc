@@ -41,12 +41,14 @@ struct player_stat_cache_t
   const player_t* player;
   mutable std::array<bool, CACHE_MAX> valid;
   mutable std::array<bool, SCHOOL_MAX + 1> spell_power_valid, player_mult_valid, player_heal_mult_valid;
+  mutable std::array<bool, static_cast<unsigned>( attack_power_type::NONE )> weapon_attack_power_valid;
   // 'valid'-states
 private:
   // cached values
   mutable double _strength, _agility, _stamina, _intellect, _spirit;
   mutable std::array<double, SCHOOL_MAX + 1> _spell_power;
-  mutable double  _attack_power, _total_melee_attack_power;
+  mutable double  _attack_power;
+  mutable std::array<double, static_cast<unsigned>( attack_power_type::NONE )> _weapon_attack_power;
   mutable double _attack_expertise;
   mutable double _attack_hit, _spell_hit;
   mutable double _attack_crit_chance, _spell_crit_chance;
@@ -75,7 +77,7 @@ public:
   double spirit() const;
   double spell_power( school_e ) const;
   double attack_power() const;
-  double total_melee_attack_power() const;
+  double weapon_attack_power( attack_power_type ) const;
   double attack_expertise() const;
   double attack_hit() const;
   double attack_crit_chance() const;
@@ -109,39 +111,39 @@ public:
   double rppm_crit_coeff() const;
 #else
   // Passthrough cache stat functions for inactive cache
-  double strength() const  { return _player -> strength();  }
-  double agility() const   { return _player -> agility();   }
-  double stamina() const   { return _player -> stamina();   }
-  double intellect() const { return _player -> intellect(); }
-  double spirit() const    { return _player -> spirit();    }
-  double spell_power( school_e s ) const  { return _player -> composite_spell_power( s ); }
-  double attack_power() const             { return _player -> composite_melee_attack_power();   }
-  double total_melee_attack_power() const { return _player -> composite_melee_attack_power_by_type( _player -> default_ap_type() ); }
-  double attack_expertise() const { return _player -> composite_melee_expertise(); }
-  double attack_hit() const       { return _player -> composite_melee_hit();       }
-  double attack_crit_chance() const      { return _player -> composite_melee_crit_chance();      }
-  double attack_haste() const     { return _player -> composite_melee_haste();     }
-  double attack_speed() const     { return _player -> composite_melee_speed();     }
-  double spell_hit() const        { return _player -> composite_spell_hit();       }
-  double spell_crit_chance() const       { return _player -> composite_spell_crit_chance();      }
-  double spell_haste() const      { return _player -> composite_spell_haste();     }
-  double spell_speed() const      { return _player -> composite_spell_speed();     }
-  double dodge() const            { return _player -> composite_dodge();      }
-  double parry() const            { return _player -> composite_parry();      }
-  double block() const            { return _player -> composite_block();      }
-  double crit_block() const       { return _player -> composite_crit_block(); }
-  double crit_avoidance() const   { return _player -> composite_crit_avoidance();       }
-  double miss() const             { return _player -> composite_miss();       }
-  double armor() const            { return _player -> composite_armor();           }
-  double mastery() const          { return _player -> composite_mastery();   }
-  double mastery_value() const    { return _player -> composite_mastery_value();   }
-  double damage_versatility() const { return _player -> composite_damage_versatility(); }
-  double heal_versatility() const { return _player -> composite_heal_versatility(); }
-  double mitigation_versatility() const { return _player -> composite_mitigation_versatility(); }
-  double leech() const { return _player -> composite_leech(); }
-  double run_speed() const { return _player -> composite_run_speed(); }
-  double avoidance() const { return _player -> composite_avoidance(); }
-  double corruption() const { return _player -> composite_corruption(); }
-  double corruption_resistance() const { return _player -> composite_corruption_resistance(); }
+  double strength() const { return _player->strength(); }
+  double agility() const { return _player->agility(); }
+  double stamina() const { return _player->stamina(); }
+  double intellect() const { return _player->intellect(); }
+  double spirit() const { return _player->spirit(); }
+  double spell_power( school_e s ) const { return _player->composite_spell_power( s ); }
+  double attack_power() const { return _player->composite_melee_attack_power(); }
+  double weapon_attack_power( attack_power_type t ) const { return _player->composite_weapon_attack_power_by_type( t ); }
+  double attack_expertise() const { return _player->composite_melee_expertise(); }
+  double attack_hit() const { return _player->composite_melee_hit(); }
+  double attack_crit_chance() const { return _player->composite_melee_crit_chance(); }
+  double attack_haste() const { return _player->composite_melee_haste(); }
+  double attack_speed() const { return _player->composite_melee_speed(); }
+  double spell_hit() const { return _player->composite_spell_hit(); }
+  double spell_crit_chance() const { return _player->composite_spell_crit_chance(); }
+  double spell_haste() const { return _player->composite_spell_haste(); }
+  double spell_speed() const { return _player->composite_spell_speed(); }
+  double dodge() const { return _player->composite_dodge(); }
+  double parry() const { return _player->composite_parry(); }
+  double block() const { return _player->composite_block(); }
+  double crit_block() const { return _player->composite_crit_block(); }
+  double crit_avoidance() const { return _player->composite_crit_avoidance(); }
+  double miss() const { return _player->composite_miss(); }
+  double armor() const { return _player->composite_armor(); }
+  double mastery() const { return _player->composite_mastery(); }
+  double mastery_value() const { return _player->composite_mastery_value(); }
+  double damage_versatility() const { return _player->composite_damage_versatility(); }
+  double heal_versatility() const { return _player->composite_heal_versatility(); }
+  double mitigation_versatility() const { return _player->composite_mitigation_versatility(); }
+  double leech() const { return _player->composite_leech(); }
+  double run_speed() const { return _player->composite_run_speed(); }
+  double avoidance() const { return _player->composite_avoidance(); }
+  double corruption() const { return _player->composite_corruption(); }
+  double corruption_resistance() const { return _player->composite_corruption_resistance(); }
 #endif
 };
