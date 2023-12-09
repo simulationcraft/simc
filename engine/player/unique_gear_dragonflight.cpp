@@ -7983,8 +7983,7 @@ void fyralath_the_dream_render( special_effect_t& e )
         charge_impact( imp ),
         dot( d )
     {
-      channeled = tick_zero = true;
-      hasted_ticks          = false;
+      channeled = true;
       target_cache.is_valid = false;
       add_child( damage );
       add_child( charge_impact );
