@@ -7932,7 +7932,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   {
     double dot_increase;
     int dots_consumed;
-    explosive_rage_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
+    explosive_rage_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s )
       : generic_proc_t( effect, n, s ),
         dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
         dots_consumed( 0 )
@@ -7954,7 +7954,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   {
     double dot_increase;
     int dots_consumed;
-    rage_of_fyralath_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
+    rage_of_fyralath_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s )
       : generic_proc_t( effect, n, s ),
         dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
         dots_consumed( 0 )
@@ -7977,7 +7977,7 @@ void fyralath_the_dream_render( special_effect_t& e )
     action_t* damage;
     action_t* charge_impact;
     action_t* dot;
-    rage_channel_t( util::string_view n, const special_effect_t& e, action_t* dam, action_t* imp, action_t* d )
+    rage_channel_t( const special_effect_t& e, util::string_view n, action_t* dam, action_t* imp, action_t* d )
       : proc_spell_t( n, e.player, e.player->find_spell( 417132 ), e.item ),
         damage( dam ),
         charge_impact( imp ),
@@ -8025,11 +8025,10 @@ void fyralath_the_dream_render( special_effect_t& e )
     }
   };
 
-  auto charge        = new rage_of_fyralath_t( "rage_of_fyralath", e, e.player->find_spell( 417134 ) );
-  auto charge_impact = new explosive_rage_t( "explosive_rage", e, e.player->find_spell( 413584 ) );
-  auto dot =
-      create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
-  auto channel = new rage_channel_t( "rage_of_fyralath_channel", e, charge, charge_impact, dot );
+  auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ) );
+  auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ) );
+  auto dot           = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
+  auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot );
 
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;
