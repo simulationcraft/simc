@@ -2266,7 +2266,7 @@ namespace monk
           // The damage only affects the initial Blackout Kick (and any initial cleaved Blackout Kicks).
           // Buff is removed prior to Teaching of the Monastery Blackout Kick procs trigger.
           if ( p()->buff.blackout_reinforcement->up() )
-            p()->buff.blackout_reinforcement->expire();
+            p()->buff.blackout_reinforcement->decrement();
 
           // Teachings of the Monastery
           // Used by both Windwalker and Mistweaver
