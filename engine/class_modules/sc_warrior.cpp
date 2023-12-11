@@ -296,7 +296,6 @@ public:
     // Extra Spells To Make Things Work
 
     const spell_data_t* colossus_smash_debuff;
-    const spell_data_t* executioners_precision_debuff;
     const spell_data_t* fatal_mark_debuff;
     const spell_data_t* concussive_blows_debuff;
     const spell_data_t* recklessness_buff;
@@ -828,9 +827,8 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
-    bool avatar, sweeping_strikes, booming_voice, bloodcraze, executioners_precision,
-    recklessness, colossus_smash,
-    juggernaut, juggernaut_prot;
+    bool avatar, sweeping_strikes, booming_voice, bloodcraze,
+    recklessness, colossus_smash;
     // tier
     bool t29_arms_4pc;
     bool t29_prot_2pc;
@@ -848,11 +846,8 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         sweeping_strikes( false ),
         booming_voice( false ),
         bloodcraze( false ),
-        executioners_precision( false ),
         recklessness( false ),
         colossus_smash( false ),
-        juggernaut( false ),
-        juggernaut_prot( false ),
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
@@ -917,6 +912,7 @@ public:
 
     // Arms
     parse_buff_effects( p()->buff.merciless_bonegrinder );
+    parse_buff_effects( p()->buff.juggernaut );
 
     // Fury
     parse_buff_effects( p()->buff.ashen_juggernaut );
@@ -924,6 +920,7 @@ public:
     parse_buff_effects( p()->buff.slaughtering_strikes_rb );
 
     // Protection
+    parse_buff_effects( p()->buff.juggernaut_prot );
   }
 
   void apply_debuff_effects()
@@ -931,6 +928,7 @@ public:
     // Shared
 
     // Arms
+    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); }, p()->talents.arms.executioners_precision->effectN( 1 ).trigger(), p()->talents.arms.executioners_precision );
 
     // Fury
 
@@ -997,8 +995,6 @@ public:
     ab::apply_affecting_aura( p()->tier_set.t31_arms_2pc );
     ab::apply_affecting_aura( p()->tier_set.t31_fury_2pc );
 
-    affected_by.juggernaut               = ab::data().affected_by( p()->talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
-    affected_by.juggernaut_prot          = ab::data().affected_by( p()->talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.bloodcraze               = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes         = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
@@ -1006,7 +1002,6 @@ public:
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
     affected_by.booming_voice            = ab::data().affected_by( p()->talents.protection.demoralizing_shout->effectN( 3 ) );
     affected_by.colossus_smash           = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
-    affected_by.executioners_precision   = ab::data().affected_by( p()->spell.executioners_precision_debuff->effectN( 1 ) );
     affected_by.avatar                   = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
@@ -1075,11 +1070,6 @@ public:
     if ( affected_by.colossus_smash && td->debuffs_colossus_smash->check() )
     {
       m *= 1.0 + ( td->debuffs_colossus_smash->value() );
-    }
-
-    if ( affected_by.executioners_precision && td->debuffs_executioners_precision->check() )
-    {
-      m *= 1.0 + ( td->debuffs_executioners_precision->stack_value() );
     }
 
     if ( affected_by.arms_mastery && td->dots_deep_wounds->is_ticking() )
@@ -1160,16 +1150,6 @@ public:
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
-    }
-
-    if ( affected_by.juggernaut && p()->buff.juggernaut->up() )
-    {
-      dm *= 1.0 + p()->buff.juggernaut->stack_value();
-    }
-
-    if ( affected_by.juggernaut_prot && p()->buff.juggernaut_prot->up() )
-    {
-      dm *= 1.0 + p()->buff.juggernaut_prot->stack_value();
     }
 
     if ( affected_by.t29_arms_4pc && p()->buff.strike_vulnerabilities->up() )
@@ -7062,7 +7042,6 @@ void warrior_t::init_spells()
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
-  spell.executioners_precision_debuff = find_spell( 386633 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
   spell.sudden_death_arms       = find_spell( 52437 );
 
@@ -7752,10 +7731,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
                                ->set_default_value( p.spell.concussive_blows_debuff->effectN( 1 ).percent() )
                                ->set_duration( p.spell.concussive_blows_debuff->duration() );
 
-  debuffs_executioners_precision = make_buff( *this, "executioners_precision" ) 
-          ->set_duration( p.spell.executioners_precision_debuff->duration() )
-          ->set_max_stack( p.spell.executioners_precision_debuff->max_stacks() )
-          ->set_default_value( p.talents.arms.executioners_precision->effectN( 1 ).percent() );
+  debuffs_executioners_precision = make_buff( *this, "executioners_precision", p.talents.arms.executioners_precision->effectN( 1 ).trigger() );
 
   debuffs_fatal_mark = make_buff( *this, "fatal_mark" ) 
           ->set_duration( p.spell.fatal_mark_debuff->duration() )
@@ -7914,7 +7890,8 @@ void warrior_t::create_buffs()
 
   buff.juggernaut = make_buff( this, "juggernaut", talents.arms.juggernaut->effectN( 1 ).trigger() )
     ->set_default_value( talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-    ->set_duration( talents.arms.juggernaut->effectN( 1 ).trigger()->duration() );
+    ->set_duration( talents.arms.juggernaut->effectN( 1 ).trigger()->duration() )
+    ->set_cooldown( talents.arms.juggernaut->internal_cooldown() );
 
   buff.juggernaut_prot = make_buff( this, "juggernaut_prot", talents.protection.juggernaut->effectN( 1 ).trigger() )
     ->set_default_value( talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
