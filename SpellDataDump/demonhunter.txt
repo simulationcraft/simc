@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -872,7 +872,6 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=282602)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.38467 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
-Hotfixed         : AP Coefficient (0.43712 -> 0.384666)
 #2 (id=1042646)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
 Description      : $@spelldesc195072
@@ -3554,7 +3553,6 @@ Effects          :
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922)
                    Family Flags: 49, 61
-Hotfixed         : NEW EFFECT
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -4871,7 +4869,6 @@ Effects          :
 Description      : Blade Dance, Chaos Strike, $?a393029[Throw Glaive, ][]and Glaive Tempest reduce the cooldown of Eye Beam by ${$s1/1000}.1 sec.
 
 Name             : Immolation Aura (id=258920) [Spell Family (107)] 
-Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
@@ -5025,7 +5022,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=483180)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30888 | PvP Coefficient: 0.80000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.351 -> 0.30888)
 #2 (id=819793)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258925

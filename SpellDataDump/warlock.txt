@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -14936,7 +14936,6 @@ Effects          :
 #1 (id=1022308)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1856 (Label) | Target: Self (1)
                    Affected Spells (Label): Antoran Armaments (387496)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1022309)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1856 (Label) | Target: Self (1)
                    Affected Spells (Label): Antoran Armaments (387496)
@@ -17401,7 +17400,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098517)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 #2 (id=1109334)  : None (0)
                    Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000
 Description      : Consuming a Demonic Core applies a Doom Brand that explodes after $423583d, dealing $423584s1 Shadow damage to nearby enemies or ${$423584s1*(1+$s2/100)} Shadow damage to a single enemy. Hand of Gul'dan reduces the duration of your Doom Brands by ${$s1/1000} sec per Soul Shard spent.
@@ -17506,7 +17504,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1099704)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.68747 | PvP Coefficient: 0.40000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (0.5 -> 0.4)
 Description      : $@spelldesc422919
 
 Name             : Doomfiend (id=423585) 
@@ -17550,7 +17547,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1099963)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.55337 | PvP Coefficient: 0.40000 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.5 -> 0.4)
 #2 (id=1099964)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=1099965)  : Dummy (3)
@@ -17631,7 +17627,6 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
 Effects          :
 #1 (id=1100205)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56962 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 #2 (id=1100206)  : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02279 | PvP Coefficient: 0.50000 | Target: Unknown(25)
 Description      : Sends a searing bolt at the enemy, causing $s1 Fire damage, and an additional $o2 Fire damage over $d.

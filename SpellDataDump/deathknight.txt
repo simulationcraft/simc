@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2751,7 +2751,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=87374)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.67040 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.392 -> 1.6704)
 #2 (id=87375)    : Dummy (3)
                    Base Value: 2.5 | Scaled Value: 2.5 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Strikes for $s1 Physical damage and infects the target with $m2-$M2 Festering Wounds.
@@ -2867,7 +2866,6 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=341774)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.17250 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Enemy (6) -> AOE enemy (15)
-Hotfixed         : AP Coefficient (0.15 -> 0.1725)
 Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and nearby enemies.
 Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
 $sweepingclaw= ${0.54*($AP*0.15)*(1+$@versadmg)*3*$<mastery>}
@@ -4187,7 +4185,6 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17250 | PvP Coefficient: 0.95700 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.15 -> 0.1725), PvP Coefficient (1.1 -> 0.957)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -4331,7 +4328,6 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28053 | PvP Coefficient: 2.95000 | Target: Unknown(25)
-Hotfixed         : AP Coefficient (0.25047 -> 0.28053), PvP Coefficient (3.3 -> 2.95)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc194310
@@ -6363,10 +6359,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315517)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.27579 | PvP Coefficient: 0.92590 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.24624 -> 0.27579)
 #2 (id=872659)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11032 | PvP Coefficient: 0.92590 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.098496 -> 0.110316)
 Description      : $@spelldesc207317
 
 Name             : Epidemic (id=215969) [Spell Family (15)] 
@@ -6391,7 +6385,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=328301)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11032 | PvP Coefficient: 0.92590 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.098496 -> 0.110316)
 Description      : $@spelldesc207317
 
 Name             : Defile (id=218100) [Spell Family (15)] 
@@ -16086,7 +16079,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
                    Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311)
                    Family Flags: 59, 71
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc390275
 Tooltip          : Scourge Strike damage taken from $@auracaster is increased by $s1%.
 
@@ -16877,10 +16869,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Blood Boil (50842), Heart Strike (206930), Heart Strike (228645)
                    Family Flags: 18, 24
-Hotfixed         : Base Value (20 -> 10)
 #2 (id=1072384)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 5)
 #3 (id=1072385)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Heart Strike and Blood Boil deal $s1% increased damage and have a $s2% chance to grant Vampiric Blood for ${$s3/1000} sec.
