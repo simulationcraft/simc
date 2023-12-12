@@ -69,12 +69,13 @@ actions.cleave+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.cleave+=/arcane_torrent,if=(focus+focus.regen+30)<focus.max
 
 actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)
-actions.st+=/call_of_the_wild
 actions.st+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator
+actions.st+=/call_of_the_wild,if=!talent.wild_instincts
 actions.st+=/stampede
-actions.st+=/bestial_wrath
 actions.st+=/bloodshed
+actions.st+=/bestial_wrath
 actions.st+=/death_chakram
+actions.st+=/call_of_the_wild
 actions.st+=/kill_command
 actions.st+=/a_murder_of_crows
 actions.st+=/steel_trap
@@ -97,7 +98,7 @@ actions.trinkets+=/variable,name=trinket_2_stronger,value=!trinket.1.has_cooldow
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=(trinket.1.has_use_buff&(variable.sync_up&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|!variable.sync_up&(variable.trinket_1_stronger&(variable.sync_remains>trinket.1.cooldown.duration%2|trinket.2.has_use_buff&trinket.2.cooldown.remains>variable.sync_remains-15&trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains+40>fight_remains)|variable.trinket_2_stronger&(trinket.2.cooldown.remains&(trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.2.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.1.cooldown.duration%2|trinket.1.cooldown.duration<fight_remains&(variable.sync_remains+trinket.1.cooldown.duration>fight_remains)))|trinket.2.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.2.cooldown.duration%2)))|!trinket.1.has_use_buff&((!trinket.2.has_use_buff&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|trinket.2.has_use_buff&(variable.sync_remains>20|trinket.2.cooldown.remains>20)))|target.time_to_die<25&(variable.trinket_1_stronger|trinket.2.cooldown.remains))&pet.main.buff.frenzy.remains>trinket.1.cast_time
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=(trinket.2.has_use_buff&(variable.sync_up&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|!variable.sync_up&(variable.trinket_2_stronger&(variable.sync_remains>trinket.2.cooldown.duration%2|trinket.1.has_use_buff&trinket.1.cooldown.remains>variable.sync_remains-15&trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains+40>fight_remains)|variable.trinket_1_stronger&(trinket.1.cooldown.remains&(trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.1.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.2.cooldown.duration%2|trinket.2.cooldown.duration<fight_remains&(variable.sync_remains+trinket.2.cooldown.duration>fight_remains)))|trinket.1.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.1.cooldown.duration%2)))|!trinket.2.has_use_buff&((!trinket.1.has_use_buff&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|trinket.1.has_use_buff&(variable.sync_remains>20|trinket.1.cooldown.remains>20)))|target.time_to_die<25&(variable.trinket_2_stronger|trinket.1.cooldown.remains))&pet.main.buff.frenzy.remains>trinket.2.cast_time
 
-head=blazing_dreamstalkers_flamewaker_horns,id=207218,bonus_id=7187/1520,gem_id=192985,enchant=incandescent_essence
+head=blazing_dreamstalkers_flamewaker_horns,id=207218,bonus_id=7187/1520,gem_id=192919,enchant=incandescent_essence
 neck=ironshell_pendant,id=133359,bonus_id=7359/6646/8782/657/9367/5923/7981,gem_id=192985/192919/192919
 shoulders=blazing_dreamstalkers_finest_hunt,id=207216,bonus_id=7187/1520
 back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
@@ -115,10 +116,10 @@ main_hand=travelers_timesplitter,id=207986,bonus_id=7187/1611,enchant=high_inten
 
 # Gear Summary
 # gear_ilvl=488.60
-# gear_agility=9850
+# gear_agility=9775
 # gear_stamina=38875
-# gear_crit_rating=5058
-# gear_haste_rating=6080
+# gear_crit_rating=5128
+# gear_haste_rating=6047
 # gear_mastery_rating=3272
 # gear_versatility_rating=263
 # gear_armor=7685
