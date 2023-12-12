@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52393 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -510,24 +510,25 @@ Velocity         : 35 yards/sec
 Duration         : 5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#5), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Blessing of Dusk (385126 effect#5), Seal of Alacrity (385425 effect#2), Improved Judgment (405461 effect#1)
-Labels           : 2579: Blessed Champion (403010 effect#2)
-                 : 2580: Divine Arbiter (404306 effect#1)
+Labels           : 2580: Divine Arbiter (404306 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #5, #11), Holy Paladin (137029 effects: #4, #9, #10, #31), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Mastery: Hand of Light (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2), Justification (377043 effect#1), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effect#3), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Zealot's Paragon (391142 effect#3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Judgment of Justice (403495 effect#2), Blades of Light (403664 effect#1), Paladin Retribution 10.1 Class Set 2pc (405549 effects: #1, #2), Judge, Jury and Executioner (405607 effect#1), Adjudication (406157 effect#1), Awakening (414193 effects: #1, #2), Initial Paladin (417383 effects: #1, #2)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ x....... ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Always AOE Line of Sight (186), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=11347)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.61054 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1052464)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1124674)  : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30527 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Judges the target, dealing $s1 $?s403664[Holystrike][Holy] damage$?s231663[, and causing them to take $197277s1% increased damage from your next Holy Power ability.][.]$?s315867[
 
 |cFFFFFFFFGenerates $220637s1 Holy Power.][]
@@ -610,7 +611,7 @@ Talent Entry     : Generic [free=(Retribution), tree=class, row=1, col=3, max_ra
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
-Resource         : 0.6% Base Mana (0) (id=305324) w/ Holy Paladin (id=137029)[Hotfixed: Percent Cost (1 -> 0.6)]
+Resource         : 0.6% Base Mana (0) (id=305324) w/ Holy Paladin (id=137029)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -1055,10 +1056,10 @@ Name             : Crusader Strike (id=35395) [Spell Family (10)]
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
-Resource         : 1.6% Base Mana (0) (id=192453) w/ Initial Paladin (id=417383)[Hotfixed: Aura Id (0 -> 417383)]
-Resource         : 0.6% Base Mana (0) (id=305973) w/ Holy Paladin (id=137029)[Hotfixed: NEW POWER]
-Resource         : 1.6% Base Mana (0) (id=305974) w/ Retribution Paladin (id=137027)[Hotfixed: NEW POWER]
-Resource         : 1.6% Base Mana (0) (id=305975) w/ Protection Paladin (id=137028)[Hotfixed: NEW POWER]
+Resource         : 1.6% Base Mana (0) (id=192453) w/ Initial Paladin (id=417383)
+Resource         : 0.6% Base Mana (0) (id=305973) w/ Holy Paladin (id=137029)
+Resource         : 1.6% Base Mana (0) (id=305974) w/ Retribution Paladin (id=137027)
+Resource         : 1.6% Base Mana (0) (id=305975) w/ Protection Paladin (id=137028)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3190,7 +3191,6 @@ Effects          :
                    Base Value: 116 | Scaled Value: 116 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
-Hotfixed         : Base Value (80 -> 116)
 #20 (id=1083883)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
@@ -3233,7 +3233,6 @@ Hotfixed         : Base Value (80 -> 116)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395)
                    Family Flags: 47
-Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 Name             : Glyph of Pillar of Light (id=146959) [Spell Family (10), Passive, Hidden] 
@@ -5956,6 +5955,7 @@ Effects          :
 Description      : Experience gains from killing Demons increased by $s1%.
 
 Name             : Wake of Ashes (id=255937) [Spell Family (10)] 
+Hotfixed         : Attributes
 Talent Entry     : Retribution [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holyfire
@@ -5967,13 +5967,13 @@ Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin 
 Family Flags     : 27, 65, 68
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=478180)   : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.92600 | PvP Coefficient: 0.72727 | Radius: 14 yards | Target: Cone Front (104)
@@ -16242,7 +16242,6 @@ Effects          :
                    Family Flags: 47, 63, 70
 #2 (id=1054089)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 2579 (Label) | Target: Self (1)
-                   Affected Spells (Label): Judgment (20271)
 #3 (id=1072496)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1072587)  : Apply Aura (6) | Dummy (4)
@@ -16521,6 +16520,7 @@ Effects          :
 Description      : Blade of Justice and Expurgation now deal Holy damage.
 
 Name             : Truth's Wake (id=403695) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -16532,13 +16532,13 @@ Triggered by     : Wake of Ashes (255937)
 Family Flags     : 27, 65, 68
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
-                 : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
+                 : ........ .......x ....x... ........   ........ .....x.. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ .x...... ........   
-                 : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+                 : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1050802)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 14 yards | Mechanic: Snare | Target: Cone Front (104)
@@ -17066,6 +17066,7 @@ Effects          :
 Description      : Divine Storm, Divine Hammer and Consecration now deal Radiant damage and your abilities that deal Radiant damage deal $s2% increased damage.
 
 Name             : Wake of Ashes (id=405345) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -17075,13 +17076,13 @@ Triggered by     : Wake of Ashes (255937)
 Family Flags     : 27, 65, 68
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
-                 : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
+                 : ........ .......x ....x... ........   ........ .....x.. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ .x...... ........   
-                 : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+                 : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1053556)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.47900 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Target: Custom (18) -> Cone Front (104)
@@ -17970,6 +17971,7 @@ Effects          :
 Description      : Divine Storm heals you for $s1% of your maximum health.
 
 Name             : Searing Light (id=407478) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -17980,13 +17982,13 @@ Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin 
 Family Flags     : 27, 65
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1070974)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
