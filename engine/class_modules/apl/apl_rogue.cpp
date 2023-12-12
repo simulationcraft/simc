@@ -251,7 +251,7 @@ void outlaw( player_t* p )
 
   stealth->add_action( "blade_flurry,if=talent.subterfuge&talent.hidden_opportunity&spell_targets>=2&buff.blade_flurry.remains<gcd", "Stealth" );
   stealth->add_action( "cold_blood,if=variable.finish_condition" );
-  stealth->add_action( "between_the_eyes,if=variable.finish_condition&talent.crackshot" );
+  stealth->add_action( "between_the_eyes,if=variable.finish_condition&talent.crackshot&(!buff.shadowmeld.up|stealthed.rogue)", "High priority Between the Eyes for Crackshot, except not directly out of Shadowmeld" );
   stealth->add_action( "dispatch,if=variable.finish_condition" );
   stealth->add_action( "pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.stack>=6&(buff.broadside.up&combo_points<=1|buff.greenskins_wickers.up)", "2 Fan the Hammer Crackshot builds can consume Opportunity in stealth with max stacks, Broadside, and low CPs, or with Greenskins active" );
   stealth->add_action( "ambush,if=talent.hidden_opportunity" );
@@ -263,7 +263,7 @@ void outlaw( player_t* p )
   stealth_cds->add_action( "variable,name=shadow_dance_condition,value=buff.between_the_eyes.up&(!talent.hidden_opportunity|!buff.audacity.up&(talent.fan_the_hammer.rank<2|!buff.opportunity.up))&!talent.crackshot", "Hidden Opportunity builds without Crackshot use Dance if Audacity and Opportunity are not active" );
   stealth_cds->add_action( "shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)&(!talent.hidden_opportunity|!cooldown.vanish.ready)" );
   stealth_cds->add_action( "shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))", "Keep it Rolling builds without Crackshot use Dance at finish condition but hold it for an upcoming Keep it Rolling" );
-  stealth_cds->add_action( "shadowmeld,if=talent.crackshot&variable.finish_condition|!talent.crackshot&(talent.count_the_odds&variable.finish_condition|talent.hidden_opportunity)" );
+  stealth_cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready&!cooldown.shadow_dance.ready" );
 }
 //outlaw_apl_end
 

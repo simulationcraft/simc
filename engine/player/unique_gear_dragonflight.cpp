@@ -7135,156 +7135,130 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 // Effect 3 On-Use Absorb
 // Effect 4 On-Use Enemy Tick
 
-// 425461 Self Damage
-// 425461 Enemy Damage
+// 425461 Passive Damage
 // 422750 On-Use Debuff
 // 425571 On-Use Absorb
-// 425703 Self Damage (On-Use)
 // 425701 Enemy Damage (On-Use)
 void fyrakks_tainted_rageheart( special_effect_t& effect )
 {
-  struct tainted_heart_t : public proc_spell_t
+  // Set up passive effect
+  struct tainted_heart_t : public generic_proc_t
   {
-    struct self_damage_t : public generic_aoe_proc_t
+    tainted_heart_t( const special_effect_t& e, std::string_view n, const spell_data_t* values )
+      : generic_proc_t( e, n, values->effectN( 5 ).trigger() )
     {
-      self_damage_t( const special_effect_t& e )
-        : generic_aoe_proc_t( e, "tainted_heart_self_damage", e.player->find_spell( 425461 ) )
+      background = true;
+      base_dd_min = base_dd_max = values->effectN( 1 ).average( e.item );
+    }
+  };
+
+  auto p_driver = effect.player->find_spell( 422652 );
+
+  auto p_dam = create_proc_action<tainted_heart_t>( "tainted_heart", effect, "tainted_heart", p_driver );
+  p_dam->aoe = p_driver->max_targets() - 1;
+
+  auto p_self = create_proc_action<tainted_heart_t>( "tainted_heart_self", effect, "tainted_heart_self", p_driver );
+  p_self->aoe = 0;
+  p_self->crit_bonus = 0.5;
+  p_self->target = effect.player;
+  p_self->stats->type = stats_e::STATS_NEUTRAL;
+
+  effect.player->register_combat_begin(
+      [ p_dam, p_self, period = p_driver->effectN( 5 ).period() ]( player_t* p ) {
+        make_repeating_event( *p->sim, period, [ p_dam, p_self, p ] {
+          if ( p->in_combat )
+          {
+            p_self->execute();
+            p_dam->execute();
+          }
+        } );
+      } );
+
+  // Set up active effect
+  struct shadowflame_rage_self_t : public generic_proc_t
+  {
+    action_t* missile;
+
+    shadowflame_rage_self_t( const special_effect_t& e, const spell_data_t* values )
+      : generic_proc_t( e, "shadowflame_rage_self", e.driver() )
+    {
+      // the self dot is parsed into this action
+      stats->type = stats_e::STATS_NEUTRAL;
+      base_td = values->effectN( 2 ).average( e.item );
+      cooldown->duration = 0_ms;
+      target = e.player;
+
+      // tick triggers missile on random target which triggers aoe on impact
+      auto missile_spell = e.trigger()->effectN( 1 ).trigger();
+      missile =
+          create_proc_action<generic_proc_t>( "shadowflame_lash_missile", e, "shadowflame_lash_missile", missile_spell );
+      missile->radius = e.trigger()->effectN( 1 ).radius_max();
+      missile->background = missile->dual = true;
+
+      auto damage_spell = missile_spell->effectN( 1 ).trigger();
+      missile->impact_action =
+          create_proc_action<generic_aoe_proc_t>( "shadowflame_lash", e, "shadowflame_lash", damage_spell, true );
+      missile->impact_action->base_dd_min = missile->impact_action->base_dd_max = values->effectN( 4 ).average( e.item );
+    }
+
+    // TODO: confirm this does trigger healing procs like all other cases of self-dot
+    result_amount_type amount_type( const action_state_t*, bool ) const override
+    {
+      return result_amount_type::HEAL_OVER_TIME;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      generic_proc_t::tick( d );
+
+      // select random target in range
+      auto& tl = missile->target_list();
+      if ( tl.size() )
       {
-        background  = true;
-        aoe = 1;
-        target      = e.player;
-        stats->type = stats_e::STATS_NEUTRAL;
-        callbacks   = false;  // TODO: confirm if this triggers any proc flags.
-        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 1 ).average( e.item );
+        rng().shuffle( tl.begin(), tl.end() );
+        missile->execute_on_target( tl.front() );
       }
-    };
+    }
+  };
 
-    struct enemy_damage_t : public generic_aoe_proc_t
+  // Set up proxy holder action
+  struct shadowflame_rage_t : public action_t
+  {
+    action_t* rage;
+    absorb_buff_t* shield;
+
+    shadowflame_rage_t( const special_effect_t& e, const spell_data_t* values )
+      : action_t( action_e::ACTION_OTHER, "shadowflame_rage", e.player, e.driver() )
     {
-      enemy_damage_t( const special_effect_t& e )
-        : generic_aoe_proc_t( e, "tainted_heart_enemy_damage", e.player->find_spell( 425461 ) )
-      {
-        // TODO: Add split/aoe behaviour.
-        aoe              = 8;
-        split_aoe_damage = false;
-        aoe_damage_increase = false;
-        background       = true;
-        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 1 ).average( e.item );
-      }
-    };
+      callbacks = false;
 
-    self_damage_t* self_damage;
-    enemy_damage_t* enemy_damage;
+      rage = create_proc_action<shadowflame_rage_self_t>( "shadowflame_rage_self", e, values );
+      add_child( debug_cast<shadowflame_rage_self_t*>( rage )->missile->impact_action );
 
-    tainted_heart_t( const special_effect_t& e ) : proc_spell_t( "tainted_heart", e.player, e.driver(), e.item )
+      shield = create_buff<absorb_buff_t>( e.player, data().effectN( 3 ).trigger() )
+        ->set_absorb_source( e.player->get_stats( "Wall of Hate" ) )
+        ->set_absorb_gain( e.player->get_gain( "Wall of Hate" ) );
+      shield->set_default_value( values->effectN( 3 ).average( e.item ) );
+    }
+
+    result_e calculate_result( action_state_t* ) const override
     {
-      self_damage  = new self_damage_t( e );
-      enemy_damage = new enemy_damage_t( e );
-
-      add_child( self_damage );
-      add_child( enemy_damage );
+      return result_e::RESULT_NONE;
     }
 
     void execute() override
     {
-      self_damage->execute();
-      enemy_damage->execute();
-      proc_spell_t::execute();
+      action_t::execute();
+
+      shield->trigger();
+      shield->absorb_source->add_execute( 0_ms, player );
+
+      rage->execute();
     }
   };
 
-  struct shadowflame_rage_t : public proc_spell_t
-  {
-    struct self_damage_t : public generic_aoe_proc_t
-    {
-      self_damage_t( const special_effect_t& e )
-        : generic_aoe_proc_t( e, "shadowflame_rage_self_damage", e.player->find_spell( 425703 ) )
-      {
-        background  = true;
-        aoe = 0;
-        split_aoe_damage = false;
-        aoe_damage_increase = false;
-        target      = e.player;
-        stats->type = stats_e::STATS_NEUTRAL;
-        callbacks   = false;  // TODO: confirm if this triggers any proc flags.
-        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 2 ).average( e.item );
-      }
-    };
-
-    struct enemy_damage_t : public generic_aoe_proc_t
-    {
-      enemy_damage_t( const special_effect_t& e )
-        : generic_aoe_proc_t( e, "shadowflame_lash_enemy", e.player->find_spell( 425701 ), true )
-      {
-        background          = true;
-        aoe_damage_increase = true;
-        base_dd_min = base_dd_max = e.player->find_spell( 422652 )->effectN( 4 ).average( e.item );
-      }
-    };
-
-    self_damage_t* self_damage;
-    enemy_damage_t* enemy_damage;
-
-    shadowflame_rage_t( const special_effect_t& e )
-      : proc_spell_t( "shadowflame_rage", e.player, e.player->find_spell( 422750 ), e.item )
-    {
-      self_damage  = new self_damage_t( e );
-      enemy_damage = new enemy_damage_t( e );
-
-      add_child( self_damage );
-      add_child( enemy_damage );
-    }
-
-    void execute() override
-    {
-      self_damage->execute();
-      enemy_damage->execute();
-      proc_spell_t::execute();
-    }
-  };
-
-  struct on_use_t : public proc_spell_t
-  {
-    action_t* shadowflame_rage_action;
-    buff_t* shadowflame_rage;
-    buff_t* wall_of_hate;
-
-    on_use_t( const special_effect_t& effect )
-      : proc_spell_t( "shadowflame_rage_use", effect.player, spell_data_t::nil(), effect.item )
-    {
-      shadowflame_rage_action = create_proc_action<shadowflame_rage_t>( "shadowflame_rage", effect );
-      shadowflame_rage =
-          make_buff( effect.player, "shadowflame_rage", effect.player->find_spell( 422750 ) )
-              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { shadowflame_rage_action->execute(); } );
-
-      wall_of_hate =
-          create_buff<absorb_buff_t>( effect.player, "wall_of_hate", effect.player->find_spell( 425571 ) )
-              ->set_absorb_source( effect.player->get_stats( "wall_of_hate" ) )
-              ->set_default_value( effect.player->find_spell( 422652 )->effectN( 3 ).average( effect.item ) );
-    }
-
-    void execute() override
-    {
-      shadowflame_rage->trigger();
-      wall_of_hate->trigger();
-      proc_spell_t::execute();
-    }
-  };
-
-  action_t* tainted_heart_action;
-  buff_t* tainted_heart;
-
-  tainted_heart_action = create_proc_action<tainted_heart_t>( "tainted_heart", effect );
-  tainted_heart        = make_buff( effect.player, "tainted_heart", effect.player->find_spell( 422652 ) )
-                      ->set_tick_callback( [ tainted_heart_action, effect ]( buff_t*, int, timespan_t ) {
-                        tainted_heart_action->execute();
-                      } );
-  effect.player->register_combat_begin( [ tainted_heart ]( player_t* ) { tainted_heart->trigger(); } );
-
-  action_t* on_use;
-
-  on_use                = create_proc_action<on_use_t>( "shadowflame_rage_use", effect );
-  effect.execute_action = on_use;
+  effect.execute_action = create_proc_action<shadowflame_rage_t>( "shadowflame_rage", effect, p_driver );
+  effect.execute_action->add_child( p_dam );
 }
 
 void fang_of_the_frenzied_nightclaw( special_effect_t& effect )
@@ -7958,7 +7932,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   {
     double dot_increase;
     int dots_consumed;
-    explosive_rage_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
+    explosive_rage_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s )
       : generic_proc_t( effect, n, s ),
         dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
         dots_consumed( 0 )
@@ -7980,7 +7954,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   {
     double dot_increase;
     int dots_consumed;
-    rage_of_fyralath_t( util::string_view n, const special_effect_t& effect, const spell_data_t* s )
+    rage_of_fyralath_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s )
       : generic_proc_t( effect, n, s ),
         dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
         dots_consumed( 0 )
@@ -8003,14 +7977,13 @@ void fyralath_the_dream_render( special_effect_t& e )
     action_t* damage;
     action_t* charge_impact;
     action_t* dot;
-    rage_channel_t( util::string_view n, const special_effect_t& e, action_t* dam, action_t* imp, action_t* d )
+    rage_channel_t( const special_effect_t& e, util::string_view n, action_t* dam, action_t* imp, action_t* d )
       : proc_spell_t( n, e.player, e.player->find_spell( 417132 ), e.item ),
         damage( dam ),
         charge_impact( imp ),
         dot( d )
     {
-      channeled = tick_zero = true;
-      hasted_ticks          = false;
+      channeled = true;
       target_cache.is_valid = false;
       add_child( damage );
       add_child( charge_impact );
@@ -8052,11 +8025,10 @@ void fyralath_the_dream_render( special_effect_t& e )
     }
   };
 
-  auto charge        = new rage_of_fyralath_t( "rage_of_fyralath", e, e.player->find_spell( 417134 ) );
-  auto charge_impact = new explosive_rage_t( "explosive_rage", e, e.player->find_spell( 413584 ) );
-  auto dot =
-      create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
-  auto channel = new rage_channel_t( "rage_of_fyralath_channel", e, charge, charge_impact, dot );
+  auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ) );
+  auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ) );
+  auto dot           = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
+  auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot );
 
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;

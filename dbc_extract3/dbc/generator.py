@@ -9,6 +9,7 @@ from dbc.constants import Class
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet
 from dbc.filter import SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
 from dbc.filter import PermanentEnchantItemSet, ExpectedStatModSet, TraitSet, EmbellishmentSet, CharacterLoadoutSet
+from dbc.filter import TraitLoadoutSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -4918,6 +4919,36 @@ class CharacterLoadoutGenerator(DataGenerator):
             fields = loadout.field('id', 'id_class')
             fields += [str(spec_idx[loadout.id_class].index(loadout.id))]
             fields += cli.field('id_item')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class TraitLoadoutGenerator(DataGenerator):
+    def filter(self):
+        return TraitLoadoutSet(self._options).get()
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Trait Loadout data',
+            type = 'trait_loadout_data_t',
+            array = 'trait_loadout',
+            length = len(data))
+
+        for entry in sorted(data, key = lambda e: (e.ref('id_trait_tree_loadout').id_spec, e.order_index)):
+            fields = entry.ref('id_trait_tree_loadout').field('id_spec')
+
+            if entry.id_trait_node_entry != 0:
+                node_entry = entry
+            else:
+                node_entries = entry.ref('id_trait_node').child_refs('TraitNodeXTraitNodeEntry')
+                if len(node_entries) == 1:
+                    node_entry = node_entries[0]
+                else:
+                    node_entry = sorted(node_entries, key = lambda e: e.index)[0]
+
+            fields += node_entry.field('id_trait_node_entry')
+            fields += entry.field('num_points', 'order_index')
+
             self.output_record(fields)
 
         self.output_footer()

@@ -60,7 +60,7 @@ actions.aoe+=/festering_strike,target_if=max:debuff.festering_wound.stack,if=!va
 actions.aoe+=/death_coil,if=!variable.pooling_runic_power&!talent.epidemic
 
 # AoE Burst
-actions.aoe_burst=epidemic,if=(!talent.bursting_sores|rune<1|talent.bursting_sores&debuff.festering_wound.stack=0)&!variable.pooling_runic_power&(active_enemies>=6|runic_power.deficit<30|buff.festermight.stack=20)
+actions.aoe_burst=epidemic,if=(rune<1|talent.bursting_sores&death_knight.fwounded_targets=0)&!variable.pooling_runic_power&(active_enemies>=6|runic_power.deficit<30|buff.festermight.stack=20)
 actions.aoe_burst+=/wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1
 actions.aoe_burst+=/epidemic,if=!variable.pooling_runic_power|fight_remains<10
 actions.aoe_burst+=/death_coil,if=!variable.pooling_runic_power&!talent.epidemic
@@ -178,7 +178,7 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_
 finger2=seal_of_the_regal_loa,id=159458,bonus_id=3317/1514/6536/6646/6935,gem_id=192922,enchant=devotion_of_critical_strike_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 trinket2=mirror_of_fractured_tomorrows,id=207581,bonus_id=6536/1540/6646
-main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fallen_crusader
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=489.07

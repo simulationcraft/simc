@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -871,7 +871,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=282602)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.43712 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.38467 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
 #2 (id=1042646)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
 Description      : $@spelldesc195072
@@ -3549,6 +3549,10 @@ Effects          :
 #9 (id=1108068)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1676 | Target: Self (1)
                    Affected Spells (Category): Immolation Aura (258920)
+#10 (id=1123644)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Immolation Aura (258921), Immolation Aura (258922)
+                   Family Flags: 49, 61
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -4880,7 +4884,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Agonizing Flames (207548 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Any Means Necessary (388114 effect#1), Demon Hide (428241 effects: #1, #3)
-Family Flags     : 11, 32, 85
+Family Flags     : 11, 32, 85, 94
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4925,7 +4929,7 @@ Name             : Immolation Aura (id=258921) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 11, 16, 49, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4947,7 +4951,7 @@ Name             : Immolation Aura (id=258922) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3)
 Triggered by     : Immolation Aura (258920)
 Family Flags     : 11, 16, 61, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
@@ -5017,7 +5021,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=483180)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35100 | PvP Coefficient: 0.80000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30888 | PvP Coefficient: 0.80000 | Radius: 0 - 12 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=819793)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258925
@@ -13849,10 +13853,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1109362)  : Apply Aura (6) | Dummy (4)
                    Base Value: 777 | Scaled Value: 777 | PvP Coefficient: 4.28960 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 4.2896)
 #3 (id=1109363)  : Apply Aura (6) | Dummy (4)
                    Base Value: 17 | Scaled Value: 17 | PvP Coefficient: 0.23530 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.235295)
 Description      : Your Chaos damage has a ${$s2/100}.2% chance to be increased by $s3%, occurring up to $m1 total $Ltime:times;.
 
 Name             : Chaotic Disposition (id=428493) [Spell Family (8)] 

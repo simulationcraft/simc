@@ -9411,7 +9411,7 @@ void death_knight_t::create_pets()
       pets.apoc_ghouls.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
 
-      if ( talent.unholy.magus_of_the_dead.ok() )
+      if ( talent.unholy.magus_of_the_dead.ok() || sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B2 ) )
       {
         pets.apoc_magus.set_creation_callback(
           [] ( death_knight_t* p ) { return new pets::magus_pet_t( p, "apoc_magus" ); });
@@ -11243,7 +11243,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
-  
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2023-11-27", "Virulent Plague Damage increased by 15%", 281049, hotfix::HOTFIX_FLAG_LIVE )
@@ -11282,7 +11282,7 @@ struct death_knight_module_t : public module_t {
       .modifier( 0.1725 )
       .verification_value( 0.15 );
   }
-  
+  */
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}

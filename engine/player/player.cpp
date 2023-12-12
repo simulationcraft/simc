@@ -1826,6 +1826,22 @@ void player_t::init_items()
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     matching_gear_slots[ i ] = !util::is_match_slot( i );
 
+  // Override with item slot overrides. Note this will completely replace any player-scoped item options
+  if ( is_player() )
+  {
+    for ( auto [ override_slot, override_str ] : sim->item_slot_overrides )
+    {
+      if ( auto slot = util::parse_slot_type( override_slot ); slot != SLOT_INVALID )
+      {
+        items[ slot ].options_str = override_str;
+      }
+      else
+      {
+        sim->error( "{} overriding unknown item slot '{}={}'; ignoring.", *this, override_slot, override_str );
+      }
+    }
+  }
+
   // We need to simple-parse the items first, this will set up some base information, and parse out
   // simple options
   for ( auto& item : items )

@@ -118,7 +118,7 @@ finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520,gem_id=192935,ench
 finger2=band_of_burning_thorns,id=207159,bonus_id=7187/1520,gem_id=192935,enchant=devotion_of_haste_3
 trinket1=rezans_gleaming_eye,id=158712,bonus_id=3317/1514
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-main_hand=fyralath_the_dreamrender,id=206448,ilevel=496,enchant=rune_of_the_fallen_crusader
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=489.07

@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52301 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1246,7 +1246,7 @@ Spell Type       : Magic
 Spell Level      : 28
 Cooldown         : 360 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Expeditious Fortification (388813 effect#1)
+Affecting spells : Expeditious Fortification (388813 effect#1), Mistweaver Monk (428200 effects: #13, #14)
 Family Flags     : 52, 53
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1263,9 +1263,8 @@ Effects          :
 #2 (id=1035050)  : Dummy (3)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.50000 | Target: Self (1)
 Description      : $@spelldesc120954
-Variables        : $health=$?s322960[${20}][${20}]
-$pvp=$?a134735[${1.5}][${1}]
-$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]
+Variables        : $health=$?s322960[${$115203s1}][${$115203s1}]
+$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]
 
 Name             : Energizing Elixir (id=115288) [Spell Family (53)] 
 Class            : Monk
@@ -2478,7 +2477,7 @@ Effects          :
 #1 (id=141067)   : Apply Aura (6) | Increase Health (34)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=153591)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.50000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=153607)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2498,9 +2497,8 @@ Description      : Turns your skin to stone for $120954d$?a388917[, increasing y
 Tooltip          : $?$w1>0[Health increased by $<health>%, damage taken reduced by $<damage>%.][]$?$w6>0[
 Effectiveness of Stagger increased by $115203s1%.][]$?$w8>0[
 Armor increased by $w8%. Dodge chance increased by $w7%.][]
-Variables        : $health=$?s322960[${20}][${20}]
-$pvp=$?a134735[${1.5}][${1}]
-$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]
+Variables        : $health=$?s322960[${$115203s1}][${$115203s1}]
+$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]
 
 Name             : Gift of the Naaru (desc=Racial) (id=121093) 
 Class            : Monk
@@ -2655,6 +2653,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Duration         : 10 seconds
 Cooldown         : 120 seconds
+Labels           : 3132: Mistweaver Monk (428200 effect#15), Mistweaver Monk (428200 effect#16)
 Family Flags     : 12
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2715,6 +2714,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Charges          : 2 (30 seconds cooldown)
 Category         : 1646
+Affecting spells : Mistweaver Monk (428200 effects: #11, #12)
 Family Flags     : 116
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -2772,6 +2772,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 90 seconds
+Labels           : 3133: Mistweaver Monk (428200 effect#17), Mistweaver Monk (428200 effect#18)
 Family Flags     : 12
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2971,7 +2972,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : PvP Enabling (96), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Taps immediately (215), Periodic Can Crit (265), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=156720)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.25700 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc123904
 
 Name             : Crackling Tiger Lightning Driver (id=123999) [Spell Family (53), Hidden] 
@@ -4070,7 +4071,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2425 (Label) | Target: Self (1)
                    Affected Spells (Label): Teachings of the Monastery (116645)
 #22 (id=1041505)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
 #23 (id=1042524)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -4090,7 +4091,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Family Flags: 36
 #29 (id=1102395)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2917 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 2917 (Label) | Target: Self (1)
                    Affected Spells (Label): Yu'lon's Grace (414131)
 #30 (id=1102396)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2917 (Label) | Target: Self (1)
@@ -4119,15 +4120,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.57143 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.57143 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727), Faeline Stomp (388201), Faeline Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Zen Pulse (405426), Press the Advantage (418360)
                    Family Flags: 103
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.57143 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.57143 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727), Faeline Stomp (388201), Faeline Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Zen Pulse (405426), Press the Advantage (418360)
                    Family Flags: 103
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.57143 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.57143 | Target: Self (1)
 #4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
@@ -4781,9 +4782,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.58500 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=289619)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.06086 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05477 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc191837
 Tooltip          : Restoring $w2 health every $t2 sec.
 
@@ -5345,7 +5346,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=290828)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0x1 | Target: Self (1)
                    Affected School(s): All
 Description      : Reduces the mana cost of your spells by $s1% for $d.
 Tooltip          : Mana cost of spells reduced by $s1%.
@@ -14722,7 +14723,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1023750)  : Apply Aura (6) | Proc Trigger Spell (42): Calming Coalescence
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 388220 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 388220 | Target: Self (1)
 Description      : Each time Soothing Mist heals, the absorb amount of your next Life Cocoon is increased by $s1%, stacking up to $388220u times.
 
 Name             : Calming Coalescence (id=388220) [Spell Family (53)] 
@@ -14746,7 +14747,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1023752)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
 Description      : $@spelldesc388218
 Tooltip          : Absorb amount of your next Life Cocoon is increased by $s1%.
 
@@ -15480,7 +15481,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1024606)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1027425)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Blackout Kicks strike ${$s2+1} targets and have an additional $s1% chance to reset the cooldown of your Rising Sun Kick while within your Faeline Stomp.
@@ -15834,9 +15835,8 @@ Effects          :
 Description      : Turns your skin to stone for $120954d, increasing your current and maximum health by $<health>% and reducing all damage you take by $<damage>%.
 
 Combines with other Fortifying Brew effects.
-Variables        : $health=$?s322960[${20}][${20}]
-$pvp=$?a134735[${1.5}][${1}]
-$damage=$?c1[${20*$<pvp>}][${20*$<pvp>}]
+Variables        : $health=$?s322960[${$115203s1}][${$115203s1}]
+$damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]
 
 Name             : Claw of the White Tiger (id=389541) [Spell Family (53)] 
 Class            : Monk
@@ -18664,10 +18664,9 @@ Attributes       : ........ ........ ........ ...x....   .....x.. ........ .....
                  : Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Is Buff (140), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1099439)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Friend (21)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Friend (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Ancient Teachings (388024), Yu'lon's Whisper (388044), Faeline Stomp (388207), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058)
                    Family Flags: 48, 102
-Hotfixed         : Sub Type (504 -> 283), Affects Spells
 Description      : $@spelldesc422889
 Tooltip          : Healing taken increased by $s1%.
 
@@ -18803,6 +18802,34 @@ Effects          :
 #10 (id=1118403)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 3074 (Label) | Target: Self (1)
                    Affected Spells (Label): Teachings of the Monastery (202090)
+#11 (id=1123748)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Healing Elixir (122281), Healing Elixir (428439)
+                   Family Flags: 116
+#12 (id=1123749)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Healing Elixir (122281), Healing Elixir (428439)
+                   Family Flags: 116
+#13 (id=1123750)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -6.6 | Scaled Value: -6.6 | PvP Coefficient: 0.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Fortifying Brew (115203)
+                   Family Flags: 52
+#14 (id=1123751)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 6.6 | Scaled Value: 6.6 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Fortifying Brew (115203)
+                   Family Flags: 52
+#15 (id=1123768)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3132 (Label) | Target: Self (1)
+                   Affected Spells (Label): Dampen Harm (122278)
+#16 (id=1123769)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.00000 | Misc Value: 12 | Misc Value 2: 3132 (Label) | Target: Self (1)
+                   Affected Spells (Label): Dampen Harm (122278)
+#17 (id=1123770)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3133 (Label) | Target: Self (1)
+                   Affected Spells (Label): Diffuse Magic (122783)
+#18 (id=1123771)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 3133 (Label) | Target: Self (1)
+                   Affected Spells (Label): Diffuse Magic (122783)
 Description      : Mistweaver Monk core passive
 
 Name             : Healing Elixir (id=428439) [Spell Family (53)] 
@@ -18812,6 +18839,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Charges          : 2 (30 seconds cooldown)
 Category         : 1646
+Affecting spells : Mistweaver Monk (428200 effects: #11, #12)
 Family Flags     : 116
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -18824,7 +18852,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), No Threat (42), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1109274)  : Direct Heal% (136)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Drink a healing elixir, healing you for $s1% of your maximum health.
 
 

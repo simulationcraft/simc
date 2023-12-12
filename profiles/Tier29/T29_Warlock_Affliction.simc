@@ -39,7 +39,7 @@ actions.precombat+=/variable,name=trinket_2_buff_duration,value=trinket.2.proc.a
 actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync)*(1-0.5*(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.ashes_of_the_embersoul)))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync)*(1-0.5*(trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.ashes_of_the_embersoul)))
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>3
+actions.precombat+=/seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>2
 actions.precombat+=/haunt
 actions.precombat+=/unstable_affliction,if=!talent.soul_swap
 actions.precombat+=/shadow_bolt
@@ -85,6 +85,7 @@ actions.aoe+=/unstable_affliction,if=remains<5
 actions.aoe+=/siphon_life,target_if=remains<5,if=active_dot.siphon_life<6&cooldown.summon_darkglare.up
 actions.aoe+=/soul_rot,if=variable.vt_up&variable.ps_up
 actions.aoe+=/seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)
+actions.aoe+=/corruption,target_if=min:remains,if=remains<5&!talent.seed_of_corruption
 actions.aoe+=/agony,target_if=min:remains,if=active_dot.agony<8&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5
 actions.aoe+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
 actions.aoe+=/malefic_rapture,if=buff.umbrafire_kindling.up&(pet.darkglare.active|!talent.doom_blossom)

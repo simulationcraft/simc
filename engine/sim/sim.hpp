@@ -150,6 +150,7 @@ struct sim_t : private sc_thread_t
   bool        enable_all_sets;
   int         progressbar_type;
   int         armory_retries;
+  std::unordered_map<std::string, std::string> item_slot_overrides;
 
   // Target options
   double      enemy_death_pct;

@@ -3785,6 +3785,8 @@ void sim_t::create_options()
   add_option( opt_bool( "save_talent_str", save_talent_str ) );
   add_option( opt_func( "talent_format", parse_talent_format ) );
   add_option( opt_int( "armory_retries", armory_retries ) );
+  add_option( opt_map( "override.item_slot.", item_slot_overrides ) );
+
   // Stat Enchants
   add_option( opt_float( "default_enchant_strength", enchant.attribute[ATTR_STRENGTH] ) );
   add_option( opt_float( "default_enchant_agility", enchant.attribute[ATTR_AGILITY] ) );
