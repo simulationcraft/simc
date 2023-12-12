@@ -827,7 +827,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
-    bool avatar, sweeping_strikes, booming_voice, bloodcraze,
+    bool avatar, sweeping_strikes, booming_voice,
     recklessness, colossus_smash;
     // tier
     bool t29_arms_4pc;
@@ -845,7 +845,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         avatar( false ),
         sweeping_strikes( false ),
         booming_voice( false ),
-        bloodcraze( false ),
         recklessness( false ),
         colossus_smash( false ),
         t29_arms_4pc ( false ),
@@ -915,6 +914,7 @@ public:
     parse_buff_effects( p()->buff.juggernaut );
 
     // Fury
+    parse_buff_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
     parse_buff_effects( p()->buff.ashen_juggernaut );
     parse_buff_effects( p()->buff.slaughtering_strikes_an );
     parse_buff_effects( p()->buff.slaughtering_strikes_rb );
@@ -995,7 +995,6 @@ public:
     ab::apply_affecting_aura( p()->tier_set.t31_arms_2pc );
     ab::apply_affecting_aura( p()->tier_set.t31_fury_2pc );
 
-    affected_by.bloodcraze               = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.sweeping_strikes         = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
@@ -1115,11 +1114,6 @@ public:
     if( affected_by.t30_fury_4pc )
     {
       c += p()->buff.merciless_assault->stack() * p()->find_spell( 409983 )->effectN( 3 ).percent();
-    }
-
-    if( affected_by.bloodcraze )
-    {
-      c += p()->buff.bloodcraze->stack_value();
     }
 
     if ( affected_by.recklessness && p()->buff.recklessness->up() )
@@ -7958,8 +7952,7 @@ void warrior_t::create_buffs()
                               ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
                               ->set_trigger_spell( test_of_might_tracker );
 
-  buff.bloodcraze = make_buff( this, "bloodcraze", find_spell( 393951 ) )
-    ->set_default_value( talents.fury.bloodcraze->effectN( 1 ).percent() );
+  buff.bloodcraze = make_buff( this, "bloodcraze", talents.fury.bloodcraze->effectN( 1 ).trigger() );
 
   const spell_data_t* hurricane_trigger = find_spell( 390577 );
   const spell_data_t* hurricane_buff   = find_spell( 390581 );
