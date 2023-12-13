@@ -26,6 +26,7 @@ def->add_action( "adaptive_swarm,target_if=max:(1+dot.adaptive_swarm_damage.stac
 def->add_action( "call_action_list,name=cooldown,if=dot.rip.ticking|spell_targets.swipe_cat>1" );
 def->add_action( "feral_frenzy,target_if=max:target.time_to_die,if=(combo_points<=2|combo_points<=3&buff.bs_inc.up)&(dot.rip.ticking|spell_targets.swipe_cat>1)&(!talent.dire_fixation.enabled|debuff.dire_fixation.up|spell_targets.swipe_cat>1)&(target.time_to_die>6|target.time_to_die=fight_remains)" );
 def->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(spell_targets.swipe_cat=1|!talent.primal_wrath.enabled|!buff.sabertooth.up)&!(variable.need_bt&active_bt_triggers=2)" );
+def->add_action( "heart_of_the_wild" );
 def->add_action( "run_action_list,name=berserk,if=buff.bs_inc.up" );
 def->add_action( "wait,sec=combo_points=5,if=combo_points=4&(buff.heart_of_the_wild.up|buff.predator_revealed.react)&energy.deficit>40&spell_targets.swipe_cat=1" );
 def->add_action( "call_action_list,name=finisher,if=combo_points>=4" );
