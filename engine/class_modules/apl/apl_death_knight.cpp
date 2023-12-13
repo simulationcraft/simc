@@ -447,7 +447,7 @@ void unholy( player_t* p )
 
   garg_setup->add_action( "apocalypse,if=debuff.festering_wound.stack>=4&(buff.commander_of_the_dead.up&pet.gargoyle.remains<23|!talent.commander_of_the_dead)", "Garg Setup" );
   garg_setup->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5" );
-  garg_setup->add_action( "any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>0" );
+  garg_setup->add_action( "any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>1" );
   garg_setup->add_action( "summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead.up|!talent.commander_of_the_dead&runic_power>=40" );
   garg_setup->add_action( "empower_rune_weapon,if=pet.gargoyle.active&pet.gargoyle.remains<=23" );
   garg_setup->add_action( "unholy_assault,if=pet.gargoyle.active&pet.gargoyle.remains<=23" );
