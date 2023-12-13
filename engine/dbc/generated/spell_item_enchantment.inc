@@ -1,4 +1,4 @@
-// Item enchantment data, wow build 10.2.0.52485
+// Item enchantment data, wow build 10.2.0.52545
 static const std::array<item_enchantment_data_t, 4648> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
@@ -4647,6 +4647,6 @@ static const std::array<item_enchantment_data_t, 4648> __spell_item_ench_data { 
   { 7009,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "10.2.0 FX Testing - Enchant Visualt - Emerald Dream" },
   { 7010,  39998, -4,   0,  30, 0, 0,   0,   0, {   5,   0,   0 }, {   16,    0,    0 }, {      5,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "+$k1 Intellect"                    },
   { 7032,      0,  0,   0,  70, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Verdant Crush"                     },
-  { 7052,      0,  0,   0,  60, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 425838,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 426327, "|cnITEM_EPIC_COLOR:Incandescent Essence|r" },
+  { 7052,      0,  0,  70,   0, 0, 550,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 425838,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 426327, "|cnITEM_EPIC_COLOR:Incandescent Essence|r" },
 } };
 
