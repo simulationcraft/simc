@@ -1288,6 +1288,9 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
   weapon_multiplier = 0.0;
   may_block = may_parry = may_dodge = false;
 
+  // force effect 1 to be used for direct ratios
+  parse_effect_data( data().effectN( 1 ) );
+
   // rank 2 multiplier
   if ( p->spells.judgment_2->ok() )
   {
