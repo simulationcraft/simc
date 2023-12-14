@@ -4312,10 +4312,10 @@ double player_t::composite_total_attack_power_by_type( attack_power_type type ) 
 
   auto mul = composite_attack_power_multiplier();
 
-  // truncated to integer
-  int base_ap = cache.attack_power() * mul;
-  // multiplier is rounded to 3 digits when applied to weapon AP
-  int weap_ap = cache.weapon_attack_power( type ) * static_cast<int>( mul * 1000 + 0.5 ) * 0.001;
+  // rounded to integer
+  int base_ap = std::round( cache.attack_power() * mul );
+  // multiplier is rounded to 3 digits
+  int weap_ap = std::round( cache.weapon_attack_power( type ) * std::round( mul * 1000 ) * 0.001 );
 
   return base_ap + weap_ap;
 }
@@ -4621,8 +4621,11 @@ double player_t::composite_total_spell_power( school_e school ) const
   {
     auto mul = composite_attack_power_multiplier();
 
-    int base_ap = cache.attack_power() * mul;
-    int weap_ap = cache.weapon_attack_power( attack_power_type::WEAPON_MAINHAND ) * mul;
+  // rounded to integer
+  int base_ap = std::round( cache.attack_power() * mul );
+  // multiplier is rounded to 3 digits
+  int weap_ap = std::round( cache.weapon_attack_power( attack_power_type::WEAPON_MAINHAND ) *
+                std::round( mul * 1000 ) * 0.001 );
 
     return current.spell_power_per_attack_power * ( base_ap + weap_ap );
   }
