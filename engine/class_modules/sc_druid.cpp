@@ -9780,7 +9780,7 @@ void druid_t::create_buffs()
   buff.heart_of_the_wild =
       make_buff_fallback( talent.heart_of_the_wild.ok(), this, "heart_of_the_wild", talent.heart_of_the_wild )
           ->set_cooldown( 0_ms );
-  if ( specialization() == DRUID_FERAL && !bugs )
+  if ( specialization() == DRUID_FERAL )
   {
     buff.heart_of_the_wild->set_period( 0_ms );
   }
