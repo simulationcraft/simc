@@ -50,7 +50,7 @@ finger1=band_of_burning_thorns,id=207159,bonus_id=6652/8783/8784/9599/9600/10244
 finger2=signet_of_the_last_elder,id=207162,bonus_id=6652/8783/8784/9599/9600/10244/10245/4800/4786/1520/9576/1808,ilevel=489,gem_id=192932,enchant_id=6550
 trinket1=nymues_unraveling_spindle,id=208615,ilevel=489
 trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
-main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6655
+main_hand=iridal_the_earths_master,id=208321,ilevel=489,enchant_id=6646
 
 save=T31_Warlock_Demonology.simc
 
