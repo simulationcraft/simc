@@ -9932,7 +9932,7 @@ struct invoke_external_buff_t : public action_t
     add_option( opt_string( "name", buff_str ) );
     add_option( opt_timespan( "duration", buff_duration ) );
     add_option( opt_int( "stacks", buff_stacks ) );
-    add_option( opt_bool( "use_pool", buff_stacks ) );
+    add_option( opt_bool( "use_pool", use_pool ) );
     parse_options( options_str );
 
     trigger_gcd           = timespan_t::zero();
