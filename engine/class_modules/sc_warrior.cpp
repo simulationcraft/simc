@@ -828,7 +828,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
     bool avatar, sweeping_strikes, booming_voice,
-    recklessness, colossus_smash;
+    recklessness;
     // tier
     bool t29_arms_4pc;
     bool t29_prot_2pc;
@@ -846,7 +846,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         sweeping_strikes( false ),
         booming_voice( false ),
         recklessness( false ),
-        colossus_smash( false ),
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
@@ -928,6 +927,8 @@ public:
     // Shared
 
     // Arms
+    //parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); }, p()->spell.colossus_smash_debuff );
+    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); }, p()->spell.colossus_smash_debuff, p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
     parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); }, p()->talents.arms.executioners_precision->effectN( 1 ).trigger(), p()->talents.arms.executioners_precision );
 
     // Fury
@@ -1000,7 +1001,6 @@ public:
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
     affected_by.booming_voice            = ab::data().affected_by( p()->talents.protection.demoralizing_shout->effectN( 3 ) );
-    affected_by.colossus_smash           = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
     affected_by.avatar                   = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
@@ -1065,11 +1065,6 @@ public:
     double m = ab::composite_target_multiplier( target );
 
     warrior_td_t* td = p()->get_target_data( target );
-
-    if ( affected_by.colossus_smash && td->debuffs_colossus_smash->check() )
-    {
-      m *= 1.0 + ( td->debuffs_colossus_smash->value() );
-    }
 
     if ( affected_by.arms_mastery && td->dots_deep_wounds->is_ticking() )
     {
@@ -1718,7 +1713,6 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.arms_mastery        = p()->mastery.deep_wounds_ARMS->ok();
-    affected_by.colossus_smash      = p()->talents.arms.colossus_smash->ok();
     affected_by.booming_voice       = p()->talents.protection.booming_voice->ok();
     affected_by.avatar = true;
     affected_by.t29_arms_4pc = true;
@@ -1729,6 +1723,8 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::reset();
     mh_lost_melee_contact = oh_lost_melee_contact = true;
   }
+
+
 
   timespan_t execute_time() const override
   {
@@ -1771,6 +1767,19 @@ struct melee_t : public warrior_attack_t
     am *= 1.0 + p()->buff.battering_ram->check_value();
 
     return am;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warrior_attack_t::composite_target_multiplier( target );
+
+    const warrior_td_t* td = p()->get_target_data( target );
+    if ( td && p() -> talents.arms.colossus_smash )
+    {
+      m *= 1.0 + td -> debuffs_colossus_smash -> check_stack_value();
+    }
+
+    return m;
   }
 
   double composite_hit() const override
@@ -3121,7 +3130,6 @@ struct colossus_smash_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      //td( execute_state->target )->debuffs_colossus_smash->trigger();
       p()->buff.test_of_might_tracker->trigger();
 
       if ( p()->talents.arms.in_for_the_kill->ok() )
@@ -7713,13 +7721,10 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
   dots_thunderous_roar = target->get_dot( "thunderous_roar_dot", &p );
 
-  debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
-                               ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent()
-                                                    * ( 1.0 + p.talents.arms.spiteful_serenity->effectN( 7 ).percent() ) )
-                               ->set_duration( p.spell.colossus_smash_debuff->duration()
-                                               + p.talents.arms.spiteful_serenity->effectN( 8 ).time_value()
-                                               + p.talents.arms.blunt_instruments->effectN( 2 ).time_value() )
-                               ->set_cooldown( timespan_t::zero() );
+  debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff )
+                            ->set_default_value_from_effect( 2 )
+                            ->apply_affecting_aura( p.talents.arms.spiteful_serenity )
+                            ->apply_affecting_aura( p.talents.arms.blunt_instruments );
 
   debuffs_concussive_blows = make_buff( *this , "concussive_blows" )
                                ->set_default_value( p.spell.concussive_blows_debuff->effectN( 1 ).percent() )
