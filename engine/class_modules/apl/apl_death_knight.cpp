@@ -421,7 +421,8 @@ void unholy( player_t* p )
   aoe_cooldowns->add_action( "vile_contagion,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=4&cooldown.any_dnd.remains<3", "AoE Cooldowns" );
   aoe_cooldowns->add_action( "summon_gargoyle" );
   aoe_cooldowns->add_action( "abomination_limb,if=rune<2|buff.festermight.stack>10|!talent.festermight|buff.festermight.up&buff.festermight.remains<12" );
-  aoe_cooldowns->add_action( "apocalypse,target_if=min:debuff.festering_wound.stack,if=talent.bursting_sores&debuff.festering_wound.up&(!death_and_decay.ticking&cooldown.death_and_decay.remains&rune<3|death_and_decay.ticking&rune=0)|!talent.bursting_sores&debuff.festering_wound.stack>=4|set_bonus.tier31_2pc&debuff.festering_wound.stack>=1" );
+  aoe_cooldowns->add_action( "apocalypse,target_if=min:debuff.festering_wound.stack,if=talent.bursting_sores&debuff.festering_wound.up&(!death_and_decay.ticking&cooldown.death_and_decay.remains&rune<3|death_and_decay.ticking&rune=0)" );
+  aoe_cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=!talent.bursting_sores&debuff.festering_wound.stack>=4|set_bonus.tier31_2pc&debuff.festering_wound.stack>=1" );
   aoe_cooldowns->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=2|buff.dark_transformation.up" );
   aoe_cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
   aoe_cooldowns->add_action( "dark_transformation,if=(cooldown.any_dnd.remains<10&talent.infected_claws&((cooldown.vile_contagion.remains|raid_event.adds.exists&raid_event.adds.in>10)&death_knight.fwounded_targets<active_enemies|!talent.vile_contagion)&(raid_event.adds.remains>5|!raid_event.adds.exists)|!talent.infected_claws)" );
@@ -447,7 +448,7 @@ void unholy( player_t* p )
 
   garg_setup->add_action( "apocalypse,if=debuff.festering_wound.stack>=4&(buff.commander_of_the_dead.up&pet.gargoyle.remains<23|!talent.commander_of_the_dead)", "Garg Setup" );
   garg_setup->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5" );
-  garg_setup->add_action( "any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>0" );
+  garg_setup->add_action( "any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>1" );
   garg_setup->add_action( "summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead.up|!talent.commander_of_the_dead&runic_power>=40" );
   garg_setup->add_action( "empower_rune_weapon,if=pet.gargoyle.active&pet.gargoyle.remains<=23" );
   garg_setup->add_action( "unholy_assault,if=pet.gargoyle.active&pet.gargoyle.remains<=23" );

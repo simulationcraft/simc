@@ -6403,7 +6403,10 @@ struct feral_spirit_spell_t : public shaman_spell_t
 
   feral_spirit_spell_t( shaman_t* player, util::string_view options_str,
                         feral_spirit_cast c = feral_spirit_cast::NORMAL ) :
-    shaman_spell_t( "feral_spirit", player, player->talent.feral_spirit ), type( c )
+    shaman_spell_t( "feral_spirit", player,
+                   c == feral_spirit_cast::NORMAL
+                   ? player->talent.feral_spirit
+                   : player->find_spell( 51533 ) ), type( c )
   {
     parse_options( options_str );
     harmful = true;

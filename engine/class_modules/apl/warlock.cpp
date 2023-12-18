@@ -111,10 +111,11 @@ void affliction( player_t* p )
   aoe->add_action( "corruption,target_if=min:remains,if=remains<5&!talent.seed_of_corruption" );
   aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<8&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5" );
   aoe->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
+  aoe->add_action( "drain_life,target_if=min:dot.soul_rot.remains,if=buff.inevitable_demise.stack>10&buff.soul_rot.up&buff.soul_rot.remains<=gcd.max&!talent.siphon_life" );
   aoe->add_action( "malefic_rapture,if=buff.umbrafire_kindling.up&(pet.darkglare.active|!talent.doom_blossom)" );
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   aoe->add_action( "malefic_rapture,if=((cooldown.summon_darkglare.remains>15|soul_shard>3)&!talent.sow_the_seeds)|buff.tormented_crescendo.up" );
-  aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
+  aoe->add_action( "drain_life,target_if=min:dot.soul_rot.remains,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>30" );
   aoe->add_action( "drain_soul,cycle_targets=1,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
   aoe->add_action( "drain_soul,if=buff.nightfall.react" );
   aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10" );
@@ -146,7 +147,7 @@ void affliction( player_t* p )
   cleave->add_action( "shadow_bolt,if=buff.nightfall.react" );
   cleave->add_action( "malefic_rapture,if=soul_shard>3" );
   cleave->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&fight_remains<4" );
-  cleave->add_action( "drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>10" );
+  cleave->add_action( "drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>30" );
   cleave->add_action( "agony,target_if=refreshable" );
   cleave->add_action( "corruption,target_if=refreshable" );
   cleave->add_action( "malefic_rapture,if=soul_shard>1" );
@@ -277,7 +278,7 @@ void demonology( player_t* p )
   tyrant->add_action( "call_action_list,name=racials,if=variable.pet_expire>0&variable.pet_expire<action.summon_demonic_tyrant.execute_time+(buff.demonic_core.down*action.shadow_bolt.execute_time+buff.demonic_core.up*gcd.max)+gcd.max,use_off_gcd=1" );
   tyrant->add_action( "potion,if=variable.pet_expire>0&variable.pet_expire<action.summon_demonic_tyrant.execute_time+(buff.demonic_core.down*action.shadow_bolt.execute_time+buff.demonic_core.up*gcd.max)+gcd.max,use_off_gcd=1" );
   tyrant->add_action( "summon_demonic_tyrant,if=variable.pet_expire>0&variable.pet_expire<action.summon_demonic_tyrant.execute_time+(buff.demonic_core.down*action.shadow_bolt.execute_time+buff.demonic_core.up*gcd.max)+gcd.max" );
-  tyrant->add_action( "implosion,if=pet_count>2&(buff.dreadstalkers.down&buff.grimoire_felguard.down&buff.vilefiend.down)&(active_enemies>3|active_enemies>2&talent.grand_warlocks_design)" );
+  tyrant->add_action( "implosion,if=pet_count>2&(buff.dreadstalkers.down&buff.grimoire_felguard.down&buff.vilefiend.down)&(active_enemies>3|active_enemies>2&talent.grand_warlocks_design)&!prev_gcd.1.implosion" );
   tyrant->add_action( "shadow_bolt,if=prev_gcd.1.grimoire_felguard&time>30&buff.nether_portal.down&buff.demonic_core.down" );
   tyrant->add_action( "power_siphon,if=buff.demonic_core.stack<4&(!buff.vilefiend.up|!talent.summon_vilefiend&(!buff.dreadstalkers.up))&(buff.nether_portal.down)" );
   tyrant->add_action( "shadow_bolt,if=buff.vilefiend.down&buff.nether_portal.down&buff.dreadstalkers.down&soul_shard<5-buff.demonic_core.stack" );

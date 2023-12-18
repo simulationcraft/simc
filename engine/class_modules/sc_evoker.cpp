@@ -150,6 +150,7 @@ struct evoker_t : public player_t
     timespan_t prepull_deep_breath_delay_stddev = timespan_t::from_seconds( 0.05 );
     bool naszuro_accurate_behaviour             = false;
     double naszuro_bounce_chance                = 0.85;
+    std::string force_clutchmates               = "";
   } option;
 
   // Action pointers
@@ -4754,7 +4755,8 @@ void evoker_t::init_finished()
     }
   }
 
-  if ( sim->player_no_pet_list.size() <= 5 )
+  if ( sim->player_no_pet_list.size() <= 5 && !util::str_compare_ci( option.force_clutchmates, "no" ) ||
+       util::str_compare_ci( option.force_clutchmates, "yes" ) )
   {
     close_as_clutchmates = true;
     sim->print_debug( "{} Activating Close As Clutchmates", *this );
@@ -5344,6 +5346,7 @@ void evoker_t::create_options()
       opt_timespan( "evoker.prepull_deep_breath_delay_stddev", option.prepull_deep_breath_delay_stddev, 0_s, 1.5_s ) );
   add_option( opt_float( "evoker.naszuro_bounce_chance", option.naszuro_bounce_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "evoker.naszuro_accurate_behaviour", option.naszuro_accurate_behaviour ) );
+  add_option( opt_string( "evoker.force_clutchmates", option.force_clutchmates ) );
 }
 
 void evoker_t::analyze( sim_t& sim )

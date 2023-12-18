@@ -171,7 +171,7 @@ actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dar
 actions.trinkets+=/use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex
 
 head=crest_of_lunar_communion,id=207281,ilevel=489,gem_id=192925,enchant_id=7052
-neck=eye_of_the_rising_flame,id=207163,ilevel=489,gem_id=192985/192925/192925
+neck=raven_filigree_pendant,id=134499,ilevel=489,gem_id=192985/192925/192925
 shoulders=shoulderguardians_of_lunar_communion,id=207279,ilevel=489
 back=vibrant_wildercloth_shawl,id=193511,bonus_id=8932/8960,ilevel=486,crafted_stats=36/49
 chest=vesture_of_the_smoldering_serpent,id=207121,ilevel=489,enchant=waking_stats_3
@@ -184,7 +184,7 @@ finger1=band_of_burning_thorns,id=207159,ilevel=489,gem_id=192925,enchant=devoti
 finger2=archdruids_tainted_seal,id=134487,ilevel=489,gem_id=192925,enchant=devotion_of_mastery_3
 trinket1=pips_emerald_friendship_badge,id=207168,ilevel=489
 trinket2=belorrelos_the_suncaller,id=207172,ilevel=489
-main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=489,enchant=sophic_devotion_3
+main_hand=vakash_the_shadowed_inferno,id=207788,ilevel=489,enchant=wafting_devotion_3
 off_hand=tricksters_captivating_chime,id=207796,ilevel=489
 
 # Gear Summary
@@ -192,9 +192,9 @@ off_hand=tricksters_captivating_chime,id=207796,ilevel=489
 # gear_stamina=38900
 # gear_intellect=13014
 # gear_crit_rating=2432
-# gear_haste_rating=5980
-# gear_mastery_rating=6388
-# gear_versatility_rating=231
+# gear_haste_rating=5724
+# gear_mastery_rating=5517
+# gear_versatility_rating=1358
 # gear_armor=3251
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1

@@ -41,17 +41,14 @@ actions+=/cat_form,if=!buff.cat_form.up
 actions+=/invoke_external_buff,name=power_infusion,if=!variable.align_cds|variable.align_cds&buff.bs_inc.up|fight_remains<25
 actions+=/call_action_list,name=variables
 actions+=/tigers_fury,target_if=min:target.time_to_die,if=!set_bonus.tier31_4pc&talent.convoke_the_spirits.enabled|!buff.tigers_fury.up|energy.deficit>65|set_bonus.tier31_2pc&action.feral_frenzy.ready|target.time_to_die<15&talent.predator.enabled
-actions+=/rake,target_if=persistent_multiplier>dot.rake.pmultiplier,if=buff.prowl.up|buff.shadowmeld.up
+actions+=/rake,target_if=max:persistent_multiplier>dot.rake.pmultiplier+refreshable,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
 actions+=/natures_vigil,if=spell_targets.swipe_cat>0
 actions+=/renewal,if=variable.regrowth
 actions+=/adaptive_swarm,target_if=(!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&dot.adaptive_swarm_damage.stack<3&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight&target.time_to_die>5,if=!talent.unbridled_swarm.enabled|spell_targets.swipe_cat=1
 actions+=/adaptive_swarm,target_if=max:(1+dot.adaptive_swarm_damage.stack)*dot.adaptive_swarm_damage.stack<3*time_to_die,if=dot.adaptive_swarm_damage.stack<3&talent.unbridled_swarm.enabled&spell_targets.swipe_cat>1
-# cooldown and feral frenzy have 2 lines, as a delayed opener to get bt rip is worth it for 2m convoke the spirits in ST
-actions+=/call_action_list,name=cooldown,if=(time>3|!talent.dire_fixation.enabled|debuff.dire_fixation.up&combo_points<4|spell_targets.swipe_cat>1)&!(spell_targets=1&talent.convoke_the_spirits.enabled)
-actions+=/call_action_list,name=cooldown,if=dot.rip.ticking
-actions+=/feral_frenzy,target_if=max:target.time_to_die,if=((combo_points<3|time<10&combo_points<4)&(!talent.dire_fixation.enabled|debuff.dire_fixation.up|spell_targets.swipe_cat>1)&(target.time_to_die<fight_remains&target.time_to_die>6|target.time_to_die=fight_remains))&!(spell_targets=1&talent.convoke_the_spirits.enabled)
-actions+=/feral_frenzy,if=combo_points<3&debuff.dire_fixation.up&dot.rip.ticking&(spell_targets=1&talent.convoke_the_spirits.enabled)
+actions+=/call_action_list,name=cooldown,if=dot.rip.ticking|spell_targets.swipe_cat>1
+actions+=/feral_frenzy,target_if=max:target.time_to_die,if=(combo_points<=2|combo_points<=3&buff.bs_inc.up)&(dot.rip.ticking|spell_targets.swipe_cat>1)&(!talent.dire_fixation.enabled|debuff.dire_fixation.up|spell_targets.swipe_cat>1)&(target.time_to_die>6|target.time_to_die=fight_remains)
 actions+=/ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(spell_targets.swipe_cat=1|!talent.primal_wrath.enabled|!buff.sabertooth.up)&!(variable.need_bt&active_bt_triggers=2)
 actions+=/run_action_list,name=berserk,if=buff.bs_inc.up
 actions+=/wait,sec=combo_points=5,if=combo_points=4&buff.predator_revealed.react&energy.deficit>40&spell_targets.swipe_cat=1
@@ -63,8 +60,8 @@ actions+=/regrowth,if=energy<25&buff.predatory_swiftness.up&!buff.clearcasting.u
 # if you need to proc bloodtalons, skip actions that you've already casted towards bloodtalons
 actions.aoe_builder=brutal_slash,target_if=min:target.time_to_die,if=(cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5)&!((variable.need_bt|buff.bs_inc.up)&buff.bt_brutal_slash.up)
 actions.aoe_builder+=/thrash_cat,if=dot.thrash_cat.remains<3&(!buff.sudden_ambush.up|!talent.doubleclawed_rake.enabled)&!talent.thrashing_claws
-actions.aoe_builder+=/prowl,target_if=max:dot.rake.pmultiplier<1.6|dot.rake.refreshable,if=(dot.rake.pmultiplier<1.6|dot.rake.refreshable)&!(variable.need_bt&buff.bt_rake.up)
-actions.aoe_builder+=/shadowmeld,target_if=max:(dot.rake.pmultiplier<1.6|dot.rake.refreshable),if=(dot.rake.pmultiplier<1.6|dot.rake.refreshable)&!(variable.need_bt&buff.bt_rake.up)
+actions.aoe_builder+=/prowl,target_if=max:dot.rake.pmultiplier<1.6+dot.rake.refreshable,if=(dot.rake.pmultiplier<1.6|dot.rake.refreshable)&!(variable.need_bt&buff.bt_rake.up)
+actions.aoe_builder+=/shadowmeld,target_if=max:dot.rake.pmultiplier<1.6+dot.rake.refreshable,if=(dot.rake.pmultiplier<1.6|dot.rake.refreshable)&!(variable.need_bt&buff.bt_rake.up)
 actions.aoe_builder+=/rake,target_if=max:(dot.rake.pmultiplier<1.6|dot.rake.refreshable)*druid.rake.ticks_gained_on_refresh,if=(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier|dot.rake.refreshable)&!(variable.need_bt&buff.bt_rake.up)
 actions.aoe_builder+=/thrash_cat,if=refreshable&!talent.thrashing_claws
 actions.aoe_builder+=/brutal_slash,if=!(variable.need_bt&buff.bt_brutal_slash.up)
@@ -81,10 +78,10 @@ actions.aoe_builder+=/moonfire_cat,target_if=max:dot.moonfire.ticks_gained_on_re
 actions.aoe_builder+=/rake,target_if=max:((dot.rake.pmultiplier<=persistent_multiplier)*25)+druid.rake.ticks_gained_on_refresh,if=variable.need_bt&buff.bt_rake.down
 
 actions.berserk=ferocious_bite,target_if=max:target.time_to_die,if=combo_points=5&dot.rip.remains>8&variable.zerk_biteweave&spell_targets.swipe_cat>1
-# proc bt if 0/1 stack if 5/6 combo points with t30 only (~0.25% dps loss at 5/6 and less than 0.1% dps loss to build at 5cp with t31)
+# proc bt if 0/1 stack if 5/6 combo points with t30 only
 actions.berserk+=/call_action_list,name=finisher,if=combo_points=5&!(buff.overflowing_power.stack<=1&active_bt_triggers=2&buff.bloodtalons.stack<=1&set_bonus.tier30_4pc)
 actions.berserk+=/run_action_list,name=aoe_builder,if=spell_targets.swipe_cat>1
-actions.berserk+=/prowl,if=!(buff.bt_rake.up&active_bt_triggers=2)&(action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up)
+actions.berserk+=/prowl,if=!(buff.bt_rake.up&active_bt_triggers=2)&action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up
 actions.berserk+=/shadowmeld,if=!(buff.bt_rake.up&active_bt_triggers=2)&action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up
 actions.berserk+=/rake,if=!(buff.bt_rake.up&active_bt_triggers=2)&(dot.rake.remains<3|buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier)
 # in single target, you just proc bt when an opportunity arises
@@ -117,7 +114,7 @@ actions.builder+=/thrash_cat,if=variable.need_bt&buff.bt_thrash.down
 
 actions.cooldown=use_item,name=algethar_puzzle_box,if=fight_remains<35|(!variable.align_3minutes)
 actions.cooldown+=/use_item,name=algethar_puzzle_box,if=variable.align_3minutes&(cooldown.bs_inc.remains<3&(!variable.lastZerk|!variable.lastConvoke|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<13)))
-actions.cooldown+=/incarnation,target_if=max:target.time_to_die,if=(target.time_to_die<fight_remains&target.time_to_die>25)|target.time_to_die=fight_remains
+actions.cooldown+=/incarnation,target_if=max:target.time_to_die,if=target.time_to_die>25|target.time_to_die=fight_remains
 # With Convoke on certain fight timers it can be correct to hold berserk for convoke
 actions.cooldown+=/berserk,if=fight_remains<25|talent.convoke_the_spirits.enabled&(fight_remains<cooldown.convoke_the_spirits.remains|(variable.align_cds&(action.feral_frenzy.ready&(combo_points<3|(time<10&combo_points<4))|time<10&combo_points<4)&cooldown.convoke_the_spirits.remains<10))
 # Hold your last berserk cast to line it up with convoke
@@ -128,8 +125,9 @@ actions.cooldown+=/berserking,if=!variable.align_3minutes|buff.bs_inc.up
 actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|(!variable.lastZerk&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)
 actions.cooldown+=/use_item,name=ashes_of_the_embersoul,if=((buff.smoldering_frenzy.up&(!talent.convoke_the_spirits.enabled|cooldown.convoke_the_spirits.remains<10))|!set_bonus.tier31_4pc&(cooldown.convoke_the_spirits.remains=0|!talent.convoke_the_spirits.enabled&buff.bs_inc.up))
 actions.cooldown+=/use_item,name=witherbarks_branch,if=(!talent.convoke_the_spirits.enabled|action.feral_frenzy.ready|!set_bonus.tier31_4pc)&!(trinket.1.is.ashes_of_the_embersoul&trinket.1.cooldown.remains<20|trinket.2.is.ashes_of_the_embersoul&trinket.2.cooldown.remains<20)
-actions.cooldown+=/use_item,name=mirror_of_fractured_tomorrows,if=(!variable.align_3minutes|buff.bs_inc.up&buff.bs_inc.remains>15|variable.lastConvoke&!variable.lastZerk&cooldown.convoke_the_spirits.remains<1)&(target.time_to_die<fight_remains&target.time_to_die>16|target.time_to_die=fight_remains)
-actions.cooldown+=/convoke_the_spirits,target_if=max:target.time_to_die,if=fight_remains<5|(buff.smoldering_frenzy.up|!set_bonus.tier31_4pc)&(dot.rip.remains>4-talent.ashamanes_guidance&buff.tigers_fury.up&combo_points<2)&(debuff.dire_fixation.up|!talent.dire_fixation.enabled|spell_targets.swipe_cat>1)&((target.time_to_die<fight_remains&target.time_to_die>5-talent.ashamanes_guidance.enabled)|target.time_to_die=fight_remains)
+actions.cooldown+=/use_item,name=mirror_of_fractured_tomorrows,if=(!variable.align_3minutes|buff.bs_inc.up&buff.bs_inc.remains>15|variable.lastConvoke&!variable.lastZerk&cooldown.convoke_the_spirits.remains<1)&(target.time_to_die>16|target.time_to_die=fight_remains)
+actions.cooldown+=/use_item,name=verdant_gladiators_badge_of_ferocity,use_off_gcd=1,if=buff.smoldering_frenzy.up
+actions.cooldown+=/convoke_the_spirits,target_if=max:target.time_to_die,if=fight_remains<5|(buff.smoldering_frenzy.up|!set_bonus.tier31_4pc)&(dot.rip.remains>4-talent.ashamanes_guidance&buff.tigers_fury.up&(combo_points<=2)|buff.bs_inc.up&combo_points<=3)&(debuff.dire_fixation.up|!talent.dire_fixation.enabled|spell_targets.swipe_cat>1)&(target.time_to_die>5-talent.ashamanes_guidance.enabled|target.time_to_die=fight_remains)
 # convoke early if you can't fit another gcd and have the entirety of convoke in smoldering window
 actions.cooldown+=/convoke_the_spirits,if=buff.smoldering_frenzy.up&buff.smoldering_frenzy.remains<5.1-talent.ashamanes_guidance
 actions.cooldown+=/use_item,name=manic_grieftorch,target_if=max:target.time_to_die,if=energy.deficit>40
@@ -162,7 +160,7 @@ actions.variables+=/variable,name=easy_swipe,op=reset
 # this variable make the sim always align berserk with convoke
 actions.variables+=/variable,name=force_align_2min,op=reset
 # this variable checks the fight timer and trinkets to decide if itll be more dps to align berserk with 2 minute convoke
-actions.variables+=/variable,name=align_cds,value=(variable.force_align_2min|equipped.witherbarks_branch|equipped.ashes_of_the_embersoul|(time+fight_remains>150&time+fight_remains<200|time+fight_remains>270&time+fight_remains<295|time+fight_remains>395&time+fight_remains<400|time+fight_remains>490&time+fight_remains<495))&talent.convoke_the_spirits.enabled&fight_style.patchwerk&spell_targets.swipe_cat=1&set_bonus.tier31_2pc
+actions.variables+=/variable,name=align_cds,value=(variable.force_align_2min|equipped.witherbarks_branch|equipped.ashes_of_the_embersoul|(time+fight_remains>150&time+fight_remains<200|time+fight_remains>270&time+fight_remains<295|time+fight_remains>395&time+fight_remains<400|time+fight_remains>490&time+fight_remains<495))&talent.convoke_the_spirits.enabled&fight_style.patchwerk&spell_targets.swipe_cat=1&set_bonus.tier31_4pc
 
 head=benevolent_embersages_casque,id=207254,bonus_id=1808,ilevel=489,gem_id=192982,enchant_id=7052
 neck=chain_of_the_green_flight,id=137311,bonus_id=4786/8782/9843/9569,ilevel=489,gem_id=192922/192922/192922

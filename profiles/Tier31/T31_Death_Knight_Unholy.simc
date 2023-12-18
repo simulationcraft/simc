@@ -99,7 +99,7 @@ actions.cooldowns+=/soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.
 # Garg Setup
 actions.garg_setup=apocalypse,if=debuff.festering_wound.stack>=4&(buff.commander_of_the_dead.up&pet.gargoyle.remains<23|!talent.commander_of_the_dead)
 actions.garg_setup+=/soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>5
-actions.garg_setup+=/any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>0
+actions.garg_setup+=/any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>1
 actions.garg_setup+=/summon_gargoyle,use_off_gcd=1,if=buff.commander_of_the_dead.up|!talent.commander_of_the_dead&runic_power>=40
 actions.garg_setup+=/empower_rune_weapon,if=pet.gargoyle.active&pet.gargoyle.remains<=23
 actions.garg_setup+=/unholy_assault,if=pet.gargoyle.active&pet.gargoyle.remains<=23

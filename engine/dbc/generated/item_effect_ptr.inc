@@ -1,5 +1,5 @@
-// Item effects, wow build 10.2.5.52432
-static const std::array<item_effect_t, 8726> __ptr_item_effect_data { {
+// Item effects, wow build 10.2.5.52554
+static const std::array<item_effect_t, 8727> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8726,9 +8726,10 @@ static const std::array<item_effect_t, 8726> __ptr_item_effect_data { {
   { 182123, 433533, 213015,   1,   0,    0,      -1,      -1 }, // Grimoire of the Eredathian Darkglare
   { 182124, 433534, 213016,   1,   0,    0,      -1,      -1 }, // Grimoire of the Abyssal Darkglare
   { 182125, 433535, 213017,   1,   0,    0,      -1,      -1 }, // Grimoire of the Riftsmolder Darkglare
+  { 182361, 434661, 213536,   0,   0,    0,      -1,      -1 }, // Throw Priceless Artifact
 } };
 
-static const std::array<uint16_t, 8726> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 8727> __ptr_item_effect_id_index { {
     443,   444,   445,   446,   447,   448,   449,   452,
     453,   454,   455,   456,   457,   458,   459,   460,
     461,   462,   463,   464,   467,   468,   469,   470,
@@ -9819,6 +9820,6 @@ static const std::array<uint16_t, 8726> __ptr_item_effect_id_index { {
    8710,   360,   361,   362,   363,   364,   365,   366,
     367,   368,   369,  8673,  4404,  8593,  8711,  8712,
    8713,  8714,  8715,  8716,  8717,  8718,  8719,  8720,
-   8721,  8722,  8723,  8724,  8725,  8519,
+   8721,  8722,  8723,  8724,  8725,  8519,  8726,
 } };
 

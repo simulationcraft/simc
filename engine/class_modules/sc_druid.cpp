@@ -661,25 +661,19 @@ public:
   {
     // Multiple Specs / Forms
     gain_t* clearcasting;        // Feral & Restoration
-    gain_t* soul_of_the_forest;  // Feral & Guardian
-    gain_t* heart_of_the_wild;   // Balance, Guardian, Restoration
 
     // Balance
-    gain_t* natures_balance;
     gain_t* stellar_innervation;
 
     // Feral (Cat)
     gain_t* energy_refund;
-    gain_t* incessant_hunter;
     gain_t* overflowing_power;
     gain_t* primal_fury;
+    gain_t* soul_of_the_forest;
     gain_t* tigers_tenacity;
 
     // Guardian (Bear)
     gain_t* bear_form;
-    gain_t* blood_frenzy;
-    gain_t* brambles;
-    gain_t* gore;
   } gain;
 
   // Masteries
@@ -2744,11 +2738,13 @@ struct berserk_cat_buff_t : public druid_buff_t
 // Blood Frenzy =============================================================
 struct blood_frenzy_buff_t : public druid_buff_t
 {
+  gain_t* gain;
   double rage;
   size_t cap;
 
   blood_frenzy_buff_t( druid_t* p )
     : base_t( p, "blood_frenzy_buff", p->talent.blood_frenzy ),
+      gain( p->get_gain( "Blood Frenzy" ) ),
       rage( find_effect( p->find_spell( 203961 ), E_ENERGIZE ).resource( RESOURCE_RAGE ) ),
       cap( as<size_t>( p->talent.blood_frenzy->effectN( 1 ).base_value() ) )
   {
@@ -2767,7 +2763,7 @@ struct blood_frenzy_buff_t : public druid_buff_t
     if ( !n )
       return;
 
-    p()->resource_gain( RESOURCE_RAGE, std::min( cap, n ) * rage, p()->gain.blood_frenzy );
+    p()->resource_gain( RESOURCE_RAGE, std::min( cap, n ) * rage, gain );
   }
 };
 
@@ -9790,10 +9786,11 @@ void druid_t::create_buffs()
   }
   else
   {
-    buff.heart_of_the_wild->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      if ( get_form() == CAT_FORM )
-        resource_gain( RESOURCE_COMBO_POINT, 1, gain.heart_of_the_wild );
-    } );
+    buff.heart_of_the_wild->set_tick_callback(
+        [ g = get_gain( "Heart of the Wild" ), this ]( buff_t*, int, timespan_t ) {
+          if ( get_form() == CAT_FORM )
+            resource_gain( RESOURCE_COMBO_POINT, 1, g );
+        } );
   }
 
   buff.ironfur = make_buff_fallback( talent.ironfur.ok(), this, "ironfur", talent.ironfur )
@@ -9989,6 +9986,7 @@ void druid_t::create_buffs()
     ->set_tick_callback(
         [ ap = nb_eff.resource( RESOURCE_ASTRAL_POWER ),
           cap = talent.natures_balance->effectN( 2 ).percent(),
+          g = get_gain( "Natures Balance" ),
           this ]
         ( buff_t*, int, timespan_t ) mutable {
           if ( !in_combat )
@@ -9998,7 +9996,7 @@ void druid_t::create_buffs()
             else
               ap = 0;
           }
-          resource_gain( RESOURCE_ASTRAL_POWER, ap, gain.natures_balance );
+          resource_gain( RESOURCE_ASTRAL_POWER, ap, g );
         } );
 
   buff.natures_grace = make_buff_fallback( talent.natures_grace.ok(), this, "natures_grace", find_spell( 393959 ) )
@@ -10810,33 +10808,24 @@ void druid_t::init_gains()
 
   if ( specialization() == DRUID_BALANCE )
   {
-    gain.natures_balance     = get_gain( "Natures Balance" );
     gain.stellar_innervation = get_gain( "Stellar Innervation" );
   }
   else if ( specialization() == DRUID_FERAL )
   {
     gain.energy_refund       = get_gain( "Energy Refund" );
-    gain.incessant_hunter    = get_gain( "Incessant Hunter" );
     gain.overflowing_power   = get_gain( "Overflowing Power" );
     gain.primal_fury         = get_gain( "Primal Fury" );
+    gain.soul_of_the_forest  = get_gain( "Soul of the Forest" );
     gain.tigers_tenacity     = get_gain( "Tiger's Tenacity" );
   }
   else if ( specialization() == DRUID_GUARDIAN )
   {
     gain.bear_form           = get_gain( "Bear Form" );
-    gain.blood_frenzy        = get_gain( "Blood Frenzy" );
-    gain.brambles            = get_gain( "Brambles" );
-    gain.gore                = get_gain( "Gore" );
   }
+
   // Multi-spec
   if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
     gain.clearcasting = get_gain( "Clearcasting" );  // Feral & Restoration
-
-  if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
-    gain.soul_of_the_forest = get_gain( "Soul of the Forest" );  // Feral & Guardian
-
-  if ( specialization() != DRUID_FERAL )
-    gain.heart_of_the_wild = get_gain( "Heart of the Wild" );  // Balance, Guardian, Restoration
 }
 
 // druid_t::init_procs ======================================================
