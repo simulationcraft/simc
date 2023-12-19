@@ -3210,8 +3210,8 @@ struct melee_t : public rogue_attack_t
 
     // Class Passives
     m *= 1.0 + p()->spec.outlaw_rogue->effectN( 18 ).percent();
-    // TOCHECK -- Removed on 10.2.0 PTR build
-    // m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
+    m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
+    m *= 1.0 + p()->spec.assassination_rogue->effectN( 23 ).percent();
 
     return m;
   }
