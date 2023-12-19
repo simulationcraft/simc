@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52607 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -5955,7 +5955,6 @@ Effects          :
 Description      : Experience gains from killing Demons increased by $s1%.
 
 Name             : Wake of Ashes (id=255937) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Retribution [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holyfire
@@ -16520,7 +16519,6 @@ Effects          :
 Description      : Blade of Justice and Expurgation now deal Holy damage.
 
 Name             : Truth's Wake (id=403695) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -17066,7 +17064,6 @@ Effects          :
 Description      : Divine Storm, Divine Hammer and Consecration now deal Radiant damage and your abilities that deal Radiant damage deal $s2% increased damage.
 
 Name             : Wake of Ashes (id=405345) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -17971,7 +17968,6 @@ Effects          :
 Description      : Divine Storm heals you for $s1% of your maximum health.
 
 Name             : Searing Light (id=407478) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
