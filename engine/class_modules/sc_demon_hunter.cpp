@@ -709,7 +709,6 @@ public:
   // Shuffled proc objects
   struct shuffled_rngs_t
   {
-    shuffled_rng_t* a_fire_inside;
   } shuffled_rng;
 
   // Special
@@ -3433,8 +3432,14 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
+  //TODO: 2023-12-19: With the change from 30% to 25% proc chance, AFI seems to no longer be
+  //                  a simple deck of cards system. Need to figure out exactly how it works
+  //                  but until then we use a flat chance from spell data again.                        
+  double afi_chance;
+
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str )
+    : demon_hunter_spell_t( "immolation_aura", p, p->spell.immolation_aura, options_str ),
+      afi_chance( p->talent.havoc.a_fire_inside->effectN( 3 ).percent() )
   {
     may_miss     = false;
     dot_duration = timespan_t::zero();
@@ -3492,7 +3497,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     p()->buff.immolation_aura->trigger();
     demon_hunter_spell_t::execute();
 
-    if ( p()->talent.havoc.a_fire_inside->ok() && p()->shuffled_rng.a_fire_inside->trigger() )
+    if ( p()->talent.havoc.a_fire_inside->ok() && rng().roll( afi_chance ) )
       cooldown->reset( true, 1 );
   }
 };
@@ -7343,11 +7348,6 @@ void demon_hunter_t::init_rng()
   {
     rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
     rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
-
-    // 2023-11-02 There is no spell data for this.
-    // The RNG was described as "marbles in a bag" with "3 wins out of 10 total" by Realz in Fel Hammer Discord.
-    // https://discord.com/channels/213770335735119873/449080055893590017/1169492209121378365
-    shuffled_rng.a_fire_inside = get_shuffled_rng( "a_fire_inside", 3, 10 );
   }
   else  // DEMON_HUNTER_VENGEANCE
   {
