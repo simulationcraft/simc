@@ -4940,13 +4940,15 @@ Effects          :
                    Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
                    Family Flags: 45
 #4 (id=191156)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
+Hotfixed         : Base Value (25 -> 0)
 #5 (id=191157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
+Hotfixed         : Base Value (25 -> 0)
 #6 (id=260767)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Influence (197524)
@@ -4978,13 +4980,15 @@ Effects          :
 #15 (id=1088944)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 #16 (id=1123095)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
+Hotfixed         : Base Value (40 -> 75)
 #17 (id=1123096)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
+Hotfixed         : Base Value (40 -> 75)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Rogue, Druid
