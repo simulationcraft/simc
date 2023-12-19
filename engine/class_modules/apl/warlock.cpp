@@ -146,7 +146,7 @@ void affliction( player_t* p )
   cleave->add_action( "shadow_bolt,if=buff.nightfall.react" );
   cleave->add_action( "malefic_rapture,if=soul_shard>3" );
   cleave->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&fight_remains<4" );
-  cleave->add_action( "drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>10" );
+  cleave->add_action( "drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>30" );
   cleave->add_action( "agony,target_if=refreshable" );
   cleave->add_action( "corruption,target_if=refreshable" );
   cleave->add_action( "malefic_rapture,if=soul_shard>1" );
