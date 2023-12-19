@@ -308,6 +308,9 @@ struct malefic_rapture_t : public affliction_spell_t
 
         if ( target_data->dots_phantom_singularity->is_ticking() )
           target_data->dots_phantom_singularity->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_soul_rot->is_ticking() )
+          target_data->dots_soul_rot->adjust_duration( t31_soulstealer_extend );
       }
     }
 
