@@ -913,8 +913,9 @@ public:
     parse_buff_effects( p()->buff.juggernaut );
 
     // Fury
-    parse_buff_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
     parse_buff_effects( p()->buff.ashen_juggernaut );
+    parse_buff_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
+    parse_buff_effects( p()->buff.recklessness );
     parse_buff_effects( p()->buff.slaughtering_strikes_an );
     parse_buff_effects( p()->buff.slaughtering_strikes_rb );
 
@@ -1108,11 +1109,6 @@ public:
     if( affected_by.t30_fury_4pc )
     {
       c += p()->buff.merciless_assault->stack() * p()->find_spell( 409983 )->effectN( 3 ).percent();
-    }
-
-    if ( affected_by.recklessness && p()->buff.recklessness->up() )
-    {
-      c += p()->buff.recklessness->check_value();
     }
 
     c += get_buff_effects_value( crit_chance_buffeffects, true );
@@ -7920,11 +7916,8 @@ void warrior_t::create_buffs()
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
-    ->set_chance(1)
-    ->set_duration( spell.recklessness_buff->duration() + talents.fury.depths_of_insanity->effectN( 1 ).time_value() )
-    //->add_invalidate( CACHE_CRIT_CHANCE ) removed in favor of composite_crit_chance (line 1015)
     ->set_cooldown( timespan_t::zero() )
-    ->set_default_value( spell.recklessness_buff->effectN( 1 ).percent() );
+    ->apply_affecting_aura( talents.fury.depths_of_insanity );
 
   buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 396752 ) );
 
