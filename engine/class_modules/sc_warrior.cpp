@@ -927,7 +927,6 @@ public:
     // Shared
 
     // Arms
-    //parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); }, p()->spell.colossus_smash_debuff );
     parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); }, p()->spell.colossus_smash_debuff, p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
     parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); }, p()->talents.arms.executioners_precision->effectN( 1 ).trigger(), p()->talents.arms.executioners_precision );
 
