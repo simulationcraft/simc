@@ -827,8 +827,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
-    bool avatar, sweeping_strikes, booming_voice,
-    recklessness;
+    bool avatar, sweeping_strikes, booming_voice;
     // tier
     bool t29_arms_4pc;
     bool t29_prot_2pc;
@@ -845,7 +844,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         avatar( false ),
         sweeping_strikes( false ),
         booming_voice( false ),
-        recklessness( false ),
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
@@ -1002,7 +1000,6 @@ public:
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
     affected_by.booming_voice            = ab::data().affected_by( p()->talents.protection.demoralizing_shout->effectN( 3 ) );
     affected_by.avatar                   = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
-    affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
