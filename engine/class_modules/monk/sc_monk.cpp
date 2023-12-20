@@ -2019,9 +2019,7 @@ namespace monk
           action_t *bok = player->find_action( "blackout_kick" );
           if ( bok )
           {
-            base_multiplier = bok->base_multiplier;
-            spell_power_mod.direct = bok->spell_power_mod.direct;
-
+            attack_power_mod = bok->attack_power_mod;
             bok->add_child( this );
           }
         }
@@ -2257,16 +2255,14 @@ namespace monk
             p()->buff.gift_of_the_ox->trigger();
 
           p()->buff.teachings_of_the_monastery->expire();
+
+          if ( p()->buff.blackout_reinforcement->up() )
+            p()->buff.blackout_reinforcement->decrement();
         }
 
         void impact( action_state_t *s ) override
         {
           monk_melee_attack_t::impact( s );
-
-          // The damage only affects the initial Blackout Kick (and any initial cleaved Blackout Kicks).
-          // Buff is removed prior to Teaching of the Monastery Blackout Kick procs trigger.
-          if ( p()->buff.blackout_reinforcement->up() )
-            p()->buff.blackout_reinforcement->decrement();
 
           // Teachings of the Monastery
           // Used by both Windwalker and Mistweaver
