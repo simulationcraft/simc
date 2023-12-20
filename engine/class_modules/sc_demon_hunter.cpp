@@ -3064,10 +3064,9 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
   {
     demon_hunter_sigil_t::tick( d );
 
-    // TODO: Verify the 25% chance, it's a sane guess based on current logs
-    // https://www.warcraftlogs.com/reports/qBxWtR4mYna9Zvj1#boss=0&difficulty=0&type=damage-done&source=1
-    // ~25% chance per tick based on above log
-    if ( p()->set_bonuses.t31_vengeance_4pc->ok() && rng().roll( 0.25 ) )
+    // Not found in spelldata, hardcoding based on empirical data
+    auto chance = 0.3 * std::pow( d->state->n_targets, -0.25 );
+    if ( p()->set_bonuses.t31_vengeance_4pc->ok() && rng().roll( chance ) )
     {
       p()->active.sigil_of_flame_t31->execute_on_target( d->target );
       p()->spawn_soul_fragment( soul_fragment::LESSER );
