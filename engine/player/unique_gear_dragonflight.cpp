@@ -7984,6 +7984,7 @@ void fyralath_the_dream_render( special_effect_t& e )
         dot( d )
     {
       channeled = true;
+      trigger_gcd = e.player->find_spell( 417131 )->gcd();
       target_cache.is_valid = false;
       add_child( damage );
       add_child( charge_impact );
