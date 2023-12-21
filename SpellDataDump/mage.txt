@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52607 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52649 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -160,7 +160,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=91)       : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.29833 | PvP Coefficient: 1.18250 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.1803 -> 1.29833), PvP Coefficient (1.3 -> 1.1825)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -356,7 +355,6 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=126904)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.66004 | PvP Coefficient: 1.24400 | Radius: 8 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.589324 -> 0.660043)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 8 yards | Mechanic: Snare | Target: AOE enemy (instant) (16)
 #3 (id=1096694)  : Dummy (3)
@@ -525,7 +523,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=2716)     : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.47066 | PvP Coefficient: 1.01900 | Target: Unknown(77)
-Hotfixed         : SP Coefficient (0.42787 -> 0.47066), PvP Coefficient (1.12 -> 1.019)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
@@ -554,7 +551,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.80222 | PvP Coefficient: 1.12400 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.7164 -> 1.80222), PvP Coefficient (1.18 -> 1.124)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[
 
 Pyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]
@@ -930,7 +926,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=20028)    : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.72800 | PvP Coefficient: 1.13400 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.686769 -> 0.728), PvP Coefficient (1.2 -> 1.134)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: none | Target: Self (1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
@@ -2342,7 +2337,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=120062)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.31538 | PvP Coefficient: 0.86600 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.17445 -> 1.31538), PvP Coefficient (0.97 -> 0.866)
 Description      : Blasts the enemy for $s1 Fire damage. 
 
 |cFFFFFFFFFire:|r Castable while casting other spells. Always deals a critical strike.
@@ -5409,7 +5403,6 @@ Effects          :
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=343735)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.38071 | PvP Coefficient: 1.09200 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.3461 -> 0.38071), PvP Coefficient (1.2 -> 1.092)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $w1%.
 
@@ -5460,7 +5453,6 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344284)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80661 | PvP Coefficient: 2.17500 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.7014 -> 0.80661), PvP Coefficient (2.5 -> 2.175)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Spell Family (3)] 
@@ -5484,7 +5476,6 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344285)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.42459 | PvP Coefficient: 1.20600 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.3791 -> 0.424592), PvP Coefficient (1.35 -> 1.206)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : $@spelldesc30455
@@ -5532,7 +5523,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344289)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.50065 | PvP Coefficient: 0.89630 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (4.2459 -> 4.50065), PvP Coefficient (0.95 -> 0.8963)
 #2 (id=344290)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc199786
@@ -15918,7 +15908,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1087752)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 25)
 Description      : While Ignite is on $s1 or fewer enemies it flares up dealing an additional $s2% of its damage to affected targets.
 
 Name             : Convection (id=416715) [Spell Family (3), Passive] 
