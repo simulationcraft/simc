@@ -325,6 +325,11 @@ struct malefic_rapture_t : public affliction_spell_t
       }
 
       affliction_spell_t::execute();
+
+      if ( p()->buffs.umbrafire_kindling->check() )
+      {
+        p()->buffs.soul_rot->extend_duration( p(), t31_soulstealer_extend );
+      }
     }
   };
 
