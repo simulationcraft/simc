@@ -2062,14 +2062,6 @@ namespace monk
           return am;
         }
 
-        void execute() override
-        {
-          monk_melee_attack_t::execute();
-
-          // Transfer the power triggers from ToTM hits but only on the primary target
-          p()->buff.transfer_the_power->trigger();
-        }
-
         void impact( action_state_t *s ) override
         {
           monk_melee_attack_t::impact( s );
@@ -2273,7 +2265,13 @@ namespace monk
             int stacks = p()->buff.teachings_of_the_monastery->current_stack;
 
             for ( int i = 0; i < stacks; i++ )
+            {
+              // Transfer the power triggers from ToTM hits but only on the primary target
+              if ( s->chain_target == 0 )
+                p()->buff.transfer_the_power->trigger();
+
               bok_totm_proc->execute();
+            }
 
             // The initial hit along with each individual TotM hits has a chance to reset the cooldown
             auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
