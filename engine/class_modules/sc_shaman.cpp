@@ -6661,7 +6661,10 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.213 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+    spell_power_mod.direct = 0.3195 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+    // TODO: implement spellpower coefficient extracttion from spell variable
+    // auto spell_desc = player->dbc->spell_desc_vars( this->data().id() );
+    // spell_desc.desc_vars()
   }
 };
 
@@ -6695,7 +6698,7 @@ struct earthquake_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.213;
+    spell_power_mod.direct = 0.3915;
   }
 };
 
