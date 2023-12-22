@@ -7087,8 +7087,8 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
             fury_of_urctos_heal->execute_on_target( player );
           } );
 
-      rising_rage_cooldown->duration    = 3_s; // No longer in spell data, setting manually from tooltip
-      fury_of_urctos_cooldown->duration = 100_ms; // Has a 100ms cd during fury
+      rising_rage_cooldown->duration    = 3_s;     // No longer in spell data, setting manually from tooltip
+      fury_of_urctos_cooldown->duration = 100_ms;  // Has a 100ms cd during fury
     }
 
     void execute() override
@@ -7120,10 +7120,13 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 
     // Attempt to trigger Gift of Ursine Vengeance roughly every max GCD on top of the damage taken
     // procs in order to more accurately represent the damage done during Fury of Urctos.
-    timespan_t period      = ( effect.player->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
-                                        effect.player->rng().range( 0_s, 750_ms ) /
-                                            ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
-    make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
+    make_repeating_event(
+        effect.player->sim,
+        [ p = effect.player ]() -> timespan_t {
+          return p->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
+                 p->rng().range( 0_s, 750_ms ) / ( 1 + p->sim->target_non_sleeping_list.size() );
+        },
+        [ action ]() { action->execute(); } );
   }
 }
 

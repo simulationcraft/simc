@@ -232,4 +232,4 @@ inline event_t* make_repeating_event( sim_t* s, timespan_t t, T&& fn, int n = -1
 template <typename F, typename G,
           typename = std::enable_if_t<std::is_same_v<std::invoke_result_t<std::decay_t<F>>, timespan_t>>>
 inline event_t* make_repeating_event( sim_t* s, F&& time, G&& exec )
-{ return make_event( *s, std::forward<F>( time ), std::forward<G>( exec ) ); }
+{ return make_repeating_event( *s, std::forward<F>( time ), std::forward<G>( exec ) ); }
