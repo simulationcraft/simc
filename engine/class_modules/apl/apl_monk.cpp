@@ -870,7 +870,7 @@ namespace monk_apl
     serenity_2t->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist&buff.call_to_dominance.up&debuff.skyreach_exhaustion.remains>buff.call_to_dominance.remains" );
     serenity_2t->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist&debuff.skyreach_exhaustion.remains>55" );
     serenity_2t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=combo_strike&buff.blackout_reinforcement.up" );
-    serenity_2t->add_action( "actions.serenity_2t+=/spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
+    serenity_2t->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
     serenity_2t->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=buff.invokers_delight.up,interrupt=1" );
     serenity_2t->add_action( "fists_of_fury_cancel,target_if=max:debuff.keefers_skyreach.remains" );
     serenity_2t->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist" );
