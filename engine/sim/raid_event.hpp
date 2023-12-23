@@ -12,6 +12,8 @@
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
 #include "util/format.hpp"
+#include "util/io.hpp"
+#include "report/report_helper.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -97,6 +99,9 @@ public:
   static void combat_end( sim_t* )
   {
   }
+  static void merge( sim_t* sim, sim_t* other );
+  static void analyze( sim_t* sim );
+  static void report( sim_t* sim, report::sc_html_stream& os );
   static double evaluate_raid_event_expression( sim_t* s, util::string_view type, util::string_view filter,
                                                 bool test_filter, bool* is_constant );
 

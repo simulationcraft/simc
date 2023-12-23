@@ -498,6 +498,7 @@ struct pull_event_t final : raid_event_t
   bool has_boss;
   event_t* spawn_event;
   event_t* redistribute_event;
+  extended_sample_data_t real_duration;
 
   struct spawn_parameter
   {
@@ -521,7 +522,8 @@ struct pull_event_t final : raid_event_t
       spawned( false ),
       has_boss( false ),
       spawn_event( nullptr ),
-      redistribute_event( nullptr )
+      redistribute_event( nullptr ),
+      real_duration( "Pull Length", false )
   {
     add_option( opt_string( "enemies", enemies_str ) );
     add_option( opt_timespan( "delay", delay ) );
@@ -530,6 +532,8 @@ struct pull_event_t final : raid_event_t
     add_option( opt_bool( "shared_health", shared_health ) );
 
     parse_options( options_str );
+
+    real_duration.name_str = "Pull " + util::to_string( pull ) + " Length";
 
     if ( pull == 1 )
       first = 0_s;
@@ -622,7 +626,9 @@ struct pull_event_t final : raid_event_t
       return;
 
     demised = true;
-    sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
+    double length = ( sim->current_time() - spawn_time ).total_seconds();
+    sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, length );
+    real_duration.add( length );
 
     event_t::cancel( redistribute_event );
 
@@ -673,6 +679,11 @@ struct pull_event_t final : raid_event_t
 
   void _finish() override
   {
+  }
+
+  void merge( pull_event_t* other )
+  {
+    real_duration.merge( other->real_duration );
   }
 
   bool active()
@@ -2463,6 +2474,51 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
 
   throw std::invalid_argument( fmt::format( "Unknown filter expression '{}'.", filter ) );
   ;
+}
+
+void raid_event_t::merge( sim_t* sim, sim_t* other_sim )
+{
+  for ( size_t i = 0; i < sim->raid_events.size(); i++ )
+  {
+    if ( sim->raid_events[ i ]->type == "pull" )
+    {
+      auto pull_event = dynamic_cast<pull_event_t*>( sim->raid_events[ i ].get() );
+      assert( pull_event );
+      auto other_event = dynamic_cast<pull_event_t*>( other_sim->raid_events[ i ].get() );
+      assert( other_event );
+      pull_event->merge( other_event );
+    }
+  }
+}
+
+void raid_event_t::analyze( sim_t* sim )
+{
+  for ( size_t i = 0; i < sim->raid_events.size(); i++ )
+  {
+    if ( sim->raid_events[ i ]->type == "pull" )
+    {
+      auto pull_event = dynamic_cast<pull_event_t*>( sim->raid_events[ i ].get() );
+      pull_event->real_duration.analyze();
+    }
+  }
+}
+
+void raid_event_t::report( sim_t* sim, report::sc_html_stream& os )
+{
+  os << "<table class=\"sc even\">\n"
+     << "<tr>\n"
+     << "<th class=\"left\">Pull Durations</th>\n"
+     << "</tr>\n";
+
+  for ( size_t i = 0; i < sim->raid_events.size(); i++ )
+  {
+    if ( sim->raid_events[ i ]->type == "pull" )
+    {
+      auto pull_event = dynamic_cast<pull_event_t*>( sim->raid_events[ i ].get() );
+      report_helper::print_html_sample_data( os, *pull_event->master, pull_event->real_duration, "Pull " + util::to_string( pull_event->pull ) );
+    }
+  }
+  os << "</table>\n";
 }
 
 void sc_format_to( const raid_event_t& raid_event, fmt::format_context::iterator out )
