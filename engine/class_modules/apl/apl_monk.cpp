@@ -705,7 +705,7 @@ namespace monk_apl
     serenity_aoelust->add_action( "faeline_stomp,if=debuff.fae_exposure_damage.remains<1", "Serenity AoE Lust" );
     serenity_aoelust->add_action( "strike_of_the_windlord,if=set_bonus.tier31_4pc&talent.thunderfist" );
     serenity_aoelust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_chiji.up&set_bonus.tier31_2pc" );
-    serenity_aoelust->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=talent.jade_ignition,interrupt_if=buff.chi_energy.stack=30
+    serenity_aoelust->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=talent.jade_ignition,interrupt_if=buff.chi_energy.stack=30" );
     serenity_aoelust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc&buff.bonedust_brew.up&active_enemies>4" );
     serenity_aoelust->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_strike&!buff.blackout_reinforcement.up 
     serenity_aoelust->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=buff.invokers_delight.up&set_bonus.tier31_2pc&(active_enemies>5&buff.transfer_the_power.stack>5|active_enemies>6|active_enemies>4&!talent.crane_vortex&buff.transfer_the_power.stack>5),interrupt=1" );
