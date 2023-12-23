@@ -808,7 +808,7 @@ namespace monk_apl
     serenity_4t->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
     serenity_4t->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_strike&!buff.blackout_reinforcement.up&talent.crane_vortex" );
     serenity_4t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.pressure_point.up&!talent.bonedust_brew" );
-    serenity_4t->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=buff.invokers_delight.up&set_bonus.tier31_2pc&buff.transfer_the_power.stack>5&!talent.crane_vortex&buff.bloodlust.up,interrupt=1 " );
+    serenity_4t->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains,if=buff.invokers_delight.up&set_bonus.tier31_2pc&buff.transfer_the_power.stack>5&!talent.crane_vortex&buff.bloodlust.up,interrupt=1" );
     serenity_4t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.pressure_point.up&set_bonus.tier30_2pc" );
     serenity_4t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=set_bonus.tier30_2pc" );
     serenity_4t->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_strike&!buff.blackout_reinforcement.up" );
