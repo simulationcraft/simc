@@ -777,14 +777,10 @@ struct pull_event_t final : raid_event_t
       adds[ i ]->pull_event = this;
       adds[ i ]->type = spawn_parameters[ i ].boss ? ENEMY_ADD_BOSS : ENEMY_ADD;
       adds[ i ]->race = spawn_parameters[ i ].race;
-
-      // Only for use with log output options as it makes the report strange but log much better
-      if ( sim->log )
-      {
-        sim->print_log( "Renaming {} to {}", adds[ i ]->name_str, spawn_parameters[ i ].name );
-        adds[ i ]->full_name_str = adds[ i ]->name_str = spawn_parameters[ i ].name;
-        total_health += spawn_parameters[ i ].health;
-      }
+      std::string mob_name = "Pull" + util::to_string( pull ) + "_" + spawn_parameters[ i ].name;
+      sim->print_log( "Renaming {} to {}", adds[ i ]->name_str, pull, mob_name );
+      adds[ i ]->full_name_str = adds[ i ]->name_str = mob_name;
+      total_health += spawn_parameters[ i ].health;
     }
 
     if ( shared_health )
@@ -2515,7 +2511,14 @@ void raid_event_t::report( sim_t* sim, report::sc_html_stream& os )
     if ( sim->raid_events[ i ]->type == "pull" )
     {
       auto pull_event = dynamic_cast<pull_event_t*>( sim->raid_events[ i ].get() );
-      report_helper::print_html_sample_data( os, *pull_event->master, pull_event->real_duration, "Pull " + util::to_string( pull_event->pull ) );
+      std::string mobs = "";
+      for (auto mob : pull_event->spawn_parameters)
+      {
+        mobs += mob.name + " ";
+      }
+      report_helper::print_html_sample_data(
+          os, *pull_event->master, pull_event->real_duration,
+          fmt::format( "Pull {} ({:.1f}): {}", pull_event->pull, pull_event->real_duration.mean(), mobs ) );
     }
   }
   os << "</table>\n";
