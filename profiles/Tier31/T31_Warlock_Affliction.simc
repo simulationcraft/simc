@@ -88,10 +88,11 @@ actions.aoe+=/seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_co
 actions.aoe+=/corruption,target_if=min:remains,if=remains<5&!talent.seed_of_corruption
 actions.aoe+=/agony,target_if=min:remains,if=active_dot.agony<8&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5
 actions.aoe+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
+actions.aoe+=/drain_life,target_if=min:dot.soul_rot.remains,if=buff.inevitable_demise.stack>10&buff.soul_rot.up&buff.soul_rot.remains<=gcd.max&!talent.siphon_life
 actions.aoe+=/malefic_rapture,if=buff.umbrafire_kindling.up&(pet.darkglare.active|!talent.doom_blossom)
 actions.aoe+=/seed_of_corruption,if=talent.sow_the_seeds
 actions.aoe+=/malefic_rapture,if=((cooldown.summon_darkglare.remains>15|soul_shard>3)&!talent.sow_the_seeds)|buff.tormented_crescendo.up
-actions.aoe+=/drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10
+actions.aoe+=/drain_life,target_if=min:dot.soul_rot.remains,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>30
 actions.aoe+=/drain_soul,cycle_targets=1,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
 actions.aoe+=/drain_soul,if=buff.nightfall.react
 actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10
@@ -123,7 +124,7 @@ actions.cleave+=/drain_soul,if=buff.nightfall.react
 actions.cleave+=/shadow_bolt,if=buff.nightfall.react
 actions.cleave+=/malefic_rapture,if=soul_shard>3
 actions.cleave+=/drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&fight_remains<4
-actions.cleave+=/drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>10
+actions.cleave+=/drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>30
 actions.cleave+=/agony,target_if=refreshable
 actions.cleave+=/corruption,target_if=refreshable
 actions.cleave+=/malefic_rapture,if=soul_shard>1
