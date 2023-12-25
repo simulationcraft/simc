@@ -6164,6 +6164,12 @@ void coiled_serpent_idol( special_effect_t& e )
 
   range::for_each( e.player->sim->target_non_sleeping_list, [ e, molten_rain, dot ]( player_t* target ) {
     target->register_on_demise_callback( e.player, [ e, molten_rain, dot ]( player_t* t ) {
+      // Dont execute at end of sim
+      if ( e.player->sim->event_mgr.canceled )
+      {
+        return;
+      }
+
       auto debuff = e.player->get_target_data( t )->debuff.lava_bolt;
       if( debuff->check() )
       {
