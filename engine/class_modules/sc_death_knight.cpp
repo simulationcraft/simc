@@ -8196,10 +8196,17 @@ void runeforge::razorice( special_effect_t& effect )
     p -> active_spells.runeforge_razorice = get_action<razorice_attack_t>( "razorice", p );
 
   // Store in which hand razorice is equipped, as it affects which abilities proc it
-  if ( effect.item -> slot == SLOT_MAIN_HAND )
-    p -> runeforge.rune_of_razorice_mh = true;
-  else if ( effect.item -> slot == SLOT_OFF_HAND )
-    p -> runeforge.rune_of_razorice_oh = true;
+  switch ( effect.item -> slot )
+  {
+    case SLOT_MAIN_HAND:
+      p->runeforge.rune_of_razorice_mh = true;
+      break;
+    case SLOT_OFF_HAND:
+      p->runeforge.rune_of_razorice_oh = true;
+      break;
+    default:
+      break;
+  }
 }
 
 void runeforge::stoneskin_gargoyle( special_effect_t& effect )
