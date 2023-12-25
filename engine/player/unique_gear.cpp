@@ -4778,6 +4778,13 @@ void unique_gear::initialize_all_special_effects(player_t *actor)
       case 293512:
       case 299464:
       case 302916:
+        // new
+      case 187611:
+      case 187613:
+      case 187614:
+      case 187615:
+      case 302773:
+      case 426827:
         continue;
     }
     actor->sim->print_debug("enabling all special effects: {}", special_effect.spell_id);
