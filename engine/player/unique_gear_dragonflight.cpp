@@ -6162,7 +6162,7 @@ void coiled_serpent_idol( special_effect_t& e )
   auto molten_rain = create_proc_action<molten_rain_t>( "molten_rain", e );
   auto dot = create_proc_action<serpent_t>( "lava_bolt_dot", e, molten_rain );
 
-  range::for_each( e.player->sim->actor_list, [ e, molten_rain, dot ]( player_t* target ) {
+  range::for_each( e.player->sim->target_non_sleeping_list, [ e, molten_rain, dot ]( player_t* target ) {
     target->register_on_demise_callback( e.player, [ e, molten_rain, dot ]( player_t* t ) {
       auto debuff = e.player->get_target_data( t )->debuff.lava_bolt;
       if( debuff->check() )
