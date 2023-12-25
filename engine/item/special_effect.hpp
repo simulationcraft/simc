@@ -102,6 +102,7 @@ public:
   { reset(); }
 
   special_effect_t( const item_t* item );
+  special_effect_t( const item_t& item );
 
   // Uses a custom initialization callback or object
   bool is_custom() const

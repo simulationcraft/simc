@@ -4296,7 +4296,7 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
             } );
   }
 
-  // Special secondary tracking buff to track the somewhat odd in-game stacking behavior 
+  // Special secondary tracking buff to track the somewhat odd in-game stacking behavior
   // Currently the in-game system uses the buff "stack" on refreshes, while the Crit value is encoded in the dynamic buff value
   // As SimC uses the stack for tracking the base crit * stack multiplier instead of a dyanmic value, we use this instead
   // Reuse the existing buff spell data, but don't create as stat_buff_t since we don't want it to do anything

@@ -4773,12 +4773,17 @@ void unique_gear::initialize_all_special_effects(player_t *actor)
 {
   for ( special_effect_db_item_t& special_effect : __special_effect_db )
   {
+    // Blacklist of special effects by spell id for effects that are broken.
+    switch (special_effect.spell_id) {
+      case 293512:
+      case 299464:
+      case 302916:
+        continue;
+    }
     actor->sim->print_debug("enabling all special effects: {}", special_effect.spell_id);
-    special_effect_t* proxy_effect = new special_effect_t( actor );
+    special_effect_t* proxy_effect = new special_effect_t( actor->items[SLOT_MAIN_HAND] );
     unique_gear::initialize_special_effect( *proxy_effect, special_effect.spell_id );
-    if ( !(proxy_effect->type != SPECIAL_EFFECT_NONE) &&
-         !(proxy_effect->proc_flags_ != 0 ))
-      actor->special_effects.push_back( proxy_effect );
+    actor->special_effects.push_back( proxy_effect );
   }
 }
 

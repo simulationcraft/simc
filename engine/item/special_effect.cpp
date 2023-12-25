@@ -83,6 +83,11 @@ special_effect_t::special_effect_t( const item_t* item ) : item( item ), player(
   reset();
 }
 
+special_effect_t::special_effect_t( const item_t& item ) : item( &item ), player( item.player )
+{
+  reset();
+}
+
 void special_effect_t::reset()
 {
   type = SPECIAL_EFFECT_NONE;
