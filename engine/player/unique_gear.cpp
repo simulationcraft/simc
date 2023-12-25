@@ -615,12 +615,12 @@ void enchants::hurricane_spell( special_effect_t& effect )
 
 void enchants::executioner( special_effect_t& effect )
 {
-  const spell_data_t* spell = effect.item -> player -> find_spell( effect.spell_id );
-  stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.item -> player, tokenized_name( spell ) ) );
+  const spell_data_t* spell = effect.player -> find_spell( effect.spell_id );
+  stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.player, tokenized_name( spell ) ) );
 
   if ( ! buff )
   {
-    buff = make_buff<stat_buff_t>( effect.item -> player, tokenized_name( spell ), spell );
+    buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell );
     buff->set_activated( false );
   }
 
@@ -706,13 +706,13 @@ struct grounded_plasma_shield_t : public engineering_effect_t
 void profession::nitro_boosts( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_USE;
-  effect.execute_action = new nitro_boosts_action_t( effect.item -> player );
+  effect.execute_action = new nitro_boosts_action_t( effect.player );
 }
 
 void profession::grounded_plasma_shield( special_effect_t& effect )
 {
   effect.type = SPECIAL_EFFECT_USE;
-  effect.execute_action = new grounded_plasma_shield_t( effect.item -> player );
+  effect.execute_action = new grounded_plasma_shield_t( effect.player );
 }
 
 void profession::zen_alchemist_stone( special_effect_t& effect )
@@ -991,7 +991,7 @@ struct lfr_harmful_spell_t : public spell_t
 
 // Blazefury Medallion
 // 243988 Driver
-// 243991 Damage spell 
+// 243991 Damage spell
 void item::blazefury_medallion( special_effect_t& effect )
 {
   struct blazefury_medallion_t : public generic_proc_t
@@ -1313,7 +1313,7 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
     stat_buff_t* buff_spi;
 
     darkmoon_card_greatness_callback( const item_t* i, const special_effect_t& data ) :
-      dbc_proc_callback_t( i -> player, data )
+      dbc_proc_callback_t( data.player, data )
     {
       struct common_buff_t : public stat_buff_t
       {
@@ -4769,6 +4769,20 @@ void unique_gear::add_effect( const special_effect_db_item_t& dbitem )
     __fallback_effect_db.push_back( dbitem );
 }
 
+void unique_gear::initialize_all_special_effects(player_t *actor)
+{
+  for ( special_effect_db_item_t& special_effect : __special_effect_db )
+  {
+    actor->sim->print_debug("enabling all special effects: {}", special_effect.spell_id);
+    special_effect_t* proxy_effect = new special_effect_t( actor );
+    unique_gear::initialize_special_effect( *proxy_effect, special_effect.spell_id );
+    if ( !(proxy_effect->type != SPECIAL_EFFECT_NONE) &&
+         !(proxy_effect->proc_flags_ != 0 ))
+      actor->special_effects.push_back( proxy_effect );
+  }
+}
+
+
 void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback )
 {
   special_effect_db_item_t dbitem;
@@ -5245,4 +5259,3 @@ void unique_gear::sort_special_effects()
   range::sort( __special_effect_db, cmp_special_effect );
   range::sort( __fallback_effect_db, cmp_special_effect );
 }
-

@@ -2081,6 +2081,9 @@ void player_t::create_special_effects()
 
   sim->print_debug( "Creating special effects for {}.", *this );
 
+  if ( sim->enable_all_item_effects ) {
+    unique_gear::initialize_all_special_effects( this );
+  }
   // Initialize all item-based special effects. This includes any DBC-backed enchants, gems, as well
   // as inherent item effects that use a spell
   for ( auto& item : items )
@@ -11571,8 +11574,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       if ( splits[ 1 ] == "rallied_to_victory_ally_estimate" )
       {
-        return make_fn_expr( expression_str, [ this ] { 
-          return dragonflight_opts.rallied_to_victory_ally_estimate; 
+        return make_fn_expr( expression_str, [ this ] {
+          return dragonflight_opts.rallied_to_victory_ally_estimate;
         } );
       }
 

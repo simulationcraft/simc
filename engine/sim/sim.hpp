@@ -148,6 +148,7 @@ struct sim_t : private sc_thread_t
   bool        allow_experimental_specializations;
   bool        enable_all_talents;
   bool        enable_all_sets;
+  bool        enable_all_item_effects;
   int         progressbar_type;
   int         armory_retries;
   std::unordered_map<std::string, std::string> item_slot_overrides;
@@ -629,7 +630,7 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   computer_process::priority_e process_priority;
-  
+
   std::shared_ptr<work_queue_t> work_queue;
 
   // Related Simulations

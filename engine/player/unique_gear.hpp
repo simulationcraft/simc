@@ -79,6 +79,8 @@ void initialize_special_effect_fallbacks( player_t* actor );
 // Second-phase special effect initializer
 void initialize_special_effect_2( special_effect_t* effect );
 
+void initialize_all_special_effects( player_t* actor );
+
 // Initialize special effects related to various race spells
 void initialize_racial_effects( player_t* );
 
