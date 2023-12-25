@@ -8179,7 +8179,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   effect.custom_buff = p -> buffs.unholy_strength;
   effect.execute_action = get_action<fallen_crusader_heal_t>( "unholy_strength", p, effect.driver() -> effectN( 1 ).trigger() );
 
-  new dbc_proc_callback_t( effect.item, effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void runeforge::razorice( special_effect_t& effect )
@@ -8190,7 +8190,7 @@ void runeforge::razorice( special_effect_t& effect )
     return;
   }
 
-  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.player );
 
   if ( ! p -> active_spells.runeforge_razorice )
     p -> active_spells.runeforge_razorice = get_action<razorice_attack_t>( "razorice", p );
@@ -8277,7 +8277,7 @@ void runeforge::hysteria( special_effect_t& effect )
   // but the proc rate is increased and it has been observed to proc twice on the same damage event (2020-08-23)
   effect.custom_buff = p -> buffs.rune_of_hysteria;
 
-  new dbc_proc_callback_t( effect.item, effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void runeforge::sanguination( special_effect_t& effect )
@@ -8357,7 +8357,7 @@ void runeforge::spellwarding( special_effect_t& effect )
   p -> runeforge.rune_of_spellwarding += effect.driver() -> effectN( 2 ).percent();
   effect.execute_action = get_action<spellwarding_absorb_t>( "rune_of_spellwarding", p, effect.driver() -> effectN( 1 ).trigger() );
 
-  new dbc_proc_callback_t( effect.item, effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // NYI
