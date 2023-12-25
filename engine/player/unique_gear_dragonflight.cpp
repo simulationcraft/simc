@@ -6162,27 +6162,30 @@ void coiled_serpent_idol( special_effect_t& e )
   auto molten_rain = create_proc_action<molten_rain_t>( "molten_rain", e );
   auto dot = create_proc_action<serpent_t>( "lava_bolt_dot", e, molten_rain );
 
-  range::for_each( e.player->sim->target_non_sleeping_list, [ e, molten_rain, dot ]( player_t* target ) {
-    target->register_on_demise_callback( e.player, [ e, molten_rain, dot ]( player_t* t ) {
-      // Dont execute at end of sim
-      if ( e.player->sim->event_mgr.canceled )
-      {
-        return;
-      }
+  range::for_each( e.player->sim->actor_list, [ e, molten_rain, dot ]( player_t* target ) {
+    if (target->is_enemy())
+    {
+      target->register_on_demise_callback( e.player, [ e, molten_rain, dot ]( player_t* t ) {
+        // Dont execute at end of sim
+        if ( e.player->sim->event_mgr.canceled )
+        {
+          return;
+        }
 
-      auto debuff = e.player->get_target_data( t )->debuff.lava_bolt;
-      if( debuff->check() )
-      {
-        for (int stacks = 0; debuff->check() > stacks; ++stacks)
+        auto debuff = e.player->get_target_data( t )->debuff.lava_bolt;
+        if ( debuff->check() )
+        {
+          for ( int stacks = 0; debuff->check() > stacks; ++stacks )
+          {
+            molten_rain->execute_on_target( t );
+          }
+        }
+        else if ( !debuff->check() && dot->get_dot( t )->is_ticking() )
         {
           molten_rain->execute_on_target( t );
         }
-      }
-      else if( !debuff->check() && dot->get_dot( t ) -> is_ticking() )
-      {
-        molten_rain->execute_on_target( t );
-      }
-    } );
+      } );
+    }
   } );
 
   e.proc_flags2_ = PF2_CRIT;
