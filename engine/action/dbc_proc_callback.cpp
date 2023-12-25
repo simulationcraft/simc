@@ -169,7 +169,8 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 
 dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_t& e )
   : action_callback_t( e.player ),
-    item( i.parent_slot != SLOT_INVALID ? i : e.player->items[SLOT_MAIN_HAND] ),
+    // item( i.parent_slot != SLOT_INVALID ? i : e.player->items[SLOT_MAIN_HAND] ),
+    item( i ),
     effect( e ),
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
@@ -191,7 +192,8 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
 
 dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_t& e )
   : action_callback_t( e.player ),
-    item( i ? *i : e.player->items[SLOT_MAIN_HAND] ),
+    // item( i ? *i : e.player->items[SLOT_MAIN_HAND] ),
+    item( *i ),
     effect( e ),
     cooldown( nullptr ),
     target_specific_cooldown( nullptr ),
@@ -272,13 +274,17 @@ void dbc_proc_callback_t::initialize()
   // in which case the proc does not trigger a buff.
   proc_buff = effect.create_buff();
 
-  if ( effect.weapon_proc )
+  if ( effect.weapon_proc && effect.item )
   {
-    if ( effect.player->sim->enable_all_item_effects )
-      weapon = effect.player->items[SLOT_MAIN_HAND].weapon();
-    else if ( effect.item )
-      weapon = effect.item->weapon();
+    weapon = effect.item->weapon();
   }
+  // if ( effect.weapon_proc )
+  // {
+  //   if ( effect.player->sim->enable_all_item_effects )
+  //     weapon = effect.player->items[SLOT_MAIN_HAND].weapon();
+  //   else if ( effect.item )
+  //     weapon = effect.item->weapon();
+  // }
 
   if ( proc_buff && effect.expire_on_max_stack != -1 )
   {
