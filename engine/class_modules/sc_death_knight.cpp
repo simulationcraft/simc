@@ -10527,9 +10527,9 @@ void death_knight_t::parse_player_effects( player_t* p )
   // Shared
   parse_player_passive_effects( spec.death_knight );
   parse_player_passive_effects( talent.might_of_thassarian );
-  parse_player_passive_effects( talent.veteran_of_the_third_war, 0U, spec.blood_death_knight );
+  parse_player_passive_effects( talent.veteran_of_the_third_war, 0U, spec.blood_death_knight ); // Giving int...? 
   parse_player_passive_effects( talent.merciless_strikes );
-  parse_player_buff_effects( buffs.icy_talons );
+  parse_player_buff_effects( buffs.icy_talons, CURRENT, talent.icy_talons );
   parse_debuff_effects_from_player( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, spell.brittle_debuff );
   parse_dot_effects_from_player( &death_knight_td_t::dots_t::frost_fever, spell.frost_fever, talent.unholy.morbidity );
   parse_dot_effects_from_player( &death_knight_td_t::dots_t::blood_plague, spell.blood_plague, specialization() == DEATH_KNIGHT_UNHOLY ? talent.unholy.morbidity : talent.blood.coagulopathy );
@@ -10538,7 +10538,7 @@ void death_knight_t::parse_player_effects( player_t* p )
   {
     parse_player_passive_effects( spec.blood_death_knight );
     parse_player_passive_effects( mastery.blood_shield );
-    parse_player_passive_effects( spec.blood_fortification );
+    parse_player_passive_effects( spec.blood_fortification ); // Giving Int...?
     parse_player_passive_effects( talent.blood_scent );
     parse_player_buff_effects( buffs.blood_shield, talent.blood.bloodshot );
     parse_player_buff_effects( buffs.bone_shield, talent.blood.improved_bone_shield );
@@ -10550,7 +10550,7 @@ void death_knight_t::parse_player_effects( player_t* p )
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
     parse_player_passive_effects( spec.frost_death_knight );
-    parse_player_buff_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
+    parse_player_buff_effects( buffs.bonegrinder_frost, CURRENT, talent.frost.bonegrinder ); // Not Working... why?! 
   }
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -10559,7 +10559,7 @@ void death_knight_t::parse_player_effects( player_t* p )
     parse_player_passive_effects( spec.unholy_death_knight );
     parse_player_buff_effects( buffs.amplify_damage );
     parse_player_buff_effects( buffs.unholy_assault );
-    parse_player_buff_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
+    parse_player_buff_effects( buffs.ghoulish_frenzy, CURRENT, talent.unholy.ghoulish_frenzy ); // Not Working... why?! 
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::virulent_plague, spell.virulent_plague, talent.unholy.morbidity );
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::unholy_blight, spell.unholy_blight_dot, false, talent.unholy.morbidity );
   }
@@ -10844,7 +10844,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  switch (school)
+  switch ( school )
   {
     case SCHOOL_PHYSICAL:
       m *= get_player_buff_effects_value( phys_damage_multiplier_buffeffects );
@@ -10867,8 +10867,9 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     case SCHOOL_ARCANE:
       m *= get_player_buff_effects_value( arcane_damage_multiplier_buffeffects );
       break;
-    default:
+    case SCHOOL_MAX:
       m *= get_player_buff_effects_value( all_damage_multiplier_buffeffects );
+    default:
       break;
   }
 
@@ -10959,7 +10960,8 @@ double death_knight_t::composite_melee_speed() const
 {
   double haste = player_t::composite_melee_speed();
 
-  haste *= 1.0 / get_player_buff_effects_value( attack_speed_multiplier_buffeffects );
+  haste *= 1.0 / get_player_buff_effects_value( all_attack_speed_multiplier_buffeffects );
+  haste *= 1.0 / get_player_buff_effects_value( melee_attack_speed_multiplier_buffeffects );
 
   return haste;
 }

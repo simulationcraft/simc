@@ -92,7 +92,8 @@ public:
   std::vector<buff_effect_t> arcane_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> attack_power_multiplier_buffeffects;
   std::vector<buff_effect_t> all_haste_multiplier_buffeffects;
-  std::vector<buff_effect_t> attack_speed_multiplier_buffeffects;
+  std::vector<buff_effect_t> all_attack_speed_multiplier_buffeffects;
+  std::vector<buff_effect_t> melee_attack_speed_multiplier_buffeffects;
   std::vector<buff_effect_t> crit_chance_additive_buffeffects;
   std::vector<buff_effect_t> crit_avoidance_additive_buffeffects;
   std::vector<dot_debuff_t> pet_damage_target_multiplier_dotdebuffs;
@@ -333,10 +334,12 @@ public:
                                                                eff );
             debug_message( "arcane damage multiplier" );
             break;
-          default:
+          case SCHOOL_MASK_ALL:
             all_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                             eff );
             debug_message( "all damage multiplier" );
+            break;
+          default:
             break;
         }
         break;
@@ -351,10 +354,14 @@ public:
         debug_message( "all haste multiplier" );
         break;
       case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
-        // Not Currently Working...?
-        attack_speed_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+        all_attack_speed_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                        eff );
-        debug_message( "attack speed multiplier" );
+        debug_message( "all attack speed multiplier" );
+        break;
+      case A_MOD_MELEE_ATTACK_SPEED_PCT:
+        melee_attack_speed_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                              eff );
+        debug_message( "melee attack speed multiplier" );
         break;
       case A_MOD_ALL_CRIT_CHANCE:
         crit_chance_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
