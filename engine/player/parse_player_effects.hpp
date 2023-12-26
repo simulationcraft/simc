@@ -90,6 +90,11 @@ public:
   std::vector<buff_effect_t> frost_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> shadow_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> arcane_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> attack_power_multiplier_buffeffects;
+  std::vector<buff_effect_t> all_haste_multiplier_buffeffects;
+  std::vector<buff_effect_t> attack_speed_multiplier_buffeffects;
+  std::vector<buff_effect_t> crit_chance_additive_buffeffects;
+  std::vector<buff_effect_t> crit_avoidance_additive_buffeffects;
   std::vector<dot_debuff_t> pet_damage_target_multiplier_dotdebuffs;
   std::vector<dot_debuff_t> guardian_damage_target_multiplier_dotdebuffs;
 
@@ -290,41 +295,76 @@ public:
         debug_message( "parry additive modifier" );
         break;
       case A_MOD_DAMAGE_PERCENT_DONE:
-        switch( eff.misc_value1() )
+        // Currently not working... for some reason?
+        switch ( eff.misc_value1() )
         {
           case SCHOOL_MASK_PHYSICAL:
-            phys_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            phys_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                             eff );
             debug_message( "physical damage multiplier" );
             break;
           case SCHOOL_MASK_HOLY:
-            holy_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            holy_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                             eff );
             debug_message( "holy damage multiplier" );
             break;
           case SCHOOL_MASK_FIRE:
-            fire_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            fire_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                             eff );
             debug_message( "fire damage multiplier" );
             break;
           case SCHOOL_MASK_NATURE:
-            nature_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            nature_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                               eff );
             debug_message( "nature damage multiplier" );
             break;
           case SCHOOL_MASK_FROST:
-            frost_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            frost_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                              eff );
             debug_message( "frost damage multiplier" );
             break;
           case SCHOOL_MASK_SHADOW:
-            shadow_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            shadow_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                               eff );
             debug_message( "shadow damage multiplier" );
             break;
           case SCHOOL_MASK_ARCANE:
-            arcane_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            arcane_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                               eff );
             debug_message( "arcane damage multiplier" );
             break;
           default:
-            all_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            all_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                            eff );
             debug_message( "all damage multiplier" );
             return;
         }
+        break;
+      case A_MOD_ATTACK_POWER_PCT:
+        attack_power_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                        eff );
+        debug_message( "attack power multiplier" );
+        break;
+      case A_HASTE_ALL:
+        all_haste_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                          eff );
+        debug_message( "all haste multiplier" );
+        break;
+      case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
+        // Not Currently Working...?
+        attack_speed_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                       eff );
+        debug_message( "attack speed multiplier" );
+        break;
+      case A_MOD_ALL_CRIT_CHANCE:
+        crit_chance_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                          eff );
+        debug_message( "crit chance additive" );
+        break;
+      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+        crit_avoidance_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                       eff );
+        debug_message( "crit avoidance additive" );
         break;
       default:
         return;

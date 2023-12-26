@@ -10528,6 +10528,8 @@ void death_knight_t::parse_player_effects( player_t* p )
   parse_player_passive_effects( spec.death_knight );
   parse_player_passive_effects( talent.might_of_thassarian );
   parse_player_passive_effects( talent.veteran_of_the_third_war, 0U, spec.blood_death_knight );
+  parse_player_passive_effects( talent.merciless_strikes );
+  parse_player_buff_effects( buffs.icy_talons );
   parse_debuff_effects_from_player( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, spell.brittle_debuff );
   parse_dot_effects_from_player( &death_knight_td_t::dots_t::frost_fever, spell.frost_fever, talent.unholy.morbidity );
   parse_dot_effects_from_player( &death_knight_td_t::dots_t::blood_plague, spell.blood_plague, specialization() == DEATH_KNIGHT_UNHOLY ? talent.unholy.morbidity : talent.blood.coagulopathy );
@@ -10535,8 +10537,11 @@ void death_knight_t::parse_player_effects( player_t* p )
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
     parse_player_passive_effects( spec.blood_death_knight );
+    parse_player_passive_effects( mastery.blood_shield );
     parse_player_passive_effects( spec.blood_fortification );
     parse_player_passive_effects( talent.blood_scent );
+    parse_player_buff_effects( buffs.blood_shield, talent.blood.bloodshot );
+    parse_player_buff_effects( buffs.bone_shield, talent.blood.improved_bone_shield );
     parse_player_buff_effects( buffs.vigorous_lifeblood_4pc );
     parse_player_buff_effects( buffs.voracious );
     parse_debuff_effects_from_player( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, spell.tightening_grasp_debuff );
@@ -10545,6 +10550,7 @@ void death_knight_t::parse_player_effects( player_t* p )
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
     parse_player_passive_effects( spec.frost_death_knight );
+    parse_player_buff_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
   }
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -10553,7 +10559,7 @@ void death_knight_t::parse_player_effects( player_t* p )
     parse_player_passive_effects( spec.unholy_death_knight );
     parse_player_buff_effects( buffs.amplify_damage );
     parse_player_buff_effects( buffs.unholy_assault );
-    parse_player_buff_effects( buffs.ghoulish_frenzy );
+    parse_player_buff_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::virulent_plague, spell.virulent_plague, talent.unholy.morbidity );
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::unholy_blight, spell.unholy_blight_dot, false, talent.unholy.morbidity );
   }
@@ -10840,16 +10846,32 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  m *= get_player_buff_effects_value( all_damage_multiplier_buffeffects );
-  
-  if ( specialization() == DEATH_KNIGHT_FROST && buffs.bonegrinder_frost->check() && dbc::is_school( school, SCHOOL_FROST ) )
+  switch (school)
   {
-    m *= 1.0 + buffs.bonegrinder_frost->check_value();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && talent.blood.bloodshot.ok() && buffs.blood_shield -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
-  {
-    m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
+    case SCHOOL_PHYSICAL:
+      m *= get_player_buff_effects_value( phys_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_HOLY:
+      m *= get_player_buff_effects_value( holy_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_FIRE:
+      m *= get_player_buff_effects_value( fire_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_NATURE:
+      m *= get_player_buff_effects_value( nature_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_FROST:
+      m *= get_player_buff_effects_value( frost_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_SHADOW:
+      m *= get_player_buff_effects_value( shadow_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_ARCANE:
+      m *= get_player_buff_effects_value( arcane_damage_multiplier_buffeffects );
+      break;
+    default:
+      m *= get_player_buff_effects_value( all_damage_multiplier_buffeffects );
+      break;
   }
 
   return m;
@@ -10906,10 +10928,7 @@ double death_knight_t::composite_attack_power_multiplier() const
 {
   double m = player_t::composite_attack_power_multiplier();
 
-  if ( mastery.blood_shield -> ok() )
-  {
-    m *= 1.0 + mastery.blood_shield -> effectN( 2 ).mastery_value() * cache.mastery();
-  }
+  m *= get_player_buff_effects_value( attack_power_multiplier_buffeffects );
 
   return m;
 }
@@ -10920,10 +10939,7 @@ double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  if (specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield->up() && talent.blood.improved_bone_shield->ok())
-  {
-    haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield->effectN( 1 ).percent() );
-  }
+  haste *= 1.0 / get_player_buff_effects_value( all_haste_multiplier_buffeffects );
 
   return haste;
 }
@@ -10934,10 +10950,7 @@ double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
 
-  if (specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield->up() && talent.blood.improved_bone_shield->ok())
-  {
-    haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield->effectN( 1 ).percent() );
-  }
+  haste *= 1.0 / get_player_buff_effects_value( all_haste_multiplier_buffeffects );
 
   return haste;
 }
@@ -10948,15 +10961,7 @@ double death_knight_t::composite_melee_speed() const
 {
   double haste = player_t::composite_melee_speed();
 
-  if ( buffs.icy_talons -> check() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.icy_talons -> check_stack_value() );
-  }
-
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.ghoulish_frenzy -> check() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.ghoulish_frenzy -> check_value() );
-  }
+  haste *= 1.0 / get_player_buff_effects_value( attack_speed_multiplier_buffeffects );
 
   return haste;
 }
@@ -10966,7 +10971,7 @@ double death_knight_t::composite_melee_crit_chance() const
 {
   double c = player_t::composite_melee_crit_chance();
 
-  c += talent.merciless_strikes->effectN( 1 ).percent();
+  c += get_player_buff_effects_value( crit_chance_additive_buffeffects );
 
   return c;
 }
@@ -10976,7 +10981,7 @@ double death_knight_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  c += talent.merciless_strikes->effectN( 1 ).percent();
+  c += get_player_buff_effects_value( crit_chance_additive_buffeffects );
 
   return c;
 }
@@ -10987,7 +10992,7 @@ double death_knight_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.blood_death_knight -> effectN( 8 ).percent();
+  c += get_player_buff_effects_value( crit_avoidance_additive_buffeffects );
 
   return c;
 }
