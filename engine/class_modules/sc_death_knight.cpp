@@ -10542,6 +10542,7 @@ void death_knight_t::parse_player_effects( player_t* p )
     parse_player_passive_effects( talent.blood_scent );
     parse_player_buff_effects( buffs.blood_shield, talent.blood.bloodshot );
     parse_player_buff_effects( buffs.bone_shield, false, talent.blood.improved_bone_shield );
+    parse_player_buff_effects( buffs.dancing_rune_weapon );
     parse_player_buff_effects( buffs.vigorous_lifeblood_4pc );
     parse_player_buff_effects( buffs.voracious );
     parse_debuff_effects_from_player( []( death_knight_td_t* td ) { return td->debuff.tightening_grasp->check(); }, spell.tightening_grasp_debuff );
