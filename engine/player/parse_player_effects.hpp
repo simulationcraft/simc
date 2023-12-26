@@ -73,20 +73,25 @@ private:
 
 public:
   // auto parsed dynamic effects
-  /*
-  std::vector<buff_effect_t> ta_multiplier_buffeffects;
-  std::vector<buff_effect_t> da_multiplier_buffeffects;
-  std::vector<buff_effect_t> execute_time_buffeffects;
-  std::vector<buff_effect_t> dot_duration_buffeffects;
-  std::vector<buff_effect_t> tick_time_buffeffects;
-  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
-  std::vector<buff_effect_t> cost_buffeffects;
-  std::vector<buff_effect_t> flat_cost_buffeffects;
-  std::vector<buff_effect_t> crit_chance_buffeffects;
-  std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
-  */
   std::vector<buff_effect_t> pet_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> guardian_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> strength_multiplier_buffeffects;
+  std::vector<buff_effect_t> agility_multiplier_buffeffects;
+  std::vector<buff_effect_t> intellect_multiplier_buffeffects;
+  std::vector<buff_effect_t> stamina_multiplier_buffeffects;
+  std::vector<buff_effect_t> leech_additive_buffeffects;
+  std::vector<buff_effect_t> expertise_additive_buffeffects;
+  std::vector<buff_effect_t> parry_additive_buffeffects;
+  std::vector<buff_effect_t> all_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> phys_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> holy_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> fire_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> nature_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> frost_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> shadow_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> arcane_damage_multiplier_buffeffects;
+  std::vector<dot_debuff_t> pet_damage_target_multiplier_dotdebuffs;
+  std::vector<dot_debuff_t> guardian_damage_target_multiplier_dotdebuffs;
 
   parse_player_buff_effects_t( player_t* p ) : player_( p ) {}
   virtual ~parse_player_buff_effects_t() = default;
@@ -218,6 +223,109 @@ public:
         guardian_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
         debug_message( "guardian damage" );
         break;
+      case A_MOD_TOTAL_STAT_PERCENTAGE:
+        switch( eff.misc_value2() )
+        {
+          case ATTRIBUTE_NONE:
+            return;
+            break;
+          case ATTR_STRENGTH:
+            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "strength multiplier" );
+            break;
+          case ATTR_AGILITY:
+            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "agility multiplier" );
+            break;
+          case ATTR_STAMINA:
+            stamina_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "stamina multiplier" );
+            break;
+          case ATTR_INTELLECT:
+            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "intellect multiplier" );
+            break;
+          case ATTR_AGI_INT:
+            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "agi/int multiplier" );
+            break;
+          case ATTR_STR_AGI:
+            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "str/agi multiplier" ); 
+            break;
+          case ATTR_STR_INT:
+            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "str/int multiplier" );
+            break;
+          case ATTR_STR_AGI_INT:
+            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "str/agi/int multiplier" );
+            break;
+          case ATTRIBUTE_MAX:
+            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            stamina_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "str/agi/int/stam multiplier" );
+            break;
+          default:
+            return;
+        }
+        break;
+      case A_MOD_LEECH_PERCENT:
+        leech_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+        debug_message( "leech additive modifier" );
+        break;
+      case A_MOD_EXPERTISE:
+        expertise_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+        debug_message( "expertise additive modifier" );
+        break;
+      case A_MOD_PARRY_PERCENT:
+        parry_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+        debug_message( "parry additive modifier" );
+        break;
+      case A_MOD_DAMAGE_PERCENT_DONE:
+        switch( eff.misc_value1() )
+        {
+          case SCHOOL_MASK_PHYSICAL:
+            phys_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "physical damage multiplier" );
+            break;
+          case SCHOOL_MASK_HOLY:
+            holy_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "holy damage multiplier" );
+            break;
+          case SCHOOL_MASK_FIRE:
+            fire_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "fire damage multiplier" );
+            break;
+          case SCHOOL_MASK_NATURE:
+            nature_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "nature damage multiplier" );
+            break;
+          case SCHOOL_MASK_FROST:
+            frost_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "frost damage multiplier" );
+            break;
+          case SCHOOL_MASK_SHADOW:
+            shadow_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "shadow damage multiplier" );
+            break;
+          case SCHOOL_MASK_ARCANE:
+            arcane_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "arcane damage multiplier" );
+            break;
+          default:
+            all_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "all damage multiplier" );
+            return;
+        }
+        break;
       default:
         return;
     }
@@ -276,8 +384,9 @@ public:
     force_player_buff_effect( buff, idx, true, DATA, mods... );
   }
 
+  template <typename... Ts>
   void parse_player_conditional_effects( const spell_data_t* spell, const bfun& func, unsigned ignore_mask = 0U,
-                                  bool use_stack = true, player_value_type_e value_type = DATA )
+                                  bool use_stack = true, player_value_type_e value_type = DATA, Ts... mods )
   {
     if ( !spell || !spell->ok() )
       return;
@@ -287,7 +396,7 @@ public:
       if ( ignore_mask & 1 << ( i - 1 ) )
         continue;
 
-      parse_player_buff_effect( nullptr, func, spell, i, use_stack, value_type, false );
+      parse_player_buff_effect( nullptr, func, spell, i, use_stack, value_type, false, mods... );
     }
   }
 
@@ -302,13 +411,19 @@ public:
     parse_player_conditional_effects( spell, nullptr, ignore_mask );
   }
 
+  template <typename... Ts>
+  void parse_player_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U, Ts... mods )
+  {
+    parse_player_conditional_effects( spell, nullptr, ignore_mask, mods...);
+  }
+
   void force_player_passive_effect( const spell_data_t* spell, unsigned idx, bool use_stack = true,
                              player_value_type_e value_type = DATA )
   {
     parse_player_buff_effect( nullptr, nullptr, spell, idx, use_stack, value_type, true );
   }
 
-  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
+  double get_player_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
                                  bool benefit = true ) const
   {
     double return_value = flat ? 0.0 : 1.0;
@@ -346,12 +461,12 @@ public:
     return return_value;
   }
 
-  // Syntax: parse_debuff_effects( func, debuff[, spell][,...] )
+  // Syntax: parse_debuff_effects_from_player( func, debuff[, spell][,...] )
   //  func = function taking the class's target_data as argument and returning an integer
   //  debuff = spell data of the debuff
   //  spell = optional list of spells with redirect effects that modify the effects on the debuff
   template <typename... Ts>
-  void parse_debuff_effect( const dfun& func, const spell_data_t* s_data, size_t i, bool force, Ts... mods )
+  void parse_debuff_effect_from_player( const dfun& func, const spell_data_t* s_data, size_t i, bool use_stacks, bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
     bool mastery    = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
@@ -370,41 +485,60 @@ public:
     if ( mastery )
       val_mul = 1.0;
 
-    if ( !( ( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ||
-              eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS ) &&
-         !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER ) && !force ) )
-      return;
+    auto debug_message = [ & ]( std::string_view type ) {
+      std::string val_str;
+      if ( !mastery )
+      {
+        val_str = "current value";
+        player_->sim->print_debug( "player-debuff-effects: {} {} modified by {} {} debuff {} ({}#{})", player_->name(),
+                                   type, val_str, "with", s_data->name_cstr(), s_data->id(), i);
+      }
+      else if ( mastery )
+      {
+        val_str = fmt::format( "{}*mastery", val * val_mul * 100 );
+        player_->sim->print_debug( "player-mastery-debuff-effects: {} {} modified by {}*mastery from {} ({}#{})",
+                                   player_->name(), type, val * val_mul * 100, s_data->name_cstr(), s_data->id(), i );
+      }
+    };
 
-    // target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, eff );
-    player_->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})",
-                               player_->name(), val * val_mul, mastery ? "*mastery" : "",
-                               s_data->name_cstr(), s_data->id(), i );
-
+    switch ( eff.subtype() )
+    {
+      case A_MOD_DAMAGE_FROM_CASTER_PET:
+        pet_damage_target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, eff );
+        debug_message( "pet damage dot/debuff" );
+        break;
+      case A_MOD_DAMAGE_FROM_CASTER_GUARDIAN:
+        guardian_damage_target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, eff );
+        debug_message( "guardian damage dot/debuff" );
+        break;
+      default:
+        return;
+    }
   }
 
   template <typename... Ts>
-  void parse_debuff_effects( const dfun& func, const spell_data_t* spell, Ts... mods )
+  void parse_debuff_effects_from_player( const dfun& func, const spell_data_t* spell, Ts... mods )
   {
     if ( !spell->ok() )
       return;
 
     for ( size_t i = 1; i <= spell->effect_count(); i++ )
     {
-      parse_debuff_effect( func, spell, i, false, mods... );
+      parse_debuff_effect_from_player( func, spell, i, true, false, mods... );
     }
   }
 
   template <typename... Ts>
-  void force_debuff_effect( const dfun& func, const spell_data_t* spell, unsigned idx, Ts... mods )
+  void force_debuff_effect_from_player( const dfun& func, const spell_data_t* spell, unsigned idx, Ts... mods )
   {
-    parse_debuff_effect( func, spell, idx, true, mods... );
+    parse_debuff_effect_from_player( func, spell, idx, true, true, mods... );
   }
 
-  virtual double get_debuff_effects_value( TD* t ) const
+  virtual double get_debuff_effects_value_from_player( const std::vector<dot_debuff_t>& debuffeffects, TD* t ) const
   {
     double return_value = 1.0;
 
-    /*for (const auto& i : target_multiplier_dotdebuffs)
+    for ( const auto& i : debuffeffects )
     {
       if ( auto check = i.func( t ) )
       {
@@ -415,7 +549,7 @@ public:
 
         return_value *= 1.0 + eff_val * check;
       }
-    }*/
+    }
 
     return return_value;
   }
