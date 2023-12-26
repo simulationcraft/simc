@@ -4755,9 +4755,7 @@ void items::yellow_punchcard( special_effect_t& effect )
 
   auto punchcard = init_punchcard( effect );
   if ( punchcard.parsed.data.id == 0 )
-  {
     return;
-  }
 
   auto budget = item_database::item_budget( effect.player, punchcard.item_level() );
 
@@ -4794,9 +4792,7 @@ void items::subroutine_overclock( special_effect_t& effect )
 {
   auto punchcard = init_punchcard( effect );
   if ( punchcard.parsed.data.id == 0 )
-  {
     return;
-  }
 
   stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "subroutine_overclock" ) );
   if ( !buff )
@@ -4815,6 +4811,9 @@ void items::subroutine_overclock( special_effect_t& effect )
 
 void items::subroutine_recalibration( special_effect_t& effect )
 {
+  if ( init_punchcard( effect ).parsed.data.id == 0 )
+    return;
+
   struct recalibration_cb_t : public dbc_proc_callback_t
   {
     unsigned casts, req_casts;
@@ -4911,6 +4910,9 @@ void items::subroutine_recalibration( special_effect_t& effect )
 
 void items::subroutine_optimization( special_effect_t& effect )
 {
+  if ( init_punchcard( effect ).parsed.data.id == 0 )
+    return;
+
   struct subroutine_optimization_buff_t : public buff_t
   {
     std::array<double, STAT_MAX> stats;
@@ -4925,7 +4927,9 @@ void items::subroutine_optimization( special_effect_t& effect )
         minor_stat( STAT_NONE ),
         punchcard( init_punchcard( effect ) ),
         raw_bonus( item_database::apply_combat_rating_multiplier(
-            effect.player, combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET, punchcard.item_level(),
+            effect.player,
+            combat_rating_multiplier_type::CR_MULTIPLIER_TRINKET,
+            punchcard.item_level(),
             effect.driver()->effectN( 2 ).average( &( punchcard ) ) ) )
     {
       // Find the two stats provided by the punchcard.
@@ -5112,6 +5116,9 @@ void items::subroutine_optimization( special_effect_t& effect )
 
 void items::harmonic_dematerializer( special_effect_t& effect )
 {
+  if ( init_punchcard( effect ).parsed.data.id == 0 )
+    return;
+
   struct harmonic_dematerializer_t : public proc_spell_t
   {
     buff_t* buff;

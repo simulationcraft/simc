@@ -4775,8 +4775,8 @@ void unique_gear::initialize_all_special_effects(player_t *actor)
   {
     // Blacklist of special effects by spell id for effects that are broken.
     switch (special_effect.spell_id) {
-      case 293512:
-      case 299464:
+      // case 293512:
+      // case 299464:
       case 302916:
         // new
       case 187611:
