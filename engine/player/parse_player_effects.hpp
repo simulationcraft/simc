@@ -27,83 +27,92 @@ double my_class_t::composite_leech() const
 {
   return player_t::composite_leech() + get_player_buff_effects_value( leech_additive_buffeffects, true );
 }
+
 double my_class_t::composite_melee_expertise( const weapon_t* ) const
 {
-  return player_t::composite_melee_expertise( nullptr ) + get_player_buff_effects_value( expertise_additive_buffeffects,
-true );
+  return player_t::composite_melee_expertise( nullptr ) + get_player_buff_effects_value( expertise_additive_buffeffects, true );
 }
+
 double my_class_t::composite_parry() const
 {
   return player_t::composite_parry() + get_player_buff_effects_value( parry_additive_buffeffects, true );
 }
+
 double my_class_t::composite_attack_power_multiplier() const
 {
-  return player_t::composite_attack_power_multiplier() * get_player_buff_effects_value(
-attack_power_multiplier_buffeffects );
+  return player_t::composite_attack_power_multiplier() * 
+  get_player_buff_effects_value( attack_power_multiplier_buffeffects );
 }
+
 double my_class_t::composite_melee_haste() const
 {
-  return player_t::composite_melee_haste() * ( 1.0 / get_player_buff_effects_value( all_haste_multiplier_buffeffects )
-);
+  return player_t::composite_melee_haste() * ( 1.0 / get_player_buff_effects_value( all_haste_multiplier_buffeffects ) );
 }
+
 double my_class_t::composite_spell_haste() const
 {
-  return player_t::composite_spell_haste() * ( 1.0 / get_player_buff_effects_value( all_haste_multiplier_buffeffects )
-);
+  return player_t::composite_spell_haste() * ( 1.0 / get_player_buff_effects_value( all_haste_multiplier_buffeffects ) );
 }
+
 double my_class_t::composite_melee_speed() const
 {
-  return player_t::composite_melee_speed() * 
-  ( 1.0 / get_player_buff_effects_value( all_attack_speed_multiplier_buffeffects ) ) * 
+  return player_t::composite_melee_speed() *
+  ( 1.0 / get_player_buff_effects_value( all_attack_speed_multiplier_buffeffects ) ) *
   ( 1.0 / get_player_buff_effects_value( melee_attack_speed_multiplier_buffeffects ) );
 }
+
 double my_class_t::composite_melee_crit_chance() const
 {
-  return player_t::composite_melee_crit_chance() + get_player_buff_effects_value( crit_chance_additive_buffeffects, true );
+  return player_t::composite_melee_crit_chance() + get_player_buff_effects_value( crit_chance_additive_buffeffects, true
+);
 }
+
 double my_class_t::composite_spell_crit_chance() const
 {
   return player_t::composite_spell_crit_chance() + get_player_buff_effects_value( crit_chance_additive_buffeffects, true );
 }
+
 double my_class_t::composite_crit_avoidance() const
 {
   return player_t::composite_crit_avoidance() + get_player_buff_effects_value( crit_avoidance_additive_buffeffects, true );
 }
+
 double my_class_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  switch ( school )
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
-    case SCHOOL_PHYSICAL:
-      m *= get_player_buff_effects_value( phys_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_HOLY:
-      m *= get_player_buff_effects_value( holy_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_FIRE:
-      m *= get_player_buff_effects_value( fire_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_NATURE:
-      m *= get_player_buff_effects_value( nature_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_FROST:
-      m *= get_player_buff_effects_value( frost_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_SHADOW:
-      m *= get_player_buff_effects_value( shadow_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_ARCANE:
-      m *= get_player_buff_effects_value( arcane_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_MAX:
-      m *= get_player_buff_effects_value( all_damage_multiplier_buffeffects );
-    default:
-      return;
+    m *= get_player_buff_effects_value( phys_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_HOLY ) )
+  {
+    m *= get_player_buff_effects_value( holy_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  {
+    m *= get_player_buff_effects_value( fire_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    m *= get_player_buff_effects_value( nature_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
+  {
+    m *= get_player_buff_effects_value( frost_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_SHADOW ) )
+  {
+    m *= get_player_buff_effects_value( shadow_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+  {
+    m *= get_player_buff_effects_value( arcane_damage_multiplier_buffeffects );
   }
 
   return m;
 }
+
 double my_class_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
@@ -119,6 +128,7 @@ double my_class_t::composite_player_pet_damage_multiplier( const action_state_t*
 
   return m;
 }
+
 double my_class_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
 {
   double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
