@@ -10756,18 +10756,16 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     case ATTR_STRENGTH:
       m *= get_player_buff_effects_value( strength_multiplier_buffeffects );
+      if( specialization() == DEATH_KNIGHT_FROST )
+      {
+        m *= 1.0 + buffs.pillar_of_frost->check_value() + buffs.pillar_of_frost_bonus->check_stack_value();
+      }
       break;
     case ATTR_STAMINA:
       m *= get_player_buff_effects_value( stamina_multiplier_buffeffects );
       break;
     default:
       break;
-  }
-
-  if ( attr == ATTR_STRENGTH )
-  {
-    if ( specialization() == DEATH_KNIGHT_FROST )
-    m *= 1.0 + buffs.pillar_of_frost -> check_value() + buffs.pillar_of_frost_bonus -> check_stack_value();
   }
 
   return m;
