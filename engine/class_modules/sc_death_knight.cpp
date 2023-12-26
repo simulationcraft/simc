@@ -21,6 +21,7 @@
 #include "action/action_callback.hpp"
 #include "class_modules/apl/apl_death_knight.hpp"
 #include "action/parse_buff_effects.hpp"
+#include "player/parse_player_effects.hpp"
 
 namespace { // UNNAMED NAMESPACE
 
@@ -527,7 +528,8 @@ struct death_knight_td_t : public actor_target_data_t {
 using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
 using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
-struct death_knight_t : public player_t {
+struct death_knight_t : public player_t, parse_player_buff_effects_t<death_knight_td_t>
+{
 public:
   // Stores the currently active death and decay ground event
   ground_aoe_event_t* active_dnd;
@@ -1288,7 +1290,8 @@ public:
     pets( this ),
     procs(),
     options(),
-    _runes( this )
+    _runes( this ),
+    parse_player_buff_effects_t( this )
   {
     cooldown.abomination_limb         = get_cooldown( "abomination_limb_proc" );
     cooldown.apocalypse               = get_cooldown( "apocalypse" );
@@ -1384,6 +1387,7 @@ public:
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
   // Shared
   bool      in_death_and_decay() const;
+  void      parse_player_effects( player_t* p );
   // Blood
   void      bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -10468,6 +10472,8 @@ void death_knight_t::init_finished()
                   "runeforge.name are to be used with Shadowlands Runeforge legendaries only. "
                   "Use death_knight.runeforge.name instead.", name() );
   }
+
+  parse_player_effects( this );
 }
 
 // death_knight_t::activate =================================================
@@ -10512,6 +10518,23 @@ void death_knight_t::reset()
   active_dnd = nullptr;
   km_proc_attempts = 0;
   bone_shield_charges_consumed = 0;
+}
+
+// death_knight_t::parse_player_effects ====================================================
+void death_knight_t::parse_player_effects( player_t* p )
+{
+  // Shared
+  parse_player_passive_effects( spec.death_knight );
+  // Blood
+  parse_player_passive_effects( spec.blood_death_knight );
+  parse_player_buff_effects( buffs.vigorous_lifeblood_4pc );
+  // Frost
+  parse_player_passive_effects( spec.frost_death_knight );
+  // Unholy
+  parse_player_passive_effects( mastery.dreadblade );
+  parse_player_passive_effects( spec.unholy_death_knight );
+  parse_player_buff_effects( buffs.amplify_damage );
+  parse_player_buff_effects( buffs.unholy_assault );
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -10823,25 +10846,11 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 
   if ( guardian )
   {
-    m *= 1.0 + spec.blood_death_knight -> effectN( 16 ).percent();
-    m *= 1.0 + spec.frost_death_knight -> effectN( 4 ).percent();
-    m *= 1.0 + spec.unholy_death_knight -> effectN( 4 ).percent();
+    m *= get_buff_effects_value( guardian_damage_multiplier_buffeffects );
   }
   else
   {
-    m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
-    m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
-    m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.vigorous_lifeblood_4pc -> check() )
-  {
-    m *= 1.0 + spell.vigorous_lifeblood_4pc -> effectN( 4 ).percent();
-  }
-
-  if ( mastery.dreadblade->ok() )
-  {
-    m *= 1.0 + cache.mastery_value();
+    m *= get_buff_effects_value( pet_damage_multiplier_buffeffects );
   }
 
   if ( talent.unholy.unholy_aura.ok() )
@@ -10850,16 +10859,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
       m *= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
     else  // Pets
       m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
-  }
-
-    if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.amplify_damage->check() )
-  {
-    m *= 1.0 + buffs.amplify_damage->check_value();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.unholy_assault->check() )
-  {
-    m *= 1.0 + buffs.unholy_assault->check_value();
   }
 
   return m;
@@ -11229,8 +11228,8 @@ private:
 
 // DEATH_KNIGHT MODULE INTERFACE ============================================
 
-struct death_knight_module_t : public module_t {
-  death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
+struct death_knight_module_t : public module_t
+  { death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
