@@ -10529,7 +10529,7 @@ void death_knight_t::parse_player_effects( player_t* p )
   parse_player_passive_effects( talent.might_of_thassarian );
   parse_player_passive_effects( talent.veteran_of_the_third_war, 0U, spec.blood_death_knight );
   parse_player_passive_effects( talent.merciless_strikes );
-  parse_player_buff_effects( buffs.icy_talons, CURRENT, talent.icy_talons );
+  parse_player_buff_effects( buffs.icy_talons, CURRENT_VALUE, talent.icy_talons );
   parse_debuff_effects_from_player( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, spell.brittle_debuff );
   parse_dot_effects_from_player( &death_knight_td_t::dots_t::frost_fever, spell.frost_fever, talent.unholy.morbidity );
   parse_dot_effects_from_player( &death_knight_td_t::dots_t::blood_plague, spell.blood_plague, specialization() == DEATH_KNIGHT_UNHOLY ? talent.unholy.morbidity : talent.blood.coagulopathy );
@@ -10551,7 +10551,7 @@ void death_knight_t::parse_player_effects( player_t* p )
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
     parse_player_passive_effects( spec.frost_death_knight );
-    parse_player_buff_effects( buffs.bonegrinder_frost, CURRENT );
+    parse_player_buff_effects( buffs.bonegrinder_frost, CURRENT_VALUE );
   }
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -10560,7 +10560,7 @@ void death_knight_t::parse_player_effects( player_t* p )
     parse_player_passive_effects( spec.unholy_death_knight );
     parse_player_buff_effects( buffs.amplify_damage );
     parse_player_buff_effects( buffs.unholy_assault );
-    parse_player_buff_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
+    parse_player_buff_effects( buffs.ghoulish_frenzy, CURRENT_VALUE, talent.unholy.ghoulish_frenzy );
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::virulent_plague, spell.virulent_plague, talent.unholy.morbidity );
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::unholy_blight, spell.unholy_blight_dot, false, talent.unholy.morbidity );
   }

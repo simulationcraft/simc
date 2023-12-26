@@ -178,9 +178,9 @@ double my_class_t::composite_player_target_pet_damage_multiplier( player_t* targ
 
 enum player_value_type_e
 {
-  DATA,
-  DEFAULT,
-  CURRENT
+  DATA_VALUE,
+  DEFAULT_VALUE,
+  CURRENT_VALUE,
 };
 
 template <typename TD>
@@ -197,7 +197,7 @@ struct parse_player_buff_effects_t
     bfun func;
     const spelleffect_data_t& eff;
 
-    buff_effect_t( buff_t* b, double v, player_value_type_e t = DATA, bool s = true, bool m = false, bfun f = nullptr,
+    buff_effect_t( buff_t* b, double v, player_value_type_e t = DATA_VALUE, bool s = true, bool m = false, bfun f = nullptr,
                    const spelleffect_data_t& e = spelleffect_data_t::nil() )
       : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e )
     {}
@@ -304,7 +304,7 @@ public:
   //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
   //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
   //  value_type = optional, default DATA, where the value comes from.
-  //               DATA = spell data, DEFAULT = buff default value, CURRENT = buff current value
+  //               DATA = spell data, DEFAULT = buff default value, CURRENT_VALUE = buff current value
   //  spell = optional list of spell with redirect effects that modify the effects on the buff
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
@@ -318,7 +318,7 @@ public:
   {
     const auto& eff = s_data->effectN( i );
     bool mastery    = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
-    double val      = ( buff && value_type == DEFAULT ) ? ( buff->default_value * 100 )
+    double val      = ( buff && value_type == DEFAULT_VALUE ) ? ( buff->default_value * 100 )
                                                             : ( mastery ? eff.mastery_value() : eff.base_value() );
     double val_mul  = 0.01;
 
@@ -333,9 +333,9 @@ public:
       {
         std::string val_str;
 
-        if ( value_type == player_value_type_e::CURRENT )
+        if ( value_type == player_value_type_e::CURRENT_VALUE )
           val_str = "current value";
-        else if ( value_type == player_value_type_e::DEFAULT )
+        else if ( value_type == player_value_type_e::DEFAULT_VALUE )
           val_str = fmt::format( "default value ({})", val * val_mul );
         else if ( mastery )
           val_str = fmt::format( "{}*mastery", val * val_mul * 100 );
@@ -558,13 +558,13 @@ public:
   template <typename... Ts>
   void parse_player_buff_effects( buff_t* buff, unsigned ignore_mask, Ts... mods )
   {
-    parse_player_buff_effects( buff, ignore_mask, true, DATA, mods... );
+    parse_player_buff_effects( buff, ignore_mask, true, DATA_VALUE, mods... );
   }
 
   template <typename... Ts>
   void parse_player_buff_effects( buff_t* buff, bool stack, Ts... mods )
   {
-    parse_player_buff_effects( buff, 0U, stack, DATA, mods... );
+    parse_player_buff_effects( buff, 0U, stack, DATA_VALUE, mods... );
   }
 
   template <typename... Ts>
@@ -576,7 +576,7 @@ public:
   template <typename... Ts>
   void parse_player_buff_effects( buff_t* buff, Ts... mods )
   {
-    parse_player_buff_effects( buff, 0U, true, DATA, mods... );
+    parse_player_buff_effects( buff, 0U, true, DATA_VALUE, mods... );
   }
 
   template <typename... Ts>
@@ -588,12 +588,12 @@ public:
   template <typename... Ts>
   void force_player_buff_effect( buff_t* buff, unsigned idx, Ts... mods )
   {
-    force_player_buff_effect( buff, idx, true, DATA, mods... );
+    force_player_buff_effect( buff, idx, true, DATA_VALUE, mods... );
   }
 
   template <typename... Ts>
   void parse_player_conditional_effects( const spell_data_t* spell, const bfun& func, unsigned ignore_mask = 0U,
-                                  bool use_stack = true, player_value_type_e value_type = DATA, Ts... mods )
+                                  bool use_stack = true, player_value_type_e value_type = DATA_VALUE, Ts... mods )
   {
     if ( !spell || !spell->ok() )
       return;
@@ -608,7 +608,7 @@ public:
   }
 
   void force_player_conditional_effect( const spell_data_t* spell, const bfun& func, unsigned idx, bool use_stack = true,
-                                 player_value_type_e value_type = DATA )
+                                 player_value_type_e value_type = DATA_VALUE )
   {
     parse_player_buff_effect( nullptr, func, spell, idx, use_stack, value_type, true );
   }
@@ -625,7 +625,7 @@ public:
   }
 
   void force_player_passive_effect( const spell_data_t* spell, unsigned idx, bool use_stack = true,
-                             player_value_type_e value_type = DATA )
+                             player_value_type_e value_type = DATA_VALUE )
   {
     parse_player_buff_effect( nullptr, nullptr, spell, idx, use_stack, value_type, true );
   }
@@ -652,7 +652,7 @@ public:
 
         mod = i.use_stacks ? stack : 1;
 
-        if ( i.type == CURRENT )
+        if ( i.type == CURRENT_VALUE )
           eff_val = i.buff->check_value();
       }
 
