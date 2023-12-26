@@ -10799,7 +10799,7 @@ double death_knight_t::composite_leech() const
 {
   double m = player_t::composite_leech();
 
-  m += ( get_player_buff_effects_value( leech_additive_buffeffects, true ) / 100 );
+  m += get_player_buff_effects_value( leech_additive_buffeffects, true );
 
   return m;
 }
@@ -10810,7 +10810,7 @@ double death_knight_t::composite_melee_expertise( const weapon_t* ) const
 {
   double expertise = player_t::composite_melee_expertise( nullptr );
 
-  expertise += ( get_player_buff_effects_value( expertise_additive_buffeffects, true ) / 100 );
+  expertise += get_player_buff_effects_value( expertise_additive_buffeffects, true );
 
   return expertise;
 }
@@ -10834,7 +10834,7 @@ double death_knight_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
 
-  parry += ( get_player_buff_effects_value( parry_additive_buffeffects, true ) / 100 );
+  parry += get_player_buff_effects_value( parry_additive_buffeffects, true );
 
   return parry;
 }
@@ -10969,7 +10969,7 @@ double death_knight_t::composite_melee_crit_chance() const
 {
   double c = player_t::composite_melee_crit_chance();
 
-  c += ( get_player_buff_effects_value( crit_chance_additive_buffeffects, true ) / 100 );
+  c += get_player_buff_effects_value( crit_chance_additive_buffeffects, true );
 
   return c;
 }
@@ -10979,7 +10979,7 @@ double death_knight_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  c += ( get_player_buff_effects_value( crit_chance_additive_buffeffects, true ) / 100 );
+  c += get_player_buff_effects_value( crit_chance_additive_buffeffects, true );
 
   return c;
 }
@@ -10990,7 +10990,7 @@ double death_knight_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += ( get_player_buff_effects_value( crit_avoidance_additive_buffeffects, true ) / 100 );
+  c += get_player_buff_effects_value( crit_avoidance_additive_buffeffects, true );
 
   return c;
 }
