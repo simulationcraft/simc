@@ -15,14 +15,131 @@
 // Mixin to player class to allow auto parsing and dynamic application of whitelist based buffs & auras.
 // 1) Add `parse_player_buff_effects_t` as an additional parent with the target data class as template parameter:
 //
-//    struct my_action_base_t : public action_t, parse_player_buff_effects_t<my_target_data_t>
+//    struct my_class_t : public player_t, parse_player_buff_effects_t<death_knight_td_t>
 //
 // 2) Construct the mixin via `parse_player_buff_effects_t( this );`
 //
-// 3) `get_buff_effects_value( buff effect vector ) returns the modified value.
+// 3) `get_player_buff_effects_value( buff effect vector ) returns the modified value.
 //    Add the following overrides with any addtional adjustments as needed (BASE is the parent to the action base class):
 
-/*    
+/* 
+double my_class_t::composite_leech() const
+{
+  return player_t::composite_leech() + get_player_buff_effects_value( leech_additive_buffeffects, true );
+}
+double my_class_t::composite_melee_expertise( const weapon_t* ) const
+{
+  return player_t::composite_melee_expertise( nullptr ) + get_player_buff_effects_value( expertise_additive_buffeffects,
+true );
+}
+double my_class_t::composite_parry() const
+{
+  return player_t::composite_parry() + get_player_buff_effects_value( parry_additive_buffeffects, true );
+}
+double my_class_t::composite_attack_power_multiplier() const
+{
+  return player_t::composite_attack_power_multiplier() * get_player_buff_effects_value(
+attack_power_multiplier_buffeffects );
+}
+double my_class_t::composite_melee_haste() const
+{
+  return player_t::composite_melee_haste() * ( 1.0 / get_player_buff_effects_value( all_haste_multiplier_buffeffects )
+);
+}
+double my_class_t::composite_spell_haste() const
+{
+  return player_t::composite_spell_haste() * ( 1.0 / get_player_buff_effects_value( all_haste_multiplier_buffeffects )
+);
+}
+double my_class_t::composite_melee_speed() const
+{
+  return player_t::composite_melee_speed() * 
+  ( 1.0 / get_player_buff_effects_value( all_attack_speed_multiplier_buffeffects ) ) * 
+  ( 1.0 / get_player_buff_effects_value( melee_attack_speed_multiplier_buffeffects ) );
+}
+double my_class_t::composite_melee_crit_chance() const
+{
+  return player_t::composite_melee_crit_chance() + get_player_buff_effects_value( crit_chance_additive_buffeffects, true );
+}
+double my_class_t::composite_spell_crit_chance() const
+{
+  return player_t::composite_spell_crit_chance() + get_player_buff_effects_value( crit_chance_additive_buffeffects, true );
+}
+double my_class_t::composite_crit_avoidance() const
+{
+  return player_t::composite_crit_avoidance() + get_player_buff_effects_value( crit_avoidance_additive_buffeffects, true );
+}
+double my_class_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  switch ( school )
+  {
+    case SCHOOL_PHYSICAL:
+      m *= get_player_buff_effects_value( phys_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_HOLY:
+      m *= get_player_buff_effects_value( holy_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_FIRE:
+      m *= get_player_buff_effects_value( fire_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_NATURE:
+      m *= get_player_buff_effects_value( nature_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_FROST:
+      m *= get_player_buff_effects_value( frost_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_SHADOW:
+      m *= get_player_buff_effects_value( shadow_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_ARCANE:
+      m *= get_player_buff_effects_value( arcane_damage_multiplier_buffeffects );
+      break;
+    case SCHOOL_MAX:
+      m *= get_player_buff_effects_value( all_damage_multiplier_buffeffects );
+    default:
+      return;
+  }
+
+  return m;
+}
+double my_class_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
+
+  if ( guardian )
+  {
+    m *= get_player_buff_effects_value( guardian_damage_multiplier_buffeffects );
+  }
+  else
+  {
+    m *= get_player_buff_effects_value( pet_damage_multiplier_buffeffects );
+  }
+
+  return m;
+}
+double my_class_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  const my_class_td_t* td = get_target_data( target );
+
+  if ( td )
+  {
+    if( guardian )
+    {
+      m *= get_debuff_effects_value_from_player( guardian_damage_target_multiplier_dotdebuffs, get_target_data( target )
+);
+    }
+    else
+    {
+      m *= get_debuff_effects_value_from_player( pet_damage_target_multiplier_dotdebuffs, get_target_data( target ) );
+    }
+  }
+
+  return m;
+}
 */
 
 enum player_value_type_e
