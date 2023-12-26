@@ -129,8 +129,7 @@ double my_class_t::composite_player_target_pet_damage_multiplier( player_t* targ
   {
     if( guardian )
     {
-      m *= get_debuff_effects_value_from_player( guardian_damage_target_multiplier_dotdebuffs, get_target_data( target )
-);
+      m *= get_debuff_effects_value_from_player( guardian_damage_target_multiplier_dotdebuffs, get_target_data( target ) );
     }
     else
     {
