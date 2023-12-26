@@ -10870,7 +10870,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     case SCHOOL_MAX:
       m *= get_player_buff_effects_value( all_damage_multiplier_buffeffects );
     default:
-      return;
+      break;
   }
 
   return m;

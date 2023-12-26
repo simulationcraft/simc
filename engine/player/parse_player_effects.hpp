@@ -348,47 +348,45 @@ public:
       case A_MOD_TOTAL_STAT_PERCENTAGE:
         switch( eff.misc_value2() )
         {
-          case ATTRIBUTE_NONE:
-            return;
-            break;
-          case ATTR_STRENGTH:
+          case 0x1:
             strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
             debug_message( "strength multiplier" );
             break;
-          case ATTR_AGILITY:
+          case 0x2:
             agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
             debug_message( "agility multiplier" );
             break;
-          case ATTR_STAMINA:
+          case 0x4:
             stamina_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
             debug_message( "stamina multiplier" );
             break;
-          case ATTR_INTELLECT:
+          case 0x5:
+            stamina_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            debug_message( "str/stam multiplier" );
+            break;
+          case 0x8:
             intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
             debug_message( "intellect multiplier" );
             break;
-          case ATTR_AGI_INT:
-            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "agi/int multiplier" );
-            break;
-          case ATTR_STR_AGI:
-            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "str/agi multiplier" ); 
-            break;
-          case ATTR_STR_INT:
-            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "str/int multiplier" );
-            break;
-          case ATTR_STR_AGI_INT:
-            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+          case 0xb:
+            switch (player_->convert_hybrid_stat( STAT_STR_AGI_INT ))
+            {
+              case STAT_STRENGTH:
+                strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+                break;
+              case STAT_AGILITY:
+                agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+                break;
+              case STAT_INTELLECT:
+                intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+                break;
+              default:
+                break;
+            }
             debug_message( "str/agi/int multiplier" );
             break;
-          case ATTRIBUTE_MAX:
+          case 0xf:
             agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
             intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
             strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
