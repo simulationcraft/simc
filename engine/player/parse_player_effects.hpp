@@ -619,9 +619,9 @@ public:
   }
 
   template <typename... Ts>
-  void parse_player_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U, Ts... mods )
+  void parse_player_passive_effects( const spell_data_t* spell, Ts... mods )
   {
-    parse_player_conditional_effects( spell, nullptr, ignore_mask, mods...);
+    parse_player_conditional_effects( spell, nullptr, mods... );
   }
 
   void force_player_passive_effect( const spell_data_t* spell, unsigned idx, bool use_stack = true,
