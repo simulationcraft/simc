@@ -77,6 +77,31 @@ double my_class_t::composite_crit_avoidance() const
   return player_t::composite_crit_avoidance() + get_player_buff_effects_value( crit_avoidance_additive_buffeffects, true );
 }
 
+double my_class_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  switch ( attr )
+  {
+    case ATTR_AGILITY:
+      m *= get_player_buff_effects_value( agility_multiplier_buffeffects );
+      break;
+    case ATTR_INTELLECT:
+      m *= get_player_buff_effects_value( intellect_multiplier_buffeffects );
+      break;
+    case ATTR_STRENGTH:
+      m *= get_player_buff_effects_value( strength_multiplier_buffeffects );
+      break;
+    case ATTR_STAMINA:
+      m *= get_player_buff_effects_value( stamina_multiplier_buffeffects );
+      break;
+    default:
+      break;
+  }
+
+  return m;
+}
+
 double my_class_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
@@ -247,19 +272,20 @@ public:
       if ( eff.type() != E_APPLY_AURA )
         continue;
 
-      if ( ( ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+      if ( ( base->affected_by_all( eff ) &&
+             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
                ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
                ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
            ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
       {
         double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
 
-        if ( eff.subtype() == A_ADD_FLAT_MODIFIER )
+        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
           val += pct;
-        else if ( eff.subtype() == A_ADD_PCT_MODIFIER )
+        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
           val *= 1.0 + pct / 100;
         else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
-          val = pct / 100;
+          val = pct;
       }
     }
   }
@@ -755,18 +781,10 @@ public:
       
       switch ( subtype )
       {
-        case A_MOD_PET_DAMAGE_DONE:
-        case A_MOD_GUARDIAN_DAMAGE_DONE:
-        case A_MOD_TOTAL_STAT_PERCENTAGE:
-        case A_MOD_DAMAGE_PERCENT_DONE:
-        case A_MOD_ATTACK_POWER_PCT:
-        case A_HASTE_ALL:
-        case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
-        case A_MOD_LEECH_PERCENT:
-        case A_MOD_EXPERTISE:
-        case A_MOD_PARRY_PERCENT:
-        case A_MOD_ALL_CRIT_CHANCE:
-        case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
           break;
         default:
           continue;
@@ -774,11 +792,21 @@ public:
 
       switch ( eff.property_type() )
       {
-        case P_EFFECT_1: target_idx = 1; break;
-        case P_EFFECT_2: target_idx = 2; break;
-        case P_EFFECT_3: target_idx = 3; break;
-        case P_EFFECT_4: target_idx = 4; break;
-        case P_EFFECT_5: target_idx = 5; break;
+        case P_EFFECT_1:
+          target_idx = 1;
+          break;
+        case P_EFFECT_2:
+          target_idx = 2;
+          break;
+        case P_EFFECT_3:
+          target_idx = 3;
+          break;
+        case P_EFFECT_4:
+          target_idx = 4;
+          break;
+        case P_EFFECT_5:
+          target_idx = 5;
+          break;
         default:
           continue;
       }
@@ -788,23 +816,15 @@ public:
 
       if ( i <= 5 )
         parse_spell_effects_mods( val, m, s_data, i, mods... );
-      
+
       switch ( subtype )
       {
-        case A_MOD_LEECH_PERCENT:
-        case A_MOD_EXPERTISE:
-        case A_MOD_PARRY_PERCENT:
-        case A_MOD_ALL_CRIT_CHANCE:
-        case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
-          effect_flat_modifiers.emplace_back( target_idx, val * 0.01 );
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          effect_flat_modifiers.emplace_back( target_idx, val );
           break;
-        case A_MOD_PET_DAMAGE_DONE:
-        case A_MOD_GUARDIAN_DAMAGE_DONE:
-        case A_MOD_TOTAL_STAT_PERCENTAGE:
-        case A_MOD_DAMAGE_PERCENT_DONE:
-        case A_MOD_ATTACK_POWER_PCT:
-        case A_HASTE_ALL:
-        case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
           effect_pct_modifiers.emplace_back( target_idx, val * 0.01 );
           break;
         default:

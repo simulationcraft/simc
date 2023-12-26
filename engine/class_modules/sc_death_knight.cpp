@@ -10318,7 +10318,7 @@ void death_knight_t::create_buffs()
   buffs.unholy_pact = new unholy_pact_buff_t( this );
 
   buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
-        -> set_default_value( spell.ghoulish_frenzy_player -> effectN( 1 ).percent() )
+        -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_ATTACK_SPEED )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         -> apply_affecting_aura( talent.unholy.ghoulish_frenzy );
@@ -10550,7 +10550,7 @@ void death_knight_t::parse_player_effects( player_t* p )
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
     parse_player_passive_effects( spec.frost_death_knight );
-    parse_player_buff_effects( buffs.bonegrinder_frost );
+    parse_player_buff_effects( buffs.bonegrinder_frost, CURRENT );
   }
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -10559,7 +10559,7 @@ void death_knight_t::parse_player_effects( player_t* p )
     parse_player_passive_effects( spec.unholy_death_knight );
     parse_player_buff_effects( buffs.amplify_damage );
     parse_player_buff_effects( buffs.unholy_assault );
-    parse_player_buff_effects( buffs.ghoulish_frenzy );
+    parse_player_buff_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::virulent_plague, spell.virulent_plague, talent.unholy.morbidity );
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::unholy_blight, spell.unholy_blight_dot, false, talent.unholy.morbidity );
   }
