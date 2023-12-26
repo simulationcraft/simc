@@ -129,11 +129,11 @@ public:
         double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
 
         if ( eff.subtype() == A_ADD_FLAT_MODIFIER )
-          val += pct;
+          val += pct / 100;
         else if ( eff.subtype() == A_ADD_PCT_MODIFIER )
           val *= 1.0 + pct / 100;
         else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
-          val = pct;
+          val = pct / 100;
       }
     }
   }
@@ -279,7 +279,7 @@ public:
             debug_message( "str/agi/int/stam multiplier" );
             break;
           default:
-            return;
+            break;
         }
         break;
       case A_MOD_LEECH_PERCENT:
@@ -337,7 +337,7 @@ public:
             all_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                             eff );
             debug_message( "all damage multiplier" );
-            return;
+            break;
         }
         break;
       case A_MOD_ATTACK_POWER_PCT:
@@ -367,7 +367,7 @@ public:
         debug_message( "crit avoidance additive" );
         break;
       default:
-        return;
+        break;
     }
   }
 
@@ -552,7 +552,7 @@ public:
         debug_message( "guardian damage dot/debuff" );
         break;
       default:
-        return;
+        break;
     }
   }
 
@@ -611,13 +611,21 @@ public:
 
       if ( eff.type() != E_APPLY_AURA )
         continue;
-      /*
+      
       switch ( subtype )
       {
-        case A_ADD_FLAT_MODIFIER:
-        case A_ADD_FLAT_LABEL_MODIFIER:
-        case A_ADD_PCT_MODIFIER:
-        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_MOD_PET_DAMAGE_DONE:
+        case A_MOD_GUARDIAN_DAMAGE_DONE:
+        case A_MOD_TOTAL_STAT_PERCENTAGE:
+        case A_MOD_DAMAGE_PERCENT_DONE:
+        case A_MOD_ATTACK_POWER_PCT:
+        case A_HASTE_ALL:
+        case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
+        case A_MOD_LEECH_PERCENT:
+        case A_MOD_EXPERTISE:
+        case A_MOD_PARRY_PERCENT:
+        case A_MOD_ALL_CRIT_CHANCE:
+        case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
           break;
         default:
           continue;
@@ -632,35 +640,43 @@ public:
         case P_EFFECT_5: target_idx = 5; break;
         default:
           continue;
-      }*/
+      }
 
       double val = eff.base_value();
       bool m;  // dummy throwaway
 
       if ( i <= 5 )
         parse_spell_effects_mods( val, m, s_data, i, mods... );
-      /*
+      
       switch ( subtype )
       {
-        case A_ADD_FLAT_MODIFIER:
-        case A_ADD_FLAT_LABEL_MODIFIER:
-          effect_flat_modifiers.emplace_back( target_idx, val );
+        case A_MOD_LEECH_PERCENT:
+        case A_MOD_EXPERTISE:
+        case A_MOD_PARRY_PERCENT:
+        case A_MOD_ALL_CRIT_CHANCE:
+        case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+          effect_flat_modifiers.emplace_back( target_idx, val * 0.01 );
           break;
-        case A_ADD_PCT_MODIFIER:
-        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_MOD_PET_DAMAGE_DONE:
+        case A_MOD_GUARDIAN_DAMAGE_DONE:
+        case A_MOD_TOTAL_STAT_PERCENTAGE:
+        case A_MOD_DAMAGE_PERCENT_DONE:
+        case A_MOD_ATTACK_POWER_PCT:
+        case A_HASTE_ALL:
+        case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
           effect_pct_modifiers.emplace_back( target_idx, val * 0.01 );
           break;
         default:
           break;
-      }*/
+      }
     }
   }
 
-  /*
+  
   // return a copy of the effect with modified value
   spelleffect_data_t modified_effect( size_t idx )
   {
-    spelleffect_data_t temp = action_->data().effectN( idx );
+    spelleffect_data_t temp = this->data().effectN( idx );
 
     for ( auto [ i, v ] : effect_flat_modifiers )
       if ( i == idx  )
@@ -671,7 +687,7 @@ public:
         temp._base_value *= 1.0 + v;
 
     return temp;
-  }*/
+  }
 
   /*
   void parsed_html_report( report::sc_html_stream& os )
