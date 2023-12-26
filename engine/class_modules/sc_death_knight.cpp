@@ -10550,7 +10550,7 @@ void death_knight_t::parse_player_effects( player_t* p )
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
     parse_player_passive_effects( spec.frost_death_knight );
-    parse_player_buff_effects( buffs.bonegrinder_frost, CURRENT, talent.frost.bonegrinder ); // Not Working... why?! 
+    parse_player_buff_effects( buffs.bonegrinder_frost ); // Not Working... why?! 
   }
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -10559,7 +10559,7 @@ void death_knight_t::parse_player_effects( player_t* p )
     parse_player_passive_effects( spec.unholy_death_knight );
     parse_player_buff_effects( buffs.amplify_damage );
     parse_player_buff_effects( buffs.unholy_assault );
-    parse_player_buff_effects( buffs.ghoulish_frenzy, CURRENT, talent.unholy.ghoulish_frenzy ); // Not Working... why?! 
+    parse_player_buff_effects( buffs.ghoulish_frenzy ); // Not Working... why?! 
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::virulent_plague, spell.virulent_plague, talent.unholy.morbidity );
     parse_dot_effects_from_player( &death_knight_td_t::dots_t::unholy_blight, spell.unholy_blight_dot, false, talent.unholy.morbidity );
   }
@@ -10844,33 +10844,33 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  switch ( school )
+    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
-    case SCHOOL_PHYSICAL:
-      m *= get_player_buff_effects_value( phys_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_HOLY:
-      m *= get_player_buff_effects_value( holy_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_FIRE:
-      m *= get_player_buff_effects_value( fire_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_NATURE:
-      m *= get_player_buff_effects_value( nature_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_FROST:
-      m *= get_player_buff_effects_value( frost_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_SHADOW:
-      m *= get_player_buff_effects_value( shadow_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_ARCANE:
-      m *= get_player_buff_effects_value( arcane_damage_multiplier_buffeffects );
-      break;
-    case SCHOOL_MAX:
-      m *= get_player_buff_effects_value( all_damage_multiplier_buffeffects );
-    default:
-      break;
+    m *= get_player_buff_effects_value( phys_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_HOLY ) )
+  {
+    m *= get_player_buff_effects_value( holy_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  {
+    m *= get_player_buff_effects_value( fire_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    m *= get_player_buff_effects_value( nature_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
+  {
+    m *= get_player_buff_effects_value( frost_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_SHADOW ) )
+  {
+    m *= get_player_buff_effects_value( shadow_damage_multiplier_buffeffects );
+  }
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+  {
+    m *= get_player_buff_effects_value( arcane_damage_multiplier_buffeffects );
   }
 
   return m;

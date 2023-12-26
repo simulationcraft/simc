@@ -198,7 +198,6 @@ public:
   std::vector<buff_effect_t> leech_additive_buffeffects;
   std::vector<buff_effect_t> expertise_additive_buffeffects;
   std::vector<buff_effect_t> parry_additive_buffeffects;
-  std::vector<buff_effect_t> all_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> phys_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> holy_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> fire_damage_multiplier_buffeffects;
@@ -246,7 +245,7 @@ public:
         double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
 
         if ( eff.subtype() == A_ADD_FLAT_MODIFIER )
-          val += pct / 100;
+          val += pct;
         else if ( eff.subtype() == A_ADD_PCT_MODIFIER )
           val *= 1.0 + pct / 100;
         else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
@@ -346,55 +345,62 @@ public:
         debug_message( "guardian damage" );
         break;
       case A_MOD_TOTAL_STAT_PERCENTAGE:
-        switch( eff.misc_value2() )
+        if ( eff.misc_value2() )
         {
-          case 0x1:
-            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "strength multiplier" );
-            break;
-          case 0x2:
-            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "agility multiplier" );
-            break;
-          case 0x4:
-            stamina_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "stamina multiplier" );
-            break;
-          case 0x5:
-            stamina_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "str/stam multiplier" );
-            break;
-          case 0x8:
-            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "intellect multiplier" );
-            break;
-          case 0xb:
-            switch (player_->convert_hybrid_stat( STAT_STR_AGI_INT ))
+          enum stat_mask_e
+          {
+            STAT_MASK_STRENGTH  = 0x1,
+            STAT_MASK_AGILITY   = 0x2,
+            STAT_MASK_STAMINA   = 0x4,
+            STAT_MASK_INTELLECT = 0x8,
+          };
+          if ( eff.misc_value2() == 0xb )
+          {
+            switch ( player_->convert_hybrid_stat( STAT_STR_AGI_INT ) )
             {
               case STAT_STRENGTH:
-                strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+                strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                              eff );
                 break;
               case STAT_AGILITY:
-                agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+                agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                             eff );
                 break;
               case STAT_INTELLECT:
-                intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+                intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                               eff );
                 break;
               default:
                 break;
             }
-            debug_message( "str/agi/int multiplier" );
-            break;
-          case 0xf:
-            agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            stamina_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            debug_message( "str/agi/int/stam multiplier" );
-            break;
-          default:
-            break;
+          }
+          else
+          {
+            if ( ( eff.misc_value2() & STAT_MASK_STRENGTH ) == STAT_MASK_STRENGTH )
+            {
+              strength_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                            eff );
+              debug_message( "strength multiplier" );
+            }
+            if ( ( eff.misc_value2() & STAT_MASK_AGILITY ) == STAT_MASK_AGILITY )
+            {
+              agility_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                           eff );
+              debug_message( "agility multiplier" );
+            }
+            if ( ( eff.misc_value2() & STAT_MASK_STAMINA ) == STAT_MASK_STAMINA )
+            {
+              stamina_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                           eff );
+              debug_message( "stamina multiplier" );
+            }
+            if ( ( eff.misc_value2() & STAT_MASK_INTELLECT ) == STAT_MASK_INTELLECT )
+            {
+              intellect_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                             eff );
+              debug_message( "intellect multiplier" );
+            }
+          }
         }
         break;
       case A_MOD_LEECH_PERCENT:
@@ -410,51 +416,55 @@ public:
         debug_message( "parry additive modifier" );
         break;
       case A_MOD_DAMAGE_PERCENT_DONE:
-        // Currently not working... for some reason?
-        switch ( eff.misc_value1() )
+        if ( eff.misc_value1() )
         {
-          case SCHOOL_MASK_PHYSICAL:
+          if ( ( eff.misc_value1() & SCHOOL_MASK_PHYSICAL ) == SCHOOL_MASK_PHYSICAL )
+          {
             phys_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                              eff );
             debug_message( "physical damage multiplier" );
-            break;
-          case SCHOOL_MASK_HOLY:
+          }
+          if ( ( eff.misc_value1() & SCHOOL_MASK_HOLY ) == SCHOOL_MASK_HOLY )
+          {
             holy_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                              eff );
             debug_message( "holy damage multiplier" );
-            break;
-          case SCHOOL_MASK_FIRE:
+          }
+
+          if ( ( eff.misc_value1() & SCHOOL_MASK_FIRE ) == SCHOOL_MASK_FIRE )
+          {
             fire_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                              eff );
             debug_message( "fire damage multiplier" );
-            break;
-          case SCHOOL_MASK_NATURE:
+          }
+
+          if ( ( eff.misc_value1() & SCHOOL_MASK_NATURE ) == SCHOOL_MASK_NATURE )
+          {
             nature_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                                eff );
             debug_message( "nature damage multiplier" );
-            break;
-          case SCHOOL_MASK_FROST:
+          }
+
+          if ( ( eff.misc_value1() & SCHOOL_MASK_FROST ) == SCHOOL_MASK_FROST )
+          {
             frost_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                               eff );
             debug_message( "frost damage multiplier" );
-            break;
-          case SCHOOL_MASK_SHADOW:
+          }
+
+          if ( ( eff.misc_value1() & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
+          {
             shadow_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                                eff );
             debug_message( "shadow damage multiplier" );
-            break;
-          case SCHOOL_MASK_ARCANE:
+          }
+
+          if ( ( eff.misc_value1() & SCHOOL_MASK_ARCANE ) == SCHOOL_MASK_ARCANE )
+          {
             arcane_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                                eff );
             debug_message( "arcane damage multiplier" );
-            break;
-          case SCHOOL_MASK_ALL:
-            all_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                            eff );
-            debug_message( "all damage multiplier" );
-            break;
-          default:
-            break;
+          }
         }
         break;
       case A_MOD_ATTACK_POWER_PCT:

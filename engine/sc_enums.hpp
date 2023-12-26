@@ -705,7 +705,6 @@ enum school_mask_e
   SCHOOL_MASK_FROST    = 0x10,
   SCHOOL_MASK_SHADOW   = 0x20,
   SCHOOL_MASK_ARCANE   = 0x40,
-  SCHOOL_MASK_ALL      = 0x7f,
 };
 
 const int64_t SCHOOL_ATTACK_MASK = ( ( int64_t( 1 ) << SCHOOL_PHYSICAL ) |
