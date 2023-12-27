@@ -20,6 +20,7 @@
 #include "dbc/specialization.hpp"
 #include "assessor.hpp"
 #include "talent.hpp"
+#include "parse_auras.hpp"
 #include <map>
 #include <set>
 #include <unordered_map>
@@ -108,7 +109,7 @@ public:
   virtual void html_customsection(report::sc_html_stream&) = 0;
 };
 
-struct player_t : public actor_t
+struct player_t : public actor_t, parse_aura_effects_t<actor_target_data_t>
 {
   static const int default_level = 70;
 
@@ -1012,6 +1013,7 @@ public:
   virtual void init_finished();
   virtual void add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration );
   virtual void add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration );
+  virtual void apply_auras();
   virtual void apply_affecting_auras(action_t&);
   virtual void action_init_finished(action_t&);
   virtual bool verify_use_items() const;
