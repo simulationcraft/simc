@@ -10527,7 +10527,7 @@ void death_knight_t::parse_player_effects( player_t* p )
   // Shared
   parse_player_passive_effects( spec.death_knight );
   parse_player_passive_effects( talent.might_of_thassarian );
-  parse_player_passive_effects( talent.veteran_of_the_third_war, 0U, spec.blood_death_knight );
+  parse_player_passive_effects( talent.veteran_of_the_third_war );
   parse_player_passive_effects( talent.merciless_strikes );
   parse_player_buff_effects( buffs.icy_talons, CURRENT_VALUE, talent.icy_talons );
   parse_debuff_effects_from_player( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, spell.brittle_debuff );
@@ -11256,6 +11256,7 @@ public:
       os << "<div class=\"clear\"></div>\n";
       os << "</div>\n";
     }
+    p.parsed_html_report( os );
   }
 private:
   death_knight_t& p;

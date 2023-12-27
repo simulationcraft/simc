@@ -618,12 +618,6 @@ public:
     parse_player_conditional_effects( spell, nullptr, ignore_mask );
   }
 
-  template <typename... Ts>
-  void parse_player_passive_effects( const spell_data_t* spell, Ts... mods )
-  {
-    parse_player_conditional_effects( spell, nullptr, mods... );
-  }
-
   void force_player_passive_effect( const spell_data_t* spell, unsigned idx, bool use_stack = true,
                              player_value_type_e value_type = DATA_VALUE )
   {
@@ -850,14 +844,15 @@ public:
     return temp;
   }
 
-  /*
+  
   void parsed_html_report( report::sc_html_stream& os )
   {
     if ( !total_buffeffects_count() )
       return;
+    os << "<h3 class=\"toggle open\">Player Effects</h3>\n"
+       << "<div class=\"toggle-content\">\n";
 
-    os << "<div>\n"
-       << "<h4>Affected By (Dynamic)</h4>\n"
+    os << "<h4>Affected By (Dynamic)</h4>\n"
        << "<table class=\"details nowrap\" style=\"width:min-content\">\n";
 
     os << "<tr>\n"
@@ -870,16 +865,30 @@ public:
        << "<th class=\"small\">Notes</th>\n"
        << "</tr>\n";
 
-    print_parsed_type( os, da_multiplier_buffeffects, "Direct Damage" );
-    print_parsed_type( os, ta_multiplier_buffeffects, "Periodic Damage" );
-    print_parsed_type( os, crit_chance_buffeffects, "Critical Strike Chance" );
-    print_parsed_type( os, execute_time_buffeffects, "Execute Time" );
-    print_parsed_type( os, dot_duration_buffeffects, "Dot Duration" );
-    print_parsed_type( os, tick_time_buffeffects, "Tick Time" );
-    print_parsed_type( os, recharge_multiplier_buffeffects, "Recharge Multiplier" );
-    print_parsed_type( os, flat_cost_buffeffects, "Flat Cost" );
-    print_parsed_type( os, cost_buffeffects, "Percent Cost" );
-    print_parsed_type( os, target_multiplier_dotdebuffs, "Dot / Debuff on Target" );
+    print_parsed_type( os, pet_damage_multiplier_buffeffects, "Pet Damage Modifier" );
+    print_parsed_type( os, guardian_damage_multiplier_buffeffects, "Guardian Damage Modifier" );
+    print_parsed_type( os, strength_multiplier_buffeffects, "Strength Modifier" );
+    print_parsed_type( os, agility_multiplier_buffeffects, "Agility Modifier" );
+    print_parsed_type( os, stamina_multiplier_buffeffects, "Stamina Modifier" );
+    print_parsed_type( os, intellect_multiplier_buffeffects, "Intellect Modifier" );
+    print_parsed_type( os, leech_additive_buffeffects, "Leech Modifier" );
+    print_parsed_type( os, expertise_additive_buffeffects, "Expertise Modifier" );
+    print_parsed_type( os, parry_additive_buffeffects, "Parry Modifier" );
+    print_parsed_type( os, crit_chance_additive_buffeffects, "Crit Chance Modifier" );
+    print_parsed_type( os, crit_avoidance_additive_buffeffects, "Crit Avoidance Modifier" );
+    print_parsed_type( os, all_haste_multiplier_buffeffects, "Haste Modifier" );
+    print_parsed_type( os, all_attack_speed_multiplier_buffeffects, "All Attack Speed Modifier" );
+    print_parsed_type( os, melee_attack_speed_multiplier_buffeffects, "Melee Attack Speed Modifier" );
+    print_parsed_type( os, attack_power_multiplier_buffeffects, "Attack Power Modifier" );
+    print_parsed_type( os, phys_damage_multiplier_buffeffects, "Physical Damage Increase" );
+    print_parsed_type( os, holy_damage_multiplier_buffeffects, "Holy Damage Increase" );
+    print_parsed_type( os, fire_damage_multiplier_buffeffects, "Fire Damage Increase" );
+    print_parsed_type( os, nature_damage_multiplier_buffeffects, "Nature Damage Increase" );
+    print_parsed_type( os, frost_damage_multiplier_buffeffects, "Frost Damage Increase" );
+    print_parsed_type( os, shadow_damage_multiplier_buffeffects, "Shadow Damage Increase" );
+    print_parsed_type( os, arcane_damage_multiplier_buffeffects, "Arcane Damage Increase" );
+    print_parsed_type( os, pet_damage_target_multiplier_dotdebuffs, "Pet Damage Debuff" );
+    print_parsed_type( os, guardian_damage_target_multiplier_dotdebuffs, "Guardian Damage Debuff" );
     print_parsed_custom_type( os );
 
     os << "</table>\n"
@@ -888,8 +897,30 @@ public:
 
   virtual size_t total_buffeffects_count()
   {
-    return pet_damage_multiplier_buffeffects.size() +
-           guardian_damage_multiplier_buffeffects.size();
+    return  pet_damage_multiplier_buffeffects.size() +
+      guardian_damage_multiplier_buffeffects.size() +
+      strength_multiplier_buffeffects.size() +
+      agility_multiplier_buffeffects.size() +
+      intellect_multiplier_buffeffects.size() +
+      stamina_multiplier_buffeffects.size() +
+      leech_additive_buffeffects.size() +
+      expertise_additive_buffeffects.size() +
+      parry_additive_buffeffects.size() +
+      phys_damage_multiplier_buffeffects.size() +
+      holy_damage_multiplier_buffeffects.size() +
+      fire_damage_multiplier_buffeffects.size() +
+      nature_damage_multiplier_buffeffects.size() +
+      frost_damage_multiplier_buffeffects.size() +
+      shadow_damage_multiplier_buffeffects.size() +
+      arcane_damage_multiplier_buffeffects.size() +
+      attack_power_multiplier_buffeffects.size() +
+      all_haste_multiplier_buffeffects.size() +
+      all_attack_speed_multiplier_buffeffects.size() +
+      melee_attack_speed_multiplier_buffeffects.size() +
+      crit_chance_additive_buffeffects.size() +
+      crit_avoidance_additive_buffeffects.size() +
+      pet_damage_target_multiplier_dotdebuffs.size() +
+      guardian_damage_target_multiplier_dotdebuffs.size();
   }
 
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
@@ -916,8 +947,8 @@ public:
   {
     switch ( t )
     {
-      case DEFAULT: return "Default Value";
-      case CURRENT: return "Current Value";
+      case DEFAULT_VALUE: return "Default Value";
+      case CURRENT_VALUE: return "Current Value";
       default:          return "Spell Data";
     }
   }
@@ -953,5 +984,5 @@ public:
                entry.value * ( entry.mastery ? 100 : 1 ),
                "",
                entry.mastery ? "Mastery" : "" );
-  }*/
+  }
 };
