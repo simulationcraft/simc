@@ -240,6 +240,7 @@ public:
   std::vector<buff_effect_t> frost_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> shadow_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> arcane_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> all_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> attack_power_multiplier_buffeffects;
   std::vector<buff_effect_t> all_haste_multiplier_buffeffects;
   std::vector<buff_effect_t> all_attack_speed_multiplier_buffeffects;
@@ -454,52 +455,61 @@ public:
       case A_MOD_DAMAGE_PERCENT_DONE:
         if ( eff.misc_value1() )
         {
-          if ( ( eff.misc_value1() & SCHOOL_MASK_PHYSICAL ) == SCHOOL_MASK_PHYSICAL )
+          if ( eff.misc_value1() == 0x7f )
           {
-            phys_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+            all_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                              eff );
-            debug_message( "physical damage multiplier" );
+            debug_message( "all damage multiplier" );
           }
-          if ( ( eff.misc_value1() & SCHOOL_MASK_HOLY ) == SCHOOL_MASK_HOLY )
+          else
           {
-            holy_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                             eff );
-            debug_message( "holy damage multiplier" );
-          }
-
-          if ( ( eff.misc_value1() & SCHOOL_MASK_FIRE ) == SCHOOL_MASK_FIRE )
-          {
-            fire_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                             eff );
-            debug_message( "fire damage multiplier" );
-          }
-
-          if ( ( eff.misc_value1() & SCHOOL_MASK_NATURE ) == SCHOOL_MASK_NATURE )
-          {
-            nature_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+            if ( ( eff.misc_value1() & SCHOOL_MASK_PHYSICAL ) == SCHOOL_MASK_PHYSICAL )
+            {
+              phys_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                                eff );
-            debug_message( "nature damage multiplier" );
-          }
-
-          if ( ( eff.misc_value1() & SCHOOL_MASK_FROST ) == SCHOOL_MASK_FROST )
-          {
-            frost_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                              eff );
-            debug_message( "frost damage multiplier" );
-          }
-
-          if ( ( eff.misc_value1() & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
-          {
-            shadow_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+              debug_message( "physical damage multiplier" );
+            }
+            if ( ( eff.misc_value1() & SCHOOL_MASK_HOLY ) == SCHOOL_MASK_HOLY )
+            {
+              holy_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                                eff );
-            debug_message( "shadow damage multiplier" );
-          }
+              debug_message( "holy damage multiplier" );
+            }
 
-          if ( ( eff.misc_value1() & SCHOOL_MASK_ARCANE ) == SCHOOL_MASK_ARCANE )
-          {
-            arcane_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+            if ( ( eff.misc_value1() & SCHOOL_MASK_FIRE ) == SCHOOL_MASK_FIRE )
+            {
+              fire_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                                eff );
-            debug_message( "arcane damage multiplier" );
+              debug_message( "fire damage multiplier" );
+            }
+
+            if ( ( eff.misc_value1() & SCHOOL_MASK_NATURE ) == SCHOOL_MASK_NATURE )
+            {
+              nature_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery,
+                                                                 f, eff );
+              debug_message( "nature damage multiplier" );
+            }
+
+            if ( ( eff.misc_value1() & SCHOOL_MASK_FROST ) == SCHOOL_MASK_FROST )
+            {
+              frost_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                                eff );
+              debug_message( "frost damage multiplier" );
+            }
+
+            if ( ( eff.misc_value1() & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
+            {
+              shadow_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery,
+                                                                 f, eff );
+              debug_message( "shadow damage multiplier" );
+            }
+
+            if ( ( eff.misc_value1() & SCHOOL_MASK_ARCANE ) == SCHOOL_MASK_ARCANE )
+            {
+              arcane_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery,
+                                                                 f, eff );
+              debug_message( "arcane damage multiplier" );
+            }
           }
         }
         break;
@@ -887,6 +897,7 @@ public:
     print_parsed_type( os, frost_damage_multiplier_buffeffects, "Frost Damage Increase" );
     print_parsed_type( os, shadow_damage_multiplier_buffeffects, "Shadow Damage Increase" );
     print_parsed_type( os, arcane_damage_multiplier_buffeffects, "Arcane Damage Increase" );
+    print_parsed_type( os, all_damage_multiplier_buffeffects, "All Damage Increase" );
     print_parsed_type( os, pet_damage_target_multiplier_dotdebuffs, "Pet Damage Debuff" );
     print_parsed_type( os, guardian_damage_target_multiplier_dotdebuffs, "Guardian Damage Debuff" );
     print_parsed_custom_type( os );
@@ -913,6 +924,7 @@ public:
       frost_damage_multiplier_buffeffects.size() +
       shadow_damage_multiplier_buffeffects.size() +
       arcane_damage_multiplier_buffeffects.size() +
+      all_damage_multiplier_buffeffects.size() +
       attack_power_multiplier_buffeffects.size() +
       all_haste_multiplier_buffeffects.size() +
       all_attack_speed_multiplier_buffeffects.size() +
