@@ -1222,7 +1222,7 @@ enum effect_subtype_t : unsigned {
     A_402 = 402,
     A_403 = 403,
     A_OVERRIDE_AP_PER_SP = 404,
-    A_405 = 405, // Misc value seems to be a mask that holds the modified ratings.
+    A_MOD_STAT_FROM_RATING_PCT = 405, // Misc value seems to be a mask that holds the modified ratings.
     A_406 = 406,
     A_407 = 407,
     A_408 = 408,

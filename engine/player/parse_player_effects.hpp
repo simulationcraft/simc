@@ -23,24 +23,39 @@
 //    Add the following overrides with any addtional adjustments as needed (BASE is the parent to the action base class):
 
 /* 
-double my_class_t::composite_leech() const
+double my_class_t::composite_base_armor_multiplier() const
 {
-  return player_t::composite_leech() + get_player_buff_effects_value( leech_additive_buffeffects, true );
+  return player_t::composite_base_armor_multiplier() * get_player_buff_effects_value( base_armor_multiplier_buffeffects );
 }
 
-double my_class_t::composite_melee_expertise( const weapon_t* ) const
+double my_class_t::composite_dodge() const
 {
-  return player_t::composite_melee_expertise( nullptr ) + get_player_buff_effects_value( expertise_additive_buffeffects, true );
+  return player_t::composite_dodge() + get_player_buff_effects_value( dodge_additive_buffeffects, true );
 }
 
-double my_class_t::composite_parry() const
+double my_class_t::composite_damage_versatility() const
 {
-  return player_t::composite_parry() + get_player_buff_effects_value( parry_additive_buffeffects, true );
+  return player_t::composite_damage_versatility() + get_player_buff_effects_value( versatility_additive_buffeffects, true );
+}
+
+double my_class_t::composite_heal_versatility() const
+{
+  return player_t::composite_heal_versatility() + get_player_buff_effects_value( versatility_additive_buffeffects, true );
+}
+
+double my_class_t::composite_mitigation_versatility() const
+{
+  return player_t::composite_mitigation_versatility() + ( get_player_buff_effects_value( versatility_additive_buffeffects, true ) / 2 );
+}
+
+double my_class_t::composite_mastery() const
+{
+  return  player_t::composite_mastery() + get_player_buff_effects_value( mastery_additive_buffeffects, true );
 }
 
 double my_class_t::composite_attack_power_multiplier() const
 {
-  return player_t::composite_attack_power_multiplier() * 
+  return player_t::composite_attack_power_multiplier() *
   get_player_buff_effects_value( attack_power_multiplier_buffeffects );
 }
 
@@ -77,6 +92,57 @@ double my_class_t::composite_crit_avoidance() const
   return player_t::composite_crit_avoidance() + get_player_buff_effects_value( crit_avoidance_additive_buffeffects, true );
 }
 
+double my_class_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  return player_t::composite_player_critical_damage_multiplier( s ) * get_player_buff_effects_value( crit_damage_multiplier_buffeffects );
+}
+
+double my_class_t::composite_leech() const
+{
+  return player_t::composite_leech() + get_player_buff_effects_value( leech_additive_buffeffects, true );
+}
+
+double my_class_t::composite_melee_expertise( const weapon_t* ) const
+{
+  return player_t::composite_melee_expertise( nullptr ) + get_player_buff_effects_value( expertise_additive_buffeffects, true );
+}
+
+double my_class_t::composite_parry() const
+{
+  return player_t::composite_parry() + get_player_buff_effects_value( parry_additive_buffeffects, true );
+}
+
+double my_class_t::composite_rating_multiplier( rating_e r ) const
+{
+  double rm = player_t::composite_rating_multiplier( r );
+
+  switch ( r )
+  {
+    case RATING_MELEE_CRIT:
+    case RATING_RANGED_CRIT:
+    case RATING_SPELL_CRIT:
+      rm *= get_player_buff_effects_value( crit_rating_multiplier_buffeffects );
+      break;
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+    case RATING_SPELL_HASTE:
+      rm *= get_player_buff_effects_value( haste_rating_multiplier_buffeffects );
+      break;
+    case RATING_MASTERY:
+      rm *= get_player_buff_effects_value( mastery_rating_multiplier_buffeffects );
+      break;
+    case RATING_DAMAGE_VERSATILITY:
+    case RATING_HEAL_VERSATILITY:
+    case RATING_MITIGATION_VERSATILITY:
+      rm *= get_player_buff_effects_value( versatility_rating_multiplier_buffeffects );
+      break;
+    default:
+      break;
+  }
+
+  return rm;
+}
+
 double my_class_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
@@ -105,6 +171,8 @@ double my_class_t::composite_attribute_multiplier( attribute_e attr ) const
 double my_class_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  m *= get_player_buff_effects_value( all_damage_multiplier_buffeffects );
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
@@ -224,15 +292,9 @@ private:
 
 public:
   // auto parsed dynamic effects
+  // Damage modifiers 
   std::vector<buff_effect_t> pet_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> guardian_damage_multiplier_buffeffects;
-  std::vector<buff_effect_t> strength_multiplier_buffeffects;
-  std::vector<buff_effect_t> agility_multiplier_buffeffects;
-  std::vector<buff_effect_t> intellect_multiplier_buffeffects;
-  std::vector<buff_effect_t> stamina_multiplier_buffeffects;
-  std::vector<buff_effect_t> leech_additive_buffeffects;
-  std::vector<buff_effect_t> expertise_additive_buffeffects;
-  std::vector<buff_effect_t> parry_additive_buffeffects;
   std::vector<buff_effect_t> phys_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> holy_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> fire_damage_multiplier_buffeffects;
@@ -241,14 +303,32 @@ public:
   std::vector<buff_effect_t> shadow_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> arcane_damage_multiplier_buffeffects;
   std::vector<buff_effect_t> all_damage_multiplier_buffeffects;
+  std::vector<buff_effect_t> crit_damage_multiplier_buffeffects;
+  // Debuff damage modifiers
+  std::vector<dot_debuff_t> pet_damage_target_multiplier_dotdebuffs;
+  std::vector<dot_debuff_t> guardian_damage_target_multiplier_dotdebuffs;
+  // Attribute modifiers
+  std::vector<buff_effect_t> strength_multiplier_buffeffects;
+  std::vector<buff_effect_t> agility_multiplier_buffeffects;
+  std::vector<buff_effect_t> intellect_multiplier_buffeffects;
+  std::vector<buff_effect_t> stamina_multiplier_buffeffects;
+  std::vector<buff_effect_t> leech_additive_buffeffects;
+  std::vector<buff_effect_t> expertise_additive_buffeffects;
+  std::vector<buff_effect_t> parry_additive_buffeffects;
   std::vector<buff_effect_t> attack_power_multiplier_buffeffects;
   std::vector<buff_effect_t> all_haste_multiplier_buffeffects;
   std::vector<buff_effect_t> all_attack_speed_multiplier_buffeffects;
   std::vector<buff_effect_t> melee_attack_speed_multiplier_buffeffects;
   std::vector<buff_effect_t> crit_chance_additive_buffeffects;
   std::vector<buff_effect_t> crit_avoidance_additive_buffeffects;
-  std::vector<dot_debuff_t> pet_damage_target_multiplier_dotdebuffs;
-  std::vector<dot_debuff_t> guardian_damage_target_multiplier_dotdebuffs;
+  std::vector<buff_effect_t> base_armor_multiplier_buffeffects;
+  std::vector<buff_effect_t> dodge_additive_buffeffects;
+  std::vector<buff_effect_t> versatility_additive_buffeffects;
+  std::vector<buff_effect_t> mastery_additive_buffeffects;
+  std::vector<buff_effect_t> crit_rating_multiplier_buffeffects;
+  std::vector<buff_effect_t> haste_rating_multiplier_buffeffects;
+  std::vector<buff_effect_t> mastery_rating_multiplier_buffeffects;
+  std::vector<buff_effect_t> versatility_rating_multiplier_buffeffects;
 
   parse_player_buff_effects_t( player_t* p ) : player_( p ) {}
   virtual ~parse_player_buff_effects_t() = default;
@@ -542,6 +622,58 @@ public:
         crit_avoidance_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                        eff );
         debug_message( "crit avoidance additive" );
+        break;
+      case A_MOD_BASE_RESISTANCE_PCT:
+        base_armor_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                        eff );
+        debug_message( "base resistance" );
+        break;
+      case A_MOD_DODGE_PERCENT:
+        dodge_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                        eff );
+        debug_message( "dodge additive" );
+        break;
+      case A_MOD_VERSATILITY_PCT:
+        versatility_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                 eff );
+        debug_message( "vers additive" );
+        break;
+      case A_MOD_MASTERY_PCT:
+        mastery_additive_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                       eff );
+        debug_message( "mastery additive" );
+        break;
+      case A_MOD_CRIT_DAMAGE_BONUS:
+        crit_damage_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                         eff );
+        debug_message( "crit damage multiplier" );
+        break;
+      case A_MOD_STAT_FROM_RATING_PCT:
+        switch ( eff.misc_value1() )
+        {
+          case 1792:
+            crit_rating_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                             eff );
+            debug_message( "crit rating multiplier" );
+            break;
+          case 917504:
+            haste_rating_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                              eff );
+            debug_message( "haste rating multiplier" );
+            break;
+          case 33554432:
+            mastery_rating_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                                eff );
+            debug_message( "mastery rating multiplier" );
+            break;
+          case 1879048192:
+            versatility_rating_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks,
+                                                                    mastery, f, eff );
+            debug_message( "versatility rating multiplier" );
+            break;
+          default:
+            break;
+        }
         break;
       default:
         break;
@@ -900,6 +1032,15 @@ public:
     print_parsed_type( os, all_damage_multiplier_buffeffects, "All Damage Increase" );
     print_parsed_type( os, pet_damage_target_multiplier_dotdebuffs, "Pet Damage Debuff" );
     print_parsed_type( os, guardian_damage_target_multiplier_dotdebuffs, "Guardian Damage Debuff" );
+    print_parsed_type( os, base_armor_multiplier_buffeffects, "Base Resistance Modifier" );
+    print_parsed_type( os, dodge_additive_buffeffects, "Dodge Modifier" );
+    print_parsed_type( os, versatility_additive_buffeffects, "Versatility Modifier" );
+    print_parsed_type( os, mastery_additive_buffeffects, "Mastery Modifier" );
+    print_parsed_type( os, crit_damage_multiplier_buffeffects, "Crit Damage Modifier" );
+    print_parsed_type( os, crit_rating_multiplier_buffeffects, "Crit Rating Modifier" );
+    print_parsed_type( os, haste_rating_multiplier_buffeffects, "Haste Rating Modifier" );
+    print_parsed_type( os, mastery_rating_multiplier_buffeffects, "Mastery Rating Modifier" );
+    print_parsed_type( os, versatility_rating_multiplier_buffeffects, "Versatility Rating Modifier" );
     print_parsed_custom_type( os );
 
     os << "</table>\n"
@@ -932,7 +1073,16 @@ public:
       crit_chance_additive_buffeffects.size() +
       crit_avoidance_additive_buffeffects.size() +
       pet_damage_target_multiplier_dotdebuffs.size() +
-      guardian_damage_target_multiplier_dotdebuffs.size();
+      guardian_damage_target_multiplier_dotdebuffs.size() +
+      dodge_additive_buffeffects.size() +
+      versatility_additive_buffeffects.size() +
+      mastery_additive_buffeffects.size() +
+      crit_damage_multiplier_buffeffects.size() +
+      crit_rating_multiplier_buffeffects.size() +
+      haste_rating_multiplier_buffeffects.size() +
+      mastery_rating_multiplier_buffeffects.size() +
+      versatility_rating_multiplier_buffeffects.size() +
+      base_armor_multiplier_buffeffects.size();
   }
 
   virtual void print_parsed_custom_type( report::sc_html_stream& ) {}
