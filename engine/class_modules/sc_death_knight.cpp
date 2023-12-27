@@ -10702,7 +10702,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   switch ( attr )
   {
     case ATTR_STRENGTH:
-      m *= get_aura_effects_value( strength_multiplier_auras );
       if( specialization() == DEATH_KNIGHT_FROST )
       {
         m *= 1.0 + buffs.pillar_of_frost->check_value() + buffs.pillar_of_frost_bonus->check_stack_value();

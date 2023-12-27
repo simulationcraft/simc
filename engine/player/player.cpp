@@ -3644,8 +3644,6 @@ void player_t::init_finished()
     }
   }
 
-  apply_auras();
-
   // Naive recording of minimum energy thresholds for the actor.
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
   for ( auto action : action_list )
@@ -3682,6 +3680,8 @@ void player_t::init_finished()
       }
     } );
   }
+
+  apply_auras();
 
   if ( !precombat_state_map.empty() )
   {

@@ -231,7 +231,7 @@ enum player_value_type_e
   CURRENT_VALUE,
 };
 
-template <typename TD>
+template <typename Actor>
 struct parse_aura_effects_t
 {
   using bfun = std::function<bool()>;
