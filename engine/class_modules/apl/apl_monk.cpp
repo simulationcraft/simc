@@ -913,8 +913,8 @@ namespace monk_apl
     default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&!talent.hit_combo&spinning_crane_kick.max&buff.bonedust_brew.up" );
     default_aoe->add_action( "strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist" );
     default_aoe->add_action( "whirling_dragon_punch,if=active_enemies>8" );
+    default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_strike&spinning_crane_kick.max" );
     default_aoe->add_action( "fists_of_fury,target_if=max:debuff.keefers_skyreach.remains" );
-    default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_strike&spinning_crane_kick.max&!buff.blackout_reinforcement.up" );
     default_aoe->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.bonedust_brew.up&buff.pressure_point.up&set_bonus.tier30_2pc" );
     default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
     default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=talent.shadowboxing_treads&combo_strike&buff.blackout_reinforcement.up" );
