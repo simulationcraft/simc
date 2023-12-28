@@ -7029,7 +7029,9 @@ struct runeforge_apocalypse_pestilence_t final : public death_knight_spell_t
 {
   runeforge_apocalypse_pestilence_t( util::string_view name, death_knight_t* p ) :
     death_knight_spell_t( name, p, p -> spell.apocalypse_pestilence_damage )
-    {}
+    {
+      background = true;
+    }
 };
 
 // Pillar of Frost ==========================================================
