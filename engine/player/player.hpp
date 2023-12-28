@@ -1013,7 +1013,7 @@ public:
   virtual void init_finished();
   virtual void add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration );
   virtual void add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration );
-  virtual void apply_auras();
+  virtual void apply_player_auras();
   virtual void apply_affecting_auras(action_t&);
   virtual void action_init_finished(action_t&);
   virtual bool verify_use_items() const;

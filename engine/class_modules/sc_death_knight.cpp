@@ -1356,7 +1356,7 @@ public:
   void      datacollection_end() override;
   void      analyze( sim_t& sim ) override;
   void      apply_affecting_auras( action_t& action ) override;
-  void      apply_auras() override;
+  void      apply_player_auras() override;
 
   // Default consumables
   std::string default_flask() const override { return death_knight_apl::flask( this ); }
@@ -10478,46 +10478,6 @@ void death_knight_t::reset()
   bone_shield_charges_consumed = 0;
 }
 
-// death_knight_t::apply_auras() ============================================
-void death_knight_t::apply_auras()
-{
-  player_t::apply_auras();
-  // Shared
-  apply_passive_aura_effects( spec.death_knight );
-  apply_passive_aura_effects( talent.might_of_thassarian );
-  apply_passive_aura_effects( talent.veteran_of_the_third_war );
-  apply_passive_aura_effects( talent.merciless_strikes );
-  apply_buff_aura_effects( buffs.icy_talons, talent.icy_talons );
-  // Blood
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-  {
-    apply_passive_aura_effects( spec.blood_death_knight );
-    apply_passive_aura_effects( mastery.blood_shield );
-    apply_passive_aura_effects( spec.blood_fortification );
-    apply_passive_aura_effects( talent.blood_scent );
-    apply_buff_aura_effects( buffs.blood_shield, talent.blood.bloodshot );
-    apply_buff_aura_effects( buffs.bone_shield, false, talent.blood.improved_bone_shield );
-    apply_buff_aura_effects( buffs.dancing_rune_weapon );
-    apply_buff_aura_effects( buffs.vigorous_lifeblood_4pc );
-    apply_buff_aura_effects( buffs.voracious );
-  }
-  // Frost
-  if ( specialization() == DEATH_KNIGHT_FROST )
-  {
-    apply_passive_aura_effects( spec.frost_death_knight );
-    apply_buff_aura_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
-  }
-  // Unholy
-  if ( specialization() == DEATH_KNIGHT_UNHOLY )
-  {
-    apply_passive_aura_effects( mastery.dreadblade );
-    apply_passive_aura_effects( spec.unholy_death_knight );
-    apply_buff_aura_effects( buffs.amplify_damage );
-    apply_buff_aura_effects( buffs.unholy_assault );
-    apply_buff_aura_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
-  }
-}
-
 // death_knight_t::assess_heal ==============================================
 
 void death_knight_t::assess_heal( school_e school, result_amount_type t, action_state_t* s )
@@ -10934,6 +10894,46 @@ void death_knight_t::adjust_dynamic_cooldowns()
   player_t::adjust_dynamic_cooldowns();
 
   _runes.update_coefficient();
+}
+
+// death_knight_t::apply_auras() ============================================
+void death_knight_t::apply_player_auras()
+{
+  player_t::apply_player_auras();
+  // Shared
+  apply_passive_aura_effects( spec.death_knight );
+  apply_passive_aura_effects( talent.might_of_thassarian );
+  apply_passive_aura_effects( talent.veteran_of_the_third_war );
+  apply_passive_aura_effects( talent.merciless_strikes );
+  apply_buff_aura_effects( buffs.icy_talons, talent.icy_talons );
+  // Blood
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
+    apply_passive_aura_effects( spec.blood_death_knight );
+    apply_passive_aura_effects( mastery.blood_shield );
+    apply_passive_aura_effects( spec.blood_fortification );
+    apply_passive_aura_effects( talent.blood_scent );
+    apply_buff_aura_effects( buffs.blood_shield, talent.blood.bloodshot );
+    apply_buff_aura_effects( buffs.bone_shield, false, talent.blood.improved_bone_shield );
+    apply_buff_aura_effects( buffs.dancing_rune_weapon );
+    apply_buff_aura_effects( buffs.vigorous_lifeblood_4pc );
+    apply_buff_aura_effects( buffs.voracious );
+  }
+  // Frost
+  if ( specialization() == DEATH_KNIGHT_FROST )
+  {
+    apply_passive_aura_effects( spec.frost_death_knight );
+    apply_buff_aura_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
+  }
+  // Unholy
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    apply_passive_aura_effects( mastery.dreadblade );
+    apply_passive_aura_effects( spec.unholy_death_knight );
+    apply_buff_aura_effects( buffs.amplify_damage );
+    apply_buff_aura_effects( buffs.unholy_assault );
+    apply_buff_aura_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
+  }
 }
 
 void death_knight_t::apply_affecting_auras( action_t& action )

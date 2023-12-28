@@ -22,208 +22,6 @@
 // 3) `get_aura_effects_value( buff effect vector ) returns the modified value.
 //    Add the following overrides with any addtional adjustments as needed (BASE is the parent to the action base class):
 
-/* 
-double my_class_t::composite_base_armor_multiplier() const
-{
-  return player_t::composite_base_armor_multiplier() * get_aura_effects_value( base_armor_multiplier_auras );
-}
-
-double my_class_t::composite_dodge() const
-{
-  return player_t::composite_dodge() + get_aura_effects_value( dodge_additive_auras, true );
-}
-
-double my_class_t::composite_damage_versatility() const
-{
-  return player_t::composite_damage_versatility() + get_aura_effects_value( versatility_additive_auras, true );
-}
-
-double my_class_t::composite_heal_versatility() const
-{
-  return player_t::composite_heal_versatility() + get_aura_effects_value( versatility_additive_auras, true );
-}
-
-double my_class_t::composite_mitigation_versatility() const
-{
-  return player_t::composite_mitigation_versatility() + ( get_aura_effects_value( versatility_additive_auras, true ) / 2 );
-}
-
-double my_class_t::composite_mastery() const
-{
-  return  player_t::composite_mastery() + get_aura_effects_value( mastery_additive_auras, true );
-}
-
-double my_class_t::composite_attack_power_multiplier() const
-{
-  return player_t::composite_attack_power_multiplier() *
-  get_aura_effects_value( attack_power_multiplier_auras );
-}
-
-double my_class_t::composite_melee_haste() const
-{
-  return player_t::composite_melee_haste() * ( 1.0 / get_aura_effects_value( all_haste_multiplier_auras ) );
-}
-
-double my_class_t::composite_spell_haste() const
-{
-  return player_t::composite_spell_haste() * ( 1.0 / get_aura_effects_value( all_haste_multiplier_auras ) );
-}
-
-double my_class_t::composite_melee_speed() const
-{
-  return player_t::composite_melee_speed() *
-  ( 1.0 / get_aura_effects_value( all_attack_speed_multiplier_auras ) ) *
-  ( 1.0 / get_aura_effects_value( melee_attack_speed_multiplier_auras ) );
-}
-
-double my_class_t::composite_melee_crit_chance() const
-{
-  return player_t::composite_melee_crit_chance() + get_aura_effects_value( crit_chance_additive_auras, true
-);
-}
-
-double my_class_t::composite_spell_crit_chance() const
-{
-  return player_t::composite_spell_crit_chance() + get_aura_effects_value( crit_chance_additive_auras, true );
-}
-
-double my_class_t::composite_crit_avoidance() const
-{
-  return player_t::composite_crit_avoidance() + get_aura_effects_value( crit_avoidance_additive_auras, true );
-}
-
-double my_class_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
-{
-  return player_t::composite_player_critical_damage_multiplier( s ) * get_aura_effects_value( crit_damage_multiplier_auras );
-}
-
-double my_class_t::composite_leech() const
-{
-  return player_t::composite_leech() + get_aura_effects_value( leech_additive_auras, true );
-}
-
-double my_class_t::composite_melee_expertise( const weapon_t* ) const
-{
-  return player_t::composite_melee_expertise( nullptr ) + get_aura_effects_value( expertise_additive_auras, true );
-}
-
-double my_class_t::composite_parry() const
-{
-  return player_t::composite_parry() + get_aura_effects_value( parry_additive_auras, true );
-}
-
-double my_class_t::composite_rating_multiplier( rating_e r ) const
-{
-  double rm = player_t::composite_rating_multiplier( r );
-
-  switch ( r )
-  {
-    case RATING_MELEE_CRIT:
-    case RATING_RANGED_CRIT:
-    case RATING_SPELL_CRIT:
-      rm *= get_aura_effects_value( crit_rating_multiplier_auras );
-      break;
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-    case RATING_SPELL_HASTE:
-      rm *= get_aura_effects_value( haste_rating_multiplier_auras );
-      break;
-    case RATING_MASTERY:
-      rm *= get_aura_effects_value( mastery_rating_multiplier_auras );
-      break;
-    case RATING_DAMAGE_VERSATILITY:
-    case RATING_HEAL_VERSATILITY:
-    case RATING_MITIGATION_VERSATILITY:
-      rm *= get_aura_effects_value( versatility_rating_multiplier_auras );
-      break;
-    default:
-      break;
-  }
-
-  return rm;
-}
-
-double my_class_t::composite_attribute_multiplier( attribute_e attr ) const
-{
-  double m = player_t::composite_attribute_multiplier( attr );
-
-  switch ( attr )
-  {
-    case ATTR_AGILITY:
-      m *= get_aura_effects_value( agility_multiplier_auras );
-      break;
-    case ATTR_INTELLECT:
-      m *= get_aura_effects_value( intellect_multiplier_auras );
-      break;
-    case ATTR_STRENGTH:
-      m *= get_aura_effects_value( strength_multiplier_auras );
-      break;
-    case ATTR_STAMINA:
-      m *= get_aura_effects_value( stamina_multiplier_auras );
-      break;
-    default:
-      break;
-  }
-
-  return m;
-}
-
-double my_class_t::composite_player_multiplier( school_e school ) const
-{
-  double m = player_t::composite_player_multiplier( school );
-
-  m *= get_aura_effects_value( all_damage_multiplier_auras );
-
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
-  {
-    m *= get_aura_effects_value( phys_damage_multiplier_auras );
-  }
-  if ( dbc::is_school( school, SCHOOL_HOLY ) )
-  {
-    m *= get_aura_effects_value( holy_damage_multiplier_auras );
-  }
-  if ( dbc::is_school( school, SCHOOL_FIRE ) )
-  {
-    m *= get_aura_effects_value( fire_damage_multiplier_auras );
-  }
-  if ( dbc::is_school( school, SCHOOL_NATURE ) )
-  {
-    m *= get_aura_effects_value( nature_damage_multiplier_auras );
-  }
-  if ( dbc::is_school( school, SCHOOL_FROST ) )
-  {
-    m *= get_aura_effects_value( frost_damage_multiplier_auras );
-  }
-  if ( dbc::is_school( school, SCHOOL_SHADOW ) )
-  {
-    m *= get_aura_effects_value( shadow_damage_multiplier_auras );
-  }
-  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
-  {
-    m *= get_aura_effects_value( arcane_damage_multiplier_auras );
-  }
-
-  return m;
-}
-
-double my_class_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
-{
-  double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
-
-  if ( guardian )
-  {
-    m *= get_aura_effects_value( guardian_damage_multiplier_auras );
-  }
-  else
-  {
-    m *= get_aura_effects_value( pet_damage_multiplier_auras );
-  }
-
-  return m;
-}
-
-*/
-// Forward Declaration 
 struct player_t;
 
 enum player_value_type_e
@@ -254,7 +52,7 @@ struct parse_aura_effects_t
   };
 
 private:
-  player_t* player_;
+  player_t* p;
   std::vector<std::pair<size_t, double>> effect_flat_modifiers;
   std::vector<std::pair<size_t, double>> effect_pct_modifiers;
 
@@ -295,8 +93,13 @@ public:
   std::vector<buff_effect_t> mastery_rating_multiplier_auras;
   std::vector<buff_effect_t> versatility_rating_multiplier_auras;
 
-  parse_aura_effects_t( player_t* p ) : player_( p ) {}
+  parse_aura_effects_t( player_t* p ) : p( p ){}
   virtual ~parse_aura_effects_t() = default;
+
+  player_t* player() const
+  {
+    return debug_cast<player_t*>( p );
+  }
 
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
@@ -388,24 +191,24 @@ public:
         else
           val_str = fmt::format( "{}", val * val_mul );
 
-        player_->sim->print_debug( "player-buff-effects: {} {} modified by {} {} buff {} ({}#{})", player_->name(), type, val_str, use_stacks ? "per stack of" : "with", buff->name(),
+        player()->sim->print_debug("player-buff-effects: {} {} modified by {} {} buff {} ({}#{})", player()->name(), type, val_str, use_stacks ? "per stack of" : "with", buff->name(),
                                    buff->data().id(), i );
       }
       else if ( mastery && !f )
       {
-        player_->sim->print_debug( "player-mastery-effects: {} {} modified by {}*mastery from {} ({}#{})",
-                                   player_->name(), type, val * val_mul * 100, s_data->name_cstr(),
+        player()->sim->print_debug( "player-mastery-effects: {} {} modified by {}*mastery from {} ({}#{})",
+                               player()->name(), type, val * val_mul * 100, s_data->name_cstr(),
                                    s_data->id(), i );
       }
       else if ( f )
       {
-        player_->sim->print_debug( "player-conditional-effects: {} {} modified by {} with condition from {} ({}#{})",
-                                   player_->name(), type, val * val_mul, s_data->name_cstr(), s_data->id(),
+        player()->sim->print_debug( "player-conditional-effects: {} {} modified by {} with condition from {} ({}#{})",
+                               player()->name(), type, val * val_mul, s_data->name_cstr(), s_data->id(),
                                    i );
       }
       else
       {
-        player_->sim->print_debug( "player-passive-effects: {} {} modified by {} from {} ({}#{})", player_->name(),
+        player()->sim->print_debug( "player-passive-effects: {} {} modified by {} from {} ({}#{})", player()->name(),
                                    type, val * val_mul, s_data->name_cstr(), s_data->id(), i );
       }
     };
@@ -438,7 +241,7 @@ public:
           };
           if ( eff.misc_value2() == 0xb )
           {
-            switch ( player_->convert_hybrid_stat( STAT_STR_AGI_INT ) )
+            switch (player()->convert_hybrid_stat( STAT_STR_AGI_INT ) )
             {
               case STAT_STRENGTH:
                 strength_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
@@ -759,7 +562,7 @@ public:
       }
 
       if ( i.mastery )
-        eff_val *= player_->cache.mastery();
+        eff_val *= player()->cache.mastery();
 
       if ( flat )
         return_value += eff_val * mod;

@@ -3681,7 +3681,7 @@ void player_t::init_finished()
     } );
   }
 
-  apply_auras();
+  apply_player_auras();
 
   if ( !precombat_state_map.empty() )
   {
@@ -3766,7 +3766,7 @@ void player_t::init_finished()
   }
 }
 
-void player_t::apply_auras()
+void player_t::apply_player_auras()
 {
 }
 
