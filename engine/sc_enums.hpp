@@ -1071,6 +1071,7 @@ enum cache_e
   CACHE_AGI_INT,
   CACHE_STR_AGI,
   CACHE_STR_INT,
+  CACHE_STR_AGI_INT,
   CACHE_SPELL_POWER,
   CACHE_ATTACK_POWER,
   CACHE_TOTAL_MELEE_ATTACK_POWER,
@@ -1138,6 +1139,7 @@ check( SPIRIT );
 check( AGI_INT );
 check( STR_AGI );
 check( STR_INT );
+check( STR_AGI_INT );
 #undef check
 
 inline cache_e cache_from_stat( stat_e st )
@@ -1149,6 +1151,10 @@ inline cache_e cache_from_stat( stat_e st )
       case STAT_STAMINA:
       case STAT_INTELLECT:
       case STAT_SPIRIT:
+      case STAT_AGI_INT:
+      case STAT_STR_AGI:
+      case STAT_STR_INT:
+      case STAT_STR_AGI_INT:
         return static_cast<cache_e>( st );
       case STAT_SPELL_POWER:
         return CACHE_SPELL_POWER;
