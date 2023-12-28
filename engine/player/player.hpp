@@ -109,7 +109,7 @@ public:
   virtual void html_customsection(report::sc_html_stream&) = 0;
 };
 
-struct player_t : public actor_t, parse_aura_effects_t<actor_t>
+struct player_t : public actor_t, parse_aura_effects_t<player_t>
 {
   static const int default_level = 70;
 

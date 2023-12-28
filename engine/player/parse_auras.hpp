@@ -231,7 +231,7 @@ enum player_value_type_e
   CURRENT_VALUE,
 };
 
-template <typename Actor>
+template <typename Player>
 struct parse_aura_effects_t
 {
   using bfun = std::function<bool()>;
@@ -453,6 +453,7 @@ public:
               default:
                 break;
             }
+            debug_message( "primary stat multiplier" );
           }
           else
           {
