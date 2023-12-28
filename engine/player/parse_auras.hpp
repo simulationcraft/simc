@@ -223,6 +223,8 @@ double my_class_t::composite_player_pet_damage_multiplier( const action_state_t*
 }
 
 */
+// Forward Declaration 
+struct player_t;
 
 enum player_value_type_e
 {
