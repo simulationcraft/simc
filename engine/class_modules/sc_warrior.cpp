@@ -36,6 +36,91 @@ action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
   return a;
 }
 
+template <typename V>
+  static const spell_data_t* resolve_spell_data( V data )
+  {
+    if constexpr (std::is_invocable_v<decltype( &spell_data_t::ok ), V>)
+      return data;
+    else if constexpr (std::is_invocable_v<decltype( &buff_t::data ), V>)
+      return &data->data();
+    else if constexpr (std::is_invocable_v<decltype( &action_t::data ), V>)
+      return &data->data();
+
+    assert( false && "Could not resolve find_effect argument to spell data." );
+    return nullptr;
+  }
+
+  // finds a spell effect
+  // 1) first argument can be either player_talent_t, spell_data_t*, buff_t*, action_t*
+  // 2) if the second argument is player_talent_t, spell_data_t*, buff_t*, or action_t* then only effects that affect it are returned
+  // 3) if the third (or second if the above does not apply) argument is effect subtype, then the type is assumed to be E_APPLY_AURA
+  // further arguments can be given to filter for full type + subtype + property
+  template <typename T, typename U, typename... Ts>
+  static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
+  {
+    const spell_data_t* data = resolve_spell_data<T>( val );
+
+    if constexpr (std::is_same_v<U, effect_subtype_t>)
+      return spell_data_t::find_spelleffect( *data, E_APPLY_AURA, type, std::forward<Ts>( args )... );
+    else if constexpr (std::is_same_v<U, effect_type_t>)
+      return spell_data_t::find_spelleffect( *data, type, std::forward<Ts>( args )... );
+    else
+    {
+      const spell_data_t* affected = resolve_spell_data<U>( type );
+
+      if constexpr (std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_subtype_t>)
+        return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA, std::forward<Ts>( args )... );
+      else if constexpr (std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_type_t>)
+        return spell_data_t::find_spelleffect( *data, *affected, std::forward<Ts>( args )... );
+      else
+        return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
+    }
+
+    assert( false && "Could not resolve find_effect argument to type/subtype." );
+    return spelleffect_data_t::nil();
+  }
+
+  template <typename T, typename U, typename... Ts>
+  static size_t find_effect_index( T val, U type, Ts&&... args )
+  {
+    return find_effect( val, type, std::forward<Ts>( args )... ).index() + 1;
+  }
+
+  // finds the first effect with a trigger spell
+  // argument can be either player_talent_t, spell_data_t*, buff_t*, action_t*
+  template <typename T>
+  static const spelleffect_data_t& find_trigger( T val )
+  {
+    const spell_data_t* data = resolve_spell_data<T>( val );
+
+    for (const auto& eff : data->effects())
+    {
+      switch (eff.type())
+      {
+        case E_TRIGGER_SPELL:
+        case E_TRIGGER_SPELL_WITH_VALUE:
+          return eff;
+        case E_APPLY_AURA:
+        case E_APPLY_AREA_AURA_PARTY:
+          switch (eff.subtype())
+          {
+            case A_PROC_TRIGGER_SPELL:
+            case A_PROC_TRIGGER_SPELL_WITH_VALUE:
+            case A_PERIODIC_TRIGGER_SPELL:
+            case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+              return eff;
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    return spelleffect_data_t::nil();
+  }
+
 struct warrior_td_t : public actor_target_data_t
 {
   dot_t* dots_deep_wounds;
@@ -827,7 +912,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
-    bool avatar, sweeping_strikes, booming_voice;
+    bool sweeping_strikes, booming_voice;
     // tier
     bool t29_arms_4pc;
     bool t29_prot_2pc;
@@ -841,7 +926,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
       : fury_mastery_direct( false ),
         fury_mastery_dot( false ),
         arms_mastery( false ),
-        avatar( false ),
         sweeping_strikes( false ),
         booming_voice( false ),
         t29_arms_4pc ( false ),
@@ -905,6 +989,7 @@ public:
   void apply_buff_effects()
   {
     // Shared
+    parse_buff_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
     parse_buff_effects( p()->buff.merciless_bonegrinder );
@@ -999,7 +1084,6 @@ public:
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
     affected_by.booming_voice            = ab::data().affected_by( p()->talents.protection.demoralizing_shout->effectN( 3 ) );
-    affected_by.avatar                   = ab::data().affected_by( p()->talents.warrior.avatar->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
@@ -1122,12 +1206,6 @@ public:
       dm *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( affected_by.avatar && p()->buff.avatar->up() )
-    {
-      //dm *= 1.0 + p()->buff.avatar->data().effectN( 1 ).percent() + p()->talents.arms.spiteful_serenity->effectN( 1 ).percent;
-      dm *= 1.0 + p()->buff.avatar->check_value();
-    }
-
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
@@ -1165,13 +1243,6 @@ public:
     if ( affected_by.fury_mastery_dot && p()->buff.enrage->up() )
     {
       tm *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.avatar && p()->buff.avatar->up() )
-    {
-      double percent_increase = p()->buff.avatar->check_value();
-
-      tm *= 1.0 + percent_increase;
     }
 
     if ( affected_by.t29_arms_4pc && p()->buff.strike_vulnerabilities->up() )
@@ -1660,6 +1731,7 @@ struct melee_t : public warrior_attack_t
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
   double sidearm_chance, enrage_chance;
   devastator_t* devastator;
+  double avatar_multi;
   melee_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ),
       annihilator( nullptr ),
@@ -1673,7 +1745,8 @@ struct melee_t : public warrior_attack_t
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       sidearm_chance( p->talents.warrior.sidearm->proc_chance() ),
       enrage_chance( p->talents.fury.frenzied_flurry->proc_chance() ),
-      devastator( nullptr )
+      devastator( nullptr ),
+      avatar_multi(0)
   {
     background = repeating = may_glance = usable_while_channeling = true;
     allow_class_ability_procs = not_a_proc = true;
@@ -1698,6 +1771,9 @@ struct melee_t : public warrior_attack_t
     {
       sidearm = new sidearm_t( p );
     }
+    const auto& eff = find_effect( p->talents.warrior.avatar, A_MOD_AUTO_ATTACK_PCT );
+    avatar_multi = eff.percent();
+    avatar_multi *= 1.0 + p->talents.arms.spiteful_serenity->effectN( 2 ).percent();
   }
 
   void init() override
@@ -1706,7 +1782,6 @@ struct melee_t : public warrior_attack_t
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.arms_mastery        = p()->mastery.deep_wounds_ARMS->ok();
     affected_by.booming_voice       = p()->talents.protection.booming_voice->ok();
-    affected_by.avatar = true;
     affected_by.t29_arms_4pc = true;
   }
 
@@ -1715,8 +1790,6 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::reset();
     mh_lost_melee_contact = oh_lost_melee_contact = true;
   }
-
-
 
   timespan_t execute_time() const override
   {
@@ -1759,6 +1832,18 @@ struct melee_t : public warrior_attack_t
     am *= 1.0 + p()->buff.battering_ram->check_value();
 
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( s );
+
+    if ( p() -> buff.avatar -> up() )
+    {
+      m *= 1.0 + avatar_multi;
+    }
+
+    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3367,11 +3452,6 @@ struct thunder_clap_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.avatar->up() && p()->talents.warrior.unstoppable_force->ok() )
-    {
-      am *= 1.0 + p()->talents.warrior.unstoppable_force->effectN( 1 ).percent();
-    }
-
     if ( p()->buff.show_of_force->check() )
     {
       am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
@@ -3445,16 +3525,6 @@ struct thunder_clap_t : public warrior_attack_t
     }
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_clap );
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = warrior_attack_t::recharge_multiplier( cd );
-    if ( p()->buff.avatar->up() && p()->talents.warrior.unstoppable_force->ok() )
-    {
-      rm *= 1.0 + ( p()->talents.warrior.unstoppable_force->effectN( 2 ).percent() );
-    }
-    return rm;
   }
 
   void impact( action_state_t* state ) override
@@ -6600,13 +6670,10 @@ struct rallying_cry_t : public warrior_spell_t
 
 struct recklessness_t : public warrior_spell_t
 {
-  double bonus_crit;
   recklessness_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_spell_t( n, p, spell ),
-      bonus_crit( 0.0 )
+    : warrior_spell_t( n, p, spell )
   {
     parse_options( options_str );
-    bonus_crit = data().effectN( 1 ).percent();
     callbacks  = false;
     harmful    = false;
     target     = p;
@@ -6645,12 +6712,10 @@ struct recklessness_t : public warrior_spell_t
 
 struct torment_recklessness_t : public warrior_spell_t
 {
-  double bonus_crit;
   torment_recklessness_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_spell_t( n, p, spell ), bonus_crit( 0.0 )
+    : warrior_spell_t( n, p, spell )
   {
     parse_options( options_str );
-    bonus_crit = data().effectN( 1 ).percent();
     callbacks  = false;
     harmful    = false;
     target     = p;
@@ -7795,11 +7860,8 @@ void warrior_t::create_buffs()
       ->set_cooldown( spec.revenge_trigger -> internal_cooldown() );
 
   buff.avatar = make_buff( this, "avatar", talents.warrior.avatar )
-      ->set_default_value( talents.warrior.avatar->effectN( 1 ).percent() 
-                           * ( 1.0 + talents.arms.spiteful_serenity->effectN( 1 ).percent() ) )
-      ->set_duration( talents.warrior.avatar->duration() + talents.arms.spiteful_serenity->effectN( 4 ).time_value() )
-      ->set_chance(1)
-      ->set_cooldown( timespan_t::zero() );
+      ->set_cooldown( timespan_t::zero() )
+      ->apply_affecting_aura( talents.arms.spiteful_serenity );
 
   buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
       -> set_default_value_from_effect( 1 );
@@ -7817,10 +7879,6 @@ void warrior_t::create_buffs()
   buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) )
       ->set_default_value( find_spell( 394313 )->effectN( 1 ).percent() )
       ->add_invalidate( CACHE_ATTACK_SPEED );
-
-  if ( talents.warrior.unstoppable_force -> ok() )
-    buff.avatar -> set_stack_change_callback( [ this ] ( buff_t*, int, int )
-    { cooldown.thunder_clap -> adjust_recharge_multiplier(); } );
 
   buff.berserker_rage = make_buff( this, "berserker_rage", talents.warrior.berserker_rage )
       ->set_cooldown( timespan_t::zero() );
