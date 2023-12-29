@@ -3808,7 +3808,7 @@ void player_t::apply_player_auras()
 
     for ( auto buff : buff_list )
     {
-      if ( !buff->is_fallback && !buff->is_stat_pct_buff )
+      if ( !buff->is_fallback && !buff->is_stat_pct_buff && buff->parse_player_auras )
       {
         apply_buff_aura_effects( buff );
       }
@@ -3956,13 +3956,12 @@ void player_t::create_buffs()
   {
     // Racials
     buffs.berserking = make_buff_fallback( race == RACE_TROLL, this, "berserking", find_spell( 26297 ) )
-                           ->add_invalidate( CACHE_HASTE );
+                           -> set_parse_player_auras( true );
 
     buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) );
 
     buffs.blood_fury = make_buff_fallback<stat_buff_t>( race == RACE_ORC, this, "blood_fury", find_racial_spell( "Blood Fury" ) )
-                           ->add_invalidate( CACHE_SPELL_POWER )
-                           ->add_invalidate( CACHE_ATTACK_POWER );
+                           -> set_parse_player_auras( true );
 
     buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
                            ->set_cooldown( 0_ms );
@@ -3999,12 +3998,12 @@ void player_t::create_buffs()
       // 9.0 class buffs
       buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
         ->set_default_value_from_effect( 1 )
-        ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+        ->set_parse_player_auras( true );
 
       buffs.power_infusion = make_buff( this, "power_infusion", find_spell( 10060 ) )
         ->set_default_value_from_effect( 1 )
         ->set_cooldown( 0_ms )
-        ->add_invalidate( CACHE_HASTE );
+        ->set_parse_player_auras( true );
 
       // External trinkets
       if ( external_buffs.soleahs_secret_technique )

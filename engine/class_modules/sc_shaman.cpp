@@ -12437,7 +12437,7 @@ struct shaman_module_t : public module_t
     p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
           ->set_max_stack( 1 )
           ->set_default_value_from_effect_type( A_HASTE_ALL )
-          ->add_invalidate( CACHE_HASTE );
+          ->set_parse_player_auras( true );
 
     p->buffs.exhaustion = make_buff( p, "exhaustion", p->find_spell( 57723 ) )->set_max_stack( 1 )->set_quiet( true );
   }

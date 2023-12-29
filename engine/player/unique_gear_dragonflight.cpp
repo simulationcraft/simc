@@ -163,6 +163,7 @@ void phial_of_elemental_chaos( special_effect_t& effect )
     effect.player->buffs.elemental_chaos_fire = buff_list.emplace_back(
         make_buff<stat_buff_t>( effect.player, "elemental_chaos_fire", effect.player->find_spell( 371348 ) )
             ->add_stat( STAT_CRIT_RATING, amount )
+            ->set_parse_player_auras( true )
             ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_BONUS )
             ->set_duration( duration ) );
     effect.player->buffs.elemental_chaos_air = buff_list.emplace_back(
@@ -7431,7 +7432,7 @@ void neltharax( special_effect_t& effect )
       ->set_default_value_from_effect( 1 );
 
   if ( buff->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
-    buff->add_invalidate( CACHE_ATTACK_SPEED );
+    buff->set_parse_player_auras( true );
 
   effect.player -> buffs.heavens_nemesis = buff;
 

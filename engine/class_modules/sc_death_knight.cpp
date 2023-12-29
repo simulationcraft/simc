@@ -10019,7 +10019,8 @@ void death_knight_t::create_buffs()
         -> apply_affecting_aura( talent.unholy_bond );
 
   buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff)
-        -> set_default_value_from_effect( 1 );
+        -> set_default_value_from_effect( 1 )
+        -> set_parse_player_auras( true );
 
   buffs.rune_of_hysteria = make_buff( this, "rune_of_hysteria", spell.rune_of_hysteria_buff )
         -> set_default_value_from_effect( 1 )
@@ -10030,6 +10031,7 @@ void death_knight_t::create_buffs()
   buffs.empower_rune_weapon = make_buff( this, "empower_rune_weapon", spell.empower_rune_weapon_main )
         -> set_tick_zero( true )
         -> set_cooldown( 0_ms )
+        -> set_parse_player_auras( true )
         -> set_period( spell.empower_rune_weapon_main -> effectN( 1 ).period() )
         -> set_default_value_from_effect( 3 )
         -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
@@ -10092,6 +10094,7 @@ void death_knight_t::create_buffs()
   buffs.dancing_rune_weapon = make_buff( this, "dancing_rune_weapon", spell.dancing_rune_weapon_buff )
         -> set_cooldown( 0_ms )
         -> set_duration( 0_ms )
+        -> set_parse_player_auras( true )
         -> set_default_value_from_effect_type( A_MOD_PARRY_PERCENT );
 
   buffs.heartrend = make_buff( this, "heartrend", spell.heartrend_buff )
@@ -10150,12 +10153,15 @@ void death_knight_t::create_buffs()
           } );
 
   buffs.vampiric_strength = make_buff( this, "vampiric_strength", spell.vampiric_strength )
+        -> set_parse_player_auras( true )
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
 
   buffs.vigorous_lifeblood_4pc = make_buff( this, "vigorous_lifeblood", spell.vigorous_lifeblood_4pc )
+        -> set_parse_player_auras( true )
         -> set_default_value_from_effect_type( A_HASTE_ALL );
 
   buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )
+        -> set_parse_player_auras( true )
         -> set_trigger_spell( talent.blood.voracious );
   }
 
@@ -10220,6 +10226,7 @@ void death_knight_t::create_buffs()
 		
   buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
         -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+        -> set_parse_player_auras( true )
         -> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
 			  
   buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
@@ -10229,12 +10236,15 @@ void death_knight_t::create_buffs()
   buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength -> effectN( 1 ).trigger() );
   
   buffs.enduring_strength = make_buff( this, "enduring_strength", spell.enduring_strength_buff )
+        -> set_parse_player_auras( true )
         -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
 		
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
+        -> set_parse_player_auras( true )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
+        -> set_parse_player_auras( true )
         -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
         -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
@@ -10260,6 +10270,7 @@ void death_knight_t::create_buffs()
         -> apply_affecting_aura( talent.unholy.harbinger_of_doom );
 
   buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
+        -> set_parse_player_auras( true )
         -> set_cooldown( 0_ms ) // Handled by the action
         -> set_default_value_from_effect( 4 ); 
 
@@ -10280,6 +10291,7 @@ void death_knight_t::create_buffs()
 
   buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
         -> set_duration( spell.ghoulish_infusion -> duration() )
+        -> set_parse_player_auras( true )
         -> set_default_value_from_effect( 2 );
 
   buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
@@ -10292,7 +10304,8 @@ void death_knight_t::create_buffs()
         -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.unholy_t30_4pc_mastery = make_buff( this, "doom_dealer", spell.unholy_t30_4pc_mastery )
-        -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).base_value() / 1.8 );
+        -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).base_value() / 1.8 )
+        -> set_parse_player_auras( true );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
         -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).base_value() / 1.8 )
@@ -10300,7 +10313,8 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buffs.amplify_damage = make_buff( this, "amplify_damage", pet_spell.amplify_damage )
-        -> set_default_value( pet_spell.amplify_damage -> effectN( 1 ).percent() );
+        -> set_default_value( pet_spell.amplify_damage -> effectN( 1 ).percent() )
+        -> set_parse_player_auras( true );
   }
 }
 

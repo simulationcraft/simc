@@ -836,7 +836,7 @@ void gem::sinister_primal( special_effect_t& effect )
   {
     p->buffs.tempus_repit = make_buff( p, "tempus_repit", p->find_spell( 137590 ) )
       ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_SPELL_SPEED )
+      ->set_parse_player_auras( true )
       ->set_activated( false );
   }
 
@@ -1737,6 +1737,7 @@ void item::legendary_ring( special_effect_t& effect )
           boom = new legendary_ring_damage_t( originaleffect, damagespell );
         }
         p -> buffs.legendary_aoe_ring = this;
+        set_parse_player_auras( true );
         if ( p -> level() == 110 ) // No damage boost at level 110.
           default_value = 0;
       }

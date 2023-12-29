@@ -117,6 +117,7 @@ public:
   buff_expire_callback_t expire_callback;
   bool allow_precombat;
   bool is_stat_pct_buff;
+  bool parse_player_auras;
 
   // Ticking buff values
   unsigned current_tick;
@@ -403,6 +404,7 @@ public:
   buff_t* set_stack_behavior( buff_stack_behavior b );
   buff_t* set_allow_precombat( bool b );
   buff_t* set_name_reporting( std::string_view );
+  buff_t* set_parse_player_auras( bool b );
 
   virtual buff_t* apply_affecting_aura( const spell_data_t* spell );
   virtual buff_t* apply_affecting_effect( const spelleffect_data_t& effect );

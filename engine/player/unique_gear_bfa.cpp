@@ -520,7 +520,7 @@ void enchants::galeforce_striking( special_effect_t& effect )
   {
     auto spell = effect.trigger();
     buff       = make_buff( effect.player, util::tokenized_name( spell ), spell )
-               ->add_invalidate( CACHE_ATTACK_SPEED )
+               ->set_parse_player_auras( true )
                ->set_default_value( spell->effectN( 1 ).percent() )
                ->set_activated( false );
     effect.player->buffs.galeforce_striking = buff;
@@ -540,7 +540,7 @@ void enchants::torrent_of_elements( special_effect_t& effect )
   {
     auto spell = effect.trigger();
     buff       = make_buff<buff_t>( effect.player, util::tokenized_name( spell ), spell )
-               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+               -> set_parse_player_auras( true )
                ->set_default_value( spell->effectN( 1 ).percent() )
                ->set_activated( false );
     effect.player->buffs.torrent_of_elements = buff;
@@ -3192,6 +3192,7 @@ void items::fathom_hunter( special_effect_t& effect )
     buff = make_buff( effect.player, "fathom_hunter", effect.driver() );
     buff->set_default_value( effect.driver()->effectN( 1 ).percent() );
     buff->set_quiet( true );
+    buff->set_parse_player_auras( true );
 
     effect.player->buffs.fathom_hunter = buff;
     effect.player->register_combat_begin( buff );
@@ -4482,7 +4483,7 @@ void items::dreams_end( special_effect_t& effect )
   {
     effect.player->buffs.delirious_frenzy = make_buff( effect.player, "delirious_frenzy", effect.trigger() )
                                                 ->set_default_value( effect.trigger()->effectN( 1 ).percent() )
-                                                ->add_invalidate( CACHE_ATTACK_SPEED );
+                                                -> set_parse_player_auras( true );
   }
 
   new delirious_frenzy_cb_t( effect );

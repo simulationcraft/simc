@@ -670,7 +670,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     trigger_intervals(),
     duration_lengths(),
     change_regen_rate( false ),
-    is_stat_pct_buff( false )
+    is_stat_pct_buff( false ),
+    parse_player_auras( false )
 {
   if ( source )  // Player Buffs
   {
@@ -1403,6 +1404,12 @@ buff_t* buff_t::set_allow_precombat( bool b )
 buff_t* buff_t::set_name_reporting( std::string_view n )
 {
   name_str_reporting = n;
+  return this;
+}
+
+buff_t* buff_t::set_parse_player_auras( bool b )
+{
+  parse_player_auras = b;
   return this;
 }
 
