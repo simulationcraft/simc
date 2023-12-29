@@ -918,9 +918,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     bool t29_prot_2pc;
     bool t30_arms_2pc;
     bool t30_arms_4pc;
-    bool t30_fury_4pc;
-    bool t31_arms_2pc;
-    bool t31_fury_2pc;
 
     affected_by_t()
       : fury_mastery_direct( false ),
@@ -930,8 +927,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
-        t30_arms_4pc( false ),
-        t30_fury_4pc( false )
+        t30_arms_4pc( false )
     {
     }
   } affected_by;
@@ -1000,6 +996,7 @@ public:
     parse_buff_effects( p()->buff.recklessness );
     parse_buff_effects( p()->buff.slaughtering_strikes_an );
     parse_buff_effects( p()->buff.slaughtering_strikes_rb );
+    parse_buff_effects( p()->buff.merciless_assault );
 
     // Protection
     parse_buff_effects( p()->buff.juggernaut_prot );
@@ -1087,7 +1084,6 @@ public:
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
     affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
-    affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
     initialized = true;
   }
@@ -1180,11 +1176,6 @@ public:
   {
     double c = ab::composite_crit_chance();
 
-    if( affected_by.t30_fury_4pc )
-    {
-      c += p()->buff.merciless_assault->stack() * p()->find_spell( 409983 )->effectN( 3 ).percent();
-    }
-
     c += get_buff_effects_value( crit_chance_buffeffects, true );
 
     return c;
@@ -1217,11 +1208,6 @@ public:
     if ( affected_by.t30_arms_4pc && p()->buff.crushing_advance->up() )
     {
       dm *= 1.0 + p()->buff.crushing_advance->stack_value();
-    }
-
-    if ( affected_by.t30_fury_4pc && p()->buff.merciless_assault->up() )
-    {
-      dm *= 1.0 + p()->buff.merciless_assault->stack_value();
     }
 
     dm *= get_buff_effects_value( da_multiplier_buffeffects );
