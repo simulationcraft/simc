@@ -2368,8 +2368,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY )
     {
-      if( dk() -> buffs.dark_transformation -> check() )
-        m *= 1.0 + dk() -> talent.unholy.dark_transformation -> effectN( 1 ).percent();
+      if( dark_transformation -> check() )
+        m *= 1.0 + dark_transformation -> value();
 
       if( ghoulish_frenzy -> check() )
         m *= 1.0 + ghoulish_frenzy -> value();
@@ -2473,6 +2473,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> add_invalidate( CACHE_ATTACK_SPEED );
 
     dark_transformation = make_buff( this, "dark_transformation", dk()->talent.unholy.dark_transformation )
+      -> set_default_value_from_effect( 1 )
+      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       -> set_duration( 0_s ) // Handled by the player buff
       -> set_cooldown( 0_s ); // Handled by the player action
   }
@@ -10236,15 +10238,12 @@ void death_knight_t::create_buffs()
   buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength -> effectN( 1 ).trigger() );
   
   buffs.enduring_strength = make_buff( this, "enduring_strength", spell.enduring_strength_buff )
-        -> set_parse_player_auras( true )
         -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
 		
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
-        -> set_parse_player_auras( true )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
-        -> set_parse_player_auras( true )
         -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
         -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
@@ -10918,6 +10917,9 @@ void death_knight_t::apply_player_auras()
   {
     apply_passive_aura_effects( spec.frost_death_knight );
     apply_buff_aura_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
+    apply_buff_aura_effects( buffs.frostwhelps_aid, talent.frost.frostwhelps_aid );
+    apply_buff_aura_effects( buffs.enduring_strength, talent.frost.enduring_strength );
+    apply_buff_aura_effects( buffs.unleashed_frenzy, talent.frost.unleashed_frenzy );
   }
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
