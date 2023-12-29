@@ -410,7 +410,7 @@ public:
         debug_message( "crit avoidance additive" );
         break;
       case A_MOD_BASE_RESISTANCE_PCT:
-        cache = CACHE_ARMOR;
+        cache = CACHE_BONUS_ARMOR;
         base_armor_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                         eff, cache );
         debug_message( "base resistance" );

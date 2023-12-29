@@ -10067,6 +10067,11 @@ void death_knight_t::create_buffs()
             // Only expire if the buff is already up
             else if ( buffs.ossuary -> up() && new_stacks < talent.blood.ossuary -> effectN( 1 ).base_value() )
               buffs.ossuary -> expire();
+            // If the buff starts or expires, invalidate relevant caches
+            if (( !old_stacks && new_stacks ) || ( old_stacks && !new_stacks ))
+            {
+              invalidate_cache( CACHE_BONUS_ARMOR );
+            }
           } )
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
         -> set_cooldown( 0_ms );
