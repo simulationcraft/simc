@@ -405,7 +405,7 @@ public:
   buff_t* set_allow_precombat( bool b );
   buff_t* set_name_reporting( std::string_view );
   /* Allow automatic parsing of auras: 9, 47, 49, 57, 65, 79, 137, 142, 163, 166, 187,
-  193, 240, 290, 318, 319, 342, 405, 429, 443, 471, and 531
+  193, 240, 290, 318, 319, 342, 344, 405, 429, 443, 471, and 531
   These are only player aura buffs, things that modify all damage, an attribute, etc.
   Will not allow automatic parsing of any other auras, or whitelisted effects! */
   buff_t* set_parse_player_auras( bool b );

@@ -3767,7 +3767,7 @@ void player_t::init_finished()
 }
 
 /* Currently capable of handling Auras; 9, 47, 49, 57, 65, 79, 137, 142, 163, 166, 187, 
-193, 240, 290, 318, 319, 342, 405, 429, 443, 471, and 531 automatically. */
+193, 240, 290, 318, 319, 342, 344, 405, 429, 443, 471, and 531 automatically. */
 void player_t::apply_player_auras()
 {
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
