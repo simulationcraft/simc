@@ -912,7 +912,7 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
     // talents
-    bool sweeping_strikes, booming_voice;
+    bool sweeping_strikes;
     // tier
     bool t29_arms_4pc;
     bool t29_prot_2pc;
@@ -927,7 +927,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         fury_mastery_dot( false ),
         arms_mastery( false ),
         sweeping_strikes( false ),
-        booming_voice( false ),
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
@@ -1017,6 +1016,7 @@ public:
     // Fury
 
     // Protection
+    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); }, p()->talents.protection.demoralizing_shout, p()->talents.protection.booming_voice );
   }
 
   void init() override
@@ -1083,7 +1083,6 @@ public:
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
-    affected_by.booming_voice            = ab::data().affected_by( p()->talents.protection.demoralizing_shout->effectN( 3 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
@@ -1150,12 +1149,6 @@ public:
     if ( affected_by.arms_mastery && td->dots_deep_wounds->is_ticking() )
     {
       m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( td -> debuffs_demoralizing_shout -> up() && p()->talents.protection.booming_voice->ok() &&
-         affected_by.booming_voice )
-    {
-      m *= 1.0 + p()->talents.protection.booming_voice->effectN( 2 ).percent();
     }
 
     if ( td->debuffs_concussive_blows->check() )
@@ -1781,7 +1774,6 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.arms_mastery        = p()->mastery.deep_wounds_ARMS->ok();
-    affected_by.booming_voice       = p()->talents.protection.booming_voice->ok();
     affected_by.t29_arms_4pc = true;
   }
 
@@ -1854,6 +1846,11 @@ struct melee_t : public warrior_attack_t
     if ( td && p() -> talents.arms.colossus_smash )
     {
       m *= 1.0 + td -> debuffs_colossus_smash -> check_stack_value();
+    }
+
+    if ( td && p() -> talents.protection.booming_voice && td -> debuffs_demoralizing_shout -> up() )
+    {
+      m *= 1.0 + p() -> talents.protection.booming_voice -> effectN( 3 ).percent();
     }
 
     return m;
