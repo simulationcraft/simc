@@ -181,7 +181,7 @@ void pet_t::reset()
 
 void pet_t::summon( timespan_t summon_duration )
 {
-  sim -> print_log( "{} summons {} for {}.", *owner, name_str, summon_duration );
+  sim -> print_log( "{} summons {} for {}s.", *owner, name_str, summon_duration );
 
   current.distance = owner -> current.distance;
 

@@ -265,7 +265,7 @@ struct adds_event_t final : public raid_event_t
 
   void regenerate_cache()
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       // Invalidate target caches
       for ( size_t i = 0, end = p->action_list.size(); i < end; i++ )
@@ -337,7 +337,7 @@ struct adds_event_t final : public raid_event_t
 
     if ( enemy_type == ENEMY_ADD_BOSS )
     {
-      for ( auto p : affected_players() )
+      for ( auto p : affected_players )
       {
         p->in_boss_encounter++;
       }
@@ -357,7 +357,7 @@ struct adds_event_t final : public raid_event_t
 
     if ( enemy_type == ENEMY_ADD_BOSS )
     {
-      for ( auto p : affected_players() )
+      for ( auto p : affected_players )
       {
         assert( p->in_boss_encounter );
         p->in_boss_encounter--;
@@ -367,7 +367,7 @@ struct adds_event_t final : public raid_event_t
     // trigger leave combat state callbacks if no adds are remaining
     if ( sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_SLICE && !sim->target_non_sleeping_list.size() )
     {
-      for ( auto p : affected_players() )
+      for ( auto p : affected_players )
         p->leave_combat();
     }
   }
@@ -417,14 +417,6 @@ struct pull_event_t final : raid_event_t
       }
       
       return pet_t::time_to_percent( percent );
-    }
-
-    void demise() override
-    {
-      pet_t::demise();
-      
-      if ( pull_event )
-        pull_event->on_demise();
     }
 
     void init_resources( bool force ) override
@@ -490,15 +482,13 @@ struct pull_event_t final : raid_event_t
   std::string enemies_str;
   timespan_t delay;
   timespan_t spawn_time;
-  int pull;
   bool bloodlust;
   bool shared_health;
-  bool spawned;
-  bool demised;
   bool has_boss;
   event_t* spawn_event;
   event_t* redistribute_event;
   extended_sample_data_t real_duration;
+  std::vector<std::unique_ptr<raid_event_t>> child_events;
 
   struct spawn_parameter
   {
@@ -513,13 +503,11 @@ struct pull_event_t final : raid_event_t
 
   pull_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "pull" ),
+      delay(),
       enemies_str(),
-      delay( 0_s ),
       spawn_time( 0_s ),
-      pull( 0 ),
       bloodlust( false ),
       shared_health( false ),
-      spawned( false ),
       has_boss( false ),
       spawn_event( nullptr ),
       redistribute_event( nullptr ),
@@ -527,20 +515,22 @@ struct pull_event_t final : raid_event_t
   {
     add_option( opt_string( "enemies", enemies_str ) );
     add_option( opt_timespan( "delay", delay ) );
-    add_option( opt_int( "pull", pull ) );
     add_option( opt_bool( "bloodlust", bloodlust ) );
     add_option( opt_bool( "shared_health", shared_health ) );
 
     parse_options( options_str );
 
-    real_duration.name_str = "Pull " + util::to_string( pull ) + " Length";
+    force_stop = true;
+    first = last = timespan_t::min();
+    first_pct = last_pct = -1.0;
+    cooldown = delay;
+    duration = timespan_t::max();
+    cooldown_stddev = cooldown_min = cooldown_max = timespan_t::zero();
+    duration_stddev = duration_min = duration_max = timespan_t::zero();
 
-    if ( pull == 1 )
-      first = 0_s;
-    else
-      first = timespan_t::max();
-
-    cooldown = sim->max_time * 2;
+    name = "Pull_" + util::to_string( pull );
+    
+    real_duration.name_str = name + " Length";
 
     master = sim->target_list.data().front();
     if ( !master )
@@ -549,12 +539,13 @@ struct pull_event_t final : raid_event_t
     }
 
     std::string spawner_name = master->name();
-    spawner_name += "_pull_spawner";
+    spawner_name += " spawner";
     adds_spawner = dynamic_cast<spawner::pet_spawner_t<mob_t, player_t>*>( master->find_spawner( spawner_name ) );
 
     if ( !adds_spawner )
     {
       adds_spawner = new spawner::pet_spawner_t<mob_t, player_t>( spawner_name, master );
+      adds_spawner->set_event_callback( spawner::pet_event_type::DEMISE, []( spawner::pet_event_type type, mob_t* mob ) { mob->pull_event->mob_demise(); } );
     }
 
     if ( enemies_str.empty() )
@@ -608,63 +599,23 @@ struct pull_event_t final : raid_event_t
     }
   }
 
-  const std::vector<player_t*>& affected_players() override
+  void mob_demise()
   {
-    return sim->player_non_sleeping_list.data();
-  }
-
-  void on_demise()
-  {
-    // don't schedule another pull until all adds from this one are dead
-    for ( auto add : adds_spawner->active_pets() )
+    // Don't schedule another pull until all mobs from this one demise.
+    if ( adds_spawner->active_pets().empty() )
     {
-      if ( add->is_active() )
-        return;
-    }
-
-    if ( demised || !spawned )
-      return;
-
-    demised = true;
-    double length = ( sim->current_time() - spawn_time ).total_seconds();
-    sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, length );
-    real_duration.add( length );
-
-    event_t::cancel( redistribute_event );
-
-    if ( has_boss )
-    {
-      for ( auto p : affected_players() )
+      for ( auto& child_event : child_events )
       {
-        if ( p->is_player() )
-        {
-          assert( p->in_boss_encounter );
-          p->in_boss_encounter--;
-        }
+        child_event->deactivate( "pull ended" );
       }
-    }
 
-    // trigger leave combat state callbacks if no adds are remaining
-    if ( !sim->target_non_sleeping_list.size() )
-    {
-      for ( auto p : affected_players() )
-        p->leave_combat();
+      deactivate( "pull ended" );
     }
-
-    // find the next pull and spawn it
-    if ( auto next = next_pull() )
-    {
-      make_event( *sim, next->delay, [ next ] { next->spawn_pull(); } );
-      return;
-    }
-
-    // if no suitable pull is found, end the iteration
-    make_event<player_demise_event_t>( *sim, *master );
   }
 
   void regenerate_cache()
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       for ( size_t i = 0, end = p->action_list.size(); i < end; i++ )
         p->action_list[ i ]->target_cache.is_valid = false;
@@ -672,75 +623,7 @@ struct pull_event_t final : raid_event_t
   }
 
   void _start() override
-  {
-    if ( !spawned )
-      make_event( *sim, delay, [ this ] { spawn_pull(); } );
-  }
-
-  void _finish() override
-  {
-  }
-
-  void merge( pull_event_t* other )
-  {
-    real_duration.merge( other->real_duration );
-  }
-
-  bool active()
-  {
-    if ( spawned )
-    {
-      for ( auto add : adds_spawner->active_pets() )
-      {
-        if ( add->is_active() )
-          return true;
-      }
-    }
-    else
-    {
-      if ( spawn_event && spawn_event->remains() >= 0_s )
-        return true;
-    }
-
-    return false;
-  }
-
-  double time_to_die()
-  {
-    double pull_dtps = 0;
-    double pull_hp = 0;
-
-    for ( pet_t* add : adds_spawner->active_pets() )
-    {
-      pull_dtps += ( add->resources.initial[ RESOURCE_HEALTH ] - add->resources.current[ RESOURCE_HEALTH ] ) / ( sim->current_time() - add->arise_time ).total_seconds();
-      pull_hp += add->resources.current[ RESOURCE_HEALTH ];
-    }
-
-    return pull_hp / pull_dtps;
-  }
-
-  pull_event_t* next_pull()
-  {
-    for ( auto& raid_event : sim->raid_events )
-    {
-      if ( raid_event->type == "pull" )
-      {
-        auto pull_event = dynamic_cast<pull_event_t*>( raid_event.get() );
-        if ( pull_event && pull_event->pull == pull + 1 )
-        {
-          return pull_event;
-        }
-      }
-    }
-    return nullptr;
-  }
-
-  void spawn_pull()
-  {
-    if ( spawned )
-      return;
-    
-    spawned = true;
+  {    
     spawn_time = sim->current_time();
 
     if ( bloodlust )
@@ -777,8 +660,8 @@ struct pull_event_t final : raid_event_t
       adds[ i ]->pull_event = this;
       adds[ i ]->type = spawn_parameters[ i ].boss ? ENEMY_ADD_BOSS : ENEMY_ADD;
       adds[ i ]->race = spawn_parameters[ i ].race;
-      std::string mob_name = "Pull" + util::to_string( pull ) + "_" + spawn_parameters[ i ].name;
-      sim->print_log( "Renaming {} to {}", adds[ i ]->name_str, pull, mob_name );
+      std::string mob_name = name + "_" + spawn_parameters[ i ].name;
+      sim->print_log( "Renaming {} to {}", adds[ i ]->name_str, mob_name );
       adds[ i ]->full_name_str = adds[ i ]->name_str = mob_name;
       total_health += spawn_parameters[ i ].health;
     }
@@ -793,7 +676,7 @@ struct pull_event_t final : raid_event_t
 
     if ( has_boss )
     {
-      for ( auto p : affected_players() )
+      for ( auto& p : affected_players )
       {
         if ( p->is_player() )
         {
@@ -801,14 +684,74 @@ struct pull_event_t final : raid_event_t
         }
       }
     }
+
+    for ( auto& raid_event : child_events )
+      raid_event->combat_begin();
+  }
+
+  void _finish() override
+  {
+    double length = ( sim->current_time() - spawn_time ).total_seconds();
+    sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, length );
+    real_duration.add( length );
+    saved_duration = timespan_t::from_seconds( length );
+
+    event_t::cancel( redistribute_event );
+
+    if ( has_boss )
+    {
+      for ( auto p : affected_players )
+      {
+        if ( p->is_player() )
+        {
+          assert( p->in_boss_encounter );
+          p->in_boss_encounter--;
+        }
+      }
+    }
+
+    // Trigger leave combat state callbacks if no mobs are remaining.
+    if ( !sim->target_non_sleeping_list.size() )
+    {
+      for ( auto p : affected_players )
+        p->leave_combat();
+    }
+  }
+
+  void merge( pull_event_t* other )
+  {
+    real_duration.merge( other->real_duration );
+  }
+
+  timespan_t remains() const override
+  {
+    double pull_dtps = 0;
+    double pull_hp = 0;
+
+    for ( pet_t* add : adds_spawner->active_pets() )
+    {
+      pull_dtps += ( add->resources.initial[ RESOURCE_HEALTH ] - add->resources.current[ RESOURCE_HEALTH ] ) / ( sim->current_time() - add->arise_time ).total_seconds();
+      pull_hp += add->resources.current[ RESOURCE_HEALTH ];
+    }
+
+    return timespan_t::from_seconds( pull_hp / pull_dtps );
+  }
+
+  timespan_t duration_time() override
+  {
+    if ( real_duration.count() )
+      return timespan_t::from_seconds( real_duration.mean() );
+    else
+      return sim->max_time / sim->raid_events.size();
   }
 
   void reset() override
   {
     raid_event_t::reset();
 
-    spawned = false;
-    demised = false;
+    for ( auto& raid_event : child_events )
+      raid_event->reset();
+
     redistribute_event = nullptr;
   }
 };
@@ -848,7 +791,7 @@ struct move_enemy_t final : public raid_event_t
 
   void regenerate_cache()
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       // Invalidate target caches
       for ( size_t i = 0, end = p->action_list.size(); i < end; i++ )
@@ -926,7 +869,7 @@ struct distraction_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       p->current.skill_debuff += skill;
     }
@@ -934,7 +877,7 @@ struct distraction_event_t final : public raid_event_t
 
   void _finish() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       p->current.skill_debuff -= skill;
     }
@@ -948,14 +891,21 @@ struct invulnerable_event_t final : public raid_event_t
 {
   bool retarget;
   player_t* target;
+  std::string target_str;
 
   invulnerable_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "invulnerable" ), retarget( false ), target( s->target )
   {
     add_option( opt_bool( "retarget", retarget ) );
-    add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      add_option( opt_string( "target", target_str ) );
+    else
+      add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
 
     parse_options( options_str );
+
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      target_str = "Pull_" + util::to_string( pull ) + "_" + target_str;
   }
 
   bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
@@ -978,6 +928,12 @@ struct invulnerable_event_t final : public raid_event_t
 
   void _start() override
   {
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      target = sim->find_player( target_str );
+
+    if (!target)
+      sim->error( "Unknown invulnerability raid event target '{}'", target_str );
+
     target->clear_debuffs();
     target->debuffs.invulnerable->increment();
 
@@ -1193,7 +1149,7 @@ struct movement_event_t final : public raid_event_t
     if ( move <= 0.0 )
       return;
 
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       p->trigger_movement( move, m );
 
@@ -1204,9 +1160,9 @@ struct movement_event_t final : public raid_event_t
       p->moving();
     }
 
-    if ( !affected_players().empty() )
+    if ( !affected_players.empty() )
     {
-      make_event<movement_ticker_t>( *sim, *sim, affected_players() );
+      make_event<movement_ticker_t>( *sim, *sim, affected_players );
     }
   }
 
@@ -1226,7 +1182,7 @@ struct stun_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       p->buffs.stunned->increment();
       p->in_combat =
@@ -1237,7 +1193,7 @@ struct stun_event_t final : public raid_event_t
 
   void _finish() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       p->buffs.stunned->decrement();
     }
@@ -1255,7 +1211,7 @@ struct interrupt_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       p->interrupt();
     }
@@ -1312,7 +1268,7 @@ struct damage_event_t final : public raid_event_t
       raid_damage->init();
     }
 
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       raid_damage->base_dd_min = raid_damage->base_dd_max =
           sim->rng().range( amount - amount_range, amount + amount_range );
@@ -1372,7 +1328,7 @@ struct heal_event_t final : public raid_event_t
       raid_heal->init();
     }
 
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       double amount_to_heal = 0.0;
 
@@ -1433,7 +1389,7 @@ struct damage_taken_debuff_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, *this );
 
@@ -1462,7 +1418,7 @@ struct damage_done_buff_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       if ( p->buffs.damage_done )
         p->buffs.damage_done->increment( 1, multiplier );
@@ -1471,7 +1427,7 @@ struct damage_done_buff_event_t final : public raid_event_t
 
   void _finish() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       if ( p->buffs.damage_done )
         p->buffs.damage_done->decrement();
@@ -1501,7 +1457,7 @@ struct buff_raid_event_t final : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       auto& b = buff_list[ p->actor_index ];
       if ( !b )
@@ -1582,7 +1538,7 @@ struct position_event_t : public raid_event_t
 
   void _start() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       if ( p->position() == POSITION_BACK )
         p->change_position( POSITION_FRONT );
@@ -1593,7 +1549,7 @@ struct position_event_t : public raid_event_t
 
   void _finish() override
   {
-    for ( auto p : affected_players() )
+    for ( auto p : affected_players )
     {
       p->change_position( p->initial.position );
     }
@@ -1615,6 +1571,19 @@ raid_event_t* get_next_raid_event( const std::vector<raid_event_t*>& matching_ev
   }
 
   return result;
+}
+
+raid_event_t* get_next_pull_event( raid_event_t* up )
+{
+  if ( !up )
+    return nullptr;
+
+  for ( auto& pull_event : up->sim->raid_events )
+  {
+    if ( pull_event->pull == up->pull + 1 )
+      return pull_event.get();
+  }
+  return nullptr;
 }
 
 /**
@@ -1680,7 +1649,9 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     cooldown_event(),
     duration_event(),
     start_event(),
-    end_event()
+    end_event(),
+    pull( 0 ),
+    pull_target_str()
 {
   add_option( opt_string( "name", name ) );
   add_option( opt_timespan( "first", first, timespan_t::zero(), timespan_t::max() ) );
@@ -1703,6 +1674,8 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   add_option( opt_string( "affected_role", affected_role_str ) );
   add_option( opt_string( "player_if", player_if_expr_str ) );
   add_option( opt_bool( "force_stop", force_stop ) );
+  add_option( opt_int( "pull", pull ) );
+  add_option( opt_string( "pull_target", pull_target_str ) );
 }
 
 timespan_t raid_event_t::cooldown_time()
@@ -1775,13 +1748,8 @@ timespan_t raid_event_t::remains() const
  */
 bool raid_event_t::up() const
 {
-  assert( is_up == static_cast<bool>( duration_event ) );
+  assert( is_up == static_cast<bool>( duration_event ) || type == "pull" );
   return is_up;
-}
-
-const std::vector<player_t*>& raid_event_t::affected_players()
-{
-  return _affected_players;
 }
 
 void raid_event_t::start()
@@ -1791,7 +1759,7 @@ void raid_event_t::start()
   num_starts++;
   is_up = true;
 
-  _affected_players.clear();
+  affected_players.clear();
 
   for ( auto& p : sim->player_non_sleeping_list )
   {
@@ -1818,7 +1786,7 @@ void raid_event_t::start()
       continue;
     }
 
-    _affected_players.push_back( p );
+    affected_players.push_back( p );
   }
 
   _start();
@@ -1828,24 +1796,35 @@ void raid_event_t::finish()
 {
   // Make sure we dont have any players which were active on start, but are now sleeping
   auto filter_sleeping = []( const player_t* p ) { return p->is_sleeping(); };
-  _affected_players.erase( std::remove_if( _affected_players.begin(), _affected_players.end(), filter_sleeping ),
-                           _affected_players.end() );
+  affected_players.erase( std::remove_if( affected_players.begin(), affected_players.end(), filter_sleeping ), 
+      affected_players.end() );
 
   is_up = false;
 
   _finish();
 
   sim->print_log( "{} finishes.", *this );
+
+  if ( type == "pull" )
+  {
+    if ( auto next = get_next_pull_event( this ) )
+    {
+      next->combat_begin();
+      return;
+    }
+    // End the iteration if no sequential pull is found.
+    make_event<player_demise_event_t>( *sim, *sim->target_list.data().front() );
+  }
 }
 
 /**
  * Raid event activation. When triggerd, raid event scheduling starts.
  */
-void raid_event_t::activate()
+void raid_event_t::activate( util::string_view reason )
 {
   if ( activation_status == activation_status_e::deactivated )
   {
-    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/last_pct).", *this );
+    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", *this );
     return;
   }
   if ( activation_status == activation_status_e::activated )
@@ -1853,19 +1832,22 @@ void raid_event_t::activate()
     // Already activated, do nothing.
     return;
   }
-  sim->print_debug( "{} activated (first/first_pct reached).", *this );
+  sim->print_debug( "{} activated ({}).", *this, reason );
   activation_status = activation_status_e::activated;
-  schedule();
+  if ( type == "pull" )
+    start();
+  else
+    schedule();
 }
 
 /**
- * Raid event deactivatin. When called, raid event scheduling stops.
+ * Raid event deactivation. When called, raid event scheduling stops.
  * Without force_stop, a currently up raid event will still finish.
  * With force_stop, the currently up raid event will be stopped directly.
  */
-void raid_event_t::deactivate()
+void raid_event_t::deactivate( std::string_view reason )
 {
-  sim->print_debug( "{} deactivated (last/last_pct reached).", *this );
+  sim->print_debug( "{} deactivated ({}).", *this, reason );
   activation_status = activation_status_e::deactivated;
   event_t::cancel( cooldown_event );
   if ( force_stop )
@@ -1893,7 +1875,7 @@ void raid_event_t::combat_begin()
 
     void execute() override
     {
-      raid_event->deactivate();
+      raid_event->deactivate( "last/last_pct reached" );
       raid_event->end_event = nullptr;
     }
   };
@@ -1901,8 +1883,10 @@ void raid_event_t::combat_begin()
   struct start_event_t : public event_t
   {
     raid_event_t* raid_event;
+    util::string_view reason;
 
-    start_event_t( sim_t& s, raid_event_t* re, timespan_t time ) : event_t( s, time ), raid_event( re )
+    start_event_t( sim_t& s, raid_event_t* re, timespan_t time, util::string_view reason )
+      : event_t( s, time ), raid_event( re ), reason( reason )
     {
     }
 
@@ -1913,32 +1897,60 @@ void raid_event_t::combat_begin()
 
     void execute() override
     {
-      raid_event->activate();
+      raid_event->activate( reason );
       raid_event->start_event = nullptr;
     }
   };
+
+  if ( type == "pull" )
+  {
+    start_event = make_event<start_event_t>( *sim, *sim, this, cooldown, "pull spawned" );
+    return;
+  }
 
   if ( last_pct == -1 && last > timespan_t::zero() )
   {
     end_event = make_event<end_event_t>( *sim, *sim, this, last );
   }
-  if ( last_pct != -1 && ( sim->current_iteration == 0 || sim->fixed_time ) )
+  if ( last_pct != -1 )
   {
-    // There is no resource callback from fluffy pillow in these circumstances, thus use time based events as well.
-    timespan_t end_time = ( 1.0 - last_pct / 100.0 ) * sim->expected_iteration_time;
-    end_event           = make_event<end_event_t>( *sim, *sim, this, end_time );
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )    
+    {
+      auto target = sim->find_player( pull_target_str );
+      if ( !target )
+        sim->error( "Unknown pull target '{}'", pull_target_str );
+
+      target->register_resource_callback( RESOURCE_HEALTH, last_pct, [ this ]() { deactivate( "last_pct reached" ); }, true );
+    }
+    else if ( sim->current_iteration == 0 || sim->fixed_time )
+    {
+      // There is no resource callback from fluffy pillow in these circumstances, thus use time based events as well.
+      timespan_t end_time = ( 1.0 - last_pct / 100.0 ) * sim->expected_iteration_time;
+      end_event = make_event<end_event_t>( *sim, *sim, this, end_time );
+    }
   }
 
   if ( first_pct == -1 )
   {
     timespan_t start_time = std::max( first, timespan_t::zero() );
-    start_event           = make_event<start_event_t>( *sim, *sim, this, start_time );
+    start_event = make_event<start_event_t>( *sim, *sim, this, start_time, "first reached" );
   }
-  if ( first_pct != -1 && ( sim->current_iteration == 0 || sim->fixed_time ) )
+  if ( first_pct != -1 )
   {
-    // There is no resource callback from fluffy pillow in these circumstances, thus use time based events as well.
-    timespan_t start_time = ( 1.0 - first_pct / 100.0 ) * sim->expected_iteration_time;
-    start_event           = make_event<start_event_t>( *sim, *sim, this, start_time );
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+    {
+      auto target = sim->find_player( pull_target_str );
+      if ( !target )
+        sim->error( "Unknown pull target '{}'", pull_target_str );
+
+      target->register_resource_callback( RESOURCE_HEALTH, first_pct, [ this ]() { activate( "first_pct reached" ); }, true );
+    }
+    else if ( sim->current_iteration == 0 || sim->fixed_time )
+    {
+      // There is no resource callback from fluffy pillow in these circumstances, thus use time based events as well.
+      timespan_t start_time = ( 1.0 - first_pct / 100.0 ) * sim->expected_iteration_time;
+      start_event = make_event<start_event_t>( *sim, *sim, this, start_time, "first_pct reached" );
+    }
   }
 }
 
@@ -2036,7 +2048,7 @@ void raid_event_t::reset()
   if ( duration_max == timespan_t::zero() )
     duration_max = duration * 1.5;
 
-  _affected_players.clear();
+  affected_players.clear();
 }
 
 // raid_event_t::parse_options ==============================================
@@ -2082,18 +2094,30 @@ void raid_event_t::parse_options( util::string_view options_str )
     throw std::invalid_argument( "last= and last_pct= cannot be used together." );
   }
 
-  if ( last_pct != -1 && !sim->fixed_time )
+  // Register later on mob spawn for pull events
+  if ( sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    assert( sim->target );
-    sim->target->register_resource_callback(
-        RESOURCE_HEALTH, last_pct, [ this ]() { deactivate(); }, true );
-  }
+    if ( last_pct != -1 && !sim->fixed_time )
+    {
+      assert( sim->target );
+      sim->target->register_resource_callback(
+          RESOURCE_HEALTH, last_pct, [ this ]() { deactivate( "last_pct reached" ); }, true );
+    }
 
-  if ( first_pct != -1 && !sim->fixed_time )
+    if ( first_pct != -1 && !sim->fixed_time )
+    {
+      assert( sim->target );
+      sim->target->register_resource_callback(
+          RESOURCE_HEALTH, first_pct, [ this ]() { activate( "first_pct reached" ); }, true );
+    }
+  }
+  else
   {
-    assert( sim->target );
-    sim->target->register_resource_callback(
-        RESOURCE_HEALTH, first_pct, [ this ]() { activate(); }, true );
+    if ( pull == 0 )
+      throw std::invalid_argument( "pull= is required for DungeonRoute events." );
+
+    if ( (first_pct != -1 || last_pct != -1 ) && pull_target_str.empty() )
+      throw std::invalid_argument( "pull_target= is required to use first/last_pct= for event scheduling." );
   }
 }
 
@@ -2167,25 +2191,46 @@ void raid_event_t::init( sim_t* sim )
     {
       auto raid_event = create( sim, name, options );
 
-      if ( raid_event->cooldown <= timespan_t::zero() )
+      if ( raid_event->cooldown <= timespan_t::zero() && raid_event->type != "pull" )
       {
         throw std::invalid_argument( "Cooldown not set or negative." );
       }
-      if ( raid_event->cooldown <= raid_event->cooldown_stddev )
+      if ( raid_event->cooldown <= raid_event->cooldown_stddev && raid_event->type != "pull" )
       {
         throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
       }
-      if ( sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE && raid_event->type == "pull" )
+      if ( raid_event->type == "pull" && sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE )
       {
         throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
       }
-      if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && raid_event->type == "adds" )
-      {
-        throw std::invalid_argument( "DungeonRoute fight style is only compatible with pull events." );
-      }
 
-      sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
-      sim->raid_events.push_back( std::move( raid_event ) );
+      // Collect other raid events assigned to a pull.
+      if ( raid_event->pull > 0 && raid_event->type != "pull" )
+      {
+        pull_event_t* pull_event = nullptr;
+        for ( auto& existing_event : sim->raid_events )
+        {
+          if ( existing_event->type == "pull" && existing_event->pull == raid_event->pull )
+          {
+            pull_event = dynamic_cast<pull_event_t*>( existing_event.get() );
+            break;
+          }
+        }
+
+        if ( !pull_event )
+          throw std::invalid_argument( fmt::format( "Could not find a pull with pull={}.", raid_event->pull ) );
+
+        if ( !raid_event->pull_target_str.empty() )
+          raid_event->pull_target_str = pull_event->name + "_" + raid_event->pull_target_str;
+
+        sim->print_debug( "Successfully created '{}', child of {}.", *( raid_event.get() ), pull_event->name );
+        pull_event->child_events.push_back( std::move( raid_event ) );
+      }
+      else
+      {
+        sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
+        sim->raid_events.push_back( std::move( raid_event ) );
+      }
     }
     catch ( const std::exception& )
     {
@@ -2195,12 +2240,12 @@ void raid_event_t::init( sim_t* sim )
 
   if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    for ( const auto& raid_event : sim->raid_events )
+    for ( auto& raid_event : sim->raid_events )
     {
-      if ( raid_event->type == "pull" )
+      if ( raid_event->type == "pull" && raid_event->pull == 1 )
         return;
     }
-    throw std::invalid_argument( "DungeonRoute fight style requires at least one pull event." );
+    throw std::invalid_argument( "DungeonRoute fight style requires at least one pull event with pull=1." );
   }
 }
 
@@ -2216,7 +2261,8 @@ void raid_event_t::combat_begin( sim_t* sim )
 {
   for ( auto& raid_event : sim->raid_events )
   {
-    raid_event->combat_begin();
+    if ( sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE || raid_event->type == "pull" && raid_event->pull == 1 )
+      raid_event->combat_begin();
   }
 }
 
@@ -2253,97 +2299,12 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   // filter the list for raid events that match the type requested
   std::vector<raid_event_t*> matching_events;
 
-  // special handling for "pull" events since they're not time based events
-  // "adds" and "pull" event types are mutually exclusive within a sim
-  // handled via the same apl expression syntax as adds
-  if ( util::str_compare_ci( type_or_name, "adds" ) && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-  {
-    pull_event_t* current_pull = nullptr;
-    for ( const auto& raid_event : s->raid_events )
-    {
-      if ( util::str_prefix_ci( raid_event->type, "pull" ) )
-      {
-        pull_event_t* pull_event = dynamic_cast<pull_event_t*>( raid_event.get() );
-        matching_events.push_back( pull_event );
-
-        if ( !current_pull && pull_event->first == 0_s )
-          current_pull = pull_event;
-
-        if ( pull_event->active() )
-          current_pull = pull_event;
-      }
-    }
-
-    if ( matching_events.empty() )
-    {
-      assert( is_constant );
-      *is_constant = true;
-      if ( filter == "in" || filter == "cooldown" )
-        return timespan_t::max().total_seconds();
-      else if ( !test_filter )  // When evaluating filter expr validity, let this one continue through
-      {
-        return 0.0;
-      }
-    }
-    else if ( filter == "exists" || filter == "up" )
-    {
-      assert( is_constant );
-      *is_constant = true;
-      return 1.0;
-    }
-
-    if ( filter == "remains" )
-    {
-      if ( current_pull && current_pull->spawned && current_pull->active() )
-        return current_pull->time_to_die();
-      else
-        return 0.0;
-    }
-
-    // the following expressions should refer to the next pull
-    if ( !current_pull )
-      return 0.0;
-
-    pull_event_t* next_pull = current_pull->next_pull();
-
-    if ( filter == "in" )
-    {
-      if ( !next_pull )
-        return timespan_t::max().total_seconds();
-      else
-      {
-        if ( current_pull->spawned )
-          return current_pull->time_to_die() + next_pull->delay.total_seconds();
-        else
-          return s->max_time.total_seconds() / matching_events.size();
-      }
-    }
-
-    if ( filter == "count" )
-    {
-      if ( next_pull )
-        return as<double>( next_pull->spawn_parameters.size() );
-      else
-        return 0.0;
-    }
-
-    if ( filter == "duration" )
-      return s->max_time.total_seconds() / matching_events.size();
-
-    if ( filter == "distance" || filter == "max_distance" || filter == "min_distance" )
-    {
-      return 0.0;
-    }
-
-    if ( filter == "cooldown" )
-      return timespan_t::max().total_seconds();
-
-    throw std::invalid_argument( fmt::format( "Invalid filter expression '{}' for pull raid event.", filter ) );
-  }
-
   // Add all raid event which match type or name
   for ( const auto& raid_event : s->raid_events )
   {
+    if ( s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && util::str_prefix_ci( type_or_name, "adds" ) && raid_event->type == "pull" )
+      matching_events.push_back( raid_event.get() );
+
     if ( util::str_prefix_ci( raid_event->type, type_or_name ) )
       matching_events.push_back( raid_event.get() );
 
@@ -2380,35 +2341,38 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
     return events.front()->remains().total_seconds();
   }
 
-  if ( filter == "up" )
+  raid_event_t* up = nullptr;
+  for ( const auto& event : matching_events )
   {
-    for ( const auto& event : matching_events )
+    if ( event->up() )
     {
-      if ( event->up() )
-      {
-        return 1.0;
-      }
+      up = event;
+      break;
     }
-    return 0.0;
   }
 
+  if ( filter == "up" )
+    return up ? 1.0 : 0.0;
+
+  raid_event_t* e = nullptr;
   // For all remaining expression, go through the list of matching raid events and look for the one happening first
-  raid_event_t* e = get_next_raid_event( matching_events );
-  // timespan_t time_to_event = timespan_t::from_seconds( -1 );
+  if ( type_or_name == "adds" && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+    raid_event_t* e = get_next_pull_event( up );
+  else
+    raid_event_t* e = get_next_raid_event( matching_events );
+
   if ( e == nullptr )
     return 0.0;
 
   // now that we have the event in question, use the filter to figure out return
   if ( filter == "in" )
   {
-    if ( e->until_next() > timespan_t::zero() )
-    {
+    if ( e->type == "pull" )
+      return ( up->remains() + e->cooldown ).total_seconds();
+    else if ( e->until_next() > timespan_t::zero() )
       return e->until_next().total_seconds();
-    }
     else
-    {
       return timespan_t::max().total_seconds();
-    }
   }
 
   if ( filter == "duration" )
@@ -2454,22 +2418,22 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
 
   if ( filter == "count" )
   {
-    if ( auto adds_event = dynamic_cast<adds_event_t*>( e ) )
-    {
-      return adds_event->count;
-    }
-    else
-    {
-      throw std::invalid_argument(
-          fmt::format( "Invalid filter expression '{}' for non-adds raid event '{}'.", filter, type_or_name ) );
-    }
+    if ( e->type == "pull" )
+      if ( auto pull_event = dynamic_cast<pull_event_t*>( e ) )
+        return as<double>( pull_event->spawn_parameters.size() );
+
+    if ( e->type == "adds" )
+      if ( auto adds_event = dynamic_cast<adds_event_t*>( e ) )
+        return adds_event->count;
+
+    throw std::invalid_argument(
+        fmt::format( "Invalid filter expression '{}' for non-adds raid event '{}'.", filter, type_or_name ) );
   }
 
   // if we have no idea what filter they've specified, return 0
   // todo: should this generate an error or something instead?
 
   throw std::invalid_argument( fmt::format( "Unknown filter expression '{}'.", filter ) );
-  ;
 }
 
 void raid_event_t::merge( sim_t* sim, sim_t* other_sim )

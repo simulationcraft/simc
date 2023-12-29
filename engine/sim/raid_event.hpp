@@ -44,6 +44,8 @@ public:
   timespan_t duration_stddev;
   timespan_t duration_min;
   timespan_t duration_max;
+  int pull;
+  std::string pull_target_str;
 
   // Player filter options
   double distance_min;   // Minimal player distance
@@ -57,6 +59,7 @@ public:
   std::string player_if_expr_str;
 
   timespan_t saved_duration;
+  std::vector<player_t*> affected_players;
   std::unordered_map<size_t, std::unique_ptr<expr_t>> player_expressions;
   std::vector<std::unique_ptr<option_t>> options;
 
@@ -71,10 +74,10 @@ public:
     options.insert( options.begin(), std::move( new_option ) );
   }
   timespan_t cooldown_time();
-  timespan_t duration_time();
+  virtual timespan_t duration_time();
   timespan_t next_time() const;
   timespan_t until_next() const;
-  timespan_t remains() const;
+  virtual timespan_t remains() const;
   bool up() const;
   double distance()
   {
@@ -88,9 +91,10 @@ public:
   {
     return distance_max;
   }
-  virtual const std::vector<player_t*>& affected_players();
   void schedule();
+  void deactivate( util::string_view reason );
   virtual void reset();
+  virtual void combat_begin();
   void parse_options( util::string_view options_str );
   static std::unique_ptr<raid_event_t> create( sim_t* sim, util::string_view name, util::string_view options_str );
   static void init( sim_t* );
@@ -108,13 +112,9 @@ public:
 private:
   virtual void _start()  = 0;
   virtual void _finish() = 0;
-  void activate();
-  void deactivate();
-  void combat_begin();
+  void activate( util::string_view reason );
   void start();
   void finish();
-
-  std::vector<player_t*> _affected_players;
 
   bool is_up;
   enum class activation_status_e
