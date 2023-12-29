@@ -4549,6 +4549,18 @@ double action_t::composite_player_multiplier( const action_state_t* ) const
   return player_school_multiplier;
 }
 
+double action_t::action_multiplier() const
+{
+  double m = base_multiplier;
+
+  if ( !special )
+  {
+    m *= player->get_aura_effects_value( player->auto_attack_damage_multiplier_auras );
+  }
+
+  return m;
+}
+
 double action_t::composite_da_multiplier( const action_state_t* ) const
 {
   return action_multiplier() * action_da_multiplier();

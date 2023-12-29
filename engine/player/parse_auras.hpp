@@ -65,6 +65,7 @@ public:
   std::vector<buff_effect_t> arcane_damage_multiplier_auras;
   std::vector<buff_effect_t> all_damage_multiplier_auras;
   std::vector<buff_effect_t> crit_damage_multiplier_auras;
+  std::vector<buff_effect_t> auto_attack_damage_multiplier_auras;
   // Attribute modifiers
   std::vector<buff_effect_t> strength_multiplier_auras;
   std::vector<buff_effect_t> agility_multiplier_auras;
@@ -495,6 +496,10 @@ public:
         spell_crit_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                   eff, cache );
         debug_message( "spell crit additive" );
+      case A_MOD_AUTO_ATTACK_PCT:
+        auto_attack_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                eff, cache );
+        debug_message( "auto attack damage multiplier" );
       default:
         break;
     }
@@ -575,6 +580,10 @@ public:
     apply_buff_aura_effect( nullptr, func, spell, idx, use_stack, value_type, true );
   }
 
+  /* Will automatically apply auras: 9, 47, 49, 57, 65, 79, 137, 142, 163, 166, 187,
+193, 240, 290, 318, 319, 342, 405, 429, 443, 471, and 531
+These are only player aura buffs, things that modify all damage, an attribute, etc.
+Will not allow automatic parsing of any other auras, or whitelisted effects! */
   void apply_passive_aura_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
   {
     apply_conditional_buff_aura_effects( spell, nullptr, ignore_mask );
