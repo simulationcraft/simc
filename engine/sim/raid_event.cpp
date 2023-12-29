@@ -886,7 +886,6 @@ struct distraction_event_t final : public raid_event_t
 
 // Invulnerable =============================================================
 
-// TODO: Support more than sim -> target
 struct invulnerable_event_t final : public raid_event_t
 {
   bool retarget;
@@ -931,8 +930,8 @@ struct invulnerable_event_t final : public raid_event_t
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
       target = sim->find_player( target_str );
 
-    if (!target)
-      sim->error( "Unknown invulnerability raid event target '{}'", target_str );
+    if ( !target )
+      throw std::invalid_argument( fmt::format( "Unknown invulnerability raid event target '{}'", target_str ) );
 
     target->clear_debuffs();
     target->debuffs.invulnerable->increment();
@@ -1484,12 +1483,21 @@ struct vulnerable_event_t final : public raid_event_t
 {
   double multiplier;
   player_t* target = nullptr;
+  std::string target_str;
 
   vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
     add_option( opt_float( "multiplier", multiplier ) );
-    add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
+    
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      add_option( opt_string( "target", target_str ) );
+    else
+      add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
+
     parse_options( options_str );
+
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      target_str = "Pull_" + util::to_string( pull ) + "_" + target_str;
   }
 
   bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
@@ -1512,6 +1520,12 @@ struct vulnerable_event_t final : public raid_event_t
 
   void _start() override
   {
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      target = sim->find_player( target_str );
+
+    if ( !target )
+      throw std::invalid_argument( fmt::format( "Unknown vulnerability raid event target '{}'", target_str ) );
+
     if ( target )
       target->debuffs.vulnerable->increment( 1, multiplier );
     else
