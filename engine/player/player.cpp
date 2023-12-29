@@ -3768,6 +3768,69 @@ void player_t::init_finished()
 
 void player_t::apply_player_auras()
 {
+  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
+  {
+    // Haste
+    apply_passive_aura_effects( racials.nimble_fingers );
+    apply_passive_aura_effects( racials.time_is_money );
+    apply_buff_aura_effects( buffs.berserking );
+    apply_buff_aura_effects( buffs.bloodlust );
+    apply_buff_aura_effects( buffs.power_infusion );
+
+    // Attack Speed
+    apply_buff_aura_effects( buffs.galeforce_striking );
+    apply_buff_aura_effects( buffs.delirious_frenzy );
+    apply_buff_aura_effects( buffs.heavens_nemesis );
+
+    // Spell Speed
+    apply_buff_aura_effects( buffs.tempus_repit, CURRENT_VALUE );
+    apply_buff_aura_effects( buffs.nefarious_pact, CURRENT_VALUE );
+    apply_buff_aura_effects( buffs.devils_due, CURRENT_VALUE );
+
+    // Attack Powr
+    apply_buff_aura_effects( sim->auras.battle_shout );
+
+    // Critical Strike
+    apply_passive_aura_effects( racials.viciousness );
+    apply_passive_aura_effects( racials.arcane_acuity );
+
+    // Spell Crit
+    apply_buff_aura_effects( buffs.focus_magic );
+
+    // Mastery
+    apply_passive_aura_effects( racials.awakened );
+
+    // Versatility
+    apply_passive_aura_effects( racials.mountaineer );
+    apply_passive_aura_effects( racials.brush_it_off );
+    apply_buff_aura_effects( sim->auras.mark_of_the_wild );
+    apply_buff_aura_effects( buffs.dmf_well_fed );
+
+    // Damage Modifiers
+    apply_passive_aura_effects( racials.command );
+    apply_passive_aura_effects( racials.magical_affinity );
+    apply_buff_aura_effects( buffs.coldhearted );
+    apply_buff_aura_effects( buffs.battlefield_presence );
+    apply_buff_aura_effects( buffs.legendary_aoe_ring );
+    apply_buff_aura_effects( buffs.taste_of_mana );
+    apply_buff_aura_effects( buffs.torrent_of_elements );
+    apply_buff_aura_effects( buffs.echo_of_eonar );
+    apply_buff_aura_effects( buffs.torrent_of_elements );
+    apply_buff_aura_effects( buffs.volatile_solvent_damage );
+
+    // Critical Damage Increase
+    apply_passive_aura_effects( racials.brawn );
+    apply_passive_aura_effects( racials.might_of_the_mountain );
+    apply_buff_aura_effects( buffs.elemental_chaos_fire );
+    apply_buff_aura_effects( buffs.incensed );
+    apply_buff_aura_effects( buffs.seething_rage_essence );
+    apply_buff_aura_effects( buffs.fathom_hunter );
+
+    // Attribute Modifiers
+    apply_passive_aura_effects( racials.the_human_spirit );
+    apply_buff_aura_effects( sim->auras.arcane_intellect );
+    apply_buff_aura_effects( sim->auras.power_word_fortitude );
+  }
 }
 
 void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )
@@ -4196,20 +4259,8 @@ double player_t::composite_melee_haste() const
     for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
       h /= 1.0 + b->check_stack_value();
 
-    if ( buffs.bloodlust->check() )
-      h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.berserking->check() )
-      h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
-    h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
-
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
-
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
 
     h *= 1.0 / get_aura_effects_value( all_haste_multiplier_auras );
   }
@@ -4221,17 +4272,8 @@ double player_t::composite_melee_speed() const
 {
   double h = composite_melee_haste();
 
-  if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
-    h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
-
-  if ( buffs.delirious_frenzy && buffs.delirious_frenzy->check() )
-    h *= 1.0 / ( 1.0 + buffs.delirious_frenzy->check_stack_value() );
-
   if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
     h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
-
-  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED && buffs.heavens_nemesis->check() )
-    h *= 1.0 / ( 1.0 + buffs.heavens_nemesis->check_stack_value() );
 
   h *= ( 1.0 / get_aura_effects_value( all_attack_speed_multiplier_auras ) ) * ( 1.0 / get_aura_effects_value( melee_attack_speed_multiplier_auras ) );
 
@@ -4337,7 +4379,6 @@ double player_t::composite_attack_power_multiplier() const
 
   double m = current.attack_power_multiplier;
 
-  m *= 1.0 + sim->auras.battle_shout->check_value();
   m *= get_aura_effects_value( attack_power_multiplier_auras );
 
   return m;
@@ -4355,9 +4396,6 @@ double player_t::composite_melee_crit_chance() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
-
-  ac += racials.viciousness->effectN( 1 ).percent();
-  ac += racials.arcane_acuity->effectN( 1 ).percent();
 
   if ( timeofday == DAY_TIME )
     ac += racials.touch_of_elune->effectN( 1 ).percent();
@@ -4578,20 +4616,8 @@ double player_t::composite_spell_haste() const
     for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
       h /= 1.0 + b->check_stack_value();
 
-    if ( buffs.bloodlust->check() )
-      h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.berserking->check() )
-      h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
-    h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
-
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
-
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
 
     h *= 1.0 / get_aura_effects_value( all_haste_multiplier_auras );
   }
@@ -4608,20 +4634,7 @@ double player_t::composite_spell_speed() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( buffs.tempus_repit &&  buffs.tempus_repit->check() )
-    {
-      speed *= 1.0 / ( 1.0 + buffs.tempus_repit->check_stack_value() );
-    }
-
-    if ( buffs.nefarious_pact )
-    {
-      speed *= 1.0 / ( 1.0 + buffs.nefarious_pact->check_stack_value() );
-    }
-
-    if ( buffs.devils_due )
-    {
-      speed *= 1.0 - buffs.devils_due->check_stack_value();
-    }
+    get_aura_effects_value( spell_speed_multiplier_auras );
   }
 
   return speed;
@@ -4668,18 +4681,13 @@ double player_t::composite_spell_crit_chance() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
 
-  sc += racials.viciousness->effectN( 1 ).percent();
-  sc += racials.arcane_acuity->effectN( 1 ).percent();
-
   if ( timeofday == DAY_TIME )
   {
     sc += racials.touch_of_elune->effectN( 1 ).percent();
   }
-
-  if ( buffs.focus_magic )
-    sc += buffs.focus_magic->check_value();
   
   sc += get_aura_effects_value( crit_chance_additive_auras, true );
+  sc += get_aura_effects_value( spell_crit_additive_auras, true );
 
   return sc;
 }
@@ -4700,7 +4708,6 @@ double player_t::composite_mastery() const
   double cm =
       current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
 
-  cm += racials.awakened->effectN( 1 ).base_value();
   cm += get_aura_effects_value( mastery_additive_auras, true );
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
@@ -4722,16 +4729,6 @@ double player_t::composite_damage_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cdv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cdv += sim->auras.mark_of_the_wild->check_value();
-  }
-
-  if ( buffs.dmf_well_fed )
-    cdv += buffs.dmf_well_fed->check_value();
-
-  cdv += racials.mountaineer->effectN( 1 ).percent();
-  cdv += racials.brush_it_off->effectN( 1 ).percent();
   cdv += get_aura_effects_value( versatility_additive_auras, true );
 
   return cdv;
@@ -4745,16 +4742,6 @@ double player_t::composite_heal_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     chv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    chv += sim->auras.mark_of_the_wild->check_value();
-  }
-
-  if ( buffs.dmf_well_fed )
-    chv += buffs.dmf_well_fed->check_value();
-
-  chv += racials.mountaineer->effectN( 1 ).percent();
-  chv += racials.brush_it_off->effectN( 1 ).percent();
   chv += get_aura_effects_value( versatility_additive_auras, true );
 
   return chv;
@@ -4768,16 +4755,6 @@ double player_t::composite_mitigation_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cmv += b->check_stack_value() / 2;
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cmv += sim->auras.mark_of_the_wild->check_value() / 2;
-  }
-
-  if ( buffs.dmf_well_fed )
-    cmv += buffs.dmf_well_fed->check_value() / 2;
-
-  cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
-  cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
   cmv += get_aura_effects_value( versatility_additive_auras, true ) / 2;
 
   return cmv;
@@ -4826,8 +4803,6 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 {
   double m = 1.0;
 
-  m *= 1.0 + racials.command->effectN(1).percent();
-
   if ( guardian )
   {
     m *= get_aura_effects_value( guardian_damage_multiplier_auras );
@@ -4835,13 +4810,6 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
   else
   {
     m *= get_aura_effects_value( pet_damage_multiplier_auras );
-
-    if (buffs.coldhearted && buffs.coldhearted->check())
-      m *= 1.0 + buffs.coldhearted->check_value();
-
-    // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
-    if (buffs.battlefield_presence && buffs.battlefield_presence->check())
-      m *= 1.0 + ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
   }
 
   return m;
@@ -4856,38 +4824,10 @@ double player_t::composite_player_multiplier( school_e school ) const
 {
   double m = 1.0;
 
-  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->check() )
-    m *= 1.0 + buffs.legendary_aoe_ring->default_value;
-
-  if ( buffs.taste_of_mana && buffs.taste_of_mana->check() && school != SCHOOL_PHYSICAL )
-  {
-    m *= 1.0 + buffs.taste_of_mana->default_value;
-  }
-
-  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->check() && school != SCHOOL_PHYSICAL )
-  {
-    m *= 1.0 + buffs.torrent_of_elements->default_value;
-  }
-
   if ( buffs.damage_done && buffs.damage_done->check() )
   {
     m *= 1.0 + buffs.damage_done->check_stack_value();
   }
-
-  if ( school != SCHOOL_PHYSICAL )
-    m *= 1.0 + racials.magical_affinity->effectN( 1 ).percent();
-
-  if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
-    m *= 1 + buffs.echo_of_eonar->check_value();
-
-  if ( buffs.volatile_solvent_damage && buffs.volatile_solvent_damage->has_common_school( school ) )
-    m *= 1.0 + buffs.volatile_solvent_damage->check_value();
-
-  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
-    m *= 1.0 + buffs.battlefield_presence->check_stack_value();
-
-  if ( buffs.coldhearted && buffs.coldhearted->check() )
-    m *= 1.0 + buffs.coldhearted->check_value();
 
   m *= get_aura_effects_value( all_damage_multiplier_auras );
 
@@ -5014,24 +4954,8 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 {
   double m = 1.0;
 
-  m *= 1.0 + racials.brawn->effectN( 1 ).percent();
-  m *= 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent();
   m *= 1.0 + passive_values.amplification_1;
   m *= 1.0 + passive_values.amplification_2;
-
-  if ( buffs.elemental_chaos_fire )
-    m *= 1.0 + buffs.elemental_chaos_fire->check_value();
-
-  if ( buffs.incensed )
-    m *= 1.0 + buffs.incensed->check_value();
-
-  // Critical hit damage buff from R3 Blood of the Enemy major on-use
-  if ( buffs.seething_rage_essence )
-    m *= 1.0 + buffs.seething_rage_essence->check_value();
-
-  // Critical hit damage buff from follower themed Benthic boots
-  if ( buffs.fathom_hunter )
-    m *= 1.0 + buffs.fathom_hunter->check_value();
 
   m *= get_aura_effects_value( crit_damage_multiplier_auras );
 
@@ -5168,8 +5092,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     case ATTR_INTELLECT:
       pct_type = STAT_PCT_BUFF_INTELLECT;
-      if ( sim->auras.arcane_intellect->check() )
-        m *= 1.0 + sim->auras.arcane_intellect->current_value;
       m *= get_aura_effects_value( intellect_multiplier_auras );
       break;
     case ATTR_SPIRIT:
@@ -5177,10 +5099,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     case ATTR_STAMINA:
       pct_type = STAT_PCT_BUFF_STAMINA;
-      if ( sim->auras.power_word_fortitude->check() )
-      {
-        m *= 1.0 + sim->auras.power_word_fortitude->current_value;
-      }
       m *= get_aura_effects_value( stamina_multiplier_auras );
       break;
     default:
@@ -5208,19 +5126,16 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_RANGED_HASTE:
       v *= 1.0 + passive_values.amplification_1;
       v *= 1.0 + passive_values.amplification_2;
-      v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       v *= get_aura_effects_value( haste_rating_multiplier_auras );
       break;
     case RATING_MASTERY:
       v *= 1.0 + passive_values.amplification_1;
       v *= 1.0 + passive_values.amplification_2;
-      v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       v *= get_aura_effects_value( mastery_rating_multiplier_auras );
       break;
     case RATING_SPELL_CRIT:
     case RATING_MELEE_CRIT:
     case RATING_RANGED_CRIT:
-      v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       v *= get_aura_effects_value( crit_rating_multiplier_auras );
       break;
     case RATING_DAMAGE_VERSATILITY:
@@ -5228,7 +5143,6 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_MITIGATION_VERSATILITY:
       v *= 1.0 + passive_values.amplification_1;
       v *= 1.0 + passive_values.amplification_2;
-      v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       v *= get_aura_effects_value( versatility_rating_multiplier_auras );
       break;
     default:

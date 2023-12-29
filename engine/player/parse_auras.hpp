@@ -82,7 +82,9 @@ public:
   std::vector<buff_effect_t> all_haste_multiplier_auras;
   std::vector<buff_effect_t> all_attack_speed_multiplier_auras;
   std::vector<buff_effect_t> melee_attack_speed_multiplier_auras;
+  std::vector<buff_effect_t> spell_speed_multiplier_auras;
   std::vector<buff_effect_t> crit_chance_additive_auras;
+  std::vector<buff_effect_t> spell_crit_additive_auras;
   std::vector<buff_effect_t> crit_avoidance_additive_auras;
   std::vector<buff_effect_t> base_armor_multiplier_auras;
   std::vector<buff_effect_t> dodge_additive_auras;
@@ -172,7 +174,7 @@ public:
     double val_mul  = 0.01;
 
     // TODO: more robust logic around 'party' buffs with radius
-    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() ) return;
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY || eff.type() == E_APPLY_AURA_PLAYER_AND_PET || eff.type() == E_APPLY_AURA_PET ) ) return;
 
     if ( i <= 5 )
       parse_spell_effects_mods( val, mastery, s_data, i, mods... );
@@ -440,10 +442,32 @@ public:
                                                                     mastery, f, eff );
             debug_message( "versatility rating multiplier" );
             break;
+          case 1913521920:
+            crit_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            haste_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            mastery_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                          eff );
+            versatility_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                              eff );
+            debug_message( "all secondary rating multiplier" );
           default:
             break;
         }
         break;
+      case A_MOD_ATTACKSPEED:
+        melee_attack_speed_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                          eff );
+        debug_message( "melee attack speed multiplier" );
+        break;
+      case A_MOD_CASTING_SPEED_NOT_STACK:
+        spell_speed_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                   eff );
+        debug_message( "spell speed multiplier" );
+        break;
+      case A_MOD_SPELL_CRIT_CHANCE:
+        spell_crit_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
+                                                  eff );
+        debug_message( "spell crit additive" );
       default:
         break;
     }
