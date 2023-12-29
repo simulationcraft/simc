@@ -10911,7 +10911,6 @@ void death_knight_t::apply_player_auras()
     apply_passive_aura_effects( talent.blood_scent );
     apply_buff_aura_effects( buffs.blood_shield, talent.blood.bloodshot );
     apply_buff_aura_effects( buffs.bone_shield, false, talent.blood.improved_bone_shield );
-    apply_buff_aura_effects( buffs.vigorous_lifeblood_4pc );
   }
   // Frost
   if ( specialization() == DEATH_KNIGHT_FROST )
