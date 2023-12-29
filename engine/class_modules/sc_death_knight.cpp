@@ -2368,14 +2368,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY )
     {
-      if( dark_transformation -> check() )
-        m *= 1.0 + dark_transformation -> value();
-
-      if( ghoulish_frenzy -> check() )
-        m *= 1.0 + ghoulish_frenzy -> value();
-
-      if( vile_infusion -> check() )
-        m *= 1.0 + vile_infusion -> value();
+      m *= 1.0 + dark_transformation -> value();
+      m *= 1.0 + ghoulish_frenzy -> value();
+      m *= 1.0 + vile_infusion -> value();
     }
 
     return m;
@@ -5105,37 +5100,42 @@ struct dark_transformation_damage_t final : public death_knight_spell_t
 // Even though the buff is tied to the pet ingame, it's simpler to add it to the player
 struct dark_transformation_buff_t final : public buff_t
 {
-  dark_transformation_buff_t( death_knight_t* p ) :
-    buff_t( p, "dark_transformation" )
+  dark_transformation_buff_t( death_knight_t* p ) : buff_t( p, "dark_transformation" )
   {
     // Dummy buff on the player for APL purposes
     set_quiet( true );
     set_duration( p->talent.unholy.dark_transformation->duration() );
-    cooldown -> duration = 0_ms; // Handled by the player ability
-    if( p -> talent.unholy.ghoulish_frenzy.ok() )
-    {
-      set_stack_change_callback( [ p ] ( buff_t*, int, int new_ ) 
+    cooldown->duration = 0_ms;  // Handled by the player ability
+    set_stack_change_callback( [ p ]( buff_t*, int, int new_ ) {
+      if ( new_ )
       {
-        if ( new_ )
+        if ( p->talent.unholy.ghoulish_frenzy.ok() )
+          p->buffs.ghoulish_frenzy->trigger();
+
+        for ( auto& ghoul : p->pets.ghoul_pet )
         {
-          p -> buffs.ghoulish_frenzy -> trigger();
-          for (auto& ghoul : p->pets.ghoul_pet)
+          ghoul->dark_transformation->trigger();
+          if ( p->talent.unholy.ghoulish_frenzy.ok() )
           {
             ghoul->ghoulish_frenzy->trigger();
-            ghoul->dark_transformation->trigger();
           }
         }
-        else
+      }
+      else
+      {
+        if ( p->talent.unholy.ghoulish_frenzy.ok() )
+          p->buffs.ghoulish_frenzy->expire();
+
+        for ( auto& ghoul : p->pets.ghoul_pet )
         {
-          p -> buffs.ghoulish_frenzy -> expire();
-          for (auto& ghoul : p->pets.ghoul_pet)
+          ghoul->dark_transformation->expire();
+          if ( p->talent.unholy.ghoulish_frenzy.ok() )
           {
             ghoul->ghoulish_frenzy->expire();
-            ghoul->dark_transformation->expire();
           }
         }
-      } );
-    }
+      }
+    } );
   }
 };
 
