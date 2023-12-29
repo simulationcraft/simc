@@ -3772,13 +3772,6 @@ void player_t::apply_player_auras()
 {
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
-    for ( auto buff : buff_list )
-    {
-      if ( !buff->is_fallback && !buff->is_stat_pct_buff )
-      {
-        apply_buff_aura_effects( buff, CURRENT_VALUE );
-      }
-    }
     // Haste
     apply_passive_aura_effects( racials.nimble_fingers );
     apply_passive_aura_effects( racials.time_is_money );
@@ -3812,6 +3805,14 @@ void player_t::apply_player_auras()
     apply_passive_aura_effects( racials.the_human_spirit );
     apply_buff_aura_effects( sim->auras.arcane_intellect );
     apply_buff_aura_effects( sim->auras.power_word_fortitude );
+
+    for ( auto buff : buff_list )
+    {
+      if ( !buff->is_fallback && !buff->is_stat_pct_buff )
+      {
+        apply_buff_aura_effects( buff );
+      }
+    }
   }
 }
 
