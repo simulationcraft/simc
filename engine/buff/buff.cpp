@@ -669,7 +669,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     start_intervals(),
     trigger_intervals(),
     duration_lengths(),
-    change_regen_rate( false )
+    change_regen_rate( false ),
+    is_stat_pct_buff( false )
 {
   if ( source )  // Player Buffs
   {
@@ -1141,6 +1142,7 @@ buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
   if ( range::find( buffs, this ) == buffs.end() )
     buffs.push_back( this );
   add_invalidate( cache_from_stat_pct_buff( type ) );
+  is_stat_pct_buff = true;
 
   return this;
 }

@@ -10915,9 +10915,7 @@ void death_knight_t::apply_player_auras()
     apply_passive_aura_effects( talent.blood_scent );
     apply_buff_aura_effects( buffs.blood_shield, talent.blood.bloodshot );
     apply_buff_aura_effects( buffs.bone_shield, false, talent.blood.improved_bone_shield );
-    apply_buff_aura_effects( buffs.dancing_rune_weapon );
     apply_buff_aura_effects( buffs.vigorous_lifeblood_4pc );
-    apply_buff_aura_effects( buffs.voracious );
   }
   // Frost
   if ( specialization() == DEATH_KNIGHT_FROST )
@@ -10930,8 +10928,6 @@ void death_knight_t::apply_player_auras()
   {
     apply_passive_aura_effects( mastery.dreadblade );
     apply_passive_aura_effects( spec.unholy_death_knight );
-    apply_buff_aura_effects( buffs.amplify_damage );
-    apply_buff_aura_effects( buffs.unholy_assault );
     apply_buff_aura_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
   }
 }

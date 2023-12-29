@@ -3772,32 +3772,24 @@ void player_t::apply_player_auras()
 {
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
+    for ( auto buff : buff_list )
+    {
+      if ( !buff->is_fallback && !buff->is_stat_pct_buff )
+      {
+        apply_buff_aura_effects( buff, CURRENT_VALUE );
+      }
+    }
     // Haste
     apply_passive_aura_effects( racials.nimble_fingers );
     apply_passive_aura_effects( racials.time_is_money );
-    apply_buff_aura_effects( buffs.berserking );
-    apply_buff_aura_effects( buffs.bloodlust );
-    apply_buff_aura_effects( buffs.power_infusion );
 
-    // Attack Speed
-    apply_buff_aura_effects( buffs.galeforce_striking );
-    apply_buff_aura_effects( buffs.delirious_frenzy );
-    apply_buff_aura_effects( buffs.heavens_nemesis );
-
-    // Spell Speed
-    apply_buff_aura_effects( buffs.tempus_repit, CURRENT_VALUE );
-    apply_buff_aura_effects( buffs.nefarious_pact, CURRENT_VALUE );
-    apply_buff_aura_effects( buffs.devils_due, CURRENT_VALUE );
-
-    // Attack Powr
+    // Attack Power
     apply_buff_aura_effects( sim->auras.battle_shout );
 
     // Critical Strike
     apply_passive_aura_effects( racials.viciousness );
     apply_passive_aura_effects( racials.arcane_acuity );
 
-    // Spell Crit
-    apply_buff_aura_effects( buffs.focus_magic );
 
     // Mastery
     apply_passive_aura_effects( racials.awakened );
@@ -3806,27 +3798,15 @@ void player_t::apply_player_auras()
     apply_passive_aura_effects( racials.mountaineer );
     apply_passive_aura_effects( racials.brush_it_off );
     apply_buff_aura_effects( sim->auras.mark_of_the_wild );
-    apply_buff_aura_effects( buffs.dmf_well_fed );
 
     // Damage Modifiers
     apply_passive_aura_effects( racials.command );
     apply_passive_aura_effects( racials.magical_affinity );
-    apply_buff_aura_effects( buffs.coldhearted );
-    apply_buff_aura_effects( buffs.battlefield_presence );
-    apply_buff_aura_effects( buffs.legendary_aoe_ring );
-    apply_buff_aura_effects( buffs.taste_of_mana );
-    apply_buff_aura_effects( buffs.torrent_of_elements );
-    apply_buff_aura_effects( buffs.echo_of_eonar );
-    apply_buff_aura_effects( buffs.torrent_of_elements );
-    apply_buff_aura_effects( buffs.volatile_solvent_damage );
+
 
     // Critical Damage Increase
     apply_passive_aura_effects( racials.brawn );
     apply_passive_aura_effects( racials.might_of_the_mountain );
-    apply_buff_aura_effects( buffs.elemental_chaos_fire );
-    apply_buff_aura_effects( buffs.incensed );
-    apply_buff_aura_effects( buffs.seething_rage_essence );
-    apply_buff_aura_effects( buffs.fathom_hunter );
 
     // Attribute Modifiers
     apply_passive_aura_effects( racials.the_human_spirit );

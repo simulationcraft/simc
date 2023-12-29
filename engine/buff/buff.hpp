@@ -116,6 +116,7 @@ public:
   buff_stack_change_callback_t stack_change_callback;
   buff_expire_callback_t expire_callback;
   bool allow_precombat;
+  bool is_stat_pct_buff;
 
   // Ticking buff values
   unsigned current_tick;

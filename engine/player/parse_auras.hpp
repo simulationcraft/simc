@@ -33,10 +33,11 @@ struct parse_aura_effects_t
     bool mastery;
     bfun func;
     const spelleffect_data_t& eff;
+    cache_e cache;
 
     buff_effect_t( buff_t* b, double v, player_value_type_e t = DATA_VALUE, bool s = true, bool m = false, bfun f = nullptr,
-                   const spelleffect_data_t& e = spelleffect_data_t::nil() )
-      : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e )
+                   const spelleffect_data_t& e = spelleffect_data_t::nil(), cache_e c = CACHE_NONE )
+      : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e ), cache( c )
     {}
   };
 
@@ -210,14 +211,16 @@ public:
     if ( mastery )
       val_mul = 1.0;
 
+    cache_e cache = CACHE_NONE;
+
     switch ( eff.subtype() )
     {
       case A_MOD_PET_DAMAGE_DONE:
-        pet_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+        pet_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff, cache );
         debug_message( "pet damage" );
         break;
       case A_MOD_GUARDIAN_DAMAGE_DONE:
-        guardian_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+        guardian_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff, cache );
         debug_message( "guardian damage" );
         break;
       case A_MOD_TOTAL_STAT_PERCENTAGE:
@@ -235,16 +238,19 @@ public:
             switch (player()->convert_hybrid_stat( STAT_STR_AGI_INT ) )
             {
               case STAT_STRENGTH:
+                cache = CACHE_STRENGTH;
                 strength_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                              eff );
+                                                              eff, cache );
                 break;
               case STAT_AGILITY:
+                cache = CACHE_AGILITY;
                 agility_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                             eff );
+                                                             eff, cache );
                 break;
               case STAT_INTELLECT:
+                cache = CACHE_INTELLECT;
                 intellect_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                               eff );
+                                                               eff, cache );
                 break;
               default:
                 break;
@@ -255,50 +261,58 @@ public:
           {
             if ( ( eff.misc_value2() & STAT_MASK_STRENGTH ) == STAT_MASK_STRENGTH )
             {
+              cache = CACHE_STRENGTH;
               strength_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                            eff );
+                                                            eff, cache );
               debug_message( "strength multiplier" );
             }
             if ( ( eff.misc_value2() & STAT_MASK_AGILITY ) == STAT_MASK_AGILITY )
             {
+              cache = CACHE_AGILITY;
               agility_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                           eff );
+                                                           eff, cache );
               debug_message( "agility multiplier" );
             }
             if ( ( eff.misc_value2() & STAT_MASK_STAMINA ) == STAT_MASK_STAMINA )
             {
               stamina_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                           eff );
+                                                           eff, cache );
+              cache = CACHE_STAMINA;
               debug_message( "stamina multiplier" );
             }
             if ( ( eff.misc_value2() & STAT_MASK_INTELLECT ) == STAT_MASK_INTELLECT )
             {
+              cache = CACHE_INTELLECT;
               intellect_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                             eff );
+                                                             eff, cache );
               debug_message( "intellect multiplier" );
             }
           }
         }
         break;
       case A_MOD_LEECH_PERCENT:
-        leech_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+        cache = CACHE_LEECH;
+        leech_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff, cache );
         debug_message( "leech additive modifier" );
         break;
       case A_MOD_EXPERTISE:
-        expertise_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+        cache = CACHE_ATTACK_EXP;
+        expertise_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff, cache );
         debug_message( "expertise additive modifier" );
         break;
       case A_MOD_PARRY_PERCENT:
-        parry_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+        cache = CACHE_PARRY;
+        parry_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff, cache );
         debug_message( "parry additive modifier" );
         break;
       case A_MOD_DAMAGE_PERCENT_DONE:
         if ( eff.misc_value1() )
         {
+          cache = CACHE_PLAYER_DAMAGE_MULTIPLIER;
           if ( eff.misc_value1() == 0x7f )
           {
             all_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                             eff );
+                                                             eff, cache );
             debug_message( "all damage multiplier" );
           }
           else
@@ -306,156 +320,175 @@ public:
             if ( ( eff.misc_value1() & SCHOOL_MASK_PHYSICAL ) == SCHOOL_MASK_PHYSICAL )
             {
               phys_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                               eff );
+                                                               eff, cache );
               debug_message( "physical damage multiplier" );
             }
             if ( ( eff.misc_value1() & SCHOOL_MASK_HOLY ) == SCHOOL_MASK_HOLY )
             {
               holy_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                               eff );
+                                                               eff, cache );
               debug_message( "holy damage multiplier" );
             }
 
             if ( ( eff.misc_value1() & SCHOOL_MASK_FIRE ) == SCHOOL_MASK_FIRE )
             {
               fire_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                               eff );
+                                                               eff, cache );
               debug_message( "fire damage multiplier" );
             }
 
             if ( ( eff.misc_value1() & SCHOOL_MASK_NATURE ) == SCHOOL_MASK_NATURE )
             {
               nature_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery,
-                                                                 f, eff );
+                                                                 f, eff, cache );
               debug_message( "nature damage multiplier" );
             }
 
             if ( ( eff.misc_value1() & SCHOOL_MASK_FROST ) == SCHOOL_MASK_FROST )
             {
               frost_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                                eff );
+                                                                eff, cache );
               debug_message( "frost damage multiplier" );
             }
 
             if ( ( eff.misc_value1() & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
             {
               shadow_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery,
-                                                                 f, eff );
+                                                                 f, eff, cache );
               debug_message( "shadow damage multiplier" );
             }
 
             if ( ( eff.misc_value1() & SCHOOL_MASK_ARCANE ) == SCHOOL_MASK_ARCANE )
             {
               arcane_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery,
-                                                                 f, eff );
+                                                                 f, eff, cache );
               debug_message( "arcane damage multiplier" );
             }
           }
         }
         break;
       case A_MOD_ATTACK_POWER_PCT:
+        cache = CACHE_ATTACK_POWER;
         attack_power_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                        eff );
+                                                        eff, cache );
         debug_message( "attack power multiplier" );
         break;
       case A_HASTE_ALL:
+        cache = CACHE_HASTE;
         all_haste_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                          eff );
+                                                          eff, cache );
         debug_message( "all haste multiplier" );
         break;
       case A_MOD_RANGED_AND_MELEE_ATTACK_SPEED:
+        cache = CACHE_ATTACK_SPEED;
         all_attack_speed_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                       eff );
+                                                       eff, cache );
         debug_message( "all attack speed multiplier" );
         break;
       case A_MOD_MELEE_ATTACK_SPEED_PCT:
+        cache = CACHE_ATTACK_SPEED;
         melee_attack_speed_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                              eff );
+                                                              eff, cache );
         debug_message( "melee attack speed multiplier" );
         break;
       case A_MOD_ALL_CRIT_CHANCE:
+        cache = CACHE_CRIT_CHANCE;
         crit_chance_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                          eff );
+                                                          eff, cache );
         debug_message( "crit chance additive" );
         break;
       case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+        cache = CACHE_ATTACK_CRIT_CHANCE;
         crit_avoidance_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                       eff );
+                                                       eff, cache );
         debug_message( "crit avoidance additive" );
         break;
       case A_MOD_BASE_RESISTANCE_PCT:
+        cache = CACHE_ARMOR;
         base_armor_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                        eff );
+                                                        eff, cache );
         debug_message( "base resistance" );
         break;
       case A_MOD_DODGE_PERCENT:
+        cache = CACHE_DODGE;
         dodge_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                        eff );
+                                                        eff, cache );
         debug_message( "dodge additive" );
         break;
       case A_MOD_VERSATILITY_PCT:
+        cache = CACHE_VERSATILITY;
         versatility_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                 eff );
+                                                 eff, cache );
         debug_message( "vers additive" );
         break;
       case A_MOD_MASTERY_PCT:
+        cache = CACHE_MASTERY;
         mastery_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                       eff );
+                                                       eff, cache );
         debug_message( "mastery additive" );
         break;
       case A_MOD_CRIT_DAMAGE_BONUS:
+        cache = CACHE_PLAYER_DAMAGE_MULTIPLIER;
         crit_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                         eff );
+                                                         eff, cache );
         debug_message( "crit damage multiplier" );
         break;
       case A_MOD_STAT_FROM_RATING_PCT:
         switch ( eff.misc_value1() )
         {
           case 1792:
+            cache = CACHE_CRIT_CHANCE;
             crit_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                             eff );
+                                                             eff, cache );
             debug_message( "crit rating multiplier" );
             break;
           case 917504:
+            cache = CACHE_HASTE;
             haste_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                              eff );
+                                                              eff, cache );
             debug_message( "haste rating multiplier" );
             break;
           case 33554432:
+            cache = CACHE_MASTERY;
             mastery_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                                eff );
+                                                                eff, cache );
             debug_message( "mastery rating multiplier" );
             break;
           case 1879048192:
+            cache = CACHE_VERSATILITY;
             versatility_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks,
-                                                                    mastery, f, eff );
+                                                                    mastery, f, eff, cache );
             debug_message( "versatility rating multiplier" );
             break;
           case 1913521920:
-            crit_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
-            haste_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
+            cache = CACHE_MAX;
+            crit_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff, cache );
+            haste_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff, cache );
             mastery_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                          eff );
+                                                          eff, cache );
             versatility_rating_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                              eff );
+                                                              eff, cache );
             debug_message( "all secondary rating multiplier" );
           default:
             break;
         }
         break;
       case A_MOD_ATTACKSPEED:
+        cache = CACHE_ATTACK_SPEED;
         melee_attack_speed_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                          eff );
+                                                          eff, cache );
         debug_message( "melee attack speed multiplier" );
         break;
       case A_MOD_CASTING_SPEED_NOT_STACK:
+        cache = CACHE_SPELL_SPEED;
         spell_speed_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                   eff );
+                                                   eff, cache );
         debug_message( "spell speed multiplier" );
         break;
       case A_MOD_SPELL_CRIT_CHANCE:
+        cache = CACHE_SPELL_CRIT_CHANCE;
         spell_crit_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                  eff );
+                                                  eff, cache );
         debug_message( "spell crit additive" );
       default:
         break;
@@ -564,7 +597,7 @@ public:
       if ( i.buff )
       {
         auto stack = benefit ? i.buff->stack() : i.buff->check();
-
+        i.buff->add_invalidate( i.cache );
         if ( !stack )
           continue;  // continue to next effect if stacks == 0 (buff is down)
 
