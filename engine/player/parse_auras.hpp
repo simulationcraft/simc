@@ -171,7 +171,7 @@ public:
     bool mastery    = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val      = ( buff && value_type == DEFAULT_VALUE ) ? ( buff->default_value * 100 )
                                                             : ( mastery ? eff.mastery_value() : eff.base_value() );
-    double val_mul  = 0.01;
+    double val_mul  = eff.subtype() == A_MOD_MASTERY_PCT ? 1 : 0.01;
 
     // TODO: more robust logic around 'party' buffs with radius
     if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY || eff.type() == E_APPLY_AURA_PLAYER_AND_PET || eff.type() == E_APPLY_AURA_PET ) ) return;
