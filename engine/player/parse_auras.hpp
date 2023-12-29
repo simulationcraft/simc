@@ -38,7 +38,12 @@ struct parse_aura_effects_t
     buff_effect_t( buff_t* b, double v, player_value_type_e t = DATA_VALUE, bool s = true, bool m = false, bfun f = nullptr,
                    const spelleffect_data_t& e = spelleffect_data_t::nil(), cache_e c = CACHE_NONE )
       : buff( b ), value( v ), type( t ), use_stacks( s ), mastery( m ), func( std::move( f ) ), eff( e ), cache( c )
-    {}
+    {
+      if( b )
+      {
+        b->add_invalidate( c );
+      }
+    }
   };
 
 private:
@@ -597,7 +602,7 @@ public:
       if ( i.buff )
       {
         auto stack = benefit ? i.buff->stack() : i.buff->check();
-        i.buff->add_invalidate( i.cache );
+
         if ( !stack )
           continue;  // continue to next effect if stacks == 0 (buff is down)
 
