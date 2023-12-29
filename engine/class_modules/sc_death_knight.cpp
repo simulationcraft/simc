@@ -10902,6 +10902,7 @@ void death_knight_t::apply_player_auras()
   apply_passive_aura_effects( talent.veteran_of_the_third_war );
   apply_passive_aura_effects( talent.merciless_strikes );
   apply_buff_aura_effects( buffs.icy_talons, talent.icy_talons );
+  apply_buff_aura_effects( buffs.rune_mastery, talent.rune_mastery );
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
