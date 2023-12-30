@@ -2374,9 +2374,9 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   raid_event_t* e = nullptr;
   // For all remaining expression, go through the list of matching raid events and look for the one happening first
   if ( type_or_name == "adds" && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-    raid_event_t* e = get_next_pull_event( up );
+    e = get_next_pull_event( up );
   else
-    raid_event_t* e = get_next_raid_event( matching_events );
+    e = get_next_raid_event( matching_events );
 
   if ( e == nullptr )
     return 0.0;
