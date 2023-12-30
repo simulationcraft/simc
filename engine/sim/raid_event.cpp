@@ -1521,10 +1521,11 @@ struct vulnerable_event_t final : public raid_event_t
   void _start() override
   {
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+    {
       target = sim->find_player( target_str );
-
-    if ( !target )
-      throw std::invalid_argument( fmt::format( "Unknown vulnerability raid event target '{}'", target_str ) );
+      if ( !target )
+        throw std::invalid_argument( fmt::format( "Unknown vulnerability raid event target '{}'", target_str ) );
+    }
 
     if ( target )
       target->debuffs.vulnerable->increment( 1, multiplier );
