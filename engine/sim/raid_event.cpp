@@ -2128,11 +2128,13 @@ void raid_event_t::parse_options( util::string_view options_str )
   }
   else
   {
-    if ( pull == 0 )
-      throw std::invalid_argument( "pull= is required for DungeonRoute events." );
-
-    if ( (first_pct != -1 || last_pct != -1 ) && pull_target_str.empty() )
-      throw std::invalid_argument( "pull_target= is required to use first/last_pct= for event scheduling." );
+    if ( last_pct != -1 || first_pct != -1 )
+    {
+      if ( pull = 0 )
+        throw std::invalid_argument( "pull= is required for DungeonRoute events with last_pct/first_pct." );
+      if ( pull_target_str.empty() )
+        throw std::invalid_argument( "pull_target= is required for DungeonRoute events with last_pct/first_pct." );
+    }
   }
 }
 
