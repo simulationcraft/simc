@@ -75,7 +75,7 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<2&(dot.agony.remains>gcd.max&dot.corruption.ticking&(!talent.siphon_life|dot.siphon_life.ticking))&(!talent.phantom_singularity|!cooldown.phantom_singularity.ready)&(!talent.vile_taint|!cooldown.vile_taint.ready)&(!talent.soul_rot|!cooldown.soul_rot.ready)" );
   default_->add_action( "malefic_rapture,if=fight_remains<4" );
-  default_->add_action( "vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|time>=0)|talent.souleaters_gluttony.rank<1&cooldown.soul_rot.remains>=12" );
+  default_->add_action( "vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time+gcd.max)|talent.souleaters_gluttony.rank<1&cooldown.soul_rot.remains>=12" );
   default_->add_action( "phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<1&(!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25))&dot.agony.ticking" );
   default_->add_action( "soul_rot,if=(variable.vt_up&(variable.ps_up|talent.souleaters_gluttony.rank!=1))" );
   default_->add_action( "agony,if=remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5&fight_remains>5" );
