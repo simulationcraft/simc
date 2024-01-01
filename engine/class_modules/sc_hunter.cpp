@@ -5743,6 +5743,8 @@ struct call_of_the_wild_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = false;
+    // disable automatic generation of the dot from spell data
+    dot_duration = 0_ms;
   }
 
   void execute() override
