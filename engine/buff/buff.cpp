@@ -671,7 +671,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     duration_lengths(),
     change_regen_rate( false ),
     is_stat_pct_buff( false ),
-    parse_player_auras( false )
+    parse_player_auras( false ),
+    value_stacks( true ),
+    modifier_spells( spell_data_t::nil() )
 {
   if ( source )  // Player Buffs
   {
@@ -1413,6 +1415,12 @@ buff_t* buff_t::set_parse_player_auras( bool b )
   return this;
 }
 
+buff_t* buff_t::set_value_stacks( bool b )
+{
+  value_stacks = b;
+  return this;
+}
+
 buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
 {
   if ( !spell->ok() || !s_data->ok() )
@@ -1424,6 +1432,8 @@ buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
   {
     apply_affecting_effect( effect );
   }
+
+  modifier_spells = spell;
 
   return this;
 }

@@ -211,7 +211,7 @@ public:
       }
     };
 
-    if ( !val )
+    if ( !val && !value_type == CURRENT_VALUE )
       return;
 
     if ( mastery )
@@ -238,25 +238,26 @@ public:
             STAT_MASK_AGILITY   = 0x2,
             STAT_MASK_STAMINA   = 0x4,
             STAT_MASK_INTELLECT = 0x8,
+            STAT_MASK_PRIMARY   = 0xb,
           };
-          if ( eff.misc_value2() == 0xb )
+          if ( eff.misc_value2() == STAT_MASK_PRIMARY )
           {
-            switch (player()->convert_hybrid_stat( STAT_STR_AGI_INT ) )
+            switch ( player()->convert_hybrid_stat( STAT_STR_AGI_INT ) )
             {
               case STAT_STRENGTH:
                 cache = CACHE_STRENGTH;
-                strength_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                              eff, cache );
+                strength_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff,
+                                                        cache );
                 break;
               case STAT_AGILITY:
                 cache = CACHE_AGILITY;
-                agility_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                             eff, cache );
+                agility_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff,
+                                                       cache );
                 break;
               case STAT_INTELLECT:
                 cache = CACHE_INTELLECT;
-                intellect_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
-                                                               eff, cache );
+                intellect_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff,
+                                                         cache );
                 break;
               default:
                 break;
@@ -314,8 +315,12 @@ public:
       case A_MOD_DAMAGE_PERCENT_DONE:
         if ( eff.misc_value1() )
         {
+          enum school_mask_e
+          {
+            SCHOOL_MASK_ALL = 0x7f,
+          };
           cache = CACHE_PLAYER_DAMAGE_MULTIPLIER;
-          if ( eff.misc_value1() == 0x7f )
+          if ( eff.misc_value1() == SCHOOL_MASK_ALL )
           {
             all_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                              eff, cache );
@@ -496,10 +501,12 @@ public:
         spell_crit_additive_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                   eff, cache );
         debug_message( "spell crit additive" );
+        break;
       case A_MOD_AUTO_ATTACK_PCT:
         auto_attack_damage_multiplier_auras.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f,
                                                 eff, cache );
         debug_message( "auto attack damage multiplier" );
+        break;
       default:
         break;
     }

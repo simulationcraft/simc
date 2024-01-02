@@ -5593,8 +5593,9 @@ struct blood_shield_buff_t final : public absorb_buff_t
   {
     set_absorb_school( SCHOOL_PHYSICAL );
     set_absorb_source( player -> get_stats( "blood_shield" ) );
+    set_parse_player_auras( true );
     modify_duration( player -> talent.blood.iron_heart ->effectN( 1 ).time_value() );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    apply_affecting_aura( player -> talent.blood.bloodshot );
   }
 };
 
@@ -10001,6 +10002,8 @@ void death_knight_t::create_buffs()
 
   buffs.rune_mastery = make_buff( this, "rune_mastery", spell.rune_mastery_buff )
         -> set_chance( 0.15 )  // This was found through testing 2022 July 21.  Not in spelldata.
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.rune_mastery )
         -> set_default_value( talent.rune_mastery->effectN( 1 ).percent() );
 
   buffs.unholy_strength = make_buff( this, "unholy_strength", spell.unholy_strength_buff )
@@ -10038,6 +10041,8 @@ void death_knight_t::create_buffs()
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
         -> set_default_value( talent.icy_talons -> effectN( 1 ).percent() )
         -> set_cooldown( talent.icy_talons->internal_cooldown() )
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.icy_talons )
         -> set_trigger_spell( talent.icy_talons );
 
   // Blood
@@ -10047,6 +10052,9 @@ void death_knight_t::create_buffs()
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
+        -> set_value_stacks( false )
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.blood.improved_bone_shield )
         -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
             if ( talent.blood.foul_bulwark.ok() ) // Change player's max health if FB is talented
@@ -10226,18 +10234,26 @@ void death_knight_t::create_buffs()
 			  
   buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
         -> set_default_value( talent.frost.bonegrinder -> effectN( 1 ).percent() )
+        -> apply_affecting_aura( talent.frost.bonegrinder )
+        -> set_parse_player_auras( true )
         -> set_schools_from_effect( 1 );
 		
   buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength -> effectN( 1 ).trigger() );
   
   buffs.enduring_strength = make_buff( this, "enduring_strength", spell.enduring_strength_buff )
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.frost.enduring_strength )
         -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
 		
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
+        -> apply_affecting_aura( talent.frost.frostwhelps_aid )
+        -> set_parse_player_auras( true )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
         -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
+        -> apply_affecting_aura( talent.frost.unleashed_frenzy )
+        -> set_parse_player_auras( true )
         -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
   buffs.wrath_of_the_frostwyrm = make_buff( this, "wrath_of_the_frostwyrm", spell.wrath_of_the_frostwyrm_buff )
@@ -10270,6 +10286,7 @@ void death_knight_t::create_buffs()
 
   buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
         -> set_default_value_from_effect( 1 )
+        -> set_parse_player_auras( true )
         -> apply_affecting_aura( talent.unholy.ghoulish_frenzy );
 
   buffs.plaguebringer = make_buff( this, "plaguebringer", spell.plaguebringer_buff )
@@ -10279,6 +10296,8 @@ void death_knight_t::create_buffs()
 
   buffs.festermight = make_buff( this, "festermight", spell.festermight_buff )
         -> set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.unholy.festermight )
         -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
@@ -10893,8 +10912,6 @@ void death_knight_t::apply_player_auras()
   apply_passive_aura_effects( talent.might_of_thassarian );
   apply_passive_aura_effects( talent.veteran_of_the_third_war );
   apply_passive_aura_effects( talent.merciless_strikes );
-  apply_buff_aura_effects( buffs.icy_talons, talent.icy_talons );
-  apply_buff_aura_effects( buffs.rune_mastery, talent.rune_mastery );
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
@@ -10902,25 +10919,17 @@ void death_knight_t::apply_player_auras()
     apply_passive_aura_effects( mastery.blood_shield );
     apply_passive_aura_effects( spec.blood_fortification );
     apply_passive_aura_effects( talent.blood_scent );
-    apply_buff_aura_effects( buffs.blood_shield, talent.blood.bloodshot );
-    apply_buff_aura_effects( buffs.bone_shield, false, talent.blood.improved_bone_shield );
   }
   // Frost
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
     apply_passive_aura_effects( spec.frost_death_knight );
-    apply_buff_aura_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
-    apply_buff_aura_effects( buffs.frostwhelps_aid, talent.frost.frostwhelps_aid );
-    apply_buff_aura_effects( buffs.enduring_strength, talent.frost.enduring_strength );
-    apply_buff_aura_effects( buffs.unleashed_frenzy, talent.frost.unleashed_frenzy );
   }
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
     apply_passive_aura_effects( mastery.dreadblade );
     apply_passive_aura_effects( spec.unholy_death_knight );
-    apply_buff_aura_effects( buffs.festermight, talent.unholy.festermight );
-    apply_buff_aura_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
   }
   player_t::apply_player_auras();
 }

@@ -118,6 +118,8 @@ public:
   bool allow_precombat;
   bool is_stat_pct_buff;
   bool parse_player_auras;
+  bool value_stacks;
+  const spell_data_t* modifier_spells;
 
   // Ticking buff values
   unsigned current_tick;
@@ -409,6 +411,7 @@ public:
   These are only player aura buffs, things that modify all damage, an attribute, etc.
   Will not allow automatic parsing of any other auras, or whitelisted effects! */
   buff_t* set_parse_player_auras( bool b );
+  buff_t* set_value_stacks( bool b );
 
   virtual buff_t* apply_affecting_aura( const spell_data_t* spell );
   virtual buff_t* apply_affecting_effect( const spelleffect_data_t& effect );
