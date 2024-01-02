@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52607 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -2184,6 +2184,7 @@ Effects          :
 Description      : Living Flame deals $361500o2 damage over $361500d to enemies, or restores $361509o2 health to allies over $361509d. Stacks $361509u times.
 
 Name             : Reversion (desc=Bronze) (id=366155) [Spell Family (224)] 
+Hotfixed         : Description
 Talent Entry     : Preservation [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
@@ -2215,8 +2216,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34200 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=1003140)  : Apply Aura (6) | Unknown(504)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.
+Description      : Repair an ally's injuries, healing them for $o1 over $d.
+
+When Reversion critically heals, its duration is extended by $t1 sec, up to a maximum of ${$t1*$<cap>}.1 sec.
 Tooltip          : Healing for $w1 every $t1 sec.
+Variables        : $cap=${6}
 
 Name             : Mail Specialization (desc=Passive) (id=366524) [Spell Family (224), Passive, Hidden] 
 Class            : Evoker

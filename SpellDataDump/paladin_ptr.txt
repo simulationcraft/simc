@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52607 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -17852,14 +17852,15 @@ Effects          :
 Description      : Final Reckoning and Execution Sentence's durations are increased by ${$s1/1000} sec. 
 
 Name             : Divine Arbiter (id=406975) [Spell Family (10)] 
+Hotfixed         : Proc Flags 1 (0 -> 16), Proc Flags 2 (4 -> 0)
 Class            : Paladin
 School           : Holystrike
 Spell Type       : None
 Duration         : 30 seconds
 Stacks           : 25 initial, 25 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Triggered by     : Divine Arbiter (404306)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
