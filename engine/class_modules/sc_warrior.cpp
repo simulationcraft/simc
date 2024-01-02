@@ -914,7 +914,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     // talents
     bool sweeping_strikes;
     // tier
-    bool t29_prot_2pc;
     bool t30_arms_2pc;
     bool t30_arms_4pc;
 
@@ -923,7 +922,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         fury_mastery_dot( false ),
         arms_mastery( false ),
         sweeping_strikes( false ),
-        t29_prot_2pc( false ),
         t30_arms_2pc( false ),
         t30_arms_4pc( false )
     {
@@ -999,6 +997,7 @@ public:
 
     // Protection
     parse_buff_effects( p()->buff.juggernaut_prot );
+    parse_buff_effects( p()->buff.vanguards_determination );
   }
 
   void apply_debuff_effects()
@@ -1079,7 +1078,6 @@ public:
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
-    affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
     affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
 
@@ -1193,11 +1191,6 @@ public:
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
-    if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
-    {
-      dm *= 1.0 + p()->buff.vanguards_determination->check_value();
-    }
-
     if ( affected_by.t30_arms_4pc && p()->buff.crushing_advance->up() )
     {
       dm *= 1.0 + p()->buff.crushing_advance->stack_value();
@@ -1215,11 +1208,6 @@ public:
     if ( affected_by.fury_mastery_dot && p()->buff.enrage->up() )
     {
       tm *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
-    {
-      tm *= 1.0 + p()->buff.vanguards_determination->check_value();
     }
 
     tm *= get_buff_effects_value( ta_multiplier_buffeffects );
