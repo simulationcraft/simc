@@ -211,7 +211,7 @@ public:
       }
     };
 
-    if ( !val && !value_type == CURRENT_VALUE )
+    if ( !val )
       return;
 
     if ( mastery )
