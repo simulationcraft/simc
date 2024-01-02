@@ -914,7 +914,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     // talents
     bool sweeping_strikes;
     // tier
-    bool t29_arms_4pc;
     bool t29_prot_2pc;
     bool t30_arms_2pc;
     bool t30_arms_4pc;
@@ -924,7 +923,6 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
         fury_mastery_dot( false ),
         arms_mastery( false ),
         sweeping_strikes( false ),
-        t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
         t30_arms_4pc( false )
@@ -987,8 +985,9 @@ public:
     parse_buff_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
-    parse_buff_effects( p()->buff.merciless_bonegrinder );
     parse_buff_effects( p()->buff.juggernaut );
+    parse_buff_effects( p()->buff.merciless_bonegrinder );
+    parse_buff_effects( p()->buff.strike_vulnerabilities );
 
     // Fury
     parse_buff_effects( p()->buff.ashen_juggernaut );
@@ -1080,7 +1079,6 @@ public:
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
-    affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
     affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
@@ -1195,11 +1193,6 @@ public:
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
-    if ( affected_by.t29_arms_4pc && p()->buff.strike_vulnerabilities->up() )
-    {
-      dm *= 1.0 + p()->buff.strike_vulnerabilities->check_value();
-    }
-
     if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
     {
       dm *= 1.0 + p()->buff.vanguards_determination->check_value();
@@ -1222,11 +1215,6 @@ public:
     if ( affected_by.fury_mastery_dot && p()->buff.enrage->up() )
     {
       tm *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.t29_arms_4pc && p()->buff.strike_vulnerabilities->up() )
-    {
-      tm *= 1.0 + p()->buff.strike_vulnerabilities->check_value();
     }
 
     if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
@@ -1760,7 +1748,6 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.arms_mastery        = p()->mastery.deep_wounds_ARMS->ok();
-    affected_by.t29_arms_4pc = true;
   }
 
   void reset() override
@@ -1820,6 +1807,9 @@ struct melee_t : public warrior_attack_t
     {
       m *= 1.0 + avatar_multi;
     }
+
+    if ( p() -> buff.strike_vulnerabilities -> up() )
+      m *= 1.0 + p() -> buff.strike_vulnerabilities -> check_value();
 
     return m;
   }
