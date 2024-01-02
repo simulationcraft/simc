@@ -1430,7 +1430,8 @@ buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
   if ( !spell->ok() || !s_data->ok() )
     return this;
 
-  assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting buffs." );
+  assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) &&
+          "only passive spells should be affecting buffs." );
 
   for ( const spelleffect_data_t& effect : spell->effects() )
   {
@@ -1438,15 +1439,15 @@ buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
   }
 
   // I hate everything about this
-  if( modifier_spell1 == spell_data_t::nil() )
+  if ( modifier_spell1 == spell_data_t::nil() )
     modifier_spell1 = spell;
-  else if( modifier_spell2 == spell_data_t::nil() )
+  else if ( modifier_spell2 == spell_data_t::nil() )
     modifier_spell2 = spell;
-  else if( modifier_spell3 == spell_data_t::nil() )
+  else if ( modifier_spell3 == spell_data_t::nil() )
     modifier_spell3 = spell;
-  else if( modifier_spell4 == spell_data_t::nil() )
+  else if ( modifier_spell4 == spell_data_t::nil() )
     modifier_spell4 = spell;
-  else if( modifier_spell5 == spell_data_t::nil() )
+  else if ( modifier_spell5 == spell_data_t::nil() )
     modifier_spell5 = spell;
 
   return this;

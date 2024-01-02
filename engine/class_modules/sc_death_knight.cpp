@@ -10722,7 +10722,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 {
   double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
-
   if ( talent.unholy.unholy_aura.ok() )
   {
     if ( guardian )

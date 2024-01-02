@@ -3766,7 +3766,7 @@ void player_t::init_finished()
   }
 }
 
-/* Currently capable of handling Auras; 9, 47, 49, 57, 65, 79, 137, 142, 163, 166, 187, 
+/* Currently capable of handling Auras; 9, 47, 49, 57, 65, 79, 137, 142, 163, 166, 187,
 193, 240, 290, 318, 319, 342, 344, 405, 429, 443, 471, and 531 automatically. */
 void player_t::apply_player_auras()
 {
@@ -3783,7 +3783,6 @@ void player_t::apply_player_auras()
     apply_passive_aura_effects( racials.viciousness );
     apply_passive_aura_effects( racials.arcane_acuity );
 
-
     // Mastery
     apply_passive_aura_effects( racials.awakened );
 
@@ -3795,7 +3794,6 @@ void player_t::apply_player_auras()
     // Damage Modifiers
     apply_passive_aura_effects( racials.command );
     apply_passive_aura_effects( racials.magical_affinity );
-
 
     // Critical Damage Increase
     apply_passive_aura_effects( racials.brawn );
@@ -3811,7 +3809,8 @@ void player_t::apply_player_auras()
       if ( !buff->is_fallback && !buff->is_stat_pct_buff && buff->parse_player_auras )
       {
         // I hate everything about this
-        apply_buff_aura_effects( buff, buff->value_stacks, buff->modifier_spell1, buff->modifier_spell2, buff->modifier_spell3, buff->modifier_spell4, buff->modifier_spell5 );
+        apply_buff_aura_effects( buff, buff->value_stacks, buff->modifier_spell1, buff->modifier_spell2,
+                                 buff->modifier_spell3, buff->modifier_spell4, buff->modifier_spell5 );
       }
     }
   }
