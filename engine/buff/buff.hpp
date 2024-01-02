@@ -119,7 +119,11 @@ public:
   bool is_stat_pct_buff;
   bool parse_player_auras;
   bool value_stacks;
-  const spell_data_t* modifier_spells;
+  const spell_data_t* modifier_spell1;
+  const spell_data_t* modifier_spell2;
+  const spell_data_t* modifier_spell3;
+  const spell_data_t* modifier_spell4;
+  const spell_data_t* modifier_spell5;
 
   // Ticking buff values
   unsigned current_tick;

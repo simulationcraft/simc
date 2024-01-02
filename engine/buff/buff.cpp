@@ -673,7 +673,11 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     is_stat_pct_buff( false ),
     parse_player_auras( false ),
     value_stacks( true ),
-    modifier_spells( spell_data_t::nil() )
+    modifier_spell1( spell_data_t::nil() ),
+    modifier_spell2( spell_data_t::nil() ),
+    modifier_spell3( spell_data_t::nil() ),
+    modifier_spell4( spell_data_t::nil() ),
+    modifier_spell5( spell_data_t::nil() )
 {
   if ( source )  // Player Buffs
   {
@@ -1433,7 +1437,17 @@ buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
     apply_affecting_effect( effect );
   }
 
-  modifier_spells = spell;
+  // I hate everything about this
+  if( modifier_spell1 == spell_data_t::nil() )
+    modifier_spell1 = spell;
+  else if( modifier_spell2 == spell_data_t::nil() )
+    modifier_spell2 = spell;
+  else if( modifier_spell3 == spell_data_t::nil() )
+    modifier_spell3 = spell;
+  else if( modifier_spell4 == spell_data_t::nil() )
+    modifier_spell4 = spell;
+  else if( modifier_spell5 == spell_data_t::nil() )
+    modifier_spell5 = spell;
 
   return this;
 }

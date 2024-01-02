@@ -3810,7 +3810,8 @@ void player_t::apply_player_auras()
     {
       if ( !buff->is_fallback && !buff->is_stat_pct_buff && buff->parse_player_auras )
       {
-        apply_buff_aura_effects( buff, buff->value_stacks, buff->modifier_spells );
+        // I hate everything about this
+        apply_buff_aura_effects( buff, buff->value_stacks, buff->modifier_spell1, buff->modifier_spell2, buff->modifier_spell3, buff->modifier_spell4, buff->modifier_spell5 );
       }
     }
   }
