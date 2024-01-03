@@ -8047,6 +8047,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;
   driver->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+  driver->proc_flags2_   = PF2_ALL_HIT;
   driver->spell_id       = 420248;
   driver->execute_action = dot;
   e.player->special_effects.push_back( driver );
