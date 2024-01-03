@@ -71,20 +71,21 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=variables" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies!=1&active_enemies<3|variable.cleave_apl" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
-  default_->add_action( "call_action_list,name=items" );
   default_->add_action( "call_action_list,name=ogcd" );
-  default_->add_action( "malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<2&(dot.agony.ticking&dot.corruption.ticking&(!talent.siphon_life|dot.siphon_life.ticking))&(!talent.phantom_singularity|!cooldown.phantom_singularity.ready)&(!talent.vile_taint|!cooldown.vile_taint.ready)&(!talent.soul_rot|!cooldown.soul_rot.ready)" );
-  default_->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
-  default_->add_action( "agony,if=remains<5" );
-  default_->add_action( "unstable_affliction,if=remains<5" );
-  default_->add_action( "corruption,if=refreshable" );
-  default_->add_action( "siphon_life,if=refreshable" );
-  default_->add_action( "haunt,if=debuff.haunt.remains<3" );
-  default_->add_action( "drain_soul,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
-  default_->add_action( "shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
-  default_->add_action( "phantom_singularity,if=cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<1&(!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25)" );
-  default_->add_action( "vile_taint,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<1&cooldown.soul_rot.remains>=12" );
+  default_->add_action( "call_action_list,name=items" );
+  default_->add_action( "malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<2&(dot.agony.remains>gcd.max&dot.corruption.ticking&(!talent.siphon_life|dot.siphon_life.ticking))&(!talent.phantom_singularity|!cooldown.phantom_singularity.ready)&(!talent.vile_taint|!cooldown.vile_taint.ready)&(!talent.soul_rot|!cooldown.soul_rot.ready)" );
+  default_->add_action( "malefic_rapture,if=fight_remains<4" );
+  default_->add_action( "vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time+gcd.max)|talent.souleaters_gluttony.rank<1&cooldown.soul_rot.remains>=12" );
+  default_->add_action( "phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<1&(!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25))&dot.agony.ticking" );
   default_->add_action( "soul_rot,if=(variable.vt_up&(variable.ps_up|talent.souleaters_gluttony.rank!=1))" );
+  default_->add_action( "agony,if=remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5&fight_remains>5" );
+  default_->add_action( "unstable_affliction,if=remains<5&fight_remains>3" );
+  default_->add_action( "haunt,if=debuff.haunt.remains<5" );
+  default_->add_action( "corruption,if=refreshable&fight_remains>5" );
+  default_->add_action( "siphon_life,if=refreshable&fight_remains>5" );
+  default_->add_action( "summon_darkglare,if=(!talent.shadow_embrace|debuff.shadow_embrace.stack=3)&variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
+  default_->add_action( "drain_soul,interrupt=1,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
+  default_->add_action( "shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
   default_->add_action( "malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2" );
@@ -93,8 +94,6 @@ void affliction( player_t* p )
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&fight_remains<4" );
   default_->add_action( "drain_soul,if=buff.nightfall.react" );
   default_->add_action( "shadow_bolt,if=buff.nightfall.react" );
-  default_->add_action( "agony,if=refreshable" );
-  default_->add_action( "corruption,if=refreshable" );
   default_->add_action( "drain_soul,interrupt=1" );
   default_->add_action( "shadow_bolt" );
 
@@ -164,7 +163,7 @@ void affliction( player_t* p )
   ogcd->add_action( "potion,if=variable.cds_active" );
   ogcd->add_action( "berserking,if=variable.cds_active" );
   ogcd->add_action( "blood_fury,if=variable.cds_active" );
-  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active", "Uses Power Infusion together with Cooldown windows like Summon Darkglare, Soul Rot, Phantom Singularity or Vile Taint" );
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active&(trinket.1.is.nymues_unraveling_spindle&trinket.1.cooldown.remains|trinket.2.is.nymues_unraveling_spindle&trinket.2.cooldown.remains|!equipped.nymues_unraveling_spindle)", "Uses Power Infusion together with Cooldown windows like Summon Darkglare, Soul Rot, Phantom Singularity or Vile Taint" );
   ogcd->add_action( "fireblood,if=variable.cds_active" );
   ogcd->add_action( "ancestral_call,if=variable.cds_active" );
 
@@ -174,7 +173,7 @@ void affliction( player_t* p )
   variables->add_action( "variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot" );
   variables->add_action( "variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up" );
   variables->add_action( "variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare" );
-  variables->add_action( "variable,name=cds_active,op=set,value=!variable.has_cds|(pet.darkglare.active|(variable.cd_dots_up&cooldown.summon_darkglare.remains>20)|buff.power_infusion.react)" );
+  variables->add_action( "variable,name=cds_active,op=set,value=!variable.has_cds|((variable.cd_dots_up&cooldown.summon_darkglare.remains>20)|buff.power_infusion.react)" );
 }
 //affliction_apl_end
 
