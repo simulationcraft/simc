@@ -8010,7 +8010,8 @@ void fyralath_the_dream_render( special_effect_t& e )
     void execute() override
     {
       auto counter = player->get_active_dots( dot->get_dot( nullptr ) );
-      buff->trigger( counter );
+      if( counter > 0 )
+        buff->trigger( counter );
 
       range::for_each( player->sim->target_non_sleeping_list, [ this ]( player_t* target ) {
         if ( dot->get_dot( target )->is_ticking() )
