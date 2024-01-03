@@ -4184,6 +4184,16 @@ namespace monk
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
+          {
+            double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
+            p()->active_actions.charred_dreams_dmg_2p->target = s->target;
+            p()->active_actions.charred_dreams_dmg_2p->base_dd_min =
+                p()->active_actions.charred_dreams_dmg_2p->base_dd_max = amt;
+            p()->active_actions.charred_dreams_dmg_2p->execute();
+            p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
+          }
         }
       };
 
