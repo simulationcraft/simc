@@ -915,15 +915,13 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
     bool sweeping_strikes;
     // tier
     bool t30_arms_2pc;
-    bool t30_arms_4pc;
 
     affected_by_t()
       : fury_mastery_direct( false ),
         fury_mastery_dot( false ),
         arms_mastery( false ),
         sweeping_strikes( false ),
-        t30_arms_2pc( false ),
-        t30_arms_4pc( false )
+        t30_arms_2pc( false )
     {
     }
   } affected_by;
@@ -983,9 +981,10 @@ public:
     parse_buff_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
+    parse_buff_effects( p()->buff.crushing_advance ); // T30 Arms 4pc
     parse_buff_effects( p()->buff.juggernaut );
     parse_buff_effects( p()->buff.merciless_bonegrinder );
-    parse_buff_effects( p()->buff.strike_vulnerabilities );
+    parse_buff_effects( p()->buff.strike_vulnerabilities ); // T29 Arms
 
     // Fury
     parse_buff_effects( p()->buff.ashen_juggernaut );
@@ -1079,7 +1078,6 @@ public:
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
     affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
-    affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
 
     initialized = true;
   }
@@ -1189,11 +1187,6 @@ public:
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
-    }
-
-    if ( affected_by.t30_arms_4pc && p()->buff.crushing_advance->up() )
-    {
-      dm *= 1.0 + p()->buff.crushing_advance->stack_value();
     }
 
     dm *= get_buff_effects_value( da_multiplier_buffeffects );
@@ -8555,7 +8548,7 @@ double warrior_t::composite_player_target_crit_chance( player_t* target ) const
 
   // crit chance bonus is not currently whitelisted in data
   if ( sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() )
-  c += find_spell( 262115 )->effectN( 4 ).percent();
+    c += find_spell( 262115 )->effectN( 4 ).percent();
 
   return c;
 }
