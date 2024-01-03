@@ -7938,16 +7938,15 @@ void thorncaller_claw( special_effect_t& effect ) {
 // 417134 Charge Damage
 // 414532 DoT
 // 413584 Charge Impact Damage
+// 417138 Stacking On use Damage increaase buff
 void fyralath_the_dream_render( special_effect_t& e )
 {
   struct explosive_rage_t : public generic_proc_t
   {
-    double dot_increase;
-    int dots_consumed;
-    explosive_rage_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s )
+    buff_t* buff;
+    explosive_rage_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s, buff_t* b )
       : generic_proc_t( effect, n, s ),
-        dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
-        dots_consumed( 0 )
+        buff( b )
     {
       background = proc = split_aoe_damage = true;
     }
@@ -7956,7 +7955,7 @@ void fyralath_the_dream_render( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      m *= 1.0 + dot_increase * dots_consumed;
+      m *= 1.0 + buff->check_stack_value();
 
       return m;
     }
@@ -7964,12 +7963,10 @@ void fyralath_the_dream_render( special_effect_t& e )
 
   struct rage_of_fyralath_t : public generic_proc_t
   {
-    double dot_increase;
-    int dots_consumed;
-    rage_of_fyralath_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s )
+    buff_t* buff;
+    rage_of_fyralath_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s, buff_t* b )
       : generic_proc_t( effect, n, s ),
-        dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
-        dots_consumed( 0 )
+        buff( b )
     {
       background = proc = split_aoe_damage = true;
     }
@@ -7978,7 +7975,7 @@ void fyralath_the_dream_render( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      m *= 1.0 + dot_increase * dots_consumed;
+      m *= 1.0 + buff->check_stack_value();
 
       return m;
     }
@@ -7989,11 +7986,13 @@ void fyralath_the_dream_render( special_effect_t& e )
     action_t* damage;
     action_t* charge_impact;
     action_t* dot;
-    rage_channel_t( const special_effect_t& e, util::string_view n, action_t* dam, action_t* imp, action_t* d )
+    buff_t* buff;
+    rage_channel_t( const special_effect_t& e, util::string_view n, action_t* dam, action_t* imp, action_t* d, buff_t* b )
       : proc_spell_t( n, e.player, e.player->find_spell( 417132 ), e.item ),
         damage( dam ),
         charge_impact( imp ),
-        dot( d )
+        dot( d ),
+        buff( b )
     {
       channeled = true;
       trigger_gcd = e.player->find_spell( 417131 )->gcd();
@@ -8010,10 +8009,8 @@ void fyralath_the_dream_render( special_effect_t& e )
 
     void execute() override
     {
-      // Caps at 5 Dotted targets for some unknown reason. 
-      auto counter = std::min( as<int>( player->get_active_dots( dot->get_dot( nullptr ) ) ), 5 );
-      debug_cast<explosive_rage_t*>( charge_impact )->dots_consumed = counter;
-      debug_cast<rage_of_fyralath_t*>( damage )->dots_consumed      = counter;
+      auto counter = player->get_active_dots( dot->get_dot( nullptr ) );
+      buff->trigger( counter );
 
       range::for_each( player->sim->target_non_sleeping_list, [ this ]( player_t* target ) {
         if ( dot->get_dot( target )->is_ticking() )
@@ -8035,13 +8032,17 @@ void fyralath_the_dream_render( special_effect_t& e )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
 
       charge_impact->execute_on_target( d->target );
+      buff->expire();
     }
   };
 
-  auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ) );
-  auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ) );
+  auto buff = create_buff<buff_t>( e.player, "rage_of_fyralath", e.player->find_spell( 417138 ) );
+  buff->set_default_value( e.player->find_spell( 420248 ) -> effectN( 1 ).percent() );
+
+  auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ), buff );
+  auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ), buff );
   auto dot           = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
-  auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot );
+  auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot, buff );
 
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;

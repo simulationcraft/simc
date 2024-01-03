@@ -1452,6 +1452,7 @@ class SpellDataGenerator(DataGenerator):
          422651, 422652, 422750, 425571, 425701, 425703, 425461, # Fyrakks Tainted Rageheart
          426474, # Verdant Tether embellishment stat buff
          424051, 424057, # String of Delicacies
+         417138, # Fyr'alath the Dreamrender
         ),
 
         # Warrior:

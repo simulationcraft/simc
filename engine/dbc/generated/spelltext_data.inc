@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52649
-static const std::array<spelltext_data_t, 20528> __spelltext_data { {
+static const std::array<spelltext_data_t, 20529> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20057,6 +20057,7 @@ static const std::array<spelltext_data_t, 20528> __spelltext_data { {
   { 417131, "Unleash the Rage of Fyr'alath to charge towards your target and swing repeatedly, dealing ${$417134s1*$417132d/$417132t1+$413584s1} Shadowflame damage over $417132d to all who would stand in your way.", 0, 0 },
   { 417132, "$@spelldesc417131", 0, 0 },
   { 417134, "$@spelldesc417131", 0, 0 },
+  { 417138, "$@spelldesc420248", "Explosive Rage damage increased by $w1%.", 0 },
   { 417139, "$@spelldesc417050", "Haste increased by $w1, and taking $417050s3% less damage from enemies that struck you in the undone future.", 0 },
   { 417234, "Summon Infernal increases the damage of your next $s3 casts of Chaos Bolt by $s1% or your next $s3 casts of Rain of Fire by $s2%.", 0, 0 },
   { 417275, 0, "The next Time Rift you complete is guaranteed to reward you with a Mount!", 0 },
