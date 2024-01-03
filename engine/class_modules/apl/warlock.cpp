@@ -104,22 +104,21 @@ void affliction( player_t* p )
   aoe->add_action( "vile_taint,if=(talent.souleaters_gluttony.rank=2&(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time))|((talent.souleaters_gluttony.rank=1&cooldown.soul_rot.remains<=execute_time))|(talent.souleaters_gluttony.rank=0&(cooldown.soul_rot.remains<=execute_time|cooldown.vile_taint.remains>25))" );
   aoe->add_action( "phantom_singularity" );
   aoe->add_action( "unstable_affliction,if=remains<5" );
-  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<6&cooldown.summon_darkglare.up" );
+  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<6&cooldown.summon_darkglare.up&time<20" );
   aoe->add_action( "soul_rot,if=variable.vt_up&variable.ps_up" );
   aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)" );
   aoe->add_action( "corruption,target_if=min:remains,if=remains<5&!talent.seed_of_corruption" );
   aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<8&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5" );
   aoe->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
-  aoe->add_action( "drain_life,target_if=min:dot.soul_rot.remains,if=buff.inevitable_demise.stack>10&buff.soul_rot.up&buff.soul_rot.remains<=gcd.max&!talent.siphon_life" );
-  aoe->add_action( "malefic_rapture,if=buff.umbrafire_kindling.up&(pet.darkglare.active|!talent.doom_blossom)" );
+  aoe->add_action( "drain_life,target_if=min:dot.soul_rot.remains,if=buff.inevitable_demise.stack>30&buff.soul_rot.up&buff.soul_rot.remains<=gcd.max&active_enemies>3" );
+  aoe->add_action( "malefic_rapture,if=buff.umbrafire_kindling.up&(((active_enemies<6|time<30)&pet.darkglare.active)|!talent.doom_blossom)" );
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   aoe->add_action( "malefic_rapture,if=((cooldown.summon_darkglare.remains>15|soul_shard>3)&!talent.sow_the_seeds)|buff.tormented_crescendo.up" );
   aoe->add_action( "drain_life,target_if=min:dot.soul_rot.remains,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>30" );
   aoe->add_action( "drain_soul,cycle_targets=1,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
-  aoe->add_action( "drain_soul,if=buff.nightfall.react" );
   aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10" );
-  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<5" );
-  aoe->add_action( "drain_soul,interrupt_global=1" );
+  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<5&(active_enemies<8|!talent.doom_blossom)" );
+  aoe->add_action( "drain_soul,cycle_targets=1,interrupt_global=1,if=(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3))|!talent.shadow_embrace" );
   aoe->add_action( "shadow_bolt" );
 
   cleave->add_action( "call_action_list,name=ogcd" );
