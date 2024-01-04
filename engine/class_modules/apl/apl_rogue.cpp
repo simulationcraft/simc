@@ -330,12 +330,12 @@ void subtlety( player_t* p )
   cds->add_action( "berserking,if=variable.racial_sync" );
   cds->add_action( "fireblood,if=variable.racial_sync" );
   cds->add_action( "ancestral_call,if=variable.racial_sync" );
-  cds->add_action( "use_item,name=ashes_of_the_embersoul,if=buff.flagellation_buff.up&talent.invigorating_shadowdust|buff.shadow_dance.up&!raid_event.adds.up&!equipped.witherbarks_branch", "Sync specific trinkets to Flagellation or Shadow Dance." );
+  cds->add_action( "use_item,name=ashes_of_the_embersoul,if=(buff.cold_blood.up|(!talent.danse_macabre&buff.shadow_dance.up|buff.danse_macabre.stack>=3)&!talent.cold_blood)|fight_remains<10", "Sync specific trinkets to Flagellation or Shadow Dance." );
   cds->add_action( "use_item,name=witherbarks_branch,if=buff.flagellation_buff.up&talent.invigorating_shadowdust|buff.shadow_blades.up|equipped.bandolier_of_twisted_blades&raid_event.adds.up" );
   cds->add_action( "use_item,name=mirror_of_fractured_tomorrows,if=buff.shadow_dance.up&(target.time_to_die>=15|equipped.ashes_of_the_embersoul)" );
   cds->add_action( "use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=!stealthed.all&(buff.deeper_daggers.up|!talent.deeper_daggers)&(!raid_event.adds.up|!equipped.stormeaters_boon|trinket.stormeaters_boon.cooldown.remains>20)" );
   cds->add_action( "use_item,name=manic_grieftorch,use_off_gcd=1,if=!stealthed.all&(!raid_event.adds.up|!equipped.stormeaters_boon|trinket.stormeaters_boon.cooldown.remains>20)" );
-  cds->add_action( "use_items,if=!stealthed.all&(!trinket.mirror_of_fractured_tomorrows.cooldown.ready|!equipped.mirror_of_fractured_tomorrows)|fight_remains<10", "Default fallback for usable items: Use outside of Stealth/Shadow Dance." );
+  cds->add_action( "use_items,if=!stealthed.all&(!trinket.mirror_of_fractured_tomorrows.cooldown.ready|!equipped.mirror_of_fractured_tomorrows)&(!trinket.ashes_of_the_embersoul.cooldown.ready|!equipped.ashes_of_the_embersoul)|fight_remains<10", "Default fallback for usable items: Use outside of Stealth/Shadow Dance." );
 
   finish->add_action( "variable,name=secret_condition,value=(action.shadowstrike.used_for_danse|action.shuriken_storm.used_for_danse)&(action.eviscerate.used_for_danse|action.black_powder.used_for_danse|action.rupture.used_for_danse)|!talent.danse_macabre", "Finisher  Defines what abilitis need to be used for DM stacks before casting Secret Tchnique." );
   finish->add_action( "rupture,if=!dot.rupture.ticking&target.time_to_die-remains>6", "Apply Rupture if its not up." );
