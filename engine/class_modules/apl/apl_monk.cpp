@@ -583,8 +583,8 @@ namespace monk_apl
     def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity", "Use Cooldowns" );
     def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
     // Serenity priority
-    def->add_action( "call_action_list,name=serenity_aoelust,if=buff.serenity.up&(buff.invokers_delight.up|buff.power_infusion.up)&active_enemies>4", "Serenity Priority" );
-    def->add_action( "call_action_list,name=serenity_lust,if=buff.serenity.up&(buff.invokers_delight.up|buff.power_infusion.up)&active_enemies<4" );
+    def->add_action( "call_action_list,name=serenity_aoelust,if=buff.serenity.up&((buff.bloodlust.up&(buff.invokers_delight.up|buff.power_infusion.up))|buff.invokers_delight.up&buff.power_infusion.up)&active_enemies>4", "Serenity Priority" );
+    def->add_action( "call_action_list,name=serenity_lust,if=buff.serenity.up&((buff.bloodlust.up&(buff.invokers_delight.up|buff.power_infusion.up))|buff.invokers_delight.up&buff.power_infusion.up)&active_enemies<4" );
     def->add_action( "call_action_list,name=serenity_aoe,if=buff.serenity.up&active_enemies>4" );
     def->add_action( "call_action_list,name=serenity_4t,if=buff.serenity.up&active_enemies=4" );
     def->add_action( "call_action_list,name=serenity_3t,if=buff.serenity.up&active_enemies=3" );
