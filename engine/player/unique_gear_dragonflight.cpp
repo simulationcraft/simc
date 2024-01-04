@@ -6143,7 +6143,7 @@ void coiled_serpent_idol( special_effect_t& e )
     {
       counter++;
       serpent->execute_on_target( s->target );
-      auto debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt;
+      auto debuff = effect.player->get_target_data( s->target )->debuff.lava_bolt;
       if ( counter == 3 )
       {
         debuff->trigger();
