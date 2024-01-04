@@ -77,8 +77,8 @@ void affliction( player_t* p )
   default_->add_action( "malefic_rapture,if=fight_remains<4" );
   default_->add_action( "vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time+gcd.max)|talent.souleaters_gluttony.rank<1&cooldown.soul_rot.remains>=12" );
   default_->add_action( "phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<1&(!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25))&dot.agony.ticking" );
-  default_->add_action( "soul_rot,if=(variable.vt_up&(variable.ps_up|talent.souleaters_gluttony.rank!=1))" );
-  default_->add_action( "agony,if=remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&remains<5&fight_remains>5" );
+  default_->add_action( "soul_rot,if=(variable.vt_up&(variable.ps_up|talent.souleaters_gluttony.rank!=1))&dot.agony.ticking" );
+  default_->add_action( "agony,if=(remains<cooldown.vile_taint.remains+action.vile_taint.cast_time|!talent.vile_taint)&remains<5&fight_remains>5" );
   default_->add_action( "unstable_affliction,if=remains<5&fight_remains>3" );
   default_->add_action( "haunt,if=debuff.haunt.remains<5" );
   default_->add_action( "corruption,if=refreshable&fight_remains>5" );
