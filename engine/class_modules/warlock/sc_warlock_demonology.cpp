@@ -70,13 +70,13 @@ public:
     return pm;
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    warlock_spell_t::execute();
+    warlock_spell_t::impact( s );
 
     if ( procs_shadow_invocation_direct && p()->talents.shadow_invocation->ok() && rng().roll( p()->shadow_invocation_proc_chance ) )
     {
-      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( target );
+      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
       p()->procs.shadow_invocation->occur();
     }
   }
