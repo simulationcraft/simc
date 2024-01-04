@@ -7986,13 +7986,17 @@ void fyralath_the_dream_render( special_effect_t& e )
     action_t* damage;
     action_t* charge_impact;
     action_t* dot;
+    int current_tick;
+    int n_ticks;
     buff_t* buff;
     rage_channel_t( const special_effect_t& e, util::string_view n, action_t* dam, action_t* imp, action_t* d, buff_t* b )
       : proc_spell_t( n, e.player, e.player->find_spell( 417132 ), e.item ),
         damage( dam ),
         charge_impact( imp ),
         dot( d ),
-        buff( b )
+        buff( b ),
+        current_tick( 0 ),
+        n_ticks( data().duration() / data().effectN( 1 ).period() )
     {
       channeled = true;
       trigger_gcd = e.player->find_spell( 417131 )->gcd();
@@ -8004,7 +8008,11 @@ void fyralath_the_dream_render( special_effect_t& e )
     void tick( dot_t* d ) override
     {
       proc_spell_t::tick( d );
-      damage->execute();
+      if ( current_tick <= n_ticks - 1 )
+      {
+        damage->execute();
+        current_tick++;
+      }
     }
 
     void execute() override
@@ -8012,6 +8020,8 @@ void fyralath_the_dream_render( special_effect_t& e )
       auto counter = player->get_active_dots( dot->get_dot( nullptr ) );
       if( counter > 0 )
         buff->trigger( counter );
+
+      current_tick = 0;
 
       range::for_each( player->sim->target_non_sleeping_list, [ this ]( player_t* target ) {
         if ( dot->get_dot( target )->is_ticking() )
@@ -8021,6 +8031,12 @@ void fyralath_the_dream_render( special_effect_t& e )
 
       event_t::cancel( player->readying );
       player->delay_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void reset() override
+    {
+      proc_spell_t::reset();
+      current_tick = 0;
     }
 
     void last_tick( dot_t* d ) override
@@ -8034,6 +8050,7 @@ void fyralath_the_dream_render( special_effect_t& e )
 
       charge_impact->execute_on_target( d->target );
       buff->expire();
+      current_tick = 0;
     }
   };
 
