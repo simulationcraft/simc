@@ -34,7 +34,7 @@ actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5
 actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit&!variable.trinket_1_exclude)
 actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit&!variable.trinket_2_exclude)
 actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown&!variable.trinket_2_exclude|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync)*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))
-actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>trinket.1.ilvl
+actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl
 actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
 actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
 actions.precombat+=/variable,name=rw_buffs,value=talent.gathering_storm|talent.everfrost
@@ -122,7 +122,7 @@ actions.cooldowns+=/any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(bu
 actions.high_prio_actions=invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)
 # Interrupt
 actions.high_prio_actions+=/mind_freeze,if=target.debuff.casting.react
-actions.high_prio_actions+=/antimagic_shell,if=runic_power.deficit>40
+actions.high_prio_actions+=/antimagic_shell,if=runic_power.deficit>40&death_knight.first_ams_cast<time
 actions.high_prio_actions+=/antimagic_zone,if=!death_knight.amz_specified&(death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.ready|!talent.breath_of_sindragosa&!buff.pillar_of_frost.up))
 actions.high_prio_actions+=/antimagic_zone,if=death_knight.amz_specified&buff.amz_timing.up
 # Maintain Frost Fever, Icy Talons and Unleashed Frenzy
@@ -139,7 +139,7 @@ actions.high_prio_actions+=/remorseless_winter,if=variable.rw_buffs|variable.add
 actions.obliteration=howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react
 actions.obliteration+=/frost_strike,target_if=min:dot.mark_of_fyralath.remains,if=(active_enemies<=1|!talent.glacial_advance)&buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
 actions.obliteration+=/glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
-actions.obliteration+=/frostscythe,if=buff.killing_machine.react&(variable.frostscythe_priority|!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.fyralath_the_dreamrender.remains<3|!dot.mark_of_fyralath.ticking))
+actions.obliteration+=/frostscythe,if=buff.killing_machine.react&(variable.frostscythe_priority|active_enemies>3&!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.fyralath_the_dreamrender.remains<3|!dot.mark_of_fyralath.ticking))
 actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.obliteration+=/howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking|buff.rime.react&set_bonus.tier30_2pc&!variable.rp_buffs)
 actions.obliteration+=/glacial_advance,if=!buff.killing_machine.react&(!death_knight.runeforge.razorice&(!talent.avalanche|debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|((variable.rp_buffs|rune<2)&active_enemies>1))
@@ -232,3 +232,4 @@ off_hand=volcorosss_barbed_fang,id=207789,bonus_id=7187/1520,enchant=rune_of_hys
 # set_bonus=tier31_4pc=1
 deathknight.ams_absorb_percent=1
 deathknight.amz_absorb_percent=1
+deathknight.first_ams_cast=0

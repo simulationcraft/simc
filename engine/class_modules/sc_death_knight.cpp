@@ -1261,6 +1261,7 @@ public:
     std::vector<timespan_t> amz_use_time;
     bool amz_specified = false;
     double average_cs_travel_time = 0.4;
+    timespan_t first_ams_cast = 20_s;
   } options;
 
   // Runes
@@ -8559,6 +8560,7 @@ void death_knight_t::create_options()
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
   add_option( opt_float( "deathknight.average_cs_travel_time", options.average_cs_travel_time, 0.0, 5.0 ) );
   add_option( opt_specified_buff_times( "deathknight.amz_use_time", options.amz_use_time ) );
+  add_option( opt_timespan( "deathknight.first_ams_cast", options.first_ams_cast ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -8593,6 +8595,10 @@ std::string death_knight_t::create_profile( save_e type )
     if( options.amz_absorb_percent > 0 )
     {
       profile_str += "deathknight.amz_absorb_percent=" + util::to_string( options.amz_absorb_percent ) + term;
+    }
+    if ( options.first_ams_cast != 20_s )
+    {
+      profile_str += "deathknight.first_ams_cast=" + util::to_string( options.first_ams_cast.total_seconds() ) + term;
     }
   }
   return profile_str;
@@ -9303,6 +9309,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
   {
     if (util::str_compare_ci( splits[ 1 ], "amz_specified" ) && splits.size() == 2)
       return expr_t::create_constant( "amz_specified", options.amz_specified );
+  }
+
+  // Expose first AMS cast to the APL to prevent its use.
+  if (util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1)
+  {
+    if (util::str_compare_ci( splits[ 1 ], "first_ams_cast" ) && splits.size() == 2)
+      return expr_t::create_constant( "first_ams_cast", options.first_ams_cast.total_seconds() );
   }
 
   // Death Knight special expressions

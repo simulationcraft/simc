@@ -288,7 +288,7 @@ void frost( player_t* p )
 
   high_prio_actions->add_action( "invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)", "High Priority Actions Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=51271/pillar-of-frost'>Pillar of Frost</a> is up, as well as <a href='https://www.wowhead.com/spell=152279/breath-of-sindragosa'>Breath of Sindragosa</a> or on cooldown if <a href='https://www.wowhead.com/spell=51271/pillar-of-frost'>Pillar of Frost</a> and <a href='https://www.wowhead.com/spell=152279/breath-of-sindragosa'>Breath of Sindragosa</a> are not talented" );
   high_prio_actions->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
-  high_prio_actions->add_action( "antimagic_shell,if=runic_power.deficit>40" );
+  high_prio_actions->add_action( "antimagic_shell,if=runic_power.deficit>40&death_knight.first_ams_cast<time" );
   high_prio_actions->add_action( "antimagic_zone,if=!death_knight.amz_specified&(death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.ready|!talent.breath_of_sindragosa&!buff.pillar_of_frost.up))" );
   high_prio_actions->add_action( "antimagic_zone,if=death_knight.amz_specified&buff.amz_timing.up" );
   high_prio_actions->add_action( "howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&(!talent.obliteration|talent.obliteration&(!cooldown.pillar_of_frost.ready|buff.pillar_of_frost.up&!buff.killing_machine.react))", "Maintain Frost Fever, Icy Talons and Unleashed Frenzy" );
