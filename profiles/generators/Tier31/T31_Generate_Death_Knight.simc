@@ -33,6 +33,7 @@ position=back
 talents=BsPAAAAAAAAAAAAAAAAAAAAAAkAAiIJRiIREikECJSSEhgWSEJSSSSSSa5AAAAAAAAAAAAAA
 deathknight.ams_absorb_percent=1
 deathknight.amz_absorb_percent=1
+deathknight.first_ams_cast=0
 
 head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192985,enchant=incandescent_essence
 neck=elemental_lariat,id=193001,bonus_id=9500/9405/8782/8960,gem_id=192922/192922/192922,crafted_stats=32/36
@@ -62,6 +63,7 @@ position=back
 talents=BsPAAAAAAAAAAAAAAAAAAAAAAISAIIJRiIRESSSIkIJRkAaRIJHQkkkkkSSAAAAAAAAAAAAA
 deathknight.ams_absorb_percent=1
 deathknight.amz_absorb_percent=1
+deathknight.first_ams_cast=0
 
 head=piercing_gaze_of_the_risen_nightmare,id=207200,bonus_id=7187/1520/6935,gem_id=192988,enchant=incandescent_essence
 neck=elemental_lariat,id=193001,bonus_id=9500/9405/8782/8960,gem_id=192922/192922/192922,crafted_stats=32/49
