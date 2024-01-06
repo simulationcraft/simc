@@ -5,7 +5,7 @@ level=70
 race=void_elf
 role=attack
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJRkkEtIQCAAAASkk0AkkkkAJlIRkQpIJpkk0SAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhEJJRLiEBAAAASkkUAkkkkAJlIRkQpIJpkk0SAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -62,8 +62,8 @@ actions+=/chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.
 actions+=/call_action_list,name=cd_sef,if=!talent.serenity
 actions+=/call_action_list,name=cd_serenity,if=talent.serenity
 # Serenity Priority
-actions+=/call_action_list,name=serenity_aoelust,if=buff.serenity.up&(buff.invokers_delight.up|buff.power_infusion.up)&active_enemies>4
-actions+=/call_action_list,name=serenity_lust,if=buff.serenity.up&(buff.invokers_delight.up|buff.power_infusion.up)&active_enemies<4
+actions+=/call_action_list,name=serenity_aoelust,if=buff.serenity.up&((buff.bloodlust.up&(buff.invokers_delight.up|buff.power_infusion.up))|buff.invokers_delight.up&buff.power_infusion.up)&active_enemies>4
+actions+=/call_action_list,name=serenity_lust,if=buff.serenity.up&((buff.bloodlust.up&(buff.invokers_delight.up|buff.power_infusion.up))|buff.invokers_delight.up&buff.power_infusion.up)&active_enemies<4
 actions+=/call_action_list,name=serenity_aoe,if=buff.serenity.up&active_enemies>4
 actions+=/call_action_list,name=serenity_4t,if=buff.serenity.up&active_enemies=4
 actions+=/call_action_list,name=serenity_3t,if=buff.serenity.up&active_enemies=3
@@ -214,8 +214,8 @@ actions.default_aoe=spinning_crane_kick,target_if=max:target.time_to_die,if=targ
 actions.default_aoe+=/spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&!talent.hit_combo&spinning_crane_kick.max&buff.bonedust_brew.up
 actions.default_aoe+=/strike_of_the_windlord,target_if=max:debuff.keefers_skyreach.remains,if=talent.thunderfist
 actions.default_aoe+=/whirling_dragon_punch,if=active_enemies>8
+actions.default_aoe+=/spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_strike&spinning_crane_kick.max
 actions.default_aoe+=/fists_of_fury,target_if=max:debuff.keefers_skyreach.remains
-actions.default_aoe+=/spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_strike&spinning_crane_kick.max&!buff.blackout_reinforcement.up
 actions.default_aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.bonedust_brew.up&buff.pressure_point.up&set_bonus.tier30_2pc
 actions.default_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads
 actions.default_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+debuff.keefers_skyreach.remains*20),if=talent.shadowboxing_treads&combo_strike&buff.blackout_reinforcement.up
@@ -494,14 +494,14 @@ actions.serenity_st+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
 actions.serenity_st+=/whirling_dragon_punch
 actions.serenity_st+=/tiger_palm,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3
 
-actions.trinkets=use_item,name=ashes_of_the_embersoul,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains|fight_remains<20
+actions.trinkets=use_item,name=witherbarks_branch,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains|fight_remains<20
 
 head=mystic_herons_hatsuburi,id=207245,bonus_id=7187/6935/1520,gem_id=192988,enchant=incandescent_essence
 neck=ouroboreal_necklet,id=210214,bonus_id=7187/8782/1520,gem_id=192932/192932/192932
 shoulders=spore_colony_shoulderguards,id=204706,bonus_id=9500/9405/8960
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=3316/1515/9916,enchant=graceful_avoidance_3
 chest=mystic_herons_burdens,id=207248,bonus_id=7187/1520,enchant=waking_stats_3
-wrists=lifebound_bindings,id=193419,bonus_id=9500/9405/8960/8797/1808,gem_id=192958,crafted_stats=36/49
+wrists=lifebound_bindings,id=193419,bonus_id=9500/9405/8960/8797/1808,gem_id=192922,crafted_stats=40/49
 hands=mystic_herons_glovebills,id=207246,bonus_id=7187/1520
 waist=houndjowl_waistband,id=159341,bonus_id=3316/1515/1808/9916,gem_id=192958,enchant=shadowed_belt_clasp_3
 legs=mystic_herons_waders,id=207244,bonus_id=7187/1520,enchant=fierce_armor_kit_3
@@ -509,17 +509,17 @@ feet=grove_darkeners_treads,id=134429,bonus_id=3316/1524/9916,enchant=watchers_l
 finger1=lord_waycrests_signet,id=158362,bonus_id=3316/1515/1808/9916,gem_id=192958,enchant=devotion_of_mastery_3
 finger2=signet_of_the_last_elder,id=207162,bonus_id=7187/6935/1520,gem_id=192958,enchant=devotion_of_mastery_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-trinket2=ashes_of_the_embersoul,id=207167,bonus_id=7187/1520
+trinket2=witherbarks_branch,id=109999,bonus_id=3316/1530/9916
 main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 # Gear Summary
 # gear_ilvl=488.60
-# gear_agility=8883
+# gear_agility=9775
 # gear_stamina=39112
-# gear_crit_rating=4315
-# gear_haste_rating=2785
-# gear_mastery_rating=2348
-# gear_versatility_rating=6317
+# gear_crit_rating=4352
+# gear_haste_rating=1759
+# gear_mastery_rating=2311
+# gear_versatility_rating=6605
 # gear_avoidance_rating=125
 # gear_armor=5327
 # set_bonus=tier31_2pc=1
