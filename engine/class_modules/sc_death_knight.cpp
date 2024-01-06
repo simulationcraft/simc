@@ -1261,7 +1261,7 @@ public:
     std::vector<timespan_t> amz_use_time;
     bool amz_specified = false;
     double average_cs_travel_time = 0.4;
-    timespan_t first_ams_cast = timespan_t::from_seconds(20);
+    timespan_t first_ams_cast = 20_s;
   } options;
 
   // Runes
@@ -8596,7 +8596,7 @@ std::string death_knight_t::create_profile( save_e type )
     {
       profile_str += "deathknight.amz_absorb_percent=" + util::to_string( options.amz_absorb_percent ) + term;
     }
-    if ( options.first_ams_cast != timespan_t::from_seconds( 20 ) )
+    if ( options.first_ams_cast != 20_s )
     {
       profile_str += "deathknight.first_ams_cast=" + util::to_string( options.first_ams_cast.total_seconds() ) + term;
     }
