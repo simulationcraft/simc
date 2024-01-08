@@ -830,7 +830,6 @@ public:
   std::string create_profile( save_e type ) override;
   void invalidate_cache( cache_e ) override;
   double temporary_movement_modifier() const override;
-  //void apply_affecting_auras(action_t& action) override;
 
   void trigger_tide_of_blood( dot_t* dot );
 
@@ -1027,51 +1026,6 @@ public:
           get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p()->cd_waste_cumulative );
       cd_wasted_iter = get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
     }
-
-    // passive set bonuses
-
-    // passive talents
-    ab::apply_affecting_aura( p()->talents.arms.bloodborne );
-    ab::apply_affecting_aura( p()->talents.arms.bloodletting );
-    ab::apply_affecting_aura( p()->talents.arms.blunt_instruments ); // damage only
-    ab::apply_affecting_aura( p()->talents.arms.impale );
-    ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
-    ab::apply_affecting_aura( p()->talents.arms.improved_execute );
-    ab::apply_affecting_aura( p()->talents.arms.improved_slam );
-    ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
-    ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
-    ab::apply_affecting_aura( p()->talents.arms.storm_of_swords );
-    ab::apply_affecting_aura( p()->talents.arms.strength_of_arms ); // rage generation in spell
-    ab::apply_affecting_aura( p()->talents.arms.valor_in_victory );
-    ab::apply_affecting_aura( p()->talents.fury.bloodborne );
-    ab::apply_affecting_aura( p()->talents.fury.critical_thinking );
-    ab::apply_affecting_aura( p()->talents.fury.deft_experience );
-    ab::apply_affecting_aura( p()->talents.fury.improved_bloodthirst );
-    ab::apply_affecting_aura( p()->talents.fury.improved_raging_blow );
-    ab::apply_affecting_aura( p()->talents.fury.meat_cleaver );
-    ab::apply_affecting_aura( p()->talents.fury.raging_armaments );
-    ab::apply_affecting_aura( p()->talents.fury.storm_of_steel );
-    ab::apply_affecting_aura( p()->talents.fury.storm_of_swords ); // rage generation in spell
-    ab::apply_affecting_aura( p()->talents.protection.storm_of_steel );
-    ab::apply_affecting_aura( p()->talents.protection.bloodborne );
-    ab::apply_affecting_aura( p()->talents.protection.defenders_aegis );
-    ab::apply_affecting_aura( p()->talents.protection.battering_ram );
-    ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
-    ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
-    ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
-    ab::apply_affecting_aura( p()->talents.warrior.crushing_force ); // crit portion not active
-    ab::apply_affecting_aura( p()->talents.warrior.piercing_verdict );
-    ab::apply_affecting_aura( p()->talents.warrior.honed_reflexes );
-    ab::apply_affecting_aura( p()->talents.warrior.sonic_boom );
-    ab::apply_affecting_aura( p()->talents.warrior.thunderous_words );
-    ab::apply_affecting_aura( p()->talents.warrior.uproar );
-
-   // set bonus
-    ab::apply_affecting_aura( p()->tier_set.t29_arms_2pc );  
-    ab::apply_affecting_aura( p()->tier_set.t29_fury_2pc );  
-    ab::apply_affecting_aura( p()->tier_set.t30_fury_2pc );
-    ab::apply_affecting_aura( p()->tier_set.t31_arms_2pc );
-    ab::apply_affecting_aura( p()->tier_set.t31_fury_2pc );
 
     affected_by.sweeping_strikes         = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
@@ -9206,6 +9160,49 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.arms_warrior );
   action.apply_affecting_aura( spec.fury_warrior );
   action.apply_affecting_aura( spec.protection_warrior );
+
+  action.apply_affecting_aura( talents.arms.bloodborne );
+  action.apply_affecting_aura( talents.arms.bloodletting );
+  action.apply_affecting_aura( talents.arms.blunt_instruments ); // damage only
+  action.apply_affecting_aura( talents.arms.impale );
+  action.apply_affecting_aura( talents.arms.improved_overpower );
+  action.apply_affecting_aura( talents.arms.improved_execute );
+  action.apply_affecting_aura( talents.arms.improved_slam );
+  action.apply_affecting_aura( talents.arms.reaping_swings );
+  action.apply_affecting_aura( talents.arms.sharpened_blades );
+  action.apply_affecting_aura( talents.arms.storm_of_swords );
+  action.apply_affecting_aura( talents.arms.strength_of_arms ); // rage generation in spell
+  action.apply_affecting_aura( talents.arms.valor_in_victory );
+  action.apply_affecting_aura( talents.fury.bloodborne );
+  action.apply_affecting_aura( talents.fury.critical_thinking );
+  action.apply_affecting_aura( talents.fury.deft_experience );
+  action.apply_affecting_aura( talents.fury.improved_bloodthirst );
+  action.apply_affecting_aura( talents.fury.improved_raging_blow );
+  action.apply_affecting_aura( talents.fury.meat_cleaver );
+  action.apply_affecting_aura( talents.fury.raging_armaments );
+  action.apply_affecting_aura( talents.fury.storm_of_steel );
+  action.apply_affecting_aura( talents.fury.storm_of_swords ); // rage generation in spell
+  action.apply_affecting_aura( talents.protection.storm_of_steel );
+  action.apply_affecting_aura( talents.protection.bloodborne );
+  action.apply_affecting_aura( talents.protection.defenders_aegis );
+  action.apply_affecting_aura( talents.protection.battering_ram );
+  action.apply_affecting_aura( talents.warrior.barbaric_training );
+  action.apply_affecting_aura( talents.warrior.concussive_blows );
+  action.apply_affecting_aura( talents.warrior.cruel_strikes );
+  action.apply_affecting_aura( talents.warrior.crushing_force ); // crit portion not active
+  action.apply_affecting_aura( talents.warrior.piercing_verdict );
+  action.apply_affecting_aura( talents.warrior.honed_reflexes );
+  action.apply_affecting_aura( talents.warrior.sonic_boom );
+  action.apply_affecting_aura( talents.warrior.thunderous_words );
+  action.apply_affecting_aura( talents.warrior.uproar );
+
+  // set bonus
+  action.apply_affecting_aura( tier_set.t29_arms_2pc );
+  action.apply_affecting_aura( tier_set.t29_fury_2pc );
+  action.apply_affecting_aura( tier_set.t30_fury_2pc );
+  action.apply_affecting_aura( tier_set.t31_arms_2pc );
+  action.apply_affecting_aura( tier_set.t31_fury_2pc );
+
   if ( specialization() == WARRIOR_FURY && main_hand_weapon.group() == WEAPON_1H &&
              off_hand_weapon.group() == WEAPON_1H && talents.fury.single_minded_fury->ok() )
   {
