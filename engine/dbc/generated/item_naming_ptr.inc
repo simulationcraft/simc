@@ -1,5 +1,5 @@
 // Item name descriptions, wow build 10.2.5.52646
-static const std::array<item_name_description_t, 825> __ptr_item_name_description_data { {
+static const std::array<item_name_description_t, 828> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -825,5 +825,8 @@ static const std::array<item_name_description_t, 825> __ptr_item_name_descriptio
   { 14106, "Northrend Cup"                               },
   { 14107, "In-Game Shop"                                },
   { 14108, "In-Game Shop Variant"                        },
+  { 14132, "Moon"                                        },
+  { 14133, "Sun"                                         },
+  { 14134, "Cycle"                                       },
 } };
 
