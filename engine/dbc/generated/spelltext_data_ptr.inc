@@ -16065,7 +16065,7 @@ static const std::array<spelltext_data_t, 20601> __ptr_spelltext_data { {
   { 369277, "Places the caster in a state of heightened awareness, granting the ability to see residual spirit elements while in the Ohn'ahran Plains.", "Able to see residual spirit elements while in the Ohn'ahran Plains.", 0 },
   { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
   { 369294, "$@spelldesc367924", "Haste increased by $w1.", 0 },
-  { 369297, "Living Flame has a a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", 0, 0 },
+  { 369297, "Living Flame has a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", 0, 0 },
   { 369299, "$@spelldesc369297", "Your next Echo, Emerald Blossom, or Disintegrate is free.", 0 },
   { 369318, "$@spelldesc367924", "Haste increased by $w1.", 0 },
   { 369372, "$@spelldesc368847", 0, "Red" },
@@ -20604,8 +20604,9 @@ static const std::array<spelltext_data_t, 20601> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.5.52646
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
   {  366155,  0, "Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.", "Repair an ally's injuries, healing them for $o1 over $d.\r\n\r\nWhen Reversion critically heals, its duration is extended by $t1 sec, up to a maximum of ${$t1*$<cap>}.1 sec." },
+  {  369297,  0, "Living Flame has a a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", "Living Flame has a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]" },
 } };
 
 // Spell description variables, wow build 10.2.5.52646
