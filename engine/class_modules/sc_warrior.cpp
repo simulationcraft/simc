@@ -9156,11 +9156,13 @@ void warrior_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
+  // Spec Auras
   action.apply_affecting_aura( spec.warrior );
   action.apply_affecting_aura( spec.arms_warrior );
   action.apply_affecting_aura( spec.fury_warrior );
   action.apply_affecting_aura( spec.protection_warrior );
 
+  // Arms Auras
   action.apply_affecting_aura( talents.arms.bloodborne );
   action.apply_affecting_aura( talents.arms.bloodletting );
   action.apply_affecting_aura( talents.arms.blunt_instruments ); // damage only
@@ -9173,6 +9175,8 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.arms.storm_of_swords );
   action.apply_affecting_aura( talents.arms.strength_of_arms ); // rage generation in spell
   action.apply_affecting_aura( talents.arms.valor_in_victory );
+
+  // Fury Auras
   action.apply_affecting_aura( talents.fury.bloodborne );
   action.apply_affecting_aura( talents.fury.critical_thinking );
   action.apply_affecting_aura( talents.fury.deft_experience );
@@ -9182,10 +9186,14 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.fury.raging_armaments );
   action.apply_affecting_aura( talents.fury.storm_of_steel );
   action.apply_affecting_aura( talents.fury.storm_of_swords ); // rage generation in spell
+
+  // Protection Auras
   action.apply_affecting_aura( talents.protection.storm_of_steel );
   action.apply_affecting_aura( talents.protection.bloodborne );
   action.apply_affecting_aura( talents.protection.defenders_aegis );
   action.apply_affecting_aura( talents.protection.battering_ram );
+
+  // Shared Auras
   action.apply_affecting_aura( talents.warrior.barbaric_training );
   action.apply_affecting_aura( talents.warrior.concussive_blows );
   action.apply_affecting_aura( talents.warrior.cruel_strikes );
