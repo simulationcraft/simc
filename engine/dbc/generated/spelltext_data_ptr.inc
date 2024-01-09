@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.5.52646
-static const std::array<spelltext_data_t, 20601> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16065,7 +16065,7 @@ static const std::array<spelltext_data_t, 20601> __ptr_spelltext_data { {
   { 369277, "Places the caster in a state of heightened awareness, granting the ability to see residual spirit elements while in the Ohn'ahran Plains.", "Able to see residual spirit elements while in the Ohn'ahran Plains.", 0 },
   { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
   { 369294, "$@spelldesc367924", "Haste increased by $w1.", 0 },
-  { 369297, "Living Flame has a a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", 0, 0 },
+  { 369297, "Living Flame has a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", 0, 0 },
   { 369299, "$@spelldesc369297", "Your next Echo, Emerald Blossom, or Disintegrate is free.", 0 },
   { 369318, "$@spelldesc367924", "Haste increased by $w1.", 0 },
   { 369372, "$@spelldesc368847", 0, "Red" },
@@ -18642,7 +18642,6 @@ static const std::array<spelltext_data_t, 20601> __ptr_spelltext_data { {
   { 392991, "Tiger Palm now has a ${$m1+5} yard range and dashes you to the target when used.\r\n\r\nTiger Palm also applies an effect which increases your critical strike chance by $344021m1% for $344021d on the target. This effect cannot be applied more than once every $337341d per target.", 0, 0 },
   { 392993, "Rising Sun Kick critical strikes reduce the cooldown of Fists of Fury by ${$m2/1000} sec.\r\n\r\nWhen Fists of Fury ends, the critical strike chance of Rising Sun Kick is increased by $337482m1% for $337482d.", 0, 0 },
   { 392994, "Increases the initial damage of Jadefire Stomp by ${$s1}% per target hit by that damage, up to a maximum of ${$s1*$s2}% additional damage.", 0, 0 },
-  { 392997, "$@spelldesc390808", 0, 0 },
   { 392998, "$@spelldesc369166", 0, 0 },
   { 393009, "$@spelldesc337546", "Magic damage taken reduced by $s1%.", 0 },
   { 393014, "Your Nature spells deal ${$s3}.1% increased damage and an additional ${$s6}.1% to targets affected by Sunfire.\r\n\r\nYour Arcane spells deal ${$s1}.1% increased damage and an additional ${$s5}.1% to targets affected by Moonfire.\r\n\r\n", 0, 0 },
@@ -20604,8 +20603,9 @@ static const std::array<spelltext_data_t, 20601> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.5.52646
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
   {  366155,  0, "Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.", "Repair an ally's injuries, healing them for $o1 over $d.\r\n\r\nWhen Reversion critically heals, its duration is extended by $t1 sec, up to a maximum of ${$t1*$<cap>}.1 sec." },
+  {  369297,  0, "Living Flame has a a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", "Living Flame has a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]" },
 } };
 
 // Spell description variables, wow build 10.2.5.52646
