@@ -701,8 +701,7 @@ namespace monk
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
 
-          // Currently bugged and not occurring.
-          if ( !p()->bugs && !ab::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 )
+          if ( !ab::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 )
           {
             if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
             {
@@ -715,19 +714,6 @@ namespace monk
                                p()->max_health() );  // accumulator is capped at the player's current max hp
                 p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
                 p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
-              }
-
-              // This value is not presented in any spell data and was found via logs.
-              if ( p()->rng().roll( 0.5 ) )
-              {
-                double amt = dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
-                p()->active_actions.charred_dreams_dmg_4p->target = dot->state->target;
-                p()->active_actions.charred_dreams_dmg_4p->base_dd_min =
-                    p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
-                p()->active_actions.charred_dreams_dmg_4p->execute();
-                p()->sim->print_debug(
-                    "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
-                    dot->state->action->id, dot->state->result_amount, amt );
               }
             }
 
@@ -2019,9 +2005,7 @@ namespace monk
           action_t *bok = player->find_action( "blackout_kick" );
           if ( bok )
           {
-            base_multiplier = bok->base_multiplier;
-            spell_power_mod.direct = bok->spell_power_mod.direct;
-
+            attack_power_mod = bok->attack_power_mod;
             bok->add_child( this );
           }
         }
@@ -2062,14 +2046,6 @@ namespace monk
           am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
 
           return am;
-        }
-
-        void execute() override
-        {
-          monk_melee_attack_t::execute();
-
-          // Transfer the power triggers from ToTM hits but only on the primary target
-          p()->buff.transfer_the_power->trigger();
         }
 
         void impact( action_state_t *s ) override
@@ -2257,16 +2233,14 @@ namespace monk
             p()->buff.gift_of_the_ox->trigger();
 
           p()->buff.teachings_of_the_monastery->expire();
+
+          if ( p()->buff.blackout_reinforcement->up() )
+            p()->buff.blackout_reinforcement->decrement();
         }
 
         void impact( action_state_t *s ) override
         {
           monk_melee_attack_t::impact( s );
-
-          // The damage only affects the initial Blackout Kick (and any initial cleaved Blackout Kicks).
-          // Buff is removed prior to Teaching of the Monastery Blackout Kick procs trigger.
-          if ( p()->buff.blackout_reinforcement->up() )
-            p()->buff.blackout_reinforcement->decrement();
 
           // Teachings of the Monastery
           // Used by both Windwalker and Mistweaver
@@ -2277,7 +2251,13 @@ namespace monk
             int stacks = p()->buff.teachings_of_the_monastery->current_stack;
 
             for ( int i = 0; i < stacks; i++ )
+            {
+              // Transfer the power triggers from ToTM hits but only on the primary target
+              if ( s->chain_target == 0 )
+                p()->buff.transfer_the_power->trigger();
+
               bok_totm_proc->execute();
+            }
 
             // The initial hit along with each individual TotM hits has a chance to reset the cooldown
             auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
@@ -4204,6 +4184,7 @@ namespace monk
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
+
           if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
           {
             double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
@@ -4250,8 +4231,7 @@ namespace monk
         {
           monk_spell_t::tick( d );
 
-          if ( !p()->bugs && p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) &&
-               !result_is_miss( d->state->result ) )
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( d->state->result ) )
           {
             double amt = d->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
             p()->active_actions.charred_dreams_dmg_2p->target = d->state->target;
@@ -7213,7 +7193,7 @@ namespace monk
         {
           // Blackout Reinforcement is also causing the CDR effect on refreshes from the RPPM "melee attack" procs.
           // I am assuming this behavior is unintended so it's under the bugs flag for now
-          
+
           timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p().sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
 
           p().cooldown.fists_of_fury->adjust( cooldown_reduction );
@@ -9054,7 +9034,7 @@ namespace monk
     {
       create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
                             []( monk_t * p, action_state_t * /*state*/ ) {
-        return true; 
+        return true;
       } );
     }
 

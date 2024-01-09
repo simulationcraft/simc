@@ -2976,6 +2976,8 @@ void sim_t::analyze()
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );
 
+  raid_event_t::analyze( this );
+
   range::sort( players_by_dps,  compare_dps() );
   range::sort( players_by_priority_dps, compare_priority_dps() );
   range::sort( players_by_hps,  compare_hps() );
@@ -3184,6 +3186,8 @@ void sim_t::merge( sim_t& other_sim )
     assert( other_p );
     player -> merge( *other_p );
   }
+
+  raid_event_t::merge( this, &other_sim );
 
   // After normal player merging, merge all dynamically spawned players. This is done after the
   // normal player merging because the dynamic spawner merging process may need to create new actors

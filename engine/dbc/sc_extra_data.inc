@@ -1017,7 +1017,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Mage TODO: Verify 12-21 Stamina 61-69 Str values
+  { // Mage TODO: Verify 12-21 Stamina values
     // Str = 0.44 of Primary
     // Agi = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1640,7 +1640,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Evoker TODO: Verify 62-69 Str values
+  { // Evoker
     // Str = 0.44 of Primary
     // Agi = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi

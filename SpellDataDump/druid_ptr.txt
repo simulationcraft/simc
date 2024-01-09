@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52485 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52649 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -513,8 +513,7 @@ Effects          :
                    Affected Spells (Label): Adaptive Swarm (325727), Adaptive Swarm (391888)
 
 Name             : Wrath (id=5176) [Spell Family (7)] 
-Class            : Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Resource         : 0.2% Base Mana (0) (id=227) w/ Guardian Druid (id=137010)
@@ -702,8 +701,7 @@ Effects          :
                    Family Flags: 68
 
 Name             : Incarnation: Tree of Life (desc=Passive) (id=5420) [Spell Family (7), Passive, Hidden] 
-Class            : Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Stance Mask      : 0x00000002
@@ -1258,25 +1256,6 @@ Effects          :
                    Base Value: 17 | Scaled Value: 17 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reduces damage from falling$?s114295[][ while in Cat Form].
 
-Name             : Elusiveness (desc=Racial Passive) (id=21009) [Passive] 
-Class            : Rogue, Druid
-Race             : Night Elf (0x8)
-School           : Physical
-Spell Type       : None
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Passive (6), Do Not Log (8)
-Effects          :
-#1 (id=11846)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your speed while $?s5176[Prowl is active by $s1%.][Stealth is active by $s1%.]
-
 Name             : Bear Form Passive 2 (id=21178) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Nature
@@ -1671,8 +1650,7 @@ Description      : Magical damage and healing increased by $s1%.
 
 Name             : Incarnation: Tree of Life (desc=Talent, Shapeshift) (id=33891) [Spell Family (7)] 
 Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
-Class            : Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Druid
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
@@ -4400,8 +4378,7 @@ Effects          :
 Description      : Your Moonkin Form now appears as Astral Form, conferring all the same benefits, but appearing as an astrally enhanced version of your normal humanoid form.
 
 Name             : Incarnation (desc=Passive) (id=117679) [Spell Family (7)] 
-Class            : Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
@@ -4622,8 +4599,7 @@ Description      : Your next Regrowth, Rebirth, or Entangling Roots is instant, 
 Tooltip          : Your next Regrowth, Rebirth, or Entangling Roots is instant, free, castable in all forms, and heals for an additional $w2%.
 
 Name             : Visual Effect: Tree of Life (id=132213) [Hidden] 
-Class            : Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Triggered by     : Incarnation: Tree of Life (33891)
@@ -4827,8 +4803,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2594 | Target: Self (1)
 
 Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden] 
-Class            : Guardian Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4913,8 +4888,7 @@ Effects          :
                    Family Flags: 21, 92
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
-Class            : Feral Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4987,8 +4961,7 @@ Effects          :
                    Family Flags: 6
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
-Class            : Restoration Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Restoration Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -5118,8 +5091,7 @@ Effects          :
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
-Class            : Balance Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Balance Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -21068,8 +21040,7 @@ Effects          :
 Description      : Starfall deals $s1% increased damage.
 
 Name             : Initial Druid (id=417382) [Spell Family (7), Passive, Hidden] 
-Class            : Unknown (1447) Rogue, Druid
-Race             : Night Elf (0x8)
+Class            : Unknown (1447) Druid
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 

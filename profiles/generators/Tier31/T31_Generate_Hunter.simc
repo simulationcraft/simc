@@ -62,7 +62,7 @@ race=tauren
 spec=survival
 role=attack
 position=back
-talents=B8PAAAAAAAAAAAAAAAAAAAAAAIHAahkwBoEEkEJRSCQSkWkIAAAAAQIRRoJkEBJOAaAAAAAA
+talents=B8PAAAAAAAAAAAAAAAAAAAAAAIHgWahkQoEEERSkkARSkWECAAAAAESUEaCJSQIoAAAAAA
 
 food=revenge_served_cold
 
@@ -79,7 +79,7 @@ feet=flametouched_treads,id=193421,bonus_id=9500/9405/9379,crafted_stats=32/36
 finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,gem_id=192935,enchant=devotion_of_critical_strike_3
 finger2=thornwoven_band,id=162548,bonus_id=657/9367/5923/7981/1808,gem_id=192935,enchant=devotion_of_haste_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-trinket2=coiled_serpent_idol,id=207175,bonus_id=7187/1520
+trinket2=mydas_talisman,id=158319,bonus_id=657/9367/5923/7981
 main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 save=T31_Hunter_Survival.simc

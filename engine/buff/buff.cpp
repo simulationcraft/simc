@@ -2792,6 +2792,19 @@ void buff_t::analyze()
     {
       uptime_array.adjust( *sim );
     }
+    // When running with single_actor_batch and there is a source, choose the fight_length with less
+    // data because enemies may have data from iterations that did not contain the other actor.
+    else if ( sim->single_actor_batch && source )
+    {
+      if ( source->get_owner_or_self()->collected_data.fight_length.size() < player->get_owner_or_self()->collected_data.fight_length.size() )
+      {
+        uptime_array.adjust( source->get_owner_or_self()->collected_data.fight_length );
+      }
+      else
+      {
+        uptime_array.adjust( player->get_owner_or_self()->collected_data.fight_length );
+      }
+    }
     else
     {
       uptime_array.adjust( player->get_owner_or_self()->collected_data.fight_length );

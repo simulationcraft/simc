@@ -991,7 +991,7 @@ struct lfr_harmful_spell_t : public spell_t
 
 // Blazefury Medallion
 // 243988 Driver
-// 243991 Damage spell 
+// 243991 Damage spell
 void item::blazefury_medallion( special_effect_t& effect )
 {
   struct blazefury_medallion_t : public generic_proc_t
@@ -1027,6 +1027,9 @@ void item::blazefury_medallion( special_effect_t& effect )
       }
     }
   };
+
+  // if your autoattacks happen to be aoe, this will apply to all targets hit
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   auto damage = create_proc_action<blazefury_medallion_t>( "blazefury_medallion", effect );
   new blazefury_medallion_cb_t( effect.player, effect, damage );

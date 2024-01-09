@@ -34,7 +34,7 @@ actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5
 actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit&!variable.trinket_1_exclude)
 actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit&!variable.trinket_2_exclude)
 actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown&!variable.trinket_2_exclude|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync)*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))
-actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>trinket.1.ilvl
+actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl
 actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
 actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
 actions.precombat+=/variable,name=rw_buffs,value=talent.gathering_storm|talent.everfrost
@@ -60,11 +60,12 @@ actions+=/call_action_list,name=single_target,if=active_enemies=1
 # AoE Action List
 actions.aoe=howling_blast,if=buff.rime.react|!dot.frost_fever.ticking
 actions.aoe+=/glacial_advance,if=!variable.pooling_runic_power&variable.rp_buffs
-actions.aoe+=/obliterate,if=buff.killing_machine.react&talent.cleaving_strikes&death_and_decay.ticking&!variable.frostscythe_priority
+actions.aoe+=/frostscythe,if=!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.fyralath_the_dreamrender.remains<3|!dot.mark_of_fyralath.ticking)
+actions.aoe+=/obliterate,target_if=min:dot.mark_of_fyralath.remains,if=buff.killing_machine.react&talent.cleaving_strikes&death_and_decay.ticking&!variable.frostscythe_priority
 actions.aoe+=/glacial_advance,if=!variable.pooling_runic_power
 actions.aoe+=/frostscythe,if=variable.frostscythe_priority
-actions.aoe+=/obliterate,if=!variable.frostscythe_priority
-actions.aoe+=/frost_strike,if=!variable.pooling_runic_power&!talent.glacial_advance
+actions.aoe+=/obliterate,target_if=min:dot.mark_of_fyralath.remains,if=!variable.frostscythe_priority
+actions.aoe+=/frost_strike,target_if=min:dot.mark_of_fyralath.remains,if=!variable.pooling_runic_power&!talent.glacial_advance
 actions.aoe+=/horn_of_winter,if=rune<2&runic_power.deficit>25
 actions.aoe+=/arcane_torrent,if=runic_power.deficit>25
 
@@ -121,7 +122,7 @@ actions.cooldowns+=/any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(bu
 actions.high_prio_actions=invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)
 # Interrupt
 actions.high_prio_actions+=/mind_freeze,if=target.debuff.casting.react
-actions.high_prio_actions+=/antimagic_shell,if=runic_power.deficit>40
+actions.high_prio_actions+=/antimagic_shell,if=runic_power.deficit>40&death_knight.first_ams_cast<time
 actions.high_prio_actions+=/antimagic_zone,if=!death_knight.amz_specified&(death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.ready|!talent.breath_of_sindragosa&!buff.pillar_of_frost.up))
 actions.high_prio_actions+=/antimagic_zone,if=death_knight.amz_specified&buff.amz_timing.up
 # Maintain Frost Fever, Icy Talons and Unleashed Frenzy
@@ -136,21 +137,21 @@ actions.high_prio_actions+=/remorseless_winter,if=variable.rw_buffs|variable.add
 
 # Obliteration Active Rotation
 actions.obliteration=howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react
-actions.obliteration+=/frost_strike,if=(active_enemies<=1|!talent.glacial_advance)&buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
+actions.obliteration+=/frost_strike,target_if=min:dot.mark_of_fyralath.remains,if=(active_enemies<=1|!talent.glacial_advance)&buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
 actions.obliteration+=/glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
-actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority
-actions.obliteration+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
+actions.obliteration+=/frostscythe,if=buff.killing_machine.react&(variable.frostscythe_priority|active_enemies>3&!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.fyralath_the_dreamrender.remains<3|!dot.mark_of_fyralath.ticking))
+actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.obliteration+=/howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking|buff.rime.react&set_bonus.tier30_2pc&!variable.rp_buffs)
 actions.obliteration+=/glacial_advance,if=!buff.killing_machine.react&(!death_knight.runeforge.razorice&(!talent.avalanche|debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|((variable.rp_buffs|rune<2)&active_enemies>1))
-actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
+actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=!buff.killing_machine.react&(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
 actions.obliteration+=/howling_blast,if=buff.rime.react&!buff.killing_machine.react
-actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
+actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=!buff.killing_machine.react&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
 actions.obliteration+=/howling_blast,if=!buff.killing_machine.react&runic_power<25
 actions.obliteration+=/arcane_torrent,if=rune<1&runic_power<25
 actions.obliteration+=/glacial_advance,if=!variable.pooling_runic_power&active_enemies>=2
-actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
+actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
 actions.obliteration+=/howling_blast,if=buff.rime.react
-actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice
+actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains
 
 # Racial Abilities
 actions.racials=blood_fury,if=variable.cooldown_check
@@ -178,7 +179,7 @@ actions.single_target+=/arcane_torrent,if=runic_power.deficit>20
 actions.single_target+=/frost_strike,if=!variable.pooling_runic_power
 
 # Trinkets
-actions.trinkets=use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&!buff.pillar_of_frost.up
+actions.trinkets=use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&!buff.pillar_of_frost.up&!buff.bloodlust.up&!buff.empower_rune_weapon.up&!variable.rp_buffs
 actions.trinkets+=/use_item,use_off_gcd=1,name=algethar_puzzle_box,if=!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains<2&(!talent.breath_of_sindragosa|runic_power>60&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains<2))
 # Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost.
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(talent.obliteration&cooldown.empower_rune_weapon.charges<1|!talent.obliteration)&(!buff.pillar_of_frost.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(buff.breath_of_sindragosa.up|buff.pillar_of_frost.up)&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
@@ -194,7 +195,7 @@ actions.variables+=/variable,name=adds_remain,value=active_enemies>=2&(!raid_eve
 actions.variables+=/variable,name=rime_buffs,value=buff.rime.react&(talent.rage_of_the_frozen_champion|talent.avalanche|talent.icebreaker)
 actions.variables+=/variable,name=rp_buffs,value=talent.unleashed_frenzy&(buff.unleashed_frenzy.remains<gcd.max*3|buff.unleashed_frenzy.stack<3)|talent.icy_talons&(buff.icy_talons.remains<gcd.max*3|buff.icy_talons.stack<3)
 actions.variables+=/variable,name=cooldown_check,value=talent.pillar_of_frost&buff.pillar_of_frost.up&(talent.obliteration&buff.pillar_of_frost.remains<6|!talent.obliteration)|!talent.pillar_of_frost&buff.empower_rune_weapon.up|!talent.pillar_of_frost&!talent.empower_rune_weapon|active_enemies>=2&buff.pillar_of_frost.up
-actions.variables+=/variable,name=frostscythe_priority,value=talent.frostscythe&(buff.killing_machine.react|active_enemies>=3)&(!talent.improved_obliterate&!talent.frigid_executioner|!talent.cleaving_strikes|talent.cleaving_strikes&(active_enemies>6|!death_and_decay.ticking&active_enemies>3))
+actions.variables+=/variable,name=frostscythe_priority,value=talent.frostscythe&(buff.killing_machine.react|active_enemies>=3)&(!talent.improved_obliterate&!talent.frigid_executioner|!talent.cleaving_strikes|talent.cleaving_strikes&(active_enemies>8|!death_and_decay.ticking&active_enemies>4))
 # Formulaic approach to determine the time before these abilities come off cooldown that the simulation should star to pool resources. Capped at 15s in the run_action_list call.
 actions.variables+=/variable,name=oblit_pooling_time,op=setif,value=((cooldown.pillar_of_frost.remains_expected+1)%gcd.max)%((rune+3)*(runic_power+5))*100,value_else=3,condition=runic_power<35&rune<2&cooldown.pillar_of_frost.remains_expected<10
 actions.variables+=/variable,name=breath_pooling_time,op=setif,value=((cooldown.breath_of_sindragosa.remains+1)%gcd.max)%((rune+1)*(runic_power+20))*100,value_else=2,condition=runic_power.deficit>10&cooldown.breath_of_sindragosa.remains<10

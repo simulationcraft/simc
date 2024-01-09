@@ -1261,6 +1261,7 @@ public:
     std::vector<timespan_t> amz_use_time;
     bool amz_specified = false;
     double average_cs_travel_time = 0.4;
+    timespan_t first_ams_cast = 20_s;
   } options;
 
   // Runes
@@ -7029,7 +7030,9 @@ struct runeforge_apocalypse_pestilence_t final : public death_knight_spell_t
 {
   runeforge_apocalypse_pestilence_t( util::string_view name, death_knight_t* p ) :
     death_knight_spell_t( name, p, p -> spell.apocalypse_pestilence_damage )
-    {}
+    {
+      background = true;
+    }
 };
 
 // Pillar of Frost ==========================================================
@@ -8179,7 +8182,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
   effect.custom_buff = p -> buffs.unholy_strength;
   effect.execute_action = get_action<fallen_crusader_heal_t>( "unholy_strength", p, effect.driver() -> effectN( 1 ).trigger() );
 
-  new dbc_proc_callback_t( effect.item, effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void runeforge::razorice( special_effect_t& effect )
@@ -8190,16 +8193,23 @@ void runeforge::razorice( special_effect_t& effect )
     return;
   }
 
-  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.player );
 
   if ( ! p -> active_spells.runeforge_razorice )
     p -> active_spells.runeforge_razorice = get_action<razorice_attack_t>( "razorice", p );
 
   // Store in which hand razorice is equipped, as it affects which abilities proc it
-  if ( effect.item -> slot == SLOT_MAIN_HAND )
-    p -> runeforge.rune_of_razorice_mh = true;
-  else if ( effect.item -> slot == SLOT_OFF_HAND )
-    p -> runeforge.rune_of_razorice_oh = true;
+  switch ( effect.item -> slot )
+  {
+    case SLOT_MAIN_HAND:
+      p->runeforge.rune_of_razorice_mh = true;
+      break;
+    case SLOT_OFF_HAND:
+      p->runeforge.rune_of_razorice_oh = true;
+      break;
+    default:
+      break;
+  }
 }
 
 void runeforge::stoneskin_gargoyle( special_effect_t& effect )
@@ -8277,7 +8287,7 @@ void runeforge::hysteria( special_effect_t& effect )
   // but the proc rate is increased and it has been observed to proc twice on the same damage event (2020-08-23)
   effect.custom_buff = p -> buffs.rune_of_hysteria;
 
-  new dbc_proc_callback_t( effect.item, effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void runeforge::sanguination( special_effect_t& effect )
@@ -8357,7 +8367,7 @@ void runeforge::spellwarding( special_effect_t& effect )
   p -> runeforge.rune_of_spellwarding += effect.driver() -> effectN( 2 ).percent();
   effect.execute_action = get_action<spellwarding_absorb_t>( "rune_of_spellwarding", p, effect.driver() -> effectN( 1 ).trigger() );
 
-  new dbc_proc_callback_t( effect.item, effect );
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // NYI
@@ -8550,6 +8560,7 @@ void death_knight_t::create_options()
   add_option( opt_bool( "deathknight.individual_pet_reporting", options.individual_pet_reporting ) );
   add_option( opt_float( "deathknight.average_cs_travel_time", options.average_cs_travel_time, 0.0, 5.0 ) );
   add_option( opt_specified_buff_times( "deathknight.amz_use_time", options.amz_use_time ) );
+  add_option( opt_timespan( "deathknight.first_ams_cast", options.first_ams_cast ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -8584,6 +8595,10 @@ std::string death_knight_t::create_profile( save_e type )
     if( options.amz_absorb_percent > 0 )
     {
       profile_str += "deathknight.amz_absorb_percent=" + util::to_string( options.amz_absorb_percent ) + term;
+    }
+    if ( options.first_ams_cast != 20_s )
+    {
+      profile_str += "deathknight.first_ams_cast=" + util::to_string( options.first_ams_cast.total_seconds() ) + term;
     }
   }
   return profile_str;
@@ -9294,6 +9309,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
   {
     if (util::str_compare_ci( splits[ 1 ], "amz_specified" ) && splits.size() == 2)
       return expr_t::create_constant( "amz_specified", options.amz_specified );
+  }
+
+  // Expose first AMS cast to the APL to prevent its use.
+  if (util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1)
+  {
+    if (util::str_compare_ci( splits[ 1 ], "first_ams_cast" ) && splits.size() == 2)
+      return expr_t::create_constant( "first_ams_cast", options.first_ams_cast.total_seconds() );
   }
 
   // Death Knight special expressions

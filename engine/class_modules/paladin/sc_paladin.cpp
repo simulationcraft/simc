@@ -853,14 +853,17 @@ struct crusading_strike_t : public paladin_melee_attack_t
   void execute() override
   {
     paladin_melee_attack_t::execute();
-    p()->melee_swing_count++;
-    if ( p()->melee_swing_count % as<int>( p()->talents.crusading_strikes->effectN( 3 ).base_value() ) == 0 )
+    if ( result_is_hit( execute_state->result ) )
     {
-      p()->resource_gain(
-        RESOURCE_HOLY_POWER,
-        as<int>( p()->talents.crusading_strikes->effectN( 4 ).base_value() ),
-        p()->gains.hp_crusading_strikes
-      );
+      p()->melee_swing_count++;
+      if ( p()->melee_swing_count % as<int>( p()->talents.crusading_strikes->effectN( 3 ).base_value() ) == 0 )
+      {
+        p()->resource_gain(
+          RESOURCE_HOLY_POWER,
+          as<int>( p()->talents.crusading_strikes->effectN( 4 ).base_value() ),
+          p()->gains.hp_crusading_strikes
+        );
+      }
     }
   }
 
@@ -876,6 +879,10 @@ struct crusading_strike_t : public paladin_melee_attack_t
         p()->buffs.empyrean_power->trigger();
       }
     }
+  }
+
+  proc_types proc_type() const override {
+    return PROC1_MELEE;
   }
 };
 
@@ -902,8 +909,14 @@ struct melee_t : public paladin_melee_attack_t
     {
       crusading_strike = new crusading_strike_t( p );
       add_child( crusading_strike );
-      impact_action = crusading_strike;
+      execute_action = crusading_strike;
       weapon_multiplier = 0.0;
+
+      if ( p->talents.blessed_champion->ok() )
+      {
+        aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
+        base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+      }
     }
 
     affected_by.avenging_wrath = affected_by.crusade = true;
@@ -933,6 +946,16 @@ struct melee_t : public paladin_melee_attack_t
       return paladin_melee_attack_t::execute_time();
   }
 
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( p()->talents.seal_of_the_crusader->ok() )
+    {
+      seal_of_the_crusader->execute_on_target( s->target );
+    }
+  }
+
   void execute() override
   {
     if ( first )
@@ -954,12 +977,6 @@ struct melee_t : public paladin_melee_attack_t
             p()->cooldowns.blade_of_justice->reset( true );
           }
         }
-      }
-
-      if ( p()->talents.seal_of_the_crusader->ok() )
-      {
-        seal_of_the_crusader->target = execute_state->target;
-        seal_of_the_crusader->schedule_execute();
       }
     }
   }

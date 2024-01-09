@@ -185,7 +185,7 @@ void augmentation( player_t* p )
   opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay>?variable.minimum_opener_delay,if=!variable.opener_cds_detected&evoker.allied_cds_up>0" );
   opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay-1" );
   opener_filler->add_action( "variable,name=opener_cds_detected,value=1,if=!variable.opener_cds_detected&evoker.allied_cds_up>0" );
-  opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay-2,if=equipped.nymues_unraveling_spindle&trinket.nymues_unraveling_spindle.cooldown.up" );
+  // opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay-2,if=equipped.nymues_unraveling_spindle&trinket.nymues_unraveling_spindle.cooldown.up" );
   opener_filler->add_action( "use_item,name=nymues_unraveling_spindle,if=cooldown.breath_of_eons.remains<=3" );
   opener_filler->add_action( "living_flame,if=active_enemies=1|talent.pupil_of_alexstrasza" );
   opener_filler->add_action( "azure_strike" );
@@ -205,7 +205,7 @@ void augmentation( player_t* p )
   default_->add_action( "variable,name=temp_wound,value=debuff.temporal_wound.remains,target_if=max:debuff.temporal_wound.remains" );
   default_->add_action( "prescience,target_if=min:debuff.prescience.remains+1000*(target=self&active_allies>2)+1000*target.spec.augmentation,if=(full_recharge_time<=gcd.max*3|cooldown.ebon_might.remains<=gcd.max*3&(buff.ebon_might_self.remains-gcd.max*3)<=buff.ebon_might_self.duration*0.4|variable.temp_wound>=(gcd.max+action.eruption.cast_time)|fight_remains<=30)&(buff.trembling_earth.stack+evoker.prescience_buffs)<=(5+(full_recharge_time<=gcd.max*3))" );
   default_->add_action( "call_action_list,name=ebon_logic,if=(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*0.4&(active_enemies>0|raid_event.adds.in<=3)&(evoker.prescience_buffs>=2&time<=10|evoker.prescience_buffs>=3|buff.ebon_might_self.remains>=action.ebon_might.cast_time|active_allies<=2)" );
-  default_->add_action( "run_action_list,name=opener_filler,if=variable.opener_delay>0&!equipped.nymues_unraveling_spindle" );
+  default_->add_action( "run_action_list,name=opener_filler,if=variable.opener_delay>0" );
   default_->add_action( "potion,if=debuff.temporal_wound.up&buff.ebon_might_self.up" );
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "deep_breath" );

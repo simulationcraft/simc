@@ -6143,7 +6143,7 @@ void coiled_serpent_idol( special_effect_t& e )
     {
       counter++;
       serpent->execute_on_target( s->target );
-      auto debuff = effect.player->find_target_data( s->target )->debuff.lava_bolt;
+      auto debuff = effect.player->get_target_data( s->target )->debuff.lava_bolt;
       if ( counter == 3 )
       {
         debuff->trigger();
@@ -6163,20 +6163,29 @@ void coiled_serpent_idol( special_effect_t& e )
   auto dot = create_proc_action<serpent_t>( "lava_bolt_dot", e, molten_rain );
 
   range::for_each( e.player->sim->actor_list, [ e, molten_rain, dot ]( player_t* target ) {
-    target->register_on_demise_callback( e.player, [ e, molten_rain, dot ]( player_t* t ) {
-      auto debuff = e.player->get_target_data( t )->debuff.lava_bolt;
-      if( debuff->check() )
-      {
-        for (int stacks = 0; debuff->check() > stacks; ++stacks)
+    if (target->is_enemy())
+    {
+      target->register_on_demise_callback( e.player, [ e, molten_rain, dot ]( player_t* t ) {
+        // Dont execute at end of sim
+        if ( e.player->sim->event_mgr.canceled )
+        {
+          return;
+        }
+
+        auto debuff = e.player->get_target_data( t )->debuff.lava_bolt;
+        if ( debuff->check() )
+        {
+          for ( int stacks = 0; debuff->check() > stacks; ++stacks )
+          {
+            molten_rain->execute_on_target( t );
+          }
+        }
+        else if ( !debuff->check() && dot->get_dot( t )->is_ticking() )
         {
           molten_rain->execute_on_target( t );
         }
-      }
-      else if( !debuff->check() && dot->get_dot( t ) -> is_ticking() )
-      {
-        molten_rain->execute_on_target( t );
-      }
-    } );
+      } );
+    }
   } );
 
   e.proc_flags2_ = PF2_CRIT;
@@ -7087,8 +7096,8 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
             fury_of_urctos_heal->execute_on_target( player );
           } );
 
-      rising_rage_cooldown->duration    = 3_s; // No longer in spell data, setting manually from tooltip
-      fury_of_urctos_cooldown->duration = 100_ms; // Has a 100ms cd during fury
+      rising_rage_cooldown->duration    = 3_s;     // No longer in spell data, setting manually from tooltip
+      fury_of_urctos_cooldown->duration = 100_ms;  // Has a 100ms cd during fury
     }
 
     void execute() override
@@ -7120,10 +7129,13 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 
     // Attempt to trigger Gift of Ursine Vengeance roughly every max GCD on top of the damage taken
     // procs in order to more accurately represent the damage done during Fury of Urctos.
-    timespan_t period      = ( effect.player->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
-                                        effect.player->rng().range( 0_s, 750_ms ) /
-                                            ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
-    make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
+    make_repeating_event(
+        effect.player->sim,
+        [ p = effect.player ]() -> timespan_t {
+          return p->sim->dragonflight_opts.gift_of_ursine_vengeance_period +
+                 p->rng().range( 0_s, 750_ms ) / ( 1 + p->sim->target_non_sleeping_list.size() );
+        },
+        [ action ]() { action->execute(); } );
   }
 }
 
@@ -7926,16 +7938,15 @@ void thorncaller_claw( special_effect_t& effect ) {
 // 417134 Charge Damage
 // 414532 DoT
 // 413584 Charge Impact Damage
+// 417138 Stacking On use Damage increaase buff
 void fyralath_the_dream_render( special_effect_t& e )
 {
   struct explosive_rage_t : public generic_proc_t
   {
-    double dot_increase;
-    int dots_consumed;
-    explosive_rage_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s )
+    buff_t* buff;
+    explosive_rage_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s, buff_t* b )
       : generic_proc_t( effect, n, s ),
-        dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
-        dots_consumed( 0 )
+        buff( b )
     {
       background = proc = split_aoe_damage = true;
     }
@@ -7944,7 +7955,7 @@ void fyralath_the_dream_render( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      m *= 1.0 + dot_increase * dots_consumed;
+      m *= 1.0 + buff->check_stack_value();
 
       return m;
     }
@@ -7952,12 +7963,10 @@ void fyralath_the_dream_render( special_effect_t& e )
 
   struct rage_of_fyralath_t : public generic_proc_t
   {
-    double dot_increase;
-    int dots_consumed;
-    rage_of_fyralath_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s )
+    buff_t* buff;
+    rage_of_fyralath_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s, buff_t* b )
       : generic_proc_t( effect, n, s ),
-        dot_increase( effect.player->find_spell( 420248 )->effectN( 1 ).percent() ),
-        dots_consumed( 0 )
+        buff( b )
     {
       background = proc = split_aoe_damage = true;
     }
@@ -7966,7 +7975,7 @@ void fyralath_the_dream_render( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      m *= 1.0 + dot_increase * dots_consumed;
+      m *= 1.0 + buff->check_stack_value();
 
       return m;
     }
@@ -7977,13 +7986,20 @@ void fyralath_the_dream_render( special_effect_t& e )
     action_t* damage;
     action_t* charge_impact;
     action_t* dot;
-    rage_channel_t( const special_effect_t& e, util::string_view n, action_t* dam, action_t* imp, action_t* d )
+    int current_tick;
+    int n_ticks;
+    buff_t* buff;
+    rage_channel_t( const special_effect_t& e, util::string_view n, action_t* dam, action_t* imp, action_t* d, buff_t* b )
       : proc_spell_t( n, e.player, e.player->find_spell( 417132 ), e.item ),
         damage( dam ),
         charge_impact( imp ),
-        dot( d )
+        dot( d ),
+        buff( b ),
+        current_tick( 0 ),
+        n_ticks( data().duration() / data().effectN( 1 ).period() )
     {
       channeled = true;
+      trigger_gcd = e.player->find_spell( 417131 )->gcd();
       target_cache.is_valid = false;
       add_child( damage );
       add_child( charge_impact );
@@ -7992,15 +8008,20 @@ void fyralath_the_dream_render( special_effect_t& e )
     void tick( dot_t* d ) override
     {
       proc_spell_t::tick( d );
-      damage->execute();
+      if ( current_tick <= n_ticks - 1 )
+      {
+        damage->execute();
+        current_tick++;
+      }
     }
 
     void execute() override
     {
-      // Caps at 5 Dotted targets for some unknown reason. 
-      auto counter = std::min( as<int>( player->get_active_dots( dot->get_dot( nullptr ) ) ), 5 );
-      debug_cast<explosive_rage_t*>( charge_impact )->dots_consumed = counter;
-      debug_cast<rage_of_fyralath_t*>( damage )->dots_consumed      = counter;
+      auto counter = player->get_active_dots( dot->get_dot( nullptr ) );
+      if( counter > 0 )
+        buff->trigger( counter );
+
+      current_tick = 0;
 
       range::for_each( player->sim->target_non_sleeping_list, [ this ]( player_t* target ) {
         if ( dot->get_dot( target )->is_ticking() )
@@ -8010,6 +8031,12 @@ void fyralath_the_dream_render( special_effect_t& e )
 
       event_t::cancel( player->readying );
       player->delay_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void reset() override
+    {
+      proc_spell_t::reset();
+      current_tick = 0;
     }
 
     void last_tick( dot_t* d ) override
@@ -8022,17 +8049,23 @@ void fyralath_the_dream_render( special_effect_t& e )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
 
       charge_impact->execute_on_target( d->target );
+      buff->expire();
+      current_tick = 0;
     }
   };
 
-  auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ) );
-  auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ) );
+  auto buff = create_buff<buff_t>( e.player, "rage_of_fyralath", e.player->find_spell( 417138 ) );
+  buff->set_default_value( e.player->find_spell( 420248 ) -> effectN( 1 ).percent() );
+
+  auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ), buff );
+  auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ), buff );
   auto dot           = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
-  auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot );
+  auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot, buff );
 
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;
   driver->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+  driver->proc_flags2_   = PF2_ALL_HIT;
   driver->spell_id       = 420248;
   driver->execute_action = dot;
   e.player->special_effects.push_back( driver );

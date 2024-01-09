@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.5.52554
-static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
+// Spell text, wow build 10.2.5.52646
+static const std::array<spelltext_data_t, 20601> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15825,7 +15825,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 366061, "$?a366059[Deal $366057s4 Cosmic damage to your target and switch to Defense mode.][Shield the most injured member of your party for $366057s3 and switch to Offense mode.]", 0, 0 },
   { 366085, "$@spelldesc365549", "You have recently benefited from Robustialic Enhancement and it cannot trigger again.", 0 },
   { 366129, "Fortialic cannot trigger again.", "You have recently benefited from Fortialic and it cannot trigger again.", 0 },
-  { 366155, "Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.", "Healing for $w1 every $t1 sec.", "Bronze" },
+  { 366155, "Repair an ally's injuries, healing them for $o1 over $d.\r\n\r\nWhen Reversion critically heals, its duration is extended by $t1 sec, up to a maximum of ${$t1*$<cap>}.1 sec.", "Healing for $w1 every $t1 sec.", "Bronze" },
   { 366184, "Inflicts damage every $t1 sec.", "Suffering damage every $t1 sec.", 0 },
   { 366222, "Summons a Succubus or Incubus under your command to seduce enemy Humanoids, preventing them from attacking.\r\n", 0, 0 },
   { 366333, "Consume this crystal to gain its enhancement temporarily. \r\nThis effect will last for $?S365394[60]?S365335[45]?S365332[30][15] min. Only works in Shadowlands outdoor areas or Oribos.", "This effect will last for $?S365394[60]?S365335[45]?S365332[30][15] min. Only works in Shadowlands outdoor areas or Oribos.", 0 },
@@ -20055,6 +20055,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 417131, "Unleash the Rage of Fyr'alath to charge towards your target and swing repeatedly, dealing ${$417134s1*$417132d/$417132t1+$413584s1} Shadowflame damage over $417132d to all who would stand in your way.", 0, 0 },
   { 417132, "$@spelldesc417131", 0, 0 },
   { 417134, "$@spelldesc417131", 0, 0 },
+  { 417138, "$@spelldesc420248", "Explosive Rage damage increased by $w1%.", 0 },
   { 417139, "$@spelldesc417050", "Haste increased by $w1, and taking $417050s3% less damage from enemies that struck you in the undone future.", 0 },
   { 417234, "Summon Infernal increases the damage of your next $s3 casts of Chaos Bolt by $s1% or your next $s3 casts of Rain of Fire by $s2%.", 0, 0 },
   { 417275, 0, "The next Time Rift you complete is guaranteed to reward you with a Mount!", 0 },
@@ -20602,12 +20603,13 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 434251, "$@spelldesc421990", "Counterattacking all incoming damage from enemies within $421996r yards. Regenerating $w1 every $t sec.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.5.52554
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.2.5.52646
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  366155,  0, "Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.", "Repair an ally's injuries, healing them for $o1 over $d.\r\n\r\nWhen Reversion critically heals, its duration is extended by $t1 sec, up to a maximum of ${$t1*$<cap>}.1 sec." },
 } };
 
-// Spell description variables, wow build 10.2.5.52554
-static const std::array<spelldesc_vars_data_t, 414> __ptr_spelldesc_vars_data { {
+// Spell description variables, wow build 10.2.5.52646
+static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -20949,6 +20951,7 @@ static const std::array<spelldesc_vars_data_t, 414> __ptr_spelldesc_vars_data { 
   {  363534, "$min=${$SP*0.4*(($d/$t1)+1)}" },
   {  364365, "$heal=${$SP*$s1/100}" },
   {  364416, "$CDR=${s1*0.1}.1" },
+  {  366155, "$cap=${6}" },
   {  367226, "$range=${30}" },
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  368847, "$damage=${$369374s1*(1+$369372d/2)}" },
@@ -21024,7 +21027,7 @@ static const std::array<spelldesc_vars_data_t, 414> __ptr_spelldesc_vars_data { 
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.5.52554
+// spelldesc_vars hotfix entries, wow build 10.2.5.52646
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

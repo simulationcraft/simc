@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.0.52485
-static const std::array<spelltext_data_t, 20528> __spelltext_data { {
+// Spell text, wow build 10.2.0.52649
+static const std::array<spelltext_data_t, 20529> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20057,6 +20057,7 @@ static const std::array<spelltext_data_t, 20528> __spelltext_data { {
   { 417131, "Unleash the Rage of Fyr'alath to charge towards your target and swing repeatedly, dealing ${$417134s1*$417132d/$417132t1+$413584s1} Shadowflame damage over $417132d to all who would stand in your way.", 0, 0 },
   { 417132, "$@spelldesc417131", 0, 0 },
   { 417134, "$@spelldesc417131", 0, 0 },
+  { 417138, "$@spelldesc420248", "Explosive Rage damage increased by $w1%.", 0 },
   { 417139, "$@spelldesc417050", "Haste increased by $w1, and taking $417050s3% less damage from enemies that struck you in the undone future.", 0 },
   { 417234, "Summon Infernal increases the damage of your next $s3 casts of Chaos Bolt by $s1% or your next $s3 casts of Rain of Fire by $s2%.", 0, 0 },
   { 417275, 0, "The next Time Rift you complete is guaranteed to reward you with a Mount!", 0 },
@@ -20530,11 +20531,11 @@ static const std::array<spelltext_data_t, 20528> __spelltext_data { {
   { 434251, "$@spelldesc421990", "Counterattacking all incoming damage from enemies within $421996r yards. Regenerating $w1 every $t sec.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.0.52485
+// spelltext hotfix entries, wow build 10.2.0.52649
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.0.52485
+// Spell description variables, wow build 10.2.0.52649
 static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20596,7 +20597,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {   53376, "$time= $?a53376[${$31884d}][${$31884d*(1+($53376s1/100))}]" },
   {   55095, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {   58877, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.3195*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
   {   64382, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {   77756, "$volcanic=$?a408572[${$408572s3}][${0}]\r\n$igneous=$?a279830[${$279830s1}][${0}]\r\n$chance=${$s1+$<volcanic>+$<igneous>}" },
   {   79096, "$cdr=${$s1/10}" },
@@ -20772,7 +20773,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  296320, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  298441, "$points=${$298461s2}" },
   {  298442, "$points=${$298461s2}" },
-  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.3195*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
   {  299367, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299369, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299958, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
@@ -20950,7 +20951,7 @@ static const std::array<spelldesc_vars_data_t, 412> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.0.52485
+// spelldesc_vars hotfix entries, wow build 10.2.0.52649
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
