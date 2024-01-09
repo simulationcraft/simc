@@ -173,7 +173,7 @@ void affliction( player_t* p )
   variables->add_action( "variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot" );
   variables->add_action( "variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up" );
   variables->add_action( "variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare" );
-  variables->add_action( "variable,name=cds_active,op=set,value=!variable.has_cds|((variable.cd_dots_up&cooldown.summon_darkglare.remains>20))" );
+  variables->add_action( "variable,name=cds_active,op=set,value=!variable.has_cds|(variable.cd_dots_up&(cooldown.summon_darkglare.remains>20|!talent.summon_darkglare))" );
   variables->add_action( "variable,name=min_vt,op=reset,if=variable.min_vt" );
   variables->add_action( "variable,name=min_ps,op=reset,if=variable.min_ps" );
 }
