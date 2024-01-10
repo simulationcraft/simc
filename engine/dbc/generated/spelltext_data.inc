@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.0.52649
-static const std::array<spelltext_data_t, 20529> __spelltext_data { {
+static const std::array<spelltext_data_t, 20528> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18644,7 +18644,6 @@ static const std::array<spelltext_data_t, 20529> __spelltext_data { {
   { 392991, "Tiger Palm now has a ${$m1+5} yard range and dashes you to the target when used.\r\n\r\nTiger Palm also applies an effect which increases your critical strike chance by $344021m1% for $344021d on the target. This effect cannot be applied more than once every $337341d per target.", 0, 0 },
   { 392993, "Rising Sun Kick critical strikes reduce the cooldown of Fists of Fury by ${$m2/1000} sec.\r\n\r\nWhen Fists of Fury ends, the critical strike chance of Rising Sun Kick is increased by $337482m1% for $337482d.", 0, 0 },
   { 392994, "Increases the initial damage of Faeline Stomp by ${$s1}% per target hit by that damage, up to a maximum of ${$s1*$s2}% additional damage.", 0, 0 },
-  { 392997, "$@spelldesc390808", 0, 0 },
   { 392998, "$@spelldesc369166", 0, 0 },
   { 393009, "$@spelldesc337546", "Magic damage taken reduced by $s1%.", 0 },
   { 393014, "Your Nature spells deal ${$s3}.1% increased damage and an additional ${$s6}.1% to targets affected by Sunfire.\r\n\r\nYour Arcane spells deal ${$s1}.1% increased damage and an additional ${$s5}.1% to targets affected by Moonfire.\r\n\r\n", 0, 0 },

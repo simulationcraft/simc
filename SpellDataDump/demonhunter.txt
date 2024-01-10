@@ -12267,8 +12267,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1027898)  : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 7.5 | Scaled Value: 7.5 (coefficient=0, delta coefficient=0.666667) | PvP Coefficient: 1.00000 | Trigger Spell: 392997 | Target: Self (1)
+#1 (id=1027898)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 7.5 | Scaled Value: 7.5 (coefficient=0, delta coefficient=0.666667) | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (231 -> 4), Trigger Spell (392997 -> 0)
+#2 (id=1128878)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#3 (id=1128879)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Immolation Aura generates $m-$M Fury when it deals critical damage.
 
 This effect may only occur once per ${$proccooldown+0.1} sec.
@@ -12722,26 +12729,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 342357 | Target: Self (1)
 Description      : $@spelldesc350570
 Tooltip          : Battling a demon from the Theater of Pain...
-
-Name             : Volatile Flameblood (id=392997) [Spell Family (107)] 
-Class            : Demon Hunter
-School           : Fire
-Spell Type       : None
-Range            : 100 yards
-Triggered by     : Volatile Flameblood (390808)
-Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126)
-Effects          :
-#1 (id=1031633)  : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
-Description      : $@spelldesc390808
 
 Name             : Fel Flame Fortification (id=393009) [Spell Family (107)] 
 Class            : Demon Hunter
