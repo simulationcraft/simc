@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52649 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52808 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -12269,13 +12269,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1027898)  : Apply Aura (6) | Dummy (4)
                    Base Value: 7.5 | Scaled Value: 7.5 (coefficient=0, delta coefficient=0.666667) | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (231 -> 4), Trigger Spell (392997 -> 0)
 #2 (id=1128878)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1128879)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Immolation Aura generates $m-$M Fury when it deals critical damage.
 
 This effect may only occur once per ${$proccooldown+0.1} sec.
