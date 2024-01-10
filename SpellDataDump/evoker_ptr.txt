@@ -2050,7 +2050,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Hover (358267 effect#5), Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20), Spatial Paradox (406732 effect#3)
+Affecting spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Hover (358267 effect#5), Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effects: #1, #3), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #19, #20), Spatial Paradox (406732 effect#3)
 Family Flags     : 1, 2, 3, 11, 38
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2476,6 +2476,7 @@ Effects          :
 Description      : Pyre has a $s1% chance to flare up and explode again on a nearby target.
 
 Name             : Essence Burst (id=369297) [Spell Family (224), Passive] 
+Hotfixed         : Description
 Talent Entry     : Preservation [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -2498,7 +2499,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1118029)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Living Flame has a a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]
+Description      : Living Flame has a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]
 
 Name             : Essence Burst (id=369299) [Spell Family (224)] 
 Class            : Evoker
@@ -2797,7 +2798,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
                  : Magic Heal
-Affecting spells : Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effects: #1, #2)
+Affecting spells : Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effects: #1, #3)
 Family Flags     : 11
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5156,7 +5157,7 @@ Description      : Temporal Anomaly reduces the cooldowns of your empower spells
 
 Name             : Grace Period (id=376239) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=9, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=mul, values=(1, 2, 2)]
+                 : Effect#1 [op=set, values=(7.5, 15)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -5179,7 +5180,9 @@ Description      : Your healing is increased by $s1% on targets with your Revers
 
 Name             : Timeless Magic (id=376240) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=9, col=3, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(15, 30, 6000)]
+                 : Effect#1 [op=mul, values=(1, 2, 2)]
+                 : Effect#2 [op=mul, values=(1, 2, 2)]
+                 : Effect#3 [op=mul, values=(1, 2, 2)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -5200,8 +5203,14 @@ Effects          :
                    Family Flags: 8, 11, 19, 45
 #2 (id=1123492)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Time Dilation (357170), Echo (364343), Reversion (366155), Field of Dreams (370062), Temporal Anomaly (373861)
-                   Family Flags: 8, 11, 19, 45
+                   Affected Spells: Time Dilation (357170), Reversion (366155), Temporal Anomaly (373861)
+                   Family Flags: 8, 19, 45
+Hotfixed         : Affects Spells
+#3 (id=1126539)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
+                   Affected Spells: Echo (364343), Field of Dreams (370062)
+                   Family Flags: 11
+Hotfixed         : NEW EFFECT
 Description      : Reversion, Time Dilation, Echo, and Temporal Anomaly last $s1% longer and cost $s2% less mana.
 
 Name             : Surge Forward (desc=Racial) (id=376743) 

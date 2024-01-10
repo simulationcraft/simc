@@ -8828,7 +8828,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc )
     replenish_rune( as<int>( spell.murderous_efficiency_gain -> effectN( 1 ).base_value() ), gains.murderous_efficiency );
   }
 
-  if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost -> up() )
+  if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost -> up() && (!bugs || (bugs && proc->name_str != "Killing Machine spent on Frostscythe")) )
   {
     buffs.bonegrinder_crit -> trigger();
     if ( buffs.bonegrinder_crit -> at_max_stacks() )
