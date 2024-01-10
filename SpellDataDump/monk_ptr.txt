@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52649 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.0.52808 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -577,7 +577,7 @@ Cooldown         : 3 seconds
 Category         : 1561: Fluidity of Motion (387230 effect#3)
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16, #30), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17, #25, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387179 effect#1), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Monk Brewmaster 10.1 Class Set 2pc (405539 effect#1), Press the Advantage (418361 effect#1), Blackout Reinforcement (424454 effect#1)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16, #30), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17, #25, #26, #29), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387179 effect#1), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Monk Brewmaster 10.1 Class Set 2pc (405539 effect#1), Press the Advantage (418361 effect#1), Blackout Reinforcement (424454 effect#1)
 Family Flags     : 4, 67, 103
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -735,7 +735,7 @@ Name             : Spinning Crane Kick (id=107270) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #24), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8, #19), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Fast Feet (388809 effect#2), Widening Whirl (388846 effect#1), Crane Vortex (388848 effect#1), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #24), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8, #19, #28), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Fast Feet (388809 effect#2), Widening Whirl (388846 effect#1), Crane Vortex (388848 effect#1), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1)
 Triggered by     : Spinning Crane Kick (101546), Spinning Crane Kick (322729)
 Family Flags     : 8, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -767,7 +767,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
 Labels           : 359: Serenity (152173 effect#4)
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #28), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #5, #12, #16, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #28), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #5, #12, #16, #26, #30), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Family Flags     : 39, 67
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2092,7 +2092,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=133162)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.39000 | PvP Coefficient: 1.15000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | PvP Coefficient: 1.06500 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+Hotfixed         : AP Coefficient (1.39 -> 1.5), PvP Coefficient (1.15 -> 1.065)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 Description      : $@spelldesc113656
@@ -4093,7 +4094,8 @@ Effects          :
                    Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 1910 | Target: Self (1)
                    Affected Spells (Category): Faeline Stomp (327104), Jadefire Stomp (388193)
 #25 (id=1081588)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+Hotfixed         : Base Value (-5 -> 3)
 #26 (id=1081589)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #27 (id=1093851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4228,6 +4230,21 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
+#28 (id=1126386)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Spinning Crane Kick (107270)
+                   Family Flags: 8
+Hotfixed         : NEW EFFECT
+#29 (id=1126387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
+                   Family Flags: 4
+Hotfixed         : NEW EFFECT
+#30 (id=1126388)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+                   Family Flags: 39
+Hotfixed         : NEW EFFECT
 
 Name             : Combo Breaker (id=137384) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
@@ -4725,7 +4742,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #28), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #12, #16, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #28), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #5, #12, #16, #26, #30), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Weapons of Order (387179 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2)
 Triggered by     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -4794,9 +4811,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.58500 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.53820 | PvP Coefficient: 1.08700 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.585 -> 0.5382), PvP Coefficient (1 -> 1.087)
 #2 (id=289619)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05477 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05039 | PvP Coefficient: 1.08700 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.054772 -> 0.05039), PvP Coefficient (1 -> 1.087)
 Description      : $@spelldesc191837
 Tooltip          : Restoring $w2 health every $t2 sec.
 
@@ -5594,7 +5613,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, S
 Charges          : 1 (4 seconds cooldown)
 Category         : 1561: Fluidity of Motion (387230 effect#3)
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16, #30), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17, #25, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387179 effect#1), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Monk Brewmaster 10.1 Class Set 2pc (405539 effect#1), Press the Advantage (418361 effect#1), Blackout Reinforcement (424454 effect#1)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16, #30), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17, #25, #26, #29), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387179 effect#1), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Monk Brewmaster 10.1 Class Set 2pc (405539 effect#1), Press the Advantage (418361 effect#1), Blackout Reinforcement (424454 effect#1)
 Family Flags     : 4, 67, 80, 103
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -6132,7 +6151,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 3
 Range            : 100 yards
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16, #30), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17, #25, #26), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387179 effect#1), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Monk Brewmaster 10.1 Class Set 2pc (405539 effect#1), Press the Advantage (418361 effect#1), Blackout Reinforcement (424454 effect#1)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16, #30), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #12, #17, #25, #26, #29), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387179 effect#1), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effects: #1, #2), Shadowboxing Treads (387638 effects: #1, #2), Hardened Soles (391383 effects: #1, #2), Shadowboxing Treads (392982 effects: #1, #2), Skyreach (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Monk Brewmaster 10.1 Class Set 2pc (405539 effect#1), Press the Advantage (418361 effect#1), Blackout Reinforcement (424454 effect#1)
 Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -10227,7 +10246,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=815341)   : Apply Aura (6) | Proc Trigger Spell (42): Dance of Chi-Ji
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.75000 | Trigger Spell: 325202 | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.75000 | Trigger Spell: 325202 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 300)
 Description      : Spending Chi has a chance to make your next Spinning Crane Kick free and deal an additional $s1% damage.
 
 Name             : Dance of Chi-Ji (id=325202) [Spell Family (53)] 
@@ -10272,7 +10292,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=815359)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17100 | PvP Coefficient: 1.11100 | Radius: 0 - 10 yards | Target: Unknown(132) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.19 -> 0.171), PvP Coefficient (1 -> 1.111)
 #2 (id=845650)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #3 (id=867662)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
@@ -14786,7 +14807,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143)
 Effects          :
 #1 (id=1024187)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.42900 | Misc Value: 17 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 35), PvP Coefficient (1 -> 1.429)
 Description      : Soothing Mist heals a second injured ally within $388478A2 yds for $s1% of the amount healed.
 
 Name             : Unison (id=388478) [Spell Family (53)] 
@@ -16373,7 +16395,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031561)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 0.72000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.36 -> 0.5), PvP Coefficient (1 -> 0.72)
 #2 (id=1031562)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 288634
 #3 (id=1031563)  : Energize Power (30)
@@ -18632,7 +18655,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098489)  : Apply Aura (6) | Proc Trigger Spell (42): Blackout Reinforcement
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Trigger Spell: 424454 | Target: Self (1)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 0.50000 | Trigger Spell: 424454 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 250)
 Description      : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 Tooltip          : Free Spinning Crane Kicks grant Blackout Reinforcement, increasing the damage of your next Blackout Kick by $s1%. Melee abilities have a chance to grant Blackout Reinforcement.
 
@@ -18708,9 +18732,10 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1101241)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 0.40000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+Hotfixed         : Base Value (200 -> 250), PvP Coefficient (0.5 -> 0.4)
 Description      : $@spelldesc422891
 Tooltip          : Blackout Kick damage increased by $w1%.
 $?a422892[Cooldown of Fists of Fury, Rising Sun Kick, Strike of the Windlord, and Whirling Dragon Punch reduced by $422892s1 sec.][]
