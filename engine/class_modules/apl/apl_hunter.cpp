@@ -79,7 +79,7 @@ void beast_mastery( player_t* p )
   cds->add_action( "potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31" );
 
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)" );
-  st->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator" );
+  st->add_action( "kill_command,if=!talent.wild_instincts&full_recharge_time<gcd&talent.alpha_predator" );
   st->add_action( "call_of_the_wild,if=!talent.wild_instincts&variable.cotw_ready" );
   st->add_action( "stampede" );
   st->add_action( "bloodshed" );
@@ -192,7 +192,7 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)" );
-  st->add_action( "kill_command,if=full_recharge_time<gcd&talent.alpha_predator" );
+  st->add_action( "kill_command,if=!talent.wild_instincts&full_recharge_time<gcd&talent.alpha_predator" );
   st->add_action( "call_of_the_wild,if=!talent.wild_instincts" );
   st->add_action( "stampede" );
   st->add_action( "bloodshed" );
