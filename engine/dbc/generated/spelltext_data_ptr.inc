@@ -16427,7 +16427,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 375936, "Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional $328306s1 damage and you gain $s6 use of any Stealth ability for $347037d.\r\n\r\nCooldown reduced by $s3 sec if Sepsis does not last its full duration.\r\n\r\n|cFFFFFFFFAwards $s7 combo $lpoint:points;.|r", "Suffering $w1 Nature damage every $t1 sec, and $328306s1 when the poison ends.", 0 },
   { 375939, "$@spelldesc375936", "Allows $328305s6 use of any Stealth ability.", 0 },
   { 375981, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
-  { 375982, "Blast your target with a Primordial Wave, dealing $375984s1 Elemental damage and applying Flame Shock to them.\r\n\r\nYour next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide] for $?a137039[$s2%]?a137040[$s3%][$s4%] of normal $?a137039[healing][damage].$?s384405[\r\n\r\nPrimordial Wave generates $s5 stacks of Maelstrom Weapon.][]", 0, "Shadowlands" },
+  { 375982, "Blast your target with a Primordial Wave, dealing $375984s1 Elemental damage and applying Flame Shock to them.\r\n\r\nYour next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide] for $?a137039[$s2%]?a137040[$s3%][$s4%] of normal $?a137039[healing][damage].$?s384405[\r\n\r\nPrimordial Wave generates $s5 stacks of Maelstrom Weapon.][]", 0, 0 },
   { 375983, "$@spelldesc375982", 0, 0 },
   { 375984, "$@spelldesc375982", 0, 0 },
   { 375985, "$@spelldesc375982", 0, 0 },
@@ -17738,7 +17738,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 386965, "Your Breath of Fire ignites your right leg in flame for $386963d, causing your Blackout Kick and Spinning Crane Kick to deal $s1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.", 0, 0 },
   { 386976, "Shadow Bolt and Drain Soul deal $s1% increased damage, up to ${$s1*$s2}%, per damage over time effect you have active on the target.", 0, 0 },
   { 386986, "Corruption damage is increased by $s1%, and each time it deals damage any of your Curses active on the target are extended by ${$s2/1000}.1 sec.", 0, 0 },
-  { 386997, "Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Nature damage and secondary targets to suffer $o2 Nature damage over $d.\r\n\r\nFor the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.", "Suffering $s2 Nature damage every $t2 sec.", "Shadowlands" },
+  { 386997, "Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Nature damage and secondary targets to suffer $o2 Nature damage over $d.\r\n\r\nFor the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.", "Suffering $s2 Nature damage every $t2 sec.", 0 },
   { 387016, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d.", 0, 0 },
   { 387018, "$@spelldesc387016", "Haste increased by ${$W1}.1%.\r\nCritical strike chance increased by ${$W2}.1%.", 0 },
   { 387028, "$@spelldesc384649", "Heals yourself and deals Fire damage to nearby enemies upon expiration.", 0 },
@@ -18166,7 +18166,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 389809, "Place a Sigil of Silence at the target location that activates after $d.\r\n\r\nSilences all enemies affected by the sigil for $204490d.", 0, 0 },
   { 389810, "Place a Sigil of Flame at the target location that activates after $d.\r\n\r\nDeals $204598s1 Fire damage, and an additional $204598o3 Fire damage over $204598d, to all enemies affected by the sigil.\r\n\r\nGenerates $389787s1 Fury.", "Sigil of Flame is active.", 0 },
   { 389813, "Place a Sigil of Misery at the target location that activates after $d.\r\n\r\nCauses all enemies affected by the sigil to cower in fear, disorienting them for $207685d.", 0, 0 },
-  { 389815, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
+  { 389815, "Place a demonic sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
   { 389817, "$@spelldesc383812", 0, 0 },
   { 389818, "$@spelldesc383812", 0, 0 },
   { 389820, "$@spelldesc383812\r\n", "$@auracaster's Ruby Whelp takes you under their wing, increasing your Haste by $w1.", 0 },
@@ -18223,7 +18223,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 390158, "Immolation Aura's damage increases by $s1% each time it deals damage.", 0, 0 },
   { 390161, "Festering Strike has a $s1% chance to generate $390162s1 Rune and grant Runic Corruption.", 0, 0 },
   { 390162, "$@spelldesc390161", 0, 0 },
-  { 390163, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
+  { 390163, "Place a demonic sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
   { 390164, "$@spelldesc389537", 0, 0 },
   { 390165, "$@spelldesc389537", "Critical Strike increased by $w1.", 0 },
   { 390166, "Increases your maximum Runic Power by ${$s1/10} and increases the Rune regeneration rate of Runic Corruption by $s2%.", 0, 0 },
@@ -18461,7 +18461,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 391517, "After Vampiric Blood expires, you absorb damage equal to $s1 times the damage your Blood Plague dealt during Vampiric Blood.", 0, 0 },
   { 391519, "Absorbing damage dealt by Blood Plague.", "Absorbing damage dealt by Blood Plague.", 0 },
   { 391525, "Your harmful spells and abilities have a chance to deal up an additional ${$s1*1.15} physical damage to your current target. Damage is increased based on your targets missing health.", 0, 0 },
-  { 391528, "Call upon the Night Fae for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form.", "Every ${$t1}.2 sec, casting $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake or Thrash on appropriate nearby targets.", "Shadowlands" },
+  { 391528, "Call upon the spirits for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form.", "Every ${$t1}.2 sec, casting $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake or Thrash on appropriate nearby targets.", 0 },
   { 391538, "Convoke the Spirits' cooldown is reduced by ${($abs($s4)/120000)*100}% and its duration and number of spells cast is reduced by $s1% Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
   { 391546, "Death's Advance grants an additional $s1% movement speed over the first $338093d.", 0, 0 },
   { 391547, "$@spelldesc391546", "Death's Advance movement speed increased by $w1%.", 0 },
@@ -18515,7 +18515,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 391876, "$@spelldesc391875", "Haste increased by $s1%.", 0 },
   { 391881, "Rip damage has a ${$s1/10}.1% chance to make your next Ferocious Bite free and deal the maximum damage.", 0, 0 },
   { 391882, "$@spelldesc339139", "Your next Ferocious Bite costs no Energy or combo points and deals the maximum damage.", 0 },
-  { 391888, "Command a swarm that heals $391891o1 or deals $391889o1 Shadow damage over $391889d to a target, and increases the effectiveness of your periodic effects on them by $391891s2%.\r\n\r\nUpon expiration, finds a new target, preferring to alternate between friend and foe up to $s1 times.", 0, "Shadowlands" },
+  { 391888, "Command a swarm that heals $391891o1 or deals $391889o1 Shadow damage over $391889d to a target, and increases the effectiveness of your periodic effects on them by $391891s2%.\r\n\r\nUpon expiration, finds a new target, preferring to alternate between friend and foe up to $s1 times.", 0, 0 },
   { 391889, "$@spelldesc391888", "Suffering $w1 Shadow damage every $t1 sec and damage over time from $@auracaster increased by $w2%.", 0 },
   { 391891, "$@spelldesc391888", "Restoring $w1 health every $t1 sec and healing over time from $@auracaster increased by $w2%.", 0 },
   { 391947, "Your Regrowth protects you, reducing all damage you take by $391955s1% while your Regrowth is on you.", 0, 0 },
@@ -20603,9 +20603,16 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.5.52646
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __ptr_spelltext_hotfix_data { {
   {  366155,  0, "Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.", "Repair an ally's injuries, healing them for $o1 over $d.\r\n\r\nWhen Reversion critically heals, its duration is extended by $t1 sec, up to a maximum of ${$t1*$<cap>}.1 sec." },
   {  369297,  0, "Living Flame has a a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", "Living Flame has a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]" },
+  {  375982,  2, "Shadowlands", nullptr },
+  {  386997,  2, "Shadowlands", nullptr },
+  {  389815,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", "Place a demonic sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
+  {  390163,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", "Place a demonic sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
+  {  391528,  0, "Call upon the Night Fae for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form.", "Call upon the spirits for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form." },
+  {  391528,  2, "Shadowlands", nullptr },
+  {  391888,  2, "Shadowlands", nullptr },
 } };
 
 // Spell description variables, wow build 10.2.5.52646
