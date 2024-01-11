@@ -11604,6 +11604,7 @@ Description      : Place a Sigil of Misery at the target location that activates
 Causes all enemies affected by the sigil to cower in fear, disorienting them for $207685d.
 
 Name             : Elysian Decree (id=389815) [Spell Family (107)] 
+Hotfixed         : Description
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : None
@@ -11631,7 +11632,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 26752 | Target: Unknown(63) -> Unknown(138)
 #3 (id=1026306)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Description      : Place a Kyrian Sigil at the target location that activates after $d.
+Description      : Place a demonic sigil at the target location that activates after $d.
 
 Detonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.
 
@@ -12101,6 +12102,7 @@ Effects          :
 Description      : Immolation Aura's damage increases by $s1% each time it deals damage.
 
 Name             : Elysian Decree (id=390163) [Spell Family (107)] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Chromatic
@@ -12129,7 +12131,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 26752 | Target: Unknown(87)
 #3 (id=1026783)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Unknown(87)
-Description      : Place a Kyrian Sigil at the target location that activates after $d.
+Description      : Place a demonic sigil at the target location that activates after $d.
 
 Detonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.
 

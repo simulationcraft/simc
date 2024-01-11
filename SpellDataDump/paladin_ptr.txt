@@ -14875,9 +14875,10 @@ Effects          :
 Description      : Each Holy Power spent on Light of Dawn increases the healing of your next Word of Glory by $s1%, up to a maximum of $s2%.
 
 Name             : Blessing of Summer (id=388007) [Spell Family (10)] 
+Hotfixed         : School (8 -> 2)
 Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
-School           : Nature
+School           : Holy
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265561)
 Spell Level      : 1
@@ -14999,8 +15000,9 @@ Tooltip          : Restoring $w1% mana every $s6 sec.
 Variables        : $points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}
 
 Name             : Blessing of Spring (id=388013) [Spell Family (10)] 
+Hotfixed         : School (8 -> 2)
 Class            : Paladin
-School           : Nature
+School           : Holy
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265564)
 Spell Level      : 48

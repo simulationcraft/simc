@@ -17128,7 +17128,8 @@ Effects          :
 Description      : $@spelldesc391347
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
-Name             : Convoke the Spirits (desc=Shadowlands) (id=391528) [Spell Family (7)] 
+Name             : Convoke the Spirits (id=391528) [Spell Family (7)] 
+Hotfixed         : Description, Rank
 Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
                  : Feral [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
                  : Guardian [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=1]
@@ -17171,7 +17172,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Swiftmend (18562), Pulverize (80313), Swiftmend (422094)
                    Family Flags: 33, 123
-Description      : Call upon the Night Fae for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]
+Description      : Call upon the spirits for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]
 
 You will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form.
 Tooltip          : Every ${$t1}.2 sec, casting $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake or Thrash on appropriate nearby targets.
@@ -17526,7 +17527,8 @@ Effects          :
 Description      : $@spelldesc339139
 Tooltip          : Your next Ferocious Bite costs no Energy or combo points and deals the maximum damage.
 
-Name             : Adaptive Swarm (desc=Shadowlands) (id=391888) [Spell Family (7)] 
+Name             : Adaptive Swarm (id=391888) [Spell Family (7)] 
+Hotfixed         : Rank
 Talent Entry     : Restoration [tree=spec, row=8, col=3, max_rank=1, req_points=20]
                  : Feral [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Druid
