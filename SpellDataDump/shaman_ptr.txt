@@ -13603,11 +13603,12 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: maelstrom | Target: Self (1)
 Description      : $@spelldesc320674
 
-Name             : Primordial Wave (desc=Shadowlands) (id=375982) [Spell Family (11)] 
+Name             : Primordial Wave (id=375982) [Spell Family (11)] 
+Hotfixed         : School (32 -> 28), Rank
 Talent Entry     : Enhancement [tree=spec, row=8, col=1, max_rank=1, req_points=20]
                  : Elemental [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Shaman
-School           : Shadow
+School           : Elemental
 Spell Type       : Magic
 Resource         : 0.6% Base Mana (0) (id=265386)
 Spell Level      : 10
