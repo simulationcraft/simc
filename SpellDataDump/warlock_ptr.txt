@@ -13519,7 +13519,7 @@ Effects          :
 Description      : Corruption damage is increased by $s1%, and each time it deals damage any of your Curses active on the target are extended by ${$s2/1000}.1 sec.
 
 Name             : Soul Rot (id=386997) [Spell Family (5)] 
-Hotfixed         : School (8 -> 32), Rank
+Hotfixed         : School (8 -> 32), Description, Tooltip
 Talent Entry     : Affliction [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -13551,10 +13551,10 @@ Effects          :
 Hotfixed         : Base Value (3 -> 4)
 #4 (id=1021495)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Nature damage and secondary targets to suffer $o2 Nature damage over $d.
+Description      : Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Shadow damage and secondary targets to suffer $o2 Shadow damage over $d.
 
 For the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.
-Tooltip          : Suffering $s2 Nature damage every $t2 sec.
+Tooltip          : Suffering $s2 Shadow damage every $t2 sec.
 
 Name             : Dark Harvest (id=387016) [Spell Family (5), Passive] 
 Talent Entry     : Affliction [tree=spec, row=10, col=4, max_rank=1, req_points=20]
