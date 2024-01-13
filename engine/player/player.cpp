@@ -9945,6 +9945,7 @@ struct invoke_external_buff_t : public action_t
 
     trigger_gcd           = timespan_t::zero();
     ignore_false_positive = true;
+
   }
 
   void init_finished() override
@@ -9966,6 +9967,9 @@ struct invoke_external_buff_t : public action_t
         player->sim->error( "Player {} uses invoke_external_buff with unknown buff {}", player->name(), buff_str );
       }
     }
+
+    // Initialise an action cooldown per buff type.
+    cooldown = player->get_cooldown( "invoke_external_buff_" + buff_str );
 
     if ( use_pool )
     {
