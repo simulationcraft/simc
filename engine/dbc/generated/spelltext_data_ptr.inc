@@ -1,4 +1,4 @@
-// Spell text, wow build 10.2.5.52646
+// Spell text, wow build 10.2.5.52902
 static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -20602,22 +20602,15 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 434251, "$@spelldesc421990", "Counterattacking all incoming damage from enemies within $421996r yards. Regenerating $w1 every $t sec.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.5.52646
-static constexpr std::array<hotfix::client_hotfix_entry_t, 11> __ptr_spelltext_hotfix_data { {
-  {  366155,  0, "Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.", "Repair an ally's injuries, healing them for $o1 over $d.\r\n\r\nWhen Reversion critically heals, its duration is extended by $t1 sec, up to a maximum of ${$t1*$<cap>}.1 sec." },
-  {  369297,  0, "Living Flame has a a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", "Living Flame has a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]" },
-  {  375982,  2, "Shadowlands", nullptr },
+// spelltext hotfix entries, wow build 10.2.5.52902
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __ptr_spelltext_hotfix_data { {
   {  386997,  0, "Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Nature damage and secondary targets to suffer $o2 Nature damage over $d.\r\n\r\nFor the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.", "Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Shadow damage and secondary targets to suffer $o2 Shadow damage over $d.\r\n\r\nFor the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana." },
   {  386997,  1, "Suffering $s2 Nature damage every $t2 sec.", "Suffering $s2 Shadow damage every $t2 sec." },
-  {  389815,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", "Place a demonic sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
-  {  390163,  0, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", "Place a demonic sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets." },
-  {  391528,  0, "Call upon the Night Fae for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form.", "Call upon the spirits for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form." },
-  {  391528,  2, "Shadowlands", nullptr },
   {  391888,  0, "Command a swarm that heals $391891o1 or deals $391889o1 Shadow damage over $391889d to a target, and increases the effectiveness of your periodic effects on them by $391891s2%.\r\n\r\nUpon expiration, finds a new target, preferring to alternate between friend and foe up to $s1 times.", "Command a swarm that heals $391891o1 or deals $391889o1 Nature damage over $391889d to a target, and increases the effectiveness of your periodic effects on them by $391891s2%.\r\n\r\nUpon expiration, finds a new target, preferring to alternate between friend and foe up to $s1 times." },
   {  391889,  1, "Suffering $w1 Shadow damage every $t1 sec and damage over time from $@auracaster increased by $w2%.", "Suffering $w1 Nature damage every $t1 sec and damage over time from $@auracaster increased by $w2%." },
 } };
 
-// Spell description variables, wow build 10.2.5.52646
+// Spell description variables, wow build 10.2.5.52902
 static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21036,9 +21029,7 @@ static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { 
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.5.52646
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelldesc_vars_hotfix_data { {
-  {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.3195*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
-  {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.3195*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+// spelldesc_vars hotfix entries, wow build 10.2.5.52902
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
