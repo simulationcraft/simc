@@ -2706,6 +2706,10 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 2.7_s;
+    
+    // Using a background repeating action as a replacement for a foreground action. Change Ready Type to trigger so we
+    // can wake up the pet when it needs to re-execute this action.
+    ready_type = READY_TRIGGER;
   }
 
   struct skulker_shot_t : public pet_spell_t<risen_skulker_pet_t>
@@ -2720,6 +2724,14 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       aoe = -1;
       base_aoe_multiplier = 0.5;
       repeating = true;
+    }
+
+    void schedule_execute( action_state_t* state ) override
+    {
+      pet_spell_t<risen_skulker_pet_t>::schedule_execute( state );
+      // This pet uses a background repeating event with a ready type of READY_TRIGGER. Without constantly re-updating
+      // the started waiting trigger_ready would never function.
+      player->started_waiting = sim->current_time();
     }
   };
 
@@ -2738,14 +2750,13 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
   void reschedule_skulker()
   {
-    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+    // Have to check the presecnce of a skulker_shot->execute_event because this acts as our "executing" due to using a
+    // background repeating action. We do not wish to have multiple of these.
+    if ( executing || skulker_shot->execute_event || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
       return;
 
-    else
-    {
-      skulker_shot->set_target( dk()->target );
-      skulker_shot->schedule_execute();
-    }
+    skulker_shot->set_target( dk()->target );
+    skulker_shot->schedule_execute();
   }
   
   void arise() override
