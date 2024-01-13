@@ -109,7 +109,7 @@ namespace monk
       propagate_const<buff_t *> weapons_of_order;
 
       // Shadowland Legendaries
-      propagate_const<buff_t *> fae_exposure;
+      propagate_const<buff_t *> jadefire_brand;
       propagate_const<buff_t *> keefers_skyreach;
       propagate_const<buff_t *> skyreach_exhaustion;
 
@@ -370,7 +370,7 @@ namespace monk
       propagate_const<buff_t *> dance_of_chiji;
       propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
       propagate_const<buff_t *> dizzying_kicks;
-      propagate_const<buff_t *> fae_exposure;
+      propagate_const<buff_t *> jadefire_brand;
       propagate_const<buff_t *> flying_serpent_kick_movement;
       propagate_const<buff_t *> fury_of_xuen_stacks;
       propagate_const<buff_t *> fury_of_xuen_haste;
@@ -743,7 +743,7 @@ namespace monk
         player_talent_t skyreach;
         player_talent_t skytouch;
         player_talent_t invokers_delight;
-        player_talent_t way_of_the_fae;
+        player_talent_t path_of_jade;
         player_talent_t jadefire_harmony;
       } windwalker;
     } talent;
@@ -926,8 +926,8 @@ namespace monk
       const spell_data_t *dance_of_chiji_bug;
       const spell_data_t *dizzying_kicks;
       const spell_data_t *empowered_tiger_lightning;
-      const spell_data_t *fae_exposure_dmg;
-      const spell_data_t *fae_exposure_heal;
+      const spell_data_t *jadefire_brand_dmg;
+      const spell_data_t *jadefire_brand_heal;
       const spell_data_t *fists_of_fury_tick;
       const spell_data_t *flying_serpent_kick_damage;
       const spell_data_t *focus_of_xuen;

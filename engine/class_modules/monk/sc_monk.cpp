@@ -754,8 +754,8 @@ namespace monk
           if ( ab::data().affected_by( td->debuff.weapons_of_order->data().effectN( 1 ) ) && td->debuff.weapons_of_order->check() )
             tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
 
-          if ( ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) && td->debuff.fae_exposure->check() )
-            tm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
+          if ( ab::data().affected_by( p()->passives.jadefire_brand_dmg->effectN( 1 ) ) && td->debuff.jadefire_brand->check() )
+            tm *= 1 + p()->passives.jadefire_brand_dmg->effectN( 1 ).percent();
         }
 
         return tm;
@@ -935,8 +935,8 @@ namespace monk
       {
         double pm = base_t::composite_persistent_multiplier( action_state );
 
-        if ( base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) && p()->buff.fae_exposure->check() )
-          pm *= 1 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
+        if ( base_t::data().affected_by( p()->passives.jadefire_brand_heal->effectN( 1 ) ) && p()->buff.jadefire_brand->check() )
+          pm *= 1 + p()->passives.jadefire_brand_heal->effectN( 1 ).percent();
 
         return pm;
       }
@@ -5402,9 +5402,9 @@ namespace monk
 
           const std::vector<player_t *> &targets = state->action->target_list();
 
-          if ( p()->talent.windwalker.way_of_the_fae->ok() && !targets.empty() )
-            cam *= 1 + ( p()->talent.windwalker.way_of_the_fae->effectN( 1 ).percent() *
-            std::min( ( double )targets.size(), p()->talent.windwalker.way_of_the_fae->effectN( 2 ).base_value() ) );
+          if ( p()->talent.windwalker.path_of_jade->ok() && !targets.empty() )
+            cam *= 1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
+            std::min( ( double )targets.size(), p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
 
           return cam;
         }
@@ -5424,7 +5424,7 @@ namespace monk
         {
           monk_heal_t::impact( s );
 
-          p()->buff.fae_exposure->trigger();
+          p()->buff.jadefire_brand->trigger();
         }
       };
 
@@ -5468,11 +5468,11 @@ namespace monk
 
           if ( !target_cache.list.empty() )
           {
-            // Prioritize enemies / players that do not have fae exposure
+            // Prioritize enemies / players that do not have jadefire brand
             // the ability does not do this inherently but it is assumed that an observant player would
             range::sort( target_cache.list, [ this ] ( player_t *left, player_t *right )
             {
-              return get_td( left )->debuff.fae_exposure->remains().total_millis() < get_td( right )->debuff.fae_exposure->remains().total_millis();
+              return get_td( left )->debuff.jadefire_brand->remains().total_millis() < get_td( right )->debuff.jadefire_brand->remains().total_millis();
             } );
           }
 
@@ -5485,7 +5485,7 @@ namespace monk
 
           p()->buff.jadefire_stomp_reset->expire();
           p()->buff.jadefire_stomp->trigger();
-          p()->buff.fae_exposure->trigger();
+          p()->buff.jadefire_brand->trigger();
         }
 
         void impact( action_state_t *s ) override
@@ -5503,7 +5503,7 @@ namespace monk
             ww_damage->execute();
           }
 
-          get_td( s->target )->debuff.fae_exposure->trigger();
+          get_td( s->target )->debuff.jadefire_brand->trigger();
         }
       };
     }  // namespace spells
@@ -7322,7 +7322,7 @@ namespace monk
       ->set_trigger_spell( p->talent.brewmaster.weapons_of_order )
       ->set_default_value_from_effect( 1 );
 
-    debuff.fae_exposure = make_buff( *this, "fae_exposure_damage", p->passives.fae_exposure_dmg )
+    debuff.jadefire_brand = make_buff( *this, "jadefire_brand_damage", p->passives.jadefire_brand_dmg )
       ->set_trigger_spell( p->talent.windwalker.jadefire_harmony )
       ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -8059,7 +8059,7 @@ namespace monk
     talent.windwalker.skyreach = _ST( "Skyreach" );
     talent.windwalker.skytouch = _ST( "Skytouch" );
     talent.windwalker.invokers_delight = _ST( "Invoker's Delight" );
-    talent.windwalker.way_of_the_fae = _ST( "Way of the Fae" );
+    talent.windwalker.path_of_jade = _ST( "Path of Jade" );
     talent.windwalker.jadefire_harmony = _ST( "Jadefire Harmony" );
 
     // Specialization spells ====================================
@@ -8171,8 +8171,8 @@ namespace monk
     passives.dance_of_chiji_bug = find_spell( 286585 );
     passives.dizzying_kicks = find_spell( 196723 );
     passives.empowered_tiger_lightning = find_spell( 335913 );
-    passives.fae_exposure_dmg = find_spell( 395414 );
-    passives.fae_exposure_heal = find_spell( 395413 );
+    passives.jadefire_brand_dmg = find_spell( 395414 );
+    passives.jadefire_brand_heal = find_spell( 395413 );
     passives.jadefire_stomp_ww_damage = find_spell( 388201 );
     passives.fists_of_fury_tick = find_spell( 117418 );
     passives.flying_serpent_kick_damage = find_spell( 123586 );
@@ -8622,7 +8622,7 @@ namespace monk
       ->set_duration( timespan_t::from_seconds( 1.5 ) )
       ->set_quiet( true );
 
-    buff.fae_exposure = make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )
+    buff.jadefire_brand = make_buff( this, "jadefire_brand_heal", passives.jadefire_brand_heal )
       ->set_trigger_spell( talent.windwalker.jadefire_harmony )
       ->set_default_value_from_effect( 1 );
 
@@ -9634,12 +9634,12 @@ namespace monk
         1 + ( td->debuff.weapons_of_order->check() * td->debuff.weapons_of_order->data().effectN( 2 ).percent() );
     }
 
-    if ( td && td->debuff.fae_exposure->check() )
+    if ( td && td->debuff.jadefire_brand->check() )
     {
       if ( guardian )
-        multiplier *= 1 + passives.fae_exposure_dmg->effectN( 3 ).percent();
+        multiplier *= 1 + passives.jadefire_brand_dmg->effectN( 3 ).percent();
       else
-        multiplier *= 1 + passives.fae_exposure_dmg->effectN( 2 ).percent();
+        multiplier *= 1 + passives.jadefire_brand_dmg->effectN( 2 ).percent();
     }
 
     return multiplier;
