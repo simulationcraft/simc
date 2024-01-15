@@ -503,8 +503,8 @@ struct pull_event_t final : raid_event_t
 
   pull_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "pull" ),
-      delay(),
       enemies_str(),
+      delay( 0_ms ),
       spawn_time( 0_s ),
       bloodlust( false ),
       shared_health( false ),
@@ -545,7 +545,9 @@ struct pull_event_t final : raid_event_t
     if ( !adds_spawner )
     {
       adds_spawner = new spawner::pet_spawner_t<mob_t, player_t>( spawner_name, master );
-      adds_spawner->set_event_callback( spawner::pet_event_type::DEMISE, []( spawner::pet_event_type type, mob_t* mob ) { mob->pull_event->mob_demise(); } );
+      adds_spawner->set_event_callback( spawner::pet_event_type::DEMISE, []( spawner::pet_event_type, mob_t* mob ) {
+        mob->pull_event->mob_demise();
+      } );
     }
 
     if ( enemies_str.empty() )
@@ -1650,6 +1652,8 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     duration_stddev( timespan_t::zero() ),
     duration_min( timespan_t::zero() ),
     duration_max( timespan_t::zero() ),
+    pull( 0 ),
+    pull_target_str(),
     distance_min( 0 ),
     distance_max( 0 ),
     players_only( false ),
@@ -1664,9 +1668,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     cooldown_event(),
     duration_event(),
     start_event(),
-    end_event(),
-    pull( 0 ),
-    pull_target_str()
+    end_event()
 {
   add_option( opt_string( "name", name ) );
   add_option( opt_timespan( "first", first, timespan_t::zero(), timespan_t::max() ) );
@@ -2130,7 +2132,7 @@ void raid_event_t::parse_options( util::string_view options_str )
   {
     if ( last_pct != -1 || first_pct != -1 )
     {
-      if ( pull = 0 )
+      if ( pull == 0 )
         throw std::invalid_argument( "pull= is required for DungeonRoute events with last_pct/first_pct." );
       if ( pull_target_str.empty() )
         throw std::invalid_argument( "pull_target= is required for DungeonRoute events with last_pct/first_pct." );

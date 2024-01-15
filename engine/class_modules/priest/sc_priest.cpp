@@ -1181,7 +1181,7 @@ public:
     return static_cast<const state_t*>( s );
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     if ( execute_override > timespan_t::min() )
       return execute_override;

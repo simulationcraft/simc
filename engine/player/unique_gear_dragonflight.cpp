@@ -7986,9 +7986,10 @@ void fyralath_the_dream_render( special_effect_t& e )
     action_t* damage;
     action_t* charge_impact;
     action_t* dot;
+    buff_t* buff;
     int current_tick;
     int n_ticks;
-    buff_t* buff;
+
     rage_channel_t( const special_effect_t& e, util::string_view n, action_t* dam, action_t* imp, action_t* d, buff_t* b )
       : proc_spell_t( n, e.player, e.player->find_spell( 417132 ), e.item ),
         damage( dam ),

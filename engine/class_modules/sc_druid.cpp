@@ -10961,11 +10961,11 @@ void druid_t::init_special_effects()
 
       rage_from_being_attacked_cb_t( druid_t* p, const special_effect_t& e )
         : druid_cb_t( p, e ),
-          rage( p->spec.bear_form_passive->effectN( 3 ).base_value() ),
-          gain( p->get_gain( "Rage from being attacked" ) )
+          gain( p->get_gain( "Rage from being attacked" ) ),
+          rage( p->spec.bear_form_passive->effectN( 3 ).base_value() )
       {}
 
-      void execute( action_t*, action_state_t* s ) override
+      void execute( action_t*, action_state_t* ) override
       {
         p()->resource_gain( RESOURCE_RAGE, rage, gain );
       }
