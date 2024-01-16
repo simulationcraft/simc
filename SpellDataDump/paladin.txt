@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52808 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -12078,7 +12078,7 @@ Description      : $@spelldesc355100
 Name             : Divine Toll (id=375576) [Spell Family (10)] 
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20]
 Class            : Paladin
-School           : Arcane
+School           : Holy
 Spell Type       : None
 Resource         : 3% Base Mana (0) (id=265377)
 Range            : 30 yards
@@ -14871,10 +14871,10 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each Holy Power spent on Light of Dawn increases the healing of your next Word of Glory by $s1%, up to a maximum of $s2%.
 
-Name             : Blessing of Summer (desc=Night Fae) (id=388007) [Spell Family (10)] 
+Name             : Blessing of Summer (id=388007) [Spell Family (10)] 
 Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
-School           : Nature
+School           : Holy
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265561)
 Spell Level      : 1
@@ -14911,7 +14911,7 @@ Description      : Bless an ally for $d, causing their attacks to have a $h% cha
 |cFFFFFFFFBlessing of the Seasons:|r Turns to Autumn after use.
 Tooltip          : Attacks have a $h% chance to deal $w1% additional damage as Holy.
 
-Name             : Blessing of Autumn (desc=Night Fae) (id=388010) [Spell Family (10)] 
+Name             : Blessing of Autumn (id=388010) [Spell Family (10)] 
 Class            : Paladin
 School           : Nature
 Spell Type       : None
@@ -14949,7 +14949,7 @@ Description      : Bless an ally for $d, causing their cooldowns to recover $s1%
 |cFFFFFFFFBlessing of the Seasons:|r Turns to Winter after use.
 Tooltip          : Cooldowns recover $w1% faster.
 
-Name             : Blessing of Winter (desc=Night Fae) (id=388011) [Spell Family (10)] 
+Name             : Blessing of Winter (id=388011) [Spell Family (10)] 
 Class            : Paladin
 School           : Nature
 Spell Type       : None
@@ -14995,9 +14995,9 @@ Description      : Bless a friendly healer for $d, restoring $s1% mana every $s6
 Tooltip          : Restoring $w1% mana every $s6 sec.
 Variables        : $points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}
 
-Name             : Blessing of Spring (desc=Night Fae) (id=388013) [Spell Family (10)] 
+Name             : Blessing of Spring (id=388013) [Spell Family (10)] 
 Class            : Paladin
-School           : Nature
+School           : Holy
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265564)
 Spell Level      : 48
@@ -17858,8 +17858,8 @@ Spell Type       : None
 Duration         : 30 seconds
 Stacks           : 25 initial, 25 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Triggered by     : Divine Arbiter (404306)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 

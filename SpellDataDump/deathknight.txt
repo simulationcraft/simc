@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52808 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -15578,7 +15578,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : All damage done by your pet is increased by $s1%.
 
-Name             : Abomination Limb (desc=Shadowlands) (id=383269) [Spell Family (15)] 
+Name             : Abomination Limb (id=383269) [Spell Family (15)] 
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
