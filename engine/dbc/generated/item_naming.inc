@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.2.0.52808
-static const std::array<item_name_description_t, 820> __item_name_description_data { {
+// Item name descriptions, wow build 10.2.5.52902
+static const std::array<item_name_description_t, 828> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -820,5 +820,13 @@ static const std::array<item_name_description_t, 820> __item_name_description_da
   { 14099, "Heroic|n"                                    },
   { 14100, "Mythic|n"                                    },
   { 14101, "Raid Finder|n"                               },
+  { 14104, "Kalimdor and Eastern Kingdoms Cups"          },
+  { 14105, "Outland Cup"                                 },
+  { 14106, "Northrend Cup"                               },
+  { 14107, "In-Game Shop"                                },
+  { 14108, "In-Game Shop Variant"                        },
+  { 14132, "Moon"                                        },
+  { 14133, "Sun"                                         },
+  { 14134, "Cycle"                                       },
 } };
 

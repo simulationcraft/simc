@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52808 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2811,7 +2811,7 @@ Attributes       : ........ ........ x....x.x ........   ........ ........ .....
                  : Not Shapeshifted (16), No Active Defense (21), Allow Cast While Dead (23), Do Not Display Range (126), Show Mechanic as Combat Text (213), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Ignore Damage Cancels Aura Interrupt (394), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=170318)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.36000 | PvP Coefficient: 1.40000 | Target: Unknown(25)
 Description      : Deals $s1 physical damage.
 
 Name             : Flare (id=132950) [Spell Family (9)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52808 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1292,10 +1292,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+                 : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -2285,7 +2285,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : $?s214205[Power Word: Shield applies Atonement to your target for $214206d.
 
-Your spell damage heals all targets affected by Atonement for $s1% of the damage done.][Power Word: Shield, Flash Heal, Renew, and Power Word: Radiance apply Atonement to your target for $194384s3 sec.
+Your spell damage heals all targets affected by Atonement for $s1% of the damage done.][Power Word: Shield, Flash Heal, Renew, Power Word: Radiance, and Power Word: Life apply Atonement to your target for $194384s3 sec.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.] 
 
@@ -5576,7 +5576,7 @@ Effects          :
 Description      : Attack the enemy's soul with a surge of Shadow energy, increasing your spell damage to the target by $s1% for $d.
 Tooltip          : Taking $s1% increased damage from the Priest.
 
-Name             : Blaze of Light (desc=PvP Talent) (id=215768) [Spell Family (6), Passive, Hidden] 
+Name             : Blaze of Light (id=215768) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(25, 50)]
@@ -17422,7 +17422,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1095893)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc421453
 
 Name             : Ultimate Penitence (id=421544) [Spell Family (6)] 
