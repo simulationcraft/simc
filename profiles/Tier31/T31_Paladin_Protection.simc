@@ -28,8 +28,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/lights_judgment
 actions.precombat+=/arcane_torrent
 actions.precombat+=/consecration
-actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
-actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_cooldown&trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!trinket.2.has_cooldown
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_cooldown&trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|!trinket.1.has_cooldown
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -87,7 +87,7 @@ finger1=band_of_burning_thorns,id=207159,bonus_id=1520/6935/7187/8767,gem_id=192
 finger2=thornwoven_band,id=162548,bonus_id=6935/7187/8767/9853,gem_id=192935,enchant=devotion_of_haste_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=1520/7187/8767
 trinket2=augury_of_the_primal_flame,id=208614,bonus_id=1527/7187/8767
-main_hand=gholak_the_final_conflagration,id=207786,bonus_id=1520/7187/8767,enchant=shadowflame_wreathe_3
+main_hand=gholak_the_final_conflagration,id=207786,bonus_id=1520/7187/8767,enchant=wafting_devotion_3
 off_hand=defender_of_the_ancient,id=207797,bonus_id=1520/7187/8767
 
 # Gear Summary
