@@ -2087,6 +2087,8 @@ void spoils_of_neltharus( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<spoils_of_neltharus_t>( "spoils_of_neltharus", effect );
+  effect.disable_buff();
+  effect.stat = STAT_ANY_DPS;
 }
 
 void sustaining_alchemist_stone( special_effect_t& effect )
