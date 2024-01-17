@@ -71,7 +71,7 @@ actions.aoe+=/execute,if=buff.sudden_death.react&set_bonus.tier31_4pc
 actions.aoe+=/cleave,if=buff.martial_prowess.stack=2
 actions.aoe+=/mortal_strike,if=talent.sharpened_blades&buff.sweeping_strikes.up&buff.martial_prowess.stack=2&active_enemies<=8
 actions.aoe+=/thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains
-actions.aoe+=/spear_of_bastion,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains
+actions.aoe+=/champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains
 actions.aoe+=/bladestorm,if=buff.hurricane.remains<3|!talent.hurricane
 actions.aoe+=/whirlwind,if=talent.storm_of_swords
 actions.aoe+=/cleave,if=!talent.fervor_of_battle|talent.fervor_of_battle&dot.deep_wounds.remains<=dot.deep_wounds.duration*0.3
@@ -93,7 +93,7 @@ actions.execute+=/sweeping_strikes,if=active_enemies>1
 actions.execute+=/mortal_strike,if=dot.rend.remains<=gcd&talent.bloodletting
 actions.execute+=/rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12
 actions.execute+=/avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20
-actions.execute+=/spear_of_bastion,if=cooldown.colossus_smash.remains<=gcd
+actions.execute+=/champions_spear,if=cooldown.colossus_smash.remains<=gcd
 actions.execute+=/warbreaker,if=raid_event.adds.in>22
 actions.execute+=/colossus_smash
 actions.execute+=/execute,if=buff.sudden_death.react&dot.deep_wounds.remains
@@ -122,7 +122,7 @@ actions.single_target+=/mortal_strike
 actions.single_target+=/thunder_clap,if=dot.rend.remains<=gcd&talent.blood_and_thunder
 actions.single_target+=/whirlwind,if=talent.storm_of_swords&debuff.colossus_smash.up
 actions.single_target+=/bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&buff.hurricane.remains<2|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)
-actions.single_target+=/spear_of_bastion,if=buff.test_of_might.up|debuff.colossus_smash.up
+actions.single_target+=/champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up
 actions.single_target+=/skullsplitter
 actions.single_target+=/execute,if=buff.sudden_death.react
 actions.single_target+=/shockwave,if=talent.sonic_boom.enabled
