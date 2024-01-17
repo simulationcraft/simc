@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52808 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -3486,7 +3486,6 @@ Effects          :
                    Family Flags: 7
 #19 (id=1081584)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
-Hotfixed         : Base Value (-5 -> 3)
 #20 (id=1081585)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #21 (id=1084907)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -3510,7 +3509,6 @@ Hotfixed         : Base Value (-5 -> 3)
                    Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676)
                    Family Flags: 126
-Hotfixed         : Base Value (-6 -> -3)
 #27 (id=1123087)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676)
@@ -3519,12 +3517,10 @@ Hotfixed         : Base Value (-6 -> -3)
                    Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676)
                    Family Flags: 126
-Hotfixed         : Base Value (-6 -> -3)
 #29 (id=1125911)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
-Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -3614,7 +3610,6 @@ Effects          :
                    Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
 #21 (id=1081540)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
-Hotfixed         : Base Value (-5 -> 3)
 #22 (id=1081541)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #23 (id=1089477)  : Apply Aura (6) | Dummy (4)
