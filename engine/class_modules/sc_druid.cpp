@@ -1542,13 +1542,17 @@ public:
 
   void schedule_execute( action_state_t* s = nullptr ) override
   {
-  check_autoshift();
+    check_autoshift();
 
-  ab::schedule_execute( s );
+    ab::schedule_execute( s );
   }
 
   void execute() override
   {
+    // offgcd actions bypass schedule_execute so check for autoshift
+    if ( ab::use_off_gcd )
+      check_autoshift();
+
     ab::execute();
 
     if ( break_stealth )
@@ -6568,9 +6572,6 @@ struct barkskin_t : public druid_spell_t
 
   void execute() override
   {
-    // since barkskin can be used off gcd, it can bypass schedule_execute() so we check for autoshift here
-    check_autoshift();
-
     druid_spell_t::execute();
 
     p()->buff.barkskin->trigger();
@@ -7404,9 +7405,6 @@ struct prowl_t : public druid_spell_t
   {
     if ( sim->log )
       sim->print_log( "{} performs {}", player->name(), name() );
-
-    // since prowl can be used off gcd, it can bypass schedule_execute() so we check for autoshift again here
-    check_autoshift();
 
     p()->buff.incarnation_cat_prowl->expire();
     p()->buff.prowl->trigger();
