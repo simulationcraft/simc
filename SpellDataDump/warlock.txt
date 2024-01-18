@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52968 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -13511,7 +13511,6 @@ Effects          :
 Description      : Corruption damage is increased by $s1%, and each time it deals damage any of your Curses active on the target are extended by ${$s2/1000}.1 sec.
 
 Name             : Soul Rot (id=386997) [Spell Family (5)] 
-Hotfixed         : Description, Tooltip
 Talent Entry     : Affliction [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
