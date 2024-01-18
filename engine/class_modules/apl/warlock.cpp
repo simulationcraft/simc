@@ -50,8 +50,8 @@ void affliction( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff.intellect|trinket.1.has_use_buff.mastery|trinket.1.has_use_buff.versatility|trinket.1.has_use_buff.haste|trinket.1.has_use_buff.crit" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff.intellect|trinket.2.has_use_buff.mastery|trinket.2.has_use_buff.versatility|trinket.2.has_use_buff.haste|trinket.2.has_use_buff.crit" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.2.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.timethiefs_gambit" );
@@ -200,8 +200,8 @@ void demonology( player_t* p )
   precombat->add_action( "variable,name=shadow_timings,default=0,op=reset" );
   precombat->add_action( "variable,name=tyrant_timings,value=0" );
   precombat->add_action( "variable,name=shadow_timings,op=set,value=0,if=cooldown.invoke_power_infusion_0.duration!=120" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff.intellect|trinket.1.has_use_buff.mastery|trinket.1.has_use_buff.versatility|trinket.1.has_use_buff.haste|trinket.1.has_use_buff.crit" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff.intellect|trinket.2.has_use_buff.mastery|trinket.2.has_use_buff.versatility|trinket.2.has_use_buff.haste|trinket.2.has_use_buff.crit" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon|trinket.1.is.timethiefs_gambit" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon|trinket.2.is.timethiefs_gambit" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.nymues_unraveling_spindle" );
@@ -323,8 +323,8 @@ void destruction( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff.intellect|trinket.1.has_use_buff.mastery|trinket.1.has_use_buff.versatility|trinket.1.has_use_buff.haste|trinket.1.has_use_buff.crit" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff.intellect|trinket.2.has_use_buff.mastery|trinket.2.has_use_buff.versatility|trinket.2.has_use_buff.haste|trinket.2.has_use_buff.crit" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.2.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.timethiefs_gambit" );
