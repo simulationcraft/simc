@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52968 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -15954,7 +15954,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1014547)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (2 -> -2)
 #2 (id=1014548)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases Leech by $s2% and reduces damage taken from area-of-effect attacks by $s1%.

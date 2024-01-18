@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52968 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
