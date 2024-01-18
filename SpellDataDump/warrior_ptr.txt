@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.5.52902 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.52968 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
