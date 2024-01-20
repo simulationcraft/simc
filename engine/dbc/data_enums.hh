@@ -1151,7 +1151,7 @@ enum effect_subtype_t : unsigned {
     A_316 = 316,
     A_317 = 317,
     A_MOD_MASTERY_PCT = 318,
-    A_319 = 319,
+    A_MOD_MELEE_ATTACK_SPEED_PCT = 319,
     A_320 = 320,
     A_321 = 321,
     A_322 = 322,
@@ -1222,7 +1222,7 @@ enum effect_subtype_t : unsigned {
     A_402 = 402,
     A_403 = 403,
     A_OVERRIDE_AP_PER_SP = 404,
-    A_405 = 405, // Misc value seems to be a mask that holds the modified ratings.
+    A_MOD_STAT_FROM_RATING_PCT = 405, // Misc value seems to be a mask that holds the modified ratings.
     A_406 = 406,
     A_407 = 407,
     A_408 = 408,
@@ -1245,7 +1245,7 @@ enum effect_subtype_t : unsigned {
     A_430 = 430,
     A_440 = 440,
     A_441 = 441,
-    A_443 = 443,
+    A_MOD_LEECH_PERCENT = 443,
     A_446 = 446,
     A_447 = 447,
     A_448 = 448,
@@ -1269,6 +1269,7 @@ enum effect_subtype_t : unsigned {
     A_492 = 492,
     A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS = 501,
     A_MOD_DAMAGE_FROM_SPELLS_LABEL = 507,
+    A_MOD_GUARDIAN_DAMAGE_DONE = 531,
     A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL = 537,
     A_MOD_SUPPORT_STAT = 540,
     A_MAX

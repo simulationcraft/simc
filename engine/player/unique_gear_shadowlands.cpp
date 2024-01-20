@@ -4920,7 +4920,7 @@ void echo_of_eonar( special_effect_t& effect )
     effect.player->buffs.echo_of_eonar =
       make_buff( effect.player, "echo_of_eonar", effect.player->find_spell( 347458 ) )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        -> set_parse_player_auras( true );
   }
 
   // TODO: buff to allies? (id=338489)
@@ -5720,7 +5720,7 @@ void shard_of_cor( special_effect_t& effect )
   {
     buff = make_buff( effect.player, "coldhearted", effect.player->find_spell( 356364 ) )
                ->set_default_value( 0.0001 * effect.driver()->effectN( 1 ).average( effect.player ), 1 )
-               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+               ->set_parse_player_auras( true );
   }
 
   effect.custom_buff = effect.player->buffs.coldhearted = buff;

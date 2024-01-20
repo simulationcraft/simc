@@ -527,7 +527,8 @@ struct death_knight_td_t : public actor_target_data_t {
 using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
 using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
-struct death_knight_t : public player_t {
+struct death_knight_t : public player_t
+{
 public:
   // Stores the currently active death and decay ground event
   ground_aoe_event_t* active_dnd;
@@ -1325,22 +1326,11 @@ public:
   void      init_procs() override;
   void      init_finished() override;
   double    composite_bonus_armor() const override;
-  double    composite_attack_power_multiplier() const override;
-  double    composite_melee_speed() const override;
-  double    composite_melee_haste() const override;
-  double    composite_spell_haste() const override;
   double    composite_attribute_multiplier( attribute_e attr ) const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_parry_rating() const override;
-  double    composite_parry() const override;
-  double    composite_leech() const override;
-  double    composite_melee_expertise( const weapon_t* ) const override;
-  double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* /* state */, bool /* guardian */ ) const override;
   double    composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
-  double    composite_melee_crit_chance() const override;
-  double    composite_spell_crit_chance() const override;
-  double    composite_crit_avoidance() const override;
   void      combat_begin() override;
   void      activate() override;
   void      reset() override;
@@ -1367,6 +1357,7 @@ public:
   void      datacollection_end() override;
   void      analyze( sim_t& sim ) override;
   void      apply_affecting_auras( action_t& action ) override;
+  void      apply_player_auras() override;
 
   // Default consumables
   std::string default_flask() const override { return death_knight_apl::flask( this ); }
@@ -1440,6 +1431,7 @@ public:
     return &( entries.back()->second );
   }
 };
+
 
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p ) :
   actor_target_data_t( target, p )
@@ -2245,6 +2237,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   gain_t* dark_transformation_gain;
   buff_t* vile_infusion;
   buff_t* ghoulish_frenzy;
+  buff_t* dark_transformation;
 
   // Generic Dark Transformation pet ability
   struct dt_melee_ability_t : public pet_melee_attack_t<ghoul_pet_t>
@@ -2376,13 +2369,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY )
     {
-      m *= 1.0 + dk() -> buffs.dark_transformation -> value();
-
-      if( ghoulish_frenzy -> check() )
-        m *= 1.0 + ghoulish_frenzy -> value();
-
-      if( vile_infusion -> check() )
-        m *= 1.0 + vile_infusion -> value();
+      m *= 1.0 + dark_transformation -> value();
+      m *= 1.0 + ghoulish_frenzy -> value();
+      m *= 1.0 + vile_infusion -> value();
     }
 
     return m;
@@ -2466,7 +2455,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::create_buffs();
 	  
     ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
-      -> set_default_value( dk() -> pet_spell.ghoulish_frenzy -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> apply_affecting_aura( dk() -> talent.unholy.ghoulish_frenzy )
       -> set_duration( 0_s )
       -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -2478,6 +2467,12 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> set_cooldown( dk() -> sets -> set(DEATH_KNIGHT_UNHOLY, T29, B2 ) -> internal_cooldown() )
       -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       -> add_invalidate( CACHE_ATTACK_SPEED );
+
+    dark_transformation = make_buff( this, "dark_transformation", dk()->talent.unholy.dark_transformation )
+      -> set_default_value_from_effect( 1 )
+      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      -> set_duration( 0_s ) // Handled by the player buff
+      -> set_cooldown( 0_s ); // Handled by the player action
   }
 };
 
@@ -3976,18 +3971,6 @@ struct melee_t : public death_knight_melee_attack_t
       return t;
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_da_multiplier( s );
-
-    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.vigorous_lifeblood_4pc -> up() )
-    {
-      m *= 1.0 + p() -> spell.vigorous_lifeblood_4pc -> effectN ( 5 ).percent();
-    }
-
-    return m;
-  }
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = death_knight_melee_attack_t::composite_target_multiplier( target );
@@ -5129,33 +5112,42 @@ struct dark_transformation_damage_t final : public death_knight_spell_t
 // Even though the buff is tied to the pet ingame, it's simpler to add it to the player
 struct dark_transformation_buff_t final : public buff_t
 {
-  dark_transformation_buff_t( death_knight_t* p ) :
-    buff_t( p, "dark_transformation", p -> talent.unholy.dark_transformation )
+  dark_transformation_buff_t( death_knight_t* p ) : buff_t( p, "dark_transformation" )
   {
-    set_default_value_from_effect( 1 );
-    cooldown -> duration = 0_ms; // Handled by the player ability
-    if( p -> talent.unholy.ghoulish_frenzy.ok() )
-    {
-      set_stack_change_callback( [ p ] ( buff_t*, int, int new_ ) 
+    // Dummy buff on the player for APL purposes
+    set_quiet( true );
+    set_duration( p->talent.unholy.dark_transformation->duration() );
+    cooldown->duration = 0_ms;  // Handled by the player ability
+    set_stack_change_callback( [ p ]( buff_t*, int, int new_ ) {
+      if ( new_ )
       {
-        if ( new_ )
+        if ( p->talent.unholy.ghoulish_frenzy.ok() )
+          p->buffs.ghoulish_frenzy->trigger();
+
+        for ( auto& ghoul : p->pets.ghoul_pet )
         {
-          p -> buffs.ghoulish_frenzy -> trigger();
-          for (auto& ghoul : p->pets.ghoul_pet)
+          ghoul->dark_transformation->trigger();
+          if ( p->talent.unholy.ghoulish_frenzy.ok() )
           {
             ghoul->ghoulish_frenzy->trigger();
           }
         }
-        else
+      }
+      else
+      {
+        if ( p->talent.unholy.ghoulish_frenzy.ok() )
+          p->buffs.ghoulish_frenzy->expire();
+
+        for ( auto& ghoul : p->pets.ghoul_pet )
         {
-          p -> buffs.ghoulish_frenzy -> expire();
-          for (auto& ghoul : p->pets.ghoul_pet)
+          ghoul->dark_transformation->expire();
+          if ( p->talent.unholy.ghoulish_frenzy.ok() )
           {
             ghoul->ghoulish_frenzy->expire();
           }
         }
-      } );
-    }
+      }
+    } );
   }
 };
 
@@ -5613,8 +5605,9 @@ struct blood_shield_buff_t final : public absorb_buff_t
   {
     set_absorb_school( SCHOOL_PHYSICAL );
     set_absorb_source( player -> get_stats( "blood_shield" ) );
+    set_parse_player_auras( true );
     modify_duration( player -> talent.blood.iron_heart ->effectN( 1 ).time_value() );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    apply_affecting_aura( player -> talent.blood.bloodshot );
   }
 };
 
@@ -9472,34 +9465,6 @@ void death_knight_t::create_pets()
   }
 }
 
-// death_knight_t::composite_attack_haste() =================================
-
-double death_knight_t::composite_melee_haste() const
-{
-  double haste = player_t::composite_melee_haste();
-
-  if( specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield -> up() && talent.blood.improved_bone_shield -> ok() )
-  {
-    haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() );
-  }
-
-  return haste;
-}
-
-// death_knight_t::composite_spell_haste() ==================================
-
-double death_knight_t::composite_spell_haste() const
-{
-  double haste = player_t::composite_spell_haste();
-
-  if( specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield -> up() && talent.blood.improved_bone_shield -> ok() )
-  {
-    haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() );
-  }
-
-  return haste;
-}
-
 // death_knight_t::init_rng =================================================
 
 void death_knight_t::init_rng()
@@ -9900,7 +9865,7 @@ void death_knight_t::init_spells()
   spell.death_rot_debuff           = find_spell( 377540 );
   spell.coil_of_devastation_debuff = find_spell( 390271 );
   spell.feasting_strikes_gain      = find_spell( 390162 );
-  spell.ghoulish_frenzy_player     = find_spell( 377587 );
+  spell.ghoulish_frenzy_player     = find_spell( 377588 );
   spell.plaguebringer_buff         = find_spell( 390178 );
   spell.festermight_buff           = find_spell( 377591 );
   spell.ghoulish_infusion          = find_spell( 394899 );
@@ -9946,7 +9911,7 @@ void death_knight_t::init_spells()
   // Ruptured Viscera Talent
   pet_spell.ruptured_viscera        = find_spell( 390220 );
   // Ghoulish Frenzy
-  pet_spell.ghoulish_frenzy         = find_spell ( 377587 );
+  pet_spell.ghoulish_frenzy         = find_spell ( 377589 );
   // Vile Infusion
   pet_spell.vile_infusion           = find_spell ( 394863 );
   // DRW Spells
@@ -10063,8 +10028,9 @@ void death_knight_t::create_buffs()
 
   buffs.rune_mastery = make_buff( this, "rune_mastery", spell.rune_mastery_buff )
         -> set_chance( 0.15 )  // This was found through testing 2022 July 21.  Not in spelldata.
-        -> set_default_value( talent.rune_mastery->effectN( 1 ).percent() )
-        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.rune_mastery )
+        -> set_default_value( talent.rune_mastery->effectN( 1 ).percent() );
 
   buffs.unholy_strength = make_buff( this, "unholy_strength", spell.unholy_strength_buff )
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
@@ -10073,7 +10039,7 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff)
         -> set_default_value_from_effect( 1 )
-        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+        -> set_parse_player_auras( true );
 
   buffs.rune_of_hysteria = make_buff( this, "rune_of_hysteria", spell.rune_of_hysteria_buff )
         -> set_default_value_from_effect( 1 )
@@ -10084,9 +10050,9 @@ void death_knight_t::create_buffs()
   buffs.empower_rune_weapon = make_buff( this, "empower_rune_weapon", spell.empower_rune_weapon_main )
         -> set_tick_zero( true )
         -> set_cooldown( 0_ms )
+        -> set_parse_player_auras( true )
         -> set_period( spell.empower_rune_weapon_main -> effectN( 1 ).period() )
         -> set_default_value_from_effect( 3 )
-        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
         -> set_tick_behavior( buff_tick_behavior::REFRESH )
         -> set_tick_callback( [ this ] ( buff_t* b, int, timespan_t ) 
@@ -10099,9 +10065,10 @@ void death_knight_t::create_buffs()
           } );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
-        -> add_invalidate( CACHE_ATTACK_SPEED )
         -> set_default_value( talent.icy_talons -> effectN( 1 ).percent() )
         -> set_cooldown( talent.icy_talons->internal_cooldown() )
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.icy_talons )
         -> set_trigger_spell( talent.icy_talons );
 
   // Blood
@@ -10111,7 +10078,9 @@ void death_knight_t::create_buffs()
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
-        -> add_invalidate( CACHE_HASTE )
+        -> set_value_stacks( false )
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.blood.improved_bone_shield )
         -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
             if ( talent.blood.foul_bulwark.ok() ) // Change player's max health if FB is talented
@@ -10132,9 +10101,8 @@ void death_knight_t::create_buffs()
             // Only expire if the buff is already up
             else if ( buffs.ossuary -> up() && new_stacks < talent.blood.ossuary -> effectN( 1 ).base_value() )
               buffs.ossuary -> expire();
-
             // If the buff starts or expires, invalidate relevant caches
-            if ( ( ! old_stacks && new_stacks ) || ( old_stacks && ! new_stacks ) )
+            if (( !old_stacks && new_stacks ) || ( old_stacks && !new_stacks ))
             {
               invalidate_cache( CACHE_BONUS_ARMOR );
             }
@@ -10155,8 +10123,8 @@ void death_knight_t::create_buffs()
   buffs.dancing_rune_weapon = make_buff( this, "dancing_rune_weapon", spell.dancing_rune_weapon_buff )
         -> set_cooldown( 0_ms )
         -> set_duration( 0_ms )
-        -> set_default_value_from_effect_type( A_MOD_PARRY_PERCENT )
-        -> add_invalidate( CACHE_PARRY );
+        -> set_parse_player_auras( true )
+        -> set_default_value_from_effect_type( A_MOD_PARRY_PERCENT );
 
   buffs.heartrend = make_buff( this, "heartrend", spell.heartrend_buff )
         -> set_default_value( talent.blood.heartrend -> effectN ( 1 ).percent() )
@@ -10167,8 +10135,7 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect( 1 );
 
   buffs.perseverance_of_the_ebon_blade = make_buff( this, "perseverance_of_the_ebon_blade", spell.preserverence_of_the_ebon_blade_buff )
-        -> set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() )
-        -> set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+        -> set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() );
 
   buffs.rune_tap = make_buff( this, "rune_tap", talent.blood.rune_tap )
         -> set_cooldown( 0_ms ); // Handled by the action
@@ -10215,16 +10182,16 @@ void death_knight_t::create_buffs()
           } );
 
   buffs.vampiric_strength = make_buff( this, "vampiric_strength", spell.vampiric_strength )
-        -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+        -> set_parse_player_auras( true )
+        -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
 
   buffs.vigorous_lifeblood_4pc = make_buff( this, "vigorous_lifeblood", spell.vigorous_lifeblood_4pc )
-        -> set_default_value_from_effect_type( A_HASTE_ALL )
-        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+        -> set_parse_player_auras( true )
+        -> set_default_value_from_effect_type( A_HASTE_ALL );
 
   buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )
-        -> set_trigger_spell( talent.blood.voracious )
-        -> add_invalidate( CACHE_LEECH );
+        -> set_parse_player_auras( true )
+        -> set_trigger_spell( talent.blood.voracious );
   }
 
   // Frost
@@ -10288,27 +10255,31 @@ void death_knight_t::create_buffs()
 		
   buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
         -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-        -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+        -> set_parse_player_auras( true )
         -> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
 			  
   buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
         -> set_default_value( talent.frost.bonegrinder -> effectN( 1 ).percent() )
-        -> set_schools_from_effect( 1 )
-        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        -> apply_affecting_aura( talent.frost.bonegrinder )
+        -> set_parse_player_auras( true )
+        -> set_schools_from_effect( 1 );
 		
   buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength -> effectN( 1 ).trigger() );
   
   buffs.enduring_strength = make_buff( this, "enduring_strength", spell.enduring_strength_buff )
-        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.frost.enduring_strength )
         -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
 		
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
-        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+        -> apply_affecting_aura( talent.frost.frostwhelps_aid )
+        -> set_parse_player_auras( true )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
-        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
+        -> apply_affecting_aura( talent.frost.unleashed_frenzy )
+        -> set_parse_player_auras( true )
         -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
   buffs.wrath_of_the_frostwyrm = make_buff( this, "wrath_of_the_frostwyrm", spell.wrath_of_the_frostwyrm_buff )
@@ -10333,15 +10304,15 @@ void death_knight_t::create_buffs()
         -> apply_affecting_aura( talent.unholy.harbinger_of_doom );
 
   buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
+        -> set_parse_player_auras( true )
         -> set_cooldown( 0_ms ) // Handled by the action
         -> set_default_value_from_effect( 4 ); 
 
   buffs.unholy_pact = new unholy_pact_buff_t( this );
 
   buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
-        -> set_default_value( spell.ghoulish_frenzy_player -> effectN( 1 ).percent() )
-        -> add_invalidate( CACHE_ATTACK_SPEED )
-        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        -> set_default_value_from_effect( 1 )
+        -> set_parse_player_auras( true )
         -> apply_affecting_aura( talent.unholy.ghoulish_frenzy );
 
   buffs.plaguebringer = make_buff( this, "plaguebringer", spell.plaguebringer_buff )
@@ -10350,21 +10321,21 @@ void death_knight_t::create_buffs()
         -> set_max_stack( 1 );
 
   buffs.festermight = make_buff( this, "festermight", spell.festermight_buff )
-        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
+        -> set_parse_player_auras( true )
+        -> apply_affecting_aura( talent.unholy.festermight )
         -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.ghoulish_infusion = make_buff( this, "ghoulish_infusion", spell.ghoulish_infusion )
         -> set_duration( spell.ghoulish_infusion -> duration() )
-        -> set_default_value_from_effect( 2 )
-        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        -> set_parse_player_auras( true )
+        -> set_default_value_from_effect( 2 );
 
   buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
   buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
-        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-        -> set_default_value( spell.defile_buff -> effectN( 1 ).base_value() / 1.8 );
+        -> set_default_value( spell.defile_buff -> effectN( 1 ).base_value() / 1.8 )
+        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
         -> set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -10379,7 +10350,8 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buffs.amplify_damage = make_buff( this, "amplify_damage", pet_spell.amplify_damage )
-        -> set_default_value( pet_spell.amplify_damage -> effectN( 1 ).percent() );
+        -> set_default_value( pet_spell.amplify_damage -> effectN( 1 ).percent() )
+        -> set_parse_player_auras( true );
   }
 }
 
@@ -10721,23 +10693,16 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
-  if ( attr == ATTR_STRENGTH )
+  switch ( attr )
   {
-    if ( specialization() == DEATH_KNIGHT_FROST )
-    m *= 1.0 + buffs.pillar_of_frost -> check_value() + buffs.pillar_of_frost_bonus -> check_stack_value();
-
-    if ( talent.might_of_thassarian.ok() )
-    {
-      m *= 1.0 + talent.might_of_thassarian->effectN( 1 ).percent();
-    }
-  }
-
-  else if ( attr == ATTR_STAMINA )
-  {
-    m *= 1.0 + talent.veteran_of_the_third_war -> effectN( 1 ).percent()
-      + spec.blood_death_knight -> effectN( 13 ).percent();
-
-    m *= 1.0 + spec.blood_fortification -> effectN( 1 ).percent();
+    case ATTR_STRENGTH:
+      if( specialization() == DEATH_KNIGHT_FROST )
+      {
+        m *= 1.0 + buffs.pillar_of_frost->check_value() + buffs.pillar_of_frost_bonus->check_stack_value();
+      }
+      break;
+    default:
+      break;
   }
 
   return m;
@@ -10765,37 +10730,7 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-// death_knight_t::composite_leech ========================================
-
-double death_knight_t::composite_leech() const
-{
-  double m = player_t::composite_leech();
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.voracious -> check() )
-  {
-    m += buffs.voracious -> data().effectN( 1 ).percent();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && talent.blood_scent.ok() )
-  {
-    m += talent.blood_scent->effectN( 1 ).percent();
-  }
-
-  return m;
-}
-
-// death_knight_t::composite_melee_expertise ===============================
-
-double death_knight_t::composite_melee_expertise( const weapon_t* ) const
-{
-  double expertise = player_t::composite_melee_expertise( nullptr );
-
-  expertise += spec.blood_death_knight -> effectN( 10 ).percent();
-
-  return expertise;
-}
-
-// warrior_t::composite_parry_rating() ========================================
+// death_knight_t::composite_parry_rating() ===================================
 
 double death_knight_t::composite_parry_rating() const
 {
@@ -10808,67 +10743,10 @@ double death_knight_t::composite_parry_rating() const
   return p;
 }
 
-// death_knight_t::composite_parry ============================================
-
-double death_knight_t::composite_parry() const
-{
-  double parry = player_t::composite_parry();
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.dancing_rune_weapon -> check() )
-    parry += buffs.dancing_rune_weapon -> check_value();
-
-  return parry;
-}
-
-// Player multipliers
-double death_knight_t::composite_player_multiplier( school_e school ) const
-{
-  double m = player_t::composite_player_multiplier( school );
-
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.ghoulish_frenzy -> check() )
-  {
-    m *= 1.0 + buffs.ghoulish_frenzy -> check_value();
-  }
-  
-  if ( specialization() == DEATH_KNIGHT_FROST && buffs.bonegrinder_frost->check() && dbc::is_school( school, SCHOOL_FROST ) )
-  {
-    m *= 1.0 + buffs.bonegrinder_frost->check_value();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && talent.blood.bloodshot.ok() && buffs.blood_shield -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
-  {
-    m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
-  }
-
-  return m;
-}
 
 double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
-
-  if ( guardian )
-  {
-    m *= 1.0 + spec.blood_death_knight -> effectN( 16 ).percent();
-    m *= 1.0 + spec.frost_death_knight -> effectN( 4 ).percent();
-    m *= 1.0 + spec.unholy_death_knight -> effectN( 4 ).percent();
-  }
-  else
-  {
-    m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
-    m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
-    m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.vigorous_lifeblood_4pc -> check() )
-  {
-    m *= 1.0 + spell.vigorous_lifeblood_4pc -> effectN( 4 ).percent();
-  }
-
-  if ( mastery.dreadblade->ok() )
-  {
-    m *= 1.0 + cache.mastery_value();
-  }
 
   if ( talent.unholy.unholy_aura.ok() )
   {
@@ -10876,16 +10754,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
       m *= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
     else  // Pets
       m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
-  }
-
-    if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.amplify_damage->check() )
-  {
-    m *= 1.0 + buffs.amplify_damage->check_value();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.unholy_assault->check() )
-  {
-    m *= 1.0 + buffs.unholy_assault->check_value();
   }
 
   return m;
@@ -10899,95 +10767,31 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
 
   if ( td )
   {
-
-    if ( td -> debuff.brittle -> check() )
+    if ( td->debuff.brittle->check() )
     {
-      m *= 1.0 + td -> debuff.brittle -> check_value();
+      m *= 1.0 + td->debuff.brittle->check_value();
     }
 
-    if ( td -> debuff.tightening_grasp -> check() && !guardian )
+    if ( td->debuff.tightening_grasp->check() && !guardian )
     {
-      m *= 1.0 + td -> debuff.tightening_grasp -> check_value();
+      m *= 1.0 + td->debuff.tightening_grasp->check_value();
     }
 
     if ( td && talent.unholy.morbidity.ok() )
     {
-      m *= 1.0 + ( td->dot.virulent_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-      m *= 1.0 + ( td->dot.frost_fever->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-      m *= 1.0 + ( td->dot.unholy_blight->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-      // Bugged as of 10/19/22 Morbidity is modifying effects 3, 4 and 5 of Blood Plague, does not include the guardian damage modifier, effect 6.
+      m *= 1.0 + ( td->dot.virulent_plague->is_ticking() * talent.unholy.morbidity->effectN( 1 ).percent() );
+      m *= 1.0 + ( td->dot.frost_fever->is_ticking() * talent.unholy.morbidity->effectN( 1 ).percent() );
+      m *= 1.0 + ( td->dot.unholy_blight->is_ticking() * talent.unholy.morbidity->effectN( 1 ).percent() );
+      // Bugged as of 10/19/22 Morbidity is modifying effects 3, 4 and 5 of Blood Plague, does not include the guardian
+      // damage modifier, effect 6.
       if ( !guardian )
       {
-        m *= 1.0 + ( td->dot.blood_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
+        m *= 1.0 + ( td->dot.blood_plague->is_ticking() * talent.unholy.morbidity->effectN( 1 ).percent() );
       }
     }
   }
 
   return m;
-}
-
-// death_knight_t::composite_attack_power_multiplier ==================================
-
-double death_knight_t::composite_attack_power_multiplier() const
-{
-  double m = player_t::composite_attack_power_multiplier();
-
-  if ( mastery.blood_shield -> ok() )
-  {
-    m *= 1.0 + mastery.blood_shield -> effectN( 2 ).mastery_value() * cache.mastery();
-  }
-
-  return m;
-}
-
-// death_knight_t::composite_attack_speed() =================================
-
-double death_knight_t::composite_melee_speed() const
-{
-  double haste = player_t::composite_melee_speed();
-
-  if ( buffs.icy_talons -> check() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.icy_talons -> check_stack_value() );
-  }
-
-  if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.ghoulish_frenzy -> check() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.ghoulish_frenzy -> check_value() );
-  }
-
-  return haste;
-}
-
-// death_knight_t::composite_melee_crit_chance() ============================
-double death_knight_t::composite_melee_crit_chance() const
-{
-  double c = player_t::composite_melee_crit_chance();
-
-  c += talent.merciless_strikes->effectN( 1 ).percent();
-
-  return c;
-}
-
-// death_knight_t::composite_spell_crit_chance() ============================
-double death_knight_t::composite_spell_crit_chance() const
-{
-  double c = player_t::composite_spell_crit_chance();
-
-  c += talent.merciless_strikes->effectN( 1 ).percent();
-
-  return c;
-}
-
-// death_knight_t::composite_tank_crit ======================================
-
-double death_knight_t::composite_crit_avoidance() const
-{
-  double c = player_t::composite_crit_avoidance();
-
-  c += spec.blood_death_knight -> effectN( 8 ).percent();
-
-  return c;
 }
 
 // death_knight_t::combat_begin =============================================
@@ -11125,6 +10929,36 @@ void death_knight_t::adjust_dynamic_cooldowns()
   _runes.update_coefficient();
 }
 
+// death_knight_t::apply_auras() ============================================
+void death_knight_t::apply_player_auras()
+{
+  // Shared
+  apply_passive_aura_effects( spec.death_knight );
+  apply_passive_aura_effects( talent.might_of_thassarian );
+  apply_passive_aura_effects( talent.veteran_of_the_third_war );
+  apply_passive_aura_effects( talent.merciless_strikes );
+  // Blood
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
+    apply_passive_aura_effects( spec.blood_death_knight );
+    apply_passive_aura_effects( mastery.blood_shield );
+    apply_passive_aura_effects( spec.blood_fortification );
+    apply_passive_aura_effects( talent.blood_scent );
+  }
+  // Frost
+  if ( specialization() == DEATH_KNIGHT_FROST )
+  {
+    apply_passive_aura_effects( spec.frost_death_knight );
+  }
+  // Unholy
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    apply_passive_aura_effects( mastery.dreadblade );
+    apply_passive_aura_effects( spec.unholy_death_knight );
+  }
+  player_t::apply_player_auras();
+}
+
 void death_knight_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
@@ -11255,8 +11089,8 @@ private:
 
 // DEATH_KNIGHT MODULE INTERFACE ============================================
 
-struct death_knight_module_t : public module_t {
-  death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
+struct death_knight_module_t : public module_t
+  { death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {

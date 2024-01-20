@@ -828,8 +828,7 @@ public:
   virtual double radius_() const
   { return radius; }
 
-  virtual double action_multiplier() const
-  { return base_multiplier; }
+  virtual double action_multiplier() const;
 
   virtual double action_da_multiplier() const
   { return base_dd_multiplier; }

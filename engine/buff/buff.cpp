@@ -669,7 +669,15 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     start_intervals(),
     trigger_intervals(),
     duration_lengths(),
-    change_regen_rate( false )
+    change_regen_rate( false ),
+    is_stat_pct_buff( false ),
+    parse_player_auras( false ),
+    value_stacks( true ),
+    modifier_spell1( spell_data_t::nil() ),
+    modifier_spell2( spell_data_t::nil() ),
+    modifier_spell3( spell_data_t::nil() ),
+    modifier_spell4( spell_data_t::nil() ),
+    modifier_spell5( spell_data_t::nil() )
 {
   if ( source )  // Player Buffs
   {
@@ -1141,6 +1149,7 @@ buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
   if ( range::find( buffs, this ) == buffs.end() )
     buffs.push_back( this );
   add_invalidate( cache_from_stat_pct_buff( type ) );
+  is_stat_pct_buff = true;
 
   return this;
 }
@@ -1404,17 +1413,42 @@ buff_t* buff_t::set_name_reporting( std::string_view n )
   return this;
 }
 
+buff_t* buff_t::set_parse_player_auras( bool b )
+{
+  parse_player_auras = b;
+  return this;
+}
+
+buff_t* buff_t::set_value_stacks( bool b )
+{
+  value_stacks = b;
+  return this;
+}
+
 buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
 {
   if ( !spell->ok() || !s_data->ok() )
     return this;
 
-  assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting buffs." );
+  assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) &&
+          "only passive spells should be affecting buffs." );
 
   for ( const spelleffect_data_t& effect : spell->effects() )
   {
     apply_affecting_effect( effect );
   }
+
+  // I hate everything about this
+  if ( modifier_spell1 == spell_data_t::nil() )
+    modifier_spell1 = spell;
+  else if ( modifier_spell2 == spell_data_t::nil() )
+    modifier_spell2 = spell;
+  else if ( modifier_spell3 == spell_data_t::nil() )
+    modifier_spell3 = spell;
+  else if ( modifier_spell4 == spell_data_t::nil() )
+    modifier_spell4 = spell;
+  else if ( modifier_spell5 == spell_data_t::nil() )
+    modifier_spell5 = spell;
 
   return this;
 }
