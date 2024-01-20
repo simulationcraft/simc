@@ -1487,7 +1487,7 @@ struct vulnerable_event_t final : public raid_event_t
   player_t* target = nullptr;
   std::string target_str;
 
-  vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
+  vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 1.0 )
   {
     add_option( opt_float( "multiplier", multiplier ) );
     
