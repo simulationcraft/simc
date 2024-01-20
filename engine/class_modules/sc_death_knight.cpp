@@ -11276,46 +11276,64 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
-  /*
+  
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Virulent Plague Damage increased by 15%", 281049, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Direct Damage Buffed by 4%", 179690, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.1725 )
-      .verification_value( 0.15 );
+      .modifier( -1 )
+      .verification_value( -5 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Epidemic Damage increased by 12%", 315517, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Periodic Damage Buffed by 4%", 191170, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.2757888 )
-      .verification_value( 0.24624 );
+      .modifier( -1 )
+      .verification_value( -5 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Epidemic AoE Damage increased by 12%", 872659, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Pet Damage Buffed by 4%", 191171, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.11031552 )
-      .verification_value( 0.098496 );
+      .modifier( -1 )
+      .verification_value( -5 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Festering Strike Damage increased by 20%", 87374, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Guardian Damage Buffed by 4%", 1032341, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.6704 )
-      .verification_value( 1.39200 );
+      .modifier( -1 )
+      .verification_value( -5 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Festering Wound damage increased by 12%", 285232, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Direct Damage Buffed by 4%", 179689, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.2805264 )
-      .verification_value( 0.25047 );
+      .modifier( 4 )
+      .verification_value( 0 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Sweeping Claws damage increased by 15%", 341774, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Periodic Damage Buffed by 4%", 191174, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.1725 )
-      .verification_value( 0.15 );
+      .modifier( 4 )
+      .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Pet Damage Buffed by 4%", 844541, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Guardian Damage Buffed by 4%", 1032340, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Bone Shield Strength Increased", 286506, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 80 )
+      .verification_value( 70 );
   }
-  */
+  
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}
