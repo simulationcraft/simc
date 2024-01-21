@@ -2804,7 +2804,6 @@ void sim_t::init()
     if ( main_target_str.empty() && target_list.empty() )
     {
       target = module_t::enemy()->create_player( this, "Dungeon" );
-      // target->initial.sleeping = target->base.sleeping = target->current.sleeping = true;
     }
     else
     {
