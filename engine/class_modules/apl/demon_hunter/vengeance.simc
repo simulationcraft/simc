@@ -23,7 +23,7 @@ actions+=/auto_attack
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
 actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
-actions+=/metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up
+actions+=/metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12
 actions+=/potion,use_off_gcd=1
 actions+=/call_action_list,name=externals
 actions+=/use_items,use_off_gcd=1
@@ -39,7 +39,7 @@ actions.maintenance+=/sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_
 actions.maintenance+=/immolation_aura
 actions.maintenance+=/bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2
 actions.maintenance+=/spirit_bomb,if=variable.can_spb
-actions.maintenance+=/felblade,if=(fury.deficit>=40&active_enemies=1)|((cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50)
+actions.maintenance+=/felblade,if=((!talent.spirit_bomb|active_enemies=1)&fury.deficit>=40)|((cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50)
 actions.maintenance+=/fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
 actions.maintenance+=/shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
 # Don't overcap fury
@@ -49,7 +49,7 @@ actions.maintenance+=/soul_cleave,if=fury.deficit<=40
 # Fiery demise window
 actions.fiery_demise=immolation_aura
 actions.fiery_demise+=/sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0
-actions.fiery_demise+=/felblade,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50
+actions.fiery_demise+=/felblade,if=(!talent.spirit_bomb|(cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))&fury<50
 actions.fiery_demise+=/fel_devastation
 actions.fiery_demise+=/soul_carver,if=soul_fragments.total<3
 actions.fiery_demise+=/the_hunt
@@ -64,7 +64,6 @@ actions.single_target+=/elysian_decree
 actions.single_target+=/fel_devastation
 actions.single_target+=/soul_cleave,if=!variable.dont_cleave
 actions.single_target+=/fracture
-actions.single_target+=/shear
 actions.single_target+=/call_action_list,name=filler
 
 # 2-5 targets
@@ -73,9 +72,8 @@ actions.small_aoe+=/fel_devastation,if=talent.collective_anguish.enabled|(talent
 actions.small_aoe+=/elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)
 actions.small_aoe+=/fel_devastation
 actions.small_aoe+=/soul_carver,if=soul_fragments.total<3
-actions.small_aoe+=/soul_cleave,if=soul_fragments<=1&!variable.dont_cleave
+actions.small_aoe+=/soul_cleave,if=(soul_fragments<=1|!talent.spirit_bomb)&!variable.dont_cleave
 actions.small_aoe+=/fracture
-actions.small_aoe+=/shear
 actions.small_aoe+=/call_action_list,name=filler
 
 # 6+ targets
@@ -85,8 +83,8 @@ actions.big_aoe+=/elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<
 actions.big_aoe+=/fel_devastation
 actions.big_aoe+=/soul_carver,if=soul_fragments.total<3
 actions.big_aoe+=/spirit_bomb,if=soul_fragments>=4
+actions.big_aoe+=/soul_cleave,if=!talent.spirit_bomb&!variable.dont_cleave
 actions.big_aoe+=/fracture
-actions.big_aoe+=/shear
 actions.big_aoe+=/soul_cleave,if=!variable.dont_cleave
 actions.big_aoe+=/call_action_list,name=filler
 
@@ -95,6 +93,7 @@ actions.filler=sigil_of_chains,if=talent.cycle_of_binding&talent.sigil_of_chains
 actions.filler+=/sigil_of_misery,if=talent.cycle_of_binding&talent.sigil_of_misery
 actions.filler+=/sigil_of_silence,if=talent.cycle_of_binding&talent.sigil_of_silence
 actions.filler+=/felblade
+actions.filler+=/shear
 actions.filler+=/throw_glaive
 
 # External buffs

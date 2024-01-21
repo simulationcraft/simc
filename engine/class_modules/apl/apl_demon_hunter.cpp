@@ -232,7 +232,7 @@ void vengeance( player_t* p )
   default_->add_action( "disrupt,if=target.debuff.casting.react" );
   default_->add_action( "infernal_strike,use_off_gcd=1" );
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
-  default_->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up" );
+  default_->add_action( "metamorphosis,use_off_gcd=1,if=!buff.metamorphosis.up&cooldown.fel_devastation.remains>12" );
   default_->add_action( "potion,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=externals" );
   default_->add_action( "use_items,use_off_gcd=1" );
@@ -247,7 +247,7 @@ void vengeance( player_t* p )
   maintenance->add_action( "immolation_aura" );
   maintenance->add_action( "bulk_extraction,if=((5-soul_fragments)<=spell_targets)&soul_fragments<=2" );
   maintenance->add_action( "spirit_bomb,if=variable.can_spb" );
-  maintenance->add_action( "felblade,if=(fury.deficit>=40&active_enemies=1)|((cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50)" );
+  maintenance->add_action( "felblade,if=((!talent.spirit_bomb|active_enemies=1)&fury.deficit>=40)|((cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50)" );
   maintenance->add_action( "fracture,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   maintenance->add_action( "shear,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
   maintenance->add_action( "spirit_bomb,if=fury.deficit<=30&spell_targets>1&soul_fragments>=4", "Don't overcap fury" );
@@ -255,7 +255,7 @@ void vengeance( player_t* p )
 
   fiery_demise->add_action( "immolation_aura", "Fiery demise window" );
   fiery_demise->add_action( "sigil_of_flame,if=talent.ascending_flame|active_dot.sigil_of_flame=0" );
-  fiery_demise->add_action( "felblade,if=(cooldown.fel_devastation.remains<=(execute_time+gcd.remains))&fury<50" );
+  fiery_demise->add_action( "felblade,if=(!talent.spirit_bomb|(cooldown.fel_devastation.remains<=(execute_time+gcd.remains)))&fury<50" );
   fiery_demise->add_action( "fel_devastation" );
   fiery_demise->add_action( "soul_carver,if=soul_fragments.total<3" );
   fiery_demise->add_action( "the_hunt" );
@@ -269,7 +269,6 @@ void vengeance( player_t* p )
   single_target->add_action( "fel_devastation" );
   single_target->add_action( "soul_cleave,if=!variable.dont_cleave" );
   single_target->add_action( "fracture" );
-  single_target->add_action( "shear" );
   single_target->add_action( "call_action_list,name=filler" );
 
   small_aoe->add_action( "the_hunt", "2-5 targets" );
@@ -277,9 +276,8 @@ void vengeance( player_t* p )
   small_aoe->add_action( "elysian_decree,line_cd=1.85,if=fury>=40&(soul_fragments.total<=1|soul_fragments.total>=4)" );
   small_aoe->add_action( "fel_devastation" );
   small_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
-  small_aoe->add_action( "soul_cleave,if=soul_fragments<=1&!variable.dont_cleave" );
+  small_aoe->add_action( "soul_cleave,if=(soul_fragments<=1|!talent.spirit_bomb)&!variable.dont_cleave" );
   small_aoe->add_action( "fracture" );
-  small_aoe->add_action( "shear" );
   small_aoe->add_action( "call_action_list,name=filler" );
 
   big_aoe->add_action( "fel_devastation,if=talent.collective_anguish|talent.stoke_the_flames", "6+ targets" );
@@ -288,8 +286,8 @@ void vengeance( player_t* p )
   big_aoe->add_action( "fel_devastation" );
   big_aoe->add_action( "soul_carver,if=soul_fragments.total<3" );
   big_aoe->add_action( "spirit_bomb,if=soul_fragments>=4" );
+  big_aoe->add_action( "soul_cleave,if=!talent.spirit_bomb&!variable.dont_cleave" );
   big_aoe->add_action( "fracture" );
-  big_aoe->add_action( "shear" );
   big_aoe->add_action( "soul_cleave,if=!variable.dont_cleave" );
   big_aoe->add_action( "call_action_list,name=filler" );
 
@@ -297,6 +295,7 @@ void vengeance( player_t* p )
   filler->add_action( "sigil_of_misery,if=talent.cycle_of_binding&talent.sigil_of_misery" );
   filler->add_action( "sigil_of_silence,if=talent.cycle_of_binding&talent.sigil_of_silence" );
   filler->add_action( "felblade" );
+  filler->add_action( "shear" );
   filler->add_action( "throw_glaive" );
 
   externals->add_action( "invoke_external_buff,name=symbol_of_hope", "External buffs" );
