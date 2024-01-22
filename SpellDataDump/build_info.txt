@@ -1,1 +1,1 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.5.53007 Live (hotfix 2024-01-20/53007, git build data-update-live-53007 8664141)
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.53007 Live (hotfix 2024-01-22/53007, git build data-update-live-53007 1fac153)
