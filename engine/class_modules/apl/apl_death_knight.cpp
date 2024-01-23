@@ -233,11 +233,11 @@ void frost( player_t* p )
   aoe->add_action( "howling_blast,if=buff.rime.react|!dot.frost_fever.ticking", "AoE Action List" );
   aoe->add_action( "glacial_advance,if=!variable.pooling_runic_power&variable.rp_buffs" );
   aoe->add_action( "frostscythe,if=!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.fyralath_the_dreamrender.remains<3|!dot.mark_of_fyralath.ticking)" );
-  aoe->add_action( "obliterate,target_if=min:dot.mark_of_fyralath.remains,if=buff.killing_machine.react&talent.cleaving_strikes&death_and_decay.ticking&!variable.frostscythe_priority" );
+  aoe->add_action( "obliterate,if=buff.killing_machine.react&talent.cleaving_strikes&death_and_decay.ticking&!variable.frostscythe_priority" );
   aoe->add_action( "glacial_advance,if=!variable.pooling_runic_power" );
   aoe->add_action( "frostscythe,if=variable.frostscythe_priority" );
-  aoe->add_action( "obliterate,target_if=min:dot.mark_of_fyralath.remains,if=!variable.frostscythe_priority" );
-  aoe->add_action( "frost_strike,target_if=min:dot.mark_of_fyralath.remains,if=!variable.pooling_runic_power&!talent.glacial_advance" );
+  aoe->add_action( "obliterate,if=!variable.frostscythe_priority" );
+  aoe->add_action( "frost_strike,if=!variable.pooling_runic_power&!talent.glacial_advance" );
   aoe->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>25" );
   aoe->add_action( "arcane_torrent,if=runic_power.deficit>25" );
 
@@ -301,21 +301,21 @@ void frost( player_t* p )
   high_prio_actions->add_action( "remorseless_winter,if=variable.rw_buffs|variable.adds_remain" );
 
   obliteration->add_action( "howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react", "Obliteration Active Rotation" );
-  obliteration->add_action( "frost_strike,target_if=min:dot.mark_of_fyralath.remains,if=(active_enemies<=1|!talent.glacial_advance)&buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );
+  obliteration->add_action( "frost_strike,if=(active_enemies<=1|!talent.glacial_advance)&buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );
   obliteration->add_action( "glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );
   obliteration->add_action( "frostscythe,if=buff.killing_machine.react&(variable.frostscythe_priority|active_enemies>3&!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.fyralath_the_dreamrender.remains<3|!dot.mark_of_fyralath.ticking))" );
-  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=buff.killing_machine.react&!variable.frostscythe_priority" );
+  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
   obliteration->add_action( "howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking|buff.rime.react&set_bonus.tier30_2pc&!variable.rp_buffs)" );
   obliteration->add_action( "glacial_advance,if=!buff.killing_machine.react&(!death_knight.runeforge.razorice&(!talent.avalanche|debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|((variable.rp_buffs|rune<2)&active_enemies>1))" );
-  obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=!buff.killing_machine.react&(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
+  obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
   obliteration->add_action( "howling_blast,if=buff.rime.react&!buff.killing_machine.react" );
-  obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=!buff.killing_machine.react&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
+  obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
   obliteration->add_action( "howling_blast,if=!buff.killing_machine.react&runic_power<30" );
   obliteration->add_action( "arcane_torrent,if=rune<1&runic_power<30" );
   obliteration->add_action( "glacial_advance,if=!variable.pooling_runic_power&active_enemies>=2" );
-  obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains,if=!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
+  obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
   obliteration->add_action( "howling_blast,if=buff.rime.react" );
-  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,target_if=min:dot.mark_of_fyralath.remains" );
+  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice," );
 
   racials->add_action( "blood_fury,if=variable.cooldown_check", "Racial Abilities" );
   racials->add_action( "berserking,if=variable.cooldown_check" );
@@ -340,7 +340,7 @@ void frost( player_t* p )
   single_target->add_action( "arcane_torrent,if=runic_power.deficit>20" );
   single_target->add_action( "frost_strike,if=!variable.pooling_runic_power" );
 
-  trinkets->add_action( "use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&!buff.pillar_of_frost.up&!buff.bloodlust.up&!buff.empower_rune_weapon.up&!variable.rp_buffs", "Trinkets" );
+  trinkets->add_action( "use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&!buff.pillar_of_frost.up&!buff.empower_rune_weapon.up&!death_and_decay.ticking", "Trinkets" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=algethar_puzzle_box,if=!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains<2&(!talent.breath_of_sindragosa|runic_power>60&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains<2))" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(talent.obliteration&buff.pillar_of_frost.remains>10&(!variable.rp_buffs|cooldown.empower_rune_weapon.max_charges<2&buff.empower_rune_weapon.up)|!talent.obliteration)&(!buff.pillar_of_frost.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(buff.breath_of_sindragosa.up|buff.pillar_of_frost.up)&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains", "Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(talent.obliteration&buff.pillar_of_frost.remains>10&(!variable.rp_buffs|cooldown.empower_rune_weapon.max_charges<2&buff.empower_rune_weapon.up)|!talent.obliteration)&(!buff.pillar_of_frost.up&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(buff.breath_of_sindragosa.up|buff.pillar_of_frost.up)&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
