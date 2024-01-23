@@ -159,6 +159,7 @@ struct sim_t : private sc_thread_t
   int         target_adds;
   std::string sim_progress_base_str, sim_progress_phase_str;
   int         desired_targets; // desired number of targets
+  int         desired_tank_targets; // desired number of tank target dummy npcs
 
 
   // Data access
@@ -629,7 +630,7 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   computer_process::priority_e process_priority;
-  
+
   std::shared_ptr<work_queue_t> work_queue;
 
   // Related Simulations
