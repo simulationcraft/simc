@@ -20588,7 +20588,7 @@ static const std::array<spelltext_data_t, 20602> __spelltext_data { {
   { 431156, "Your next Rapid Fire will shoot $s1% additional shots during its channel.", "Your next Rapid Fire will shoot $s1% additional shots during its channel.", 0 },
   { 431168, "Rapid Fire deals $s1% additional damage. Trick Shots causes Rapid Fire to launch a Volley for $s2 sec, dealing $s3% of normal damage.", 0, 0 },
   { 431172, "Every $s1 Focus you spend has a ${$m2/10}.1% chance to reset the cooldown of Rapid Fire and cause your next Rapid Fire to shoot $431156s1% additional shots during its channel.", 0, 0 },
-  { 431709, "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", 0 },
+  { 431709, "Grants you an aura that will randomize the look of your customizable dragonriding mounts.", "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", 0 },
   { 431949, "Pull out a fancy white parasol for $d, allowing you to safely float down the next time you fall.", "Feeling fancy... and ready to float down safely in case of a fall.", 0 },
   { 431962, "Reduces your falling speed for $d.", "Falling speed reduced.", 0 },
   { 431994, "Pull out a fancy jade parasol for $d, allowing you to safely float down the next time you fall.", "Feeling fancy... and ready to float down safely in case of a fall.", 0 },
@@ -20605,7 +20605,8 @@ static const std::array<spelltext_data_t, 20602> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.2.5.53040
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  431709,  0, "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", "Grants you an aura that will randomize the look of your customizable dragonriding mounts." },
 } };
 
 // Spell description variables, wow build 10.2.5.53040

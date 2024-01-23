@@ -5459,7 +5459,8 @@ Effects          :
                    Affected Spells: Soul Leech (108366)
                    Family Flags: 13
 #4 (id=1104809)  : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your Soul Leech absorption now passively recharges at a rate of ${$s1/10}.1% of maximum health every $t1 sec, and may now absorb up to $s2% of maximum health.
 
 Increases your armor by $m4%.
@@ -13136,7 +13137,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1020874)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Increases the amount of damage required to break your fear effects by $s1%.
 
 Name             : Greater Banish (id=386651) [Spell Family (5), Passive, Hidden] 
