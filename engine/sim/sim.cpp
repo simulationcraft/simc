@@ -1519,6 +1519,7 @@ sim_t::sim_t()
     target_level( -1 ),
     target_adds( 0 ),
     desired_targets( 1 ),
+    desired_tank_targets( 1 ),
     dbc( new dbc_t() ),
     dbc_override( std::make_unique<dbc_override_t>() ),
     timewalk( -1 ),
@@ -2838,11 +2839,27 @@ void sim_t::init()
     target = module_t::tank_dummy_enemy()->create_player( this, "Fluffy_Pillow" );
   }
 
-  // create additional enemies here
+  // create additional non-tank enemies here
+  int count_additional_enemy = 1;
   while ( as<int>(target_list.size()) < desired_targets )
   {
     active_player = nullptr;
-    active_player = module_t::enemy() -> create_player( this, "enemy" + util::to_string( target_list.size() + 1 ) );
+    active_player = module_t::enemy() -> create_player( this, "Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
+    count_additional_enemy++;
+    if ( ! active_player )
+    {
+      throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
+    }
+  }
+
+  // create additional tank enemies here
+  int desired_target_count = as<int>( target_list.size() ) + desired_tank_targets - 1;
+  count_additional_enemy = 1;
+  while ( as<int>(target_list.size()) < desired_target_count )
+  {
+    active_player = nullptr;
+    active_player = module_t::tank_dummy_enemy() -> create_player( this, "Tank_Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
+    count_additional_enemy++;
     if ( ! active_player )
     {
       throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
@@ -3421,6 +3438,9 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   if ( name_str == "desired_targets" )
     return expr_t::create_constant( name_str, desired_targets );
 
+  if ( name_str == "desired_tank_targets" )
+    return expr_t::create_constant( name_str, desired_tank_targets );
+
   if ( name_str == "initial_targets" )
     return expr_t::create_constant( name_str, target_list.size() );
 
@@ -3751,6 +3771,7 @@ void sim_t::create_options()
   add_option( opt_bool( "auto_attacks_always_land", auto_attacks_always_land ) );
   add_option( opt_bool( "log_spell_id", log_spell_id ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
+  add_option( opt_int( "desired_tank_targets", desired_tank_targets ) );
   add_option( opt_bool( "show_etmi", show_etmi ) );
   add_option( opt_float( "tmi_window_global", tmi_window_global ) );
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
