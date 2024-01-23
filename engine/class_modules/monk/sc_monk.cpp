@@ -10666,7 +10666,7 @@ namespace monk
       bool match;
     };
 
-    std::vector<monk_bug *> issues;
+    auto_dispose<std::vector<monk_bug *>> issues;
 
     monk_report_t( monk_t &player ) : p( player )
     {
