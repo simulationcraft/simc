@@ -315,7 +315,7 @@ void frost( player_t* p )
   obliteration->add_action( "glacial_advance,if=!variable.pooling_runic_power&active_enemies>=2" );
   obliteration->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)" );
   obliteration->add_action( "howling_blast,if=buff.rime.react" );
-  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice," );
+  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
 
   racials->add_action( "blood_fury,if=variable.cooldown_check", "Racial Abilities" );
   racials->add_action( "berserking,if=variable.cooldown_check" );
