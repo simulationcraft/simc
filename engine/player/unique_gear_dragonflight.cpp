@@ -7948,11 +7948,13 @@ void fyralath_the_dream_render( special_effect_t& e )
   struct explosive_rage_t : public generic_proc_t
   {
     buff_t* buff;
-    explosive_rage_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s, buff_t* b )
+    action_t* dot;
+    explosive_rage_t( const special_effect_t& effect, util::string_view n, const spell_data_t* s, buff_t* b, action_t* a )
       : generic_proc_t( effect, n, s ),
-        buff( b )
+        buff( b ), dot( a )
     {
       background = proc = split_aoe_damage = true;
+      impact_action = dot;
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -8062,9 +8064,9 @@ void fyralath_the_dream_render( special_effect_t& e )
   auto buff = create_buff<buff_t>( e.player, "rage_of_fyralath", e.player->find_spell( 417138 ) );
   buff->set_default_value( e.player->find_spell( 420248 ) -> effectN( 1 ).percent() );
 
+  auto dot = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
   auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ), buff );
-  auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ), buff );
-  auto dot           = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
+  auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ), buff, dot );
   auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot, buff );
 
   auto driver            = new special_effect_t( e.player );

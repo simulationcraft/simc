@@ -6866,15 +6866,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
   void impact( action_state_t* state ) override
   {
-    // Obliterate Cleave with Cleaving Strikes cant proc things
-    if( state -> target != target )
-    {
-      callbacks = false;
-    }
-    else
-    {
-      callbacks = true;
-    }
     death_knight_melee_attack_t::impact( state );
 
     if ( p()->talent.frost.enduring_strength.ok() && p()->buffs.pillar_of_frost->up() &&
