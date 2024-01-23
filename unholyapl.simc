@@ -1,0 +1,249 @@
+# Base Actor
+# Khazak - Unholy - 2022-12-17 01:02 - US/Zul'jin
+# SimC Addon 10.0.2-04
+# WoW 10.0.2.47187, TOC 100002
+# Requires SimulationCraft 1000-01 or newer
+
+deathknight="Khazak"
+level=70
+race=orc
+region=us
+server=zuljin
+role=attack
+professions=blacksmithing=100/jewelcrafting=76
+spec=unholy
+
+talents=BwPAdLUHklrTr3hBIcYWdbnCGDAkQSCJtIhgkEhQSiEBAAAAAAAAAAJ5AhQSaAAkiUOQkkkIJB
+
+# Saved Loadout: Wounds M+
+# talents=BwPAdLUHklrTr3hBIcYWdbnCGDAkQSCJtIBkkEhQSiEBAAAAAAAAAAJJhEJpAAQKS5ARSSikA
+# Saved Loadout: Garg UA
+# talents=BwPAdLUHklrTr3hBIcYWdbnCGDAkQSCJtIBkkEhQSiEBAAAAAAAAAokkEiAAASkiUSkkkIJA
+# Saved Loadout: PvP
+# talents=BwPAdLUHklrTr3hBIcYWdbnCGDAkEJBSLSISSSEikkIBAAAAAAAAAAQSiQSaAAkiUSkkkIJB
+# Saved Loadout: Arenas
+# talents=BwPAdLUHklrTr3hBIcYWdbnCGDAiEJJCIhIJJRgIJSSCAAAAAAAAAokkEIAAQiEJtEJJJSC
+# Saved Loadout: Disease M+
+# talents=BwPAdLUHklrTr3hBIcYWdbnCGDAkQSCJtIhgkEhQSiEBAAAAAAAAAAJ5AhQSaAAkiUOQkkkIJB
+
+head=,id=200757,gem_id=192921,bonus_id=6652/7935/1581/5865/8767
+neck=,id=193676,bonus_id=7977/6652/7936/8784/1594/8767
+shoulder=,id=134360,bonus_id=8966/7977/6652/8822/8817/9144/3271/8767
+back=,id=193763,bonus_id=8966/7977/6652/8822/8819/9144/1614/8767
+chest=,id=200213,enchant_id=6624,bonus_id=6652/1485/5864/8767
+shirt=,id=151116
+wrist=,id=195533,enchant_id=6579,bonus_id=6652/7936/7979/8821/8819/1472/8767
+hands=,id=200407,bonus_id=7980/6652/8829/1485/8767
+waist=,id=192011,bonus_id=6652/7935/1478/5865/8767
+legs=,id=200409,enchant_id=6490,bonus_id=7980/6652/8827/1485/8767
+feet=,id=193630,enchant_id=6606,bonus_id=8966/7977/6652/8822/8818/9144/1614/8767
+finger1=,id=202119,enchant_id=6561
+finger2=,id=133679,enchant_id=6561,bonus_id=8962/7977/6652/7937/9144/3258/8767
+trinket1=,id=200217,bonus_id=6652/1481/5865/8767
+trinket2=,id=193679,bonus_id=8966/7977/6652/9144/1614/8767
+main_hand=,id=110036,enchant_id=3368,bonus_id=8966/7977/6652/9147/3277/8767
+
+### Gear from Bags
+#
+# Wyrmforged Helm (379)
+# head=,id=192005,bonus_id=6652/7936/1481/5865/8767
+#
+# Snowman's Icy Gaze (369)
+# head=,id=200211,bonus_id=6652/7937/1472/5864/8766
+#
+# Crimson Aspirant's Plate Helm (340)
+# head=,id=201093,bonus_id=8985/6652/7936/8990/1472
+#
+# Qalashi War-Helm (382)
+# head=,id=200757,bonus_id=6652/7937/1585/5864/8767
+#
+# Custodian's Medallion of Delusion (346)
+# neck=,id=193647,bonus_id=7978/7975/6652/7936/8783,drop_level=70
+#
+# Crimson Aspirant's Choker (340)
+# neck=,id=201748,bonus_id=8985/6652/7936/8783/8990/1472
+#
+# Lucky Hunting Charm (379)
+# neck=,id=200445,bonus_id=6652/7936/8784/1481/5865/8767
+#
+# Crimson Aspirant's Plate Shoulders (340)
+# shoulder=,id=201114,bonus_id=8985/6652/8990/1472
+#
+# Crimson Aspirant's Cloak (340)
+# back=,id=201750,bonus_id=8985/6652/8990/1472
+#
+# Cloak of Failing Will (379)
+# back=,id=144115,enchant_id=6597,bonus_id=8962/7977/6652/8822/8819/9144/3269/8767
+#
+# Cloak of Coordination (29)
+# back=,id=65274
+#
+# Drakebreaker's Breastplate (366)
+# chest=,id=198582,bonus_id=8978/6652/8816/1488/8766
+#
+# Tabard of the Achiever (1)
+# tabard=,id=40643
+#
+# Wyrmforged Armplates (356)
+# wrist=,id=192012,bonus_id=6652/7937/1462/5861/8766
+#
+# Drakebreaker's Armplates (366)
+# wrist=,id=198588,bonus_id=8978/6652/7936/8815/1488/8766
+#
+# Crimson Aspirant's Plate Handguards (340)
+# hands=,id=201136,bonus_id=8985/6652/8990/1472
+#
+# Wyrmforged Gauntlets (379)
+# hands=,id=192008,bonus_id=6652/1481/5865/8767
+#
+# Drakebreaker's Girdle (366)
+# waist=,id=198587,bonus_id=8978/6652/7936/8814/1488/8766
+#
+# Ravenous Omnivore's Girdle (372)
+# waist=,id=193760,bonus_id=7977/41/7937/8814/1594/8767
+#
+# Crimson Aspirant's Plate Wargreaves (340)
+# legs=,id=201142,bonus_id=8985/6652/8990/1472
+#
+# Wyrmforged Legguards (382)
+# legs=,id=192009,bonus_id=6652/1485/5864/8767
+#
+# Drakebreaker's Sabatons (366)
+# feet=,id=198583,bonus_id=8978/6652/8814/1488/8766
+#
+# Crimson Aspirant's Ring (340)
+# finger1=,id=201744,bonus_id=8985/6652/7936/8990/1472
+#
+# Unstable Arcane Loop (389)
+# finger1=,id=193633,bonus_id=8965/7977/6652/7937/9144/1611/8767
+#
+# Ring of Embers (379)
+# finger1=,id=200163,bonus_id=6652/7937/1485/5861/8767
+#
+# Violet Seal of the Grand Magus (50)
+# finger1=,id=142469
+#
+# Blaze Ring (385)
+# finger1=,id=200159,bonus_id=6652/7937/1488/5864/8767
+#
+# Ruby Whelp Shell (372)
+# trinket1=,id=193757,bonus_id=7977/6652/1594/8767
+#
+# Ruby Whelp Shell (392)
+# trinket1=,id=193757,bonus_id=8966/7977/6652/9144/1614/8767
+#
+# Rumbling Ruby (389)
+# trinket1=,id=194303,bonus_id=6652/7979/1472/8767
+#
+# Crimson Aspirant's Insignia of Alacrity (340)
+# trinket1=,id=201451,bonus_id=8985/6652/8990/1472
+#
+# Shikaari Huntress' Arrowhead (369)
+# trinket1=,id=198542,bonus_id=6652/1424/5864/8766
+#
+# Shikaari Huntress' Arrowhead (366)
+# trinket1=,id=198542,bonus_id=6652/1420/5865/8766
+#
+# Battle Scarred Scale (376)
+# trinket1=,id=193477,bonus_id=6652/1478/5865/8767
+#
+# Ancestral Protector's Stone (372)
+# trinket1=,id=197934,bonus_id=6652/1427/5864/8767
+#
+# Bushwhacker's Compass (376)
+# trinket1=,id=198490,bonus_id=6652/1430/5865/8767
+#
+# Primal Ritual Shell (372)
+# trinket1=,id=200563,bonus_id=6652/1475/5864/8767
+#
+# Battle Scarred Scale (376)
+# trinket1=,id=193477,bonus_id=6652/1478/5865/8767
+#
+# Crimson Aspirant's Medallion (340)
+# trinket1=,id=201450,bonus_id=8985/6652/8990/1472
+#
+# Gral's Discarded Tooth (356)
+# trinket1=,id=192797,bonus_id=6652/1462/5861/8766
+#
+# Dragon Games Equipment (385)
+# trinket1=,id=193719,bonus_id=8964/7977/6652/9144/1607/8767
+#
+# Seasoned Hunter's Trophy (369)
+# trinket1=,id=200859,bonus_id=6652/1472/5864/8766
+#
+# Djaradin Bludgeoning Hammer (385)
+# main_hand=,id=197927,enchant_id=6243,bonus_id=9135/6652/1494/5858/8767
+#
+# Protector's Molten Cudgel (379)
+# main_hand=,id=200169,bonus_id=6652/1481/5865/8767
+#
+# Protector's Molten Cudgel (382)
+# main_hand=,id=200169,bonus_id=6652/1485/5864/8767
+#
+# Uktulut Whaling Spear (372)
+# main_hand=,id=197938,bonus_id=6652/1475/5864/8767
+#
+# Nokuhd Impaling Halberd (363)
+# main_hand=,id=192031,bonus_id=6652/1462/5868/8766
+#
+# Sargha's Smasher (372)
+# main_hand=,id=193779,bonus_id=7977/6652/1594/8767
+#
+# Isle Trapper's Axe of the Aurora (302)
+# main_hand=,id=199044,bonus_id=7969/6652/1705,drop_level=70
+#
+# Djaradin Bludgeoning Hammer (376)
+# main_hand=,id=197927,bonus_id=6652/1478/5865/8767
+#
+# Reclaimed Tuskarr Harpoon (385)
+# main_hand=,id=200301,bonus_id=6652/1488/5864/8767
+#
+# Crimson Aspirant's Pulverizer (340)
+# main_hand=,id=201964,enchant_id=3368,bonus_id=8985/6652/8990/1472
+#
+# Drakebreaker's Cleaver (382)
+# main_hand=,id=199070,enchant_id=3368,bonus_id=8978/6652/1485/5864/8767
+
+# Checksum: 369321b
+name=Khazak
+
+# Consumables
+flask=phial_of_elemental_chaos_3
+
+# Expansion Options
+dragonflight.primal_ritual_shell_blessing=wind
+dragonflight.whispering_incarnate_icon_roles=dps/heal/tank
+temporary_enchant=
+shadowlands.enable_domination_gems=0
+shadowlands.soleahs_secret_technique_type=mastery
+shadowlands.titanic_ocular_gland_worthy_chance=1
+shadowlands.enable_rune_words=0
+shadowlands.stone_legionnaires_in_party=0
+shadowlands.crimson_choir_in_party=0
+shadowlands.disable_iqd_execute=1
+shadowlands.iqd_stat_fail_chance=0
+shadowlands.unbound_changeling_stat_type=
+# Custom APL
+
+disable_aotd=1
+
+# Actors
+
+# Simulation Options
+iterations=5000
+desired_targets=1
+max_time=60
+calculate_scale_factors=0
+scale_only=strength,intellect,agility,crit,mastery,vers,haste,weapon_dps,weapon_offhand_dps
+override.bloodlust=1
+override.arcane_intellect=1
+override.power_word_fortitude=1
+override.battle_shout=1
+override.mystic_touch=1
+override.chaos_brand=1
+override.windfury_totem=1
+override.mark_of_the_wild=1
+override.bleeding=1
+report_details=1
+single_actor_batch=1
+optimize_expressions=1

@@ -1,0 +1,169 @@
+# Base Actor
+# Emoray - Unholy - 2024-01-12 14:45 - EU/Kazzak
+# SimC Addon 10.2.0-01
+# WoW 10.2.0.52808, TOC 100200
+# Requires SimulationCraft 1000-01 or newer
+
+deathknight="Emoray"
+level=70
+race=troll
+region=eu
+server=kazzak
+role=attack
+professions=blacksmithing=100/alchemy=76
+spec=unholy
+
+talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAiQSCJtIBkIRIkkkEBAAAAAAAAAKkEhIJpBASIJFRSSikA
+
+# Saved Loadout: Dungeon
+# talents=BwPA/gf1fDREKLfAcG9Z2HkF/BAiQSCJtIBkIRIkkkEBAAAAAAAAAKkEhIJpBAgkUEJJJSSA
+# Saved Loadout: ST
+# talents=BwPA/gf1fDREKLfAcG9Z2HkF/BAigkEJiERISECJJJRAAAAAAAAAgSSSICAAIJh0SkkkIJA
+# Saved Loadout: Dungeon Garg
+# talents=BwPA/gf1fDREKLfAcG9Z2HkF/BAiQSCJtIBkIRIkkkEBAAAAAAAAAQiEikkGAIRSSBJJ5ASE
+# Saved Loadout: ST DF
+# talents=BwPA/gf1fDREKLfAcG9Z2HkF/BAIikEJiERISECJJJRAAAAAAAAAgSSSgIJAASSINRSSikA
+# Saved Loadout: Dungeon BS
+# talents=BwPA/gf1fDREKLfAcG9Z2HkF/BAiQSCJtIBkIRIkkkEBAAAAAAAAAKkkQSikCAASSTkkkIJA
+
+# Piercing Gaze of the Risen Nightmare (489)
+head=,id=207200,enchant_id=7052,gem_id=192948,bonus_id=6652/7981/8095/9513/9516/9576/1520/8767
+# Elemental Lariat  (486)
+neck=,id=193001,gem_id=192948/192948/192948,bonus_id=8836/8840/8902/8960/9477/8782/9405/8791/9500/9498,crafted_stats=49/32,crafting_quality=5
+# Skewers of the Risen Nightmare (489)
+shoulder=,id=207198,bonus_id=6652/7981/8095/9511/9576/1520/8767
+# Inflammable Drapeleaf (489)
+back=,id=207160,enchant_id=6592,bonus_id=6652/9509/7981/9576/1520/8767
+# Unceasing Footman's Breastplate (489)
+chest=,id=207884,enchant_id=6625,bonus_id=9639/6652/9506/9144/9576/1579/8767
+# Orgrimmar Tabard (1)
+tabard=,id=45581
+# Allied Wristguard of Companionship  (486)
+wrist=,id=190526,enchant_id=6574,gem_id=192948,bonus_id=8836/8840/8902/8960/9405/9500/9498/9516,crafting_quality=5
+# Thorns of the Risen Nightmare (489)
+hands=,id=207201,bonus_id=6652/9639/9514/9576/1520/8767
+# Greatbelt of Disruption (483)
+waist=,id=137310,enchant_id=6904,gem_id=192985,bonus_id=9639/6652/9516/9506/9144/9581/9876/8767
+# Greaves of the Risen Nightmare (483)
+legs=,id=207199,enchant_id=6830,bonus_id=6652/7980/9512/9581/1514/8767
+# Lavaforged Sollerets (489)
+feet=,id=207148,enchant_id=6613,bonus_id=6652/9509/7981/9576/1520/8767
+# Signet of Titanic Insight  (486)
+finger1=,id=192999,enchant_id=6556,gem_id=192948,bonus_id=8836/8840/8902/8780/9405/8794/9500/8174/9498,crafted_stats=32/49,crafting_quality=5
+# Band of Twisted Bark (483)
+finger2=,id=134531,enchant_id=6556,gem_id=192922,bonus_id=9639/6652/9516/9144/9581/9876/8767
+# Pip's Emerald Friendship Badge (489)
+trinket1=,id=207168,bonus_id=6652/7981/9576/1520/8767
+# Mirror of Fractured Tomorrows (489)
+trinket2=,id=207581,bonus_id=9639/6652/9144/9576/1540/8767
+# Fyr'alath the Dreamrender (496)
+main_hand=fyralath_the_dreamrender,id=206448,bonus_id=1468,enchant=rune_of_the_fallen_crusader
+### Gear from Bags
+#
+# Torc of Passed Time  (447)
+# neck=,id=201759,gem_id=192919/192919/192919,bonus_id=8836/8840/8902/9477/8782/9405/8793/9376/9366,crafted_stats=49/40,crafting_quality=5
+#
+# Undulating Sporecloak  (447)
+# back=,id=205025,enchant_id=6592,bonus_id=8836/8840/8902/8960/9405/9366/9376,crafting_quality=5
+#
+# Etheldrin's Breastplate (470)
+# chest=,id=136976,bonus_id=9569/9639/6652/9506/9144/9843/8767
+#
+# Primal Molten Breastplate  (421)
+# chest=,id=190495,enchant_id=6625,bonus_id=8836/8840/8902/9405/8846/8793/9365,crafted_stats=40/32,crafting_quality=5
+#
+# Primal Molten Vambraces  (447)
+# wrist=,id=190502,enchant_id=6574,gem_id=192948,bonus_id=8836/8840/8902/9405/9376/8791/9366/9413,crafted_stats=32/40,crafting_quality=5
+#
+# Primal Molten Greatbelt  (447)
+# waist=,id=190501,enchant_id=6904,gem_id=192948,bonus_id=8836/8840/8902/9405/9376/8790/8174/9366/9413,crafted_stats=49/36,crafting_quality=5
+#
+# Rivet-Sealed Waistplate (483)
+# waist=,id=109841,enchant_id=6904,gem_id=192982,bonus_id=9639/6652/9516/9506/9144/9581/9882/8767
+#
+# Unstable Frostfire Belt  (421)
+# waist=,id=191623,bonus_id=8836/8840/8902/8960/9405/8846/9365/7936,crafting_quality=5
+#
+# Rook Footman's Legplates (470)
+# legs=,id=139240,bonus_id=9569/9639/6652/9506/9144/9843/8767
+#
+# Primal Molten Sabatons  (486)
+# feet=,id=190496,enchant_id=6613,bonus_id=8836/8840/8902/9405/9500/8790/9498,crafted_stats=32/36,crafting_quality=5
+#
+# Signet of Titanic Insight  (447)
+# finger1=,id=192999,enchant_id=6550,gem_id=192982,bonus_id=8836/8840/8902/8780/9405/8790/9376/9366,crafted_stats=36/40,crafting_quality=5
+#
+# Band of Burning Thorns (489)
+# finger1=,id=207159,enchant_id=6562,bonus_id=6652/9600/7981/9576/1520/8767
+#
+# Ring-Bound Hourglass  (447)
+# finger1=,id=193000,enchant_id=6568,gem_id=192948,bonus_id=8836/8840/8902/8780/9405/8793/9376/9366,crafted_stats=36/40,crafting_quality=5
+#
+# Arch-Druid's Tainted Seal (483)
+# finger1=,id=134487,enchant_id=6556,gem_id=192948,bonus_id=9639/6652/9516/9144/9581/9876/8767
+#
+# Rezan's Gleaming Eye (483)
+# trinket1=,id=158712,bonus_id=9639/6652/9144/9581/9847/8767
+#
+# Accelerating Sandglass (483)
+# trinket1=,id=207566,bonus_id=9639/6652/9144/9581/1534/8767
+#
+# Ember of Nullification (483)
+# trinket1=,id=136978,bonus_id=9639/6652/9144/9581/9876/8767
+#
+# Porcelain Crab (483)
+# trinket1=,id=133192,bonus_id=9639/6652/9144/9581/9889/8767
+#
+# Might of the Ocean (483)
+# trinket1=,id=133197,bonus_id=9639/6652/9144/9581/9889/8767
+#
+# Gholak, the Final Conflagration (483)
+# main_hand=,id=207786,enchant_id=3368,bonus_id=6652/7980/9584/9581/1514/8767
+#
+# Volcoross's Barbed Fang (489)
+# main_hand=,id=207789,enchant_id=6243,bonus_id=6652/7981/9576/1520/8767
+
+### Additional Character Info
+#
+# upgrade_currencies=c:2708:120/c:2709:30/c:2122:5/c:2707:495/c:1792:1177/c:2706:838/c:2245:2000/i:198058:1/i:206960:1/i:198048:6
+#
+# slot_high_watermarks=0:489:489/1:486:486/2:489:489/3:489:489/4:483:483/5:483:483/6:489:489/7:486:486/8:489:489/9:486:486/10:489:489/11:489:489/12:496:496/13:61:353/14:489:489/15:483:483/16:10:382
+
+# Checksum: 8eaf7cba
+name=Emoray
+
+# Consumables
+flask=iced_phial_of_corrupting_rage_3
+
+# Expansion Options
+dragonflight.balefire_branch_loss_rng_type=rppm
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=
+dragonflight.blue_silken_lining_uptime=0.45
+dragonflight.corrupting_rage_uptime=0.85
+dragonflight.ruby_whelp_shell_training=
+dragonflight.primal_ritual_shell_blessing=wind
+dragonflight.whispering_incarnate_icon_roles=dps/heal/tank
+temporary_enchant=main_hand:howling_rune_3
+
+# Actors
+
+# Simulation Options
+iterations=5000
+desired_targets=1
+max_time=360
+calculate_scale_factors=0
+scale_only=strength,intellect,agility,crit,mastery,vers,haste,weapon_dps,weapon_offhand_dps
+override.bloodlust=1
+override.arcane_intellect=0
+override.power_word_fortitude=0
+override.battle_shout=0
+override.mystic_touch=0
+override.chaos_brand=1
+override.windfury_totem=0
+override.mark_of_the_wild=1
+override.hunters_mark=1
+override.bleeding=0
+report_details=1
+single_actor_batch=1
+optimize_expressions=1

@@ -1,0 +1,1 @@
+.\simc.exe max_time=450 .\profiles\Tier28_5\T28_5_Death_Knight_Frost-copy.simc .\profiles\Tier28_5\T28_5_Death_Knight_Frost.simc .\profiles\Tier28_5\T28_5_Death_Knight_Frost_2H.simc .\profiles\Tier28_5\T28_5_Death_Knight_Frost_2H-copy.simc html=.\report.html
