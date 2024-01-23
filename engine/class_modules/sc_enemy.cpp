@@ -1445,10 +1445,9 @@ void enemy_t::init_target()
 
 // enemy_t::init_actions ====================================================
 
-// default provided to be overloaded for tank_dummy_enemy_t::generate_action_list()
 std::string enemy_t::generate_action_list()
 {
-  return "/";
+  return generate_tank_action_list( tank_dummy_e::MYTHIC );
 }
 
 void enemy_t::generate_heal_raid_event()
