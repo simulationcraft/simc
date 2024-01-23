@@ -3146,6 +3146,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=748514)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#10 (id=1132070)  : Apply Aura (6) | Modify Armor% (101)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -4286,7 +4289,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22346 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22346 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : Finishing move that disembowels the target, causing damage per combo point.$?s382511[ Targets with Find Weakness suffer an additional $382511s1% damage as Shadow.][]
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -9500,7 +9504,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=819933)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22346 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22346 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
