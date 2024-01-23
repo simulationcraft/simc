@@ -8005,7 +8005,7 @@ void fyralath_the_dream_render( special_effect_t& e )
         current_tick( 0 ),
         n_ticks( data().duration() / data().effectN( 1 ).period() )
     {
-      channeled = true;
+      channeled = hasted_ticks = true;
       trigger_gcd = e.player->find_spell( 417131 )->gcd();
       target_cache.is_valid = false;
       add_child( damage );
@@ -8064,7 +8064,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   auto buff = create_buff<buff_t>( e.player, "rage_of_fyralath", e.player->find_spell( 417138 ) );
   buff->set_default_value( e.player->find_spell( 420248 ) -> effectN( 1 ).percent() );
 
-  auto dot = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
+  auto dot           = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
   auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ), buff );
   auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ), buff, dot );
   auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot, buff );
