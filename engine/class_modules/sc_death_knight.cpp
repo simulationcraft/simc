@@ -10851,8 +10851,8 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
     m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
     m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
     m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
-    m *= 1.0 + spec.frost_death_knight -> effectN( 8 ).percent();
-    m *= 1.0 + spec.unholy_death_knight -> effectN( 9 ).percent();
+    m *= 1.0 + spec.frost_death_knight -> effectN( 9 ).percent();
+    m *= 1.0 + spec.unholy_death_knight -> effectN( 10 ).percent();
   }
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.vigorous_lifeblood_4pc -> check() )
