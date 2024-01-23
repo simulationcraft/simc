@@ -59,8 +59,8 @@ def test_baseline(klass: str, path: str, enable: dict):
         "baseline profile",
         group=grp,
         args=[
+            ( "single_actor_batch", "1" ),
             ( "json", "test.json" ),
-            ( "output", "test.txt" ),
             ( "html", "test.html" )
         ]
     )
