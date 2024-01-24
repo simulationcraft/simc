@@ -8069,26 +8069,26 @@ void fyralath_the_dream_render( special_effect_t& e )
   auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ), buff, dot );
   auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot, buff );
 
-  auto equip_driver_id   = 420248;
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;
   driver->source         = SPECIAL_EFFECT_SOURCE_ITEM;
   driver->proc_flags2_   = PF2_ALL_HIT;
-  driver->spell_id       = equip_driver_id;
+  driver->spell_id       = 420248;
   driver->execute_action = dot;
   e.player->special_effects.push_back( driver );
 
   auto cb = new dbc_proc_callback_t( e.player, *driver );
   cb->initialize();
-  cb->activate();
+  cb->deactivate();
 
+  // Using a differnet spell id from the main proc for the scripted effects to prevent double procs
   auto dummy_equip_id = 417138;
   auto scripted_driver = new special_effect_t( e.player );
   scripted_driver->type = SPECIAL_EFFECT_EQUIP;
   scripted_driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
   scripted_driver->name_str = "mark_of_fyralath_scripted";
   scripted_driver->proc_flags_ = PF_ALL_DAMAGE | PF_CAST_SUCCESSFUL;
-  scripted_driver->proc_flags2_ = PF2_ALL_HIT | PF2_ALL_CAST;
+  scripted_driver->proc_flags2_ = PF2_ALL_HIT | PF2_LANDED;
   scripted_driver->spell_id = dummy_equip_id;
   scripted_driver->execute_action = dot;
   e.player->special_effects.push_back( scripted_driver );
