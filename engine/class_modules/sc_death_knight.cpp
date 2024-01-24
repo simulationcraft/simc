@@ -694,6 +694,7 @@ public:
     // Unholy
     propagate_const<action_t*> bursting_sores;
     propagate_const<action_t*> festering_wound;
+    propagate_const<action_t*> festering_wound_application;
     propagate_const<action_t*> virulent_eruption;
     propagate_const<action_t*> ruptured_viscera;
     action_t* unholy_pact_damage;
@@ -6075,6 +6076,15 @@ struct bursting_sores_t final : public death_knight_spell_t
   }
 };
 
+struct festering_wound_application_t final : public death_knight_spell_t
+{
+  festering_wound_application_t( util::string_view n, death_knight_t* p ) :
+    death_knight_spell_t( n, p, p -> spec.festering_wound )
+  {
+    background = true;
+  }
+};
+
 struct festering_wound_t final : public death_knight_spell_t
 {
   festering_wound_t( util::string_view n, death_knight_t* p ) :
@@ -8874,15 +8884,16 @@ void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, doub
 
 void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, proc_t* proc )
 {
-  if ( !state -> action -> result_is_hit( state -> result ) )
+  if ( !state->action->result_is_hit( state->result ) )
   {
     return;
   }
 
-  get_target_data( state -> target ) -> debuff.festering_wound -> trigger( n );
+  get_target_data( state->target )->debuff.festering_wound->trigger( n );
   while ( n-- > 0 )
   {
-    proc -> occur();
+    proc->occur();
+    active_spells.festering_wound_application->execute_on_target( state->target );
   }
 }
 
@@ -9075,6 +9086,7 @@ void death_knight_t::create_actions()
     if ( spec.festering_wound->ok() )
     {
       active_spells.festering_wound = get_action<festering_wound_t>( "festering_wound", this );
+      active_spells.festering_wound_application = get_action<festering_wound_application_t>( "festering_wound_application", this );
     }
 
     if ( talent.unholy.bursting_sores.ok() )
