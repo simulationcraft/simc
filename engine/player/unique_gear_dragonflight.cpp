@@ -8073,27 +8073,41 @@ void fyralath_the_dream_render( special_effect_t& e )
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;
   driver->source         = SPECIAL_EFFECT_SOURCE_ITEM;
-  driver->proc_flags_    = PF_ALL_DAMAGE | PF_CAST_SUCCESSFUL;
-  driver->proc_flags2_   = PF2_ALL_HIT | PF2_ALL_CAST;
+  driver->proc_flags2_   = PF2_ALL_HIT;
   driver->spell_id       = equip_driver_id;
   driver->execute_action = dot;
   e.player->special_effects.push_back( driver );
+
+  auto cb = new dbc_proc_callback_t( e.player, *driver );
+  cb->initialize();
+  cb->activate();
+
+  auto dummy_equip_id = 417138;
+  auto scripted_driver = new special_effect_t( e.player );
+  scripted_driver->type = SPECIAL_EFFECT_EQUIP;
+  scripted_driver->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  scripted_driver->name_str = "mark_of_fyralath_scripted";
+  scripted_driver->proc_flags_ = PF_ALL_DAMAGE | PF_CAST_SUCCESSFUL;
+  scripted_driver->proc_flags2_ = PF2_ALL_HIT | PF2_ALL_CAST;
+  scripted_driver->spell_id = dummy_equip_id;
+  scripted_driver->execute_action = dot;
+  e.player->special_effects.push_back( scripted_driver );
+
+  auto scripted_cb = new dbc_proc_callback_t( e.player, *scripted_driver );
+  scripted_cb->initialize();
+  scripted_cb->activate();
 
   std::set<unsigned> proc_spell_id;
   // List of all spell ids that can proc the DoT, that are not considered "melee" or "yellow melee".
   // Appears to be specifically anything that applies a DoT or Debuff that can deal damage.
   proc_spell_id = { 196780, 191587, 115989, 115994, 194310, 237680, 390220, 390279 };
 
-  driver->player->callbacks.register_callback_trigger_function(
-    equip_driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+  scripted_driver->player->callbacks.register_callback_trigger_function(
+    dummy_equip_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
     [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* )
     {
-      return ( range::contains( proc_spell_id, a->data().id() ) || a->type == SPELL_TYPE_MELEE );
+      return range::contains( proc_spell_id, a->data().id() );
     } );
-
-  auto cb = new dbc_proc_callback_t( e.player, *driver );
-  cb->initialize();
-  cb->activate();
 
   e.execute_action = channel;
 }
