@@ -8079,7 +8079,7 @@ void fyralath_the_dream_render( special_effect_t& e )
 
   auto cb = new dbc_proc_callback_t( e.player, *driver );
   cb->initialize();
-  cb->deactivate();
+  cb->activate();
 
   // Using a differnet spell id from the main proc for the scripted effects to prevent double procs
   auto dummy_equip_id = 417138;
