@@ -1519,6 +1519,7 @@ sim_t::sim_t()
     target_level( -1 ),
     target_adds( 0 ),
     desired_targets( 1 ),
+    desired_tank_targets( 1 ),
     dbc( new dbc_t() ),
     dbc_override( std::make_unique<dbc_override_t>() ),
     timewalk( -1 ),
@@ -2330,11 +2331,11 @@ void sim_t::init_fight_style()
     case FIGHT_STYLE_PATCHWERK:
       raid_events_str.clear();
       break;
-    
+
     case FIGHT_STYLE_CASTING_PATCHWERK:
       raid_events_str += "/casting,cooldown=500,duration=500";
       break;
-    
+
     case FIGHT_STYLE_HECTIC_ADD_CLEAVE:
     {
       // Phase 1 - Adds and move into position to fight adds
@@ -2356,7 +2357,7 @@ void sim_t::init_fight_style()
                                       first2, cooldown2 );
     }
     break;
-    
+
     case FIGHT_STYLE_DUNGEON_SLICE:
       desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
@@ -2369,7 +2370,7 @@ void sim_t::init_fight_style()
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=18,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
       break;
-    
+
     case FIGHT_STYLE_DUNGEON_ROUTE:
       // To be used in conjunction with "pull" raid events for a simulated dungeon run.
       desired_targets = 1;
@@ -2377,7 +2378,7 @@ void sim_t::init_fight_style()
       // Bloodlust is handled by an option on each pull raid event.
       overrides.bloodlust = 0;
       break;
-    
+
     case FIGHT_STYLE_CLEAVE_ADD:
     {
       auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
@@ -2388,16 +2389,16 @@ void sim_t::init_fight_style()
                                       first_and_duration, cooldown, first_and_duration, last );
     }
     break;
-    
+
     case FIGHT_STYLE_LIGHT_MOVEMENT:
       raid_events_str += "/movement,players_only=1,cooldown=40,cooldown_stddev=10,distance=15,distance_min=10,distance_max=20,first=15";
       break;
-    
+
     case FIGHT_STYLE_HEAVY_MOVEMENT:
       raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
       raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,distance_min=40,distance_max=50,first=30";
       break;
-    
+
     case FIGHT_STYLE_BEASTLORD:
     {
       deprecated = true;
@@ -2420,7 +2421,7 @@ void sim_t::init_fight_style()
                                       beast_last );
     }
     break;
-    
+
     case FIGHT_STYLE_HELTER_SKELTER:
       deprecated = true;
       raid_events_str += "/casting,cooldown=30,duration=3,first=15";
@@ -2428,7 +2429,7 @@ void sim_t::init_fight_style()
       raid_events_str += "/stun,cooldown=60,duration=2";
       raid_events_str += "/invulnerable,cooldown=120,duration=3";
       break;
-    
+
     case FIGHT_STYLE_ULTRAXION:
       deprecated = true;
       max_time = timespan_t::from_seconds( 366.0 );
@@ -2445,7 +2446,7 @@ void sim_t::init_fight_style()
       raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
       raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
       break;
-    
+
     default:
       fight_style = FIGHT_STYLE_PATCHWERK;
       break;
@@ -2832,14 +2833,33 @@ void sim_t::init()
   }
   else
   {
-    target = module_t::enemy()->create_player( this, "Fluffy_Pillow" );
+    // Default enemy used if no explicity enemy declarations are found.
+    // Only the first enemy uses the tank_dummy_enemy module, to prevent approximately
+    // linear scaling of damage intake from using the `desired_targets` sim opt
+    target = module_t::tank_dummy_enemy()->create_player( this, "Fluffy_Pillow" );
   }
 
-  // create additional enemies here
+  // create additional non-tank enemies here
+  int count_additional_enemy = 1;
   while ( as<int>(target_list.size()) < desired_targets )
   {
     active_player = nullptr;
-    active_player = module_t::enemy() -> create_player( this, "enemy" + util::to_string( target_list.size() + 1 ) );
+    active_player = module_t::enemy() -> create_player( this, "Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
+    count_additional_enemy++;
+    if ( ! active_player )
+    {
+      throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
+    }
+  }
+
+  // create additional tank enemies here
+  int desired_target_count = as<int>( target_list.size() ) + desired_tank_targets - 1;
+  count_additional_enemy = 1;
+  while ( as<int>(target_list.size()) < desired_target_count )
+  {
+    active_player = nullptr;
+    active_player = module_t::tank_dummy_enemy() -> create_player( this, "Tank_Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
+    count_additional_enemy++;
     if ( ! active_player )
     {
       throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
@@ -3418,6 +3438,9 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   if ( name_str == "desired_targets" )
     return expr_t::create_constant( name_str, desired_targets );
 
+  if ( name_str == "desired_tank_targets" )
+    return expr_t::create_constant( name_str, desired_tank_targets );
+
   if ( name_str == "initial_targets" )
     return expr_t::create_constant( name_str, target_list.size() );
 
@@ -3748,6 +3771,7 @@ void sim_t::create_options()
   add_option( opt_bool( "auto_attacks_always_land", auto_attacks_always_land ) );
   add_option( opt_bool( "log_spell_id", log_spell_id ) );
   add_option( opt_int( "desired_targets", desired_targets ) );
+  add_option( opt_int( "desired_tank_targets", desired_tank_targets ) );
   add_option( opt_bool( "show_etmi", show_etmi ) );
   add_option( opt_float( "tmi_window_global", tmi_window_global ) );
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
