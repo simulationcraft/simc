@@ -8100,7 +8100,7 @@ void fyralath_the_dream_render( special_effect_t& e )
   std::set<unsigned> proc_spell_id;
   // List of all spell ids that can proc the DoT, that are not considered "melee" or "yellow melee".
   // Appears to be specifically anything that applies a DoT or Debuff that can deal damage.
-  proc_spell_id = { 196780, 191587, 115989, 115994, 194310, 237680, 390220, 390279, 197147 };
+  proc_spell_id = { 196780, 191587, 115989, 115994, 194310, 237680, 390220, 390279, 197147, 55095, 55078 };
 
   scripted_driver->player->callbacks.register_callback_trigger_function(
     dummy_equip_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
