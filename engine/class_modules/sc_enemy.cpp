@@ -1178,6 +1178,7 @@ struct tank_dummy_enemy_t : public enemy_t
 
   void init() override
   {
+    enemy_t::init();
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
     // Try parsing the name
     if ( tank_dummy_enum == tank_dummy_e::NONE )
@@ -1453,7 +1454,7 @@ std::string enemy_t::generate_action_list()
 
 void enemy_t::generate_heal_raid_event()
 {
-  add_tank_heal_raid_event( tank_dummy_e::HEROIC );
+  // add_tank_heal_raid_event( tank_dummy_e::HEROIC );
 }
 
 std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
