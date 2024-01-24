@@ -8069,14 +8069,27 @@ void fyralath_the_dream_render( special_effect_t& e )
   auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ), buff, dot );
   auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot, buff );
 
+  auto equip_driver_id   = 420248;
   auto driver            = new special_effect_t( e.player );
   driver->type           = SPECIAL_EFFECT_EQUIP;
   driver->source         = SPECIAL_EFFECT_SOURCE_ITEM;
-  driver->proc_flags_    = PF_ALL_DAMAGE; // Seems to be proccing off spells now as well
-  driver->proc_flags2_   = PF2_ALL_HIT;
-  driver->spell_id       = 420248;
+  driver->proc_flags_    = PF_ALL_DAMAGE | PF_CAST_SUCCESSFUL;
+  driver->proc_flags2_   = PF2_ALL_HIT | PF2_ALL_CAST;
+  driver->spell_id       = equip_driver_id;
   driver->execute_action = dot;
   e.player->special_effects.push_back( driver );
+
+  std::set<unsigned> proc_spell_id;
+  // List of all spell ids that can proc the DoT, that are not considered "melee" or "yellow melee".
+  // Appears to be specifically anything that applies a DoT or Debuff that can deal damage.
+  proc_spell_id = { 196780, 191587, 115989, 115994, 194310, 237680, 390220, 390279 };
+
+  driver->player->callbacks.register_callback_trigger_function(
+    equip_driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* )
+    {
+      return ( range::contains( proc_spell_id, a->data().id() ) || a->type == SPELL_TYPE_MELEE );
+    } );
 
   auto cb = new dbc_proc_callback_t( e.player, *driver );
   cb->initialize();
