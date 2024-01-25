@@ -232,7 +232,7 @@ void frost( player_t* p )
 
   aoe->add_action( "howling_blast,if=buff.rime.react|!dot.frost_fever.ticking", "AoE Action List" );
   aoe->add_action( "glacial_advance,if=!variable.pooling_runic_power&variable.rp_buffs" );
-  aoe->add_action( "frostscythe,if=!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.fyralath_the_dreamrender.remains<3|!dot.mark_of_fyralath.ticking)" );
+  aoe->add_action( "frostscythe,if=!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.rage_of_fyralath_417131.remains<3|!dot.mark_of_fyralath.ticking)" );
   aoe->add_action( "obliterate,if=buff.killing_machine.react&talent.cleaving_strikes&death_and_decay.ticking&!variable.frostscythe_priority" );
   aoe->add_action( "glacial_advance,if=!variable.pooling_runic_power" );
   aoe->add_action( "frostscythe,if=variable.frostscythe_priority" );
@@ -291,7 +291,7 @@ void frost( player_t* p )
   high_prio_actions->add_action( "antimagic_shell,if=runic_power.deficit>40&death_knight.first_ams_cast<time" );
   high_prio_actions->add_action( "antimagic_zone,if=!death_knight.amz_specified&(death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.ready|!talent.breath_of_sindragosa&!buff.pillar_of_frost.up))" );
   high_prio_actions->add_action( "antimagic_zone,if=death_knight.amz_specified&buff.amz_timing.up" );
-  high_prio_actions->add_action( "howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&(!talent.obliteration|talent.obliteration&(!cooldown.pillar_of_frost.ready|buff.pillar_of_frost.up&!buff.killing_machine.react))", "Maintain Frost Fever, Icy Talons and Unleashed Frenzy" );
+  high_prio_actions->add_action( "howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&((!talent.obliteration|talent.obliteration&(!cooldown.pillar_of_frost.ready|buff.pillar_of_frost.up&!buff.killing_machine.react))|(equipped.fyralath_the_dreamrender&!dot.mark_of_fyralath.ticking))", "Maintain Frost Fever, Icy Talons and Unleashed Frenzy" );
   high_prio_actions->add_action( "glacial_advance,if=active_enemies>=2&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time" );
   high_prio_actions->add_action( "glacial_advance,if=active_enemies>=2&variable.rp_buffs&talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time" );
   high_prio_actions->add_action( "glacial_advance,if=active_enemies>=2&variable.rp_buffs&!talent.breath_of_sindragosa&talent.obliteration&!buff.pillar_of_frost.up" );
@@ -303,7 +303,7 @@ void frost( player_t* p )
   obliteration->add_action( "howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react", "Obliteration Active Rotation" );
   obliteration->add_action( "frost_strike,if=(active_enemies<=1|!talent.glacial_advance)&buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );
   obliteration->add_action( "glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );
-  obliteration->add_action( "frostscythe,if=buff.killing_machine.react&(variable.frostscythe_priority|active_enemies>3&!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.fyralath_the_dreamrender.remains<3|!dot.mark_of_fyralath.ticking))" );
+  obliteration->add_action( "frostscythe,if=buff.killing_machine.react&(variable.frostscythe_priority|active_enemies>3&!death_and_decay.ticking&equipped.fyralath_the_dreamrender&(cooldown.rage_of_fyralath_417131.remains<3|!dot.mark_of_fyralath.ticking))" );
   obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
   obliteration->add_action( "howling_blast,if=!buff.killing_machine.react&(!dot.frost_fever.ticking|buff.rime.react&set_bonus.tier30_2pc&!variable.rp_buffs)" );
   obliteration->add_action( "glacial_advance,if=!buff.killing_machine.react&(!death_knight.runeforge.razorice&(!talent.avalanche|debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|((variable.rp_buffs|rune<2)&active_enemies>1))" );
@@ -340,7 +340,7 @@ void frost( player_t* p )
   single_target->add_action( "arcane_torrent,if=runic_power.deficit>20" );
   single_target->add_action( "frost_strike,if=!variable.pooling_runic_power" );
 
-  trinkets->add_action( "use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&!buff.pillar_of_frost.up&!buff.empower_rune_weapon.up&!death_and_decay.ticking", "Trinkets" );
+  trinkets->add_action( "use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking&!buff.pillar_of_frost.up&!buff.empower_rune_weapon.up&!death_and_decay.ticking&(active_enemies<2|dot.frost_fever.ticking)", "Trinkets" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=algethar_puzzle_box,if=!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains<2&(!talent.breath_of_sindragosa|runic_power>60&(buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains<2))" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(talent.obliteration&buff.pillar_of_frost.remains>10&(!variable.rp_buffs|cooldown.empower_rune_weapon.max_charges<2&buff.empower_rune_weapon.up)|!talent.obliteration)&(!buff.pillar_of_frost.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(buff.breath_of_sindragosa.up|buff.pillar_of_frost.up)&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains", "Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(talent.obliteration&buff.pillar_of_frost.remains>10&(!variable.rp_buffs|cooldown.empower_rune_weapon.max_charges<2&buff.empower_rune_weapon.up)|!talent.obliteration)&(!buff.pillar_of_frost.up&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(buff.breath_of_sindragosa.up|buff.pillar_of_frost.up)&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
