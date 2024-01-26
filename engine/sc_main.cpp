@@ -263,12 +263,23 @@ int sim_t::main( const std::vector<std::string>& args )
 
     sim_control_t control;
 
+    auto version_displayed = false;
+    auto _print_version_info = [ this, &version_displayed ] ( )
+    {
+      if ( !version_displayed )
+      {
+        print_version_info( *dbc );
+        version_displayed = true;
+      }
+    };
+
     try
     {
       control.options.parse_args( args );
     }
     catch ( const std::exception& )
     {
+      _print_version_info();
       fmt::print( "\n" );
       std::throw_with_nested( std::invalid_argument( "Incorrect option format" ) );
     }
@@ -282,12 +293,14 @@ int sim_t::main( const std::vector<std::string>& args )
     }
     catch ( const std::exception& )
     {
+      _print_version_info();
       fmt::print( "\n" );
       std::throw_with_nested( std::runtime_error( "Setup failure" ) );
     }
 
-    // print version info
-    print_version_info( *dbc );
+    // print version info if it hasn't been displayed already
+    if ( !version_displayed )
+      _print_version_info();
 
     if ( display_build > 0 )
       print_build_info( *dbc );
