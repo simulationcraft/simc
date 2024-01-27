@@ -4649,34 +4649,34 @@ void evoker_t::init_finished()
     {
       if ( p->specialization() == DEATH_KNIGHT_FROST )
       {
-        if ( ST( p, "Breath of Sindragosa" )->ok() )
+        if ( ST( p, "Breath of Sindragosa" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "breath_of_sindragosa" );
         }
-        else if ( ST( p, "Pillar of Frost" )->ok() )
+        else if ( ST( p, "Pillar of Frost" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "pillar_of_frost" );
         }
-        else if ( ST( p, "Empower Rune Weapon" )->ok() || CT( p, "Empower Rune Weapon" )->ok() )
+        else if ( ST( p, "Empower Rune Weapon" ).ok() || CT( p, "Empower Rune Weapon" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "empower_rune_weapon" );
         }
       }
       else if ( p->specialization() == DEATH_KNIGHT_UNHOLY )
       {
-        if ( ST( p, "Commander of the Dead" )->ok() )
+        if ( ST( p, "Commander of the Dead" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "commander_of_the_dead" );
         }
-        else if ( ST( p, "Unholy Assault" )->ok() )
+        else if ( ST( p, "Unholy Assault" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "unholy_assault" );
         }
-        else if ( ST( p, "Defile" )->ok() && ( sim->has_raid_event( "adds" ) || sim->has_raid_event( "pull" ) ) )
+        else if ( ST( p, "Defile" ).ok() && ( sim->has_raid_event( "adds" ) || sim->has_raid_event( "pull" ) ) )
         {
           allied_major_cds[ p ] = buff_t::find( p, "defile" );
         }
-        else if ( ST( p, "Dark Transformation" )->ok() )
+        else if ( ST( p, "Dark Transformation" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "dark_transformation" );
         }
@@ -4691,7 +4691,7 @@ void evoker_t::init_finished()
       else if ( p->specialization() == EVOKER_DEVASTATION )
       {
         auto evoker = static_cast<evoker_t*>( p );
-        if ( evoker->talent.dragonrage->ok() )
+        if ( evoker->talent.dragonrage.ok() )
         {
           allied_major_cds[ p ] = evoker->buff.dragonrage;
         }
@@ -4701,15 +4701,15 @@ void evoker_t::init_finished()
     {
       if ( p->specialization() == PRIEST_SHADOW )
       {
-        if ( CT(p, "Power Infusion" ) )
+        if ( CT( p, "Power Infusion" ).ok() )
         {
           allied_major_cds[ p ] = p->buffs.power_infusion;
         }
-        else if ( ST( p, "Void Eruption" ) )
+        else if ( ST( p, "Void Eruption" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "voidform" );
         }
-        else if ( ST( p, "Dark Ascension" ) )
+        else if ( ST( p, "Dark Ascension" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "dark_ascension" );
         }
@@ -4723,12 +4723,12 @@ void evoker_t::init_finished()
       }
       else if ( p->specialization() == MAGE_FROST )
       {
-        if ( ST( p, "Icy Veins" ) )
+        if ( ST( p, "Icy Veins" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "icy_veins" );
       }
       else if ( p->specialization() == MAGE_ARCANE )
       {
-        if ( ST( p, "Arcane Surge" ) )
+        if ( ST( p, "Arcane Surge" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "arcane_surge" );
       }
     }
@@ -4736,18 +4736,18 @@ void evoker_t::init_finished()
     {
       if ( p->specialization() == HUNTER_MARKSMANSHIP )
       {
-        if ( ST( p, "Trueshot" ) )
+        if ( ST( p, "Trueshot" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "trueshot" );
       }
       else if ( p->specialization() == HUNTER_SURVIVAL )
       {
-        if ( ST( p, "Coordinated Assault" ) )
+        if ( ST( p, "Coordinated Assault" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "coordinated_assault" );
       }
     }
     else if ( p->type == PALADIN )
     {
-      if ( CT( p, "Avenging Wrath" ) )
+      if ( CT( p, "Avenging Wrath" ).ok() )
       {
         // TODO: Handle sentinel and other special ones
         allied_major_cds[ p ] = buff_t::find( p, "avenging_wrath" );
@@ -4755,14 +4755,15 @@ void evoker_t::init_finished()
     }
     else if ( p->type == MONK )
     {
-      if ( ST( p, "Serenity" ) )
+      if ( ST( p, "Serenity" ).ok() )
       {
         allied_major_cds[ p ] = buff_t::find( p, "serenity" );
       }
-      else if ( ST( p, "Storm, Earth, and Fire" ) )
+      else if ( ST( p, "Storm, Earth, and Fire" ).ok() )
       {
         allied_major_cds[ p ] = buff_t::find( p, "storm_earth_and_fire" );
       }
+      sim->print_debug( "{} has found cd {} for player {}", *this, *allied_major_cds[ p ], *p );
     }
   }
 
