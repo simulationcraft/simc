@@ -4745,12 +4745,23 @@ void evoker_t::init_finished()
           allied_major_cds[ p ] = buff_t::find( p, "coordinated_assault" );
       }
     }
-    else if (p->type == PALADIN)
+    else if ( p->type == PALADIN )
     {
       if ( CT( p, "Avenging Wrath" ) )
       {
         // TODO: Handle sentinel and other special ones
         allied_major_cds[ p ] = buff_t::find( p, "avenging_wrath" );
+      }
+    }
+    else if ( p->type == MONK )
+    {
+      if ( ST( p, "Serenity" ) )
+      {
+        allied_major_cds[ p ] = buff_t::find( p, "serenity" );
+      }
+      else if ( ST( p, "Storm, Earth, and Fire" ) )
+      {
+        allied_major_cds[ p ] = buff_t::find( p, "storm_earth_and_fire" );
       }
     }
   }
