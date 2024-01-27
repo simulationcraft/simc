@@ -4763,7 +4763,6 @@ void evoker_t::init_finished()
       {
         allied_major_cds[ p ] = buff_t::find( p, "storm_earth_and_fire" );
       }
-      sim->print_debug( "{} has found cd {} for player {}", *this, *allied_major_cds[ p ], *p );
     }
   }
 
