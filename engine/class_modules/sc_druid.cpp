@@ -8467,12 +8467,11 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     using namespace cat_attacks;
 
-    actions.conv_feral_frenzy   = get_convoke_action<feral_frenzy_t>( "feral_frenzy", p()->find_spell( 274837 ) );
-    actions.conv_ferocious_bite = get_convoke_action<ferocious_bite_t>( "ferocious_bite" );
-    actions.conv_thrash_cat     = get_convoke_action<thrash_cat_t>( "thrash_cat", p()->find_spell( 106830 ) );
-    actions.conv_shred          = get_convoke_action<shred_t>( "shred" );
-    // LI is a talent but the spell id is hardcoded into the constructor, so we don't need to explictly pass it here
-    actions.conv_lunar_inspiration = get_convoke_action<lunar_inspiration_t>( "lunar_inspiration" );
+    actions.conv_feral_frenzy      = get_convoke_action<feral_frenzy_t>( "feral_frenzy", p()->find_spell( 274837 ) );
+    actions.conv_ferocious_bite    = get_convoke_action<ferocious_bite_t>( "ferocious_bite" );
+    actions.conv_thrash_cat        = get_convoke_action<thrash_cat_t>( "thrash_cat", p()->find_spell( 106830 ) );
+    actions.conv_shred             = get_convoke_action<shred_t>( "shred" );
+    actions.conv_lunar_inspiration = get_convoke_action<lunar_inspiration_t>( "lunar_inspiration", p()->find_spell( 155625 ) );
     // find by id since talent is not required
     actions.conv_lunar_inspiration->s_data_reporting = p()->find_spell( 155580 );
 
