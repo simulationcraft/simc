@@ -3713,8 +3713,6 @@ struct blistering_scales_damage_t : public evoker_external_action_t<spell_t>
 {
 private:
   using base = evoker_external_action_t<spell_t>;
-protected:
-  using state_t = evoker_action_state_t<stats_data_t>;
 
 public:
   blistering_scales_damage_t( player_t* p ) : base( "blistering_scales_damage", p, p->find_spell( 360828 ) )
@@ -3737,7 +3735,7 @@ public:
   {
     base::execute();
 
-    if ( p( execute_state )->talent.reactive_hide.ok() )
+    if ( execute_state && p( execute_state )->talent.reactive_hide.ok() )
       p( execute_state )->buff.reactive_hide->trigger();
   }
 };
