@@ -535,7 +535,7 @@ struct pull_event_t final : raid_event_t
     master = sim->target_list.data().front();
     if ( !master )
     {
-      throw std::invalid_argument( fmt::format( "{} no enemy available in the sim.", *this ) );
+      throw std::invalid_argument( fmt::format( "no enemy available in the sim." ) );
     }
 
     std::string spawner_name = master->name();
@@ -552,14 +552,14 @@ struct pull_event_t final : raid_event_t
 
     if ( enemies_str.empty() )
     {
-      throw std::invalid_argument( fmt::format( "{} no enemies string.", *this ) );
+      throw std::invalid_argument( fmt::format( "no enemies string." ) );
     }
     else
     {
       auto enemy_splits = util::string_split<util::string_view>( enemies_str, "|" );
       if ( enemy_splits.empty() )
       {
-        throw std::invalid_argument( fmt::format( "{} at least one enemy is required.", *this ) );
+        throw std::invalid_argument( fmt::format( "at least one enemy is required.") );
       }
       else
       {
@@ -568,7 +568,7 @@ struct pull_event_t final : raid_event_t
           auto splits = util::string_split<util::string_view>( enemy_str, ":" );
           if ( splits.size() < 2 )
           {
-            throw std::invalid_argument( fmt::format( "{} bad enemy string '{}'.", *this, enemy_str ) );
+            throw std::invalid_argument( fmt::format( "bad enemy string '{}'.", enemy_str ) );
           }
           else
           {
@@ -1090,7 +1090,7 @@ struct movement_event_t final : public raid_event_t
       sim->error(
           "{} average player movement time ({}) is longer than cooldown movement time ({}). "
           "Capping it the lower value.",
-          *this, move_distance / avg_player_movement_speed, cooldown_move );
+          name, move_distance / avg_player_movement_speed, cooldown_move );
       move_distance = cooldown_move * avg_player_movement_speed;
     }
 
@@ -1340,7 +1340,7 @@ struct heal_event_t final : public raid_event_t
         if ( to_pct_range > 0 )
           pct_actual = sim->rng().range( to_pct - to_pct_range, to_pct + to_pct_range );
 
-        sim->print_debug( "{} heals {} {}% ({}) of max health, current health {}", *this, p->name(), pct_actual,
+        sim->print_debug( "{} heals {} {}% ({}) of max health, current health {}", name, p->name(), pct_actual,
                           p->resources.max[ RESOURCE_HEALTH ] * pct_actual / 100,
                           p->resources.current[ RESOURCE_HEALTH ] );
 
@@ -1392,7 +1392,7 @@ struct damage_taken_debuff_event_t final : public raid_event_t
   {
     for ( auto p : affected_players )
     {
-      sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, *this );
+      sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, name );
 
       if ( p->debuffs.damage_taken )
         p->debuffs.damage_taken->trigger( amount );
@@ -1453,7 +1453,7 @@ struct buff_raid_event_t final : public raid_event_t
     players_only = true;
 
     if ( buff_str.empty() )
-      throw std::invalid_argument( fmt::format( "{} you must specify a buff_name.", *this ) );
+      throw std::invalid_argument( fmt::format( "you must specify a buff_name." ) );
   }
 
   void _start() override
@@ -1771,7 +1771,7 @@ bool raid_event_t::up() const
 
 void raid_event_t::start()
 {
-  sim->print_log( "{} starts.", *this );
+  sim->print_log( "{} starts.", name );
 
   num_starts++;
   is_up = true;
@@ -1793,7 +1793,7 @@ void raid_event_t::start()
       }
       catch ( const std::exception& e )
       {
-        sim->error( "{} player_if expression error '{}': {}", *this, player_if_expr_str, e.what() );
+        sim->error( "{} player_if expression error '{}': {}", name, player_if_expr_str, e.what() );
         sim->cancel();
       }
     }
@@ -1820,7 +1820,7 @@ void raid_event_t::finish()
 
   _finish();
 
-  sim->print_log( "{} finishes.", *this );
+  sim->print_log( "{} finishes.", name );
 
   if ( type == "pull" )
   {
@@ -1841,7 +1841,7 @@ void raid_event_t::activate( util::string_view reason )
 {
   if ( activation_status == activation_status_e::deactivated )
   {
-    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", *this );
+    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", name );
     return;
   }
   if ( activation_status == activation_status_e::activated )
@@ -1849,7 +1849,7 @@ void raid_event_t::activate( util::string_view reason )
     // Already activated, do nothing.
     return;
   }
-  sim->print_debug( "{} activated ({}).", *this, reason );
+  sim->print_debug( "{} activated ({}).", name, reason );
   activation_status = activation_status_e::activated;
   if ( type == "pull" )
     start();
@@ -1864,12 +1864,12 @@ void raid_event_t::activate( util::string_view reason )
  */
 void raid_event_t::deactivate( std::string_view reason )
 {
-  sim->print_debug( "{} deactivated ({}).", *this, reason );
+  sim->print_debug( "{} deactivated ({}).", name, reason );
   activation_status = activation_status_e::deactivated;
   event_t::cancel( cooldown_event );
   if ( force_stop )
   {
-    sim->print_debug( "{} is force stopped.", *this );
+    sim->print_debug( "{} is force stopped.", name );
     event_t::cancel( duration_event );
     finish();
   }
@@ -1973,7 +1973,7 @@ void raid_event_t::combat_begin()
 
 void raid_event_t::schedule()
 {
-  sim->print_debug( "Scheduling {}", *this );
+  sim->print_debug( "Scheduling {}", name );
 
   struct duration_event_t : public event_t
   {
@@ -2242,12 +2242,12 @@ void raid_event_t::init( sim_t* sim )
         if ( !raid_event->pull_target_str.empty() )
           raid_event->pull_target_str = pull_event->name + "_" + raid_event->pull_target_str;
 
-        sim->print_debug( "Successfully created '{}', child of {}.", *( raid_event.get() ), pull_event->name );
+        sim->print_debug( "Successfully created '{}', child of {}.", name, pull_event->name );
         pull_event->child_events.push_back( std::move( raid_event ) );
       }
       else
       {
-        sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
+        sim->print_debug( "Successfully created '{}'.", name );
         sim->raid_events.push_back( std::move( raid_event ) );
       }
     }
