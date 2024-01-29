@@ -128,6 +128,6 @@ private:
   event_t* duration_event;
   event_t* start_event;
   event_t* end_event;
-  
+
   friend void sc_format_to( const raid_event_t&, fmt::format_context::iterator );
 };
