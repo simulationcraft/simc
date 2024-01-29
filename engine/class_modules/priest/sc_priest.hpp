@@ -406,8 +406,7 @@ public:
       player_talent_t exaltation;
       player_talent_t indemnity;
       player_talent_t pain_and_suffering;
-      // player_talent_t twilight_corruption;
-      const spell_data_t* twilight_corruption;
+      player_talent_t twilight_corruption;
       // Row
       player_talent_t borrowed_time;
       player_talent_t castigation;
