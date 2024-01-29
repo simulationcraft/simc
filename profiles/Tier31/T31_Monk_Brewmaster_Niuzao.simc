@@ -5,7 +5,7 @@ level=70
 race=void_elf
 role=tank
 position=front
-talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJFalkECJJl2BEAAAg0SCJSI0KSSaJJlEgSLk0SpEC
+talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJFalkECJJl2BEAAAg0SCJSI0KSSaJJlEgSLk0SpECA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3

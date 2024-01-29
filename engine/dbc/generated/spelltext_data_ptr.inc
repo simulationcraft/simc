@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.5.52646
-static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
+// Spell text, wow build 10.2.5.53040
+static const std::array<spelltext_data_t, 20602> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16427,7 +16427,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 375936, "Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional $328306s1 damage and you gain $s6 use of any Stealth ability for $347037d.\r\n\r\nCooldown reduced by $s3 sec if Sepsis does not last its full duration.\r\n\r\n|cFFFFFFFFAwards $s7 combo $lpoint:points;.|r", "Suffering $w1 Nature damage every $t1 sec, and $328306s1 when the poison ends.", 0 },
   { 375939, "$@spelldesc375936", "Allows $328305s6 use of any Stealth ability.", 0 },
   { 375981, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
-  { 375982, "Blast your target with a Primordial Wave, dealing $375984s1 Elemental damage and applying Flame Shock to them.\r\n\r\nYour next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide] for $?a137039[$s2%]?a137040[$s3%][$s4%] of normal $?a137039[healing][damage].$?s384405[\r\n\r\nPrimordial Wave generates $s5 stacks of Maelstrom Weapon.][]", 0, "Shadowlands" },
+  { 375982, "Blast your target with a Primordial Wave, dealing $375984s1 Elemental damage and applying Flame Shock to them.\r\n\r\nYour next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide] for $?a137039[$s2%]?a137040[$s3%][$s4%] of normal $?a137039[healing][damage].$?s384405[\r\n\r\nPrimordial Wave generates $s5 stacks of Maelstrom Weapon.][]", 0, 0 },
   { 375983, "$@spelldesc375982", 0, 0 },
   { 375984, "$@spelldesc375982", 0, 0 },
   { 375985, "$@spelldesc375982", 0, 0 },
@@ -17738,7 +17738,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 386965, "Your Breath of Fire ignites your right leg in flame for $386963d, causing your Blackout Kick and Spinning Crane Kick to deal $s1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.", 0, 0 },
   { 386976, "Shadow Bolt and Drain Soul deal $s1% increased damage, up to ${$s1*$s2}%, per damage over time effect you have active on the target.", 0, 0 },
   { 386986, "Corruption damage is increased by $s1%, and each time it deals damage any of your Curses active on the target are extended by ${$s2/1000}.1 sec.", 0, 0 },
-  { 386997, "Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Nature damage and secondary targets to suffer $o2 Nature damage over $d.\r\n\r\nFor the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.", "Suffering $s2 Nature damage every $t2 sec.", "Shadowlands" },
+  { 386997, "Wither away all life force of your current target and up to $s3 additional targets nearby, causing your primary target to suffer ${$o2*(1+$m4/10)} Shadow damage and secondary targets to suffer $o2 Shadow damage over $d.\r\n\r\nFor the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.", "Suffering $s2 Shadow damage every $t2 sec.", 0 },
   { 387016, "Each target affected by Soul Rot increases your haste and critical strike chance by ${$s1/10}.1% for $387018d.", 0, 0 },
   { 387018, "$@spelldesc387016", "Haste increased by ${$W1}.1%.\r\nCritical strike chance increased by ${$W2}.1%.", 0 },
   { 387028, "$@spelldesc384649", "Heals yourself and deals Fire damage to nearby enemies upon expiration.", 0 },
@@ -17970,7 +17970,9 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 388116, "The duration of your active demon form is extended by ${$s1/1000}.1 sec per $s2 Fury spent.", 0, 0 },
   { 388118, "Gain critical strike damage equal to $s2% of your critical strike chance.", 0, 0 },
   { 388193, "Strike the ground fiercely to expose a path of jade for $d, dealing $388207s1 Nature damage to up to 5 enemies, and restores $388207s2 health to up to 5 allies within $388207a1 yds caught in the path. $?a137024[Up to 5 allies]?a137025[Up to 5 enemies][Stagger is $s3% more effective for $347480d against enemies] caught in the path$?a137023[]?a137024[ are healed with an Essence Font bolt][ suffer an additional $388201s1 damage].\r\n\r\nYour abilities have a $s2% chance of resetting the cooldown of Jadefire Stomp while fighting within the path.", "Fighting within jadefire has a $s2% chance of resetting the cooldown of Jadefire Stomp.", 0 },
+  { 388199, "$@spelldesc388193", 0, 0 },
   { 388201, "$@spelldesc388193", 0, 0 },
+  { 388203, "$@spelldesc388193", 0, 0 },
   { 388207, "$@spelldesc388193", 0, 0 },
   { 388212, "Reduces the cooldown of $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by 2 min, but decreases its duration to 12 sec. ", 0, 0 },
   { 388218, "Each time Soothing Mist heals, the absorb amount of your next Life Cocoon is increased by $s1%, stacking up to $388220u times.", 0, 0 },
@@ -18166,7 +18168,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 389809, "Place a Sigil of Silence at the target location that activates after $d.\r\n\r\nSilences all enemies affected by the sigil for $204490d.", 0, 0 },
   { 389810, "Place a Sigil of Flame at the target location that activates after $d.\r\n\r\nDeals $204598s1 Fire damage, and an additional $204598o3 Fire damage over $204598d, to all enemies affected by the sigil.\r\n\r\nGenerates $389787s1 Fury.", "Sigil of Flame is active.", 0 },
   { 389813, "Place a Sigil of Misery at the target location that activates after $d.\r\n\r\nCauses all enemies affected by the sigil to cower in fear, disorienting them for $207685d.", 0, 0 },
-  { 389815, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
+  { 389815, "Place a demonic sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $307046s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
   { 389817, "$@spelldesc383812", 0, 0 },
   { 389818, "$@spelldesc383812", 0, 0 },
   { 389820, "$@spelldesc383812\r\n", "$@auracaster's Ruby Whelp takes you under their wing, increasing your Haste by $w1.", 0 },
@@ -18223,7 +18225,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 390158, "Immolation Aura's damage increases by $s1% each time it deals damage.", 0, 0 },
   { 390161, "Festering Strike has a $s1% chance to generate $390162s1 Rune and grant Runic Corruption.", 0, 0 },
   { 390162, "$@spelldesc390161", 0, 0 },
-  { 390163, "Place a Kyrian Sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
+  { 390163, "Place a demonic sigil at the target location that activates after $d.\r\n\r\nDetonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.", 0, 0 },
   { 390164, "$@spelldesc389537", 0, 0 },
   { 390165, "$@spelldesc389537", "Critical Strike increased by $w1.", 0 },
   { 390166, "Increases your maximum Runic Power by ${$s1/10} and increases the Rune regeneration rate of Runic Corruption by $s2%.", 0, 0 },
@@ -18461,7 +18463,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 391517, "After Vampiric Blood expires, you absorb damage equal to $s1 times the damage your Blood Plague dealt during Vampiric Blood.", 0, 0 },
   { 391519, "Absorbing damage dealt by Blood Plague.", "Absorbing damage dealt by Blood Plague.", 0 },
   { 391525, "Your harmful spells and abilities have a chance to deal up an additional ${$s1*1.15} physical damage to your current target. Damage is increased based on your targets missing health.", 0, 0 },
-  { 391528, "Call upon the Night Fae for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form.", "Every ${$t1}.2 sec, casting $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake or Thrash on appropriate nearby targets.", "Shadowlands" },
+  { 391528, "Call upon the spirits for an eruption of energy, channeling a rapid flurry of $s2 Druid spells and abilities over $d.$?s391538[ Chance to use an exceptional spell or ability is increased.][]\r\n\r\nYou will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake, and Thrash on appropriate nearby targets, favoring your current shapeshift form.", "Every ${$t1}.2 sec, casting $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake or Thrash on appropriate nearby targets.", 0 },
   { 391538, "Convoke the Spirits' cooldown is reduced by ${($abs($s4)/120000)*100}% and its duration and number of spells cast is reduced by $s1% Convoke the Spirits has an increased chance to use an exceptional spell or ability.", 0, 0 },
   { 391546, "Death's Advance grants an additional $s1% movement speed over the first $338093d.", 0, 0 },
   { 391547, "$@spelldesc391546", "Death's Advance movement speed increased by $w1%.", 0 },
@@ -18515,8 +18517,8 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 391876, "$@spelldesc391875", "Haste increased by $s1%.", 0 },
   { 391881, "Rip damage has a ${$s1/10}.1% chance to make your next Ferocious Bite free and deal the maximum damage.", 0, 0 },
   { 391882, "$@spelldesc339139", "Your next Ferocious Bite costs no Energy or combo points and deals the maximum damage.", 0 },
-  { 391888, "Command a swarm that heals $391891o1 or deals $391889o1 Shadow damage over $391889d to a target, and increases the effectiveness of your periodic effects on them by $391891s2%.\r\n\r\nUpon expiration, finds a new target, preferring to alternate between friend and foe up to $s1 times.", 0, "Shadowlands" },
-  { 391889, "$@spelldesc391888", "Suffering $w1 Shadow damage every $t1 sec and damage over time from $@auracaster increased by $w2%.", 0 },
+  { 391888, "Command a swarm that heals $391891o1 or deals $391889o1 Nature damage over $391889d to a target, and increases the effectiveness of your periodic effects on them by $391891s2%.\r\n\r\nUpon expiration, finds a new target, preferring to alternate between friend and foe up to $s1 times.", 0, 0 },
+  { 391889, "$@spelldesc391888", "Suffering $w1 Nature damage every $t1 sec and damage over time from $@auracaster increased by $w2%.", 0 },
   { 391891, "$@spelldesc391888", "Restoring $w1 health every $t1 sec and healing over time from $@auracaster increased by $w2%.", 0 },
   { 391947, "Your Regrowth protects you, reducing all damage you take by $391955s1% while your Regrowth is on you.", 0, 0 },
   { 391949, "Taking damage as well as dealing harmful spells and abilities has a chance to grant you a $s1 absorb shield for $391952d and $s2 Speed while the shield lasts.", 0, 0 },
@@ -20586,7 +20588,7 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 431156, "Your next Rapid Fire will shoot $s1% additional shots during its channel.", "Your next Rapid Fire will shoot $s1% additional shots during its channel.", 0 },
   { 431168, "Rapid Fire deals $s1% additional damage. Trick Shots causes Rapid Fire to launch a Volley for $s2 sec, dealing $s3% of normal damage.", 0, 0 },
   { 431172, "Every $s1 Focus you spend has a ${$m2/10}.1% chance to reset the cooldown of Rapid Fire and cause your next Rapid Fire to shoot $431156s1% additional shots during its channel.", 0, 0 },
-  { 431709, "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", 0 },
+  { 431709, "Grants you an aura that will randomize the look of your customizable dragonriding mounts.", "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", 0 },
   { 431949, "Pull out a fancy white parasol for $d, allowing you to safely float down the next time you fall.", "Feeling fancy... and ready to float down safely in case of a fall.", 0 },
   { 431962, "Reduces your falling speed for $d.", "Falling speed reduced.", 0 },
   { 431994, "Pull out a fancy jade parasol for $d, allowing you to safely float down the next time you fall.", "Feeling fancy... and ready to float down safely in case of a fall.", 0 },
@@ -20602,13 +20604,12 @@ static const std::array<spelltext_data_t, 20600> __ptr_spelltext_data { {
   { 434251, "$@spelldesc421990", "Counterattacking all incoming damage from enemies within $421996r yards. Regenerating $w1 every $t sec.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.5.52646
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
-  {  366155,  0, "Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.", "Repair an ally's injuries, healing them for $o1 over $d.\r\n\r\nWhen Reversion critically heals, its duration is extended by $t1 sec, up to a maximum of ${$t1*$<cap>}.1 sec." },
-  {  369297,  0, "Living Flame has a a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", "Living Flame has a $s1% chance, and Reversion has a $s2% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]" },
+// spelltext hotfix entries, wow build 10.2.5.53040
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  431709,  0, "Each time you mount a customizable dragonriding mount, the customizations will be randomized.", "Grants you an aura that will randomize the look of your customizable dragonriding mounts." },
 } };
 
-// Spell description variables, wow build 10.2.5.52646
+// Spell description variables, wow build 10.2.5.53040
 static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20670,7 +20671,7 @@ static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { 
   {   53376, "$time= $?a53376[${$31884d}][${$31884d*(1+($53376s1/100))}]" },
   {   55095, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {   58877, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.3195*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
   {   64382, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {   77756, "$volcanic=$?a408572[${$408572s3}][${0}]\r\n$igneous=$?a279830[${$279830s1}][${0}]\r\n$chance=${$s1+$<volcanic>+$<igneous>}" },
   {   79096, "$cdr=${$s1/10}" },
@@ -20847,7 +20848,7 @@ static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { 
   {  296320, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  298441, "$points=${$298461s2}" },
   {  298442, "$points=${$298461s2}" },
-  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.3195*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
   {  299367, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299369, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299958, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
@@ -21027,7 +21028,7 @@ static const std::array<spelldesc_vars_data_t, 415> __ptr_spelldesc_vars_data { 
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.5.52646
+// spelldesc_vars hotfix entries, wow build 10.2.5.53040
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

@@ -207,7 +207,7 @@ public:
     buff_t* dancing_blades;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
-    buff_t* elysian_might;
+    buff_t* champions_might;
     buff_t* enrage;
     buff_t* frenzy;
     buff_t* heroic_leap_movement;
@@ -312,7 +312,7 @@ public:
     cooldown_t* thunder_clap;
     cooldown_t* warbreaker;
     cooldown_t* conquerors_banner;
-    cooldown_t* spear_of_bastion;
+    cooldown_t* champions_spear;
     cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
     cooldown_t* t31_fury_4pc_icd;
@@ -339,7 +339,7 @@ public:
     gain_t* revenge;
     gain_t* shield_charge;
     gain_t* shield_slam;
-    gain_t* spear_of_bastion;
+    gain_t* champions_spear;
     gain_t* strength_of_arms;
     gain_t* whirlwind;
     gain_t* booming_voice;
@@ -507,7 +507,7 @@ public:
 
       player_talent_t avatar;
       player_talent_t thunderous_roar;
-      player_talent_t spear_of_bastion;
+      player_talent_t champions_spear;
       player_talent_t shockwave;
 
       player_talent_t immovable_object;
@@ -518,8 +518,8 @@ public:
       player_talent_t titans_torment;
       player_talent_t uproar;
       player_talent_t thunderous_words;
-      player_talent_t piercing_verdict;
-      player_talent_t elysian_might;
+      player_talent_t piercing_challenge;
+      player_talent_t champions_might;
       player_talent_t rumbling_earth;
       player_talent_t sonic_boom;
 
@@ -6057,12 +6057,12 @@ struct conquerors_banner_t : public warrior_spell_t
   }
 };
 
-// Spear of Bastion==========================================================
+// Champion's Spear==========================================================
 
-struct spear_of_bastion_damage_t : public warrior_attack_t
+struct champions_spear_damage_t : public warrior_attack_t
 {
   double rage_gain;
-  spear_of_bastion_damage_t( util::string_view name, warrior_t* p ) : warrior_attack_t( name, p, p->find_spell( 376080 ) ),
+  champions_spear_damage_t( util::string_view name, warrior_t* p ) : warrior_attack_t( name, p, p->find_spell( 376080 ) ),
   rage_gain( p->find_spell( 376080 )->effectN( 3 ).resource( RESOURCE_RAGE ) )
   {
     background = tick_may_crit = true;
@@ -6073,10 +6073,10 @@ struct spear_of_bastion_damage_t : public warrior_attack_t
     allow_class_ability_procs  = true;
     energize_type     = action_energize::NONE;
 
-    rage_gain *= 1.0 + p->talents.warrior.piercing_verdict->effectN( 2 ).percent();
+    rage_gain *= 1.0 + p->talents.warrior.piercing_challenge->effectN( 2 ).percent();
 
     // dot_duration += timespan_t::from_millis( p -> find_spell( 357996 ) -> effectN( 1 ).base_value() );
-    if ( p->talents.warrior.elysian_might->ok() )
+    if ( p->talents.warrior.champions_might->ok() )
     {
       dot_duration += timespan_t::from_millis( p->find_spell( 386284 )->effectN( 1 ).base_value() );
     }
@@ -6086,23 +6086,23 @@ struct spear_of_bastion_damage_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.spear_of_bastion );
+    p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.champions_spear );
   }
 };
 
-struct spear_of_bastion_t : public warrior_attack_t
+struct champions_spear_t : public warrior_attack_t
 {
-  action_t* spear_of_bastion_attack;
-  spear_of_bastion_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "spear_of_bastion", p, p->talents.warrior.spear_of_bastion ),
-    spear_of_bastion_attack( get_action<spear_of_bastion_damage_t>( "spear_of_bastion_damage", p ) )
+  action_t* champions_spear_attack;
+  champions_spear_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "champions_spear", p, p->talents.warrior.champions_spear ),
+    champions_spear_attack( get_action<champions_spear_damage_t>( "champions_spear_damage", p ) )
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
     aoe = -1;
     reduced_aoe_targets               = 5.0;
 
-    execute_action = spear_of_bastion_attack;
+    execute_action = champions_spear_attack;
     add_child( execute_action );
 
     energize_type     = action_energize::NONE;
@@ -6112,9 +6112,9 @@ struct spear_of_bastion_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p()->talents.warrior.elysian_might->ok() )
+    if ( p()->talents.warrior.champions_might->ok() )
     {
-      p()->buff.elysian_might->trigger();
+      p()->buff.champions_might->trigger();
     }
   }
 };
@@ -6939,8 +6939,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new skullsplitter_t( this, options_str );
   if ( name == "slam" )
     return new slam_t( this, options_str );
-  if ( name == "spear_of_bastion" )
-    return new spear_of_bastion_t( this, options_str );
+  if ( name == "champions_spear" )
+    return new champions_spear_t( this, options_str );
   if ( name == "spell_reflection" )
     return new spell_reflection_t( this, options_str );
   if ( name == "storm_bolt" )
@@ -7093,7 +7093,7 @@ void warrior_t::init_spells()
 
   talents.warrior.avatar                           = find_talent_spell( talent_tree::CLASS, "Avatar" );
   talents.warrior.thunderous_roar                  = find_talent_spell( talent_tree::CLASS, "Thunderous Roar" );
-  talents.warrior.spear_of_bastion                 = find_talent_spell( talent_tree::CLASS, "Spear of Bastion" );
+  talents.warrior.champions_spear                  = find_talent_spell( talent_tree::CLASS, "Champion's Spear" );
   talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
 
   talents.warrior.immovable_object                 = find_talent_spell( talent_tree::CLASS, "Immovable Object" );
@@ -7104,8 +7104,8 @@ void warrior_t::init_spells()
   talents.warrior.titans_torment                   = find_talent_spell( talent_tree::CLASS, "Titan's Torment" );
   talents.warrior.uproar                           = find_talent_spell( talent_tree::CLASS, "Uproar" );
   talents.warrior.thunderous_words                 = find_talent_spell( talent_tree::CLASS, "Thunderous Words" );
-  talents.warrior.piercing_verdict                 = find_talent_spell( talent_tree::CLASS, "Piercing Verdict" );
-  talents.warrior.elysian_might                    = find_talent_spell( talent_tree::CLASS, "Elysian Might" );
+  talents.warrior.piercing_challenge                = find_talent_spell( talent_tree::CLASS, "Piercing Challenge" );
+  talents.warrior.champions_might                  = find_talent_spell( talent_tree::CLASS, "Champion's Might" );
   talents.warrior.rumbling_earth                   = find_talent_spell( talent_tree::CLASS, "Rumbling Earth" );
   talents.warrior.sonic_boom                       = find_talent_spell( talent_tree::CLASS, "Sonic Boom" );
 
@@ -7819,10 +7819,10 @@ void warrior_t::create_buffs()
     ->add_invalidate( CACHE_PARRY );
 
 
-  buff.elysian_might = make_buff( this, "elysian_might", find_spell( 386286 ) )
+  buff.champions_might = make_buff( this, "champions_might", find_spell( 386286 ) )
      ->set_default_value( find_spell( 386286 )->effectN( 1 ).percent() )
      ->set_duration( find_spell( 376080 )->duration() +
-                     talents.warrior.elysian_might->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
+                     talents.warrior.champions_might->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
      ->add_invalidate( CACHE_ATTACK_HASTE )
@@ -8067,7 +8067,7 @@ void warrior_t::init_gains()
   gain.revenge                          = get_gain( "revenge" );
   gain.shield_charge                    = get_gain( "shield_charge" );
   gain.shield_slam                      = get_gain( "shield_slam" );
-  gain.spear_of_bastion                 = get_gain( "spear_of_bastion" );
+  gain.champions_spear                  = get_gain( "champions_spear" );
   gain.strength_of_arms                 = get_gain( "strength_of_arms" );
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
@@ -8872,7 +8872,7 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
 
-  cdm *= 1.0 + buff.elysian_might->check_value();
+  cdm *= 1.0 + buff.champions_might->check_value();
 
   return cdm;
 }
@@ -9198,7 +9198,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.warrior.concussive_blows );
   action.apply_affecting_aura( talents.warrior.cruel_strikes );
   action.apply_affecting_aura( talents.warrior.crushing_force ); // crit portion not active
-  action.apply_affecting_aura( talents.warrior.piercing_verdict );
+  action.apply_affecting_aura( talents.warrior.piercing_challenge );
   action.apply_affecting_aura( talents.warrior.honed_reflexes );
   action.apply_affecting_aura( talents.warrior.sonic_boom );
   action.apply_affecting_aura( talents.warrior.thunderous_words );

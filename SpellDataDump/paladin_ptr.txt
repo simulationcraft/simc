@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.0.52649 Live
+SimulationCraft 1020-01 for World of Warcraft 10.2.5.53040 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -2818,6 +2818,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=748514)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#10 (id=1132070)  : Apply Aura (6) | Modify Armor% (101)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -2918,11 +2921,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590)
                    Family Flags: 65
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590)
                    Family Flags: 65
 #3 (id=191093)   : Apply Aura (6) | Hasted Cooldown Duration (416)
@@ -3165,9 +3168,10 @@ Effects          :
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Judgment (197277), Judgment (275773), Judgment (275779), Ashen Hallow (317221), Hallowed Discernment (340203)
                    Family Flags: 18, 23, 39
 #11 (id=260932)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 58 | Scaled Value: 58 | PvP Coefficient: 1.00000
+                   Base Value: 105 | Scaled Value: 105 | PvP Coefficient: 1.00000
                    Affected Spells: Consecration (26573), Consecration (81297)
                    Family Flags: 5
+Hotfixed         : Base Value (58 -> 105)
 #12 (id=260933)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #13 (id=1032420)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -3181,9 +3185,10 @@ Effects          :
                    Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
                    Family Flags: 92
 #16 (id=1056034)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #17 (id=1081586)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
+Hotfixed         : Base Value (10 -> 5)
 #18 (id=1081587)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
@@ -3841,7 +3846,8 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267535)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.38656 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.66387 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.38656 -> 1.66387)
 #2 (id=267536)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 #3 (id=1051842)  : Trigger Spell (64): Blade of Justice
@@ -5975,7 +5981,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=478180)   : School Damage (2): holyfire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.92600 | PvP Coefficient: 0.72727 | Radius: 14 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.51120 | PvP Coefficient: 0.72727 | Radius: 14 yards | Target: Cone Front (104)
+Hotfixed         : AP Coefficient (2.926 -> 3.5112)
 #2 (id=478181)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 #3 (id=478182)   : Trigger Spell (64): Truth's Wake
@@ -12924,7 +12931,8 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Melee Chain Targeting (172), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1015174)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.63020 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.79322 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.6302 -> 1.79322)
 #2 (id=1015175)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 $?s403664[Holystrike][Holy] damage to an enemy target,
@@ -14874,7 +14882,7 @@ Description      : Each Holy Power spent on Light of Dawn increases the healing 
 Name             : Blessing of Summer (id=388007) [Spell Family (10)] 
 Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
-School           : Nature
+School           : Holy
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265561)
 Spell Level      : 1
@@ -14997,7 +15005,7 @@ Variables        : $points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}
 
 Name             : Blessing of Spring (id=388013) [Spell Family (10)] 
 Class            : Paladin
-School           : Nature
+School           : Holy
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265564)
 Spell Level      : 48
@@ -16541,7 +16549,8 @@ Effects          :
 #1 (id=1050802)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 14 yards | Mechanic: Snare | Target: Cone Front (104)
 #2 (id=1050803)  : Apply Aura (6) | Periodic Damage (3): holyfire every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42500 | PvP Coefficient: 1.00000 | Radius: 14 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.54400 | PvP Coefficient: 1.00000 | Radius: 14 yards | Target: Cone Front (104)
+Hotfixed         : AP Coefficient (0.425 -> 0.544)
 Description      : Wake of Ashes slows targets by $s1% and burns the target for an additional $o2 Radiant damage over $383351d.
 
 Tooltip          : $?(s403696)[Burning for $w2 damage every $t2 sec and movement speed reduced by $s1%.] [Movement speed reduced by $s1%.]
@@ -17082,7 +17091,8 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1053556)  : School Damage (2): holyfire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.47900 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Target: Custom (18) -> Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.89312 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Target: Custom (18) -> Cone Front (104)
+Hotfixed         : AP Coefficient (1.479 -> 1.89312)
 Description      : $@spelldesc255937
 
 Name             : Wake of Ashes (id=405350) [Spell Family (10)] 
@@ -17104,7 +17114,8 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1053566)  : School Damage (2): holyfire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.47900 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Target: Custom (18) -> Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.89312 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Target: Custom (18) -> Cone Front (104)
+Hotfixed         : AP Coefficient (1.479 -> 1.89312)
 Description      : $@spelldesc255937
 
 
@@ -17852,7 +17863,6 @@ Effects          :
 Description      : Final Reckoning and Execution Sentence's durations are increased by ${$s1/1000} sec. 
 
 Name             : Divine Arbiter (id=406975) [Spell Family (10)] 
-Hotfixed         : Proc Flags 1 (0 -> 16), Proc Flags 2 (4 -> 0)
 Class            : Paladin
 School           : Holystrike
 Spell Type       : None
@@ -18892,7 +18902,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55250 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.71825 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
+Hotfixed         : AP Coefficient (0.5525 -> 0.71825)
 #2 (id=1084763)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell w/ Value (142): Lightforged Blessing

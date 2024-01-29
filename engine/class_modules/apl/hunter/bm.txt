@@ -28,7 +28,7 @@ actions.cds+=/fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buf
 actions.cds+=/potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31
 
 actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)
-actions.st+=/kill_command,if=full_recharge_time<gcd&talent.alpha_predator
+actions.st+=/kill_command,if=!talent.wild_instincts&full_recharge_time<gcd&talent.alpha_predator
 actions.st+=/call_of_the_wild,if=!talent.wild_instincts&variable.cotw_ready
 actions.st+=/stampede
 actions.st+=/bloodshed

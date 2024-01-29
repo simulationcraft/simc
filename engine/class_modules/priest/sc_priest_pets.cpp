@@ -528,7 +528,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
       mindbender_spell( owner->find_spell( 123051 ) ),
       power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
       power_leech_mana( o().specialization() == PRIEST_SHADOW ? 0.0
-                                                              : o().find_spell( 200010 )->effectN( 1 ).percent() / 10 )
+                                                              : o().find_spell( 123051 )->effectN( 1 ).percent() / 100 )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
 

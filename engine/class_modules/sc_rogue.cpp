@@ -4238,9 +4238,6 @@ struct eviscerate_t : public rogue_attack_t
 
     bool procs_poison() const override
     { return false; }
-
-    bool procs_shadow_blades_damage() const override
-    { return false; }
   };
 
   eviscerate_bonus_t* bonus_attack;
@@ -5033,9 +5030,6 @@ struct rupture_t : public rogue_attack_t
       snapshot_state( damage_state, result_amount_type::DMG_OVER_TIME );
       trigger_secondary_action( damage_state, 1_s );
     }
-
-    bool procs_shadow_blades_damage() const override
-    { return false; }
   };
 
   replicating_shadows_tick_t* replicating_shadows_tick;
@@ -5696,9 +5690,6 @@ struct black_powder_t: public rogue_attack_t
 
     bool procs_poison() const override
     { return false; }
-
-    bool procs_shadow_blades_damage() const override
-    { return false; }
   };
 
   black_powder_bonus_t* bonus_attack;
@@ -5732,29 +5723,31 @@ struct black_powder_t: public rogue_attack_t
 
     rogue_attack_t::execute();
 
-    if ( p()->spec.finality_black_powder_buff->ok() )
+    // BUG: Finality BP seems to affect every instance of shadow damage due to, err, spaghetti with the bonus attack trigger order and travel time?
+    // See https://github.com/SimCMinMax/WoW-BugTracker/issues/747
+    bool triggered_finality = false;
+    if ( p()->spec.finality_black_powder_buff->ok() && !p()->buffs.finality_black_powder->check() )
     {
-      if ( p()->buffs.finality_black_powder->check() )
-        p()->buffs.finality_black_powder->expire();
-      else
-        p()->buffs.finality_black_powder->trigger();
+      p()->buffs.finality_black_powder->trigger();
+      triggered_finality = true;
+    }
+
+    if ( bonus_attack )
+    {
+      bonus_attack->last_cp = cast_state( execute_state )->get_combo_points();
+      bonus_attack->execute_on_target( execute_state->target );
+    }
+
+    // See bug above.
+    if ( !triggered_finality )
+    {
+      p()->buffs.finality_black_powder->expire();
     }
 
     if ( p()->set_bonuses.t29_subtlety_2pc->ok() )
     {
       p()->buffs.t29_subtlety_2pc->expire();
       p()->buffs.t29_subtlety_2pc->trigger( cast_state( execute_state )->get_combo_points() );
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    if ( bonus_attack && state->chain_target == 0 )
-    {
-      bonus_attack->last_cp = cast_state( state )->get_combo_points();
-      bonus_attack->execute_on_target( state->target );
     }
   }
 

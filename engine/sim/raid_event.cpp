@@ -92,7 +92,7 @@ struct adds_event_t final : public raid_event_t
       master = sim->find_player( master_str );
       if ( !master )
       {
-        throw std::invalid_argument( fmt::format( "{} cannot find master '{}'.", *this, master_str ) );
+        throw std::invalid_argument( fmt::format( "cannot find master '{}'.", master_str ) );
       }
     }
 
@@ -102,7 +102,7 @@ struct adds_event_t final : public raid_event_t
 
     if ( !master )
     {
-      throw std::invalid_argument( fmt::format( "{} no enemy target available in the sim.", *this ) );
+      throw std::invalid_argument( fmt::format( "no enemy target available in the sim." ) );
     }
 
     double overlap    = 1;
@@ -114,9 +114,9 @@ struct adds_event_t final : public raid_event_t
       if ( min_cd <= timespan_t::zero() )
       {
         throw std::invalid_argument(
-            fmt::format( "{} the cooldown standard deviation ({}) is too large, "
+            fmt::format( "the cooldown standard deviation ({}) is too large, "
                          "creating a too short minimum cooldown ({})",
-                         *this, cooldown_stddev, min_cd ) );
+                         cooldown_stddev, min_cd ) );
       }
     }
 
@@ -126,9 +126,9 @@ struct adds_event_t final : public raid_event_t
     if ( overlap > 1 )
     {
       throw std::invalid_argument(
-          fmt::format( "{} does not support overlapping add spawning in a single raid event. "
+          fmt::format( "does not support overlapping add spawning in a single raid event. "
                        "Duration ({}) > reasonable minimum cooldown ({}).",
-                       *this, duration, min_cd ) );
+                       duration, min_cd ) );
     }
 
     if ( !race_str.empty() )
@@ -136,7 +136,7 @@ struct adds_event_t final : public raid_event_t
       race = util::parse_race_type( race_str );
       if ( race == RACE_UNKNOWN )
       {
-        throw std::invalid_argument( fmt::format( "{} could not parse race from '{}'.", *this, race_str ) );
+        throw std::invalid_argument( fmt::format( "could not parse race from '{}'.", race_str ) );
       }
     }
     else if ( !sim->target_race.empty() )
@@ -146,7 +146,7 @@ struct adds_event_t final : public raid_event_t
       if ( race == RACE_UNKNOWN )
       {
         throw std::invalid_argument(
-            fmt::format( "{} could not parse race from sim target race '{}'.", *this, sim->target_race ) );
+            fmt::format( "could not parse race from sim target race '{}'.", sim->target_race ) );
       }
     }
 
@@ -156,7 +156,7 @@ struct adds_event_t final : public raid_event_t
 
       if ( !( enemy_type == ENEMY_ADD || enemy_type == ENEMY_ADD_BOSS ) )
       {
-        throw std::invalid_argument( fmt::format( "{} could not parse enemy type from '{}'.", *this, enemy_type_str ) );
+        throw std::invalid_argument( fmt::format( "could not parse enemy type from '{}'.", enemy_type_str ) );
       }
     }
 
@@ -415,7 +415,7 @@ struct pull_event_t final : raid_event_t
         double pull_dps = pull_damage / ( sim->current_time() - pull_event->spawn_time ).total_seconds();
         return timespan_t::from_seconds( ( resources.current[ RESOURCE_HEALTH ] - target_hp ) / ( pull_dps / add_count ) );
       }
-      
+
       return pet_t::time_to_percent( percent );
     }
 
@@ -503,8 +503,8 @@ struct pull_event_t final : raid_event_t
 
   pull_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "pull" ),
-      delay(),
       enemies_str(),
+      delay( 0_ms ),
       spawn_time( 0_s ),
       bloodlust( false ),
       shared_health( false ),
@@ -529,13 +529,13 @@ struct pull_event_t final : raid_event_t
     duration_stddev = duration_min = duration_max = timespan_t::zero();
 
     name = "Pull_" + util::to_string( pull );
-    
+
     real_duration.name_str = name + " Length";
 
     master = sim->target_list.data().front();
     if ( !master )
     {
-      throw std::invalid_argument( fmt::format( "{} no enemy available in the sim.", *this ) );
+      throw std::invalid_argument( fmt::format( "no enemy available in the sim." ) );
     }
 
     std::string spawner_name = master->name();
@@ -545,19 +545,21 @@ struct pull_event_t final : raid_event_t
     if ( !adds_spawner )
     {
       adds_spawner = new spawner::pet_spawner_t<mob_t, player_t>( spawner_name, master );
-      adds_spawner->set_event_callback( spawner::pet_event_type::DEMISE, []( spawner::pet_event_type type, mob_t* mob ) { mob->pull_event->mob_demise(); } );
+      adds_spawner->set_event_callback( spawner::pet_event_type::DEMISE, []( spawner::pet_event_type, mob_t* mob ) {
+        mob->pull_event->mob_demise();
+      } );
     }
 
     if ( enemies_str.empty() )
     {
-      throw std::invalid_argument( fmt::format( "{} no enemies string.", *this ) );
+      throw std::invalid_argument( fmt::format( "no enemies string." ) );
     }
     else
     {
       auto enemy_splits = util::string_split<util::string_view>( enemies_str, "|" );
       if ( enemy_splits.empty() )
       {
-        throw std::invalid_argument( fmt::format( "{} at least one enemy is required.", *this ) );
+        throw std::invalid_argument( fmt::format( "at least one enemy is required.") );
       }
       else
       {
@@ -566,7 +568,7 @@ struct pull_event_t final : raid_event_t
           auto splits = util::string_split<util::string_view>( enemy_str, ":" );
           if ( splits.size() < 2 )
           {
-            throw std::invalid_argument( fmt::format( "{} bad enemy string '{}'.", *this, enemy_str ) );
+            throw std::invalid_argument( fmt::format( "bad enemy string '{}'.", enemy_str ) );
           }
           else
           {
@@ -623,7 +625,7 @@ struct pull_event_t final : raid_event_t
   }
 
   void _start() override
-  {    
+  {
     spawn_time = sim->current_time();
 
     if ( bloodlust )
@@ -648,7 +650,7 @@ struct pull_event_t final : raid_event_t
           p->buffs.exhaustion->trigger();
         }
       }
-    }    
+    }
 
     auto adds = adds_spawner->spawn( as<unsigned>( spawn_parameters.size() ) );
     double total_health = 0;
@@ -1088,7 +1090,7 @@ struct movement_event_t final : public raid_event_t
       sim->error(
           "{} average player movement time ({}) is longer than cooldown movement time ({}). "
           "Capping it the lower value.",
-          *this, move_distance / avg_player_movement_speed, cooldown_move );
+          name, move_distance / avg_player_movement_speed, cooldown_move );
       move_distance = cooldown_move * avg_player_movement_speed;
     }
 
@@ -1338,7 +1340,7 @@ struct heal_event_t final : public raid_event_t
         if ( to_pct_range > 0 )
           pct_actual = sim->rng().range( to_pct - to_pct_range, to_pct + to_pct_range );
 
-        sim->print_debug( "{} heals {} {}% ({}) of max health, current health {}", *this, p->name(), pct_actual,
+        sim->print_debug( "{} heals {} {}% ({}) of max health, current health {}", name, p->name(), pct_actual,
                           p->resources.max[ RESOURCE_HEALTH ] * pct_actual / 100,
                           p->resources.current[ RESOURCE_HEALTH ] );
 
@@ -1390,7 +1392,7 @@ struct damage_taken_debuff_event_t final : public raid_event_t
   {
     for ( auto p : affected_players )
     {
-      sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, *this );
+      sim->print_log( "{} gains {} stacks of damage_taken debuff from {}.", p->name(), amount, name );
 
       if ( p->debuffs.damage_taken )
         p->debuffs.damage_taken->trigger( amount );
@@ -1451,7 +1453,7 @@ struct buff_raid_event_t final : public raid_event_t
     players_only = true;
 
     if ( buff_str.empty() )
-      throw std::invalid_argument( fmt::format( "{} you must specify a buff_name.", *this ) );
+      throw std::invalid_argument( fmt::format( "you must specify a buff_name." ) );
   }
 
   void _start() override
@@ -1485,10 +1487,10 @@ struct vulnerable_event_t final : public raid_event_t
   player_t* target = nullptr;
   std::string target_str;
 
-  vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
+  vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 1.0 )
   {
     add_option( opt_float( "multiplier", multiplier ) );
-    
+
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
       add_option( opt_string( "target", target_str ) );
     else
@@ -1650,6 +1652,8 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     duration_stddev( timespan_t::zero() ),
     duration_min( timespan_t::zero() ),
     duration_max( timespan_t::zero() ),
+    pull( 0 ),
+    pull_target_str(),
     distance_min( 0 ),
     distance_max( 0 ),
     players_only( false ),
@@ -1664,9 +1668,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     cooldown_event(),
     duration_event(),
     start_event(),
-    end_event(),
-    pull( 0 ),
-    pull_target_str()
+    end_event()
 {
   add_option( opt_string( "name", name ) );
   add_option( opt_timespan( "first", first, timespan_t::zero(), timespan_t::max() ) );
@@ -1769,7 +1771,7 @@ bool raid_event_t::up() const
 
 void raid_event_t::start()
 {
-  sim->print_log( "{} starts.", *this );
+  sim->print_log( "{} starts.", name );
 
   num_starts++;
   is_up = true;
@@ -1791,7 +1793,7 @@ void raid_event_t::start()
       }
       catch ( const std::exception& e )
       {
-        sim->error( "{} player_if expression error '{}': {}", *this, player_if_expr_str, e.what() );
+        sim->error( "{} player_if expression error '{}': {}", name, player_if_expr_str, e.what() );
         sim->cancel();
       }
     }
@@ -1811,14 +1813,14 @@ void raid_event_t::finish()
 {
   // Make sure we dont have any players which were active on start, but are now sleeping
   auto filter_sleeping = []( const player_t* p ) { return p->is_sleeping(); };
-  affected_players.erase( std::remove_if( affected_players.begin(), affected_players.end(), filter_sleeping ), 
+  affected_players.erase( std::remove_if( affected_players.begin(), affected_players.end(), filter_sleeping ),
       affected_players.end() );
 
   is_up = false;
 
   _finish();
 
-  sim->print_log( "{} finishes.", *this );
+  sim->print_log( "{} finishes.", name );
 
   if ( type == "pull" )
   {
@@ -1839,7 +1841,7 @@ void raid_event_t::activate( util::string_view reason )
 {
   if ( activation_status == activation_status_e::deactivated )
   {
-    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", *this );
+    sim->print_debug( "{} already deactivated. (last/last_pct happened before first/first_pct).", name );
     return;
   }
   if ( activation_status == activation_status_e::activated )
@@ -1847,7 +1849,7 @@ void raid_event_t::activate( util::string_view reason )
     // Already activated, do nothing.
     return;
   }
-  sim->print_debug( "{} activated ({}).", *this, reason );
+  sim->print_debug( "{} activated ({}).", name, reason );
   activation_status = activation_status_e::activated;
   if ( type == "pull" )
     start();
@@ -1862,12 +1864,12 @@ void raid_event_t::activate( util::string_view reason )
  */
 void raid_event_t::deactivate( std::string_view reason )
 {
-  sim->print_debug( "{} deactivated ({}).", *this, reason );
+  sim->print_debug( "{} deactivated ({}).", name, reason );
   activation_status = activation_status_e::deactivated;
   event_t::cancel( cooldown_event );
   if ( force_stop )
   {
-    sim->print_debug( "{} is force stopped.", *this );
+    sim->print_debug( "{} is force stopped.", name );
     event_t::cancel( duration_event );
     finish();
   }
@@ -1929,7 +1931,7 @@ void raid_event_t::combat_begin()
   }
   if ( last_pct != -1 )
   {
-    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )    
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
     {
       auto target = sim->find_player( pull_target_str );
       if ( !target )
@@ -1971,7 +1973,7 @@ void raid_event_t::combat_begin()
 
 void raid_event_t::schedule()
 {
-  sim->print_debug( "Scheduling {}", *this );
+  sim->print_debug( "Scheduling {}", name );
 
   struct duration_event_t : public event_t
   {
@@ -2130,7 +2132,7 @@ void raid_event_t::parse_options( util::string_view options_str )
   {
     if ( last_pct != -1 || first_pct != -1 )
     {
-      if ( pull = 0 )
+      if ( pull == 0 )
         throw std::invalid_argument( "pull= is required for DungeonRoute events with last_pct/first_pct." );
       if ( pull_target_str.empty() )
         throw std::invalid_argument( "pull_target= is required for DungeonRoute events with last_pct/first_pct." );
@@ -2240,12 +2242,12 @@ void raid_event_t::init( sim_t* sim )
         if ( !raid_event->pull_target_str.empty() )
           raid_event->pull_target_str = pull_event->name + "_" + raid_event->pull_target_str;
 
-        sim->print_debug( "Successfully created '{}', child of {}.", *( raid_event.get() ), pull_event->name );
+        sim->print_debug( "Successfully created '{}', child of {}.", name, pull_event->name );
         pull_event->child_events.push_back( std::move( raid_event ) );
       }
       else
       {
-        sim->print_debug( "Successfully created '{}'.", *( raid_event.get() ) );
+        sim->print_debug( "Successfully created '{}'.", name );
         sim->raid_events.push_back( std::move( raid_event ) );
       }
     }
@@ -2278,7 +2280,7 @@ void raid_event_t::combat_begin( sim_t* sim )
 {
   for ( auto& raid_event : sim->raid_events )
   {
-    if ( sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE || raid_event->type == "pull" && raid_event->pull == 1 )
+    if ( sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE || ( raid_event->type == "pull" && raid_event->pull == 1 ) )
       raid_event->combat_begin();
   }
 }

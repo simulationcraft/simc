@@ -5641,7 +5641,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
       : demon_hunter_attack_t( name, p, s )
     {
       dual = true;
-      aoe  = data().effectN( 2 ).base_value();
     }
 
     action_state_t* new_state() override
@@ -5668,14 +5667,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
       if ( result_is_hit( s->result ) && p()->talent.vengeance.void_reaver->ok() )
       {
         td( s->target )->debuffs.frailty->trigger();
-      }
-      // Soul Cleave applies a stack of Frailty to the primary target if Soulcrush is talented,
-      // doesn't need to hit.
-      if ( s->chain_target == 0 && p()->talent.vengeance.soulcrush->ok() )
-      {
-        td( s->target )
-            ->debuffs.frailty->trigger(
-                timespan_t::from_seconds( p()->talent.vengeance.soulcrush->effectN( 2 ).base_value() ) );
       }
 
       if ( debug_cast<soul_cleave_state_t*>( s )->t29_vengeance_4pc_proc )
@@ -5748,8 +5739,16 @@ struct soul_cleave_t : public demon_hunter_attack_t
       heal->execute();
     }
 
+    // Soul Cleave applies a stack of Frailty to the primary target if Soulcrush is talented,
+    // doesn't need to hit.
+    if ( p()->talent.vengeance.soulcrush->ok() )
+    {
+      td( target )->debuffs.frailty->trigger(
+          timespan_t::from_seconds( p()->talent.vengeance.soulcrush->effectN( 2 ).base_value() ) );
+    }
+
     // Soul fragments consumed are capped for Soul Cleave
-    p()->consume_soul_fragments( soul_fragment::ANY, true, (unsigned)data().effectN( 3 ).base_value() );
+    p()->consume_soul_fragments( soul_fragment::ANY, true, static_cast<unsigned>( data().effectN( 3 ).base_value() ) );
   }
 };
 

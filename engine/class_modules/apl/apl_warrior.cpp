@@ -47,9 +47,9 @@ void fury( player_t* p )
   default_->add_action( "fireblood" );
   default_->add_action( "ancestral_call" );
   default_->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15&!buff.avatar.up&cooldown.odyns_fury.remains|talent.berserkers_torment&buff.enrage.up&!buff.avatar.up&raid_event.adds.in>15|!talent.titans_torment&!talent.berserkers_torment&(buff.recklessness.up|target.time_to_die<20)" );
-  default_->add_action( "recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.spear_of_bastion.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
+  default_->add_action( "recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.champions_spear.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
   default_->add_action( "recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12" );
-  default_->add_action( "spear_of_bastion,if=buff.enrage.up&((buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)&raid_event.adds.in>15" );
+  default_->add_action( "champions_spear,if=buff.enrage.up&((buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)&raid_event.adds.in>15" );
   default_->add_action( "run_action_list,name=multi_target,if=active_enemies>=2" );
   default_->add_action( "run_action_list,name=single_target,if=active_enemies=1" );
 
@@ -87,7 +87,7 @@ void fury( player_t* p )
   single_target->add_action( "odyns_fury,if=(buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades))" );
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
   single_target->add_action( "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
-  single_target->add_action( "bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.furious_bloodthirst.up&buff.enrage.up&(!dot.gushing_wound.remains|buff.elysian_might.up))" );
+  single_target->add_action( "bloodthirst,if=(set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95)|(!talent.reckless_abandon&buff.furious_bloodthirst.up&buff.enrage.up&(!dot.gushing_wound.remains|buff.champions_might.up))" );
   single_target->add_action( "bloodbath,if=set_bonus.tier31_2pc" );
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
@@ -179,7 +179,7 @@ void arms( player_t* p )
   execute->add_action( "mortal_strike,if=dot.rend.remains<=gcd&talent.bloodletting" );
   execute->add_action( "rend,if=remains<=gcd&!talent.bloodletting&(!talent.warbreaker&cooldown.colossus_smash.remains<4|talent.warbreaker&cooldown.warbreaker.remains<4)&target.time_to_die>12" );
   execute->add_action( "avatar,if=cooldown.colossus_smash.ready|debuff.colossus_smash.up|target.time_to_die<20" );
-  execute->add_action( "spear_of_bastion,if=cooldown.colossus_smash.remains<=gcd" );
+  execute->add_action( "champions_spear,if=cooldown.colossus_smash.remains<=gcd" );
   execute->add_action( "warbreaker,if=raid_event.adds.in>22" );
   execute->add_action( "colossus_smash" );
   execute->add_action( "execute,if=buff.sudden_death.react&dot.deep_wounds.remains" );
@@ -208,7 +208,7 @@ void arms( player_t* p )
   aoe->add_action( "cleave,if=buff.martial_prowess.stack=2" );
   aoe->add_action( "mortal_strike,if=talent.sharpened_blades&buff.sweeping_strikes.up&buff.martial_prowess.stack=2&active_enemies<=8" );
   aoe->add_action( "thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains" );
-  aoe->add_action( "spear_of_bastion,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains" );
+  aoe->add_action( "champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains" );
   aoe->add_action( "bladestorm,if=buff.hurricane.remains<3|!talent.hurricane" );
   aoe->add_action( "whirlwind,if=talent.storm_of_swords" );
   aoe->add_action( "cleave,if=!talent.fervor_of_battle|talent.fervor_of_battle&dot.deep_wounds.remains<=dot.deep_wounds.duration*0.3" );
@@ -237,7 +237,7 @@ void arms( player_t* p )
   single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.blood_and_thunder" );
   single_target->add_action( "whirlwind,if=talent.storm_of_swords&debuff.colossus_smash.up" );
   single_target->add_action( "bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&buff.hurricane.remains<2|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
-  single_target->add_action( "spear_of_bastion,if=buff.test_of_might.up|debuff.colossus_smash.up" );
+  single_target->add_action( "champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up" );
   single_target->add_action( "skullsplitter" );
   single_target->add_action( "execute,if=buff.sudden_death.react" );
   single_target->add_action( "shockwave,if=talent.sonic_boom.enabled" );
@@ -296,7 +296,7 @@ void protection( player_t* p )
   default_->add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc" );
   default_->add_action( "ravager" );
   default_->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
-  default_->add_action( "spear_of_bastion" );
+  default_->add_action( "champions_spear" );
   default_->add_action( "thunderous_roar" );
   default_->add_action( "shield_slam,if=buff.fervid.up" );
   default_->add_action( "shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled|talent.sonic_boom.enabled&talent.rumbling_earth.enabled&spell_targets.shockwave>=3" );

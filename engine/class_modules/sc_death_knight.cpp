@@ -694,6 +694,7 @@ public:
     // Unholy
     propagate_const<action_t*> bursting_sores;
     propagate_const<action_t*> festering_wound;
+    propagate_const<action_t*> festering_wound_application;
     propagate_const<action_t*> virulent_eruption;
     propagate_const<action_t*> ruptured_viscera;
     action_t* unholy_pact_damage;
@@ -2706,6 +2707,10 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 2.7_s;
+    
+    // Using a background repeating action as a replacement for a foreground action. Change Ready Type to trigger so we
+    // can wake up the pet when it needs to re-execute this action.
+    ready_type = READY_TRIGGER;
   }
 
   struct skulker_shot_t : public pet_spell_t<risen_skulker_pet_t>
@@ -2720,6 +2725,14 @@ struct risen_skulker_pet_t : public death_knight_pet_t
       aoe = -1;
       base_aoe_multiplier = 0.5;
       repeating = true;
+    }
+
+    void schedule_execute( action_state_t* state ) override
+    {
+      pet_spell_t<risen_skulker_pet_t>::schedule_execute( state );
+      // This pet uses a background repeating event with a ready type of READY_TRIGGER. Without constantly re-updating
+      // the started waiting trigger_ready would never function.
+      player->started_waiting = sim->current_time();
     }
   };
 
@@ -2738,14 +2751,13 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
   void reschedule_skulker()
   {
-    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+    // Have to check the presecnce of a skulker_shot->execute_event because this acts as our "executing" due to using a
+    // background repeating action. We do not wish to have multiple of these.
+    if ( executing || skulker_shot->execute_event || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
       return;
 
-    else
-    {
-      skulker_shot->set_target( dk()->target );
-      skulker_shot->schedule_execute();
-    }
+    skulker_shot->set_target( dk()->target );
+    skulker_shot->schedule_execute();
   }
   
   void arise() override
@@ -6064,6 +6076,15 @@ struct bursting_sores_t final : public death_knight_spell_t
   }
 };
 
+struct festering_wound_application_t final : public death_knight_spell_t
+{
+  festering_wound_application_t( util::string_view n, death_knight_t* p ) :
+    death_knight_spell_t( n, p, p -> spec.festering_wound )
+  {
+    background = true;
+  }
+};
+
 struct festering_wound_t final : public death_knight_spell_t
 {
   festering_wound_t( util::string_view n, death_knight_t* p ) :
@@ -6855,15 +6876,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
   void impact( action_state_t* state ) override
   {
-    // Obliterate Cleave with Cleaving Strikes cant proc things
-    if( state -> target != target )
-    {
-      callbacks = false;
-    }
-    else
-    {
-      callbacks = true;
-    }
     death_knight_melee_attack_t::impact( state );
 
     if ( p()->talent.frost.enduring_strength.ok() && p()->buffs.pillar_of_frost->up() &&
@@ -8872,15 +8884,16 @@ void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, doub
 
 void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, proc_t* proc )
 {
-  if ( !state -> action -> result_is_hit( state -> result ) )
+  if ( !state->action->result_is_hit( state->result ) )
   {
     return;
   }
 
-  get_target_data( state -> target ) -> debuff.festering_wound -> trigger( n );
+  get_target_data( state->target )->debuff.festering_wound->trigger( n );
   while ( n-- > 0 )
   {
-    proc -> occur();
+    proc->occur();
+    active_spells.festering_wound_application->execute_on_target( state->target );
   }
 }
 
@@ -9073,6 +9086,7 @@ void death_knight_t::create_actions()
     if ( spec.festering_wound->ok() )
     {
       active_spells.festering_wound = get_action<festering_wound_t>( "festering_wound", this );
+      active_spells.festering_wound_application = get_action<festering_wound_application_t>( "festering_wound_application", this );
     }
 
     if ( talent.unholy.bursting_sores.ok() )
@@ -10841,12 +10855,16 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
     m *= 1.0 + spec.blood_death_knight -> effectN( 16 ).percent();
     m *= 1.0 + spec.frost_death_knight -> effectN( 4 ).percent();
     m *= 1.0 + spec.unholy_death_knight -> effectN( 4 ).percent();
+    m *= 1.0 + spec.frost_death_knight -> effectN( 9 ).percent();
+    m *= 1.0 + spec.unholy_death_knight -> effectN( 10 ).percent();
   }
   else
   {
     m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
     m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
     m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+    m *= 1.0 + spec.frost_death_knight -> effectN( 8 ).percent();
+    m *= 1.0 + spec.unholy_death_knight -> effectN( 9 ).percent();
   }
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.vigorous_lifeblood_4pc -> check() )
@@ -11268,43 +11286,61 @@ struct death_knight_module_t : public module_t {
   /*
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Virulent Plague Damage increased by 15%", 281049, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Direct Damage Buffed by 4%", 179690, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.1725 )
-      .verification_value( 0.15 );
+      .modifier( -1 )
+      .verification_value( -5 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Epidemic Damage increased by 12%", 315517, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Periodic Damage Buffed by 4%", 191170, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.2757888 )
-      .verification_value( 0.24624 );
+      .modifier( -1 )
+      .verification_value( -5 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Epidemic AoE Damage increased by 12%", 872659, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Pet Damage Buffed by 4%", 191171, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.11031552 )
-      .verification_value( 0.098496 );
+      .modifier( -1 )
+      .verification_value( -5 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Festering Strike Damage increased by 20%", 87374, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Guardian Damage Buffed by 4%", 1032341, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.6704 )
-      .verification_value( 1.39200 );
+      .modifier( -1 )
+      .verification_value( -5 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Festering Wound damage increased by 12%", 285232, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Direct Damage Buffed by 4%", 179689, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.2805264 )
-      .verification_value( 0.25047 );
+      .modifier( 4 )
+      .verification_value( 0 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Sweeping Claws damage increased by 15%", 341774, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Periodic Damage Buffed by 4%", 191174, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.1725 )
-      .verification_value( 0.15 );
-  }
-  */
+      .modifier( 4 )
+      .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Pet Damage Buffed by 4%", 844541, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Guardian Damage Buffed by 4%", 1032340, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2023-11-27", "Bone Shield Strength Increased", 286506, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 80 )
+      .verification_value( 70 );
+  }*/
+  
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}
