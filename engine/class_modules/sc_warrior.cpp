@@ -6689,6 +6689,11 @@ struct ignore_pain_t : public warrior_spell_t
 
   void impact( action_state_t* s ) override
   {
+    // With the buff to warrior on Jan 23 2024
+    // the amount gained is +5%.  Need to check cap as well.  This buff was stored in a dummy effect
+    // in the protection aura
+    // p() -> effectN( 23 ).percent();
+
     double new_ip = s -> result_amount;
 
     double previous_ip = p() -> buff.ignore_pain -> current_value;
