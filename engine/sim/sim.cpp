@@ -2437,14 +2437,14 @@ void sim_t::init_fight_style()
       vary_combat_length = 0.0;
       raid_events_str += "/flying,first=0,duration=500,cooldown=500";
       raid_events_str += "/position_switch,first=0,duration=500,cooldown=500";
-      raid_events_str += "/stun,duration=1.0,first=45.0,period=45.0";
-      raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0";
-      raid_events_str += "/damage,first=6.0,period=6.0,last=59.5,amount=44000,type=shadow";
-      raid_events_str += "/damage,first=60.0,period=5.0,last=119.5,amount=44855,type=shadow";
-      raid_events_str += "/damage,first=120.0,period=4.0,last=179.5,amount=44855,type=shadow";
-      raid_events_str += "/damage,first=180.0,period=3.0,last=239.5,amount=44855,type=shadow";
-      raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
-      raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
+      raid_events_str += "/stun,duration=1.0,first=45.0,cooldown=45.0";
+      raid_events_str += "/stun,duration=1.0,first=57.0,cooldown=57.0";
+      raid_events_str += "/damage,first=6.0,cooldown=6.0,last=59.5,amount=44000,type=shadow";
+      raid_events_str += "/damage,first=60.0,cooldown=5.0,last=119.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=120.0,cooldown=4.0,last=179.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=180.0,cooldown=3.0,last=239.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=240.0,cooldown=2.0,last=299.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=300.0,cooldown=1.0,amount=44855,type=shadow";
       break;
 
     default:

@@ -37,8 +37,6 @@ struct adds_event_t final : public raid_event_t
   double spawn_x_coord;
   double spawn_y_coord;
   int spawn_stacked;
-  double spawn_radius_min;
-  double spawn_radius_max;
   double spawn_radius;
   double spawn_angle_start;
   double spawn_angle_end;
@@ -59,8 +57,6 @@ struct adds_event_t final : public raid_event_t
       spawn_x_coord( 0 ),
       spawn_y_coord( 0 ),
       spawn_stacked( 0 ),
-      spawn_radius_min( 0 ),
-      spawn_radius_max( 0 ),
       spawn_radius( 0 ),
       spawn_angle_start( -1 ),
       spawn_angle_end( -1 ),
@@ -77,14 +73,15 @@ struct adds_event_t final : public raid_event_t
     add_option( opt_float( "spawn_x", spawn_x_coord ) );
     add_option( opt_float( "spawn_y", spawn_y_coord ) );
     add_option( opt_int( "stacked", spawn_stacked ) );
-    add_option( opt_float( "min_distance", spawn_radius_min ) );
-    add_option( opt_float( "max_distance", spawn_radius_max ) );
     add_option( opt_float( "distance", spawn_radius ) );
     add_option( opt_float( "angle_start", spawn_angle_start ) );
     add_option( opt_float( "angle_end", spawn_angle_end ) );
     add_option( opt_string( "race", race_str ) );
     add_option( opt_string( "type", enemy_type_str ) );
     add_option( opt_bool( "same_duration", same_duration ) );
+
+    add_option( opt_deprecated( "min_distance", "distance_min" ) );
+    add_option( opt_deprecated( "max_distance", "distance_max" ) );
     parse_options( options_str );
 
     if ( !master_str.empty() )
@@ -162,12 +159,12 @@ struct adds_event_t final : public raid_event_t
 
     sim->add_waves++;
 
-    if ( fabs( spawn_radius ) > 0 || fabs( spawn_radius_max ) > 0 || fabs( spawn_radius_min ) > 0 )
+    if ( fabs( spawn_radius ) > 0 || fabs( distance_max ) > 0 || fabs( distance_min ) > 0 )
     {
       sim->distance_targeting_enabled = true;
       if ( fabs( spawn_radius ) > 0 )
       {
-        spawn_radius_min = spawn_radius_max = fabs( spawn_radius );
+        distance_min = distance_max = fabs( spawn_radius );
       }
 
       double tempangle;
@@ -295,14 +292,14 @@ struct adds_event_t final : public raid_event_t
         continue;
       }
 
-      if ( std::fabs( spawn_radius_max ) > 0 )
+      if ( std::fabs( distance_max ) > 0 )
       {
         if ( spawn_stacked == 0 || !offset_computed )
         {
           double angle_start = spawn_angle_start * ( m_pi / 180 );
           double angle_end   = spawn_angle_end * ( m_pi / 180 );
           double angle       = sim->rng().range( angle_start, angle_end );
-          double radius      = sim->rng().range( std::fabs( spawn_radius_min ), std::fabs( spawn_radius_max ) );
+          double radius      = sim->rng().range( std::fabs( distance_min ), std::fabs( distance_max ) );
           x_offset           = radius * cos( angle );
           y_offset           = radius * sin( angle );
           offset_computed    = true;
@@ -1058,8 +1055,6 @@ struct movement_event_t final : public raid_event_t
   std::string move_direction;
   double distance_range;
   double move;
-  double distance_min;
-  double distance_max;
   double avg_player_movement_speed;
 
   movement_event_t( sim_t* s, util::string_view options_str )
@@ -1068,15 +1063,11 @@ struct movement_event_t final : public raid_event_t
       direction( movement_direction_type::TOWARDS ),
       distance_range( 0 ),
       move(),
-      distance_min( 0 ),
-      distance_max( 0 ),
       avg_player_movement_speed( 7.0 )
   {
     add_option( opt_float( "distance", move_distance ) );
     add_option( opt_string( "direction", move_direction ) );
     add_option( opt_float( "distance_range", distance_range ) );
-    add_option( opt_float( "distance_min", distance_min ) );
-    add_option( opt_float( "distance_max", distance_max ) );
     parse_options( options_str );
 
     if ( duration > timespan_t::zero() )
@@ -1675,7 +1666,6 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   add_option( opt_timespan( "last", last, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_float( "first_pct", first_pct, 0.0, 100 ) );
   add_option( opt_float( "last_pct", last_pct, 0.0, 100 ) );
-  add_option( opt_timespan( "period", cooldown ) );
   add_option( opt_timespan( "cooldown", cooldown ) );
   add_option( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
   add_option( opt_timespan( "cooldown_min", cooldown_min ) );
@@ -1693,6 +1683,8 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   add_option( opt_bool( "force_stop", force_stop ) );
   add_option( opt_int( "pull", pull ) );
   add_option( opt_string( "pull_target", pull_target_str ) );
+
+  add_option( opt_deprecated( "period", "cooldown" ) );
 }
 
 timespan_t raid_event_t::cooldown_time()
@@ -2401,13 +2393,13 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
     return e->cooldown_time().total_seconds();
 
   if ( filter == "distance" )
-    return e->distance();
+    return e->distance_max;
 
-  if ( filter == "max_distance" )
-    return e->max_distance();
+  if ( filter == "distance_min" )
+    return e->distance_min;
 
-  if ( filter == "min_distance" )
-    return e->min_distance();
+  if ( filter == "distance_max" )
+    return e->distance_max;
 
   if ( filter == "amount" )
   {
