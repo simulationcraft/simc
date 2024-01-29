@@ -188,7 +188,8 @@ public:
     double val_mul  = 0.01;
 
     // TODO: more robust logic around 'party' buffs with radius
-    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() ) return;
+    // TODO: Warrior Avatar uses E_APPLY_AURA_PET for the periodic.  After testing, confirmed in game that this also seems to apply to the player
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY || eff.type() == E_APPLY_AURA_PET ) || eff.radius() ) return;
 
     if ( i <= 5 )
       parse_spell_effects_mods( val, mastery, s_data, i, mods... );
