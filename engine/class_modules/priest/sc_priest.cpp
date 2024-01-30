@@ -2350,6 +2350,11 @@ double priest_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
   }
 
+  if ( buffs.borrowed_time->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
+  }
+
   return h;
 }
 
@@ -2360,6 +2365,11 @@ double priest_t::composite_melee_haste() const
   if ( buffs.devoured_anger->check() )
   {
     h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
+  }
+  
+  if ( buffs.borrowed_time->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
   }
 
   return h;

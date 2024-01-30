@@ -674,7 +674,12 @@ void priest_t::create_buffs_discipline()
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) )
                                ->set_default_value( talents.discipline.harsh_discipline->effectN( 2 ).base_value() );
 
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) );
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->add_invalidate( CACHE_HASTE );
+  
+  if ( talents.discipline.borrowed_time.ok() )
+  {
+    buffs.borrowed_time->set_default_value( talents.discipline.borrowed_time->effectN( 2 ).percent() );
+  }
 
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
 
