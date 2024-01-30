@@ -8065,7 +8065,6 @@ void fyralath_the_dream_render( special_effect_t& e )
   buff->set_default_value( e.player->find_spell( 420248 ) -> effectN( 1 ).percent() );
 
   auto dot           = create_proc_action<generic_proc_t>( "mark_of_fyralath", e, "mark_of_fyralath", e.player->find_spell( 414532 ) );
-  dot -> tick_zero   = false;
   auto charge        = create_proc_action<rage_of_fyralath_t>( "rage_of_fyralath", e, "rage_of_fyralath", e.player->find_spell( 417134 ), buff );
   auto charge_impact = create_proc_action<explosive_rage_t>( "explosive_rage", e, "explosive_rage", e.player->find_spell( 413584 ), buff, dot );
   auto channel       = create_proc_action<rage_channel_t>( "rage_of_fyralath_channel", e, "rage_of_fyralath_channel", charge, charge_impact, dot, buff );
@@ -8101,9 +8100,23 @@ void fyralath_the_dream_render( special_effect_t& e )
   std::set<unsigned> proc_spell_id;
   // List of all spell ids that can proc the DoT, that are not considered "melee" or "yellow melee".
   // Appears to be specifically anything that applies a DoT or Debuff that can deal damage.
-  // Two commented out spell ids seem to cause an event overflow at extremely high target counts, so they are excluded.
-  // Still results in the same behavior, as it also triggers 191587.
-  proc_spell_id = { 196780, 191587, /*115989, 115994,*/ 194310, 237680, 390220, 390279, 197147, 55095, 55078 };
+
+  switch (e.player->specialization())
+  {
+    case DEATH_KNIGHT_BLOOD:
+      proc_spell_id = { 55078 };
+      break;
+    case DEATH_KNIGHT_FROST:
+      proc_spell_id = { 237680, 55095 };
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      // Commented spells are Unholy Blight, which still triggers 191587 resulting in the correct behavior
+      // This limits events at high target counts, but isnt exact to in game behavior.
+      proc_spell_id = { 196780, 191587, /*115989, 115994,*/ 194310, 390220, 390279, 197147 };
+      break;
+    default:
+      break;
+  }
 
   scripted_driver->player->callbacks.register_callback_trigger_function(
     dummy_equip_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
