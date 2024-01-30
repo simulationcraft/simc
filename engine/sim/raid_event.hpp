@@ -83,11 +83,11 @@ public:
   {
     return distance_max;
   }
-  double min_distance()
+  double max_distance()
   {
     return distance_min;
   }
-  double max_distance()
+  double min_distance()
   {
     return distance_max;
   }
