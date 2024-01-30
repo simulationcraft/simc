@@ -644,6 +644,13 @@ struct smite_base_t : public priest_spell_t
       priest().procs.divine_favor_chastise->occur();
       child_holy_fire->execute();
     }
+
+    // T31 Background set bonus triggers the shadow amp. Core logic ignores background spell execution so manually trigger this here.
+    if ( priest().talents.discipline.twilight_equilibrium.enabled() && background )
+    {
+      priest().buffs.twilight_equilibrium_shadow_amp->trigger();
+    }
+
   }
 
   void impact( action_state_t* s ) override
