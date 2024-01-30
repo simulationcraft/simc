@@ -649,6 +649,15 @@ struct shadow_word_pain_t final : public priest_spell_t
       }
     }
   }
+    
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    auto m = priest_spell_t::composite_persistent_multiplier( s );
+
+    m *= 1 + p().buffs.twilight_equilibrium_shadow_amp->check_value();
+
+    return m;
+  }
 
   void tick( dot_t* d ) override
   {
