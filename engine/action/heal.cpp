@@ -247,7 +247,7 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
   {
     double leech_pct = 0;
 
-    if ( s->action != player->spells.leech && s->result_amount > 0 &&
+    if ( player != s->target && s->result_amount > 0 &&
          ( leech_pct = s->action->composite_leech( s ) ) > 0 )
     {
       player->leech_pool += leech_pct * s->result_amount;
