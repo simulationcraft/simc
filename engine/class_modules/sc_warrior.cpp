@@ -8178,13 +8178,13 @@ std::string warrior_t::default_flask() const
 std::string warrior_t::default_food() const
 {
   std::string fury_food = ( true_level > 60 )
-                              ? "fated_fortune_cookie"
+                              ? "thousandbone_tongueslicer"
                               : ( true_level > 50 )
                                     ? "feast_of_gluttonous_hedonism"
                                     : "disabled";
 
   std::string arms_food = ( true_level > 60 )
-                              ? "fated_fortune_cookie"
+                              ? "feisty_fish_sticks"
                               : ( true_level > 50 )
                                     ? "feast_of_gluttonous_hedonism"
                                     : "disabled";
