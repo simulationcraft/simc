@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.5.53040 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.5.53040 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -408,7 +408,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=612)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 4.90438 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (3.9235 -> 4.90438)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -1265,7 +1264,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.91000 | PvP Coefficient: 1.10000 | Radius: 10 yards | Target: AOE friendly (31)
-Hotfixed         : SP Coefficient (2.3275 -> 2.91)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=709475)   : Dummy (3)
@@ -2369,7 +2367,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=91044)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.45700 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.89 -> 2.457)
 #2 (id=709477)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : Chastises the target for $s1 Holy damage and $?s200199[stuns][incapacitates] them for $?s200199[$200200d][$200196d].$?s63733[
@@ -3379,7 +3376,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #10 (id=1132070)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -3450,12 +3446,10 @@ Effects          :
                    Base Value: 69 | Scaled Value: 69 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Hotfixed         : Base Value (47 -> 69)
 #8 (id=871791)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 69 | Scaled Value: 69 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Hotfixed         : Base Value (47 -> 69)
 #9 (id=914764)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Mindgames (323673), Mindgames (375901)
@@ -3488,17 +3482,14 @@ Hotfixed         : Base Value (47 -> 69)
                    Base Value: 28 | Scaled Value: 28 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Base Value (11 -> 28)
 #18 (id=1079592)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 86 | Scaled Value: 86 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529)
                    Family Flags: 7
-Hotfixed         : Base Value (43 -> 86)
 #19 (id=1081584)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #20 (id=1081585)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
-Hotfixed         : Base Value (10 -> 5)
 #21 (id=1084907)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139)
@@ -3623,7 +3614,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #22 (id=1081541)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
-Hotfixed         : Base Value (10 -> 5)
 #23 (id=1089477)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #24 (id=1090993)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3738,7 +3728,6 @@ Effects          :
                    Base Value: 37 | Scaled Value: 37 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Mind Blast (8092)
                    Family Flags: 13
-Hotfixed         : Base Value (25 -> 37)
 #23 (id=1073588)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
@@ -4773,7 +4762,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 30)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -9819,10 +9807,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=832086)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 1.91245 | PvP Coefficient: 0.89000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.73859 -> 1.91245)
 #2 (id=832087)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.90830 | PvP Coefficient: 0.89000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.825727 -> 0.9083)
 #3 (id=832088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=832089)   : Dummy (3)
@@ -17197,7 +17183,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... .....
 Effects          :
 #1 (id=1081317)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.24684 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.2057 -> 0.24684)
 Description      : $@spelldesc341491
 
 Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 
@@ -17559,12 +17544,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098497)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 #2 (id=1103091)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585), Penance (47666), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529)
                    Family Flags: 7, 47
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 Description      : Smite and Penance damage increased by $s2% and Smite extends the duration of an active Atonement by ${$s1/1000}.1 sec.
 
 Name             : Priest Discipline 10.2 Class Set 4pc (id=422900) [Spell Family (6), Passive, Hidden] 

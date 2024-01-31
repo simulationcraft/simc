@@ -1,4 +1,4 @@
-SimulationCraft 1020-01 for World of Warcraft 10.2.5.53040 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.5.53040 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -2853,7 +2853,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #10 (id=1132070)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -13074,7 +13073,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013836)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.20000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.2)
 Description      : Frost Nova can withstand $s1% more damage before breaking.
 
 Name             : Tome of Antonidas (id=382490) [Spell Family (3), Passive, Hidden] 
@@ -16335,7 +16333,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1098483)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 Description      : Casting Glacial Spike has a $s1% chance to trigger Brain Freeze.
 
 
