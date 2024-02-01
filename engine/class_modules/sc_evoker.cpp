@@ -20,6 +20,7 @@ namespace
 
 // Forward declarations
 struct evoker_t;
+struct simplified_player_t;
 
 enum empower_e
 {
@@ -109,6 +110,151 @@ struct evoker_action_state_t : public Base, public Data
   }
 };
 
+struct simplified_player_t : public player_t
+{
+  action_t* ability;
+  action_t* snapshot_stats;
+
+  simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
+    : player_t( sim, PLAYER_SIMPLIFIED, name, r )
+  {
+    ready_type = READY_TRIGGER;
+  }
+
+  struct simple_ability_t : public spell_t
+  {
+    simple_ability_t( player_t* p ) : spell_t( "simple_spell", p )
+    {
+      background = repeating = true;
+
+      allow_class_ability_procs = true;
+      may_crit                  = true;
+
+      spell_power_mod.direct = 8;
+      gcd_type               = gcd_haste_type::SPELL_HASTE;
+      base_execute_time      = 1.5_s;
+      school                 = SCHOOL_CHROMATIC;
+    }
+
+    bool usable_moving() const override
+    {
+      return true;
+    }
+  };
+
+  void init_finished() override
+  {
+    player_t::init_finished();
+
+    register_combat_begin( snapshot_stats );
+    matching_gear = true;
+  }
+
+  double composite_mastery_value() const override
+  {
+    return composite_mastery() * 0.0125;
+  }
+
+  void init_base_stats() override
+  {
+    player_t::init_base_stats();
+
+    base.spell_power_per_intellect = 1;
+    
+    base.stats.attribute[ STAT_INTELLECT ] = 15103;
+    
+    // 15030 Secondaries
+    base.stats.crit_rating        = 4675;
+    base.stats.haste_rating       = 4675;
+    base.stats.mastery_rating     = 4675;
+    base.stats.versatility_rating = 1005;
+
+  }
+
+  void create_actions() override
+  {
+    // player_t::create_actions();
+    ability = new simple_ability_t( this );
+    snapshot_stats = new snapshot_stats_t( this, "" );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = player_t::composite_player_multiplier( school );
+
+    m *= 1.0 + cache.mastery_value();
+
+    return m;
+  }
+  
+  role_e primary_role() const override
+  {
+    return ROLE_SPELL;
+  }
+
+  void invalidate_cache( cache_e cache ) override
+  {
+    player_t::invalidate_cache( cache );
+
+    switch ( cache )
+    {
+      case CACHE_MASTERY:
+        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        break;
+      default:
+        break;
+    }
+  }
+
+  double matching_gear_multiplier( attribute_e attr ) const override
+  {
+    return attr == ATTR_INTELLECT ? 0.05 : 0.0;
+  }
+
+  stat_e convert_hybrid_stat( stat_e stat ) const override
+  {
+    switch ( stat )
+    {
+      case STAT_STR_AGI_INT:
+      case STAT_AGI_INT:
+      case STAT_STR_INT:
+        return STAT_INTELLECT;
+      case STAT_STR_AGI:
+      case STAT_SPIRIT:
+      case STAT_BONUS_ARMOR:
+        return STAT_NONE;
+      default:
+        return stat;
+    }
+  }
+
+  void reschedule_actor()
+  {
+    if ( executing || ability->execute_event || is_sleeping() ||
+         buffs.stunned->check() )
+      return;
+    
+    ability->schedule_execute();
+  }
+
+  void arise() override
+  {
+    player_t::arise();
+
+    reschedule_actor();
+  }
+
+  void schedule_ready( timespan_t delta_time, bool waiting ) override
+  {
+    reschedule_actor();
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_MANA;
+  }
+};
+
 struct evoker_t : public player_t
 {
   // !!!===========================================================================!!!
@@ -151,6 +297,7 @@ struct evoker_t : public player_t
     bool naszuro_accurate_behaviour             = false;
     double naszuro_bounce_chance                = 0.85;
     std::string force_clutchmates               = "";
+    bool make_simplified_if_alone               = true;
   } option;
 
   // Action pointers
@@ -469,6 +616,7 @@ struct evoker_t : public player_t
   void create_actions() override;
   void create_buffs() override;
   void create_options() override;
+  void create_pets() override;
   // void arise() override;
   void moving() override;
   void schedule_ready( timespan_t, bool ) override;
@@ -4342,7 +4490,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                   b->current_value = evoker->cache.mastery_value();
                   b->invalidate_cache();
                 }
-              } );
+              } )
+              ->set_freeze_stacks( true );
 
       buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
                                                                        evoker->find_spell( 395152 ) )
@@ -4630,6 +4779,23 @@ void evoker_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+void evoker_t::create_pets()
+{
+  player_t::create_pets();
+  if ( sim->player_no_pet_list.size() == 1 && option.make_simplified_if_alone )
+  {
+    option.force_clutchmates = "no";
+    close_as_clutchmates     = false;
+
+    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
+
+    for ( size_t i = 0; i < 4; i++ )
+    {
+      module->create_player( sim, "Bob" + std::to_string( i ) );
+    }
+  }
 }
 
 void evoker_t::init_finished()
@@ -5356,6 +5522,7 @@ void evoker_t::create_options()
   add_option( opt_float( "evoker.naszuro_bounce_chance", option.naszuro_bounce_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "evoker.naszuro_accurate_behaviour", option.naszuro_accurate_behaviour ) );
   add_option( opt_string( "evoker.force_clutchmates", option.force_clutchmates ) );
+  add_option( opt_bool( "evoker.make_simplified_if_alone", option.make_simplified_if_alone ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -5849,6 +6016,21 @@ private:
   [[maybe_unused]] evoker_t& p;
 };
 
+class player_simplified_report_t : public player_report_extension_t
+{
+public:
+  player_simplified_report_t( simplified_player_t& player ) : p( player )
+  {
+  }
+
+  void html_customsection( report::sc_html_stream& /*os*/ ) override
+  {
+  }
+
+private:
+  [[maybe_unused]] simplified_player_t& p;
+};
+
 // EVOKER MODULE INTERFACE ==================================================
 struct evoker_module_t : public module_t
 {
@@ -5903,10 +6085,61 @@ struct evoker_module_t : public module_t
   {
   }
 };
+
+
+// EVOKER MODULE INTERFACE ==================================================
+struct player_simplified_module_t : public module_t
+{
+  player_simplified_module_t() : module_t( PLAYER_SIMPLIFIED )
+  {
+  }
+
+  player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
+  {
+    auto p              = new simplified_player_t( sim, name, r );
+    p->report_extension = std::make_unique<player_simplified_report_t>( *p );
+    return p;
+  }
+
+  bool valid() const override
+  {
+    return true;
+  }
+
+  void init( player_t* /* p */ ) const override
+  {
+  }
+
+  void static_init() const override
+  {
+  }
+
+  void register_hotfixes() const override
+  {
+  }
+
+  void combat_begin( sim_t* ) const override
+  {
+  }
+
+  void create_actions( player_t* p ) const override
+  {
+  }
+
+  void combat_end( sim_t* ) const override
+  {
+  }
+};
 }  // namespace
 
 const module_t* module_t::evoker()
 {
   static evoker_module_t m;
+  return &m;
+}
+
+const module_t* module_t::player_simplified()
+{
+  static player_simplified_module_t m;
   return &m;
 }

@@ -629,6 +629,7 @@ const char* util::player_type_string( player_e type )
     case SHAMAN:          return "shaman";
     case WARLOCK:         return "warlock";
     case WARRIOR:         return "warrior";
+    case PLAYER_SIMPLIFIED:         return "player_simplified";
     case PLAYER_PET:      return "pet";
     case PLAYER_GUARDIAN: return "guardian";
     case ENEMY:           return "enemy";
@@ -659,6 +660,7 @@ const char* util::player_type_string_long( player_e type )
     case SHAMAN:          return "Shaman";
     case WARLOCK:         return "Warlock";
     case WARRIOR:         return "Warrior";
+    case PLAYER_SIMPLIFIED:         return "Simplified Player";
     case PLAYER_PET:      return "Pet";
     case PLAYER_GUARDIAN: return "Guardian";
     case ENEMY:           return "Enemy";

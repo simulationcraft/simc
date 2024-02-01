@@ -178,10 +178,10 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 // Figure out if the option defines new actor(s) with their own scope
 bool is_actor_scope( const option_tuple_t& opt )
 {
-  static constexpr std::array<util::string_view, 21> actor_scope_opts { {
+  static constexpr std::array<util::string_view, 22> actor_scope_opts { {
     "deathknight", "demonhunter", "druid", "evoker", "hunter", "mage", "monk",
-    "paladin", "priest", "rogue", "shaman", "warlock", "warrior", "enemy",
-    "tank_dummy", "pet", "guardian", "copy", "armory", "local_json", "guild"
+    "paladin", "priest", "rogue", "shaman", "warlock", "warrior", "player_simplified",
+    "enemy", "tank_dummy", "pet", "guardian", "copy", "armory", "local_json", "guild"
   } };
 
   return range::any_of( actor_scope_opts, [ &opt ]( util::string_view name ) {

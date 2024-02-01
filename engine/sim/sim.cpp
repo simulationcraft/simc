@@ -3795,6 +3795,7 @@ void sim_t::create_options()
   add_option( opt_func( "shaman", parse_player ) );
   add_option( opt_func( "warlock", parse_player ) );
   add_option( opt_func( "warrior", parse_player ) );
+  add_option( opt_func( "player_simplified", parse_player ) );
   add_option( opt_func( "enemy", parse_player ) );
   add_option( opt_func( "tank_dummy", parse_player ) );
   add_option( opt_func( "pet", parse_player ) );
