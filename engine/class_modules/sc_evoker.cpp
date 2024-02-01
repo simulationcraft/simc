@@ -4971,6 +4971,20 @@ void evoker_t::init_finished()
         allied_major_cds[ p ] = buff_t::find( p, "storm_earth_and_fire" );
       }
     }
+    else if ( p->type == ROGUE )
+    {
+      if ( p->specialization() == ROGUE_OUTLAW )
+      {
+        allied_major_cds[ p ] = buff_t::find( p, "adrenaline_rush" );
+      }
+      else
+      {
+        if ( CT( p, "Shadow Dance" ).ok() || ST( p, "Shadow Dance" ).ok() )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "shadow_dance" );
+        }
+      }
+    }
   }
 
   if ( sim->player_no_pet_list.size() <= 5 && !util::str_compare_ci( option.force_clutchmates, "no" ) ||
