@@ -87,11 +87,8 @@ void devastation( player_t* p )
   aoe->add_action( "deep_breath,if=!buff.dragonrage.up&essence.deficit>3", "Cast DB if not in DR and not going to overflow essence." );
   aoe->add_action( "shattering_star,target_if=max:target.health.pct,if=buff.essence_burst.stack<buff.essence_burst.max_stack|!talent.arcane_vigor", "Send SS when it doesn't overflow EB, without vigor send on CD" );
   aoe->add_action( "firestorm", "Cast Firestorm before spending ressources" );
-  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=5", "Pyre logic  Pyre 5T+  Pyre 4T with if both EB & Irid Blue isn't up or not playing Eternity Span  Pyre 4t if playing Volatility  Pyre on 3T if playing CB+Volatility and neither EB or blue buff is up  Pyre on 3T if not playing Volatility if Irid red is up or EB isn't up.  Pyre with 15 stacks of CB" );
-  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=4&(!buff.essence_burst.up&!buff.iridescence_blue.up|!talent.eternitys_span)" );
-  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=4&talent.volatility" );
-  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility&talent.charged_blast&!buff.essence_burst.up&!buff.iridescence_blue.up" );
-  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility&!talent.charged_blast&(buff.iridescence_red.up|!buff.essence_burst.up)" );
+  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=4", "Pyre logic  Pyre 4T+  Pyre 3T+ if playing Volatility  Pyre with 15 stacks of CB" );
+  aoe->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility" );
   aoe->add_action( "pyre,target_if=max:target.health.pct,if=buff.charged_blast.stack>=15" );
   aoe->add_action( "living_flame,target_if=max:target.health.pct,if=(!talent.burnout|buff.burnout.up|active_enemies>=4|buff.scarlet_adaptation.up)&buff.leaping_flames.up&!buff.essence_burst.up&essence<essence.max-1", "Cast LF with leaping flames up if: not playing burnout, burnout is up, more than 4 enemies, or scarlet adaptation is up." );
   aoe->add_action( "disintegrate,target_if=max:target.health.pct,chain=1,early_chain_if=evoker.use_early_chaining&ticks>=2&essence.deficit<2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(!(buff.power_infusion.up&buff.bloodlust.up)|cooldown.fire_breath.up|cooldown.eternity_surge.up)&(raid_event.movement.in>2|buff.hover.up),if=raid_event.movement.in>2|buff.hover.up", "Yoinked the disintegrate logic from ST" );
