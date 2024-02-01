@@ -1,4 +1,4 @@
-SimulationCraft 1025-01 for World of Warcraft 10.2.5.53104 Live
+SimulationCraft 1025-01 for World of Warcraft 10.2.5.53162 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -17445,7 +17445,6 @@ Effects          :
 Description      : $@spelldesc386474
 
 Name             : Poison Cleansing (id=403922) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
