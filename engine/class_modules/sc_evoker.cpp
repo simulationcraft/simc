@@ -4817,10 +4817,20 @@ void evoker_t::create_pets()
   player_t::create_pets();
   if ( sim->player_no_pet_list.size() == 1 && option.make_simplified_if_alone )
   {
-    option.force_clutchmates = "no";
-    close_as_clutchmates     = false;
+    size_t bobs;
 
-    size_t bobs = sim->fight_style == ( FIGHT_STYLE_DUNGEON_ROUTE || FIGHT_STYLE_DUNGEON_SLICE ) ? 2 : 4;
+    if ( sim->fight_style ==  FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+    {
+      option.force_clutchmates = "yes";
+      close_as_clutchmates     = true;
+      bobs                     = 2;
+    }
+    else
+    {
+      option.force_clutchmates = "no";
+      close_as_clutchmates     = false;
+      bobs                     = 4;
+    }
 
     const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
 
