@@ -118,7 +118,11 @@ struct simplified_player_t : public player_t
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
     : player_t( sim, PLAYER_SIMPLIFIED, name, r )
   {
-    ready_type = READY_TRIGGER;
+    resource_regeneration = regen_type::DISABLED;
+
+    // Using a background repeating action as a replacement for a foreground action. Change Ready Type to trigger so we
+    // can wake up the pet when it needs to re-execute this action.
+    ready_type            = READY_TRIGGER;
   }
 
   struct simple_ability_t : public spell_t
@@ -134,11 +138,24 @@ struct simplified_player_t : public player_t
       gcd_type               = gcd_haste_type::SPELL_HASTE;
       base_execute_time      = 1.5_s;
       school                 = SCHOOL_CHROMATIC;
+
+      aoe                 = -1;
+      reduced_aoe_targets = 8;
+      full_amount_targets = 1;
+      base_aoe_multiplier = 0.35;
     }
 
     bool usable_moving() const override
     {
       return true;
+    }
+        
+    void schedule_execute( action_state_t* state ) override
+    {
+      spell_t::schedule_execute( state );
+      // This uses a background repeating event with a ready type of READY_TRIGGER. Without constantly re-updating
+      // the started waiting trigger_ready would never function.
+      player->started_waiting = sim->current_time();
     }
   };
 
@@ -185,6 +202,20 @@ struct simplified_player_t : public player_t
     m *= 1.0 + cache.mastery_value();
 
     return m;
+  }
+
+  void acquire_target( retarget_source event, player_t* context ) override
+  {
+    if ( ability->execute_event && ability->target->is_sleeping() )
+    {
+      event_t::cancel( ability->execute_event );
+      started_waiting = sim->current_time();
+    }
+
+    player_t::acquire_target( event, context );
+
+    if ( !ability->execute_event )
+      trigger_ready();
   }
   
   role_e primary_role() const override
