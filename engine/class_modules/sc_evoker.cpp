@@ -4531,6 +4531,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       buffs.ebon_might->set_cooldown( 0_ms )
           ->set_period( timespan_t::zero() )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+          ->add_invalidate( CACHE_STR_AGI_INT )
           ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
             if ( new_ )
             {
