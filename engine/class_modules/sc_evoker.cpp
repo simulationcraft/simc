@@ -4820,9 +4820,11 @@ void evoker_t::create_pets()
     option.force_clutchmates = "no";
     close_as_clutchmates     = false;
 
+    size_t bobs = sim->fight_style == ( FIGHT_STYLE_DUNGEON_ROUTE || FIGHT_STYLE_DUNGEON_SLICE ) ? 2 : 4;
+
     const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
 
-    for ( size_t i = 0; i < 4; i++ )
+    for ( size_t i = 0; i < bobs; i++ )
     {
       module->create_player( sim, "Bob" + std::to_string( i ) );
     }
