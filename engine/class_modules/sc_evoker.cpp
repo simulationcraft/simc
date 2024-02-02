@@ -4816,7 +4816,7 @@ void evoker_t::init_action_list()
 void evoker_t::create_pets()
 {
   player_t::create_pets();
-  if ( sim->player_no_pet_list.size() == 1 && option.make_simplified_if_alone )
+  if ( specialization() == EVOKER_AUGMENTATION && sim->player_no_pet_list.size() == 1 && option.make_simplified_if_alone )
   {
     size_t bobs;
 
