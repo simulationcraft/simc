@@ -363,7 +363,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
     if ( p->talents.blade_of_vengeance->ok() )
     {
-      attack_power_mod.direct = p->find_spell( 404358 )->effectN( 1 ).ap_coeff();
+      base_aoe_multiplier *= p->find_spell( 404358 )->effectN( 1 ).ap_coeff() / attack_power_mod.direct;
       aoe = -1;
       reduced_aoe_targets = 5;
     }
