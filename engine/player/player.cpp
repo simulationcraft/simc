@@ -6796,6 +6796,8 @@ void player_t::collect_resource_timeline_information()
     elem.timeline.add( sim->current_time(), resources.current[ elem.type ] );
   }
 
+  collected_data.health_pct.add( sim->current_time(), health_percentage() );
+
   for ( auto& elem : collected_data.stat_timelines )
   {
     auto value = get_stat_value(elem.type);
@@ -13390,6 +13392,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   max_spike_amount( player->name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
   target_metric( player->name_str + " Target Metric", generic_container_type( player, 1 ) ),
   resource_timelines(),
+  health_pct(),
   combat_start_resource(
     ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
   combat_end_resource(
@@ -13499,6 +13502,8 @@ void player_collected_data_t::merge( const player_t& other_player )
     }
   }
 
+  health_pct.merge( other.health_pct );
+
   for ( size_t i = 0, end = combat_start_resource.size(); i < end; ++i )
   {
     combat_start_resource[ i ].merge( other.combat_start_resource[ i ] );
@@ -13551,6 +13556,7 @@ void player_collected_data_t::analyze( const player_t& p )
     timeline_dmg_taken.adjust( *p.sim );
     timeline_healing_taken.adjust( *p.sim );
 
+    health_pct.adjust( *p.sim );
     range::for_each( resource_timelines, [&p]( resource_timeline_t& tl ) { tl.timeline.adjust( *p.sim ); } );
     range::for_each( stat_timelines, [&p]( stat_timeline_t& tl ) { tl.timeline.adjust( *p.sim ); } );
 
@@ -13565,6 +13571,7 @@ void player_collected_data_t::analyze( const player_t& p )
     timeline_dmg_taken.adjust( fight_length );
     timeline_healing_taken.adjust( fight_length );
 
+    health_pct.adjust( fight_length );
     range::for_each( resource_timelines, [this]( resource_timeline_t& tl ) { tl.timeline.adjust( fight_length ); } );
     range::for_each( stat_timelines, [this]( stat_timeline_t& tl ) { tl.timeline.adjust( fight_length ); } );
 
