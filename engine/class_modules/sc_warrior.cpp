@@ -368,6 +368,7 @@ public:
     const spell_data_t* battle_shout;
     const spell_data_t* charge;
     const spell_data_t* execute;
+    const spell_data_t* execute_rage_refund;
     const spell_data_t* hamstring;
     const spell_data_t* heroic_throw;
     const spell_data_t* pummel;
@@ -377,6 +378,13 @@ public:
     const spell_data_t* taunt;
     const spell_data_t* victory_rush;
     const spell_data_t* whirlwind;
+
+    // Arms
+    const spell_data_t* deep_wounds_arms;
+
+    // Fury
+
+    // Protection
 
     // Extra Spells To Make Things Work
 
@@ -393,6 +401,7 @@ public:
 
     // T31
     const spell_data_t* furious_bloodthirst;
+    const spell_data_t* t31_fury_4pc;
   } spell;
 
   // Mastery
@@ -1031,7 +1040,7 @@ public:
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
-    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->spell.deep_wounds_arms->effectN( 5 ) );
 
     initialized = true;
   }
@@ -1114,7 +1123,7 @@ public:
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() &&
          affected_by.t30_arms_2pc )
     {
-      tcdbm *= 1.0 + ( p()->find_spell( 262115 )->effectN( 5 ).percent() );
+      tcdbm *= 1.0 + ( p()->spell.deep_wounds_arms->effectN( 5 ).percent() );
     }
 
     return tcdbm;
@@ -2646,7 +2655,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( p()->tier_set.t31_fury_4pc->ok() && s->result == RESULT_CRIT && p()->cooldown.t31_fury_4pc_icd->up() )
     {
-      p()->cooldown.odyns_fury->adjust( - timespan_t::from_millis( p()->find_spell( 422926 )->effectN( 3 ).base_value() ) );
+      p()->cooldown.odyns_fury->adjust( - timespan_t::from_millis( p()->spell.t31_fury_4pc->effectN( 3 ).base_value() ) );
       p()->cooldown.t31_fury_4pc_icd->start();
     }
   }
@@ -2807,7 +2816,7 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( p()->tier_set.t31_fury_4pc->ok() && s->result == RESULT_CRIT && p()->cooldown.t31_fury_4pc_icd->up() )
     {
-      p()->cooldown.odyns_fury->adjust( - timespan_t::from_millis( p()->find_spell( 422926 )->effectN( 3 ).base_value() ) );
+      p()->cooldown.odyns_fury->adjust( - timespan_t::from_millis( p()->spell.t31_fury_4pc->effectN( 3 ).base_value() ) );
       p()->cooldown.t31_fury_4pc_icd->start();
     }
   }
@@ -3578,13 +3587,13 @@ struct execute_arms_t : public warrior_attack_t
     trigger_attack->execute();
     if ( p()->talents.arms.improved_execute->ok() && !p()->talents.arms.critical_thinking->ok() )
     {
-      p()->resource_gain( RESOURCE_RAGE, last_resource_cost * p()->find_spell( 163201 )->effectN( 2 ).percent(),
+      p()->resource_gain( RESOURCE_RAGE, last_resource_cost * p()->spell.execute_rage_refund->effectN( 2 ).percent(),
                           p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
     }
     if ( p()->talents.arms.improved_execute->ok() && p()->talents.arms.critical_thinking->ok() )
     {
       p()->resource_gain( RESOURCE_RAGE, last_resource_cost * ( p()->talents.arms.critical_thinking->effectN( 2 ).percent() +
-                                                 p()->find_spell( 163201 )->effectN( 2 ).percent() ),
+                                                 p()->spell.execute_rage_refund->effectN( 2 ).percent() ),
                           p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
     }
 
@@ -6991,6 +7000,7 @@ void warrior_t::init_spells()
   spell.battle_shout            = find_class_spell( "Battle Shout" );
   spell.charge                  = find_class_spell( "Charge" );
   spell.execute                 = find_class_spell( "Execute" );
+  spell.execute_rage_refund     = find_spell( 163201 );
   spell.hamstring               = find_class_spell( "Hamstring" );
   spell.heroic_throw            = find_class_spell( "Heroic Throw" );
   spell.pummel                  = find_class_spell( "Pummel" );
@@ -7014,6 +7024,7 @@ void warrior_t::init_spells()
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
+  spell.deep_wounds_arms        = find_spell( 262115 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
   spell.sudden_death_arms       = find_spell( 52437 );
 
@@ -7028,6 +7039,7 @@ void warrior_t::init_spells()
   spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
   spell.sudden_death_fury       = find_spell( 280776 );
   spell.furious_bloodthirst     = find_spell( 423211 );
+  spell.t31_fury_4pc            = find_spell( 422926 );
 
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
@@ -8507,7 +8519,7 @@ double warrior_t::composite_player_target_crit_chance( player_t* target ) const
 
   // crit chance bonus is not currently whitelisted in data
   if ( sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() )
-    c += find_spell( 262115 )->effectN( 4 ).percent();
+    c += spell.deep_wounds_arms->effectN( 4 ).percent();
 
   return c;
 }
