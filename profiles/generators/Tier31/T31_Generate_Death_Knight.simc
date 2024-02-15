@@ -50,7 +50,7 @@ finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=
 trinket1=pips_emerald_friendship_badge,id=207168,bonus_id=7187/1520
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
-off_hand=volcorosss_barbed_fang,id=207789,bonus_id=7187/1520,enchant=rune_of_hysteria
+off_hand=quelzaram_high_blade_of_the_lion,id=207994,bonus_id=6536/1611/6646,enchant=rune_of_hysteria
 
 save="T31_Death_Knight_Frost.simc"
 
