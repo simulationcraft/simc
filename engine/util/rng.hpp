@@ -269,7 +269,7 @@ public:
   /// Exponentially Modified Gaussian Distribution
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
 
-  template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
+  template <typename T, typename std::enable_if<std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed, T>::type>
   T gauss( T mean, T stddev )
   {
     assert( mean >= std::numeric_limits<double>::min() && mean <= std::numeric_limits<double>::max() );
@@ -299,6 +299,15 @@ public:
 
     return static_cast<T>(
         gauss_a( static_cast<double>( mean ), static_cast<double>( stddev ), static_cast<double>( min ) ) );
+  }
+
+  template <typename T, typename std::enable_if<std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed, T>::type>
+  T gauss( T mean, T stddev )
+  {
+    assert( mean >= std::numeric_limits<double>::min() && mean <= std::numeric_limits<double>::max() );
+    assert( stddev >= std::numeric_limits<double>::min() && stddev <= std::numeric_limits<double>::max() );
+
+    return static_cast<T>( gauss_a( static_cast<double>( mean ), static_cast<double>( stddev ), static_cast<double>( std::numeric_limits<T>::min() ) ) );
   }
 
   template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
