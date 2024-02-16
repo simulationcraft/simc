@@ -427,30 +427,30 @@ double basic_rng_t<Engine>::gauss( double mean, double stddev )
   if ( stddev == 0 )
     return mean;
 
-    if ( gauss_pair_use )
-    {
-      gauss_pair_use = false;
+  if ( gauss_pair_use )
+  {
+    gauss_pair_use = false;
     return mean + gauss_pair_value * stddev;
-    }
+  }
 
-      double x1, x2, w, y1, y2;
-      do
-      {
-        x1 = 2.0 * real() - 1.0;
-        x2 = 2.0 * real() - 1.0;
-        w = x1 * x1 + x2 * x2;
-      }
-      while ( w >= 1.0 || w == 0.0 );
+  double x1, x2, w, y1, y2;
+  do
+  {
+    x1 = 2.0 * real() - 1.0;
+    x2 = 2.0 * real() - 1.0;
+    w = x1 * x1 + x2 * x2;
+  }
+  while ( w >= 1.0 || w == 0.0 );
 
-      w = std::sqrt( ( -2.0 * std::log( w ) ) / w );
-      y1 = x1 * w;
-      y2 = x2 * w;
+  w = std::sqrt( ( -2.0 * std::log( w ) ) / w );
+  y1 = x1 * w;
+  y2 = x2 * w;
 
-      gauss_pair_value = y2;
-      gauss_pair_use = true;
+  gauss_pair_value = y2;
+  gauss_pair_use = true;
 
   return mean + y1 * stddev;
-    }
+}
 
 template <typename Engine>
 double basic_rng_t<Engine>::gauss_ab( double mean, double stddev, double min, double max )
