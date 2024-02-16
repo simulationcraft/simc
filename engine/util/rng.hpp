@@ -273,36 +273,8 @@ public:
             typename std::enable_if<std::numeric_limits<T>::is_integer && !std::numeric_limits<T>::is_signed, T>::type>
   T gauss( T mean, T stddev )
   {
-    return static_cast<T>( gauss( static_cast<double>( mean ), static_cast<double>( stddev ) ) );
-  }
-
-  template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
-  T gauss_ab( T mean, T stddev, T min, T max )
-  {
-    return static_cast<T>( gauss_ab( static_cast<double>( mean ), static_cast<double>( stddev ),
-                                     static_cast<double>( min ), static_cast<double>( max ) ) );
-  }
-
-  template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
-  T gauss_a( T mean, T stddev, T min )
-  {
-    return static_cast<T>(
-        gauss_a( static_cast<double>( mean ), static_cast<double>( stddev ), static_cast<double>( min ) ) );
-  }
-
-  template <typename T,
-            typename std::enable_if<std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed, T>::type>
-  T gauss( T mean, T stddev )
-  {
     return static_cast<T>( gauss_a( static_cast<double>( mean ), static_cast<double>( stddev ),
                                     static_cast<double>( std::numeric_limits<T>::min() ) ) );
-  }
-
-  template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
-  T gauss_b( T mean, T stddev, T max )
-  {
-    return static_cast<T>(
-        gauss_b( static_cast<double>( mean ), static_cast<double>( stddev ), static_cast<double>( max ) ) );
   }
 
   /// Timespan uniform distribution in the range [min..max)
