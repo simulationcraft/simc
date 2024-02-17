@@ -113,6 +113,9 @@ public:
   /// Timespan Gaussian Distribution
   timespan_t gauss( timespan_t mean, timespan_t stddev );
 
+  /// Timespan Exponential Distribution
+  timespan_t exponential( timespan_t nu );
+
   /// Timespan exponentially Modified Gaussian Distribution
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
 
@@ -303,17 +306,21 @@ timespan_t basic_rng_t<Engine>::range( timespan_t min, timespan_t max )
 template <typename Engine>
 timespan_t basic_rng_t<Engine>::gauss( timespan_t mean, timespan_t stddev )
 {
-  return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
-                                         static_cast<double>( timespan_t::to_native( stddev ) ) ) );
+  return timespan_t::from_native( gauss_a( static_cast<double>( timespan_t::to_native( mean ) ),
+                                           static_cast<double>( timespan_t::to_native( stddev ) ), 0.0 ) );
+}
+
+template <typename Engine>
+timespan_t basic_rng_t<Engine>::exponential( timespan_t nu )
+{
+  return timespan_t::from_native( exponential( timespan_t::to_native( nu ) ) );
 }
 
 /// Timespan exponentially Modified Gaussian Distribution
 template <typename Engine>
 timespan_t basic_rng_t<Engine>::exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
 {
-  return timespan_t::from_native( exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ),
-                                           static_cast<double>( timespan_t::to_native( nu ) ) ) );
+  return gauss( mean, stddev ) + exponential( nu );
 }
 
 /// RNG Engines
