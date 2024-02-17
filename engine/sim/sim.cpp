@@ -2720,7 +2720,7 @@ void sim_t::init()
   if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
 
-  confidence_estimator = rng().stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
+  confidence_estimator = rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
   if ( challenge_mode && scale_to_itemlevel < 0 )
   {
