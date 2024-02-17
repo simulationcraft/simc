@@ -310,48 +310,14 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     return static_cast<priest_pet_t&>( *player );
   }
 
-  double cost() const override
-  {
-    double c = spell_t::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
-    return c;
-  }
+  // skip composite_target_multiplier() as priest_pet_spell_t doesn't have quick target_data accessor
+  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
+  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
 
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
-    return ta;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double da = spell_t::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-    return da;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = spell_t::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
-    return cc;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t et = spell_t::execute_time() * get_buff_effects_value( execute_time_buffeffects );
-    return et;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t dd = spell_t::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
-    return dd;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm =
-        action_t::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
-    return rm;
-  }
+  // undef first as setup is also done in sc_priest.hpp for priest_action_t
+  #undef PARSE_BUFF_EFFECTS_SETUP_BASE
+  #define PARSE_BUFF_EFFECTS_SETUP_BASE spell_t
+  PARSE_BUFF_EFFECTS_SETUP
 
   double composite_target_da_multiplier( player_t* t ) const override
   {
@@ -386,11 +352,6 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
       if ( triggers_atonement && s->chain_target == 0 )
         p().o().trigger_atonement( s );
     }
-  }
-
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
   }
 };
 
