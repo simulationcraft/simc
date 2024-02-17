@@ -1673,6 +1673,7 @@ public:
     }, spell, idx, true, mods... );
   }
 
+  // custom cost() to account for innervate and free spellss
   #undef PARSE_BUFF_EFFECTS_SETUP_COST
   #define PARSE_BUFF_EFFECTS_SETUP_COST
   double cost() const override
