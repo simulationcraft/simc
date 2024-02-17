@@ -7615,7 +7615,7 @@ struct starfall_t : public ap_spender_t
     timespan_t travel_time() const override
     {
       // seems to have random discrete intervals. guesstimating at 66ms.
-      return ( rng().range<int>( 14 ) + 1 ) * 66_ms;
+      return ( rng().range( 14 ) + 1 ) * 66_ms;
     }
 
     void impact( action_state_t* s ) override
@@ -8570,7 +8570,7 @@ struct convoke_the_spirits_t : public druid_spell_t
                    };
 
     cast_list.insert( cast_list.end(),
-                      rng().range<size_t>( guidance ? 2.5 : 4, guidance ? 7.5 : 9 ),
+                      rng().range( guidance ? 2.5 : 4, guidance ? 7.5 : 9 ),
                       CAST_OFFSPEC );
 
     insert_exceptional( CAST_FERAL_FRENZY );
