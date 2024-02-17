@@ -20,40 +20,129 @@
 //
 // 2) Construct the mixin via `parse_buff_effects_t( this );`
 //
-// 3) `get_buff_effects_value( buff effect vector ) returns the modified value.
-//    Add the following overrides with any addtional adjustments as needed (BASE is the parent to the action base class):
+// 3) `PARSE_BUFF_EFFECTS_SETUP` macro can be used to add the necessary overrides to the action class. If custom
+//    overrides are needed, individual methods can be left out and added manually.
+//
+//    a) #undef and #define the corresponding PARSE_BUFF_EFFECTS_SETUP_X macro for any custom overrides.
+//    b) #define PARSE_BUFF_EFFECTS_SETUP_BASE to the parent class of the action class.
+//    c) Call the PARSE_BUFF_EFFECTS_SETUP macro.
+//    d) For example, if your action is based on spell_t, and you have custom cost() and composite_ta_multiplier():
+//
+//       #undef PARSE_BUFF_EFFECTS_SETUP_COST
+//       #define PARSE_BUFF_EFFECTS_SETUP_COST
+//       double cost() const override
+//       {
+//         auto c = spell_t::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false );
+//         ...CUSTOM FLAT ADD CODE...
+//
+//         c *= get_buff_effects_value( cost_buffeffects, false, false );
+//         ...CUSTOM MULTIPLIER CODE...
+//
+//         return std::max( 0.0, c );
+//       }
+//
+//       #undef PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
+//       #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
+//       double composite_ta_multiplier( const action_state_t* s ) const override
+//       {
+//         auto ta = spell_t::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+//         ...CUSTOM MULTIPLIER CODE...
+//
+//         return ta;
+//       }
+//
+//       #define PARSE_BUFF_EFFECTS_SETUP_BASE spell_t
+//       PARSE_BUFF_EFFECTS_SETUP
 
-/*    double cost() const override
-      { return std::max( 0.0, ( BASE::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) )
-                                             * get_buff_effects_value( cost_buffeffects, false, false ) ); }
+#define PARSE_BUFF_EFFECTS_SETUP_COST \
+  double cost() const override \
+  { \
+    return std::max( 0.0, ( PARSE_BUFF_EFFECTS_SETUP_BASE::cost() + \
+                            get_buff_effects_value( flat_cost_buffeffects, true, false ) ) * \
+                          get_buff_effects_value( cost_buffeffects, false, false ) ); \
+  }
 
-      double composite_ta_multiplier( const action_state_t* s ) const override
-      { return BASE::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects ); }
+#define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER \
+  double composite_ta_multiplier( const action_state_t* s ) const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_ta_multiplier( s ) * \
+           get_buff_effects_value( ta_multiplier_buffeffects ); \
+  }
 
-      double composite_da_multiplier( const action_state_t* s ) const override
-      { return BASE::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects ); }
+#define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER \
+  double composite_da_multiplier( const action_state_t* s ) const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_da_multiplier( s ) * \
+           get_buff_effects_value( da_multiplier_buffeffects ); \
+  }
 
-      double composite_crit_chance() const override
-      { return BASE::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true ); }
+#define PARSE_BUFF_EFFECTS_SETUP_CRIT_CHANCE \
+  double composite_crit_chance() const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_crit_chance() + \
+           get_buff_effects_value( crit_chance_buffeffects, true ); \
+  }
 
-      timespan_t execute_time() const override
-      { return std::max( 0_ms, BASE::execute_time() * get_buff_effects_value( execute_time_buffeffects ) ); }
+#define PARSE_BUFF_EFFECTS_SETUP_EXECUTE_TIME \
+  timespan_t execute_time() const override \
+  { \
+    return std::max( 0_ms, PARSE_BUFF_EFFECTS_SETUP_BASE::execute_time() * \
+                           get_buff_effects_value( execute_time_buffeffects ) ); \
+  }
 
-      timespan_t composite_dot_duration( const action_state_t* s ) const override
-      { return BASE::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects ); }
+#define PARSE_BUFF_EFFECTS_SETUP_DOT_DURATION \
+  timespan_t composite_dot_duration( const action_state_t* s ) const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_dot_duration( s ) * \
+           get_buff_effects_value( dot_duration_buffeffects ); \
+  }
 
-      timespan_t tick_time( const action_state_t* s ) const override
-      { return std::max( 1_ms, BASE::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects ) ); }
+#define PARSE_BUFF_EFFECTS_SETUP_TICK_TIME \
+  timespan_t tick_time( const action_state_t* s ) const override \
+  { \
+    return std::max( 1_ms, PARSE_BUFF_EFFECTS_SETUP_BASE::tick_time( s ) * \
+                           get_buff_effects_value( tick_time_buffeffects ) ); \
+  }
 
-      double recharge_multiplier( const cooldown_t& cd ) const override
-      { return BASE::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects ); }
+#define PARSE_BUFF_EFFECTS_SETUP_COOLDOWN_DURATION \
+  timespan_t cooldown_duration() const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::cooldown_duration() * \
+           get_buff_effects_value( recharge_multiplier_buffeffects ); \
+  }
 
-      double composite_target_multiplier( player_t* t ) const override
-      { return BASE::composite_target_multiplier( t ) * get_debuff_effects_value( td( t ) ); }
+#define PARSE_BUFF_EFFECTS_SETUP_RECHARGE_MULTIPLIER \
+  double recharge_multiplier( const cooldown_t& cd ) const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::recharge_multiplier( cd ) * \
+           get_buff_effects_value( recharge_multiplier_buffeffects ); \
+  }
 
-      void html_customsection( report::sc_html_stream& os ) override
-      { parsed_html_report( os ); }
-*/
+#define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER \
+  double composite_target_multiplier( player_t* t ) const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_multiplier( t ) * \
+           get_debuff_effects_value( td( t ) ); \
+  }
+
+#define PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION \
+  void html_customsection( report::sc_html_stream& os ) override \
+  { \
+    parsed_html_report( os ); \
+  }
+
+#define PARSE_BUFF_EFFECTS_SETUP \
+  PARSE_BUFF_EFFECTS_SETUP_COST \
+  PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER \
+  PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER \
+  PARSE_BUFF_EFFECTS_SETUP_CRIT_CHANCE \
+  PARSE_BUFF_EFFECTS_SETUP_EXECUTE_TIME \
+  PARSE_BUFF_EFFECTS_SETUP_DOT_DURATION \
+  PARSE_BUFF_EFFECTS_SETUP_TICK_TIME \
+  PARSE_BUFF_EFFECTS_SETUP_COOLDOWN_DURATION \
+  PARSE_BUFF_EFFECTS_SETUP_RECHARGE_MULTIPLIER \
+  PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER \
+  PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION
 
 enum value_type_e
 {

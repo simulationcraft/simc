@@ -1673,6 +1673,8 @@ public:
     }, spell, idx, true, mods... );
   }
 
+  #undef PARSE_BUFF_EFFECTS_SETUP_COST
+  #define PARSE_BUFF_EFFECTS_SETUP_COST
   double cost() const override
   {
     if ( is_free() || ( p()->specialization() == DRUID_RESTORATION && p()->buff.innervate->up() ) )
@@ -1687,51 +1689,8 @@ public:
     return std::max( 0.0, c );
   }
 
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    return ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    return ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-  }
-
-  double composite_crit_chance() const override
-  {
-    return ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
-  }
-
-  timespan_t execute_time() const override
-  {
-    return std::max( 0_ms, ab::execute_time() * get_buff_effects_value( execute_time_buffeffects ) );
-
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
-  }
-
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    return ab::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects );
-  }
-
-  timespan_t cooldown_duration() const override
-  {
-    return ab::cooldown_duration() * get_buff_effects_value( recharge_multiplier_buffeffects );
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    return ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects );
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    return ab::composite_target_multiplier( t ) * get_debuff_effects_value( td( t ) );
-  }
+  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
+  PARSE_BUFF_EFFECTS_SETUP
 
   // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
   // Swiftness
@@ -1766,11 +1725,6 @@ public:
 #endif
 
     return ab::verify_actor_spec();
-  }
-
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
   }
 };
 
