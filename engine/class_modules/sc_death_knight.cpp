@@ -3442,78 +3442,9 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
                          }, spell, idx, true, mods... );
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = action_base_t::composite_da_multiplier( state );
-
-    m *= get_buff_effects_value( da_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double composite_ta_multiplier( const action_state_t* state ) const override
-  {
-    double m = action_base_t::composite_ta_multiplier( state );
-
-    m *= get_buff_effects_value( ta_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double m = action_base_t::composite_crit_chance();
-
-    m += get_buff_effects_value( crit_chance_buffeffects, true );
-
-    return m;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t m = action_base_t::execute_time();
-
-    m *= get_buff_effects_value( execute_time_buffeffects );
-
-    return std::max( 0_ms, m );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* state ) const override
-  {
-    timespan_t m = action_base_t::composite_dot_duration( state );
-
-    m *= get_buff_effects_value( dot_duration_buffeffects );
-
-    return m;
-  }
-
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    timespan_t m = action_base_t::tick_time( state );
-
-    m *= get_buff_effects_value( tick_time_buffeffects );
-
-    return std::max( 1_ms, m );
-  }
-
-  timespan_t cooldown_duration() const override
-  {
-    timespan_t m = action_base_t::cooldown_duration();
-
-    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = action_base_t::recharge_multiplier( cd );
-
-    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
-
-    return m;
-  }
-
+  // custom composite_target_multiplier() to use get_td() instead of td()
+  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
+  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = action_base_t::composite_target_multiplier( target );
@@ -3523,16 +3454,8 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     return m;
   }
 
-  double cost() const override
-  {
-    double c = action_base_t::cost();
-
-    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-    
-    c *= get_buff_effects_value( cost_buffeffects, false, false );
-
-    return std::max( 0.0, c );
-  }
+  #define PARSE_BUFF_EFFECTS_SETUP_BASE action_base_t
+  PARSE_BUFF_EFFECTS_SETUP
 
   double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
   {
@@ -3620,11 +3543,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   void update_ready( timespan_t cd ) override
   {
     action_base_t::update_ready( cd );
-  }
-
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
   }
 };
 
