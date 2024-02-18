@@ -253,7 +253,7 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -263,7 +263,7 @@ double warlock_pet_t::composite_spell_speed() const
 {
   double m = pet_t::composite_spell_speed();
 
-  if ( o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -273,7 +273,7 @@ double warlock_pet_t::composite_melee_speed() const
 {
   double m = pet_t::composite_melee_speed();
 
-  if ( o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet && o()->talents.demonic_inspiration->ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
