@@ -71,6 +71,20 @@ public:
   /// Uniform distribution in the range [0.0..max)
   double range( double max );
 
+  /// Uniform distribution in the range [min..max)
+  template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
+  T range( T min, T max )
+  {
+    return static_cast<T>( std::floor( range( static_cast<double>( min ), static_cast<double>( max ) ) ) );
+  }
+
+  /// Uniform distribution in the range [0.0..max)
+  template <typename T, typename = std::enable_if_t<std::numeric_limits<T>::is_integer>>
+  T range( T max )
+  {
+    return range<T>( T{}, max );
+  }
+
   /// Gaussian Distribution
   double gauss( double mean, double stddev );
 
@@ -85,13 +99,13 @@ public:
   /// Exponentially Modified Gaussian Distribution
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
 
-  template <typename T, typename std::enable_if_t<!std::numeric_limits<T>::is_signed>>
+  template <typename T, typename = std::enable_if_t<!std::numeric_limits<T>::is_signed>>
   T gauss( T mean, T stddev )
   {
     return static_cast<T>( gauss_a( static_cast<double>( mean ), static_cast<double>( stddev ), 0.0 ) );
   }
 
-  template <typename T, typename std::enable_if_t<!std::numeric_limits<T>::is_signed>>
+  template <typename T, typename = std::enable_if_t<!std::numeric_limits<T>::is_signed>>
   T exgauss( T gauss_mean, T gauss_stddev, T exp_nu )
   {
     return static_cast<T>( gauss_a( static_cast<double>( gauss_mean ), static_cast<double>( gauss_stddev ), 0.0 ) +
@@ -116,7 +130,7 @@ public:
   {
     size_t n = last - first;
     for ( size_t i = 0; i < n - 1; i++ )
-      std::swap( first[ i ], first[ static_cast<int>( range( i, n ) ) ] );
+      std::swap( first[ i ], first[ range( i, n ) ] );
   }
 
 private:
