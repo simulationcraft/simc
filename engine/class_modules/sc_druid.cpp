@@ -1614,19 +1614,44 @@ public:
     parse_buff_effects( p()->buff.natures_swiftness, p()->talent.natures_splendor );
   }
 
+  template <typename T>
+  dfun d_fn( T d, bool stack = true )
+  {
+    if constexpr ( std::is_invocable_v<T, druid_td_t::debuffs_t> )
+    {
+      if ( stack )
+        return [ d ]( druid_td_t* t ) { return std::invoke( d, t->debuff )->check(); };
+      else
+        return [ d ]( druid_td_t* t ) { return std::invoke( d, t->debuff )->check() > 0; };
+    }
+    else if constexpr ( std::is_invocable_v<T, druid_td_t::dots_t> )
+    {
+      if ( stack )
+        return [ d ]( druid_td_t* t ) { return std::invoke( d, t->dots )->current_stack(); };
+      else
+        return [ d ]( druid_td_t* t ) { return std::invoke( d, t->dots )->is_ticking(); };
+    }
+    else
+    {
+      assert( false );
+      return nullptr;
+    }
+  }
+
   void apply_debuffs_effects()
   {
-    parse_dot_effects( &druid_td_t::dots_t::moonfire, p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
-    parse_dot_effects( &druid_td_t::dots_t::sunfire, p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
-    parse_dot_effects( &druid_td_t::dots_t::adaptive_swarm_damage, p()->spec.adaptive_swarm_damage, false, p()->spec_spell );
-    parse_dot_effects( &druid_td_t::dots_t::thrash_bear, p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
-
-    parse_debuff_effects( []( druid_td_t* td )
-        { return td->debuff.dire_fixation->check(); },
-        find_trigger( p()->talent.dire_fixation ).trigger() );
-    parse_debuff_effects( []( druid_td_t* td )
-        { return td->debuff.waning_twilight->check(); },
-        p()->spec.waning_twilight, p()->talent.waning_twilight );
+    parse_debuff_effects( d_fn( &druid_td_t::dots_t::moonfire ),
+                          p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
+    parse_debuff_effects( d_fn( &druid_td_t::dots_t::sunfire ),
+                          p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
+    parse_debuff_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
+                          p()->spec.adaptive_swarm_damage, p()->spec_spell );
+    parse_debuff_effects( d_fn( &druid_td_t::dots_t::thrash_bear ),
+                          p()->spec.thrash_bear_bleed, p()->talent.rend_and_tear );
+    parse_debuff_effects( d_fn( &druid_td_t::debuffs_t::dire_fixation ),
+                          find_trigger( p()->talent.dire_fixation ).trigger() );
+    parse_debuff_effects( d_fn( &druid_td_t::debuffs_t::waning_twilight ),
+                          p()->spec.waning_twilight, p()->talent.waning_twilight );
 
     if ( p()->talent.incarnation_cat.ok() && p()->talent.ashamanes_guidance.ok() )
     {
@@ -1637,40 +1662,6 @@ public:
           { return p->buff.ashamanes_guidance->check() && td->dots.rake->is_ticking(); },
           find_trigger( p()->talent.rake ).trigger(), p()->spec.ashamanes_guidance_buff );
     }
-  }
-
-  template <typename DOT, typename... Ts>
-  void parse_dot_effects( DOT dot, const spell_data_t* spell, bool stacks, Ts... mods )
-  {
-    if ( stacks )
-    {
-      parse_debuff_effects( [ dot ]( druid_td_t* t ) {
-        return std::invoke( dot, t->dots )->current_stack();
-      }, spell, mods... );
-    }
-    else
-    {
-      parse_debuff_effects( [ dot ]( druid_td_t* t ) {
-        return std::invoke( dot, t->dots )->is_ticking();
-      }, spell, mods... );
-    }
-  }
-
-  template <typename DOT, typename... Ts>
-  void parse_dot_effects( DOT dot, const spell_data_t* spell, Ts... mods )
-  {
-    parse_dot_effects( dot, spell, true, mods... );
-  }
-
-  template <typename DOT, typename... Ts>
-  void force_dot_effect( DOT dot, const spell_data_t* spell, unsigned idx, Ts... mods )
-  {
-    if ( ab::data().affected_by_all( spell->effectN( idx ) ) )
-      return;
-
-    parse_debuff_effect( [ dot ]( druid_td_t* t ) {
-      return std::invoke( dot, t->dots )->is_ticking();
-    }, spell, idx, true, mods... );
   }
 
   double cost() const override
