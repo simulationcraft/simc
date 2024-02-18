@@ -326,7 +326,7 @@ timespan_t basic_rng_t<Engine>::gauss( timespan_t mean, timespan_t stddev )
 template <typename Engine>
 timespan_t basic_rng_t<Engine>::exponential( timespan_t nu )
 {
-  return timespan_t::from_native( exponential( timespan_t::to_native( nu ) ) );
+  return timespan_t::from_native( exponential( static_cast<double>( timespan_t::to_native( nu ) ) ) );
 }
 
 /// Timespan exponentially Modified Gaussian Distribution
