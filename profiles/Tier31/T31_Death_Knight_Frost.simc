@@ -75,8 +75,8 @@ actions.breath+=/horn_of_winter,if=rune<2&runic_power.deficit>25+(5*buff.rune_of
 actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.breath+=/frostscythe,if=variable.frostscythe_priority&(buff.killing_machine.react|runic_power>45)
 actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>40|buff.pillar_of_frost.up
-actions.breath+=/death_and_decay,if=runic_power<36&rune.time_to_2>runic_power%18
 actions.breath+=/remorseless_winter,if=runic_power<36&rune.time_to_2>runic_power%18
+actions.breath+=/death_and_decay,if=talent.unholy_ground&!death_and_decay.ticking&runic_power.deficit>=10|runic_power<36&rune.time_to_2>runic_power%18
 actions.breath+=/howling_blast,if=runic_power<36&rune.time_to_2>runic_power%18
 actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25
 actions.breath+=/howling_blast,if=buff.rime.react
@@ -217,16 +217,16 @@ finger2=band_of_twisted_bark,id=134531,bonus_id=3326/1514/6536/6646/6935,gem_id=
 trinket1=pips_emerald_friendship_badge,id=207168,bonus_id=7187/1520
 trinket2=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
 main_hand=gholak_the_final_conflagration,id=207786,bonus_id=7187/1520,enchant=rune_of_the_fallen_crusader
-off_hand=volcorosss_barbed_fang,id=207789,bonus_id=7187/1520,enchant=rune_of_hysteria
+off_hand=quelzaram_high_blade_of_the_lion,id=207994,bonus_id=6536/1611/6646,enchant=rune_of_hysteria
 
 # Gear Summary
 # gear_ilvl=488.63
 # gear_strength=9773
 # gear_stamina=38769
-# gear_crit_rating=5728
-# gear_haste_rating=4835
-# gear_mastery_rating=4334
-# gear_versatility_rating=463
+# gear_crit_rating=5964
+# gear_haste_rating=4497
+# gear_mastery_rating=4615
+# gear_versatility_rating=284
 # gear_armor=11405
 # set_bonus=tier31_2pc=1
 # set_bonus=tier31_4pc=1
