@@ -2993,6 +2993,17 @@ void sim_t::analyze()
     std::fflush( stdout );
   }
 
+  
+  assert( iterations > 0 );
+
+  // Run core analyze for all actor collected data before proceeding to full analysis. This is to prevent errors from
+  // when actors access information from each other, e.g. buffs.
+  for ( size_t i = 0; i < actor_list.size(); i++ )
+  {
+    actor_list[ i ] -> pre_analyze_hook();
+    actor_list[ i ] -> collected_data.analyze( *actor_list[ i ] );
+  }
+
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );
 
