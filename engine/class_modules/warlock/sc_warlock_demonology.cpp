@@ -706,7 +706,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     // Last tested 2021-07-13
     // Ingame there is a chance for tyrant to get an extra cast off before reaching the required haste breakpoint. In-game testing
     // found the tyrant sometimes stayed longer than the specified duration and can be modelled fairly closely using a normal distribution.
-    timespan_t extraTyrantTime = timespan_t::from_millis( rng().gauss( 380.0, 220.0, true ) );
+    timespan_t extraTyrantTime = timespan_t::from_millis( rng().gauss_a( 380.0, 220.0, 0.0 ) );
     auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
     if ( !p()->min_version_check( VERSION_10_2_0 ) )

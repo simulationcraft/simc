@@ -6340,7 +6340,7 @@ struct adaptive_swarm_t : public druid_spell_t
       else if ( t->role == ROLE_SPELL )
         dis = p()->options.adaptive_swarm_jump_distance_ranged;
 
-      return rng().gauss( dis, p()->options.adaptive_swarm_jump_distance_stddev, true );
+      return rng().gauss_a( dis, p()->options.adaptive_swarm_jump_distance_stddev, 0.0 );
     }
   };
 
@@ -8552,15 +8552,6 @@ struct convoke_the_spirits_t : public druid_spell_t
     return type_;
   }
 
-  inline static size_t _clamp_and_cast( double x, size_t min, size_t max )
-  {
-    if ( x < min )
-      return min;
-    if ( x > max )
-      return max;
-    return static_cast<size_t>( x );
-  }
-
   void _execute_cat()
   {
     offspec_list = { CAST_HEAL, CAST_HEAL, CAST_WRATH, CAST_MOONFIRE };
@@ -8577,8 +8568,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     cast_list.insert(
         cast_list.end(),
-        _clamp_and_cast( rng().gauss( guidance ? 3 : 4.2, guidance ? 0.8 : 0.9360890055, true ), 0,
-                         max_ticks - cast_list.size() ),
+        static_cast<size_t>( rng().gauss_ab( guidance ? 3 : 4.2, guidance ? 0.8 : 0.9360890055, 0, max_ticks - cast_list.size() ) ),
         CAST_MAIN );
   }
 
