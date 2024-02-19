@@ -295,4 +295,6 @@ jobs:
         with:
           message: 'Regenerate profiles'
           default_author: github_actor
+          fetch: false
+          ref: ${{ github.event.pull_request.head.ref }}
 
