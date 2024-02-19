@@ -240,13 +240,6 @@ jobs:
           SIMC_ITERATIONS: 2
         run: ${{ github.workspace }}/tests/run.py ${{ matrix.spec }} -tests trinket baseline --max-profiles-to-use 1 --enable-all-talents --enable-all-sets
 
-      - name: Regenerate Profiles
-        uses: EndBug/add-and-commit@v9.1.4
-        with:
-          message: 'Regenerate profiles'
-          default_author: github_actor
-
-
   build-osx:
     name: macos-latest
     runs-on: macos-latest
@@ -297,7 +290,9 @@ jobs:
         if: ${{ matrix.runSmokeTest }}
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
 
-      - name: Generate profiles
-        run: |
-          bash ./generate_profiles.sh
+      - name: Regenerate Profiles
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          message: 'Regenerate profiles'
+          default_author: github_actor
 
