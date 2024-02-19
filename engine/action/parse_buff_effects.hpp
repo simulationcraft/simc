@@ -124,7 +124,7 @@ public:
   {
     bool mod_is_mastery = false;
 
-    if ( mod->effect_count() && action_->player->find_mastery_spell( action_->player->specialization() ) == mod )
+    if ( mod->effect_count() && mod->flags( SX_MASTERY_AFFECTS_POINTS ) )
     {
       mastery = true;
       mod_is_mastery = true;
@@ -182,13 +182,14 @@ public:
                            value_type_e value_type, bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
-    bool mastery    = action_->player->find_mastery_spell( action_->player->specialization() ) == s_data;
+    bool mastery    = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val      = ( buff && value_type == USE_DEFAULT ) ? ( buff->default_value * 100 )
                                                             : ( mastery ? eff.mastery_value() : eff.base_value() );
     double val_mul  = 0.01;
 
     // TODO: more robust logic around 'party' buffs with radius
-    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() ) return;
+    // TODO: Warrior Avatar uses E_APPLY_AURA_PET for the periodic.  After testing, confirmed in game that this also seems to apply to the player
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY || eff.type() == E_APPLY_AURA_PET ) || eff.radius() ) return;
 
     if ( i <= 5 )
       parse_spell_effects_mods( val, mastery, s_data, i, mods... );
@@ -441,7 +442,7 @@ public:
   void parse_debuff_effect( const dfun& func, const spell_data_t* s_data, size_t i, bool force, Ts... mods )
   {
     const auto& eff = s_data->effectN( i );
-    bool mastery    = action_->player->find_mastery_spell( action_->player->specialization() ) == s_data;
+    bool mastery    = s_data->flags( SX_MASTERY_AFFECTS_POINTS );
     double val      = mastery ? eff.mastery_value() : eff.base_value();
     double val_mul  = 0.01;
 

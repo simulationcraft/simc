@@ -170,6 +170,9 @@ public:
   /// Used with DoT Drivers, tells simc that the direct hit is actually a tick.
   bool direct_tick;
 
+  /// Used with direct damage effects that trigger periodic proc flags
+  bool treat_as_periodic;
+
   /// Used with psudo-DoT effects, tells us to ignore armor even if the physical damage is direct
   bool ignores_armor;
 

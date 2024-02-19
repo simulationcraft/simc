@@ -30,7 +30,7 @@ spec=windwalker
 level=70
 race=void_elf
 role=dps
-talents=B0QAK5xc05YQdq4E+VOLrE2vpCAAAAAAAIRSS0icgEAAAAgEJJFAJJJJBJtIRkQrIJplk0SAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhEJJRLiEBAAAASkkUAkkkkAJlIRkQpIJRSSLBAAA0A
 
 head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/9229/9410/9382/1504/8767/9413,gem_id=192991
 neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8783/8782/9405/8795/9376/8174/9366,gem_id=192932/192932/192932,crafted_stats=36/32,crafting_quality=5
@@ -55,7 +55,7 @@ spec=windwalker
 level=70
 race=orc
 role=dps
-talents=B0QAK5xc05YQdq4E+VOLrE2vpCAAAAAAAIRSSUicgEAAAAgEJJFAJJJJBJtIRkQrIJplk0SAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhEJJRJiEBAAAASkkUAkkkkAJlIRkQpIJRSSLBAAA0A
 
 head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/9229/9410/9382/1504/8767/9413,gem_id=192991
 neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8783/8782/9405/8795/9376/8174/9366,gem_id=192932/192932/192932,crafted_stats=36/32,crafting_quality=5

@@ -211,6 +211,7 @@ ACTIVE_SPELL_WHITELIST = [
 ]
 
 IGNORE_CLASS_AND_RACE_MASKS = [
+  21009, # Night Elf Elusiveness Racial
   297736, # Vision of Perfection
   297737, # Vision of Perfection
   297738, # Vision of Perfection

@@ -1322,7 +1322,8 @@ struct holy_power_consumer_t : public Base
 
     double c = ab::cost();
 
-    if ( ab::p()->talents.vanguard_of_justice->ok() )
+    if ( ab::p()->talents.vanguard_of_justice->ok() &&
+         this->data().affected_by( ab::p()->talents.vanguard_of_justice->effectN( 1 ) ) )
     {
       c += ab::p()->talents.vanguard_of_justice->effectN( 1 ).base_value();
     }
@@ -1352,11 +1353,12 @@ struct holy_power_consumer_t : public Base
     if ( ab::background && is_divine_storm )
       return;
 
-    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || (is_wog && p->buffs.shining_light_free->up());
+    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) || (is_divine_storm && p->buffs.empyrean_power->up());
 
-    // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
-    int num_hopo_spent = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
-
+    int num_hopo_spent = holy_power_consumer_t::cost();
+    // Free spenders seem to count as 3 Holy Power, regardless the cost
+    if ( isFreeSLDPSpender )
+      num_hopo_spent = 3;
     if ( p->talents.relentless_inquisitor->ok() )
       p->buffs.relentless_inquisitor->trigger();
 

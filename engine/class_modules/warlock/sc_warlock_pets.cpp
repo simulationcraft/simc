@@ -147,6 +147,7 @@ void warlock_pet_t::create_buffs()
   buffs.fury_of_ruvaraad->quiet = true;
   buffs.nerzhuls_volition->quiet = true;
   buffs.demonic_power->quiet = true;
+  buffs.the_expendables->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -252,7 +253,7 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -262,7 +263,7 @@ double warlock_pet_t::composite_spell_speed() const
 {
   double m = pet_t::composite_spell_speed();
 
-  if ( o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -272,7 +273,7 @@ double warlock_pet_t::composite_melee_speed() const
 {
   double m = pet_t::composite_melee_speed();
 
-  if ( o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet && o()->talents.demonic_inspiration->ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -2525,7 +2526,7 @@ void infernal_t::arise()
   // 2022-06-28 Testing indicates there is a ~1.6 second delay after spawn before first melee
   // Embers looks to trigger at around the same time as first melee swing, but Immolation takes another minimum GCD to apply (and has no zero-tick)
   // Additionally, there is some unknown amount of movement adjustment the pet can take, so we model this with a distribution
-  timespan_t delay = timespan_t::from_seconds( rng().gauss( 1.6, 0.2, true ) );
+  timespan_t delay = timespan_t::from_seconds( rng().gauss_a( 1.6, 0.2, 0.0 ) );
 
   make_event( *sim, delay, [ this ] {
     buffs.embers->trigger();

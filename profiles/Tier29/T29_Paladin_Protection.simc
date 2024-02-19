@@ -28,8 +28,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/lights_judgment
 actions.precombat+=/arcane_torrent
 actions.precombat+=/consecration
-actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
-actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_cooldown&trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!trinket.2.has_cooldown
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_cooldown&trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|!trinket.1.has_cooldown
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -46,6 +46,7 @@ actions.cooldowns+=/moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|
 actions.cooldowns+=/divine_toll,if=spell_targets.shield_of_the_righteous>=3
 actions.cooldowns+=/bastion_of_light,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains<=30
 actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up
+actions.cooldowns+=/fireblood,if=buff.avenging_wrath.remains>8
 
 actions.standard=consecration,if=buff.sanctification.stack=buff.sanctification.max_stack
 # Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD). Don't use it when on max Sanctification Stacks (Very next GCD will trigger Consecration, so we want the bonus damage)

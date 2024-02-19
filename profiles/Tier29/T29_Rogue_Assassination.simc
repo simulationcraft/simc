@@ -27,8 +27,8 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 actions.precombat+=/snapshot_stats
 # Check which trinket slots have Stat Values
-actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
-actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&!trinket.2.is.witherbarks_branch|trinket.1.is.witherbarks_branch
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)&!trinket.1.is.witherbarks_branch|trinket.2.is.witherbarks_branch
 actions.precombat+=/stealth
 # Pre-cast Slice and Dice if possible
 actions.precombat+=/slice_and_dice,precombat_seconds=1
@@ -59,7 +59,7 @@ actions+=/arcane_pulse
 actions+=/lights_judgment
 actions+=/bag_of_tricks
 
-# Cooldowns  Wait on Deathmark for Garrote with MA and check for Kingsbane
+# Cooldowns Wait on Deathmark for Garrote with MA and check for Kingsbane
 actions.cds=variable,name=deathmark_ma_condition,value=!talent.master_assassin.enabled|dot.garrote.ticking
 actions.cds+=/variable,name=deathmark_kingsbane_condition,value=!talent.kingsbane|cooldown.kingsbane.remains<=2
 # Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied
@@ -82,8 +82,8 @@ actions.cds+=/call_action_list,name=misc_cds
 actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
 actions.cds+=/cold_blood,if=combo_points>=4
 
-# Direct Damage Abilities   Envenom at 4+ (5+ with DS) CP if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe
-actions.direct=envenom,if=effective_combo_points>=4&(variable.not_pooling|debuff.amplifying_poison.stack>=20|effective_combo_points>cp_max_spend|!variable.single_target)
+# Direct Damage Abilities   Envenom at 4+ CP if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe
+actions.direct=envenom,if=effective_combo_points>=4+cooldown.deathmark.ready&(variable.not_pooling|debuff.amplifying_poison.stack>=20|effective_combo_points>cp_max_spend|!variable.single_target)
 # Check if we should be using a filler
 actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|variable.not_pooling|!variable.single_target
 # Maintain Caustic Spatter
@@ -108,12 +108,12 @@ actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.ampli
 # Fallback Mutilate
 actions.direct+=/mutilate,if=variable.use_filler
 
-# Damage over time abilities  Check what the maximum Scent of Blood stacks is currently
+# Damage over time abilities   Check what the maximum Scent of Blood stacks is currently
 actions.dot=variable,name=scent_effective_max_stacks,value=(spell_targets.fan_of_knives*talent.scent_of_blood.rank*2)>?20
 # We are Scent Saturated when our stack count is hitting the maximum
 actions.dot+=/variable,name=scent_saturation,value=buff.scent_of_blood.stack>=variable.scent_effective_max_stacks
-# Crimson Tempest on 2+ Targets if we have enough energy regen and it is not snapshot from stealth already
-actions.dot+=/crimson_tempest,target_if=min:remains,if=spell_targets>=2&refreshable&pmultiplier<=1&effective_combo_points>=4&energy.regen_combined>25&!cooldown.deathmark.ready&target.time_to_die-remains>6
+# Crimson Tempest on 4+ Targets if we have enough energy regen and it is not snapshot from stealth already
+actions.dot+=/crimson_tempest,target_if=min:remains,if=spell_targets>=3+set_bonus.tier31_4pc&refreshable&pmultiplier<=1&effective_combo_points>=4&energy.regen_combined>25&!cooldown.deathmark.ready&target.time_to_die-remains>6
 # Garrote upkeep, also uses it in AoE to reach energy saturation
 actions.dot+=/garrote,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&target.time_to_die-remains>12
 actions.dot+=/garrote,cycle_targets=1,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&!variable.regen_saturated&spell_targets.fan_of_knives>=2&target.time_to_die-remains>12
@@ -125,13 +125,12 @@ actions.dot+=/garrote,if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|rem
 
 # Special Case Trinkets
 actions.items=use_item,name=ashes_of_the_embersoul,use_off_gcd=1,if=(dot.kingsbane.ticking&dot.kingsbane.remains<=11)|fight_remains<=22
-actions.items+=/use_item,name=witherbarks_branch,use_off_gcd=1,if=(dot.deathmark.ticking)|fight_remains<=22
 actions.items+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=dot.rupture.ticking&cooldown.deathmark.remains<2|fight_remains<=22
 # Fallback case for using stat trinkets
 actions.items+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)
 actions.items+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)
 
-# Miscellaneous Cooldowns  Potion
+# Miscellaneous Cooldowns Potion
 actions.misc_cds=potion,if=buff.bloodlust.react|fight_remains<30|debuff.deathmark.up
 # Various special racials to be synced with cooldowns
 actions.misc_cds+=/blood_fury,if=debuff.deathmark.up
@@ -139,7 +138,7 @@ actions.misc_cds+=/berserking,if=debuff.deathmark.up
 actions.misc_cds+=/fireblood,if=debuff.deathmark.up
 actions.misc_cds+=/ancestral_call,if=(!talent.kingsbane&debuff.deathmark.up&debuff.shiv.up)|(talent.kingsbane&debuff.deathmark.up&dot.kingsbane.ticking&dot.kingsbane.remains<8)
 
-# Shiv  Shiv if talented into Kingsbane; Always sync, or prioritize the last 8 seconds
+# Shiv   Shiv if talented into Kingsbane; Always sync, or prioritize the last 8 seconds
 actions.shiv=shiv,if=talent.kingsbane&!talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking&dot.kingsbane.remains<8|cooldown.kingsbane.remains>=24)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
 actions.shiv+=/shiv,if=talent.kingsbane&talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking|cooldown.kingsbane.remains<=1)|fight_remains<=charges*8
 # Shiv cases for Sepsis/Arterial in special circumstances
@@ -155,15 +154,14 @@ actions.stealthed+=/shiv,if=talent.kingsbane&(dot.kingsbane.ticking|cooldown.kin
 # Kingsbane in Shadow Dance for snapshotting Nightstalker
 actions.stealthed+=/kingsbane,if=buff.shadow_dance.remains>=2&buff.envenom.up
 # Envenom to maintain the buff during Shadow Dance
-actions.stealthed+=/envenom,if=effective_combo_points>=4&dot.kingsbane.ticking&buff.envenom.remains<=2
+actions.stealthed+=/envenom,if=effective_combo_points>=4&dot.kingsbane.ticking&buff.envenom.remains<=3
 # Envenom during Master Assassin in single target
 actions.stealthed+=/envenom,if=effective_combo_points>=4&buff.master_assassin_aura.up&!buff.shadow_dance.up&variable.single_target
-# Crimson Tempest on 3+ targets to snapshot Nightstalker
-actions.stealthed+=/crimson_tempest,target_if=min:remains,if=spell_targets>=3&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6
+# Crimson Tempest on 4+ targets to snapshot Nightstalker
+actions.stealthed+=/crimson_tempest,target_if=min:remains,if=spell_targets>=3+set_bonus.tier31_4pc&refreshable&effective_combo_points>=4&!cooldown.deathmark.ready&target.time_to_die-remains>6
 # Improved Garrote: Apply or Refresh with buffed Garrotes, accounting for Sepsis buff time and Indiscriminate Carnage
 actions.stealthed+=/garrote,target_if=min:remains,if=stealthed.improved_garrote&(remains<(12-buff.sepsis_buff.remains)|pmultiplier<=1|(buff.indiscriminate_carnage.up&active_dot.garrote<spell_targets.fan_of_knives))&!variable.single_target&target.time_to_die-remains>2
-actions.stealthed+=/garrote,if=stealthed.improved_garrote&!buff.shadow_dance.up&(pmultiplier<=1|dot.deathmark.ticking&buff.master_assassin_aura.remains<3)&combo_points.deficit>=1+2*talent.shrouded_suffocation
-actions.stealthed+=/garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remains<12)&combo_points.deficit>=1+2*talent.shrouded_suffocation
+actions.stealthed+=/garrote,if=stealthed.improved_garrote&(pmultiplier<=1|remains<14|!variable.single_target&buff.master_assassin_aura.remains<3)&combo_points.deficit>=1+2*talent.shrouded_suffocation
 # Rupture in Shadow Dance to snapshot Nightstalker as a final resort
 actions.stealthed+=/rupture,if=effective_combo_points>=4&(pmultiplier<=1)&(buff.shadow_dance.up|debuff.deathmark.up)
 

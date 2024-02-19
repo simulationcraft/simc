@@ -1906,6 +1906,23 @@
       { "data_type": "f", "field": "unk_8" }
     ]
   },
+  "TraitTreeLoadout": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_trait_tree", "ref": "TraitTree" },
+      { "data_type": "i", "field": "id_spec", "ref": "ChrSpecialization" }
+    ]
+  },
+  "TraitTreeLoadoutEntry": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_trait_tree_loadout", "ref": "TraitTreeLoadout" },
+      { "data_type": "i", "field": "id_trait_node", "ref": "TraitNode" },
+      { "data_type": "i", "field": "id_trait_node_entry", "ref": "TraitNodeEntry" },
+      { "data_type": "i", "field": "num_points" },
+      { "data_type": "i", "field": "order_index" }
+    ]
+  },
   "TraitTreeXTraitCurrency": {
     "parent": "TraitTree",
     "fields": [

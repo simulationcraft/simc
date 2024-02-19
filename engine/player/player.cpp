@@ -1826,6 +1826,22 @@ void player_t::init_items()
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     matching_gear_slots[ i ] = !util::is_match_slot( i );
 
+  // Override with item slot overrides. Note this will completely replace any player-scoped item options
+  if ( is_player() )
+  {
+    for ( auto [ override_slot, override_str ] : sim->item_slot_overrides )
+    {
+      if ( auto slot = util::parse_slot_type( override_slot ); slot != SLOT_INVALID )
+      {
+        items[ slot ].options_str = override_str;
+      }
+      else
+      {
+        sim->error( "{} overriding unknown item slot '{}={}'; ignoring.", *this, override_slot, override_str );
+      }
+    }
+  }
+
   // We need to simple-parse the items first, this will set up some base information, and parse out
   // simple options
   for ( auto& item : items )
@@ -4050,6 +4066,13 @@ void player_t::create_buffs()
     debuffs.mystic_touch = make_buff( this, "mystic_touch", find_spell( 113746 ) )
         ->set_default_value_from_effect( 1 )
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
+
+    // Dragonflight Raid Damage Modifier Debuffs
+    auto buff_spell      = find_spell( 428402 );
+    debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 257284 ) )
+        ->set_period( 0_s )
+        ->set_default_value( buff_spell->effectN( 1 ).percent() )
+        ->set_schools( buff_spell->effectN( 1 ).affected_schools() );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
@@ -5215,6 +5238,10 @@ double player_t::composite_player_vulnerability( school_e school ) const
 
   if ( debuffs.chaos_brand && debuffs.chaos_brand->has_common_school( school ) )
     m *= 1.0 + debuffs.chaos_brand->check_value();
+
+  if ( debuffs.hunters_mark && debuffs.hunters_mark->has_common_school( school ) &&
+       health_percentage() > debuffs.hunters_mark->data().effectN( 3 ).base_value() )
+    m *= 1.0 + debuffs.hunters_mark->check_value();
 
   return m;
 }
@@ -6769,6 +6796,8 @@ void player_t::collect_resource_timeline_information()
     elem.timeline.add( sim->current_time(), resources.current[ elem.type ] );
   }
 
+  collected_data.health_pct.add( sim->current_time(), health_percentage() );
+
   for ( auto& elem : collected_data.stat_timelines )
   {
     auto value = get_stat_value(elem.type);
@@ -7054,6 +7083,10 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
     case STAT_STRENGTH:
     case STAT_AGILITY:
     case STAT_INTELLECT:
+    case STAT_AGI_INT:
+    case STAT_STR_AGI:
+    case STAT_STR_INT:
+    case STAT_STR_AGI_INT:
     case STAT_SPIRIT:
     case STAT_SPELL_POWER:
     case STAT_ATTACK_POWER:
@@ -7193,6 +7226,10 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
     case STAT_STRENGTH:
     case STAT_AGILITY:
     case STAT_INTELLECT:
+    case STAT_AGI_INT:
+    case STAT_STR_AGI:
+    case STAT_STR_INT:
+    case STAT_STR_AGI_INT:
     case STAT_SPIRIT:
     case STAT_SPELL_POWER:
     case STAT_ATTACK_POWER:
@@ -7497,7 +7534,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
                         dbc::is_school( ab->absorb_school, school ) ) )  // Otherwise check by school
                  && ab->up() )
             {
-              double absorbed = ab->consume( s->result_amount, s->action->player );
+              double absorbed = ab->consume( s->result_amount, s );
 
               s->result_amount -= absorbed;
 
@@ -9905,11 +9942,12 @@ struct invoke_external_buff_t : public action_t
     add_option( opt_string( "name", buff_str ) );
     add_option( opt_timespan( "duration", buff_duration ) );
     add_option( opt_int( "stacks", buff_stacks ) );
-    add_option( opt_bool( "use_pool", buff_stacks ) );
+    add_option( opt_bool( "use_pool", use_pool ) );
     parse_options( options_str );
 
     trigger_gcd           = timespan_t::zero();
     ignore_false_positive = true;
+
   }
 
   void init_finished() override
@@ -9931,6 +9969,9 @@ struct invoke_external_buff_t : public action_t
         player->sim->error( "Player {} uses invoke_external_buff with unknown buff {}", player->name(), buff_str );
       }
     }
+
+    // Initialise an action cooldown per buff type.
+    cooldown = player->get_cooldown( "invoke_external_buff_" + buff_str );
 
     if ( use_pool )
     {
@@ -12810,10 +12851,6 @@ void player_t::analyze( sim_t& s )
 {
   assert( s.iterations > 0 );
 
-  pre_analyze_hook();
-
-  collected_data.analyze( *this );
-
   range::for_each( buff_list, []( buff_t* b ) { b->analyze(); } );
 
   range::for_each( proc_list, []( proc_t* pr ) { pr->analyze(); } );
@@ -13351,6 +13388,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   max_spike_amount( player->name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
   target_metric( player->name_str + " Target Metric", generic_container_type( player, 1 ) ),
   resource_timelines(),
+  health_pct(),
   combat_start_resource(
     ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
   combat_end_resource(
@@ -13460,6 +13498,8 @@ void player_collected_data_t::merge( const player_t& other_player )
     }
   }
 
+  health_pct.merge( other.health_pct );
+
   for ( size_t i = 0, end = combat_start_resource.size(); i < end; ++i )
   {
     combat_start_resource[ i ].merge( other.combat_start_resource[ i ] );
@@ -13512,6 +13552,7 @@ void player_collected_data_t::analyze( const player_t& p )
     timeline_dmg_taken.adjust( *p.sim );
     timeline_healing_taken.adjust( *p.sim );
 
+    health_pct.adjust( *p.sim );
     range::for_each( resource_timelines, [&p]( resource_timeline_t& tl ) { tl.timeline.adjust( *p.sim ); } );
     range::for_each( stat_timelines, [&p]( stat_timeline_t& tl ) { tl.timeline.adjust( *p.sim ); } );
 
@@ -13526,6 +13567,7 @@ void player_collected_data_t::analyze( const player_t& p )
     timeline_dmg_taken.adjust( fight_length );
     timeline_healing_taken.adjust( fight_length );
 
+    health_pct.adjust( fight_length );
     range::for_each( resource_timelines, [this]( resource_timeline_t& tl ) { tl.timeline.adjust( fight_length ); } );
     range::for_each( stat_timelines, [this]( stat_timeline_t& tl ) { tl.timeline.adjust( fight_length ); } );
 

@@ -543,12 +543,6 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.shadow_invocation->ok() && rng().roll( p()->shadow_invocation_proc_chance ) )
-    {
-      p()->proc_actions.bilescourge_bombers_proc->execute_on_target( target );
-      p()->procs.shadow_invocation->occur();
-    }
-
     p()->buffs.stolen_power_final->expire();
   }
 
@@ -568,6 +562,12 @@ struct shadow_bolt_t : public warlock_spell_t
           p()->procs.tormented_crescendo->occur();
           p()->buffs.tormented_crescendo->trigger();
         }
+      }
+
+      if ( p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.shadow_invocation->ok() && rng().roll( p()->shadow_invocation_proc_chance ) )
+      {
+        p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
+        p()->procs.shadow_invocation->occur();
       }
     }
   }

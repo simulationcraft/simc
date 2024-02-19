@@ -1,6 +1,6 @@
 import os, logging, io
 
-import dbc, dbc.wdc1, dbc.xfth, dbc.wdc2, dbc.wdc3, dbc.wdc4
+import dbc, dbc.wdc1, dbc.xfth, dbc.wdc2, dbc.wdc3, dbc.wdc4, dbc.wdc5
 
 from dbc.constants import HotfixType
 
@@ -8,7 +8,8 @@ _PARSERS = {
     b'WDC1': dbc.wdc1.WDC1Parser,
     b'WDC2': dbc.wdc2.WDC2Parser,
     b'WDC3': dbc.wdc3.WDC3Parser,
-    b'WDC4': dbc.wdc4.WDC4Parser
+    b'WDC4': dbc.wdc4.WDC4Parser,
+    b'WDC5': dbc.wdc5.WDC5Parser
 }
 
 class HotfixIterator:
