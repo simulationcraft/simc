@@ -64,7 +64,7 @@ namespace monk
   // Template for common monk action code. See priest_action_t.
 
     template <class Base>
-    struct monk_action_t : public Base, public parse_buff_effects_t<monk_td_t>
+    struct monk_action_t : public Base, public parse_buff_effects_t<monk_t, monk_td_t>
     {
       sef_ability_e sef_ability;
       // Whether the ability is affected by the Windwalker's Mastery.
@@ -97,7 +97,7 @@ namespace monk
 
       monk_action_t( util::string_view n, monk_t *player, const spell_data_t *s = spell_data_t::nil() )
         : ab( n, player, s ),
-        parse_buff_effects_t( this ),
+        parse_buff_effects_t( player, this ),
         sef_ability( sef_ability_e::SEF_NONE ),
         ww_mastery( false ),
         may_combo_strike( false ),

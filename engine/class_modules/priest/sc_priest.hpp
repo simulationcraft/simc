@@ -817,7 +817,7 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public Base, public parse_buff_effects_t<priest_td_t>
+struct priest_action_t : public Base, public parse_buff_effects_t<priest_t, priest_td_t>
 {
 protected:
   priest_t& priest()
@@ -844,7 +844,7 @@ protected:
 
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s ), parse_buff_effects_t( this )
+    : ab( name, &p, s ), parse_buff_effects_t( &p, this )
   {
     if ( ab::data().ok() )
     {

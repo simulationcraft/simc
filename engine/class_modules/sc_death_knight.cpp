@@ -3269,7 +3269,7 @@ namespace { // UNNAMED NAMESPACE
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
-struct death_knight_action_t : public Base, public parse_buff_effects_t<death_knight_td_t>
+struct death_knight_action_t : public Base, public parse_buff_effects_t<death_knight_t, death_knight_td_t>
 {
   using action_base_t = Base;
   using base_t = death_knight_action_t<Base>;
@@ -3285,7 +3285,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), 
-    parse_buff_effects_t( this ),
+    parse_buff_effects_t( p, this ),
     gain( nullptr ),
     hasted_gcd( false ),
     affected_by()
@@ -3440,18 +3440,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
                          {
                            return std::invoke( dot, t->dot )->is_ticking();
                          }, spell, idx, true, mods... );
-  }
-
-  // custom composite_target_multiplier() to use get_td() instead of td()
-  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
-  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = action_base_t::composite_target_multiplier( target );
-
-    m *= get_debuff_effects_value( get_td( target ) );
-
-    return m;
   }
 
   #define PARSE_BUFF_EFFECTS_SETUP_BASE action_base_t

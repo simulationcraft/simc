@@ -913,7 +913,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
-struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
+struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_t, warrior_td_t>
 {
   struct affected_by_t
   {
@@ -947,7 +947,7 @@ public:
   bool initialized;
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( this ),
+      parse_buff_effects_t( player, this ),
       usable_while_channeling( false ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),

@@ -218,14 +218,14 @@ struct priest_pet_melee_t : public melee_attack_t
   }
 };
 
-struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_td_t>
+struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_pet_t, priest_td_t>
 {
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
     : spell_t( token, &p, s ),
-      parse_buff_effects_t( this ),
+      parse_buff_effects_t( &p, this ),
       affected_by_shadow_weaving( false ),
       triggers_atonement( false )
   {
@@ -310,7 +310,7 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     return static_cast<priest_pet_t&>( *player );
   }
 
-  // skip composite_target_multiplier() as priest_pet_spell_t doesn't have quick target_data accessor
+  // skip composite_target_multiplier() as priest_pet_t doesn't have target_specific_t
   #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
   #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
 

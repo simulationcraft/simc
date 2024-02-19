@@ -998,7 +998,7 @@ public:
 
 // Template for base evoker action code.
 template <class Base>
-struct evoker_action_t : public Base, public parse_buff_effects_t<evoker_td_t>
+struct evoker_action_t : public Base, public parse_buff_effects_t<evoker_t, evoker_td_t>
 {
 private:
   using ab = Base;  // action base, spell_t/heal_t/etc.
@@ -1010,7 +1010,7 @@ public:
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
     : ab( name, player, spell ),
-      parse_buff_effects_t( this ),
+      parse_buff_effects_t( player, this ),
       spell_color( SPELL_COLOR_NONE ),
       proc_spell_type( proc_spell_type_e::NONE ),
       move_during_hover( false )

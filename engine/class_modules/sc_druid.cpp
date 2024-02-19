@@ -1399,7 +1399,7 @@ public:
 };
 
 template <class Base>
-struct druid_action_t : public Base, public parse_buff_effects_t<druid_td_t>
+struct druid_action_t : public Base, public parse_buff_effects_t<druid_t, druid_td_t>
 {
 private:
   using ab = Base;  // action base, eg. spell_t
@@ -1422,7 +1422,7 @@ public:
 
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( this ),
+      parse_buff_effects_t( player, this ),
       dot_name( n ),
       form_mask( ab::data().stance_mask() ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )

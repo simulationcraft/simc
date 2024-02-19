@@ -14,14 +14,18 @@
 #include <functional>
 
 // Mixin to action base class to allow auto parsing and dynamic application of whitelist based buffs & auras.
-// 1) Add `parse_buff_effects_t` as an additional parent with the target data class as template parameter:
 //
-//    struct my_action_base_t : public action_t, parse_buff_effects_t<my_target_data_t>
+// 1) Add `parse_buff_effects_t` as an additional parent with the player class and target data class as template
+// parameter:
 //
-// 2) Construct the mixin via `parse_buff_effects_t( this );`
+//    struct my_action_base_t : public action_t, parse_buff_effects_t<my_player_t, my_target_data_t>
 //
-// 3) `PARSE_BUFF_EFFECTS_SETUP` macro can be used to add the necessary overrides to the action class. If custom
-//    overrides are needed, individual methods can be left out and added manually.
+// 2) Construct the mixin with a pointer to the player and pointer to the action as arguments:
+//
+//    parse_buff_effects_t( *player, this );
+//
+// 3) PARSE_BUFF_EFFECTS_SETUP macro can be used to add the necessary overrides to the action class. If custom overrides
+// are needed, individual methods can be left out and added manually.
 //
 //    a) #undef and #define the corresponding PARSE_BUFF_EFFECTS_SETUP_X macro for any custom overrides.
 //    b) #define PARSE_BUFF_EFFECTS_SETUP_BASE to the parent class of the action class.
@@ -122,7 +126,7 @@
   double composite_target_multiplier( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_multiplier( t ) * \
-           get_debuff_effects_value( td( t ) ); \
+           get_debuff_effects_value( parse_buff_effects_target_data( t ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION \
@@ -151,7 +155,7 @@ enum value_type_e
   USE_CURRENT
 };
 
-template <typename TD>
+template <typename PLAYER, typename TD>
 struct parse_buff_effects_t
 {
   using bfun = std::function<bool()>;
@@ -186,6 +190,7 @@ struct parse_buff_effects_t
   };
 
 private:
+  PLAYER* player_;
   action_t* action_;
   std::vector<std::pair<size_t, double>> effect_flat_modifiers;
   std::vector<std::pair<size_t, double>> effect_pct_modifiers;
@@ -203,7 +208,7 @@ public:
   std::vector<buff_effect_t> crit_chance_buffeffects;
   std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
 
-  parse_buff_effects_t( action_t* a ) : action_( a ) {}
+  parse_buff_effects_t( PLAYER* p, action_t* a ) : player_( p ), action_( a ) {}
   virtual ~parse_buff_effects_t() = default;
 
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
@@ -523,6 +528,11 @@ public:
     return return_value;
   }
 
+  TD* parse_buff_effects_target_data( player_t* t ) const
+  {
+    return player_->get_target_data( t );
+  }
+
   // Syntax: parse_debuff_effects( func, debuff[, spell][,...] )
   //  func = function taking the class's target_data as argument and returning an integer
   //  debuff = spell data of the debuff
@@ -581,13 +591,13 @@ public:
     parse_debuff_effect( func, spell, idx, true, mods... );
   }
 
-  virtual double get_debuff_effects_value( TD* t ) const
+  virtual double get_debuff_effects_value( TD* td ) const
   {
     double return_value = 1.0;
 
     for ( const auto& i : target_multiplier_dotdebuffs )
     {
-      if ( auto check = i.func( t ) )
+      if ( auto check = i.func( td ) )
       {
         auto eff_val = i.value;
 
