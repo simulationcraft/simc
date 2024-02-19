@@ -294,6 +294,10 @@ jobs:
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
 
       - name: Regenerate Profiles
+        run: |
+          bash ./generate_profiles.sh
+          
+      - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
         with:
           message: 'Regenerate profiles'
