@@ -299,4 +299,5 @@ jobs:
           message: 'Regenerate profiles'
           default_author: github_actions
           fetch: false
+          add: '*.simc'
 
