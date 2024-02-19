@@ -41,7 +41,7 @@ std::string food( const player_t* p )
 
   if ( p->true_level >= 61 )
   {
-    frost_food  = ( p->dual_wield() ) ? "thousandbone_tongueslicer" : "sizzling_seafood_medley";
+    frost_food  = ( p->dual_wield() ) ? "sizzling_seafood_medley" : "sizzling_seafood_medley";
     unholy_food = "sizzling_seafood_medley";
     blood_food  = "great_cerulean_sea";
   }
