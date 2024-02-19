@@ -268,6 +268,9 @@ jobs:
        
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
 
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
@@ -294,7 +297,6 @@ jobs:
         uses: EndBug/add-and-commit@v9.1.4
         with:
           message: 'Regenerate profiles'
-          default_author: github_actor
+          default_author: github_actions
           fetch: false
-          ref: ${{ github.event.pull_request.head.ref }}
 
