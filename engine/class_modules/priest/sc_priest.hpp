@@ -72,6 +72,7 @@ namespace actions::heals
 {
 struct essence_devourer_t;
 struct atonement_t;
+struct divine_aegis_t;
 }  // namespace actions::heals
 
 /**
@@ -187,6 +188,7 @@ public:
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> devoured_pride;
     propagate_const<buff_t*> devoured_despair;
+    propagate_const<buff_t*> devoured_anger;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> mind_melt;
     propagate_const<buff_t*> surge_of_insanity;
@@ -404,8 +406,7 @@ public:
       player_talent_t exaltation;
       player_talent_t indemnity;
       player_talent_t pain_and_suffering;
-      // player_talent_t twilight_corruption;
-      const spell_data_t* twilight_corruption;
+      player_talent_t twilight_corruption;
       // Row
       player_talent_t borrowed_time;
       player_talent_t castigation;
@@ -418,6 +419,7 @@ public:
       player_talent_t void_summoner;
       // Row 9
       player_talent_t divine_aegis;
+      const spell_data_t* divine_aegis_buff;
       player_talent_t blaze_of_light;
       player_talent_t heavens_wrath;
       player_talent_t harsh_discipline;
@@ -630,6 +632,7 @@ public:
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
     propagate_const<actions::heals::essence_devourer_t*> essence_devourer;
     propagate_const<actions::heals::atonement_t*> atonement;
+    propagate_const<actions::heals::divine_aegis_t*> divine_aegis;
   } background_actions;
 
   // Items
@@ -669,6 +672,10 @@ public:
     bool init_insanity = true;
 
     int disc_minimum_allies = 5;
+
+    // Forces Idol of Y'Shaarj to give a particular buff for every cast
+    // default, pride, anger, despair, fear (NYI), violence
+    std::string forced_yshaarj_type = "default";
   } options;
 
   vector_with_callback<player_t*> allies_with_atonement;
@@ -759,6 +766,7 @@ public:
   void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_atonement( action_state_t* );
+  void trigger_divine_aegis( action_state_t* );
   void spawn_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
   int number_of_echoing_voids_active();
@@ -955,19 +963,12 @@ public:
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
-      parse_buff_effects( p().buffs.gathering_shadows,
-                          true );                      // Spell Direct amount for Mind Sear (NOT DP)
-      parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
-
+      parse_buff_effects( p().buffs.devoured_pride );                   // Spell Direct and Periodic amount
       parse_buff_effects( p().buffs.voidform, 0x4U, false, USE_DATA );  // Skip E3 for AM
       parse_buff_effects( p().buffs.shadowform );
       parse_buff_effects( p().buffs.mind_devourer );
       parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-      // TODO: check why we cant use_default=true to get the value correct
       parse_buff_effects( p().buffs.dark_ascension, 0b1000U, false, USE_DATA );  // Buffs non-periodic spells - Skip E4
-      parse_buff_effects( p().buffs.gathering_shadows,
-                          true );                      // Spell Direct amount for Mind Sear (NOT DP)
-      parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_buff_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
@@ -1268,6 +1269,11 @@ struct priest_heal_t : public priest_action_t<heal_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
+      }
+
+      if ( s->result == RESULT_CRIT && p().talents.discipline.divine_aegis.enabled() )
+      {
+        p().trigger_divine_aegis( s );
       }
     }
   }

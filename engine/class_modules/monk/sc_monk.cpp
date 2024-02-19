@@ -30,7 +30,7 @@ zen pulse + talent behind (echoing reverberation) needs to be added
 sheilun + talent behind (shaohao's lessons) needs to be added
 secret infusion (talent) needs to be added
 touch of death for mistweaver (basically copy from ww but without the mastery interaction) needs to be added
-Ancient Concordance + Awakened Faeline (two faeline stomp talents, like faeline harmony esque) needs to be added
+Ancient Concordance + Awakened Jadefire (two jadefire stomp talents, like jadefire harmony esque) needs to be added
 and I guess the ap% of the spells were not updated throughout the buffs, but idk about that one
 
 BREWMASTER:
@@ -73,8 +73,8 @@ namespace monk
       bool may_combo_strike;
       // Whether the ability triggers Invoke Chi-Ji Gust's of Mist
       bool trigger_chiji;
-      // Whether the ability can reset Faeline Stomp
-      bool trigger_faeline_stomp;
+      // Whether the ability can reset Jadefire Stomp
+      bool trigger_jadefire_stomp;
       // Whether the ability can be used during Spinning Crane Kick
       bool cast_during_sck;
       // Whether the ability is on the PTA whitelist
@@ -102,7 +102,7 @@ namespace monk
         ww_mastery( false ),
         may_combo_strike( false ),
         trigger_chiji( false ),
-        trigger_faeline_stomp( false ),
+        trigger_jadefire_stomp( false ),
         cast_during_sck( false ),
         press_the_advantage_whitelist( false ),
         keefers_skyreach_proc( nullptr ),
@@ -606,18 +606,18 @@ namespace monk
         trigger_storm_earth_and_fire( this );
 
         if ( p()->current.distance_to_move <= 5
-          && p()->buff.faeline_stomp->up()
-          && trigger_faeline_stomp
-          && p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
+          && p()->buff.jadefire_stomp->up()
+          && trigger_jadefire_stomp
+          && p()->rng().roll( p()->user_options.jadefire_stomp_uptime ) )
         {
-          double reset_value = p()->buff.faeline_stomp->value();
+          double reset_value = p()->buff.jadefire_stomp->value();
 
-          reset_value *= 1 + p()->talent.windwalker.faeline_harmony->effectN( 2 ).percent();
+          reset_value *= 1 + p()->talent.windwalker.jadefire_harmony->effectN( 2 ).percent();
 
           if ( p()->rng().roll( reset_value ) )
           {
-            p()->cooldown.faeline_stomp->reset( true, 1 );
-            p()->buff.faeline_stomp_reset->trigger();
+            p()->cooldown.jadefire_stomp->reset( true, 1 );
+            p()->buff.jadefire_stomp_reset->trigger();
           }
         }
 
@@ -701,8 +701,7 @@ namespace monk
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
 
-          // Currently bugged and not occurring.
-          if ( !p()->bugs && !ab::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 )
+          if ( !ab::result_is_miss( dot->state->result ) && dot->state->result_amount > 0 )
           {
             if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
             {
@@ -715,19 +714,6 @@ namespace monk
                                p()->max_health() );  // accumulator is capped at the player's current max hp
                 p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
                 p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
-              }
-
-              // This value is not presented in any spell data and was found via logs.
-              if ( p()->rng().roll( 0.5 ) )
-              {
-                double amt = dot->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
-                p()->active_actions.charred_dreams_dmg_4p->target = dot->state->target;
-                p()->active_actions.charred_dreams_dmg_4p->base_dd_min =
-                    p()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
-                p()->active_actions.charred_dreams_dmg_4p->execute();
-                p()->sim->print_debug(
-                    "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
-                    dot->state->action->id, dot->state->result_amount, amt );
               }
             }
 
@@ -768,8 +754,8 @@ namespace monk
           if ( ab::data().affected_by( td->debuff.weapons_of_order->data().effectN( 1 ) ) && td->debuff.weapons_of_order->check() )
             tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
 
-          if ( ab::data().affected_by( p()->passives.fae_exposure_dmg->effectN( 1 ) ) && td->debuff.fae_exposure->check() )
-            tm *= 1 + p()->passives.fae_exposure_dmg->effectN( 1 ).percent();
+          if ( ab::data().affected_by( p()->passives.jadefire_brand_dmg->effectN( 1 ) ) && td->debuff.jadefire_brand->check() )
+            tm *= 1 + p()->passives.jadefire_brand_dmg->effectN( 1 ).percent();
         }
 
         return tm;
@@ -949,8 +935,8 @@ namespace monk
       {
         double pm = base_t::composite_persistent_multiplier( action_state );
 
-        if ( base_t::data().affected_by( p()->passives.fae_exposure_heal->effectN( 1 ) ) && p()->buff.fae_exposure->check() )
-          pm *= 1 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
+        if ( base_t::data().affected_by( p()->passives.jadefire_brand_heal->effectN( 1 ) ) && p()->buff.jadefire_brand->check() )
+          pm *= 1 + p()->passives.jadefire_brand_heal->effectN( 1 ).percent();
 
         return pm;
       }
@@ -1453,7 +1439,7 @@ namespace monk
           ww_mastery = true;
           may_combo_strike = true;
           trigger_chiji = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           sef_ability = sef_ability_e::SEF_TIGER_PALM;
           cast_during_sck = true;
           press_the_advantage_whitelist = true;
@@ -1622,7 +1608,7 @@ namespace monk
           background = true;
           ww_mastery = true;
           sef_ability = sef_ability_e::SEF_GLORY_OF_THE_DAWN;
-          //trigger_faeline_stomp   = TODO;
+          //trigger_jadefire_stomp   = TODO;
 
           apply_dual_wield_two_handed_scaling();
         }
@@ -1685,7 +1671,7 @@ namespace monk
           : monk_melee_attack_t( name, p, p->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
         {
           ww_mastery = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
 
           background = dual = true;
           may_crit = true;
@@ -1802,7 +1788,7 @@ namespace monk
           parse_options( options_str );
 
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           sef_ability = sef_ability_e::SEF_RISING_SUN_KICK;
           affected_by.serenity = true;
           ap_type = attack_power_type::NONE;
@@ -1971,7 +1957,7 @@ namespace monk
           // parse_options( options_str );
 
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           sef_ability = sef_ability_e::SEF_RISING_SUN_KICK;
           affected_by.serenity = true;
           ap_type = attack_power_type::NONE;
@@ -2019,9 +2005,7 @@ namespace monk
           action_t *bok = player->find_action( "blackout_kick" );
           if ( bok )
           {
-            base_multiplier = bok->base_multiplier;
-            spell_power_mod.direct = bok->spell_power_mod.direct;
-
+            attack_power_mod = bok->attack_power_mod;
             bok->add_child( this );
           }
         }
@@ -2062,14 +2046,6 @@ namespace monk
           am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
 
           return am;
-        }
-
-        void execute() override
-        {
-          monk_melee_attack_t::execute();
-
-          // Transfer the power triggers from ToTM hits but only on the primary target
-          p()->buff.transfer_the_power->trigger();
         }
 
         void impact( action_state_t *s ) override
@@ -2124,7 +2100,7 @@ namespace monk
           sef_ability = sef_ability_e::SEF_BLACKOUT_KICK;
           may_combo_strike = true;
           trigger_chiji = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           cast_during_sck = true;
           press_the_advantage_whitelist = true;
 
@@ -2257,24 +2233,14 @@ namespace monk
             p()->buff.gift_of_the_ox->trigger();
 
           p()->buff.teachings_of_the_monastery->expire();
+
+          if ( p()->buff.blackout_reinforcement->up() )
+            p()->buff.blackout_reinforcement->decrement();
         }
 
         void impact( action_state_t *s ) override
         {
           monk_melee_attack_t::impact( s );
-
-          // The damage only affects the initial Blackout Kick (and any initial cleaved Blackout Kicks).
-          // Buff is removed prior to Teaching of the Monastery Blackout Kick procs trigger.
-          if ( p()->buff.blackout_reinforcement->up() )
-          {
-            p()->buff.blackout_reinforcement->expire();
-
-            timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
-            p()->cooldown.fists_of_fury->adjust( cooldown_reduction );
-            p()->cooldown.rising_sun_kick->adjust( cooldown_reduction );
-            p()->cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
-            p()->cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
-          }
 
           // Teachings of the Monastery
           // Used by both Windwalker and Mistweaver
@@ -2285,7 +2251,13 @@ namespace monk
             int stacks = p()->buff.teachings_of_the_monastery->current_stack;
 
             for ( int i = 0; i < stacks; i++ )
+            {
+              // Transfer the power triggers from ToTM hits but only on the primary target
+              if ( s->chain_target == 0 )
+                p()->buff.transfer_the_power->trigger();
+
               bok_totm_proc->execute();
+            }
 
             // The initial hit along with each individual TotM hits has a chance to reset the cooldown
             auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
@@ -2370,7 +2342,7 @@ namespace monk
           parse_options( options_str );
           sef_ability = sef_ability_e::SEF_RUSHING_JADE_WIND;
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           gcd_type = gcd_haste_type::NONE;
 
           // Set dot data to 0, since we handle everything through the buff.
@@ -2587,7 +2559,7 @@ namespace monk
 
           sef_ability = sef_ability_e::SEF_SPINNING_CRANE_KICK;
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
 
           may_crit = may_miss = may_block = may_dodge = may_parry = false;
           tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
@@ -2693,8 +2665,10 @@ namespace monk
           if ( current_resource() == RESOURCE_CHI && cost() == 0 )
           {
             if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
-              if ( p()->buff.blackout_reinforcement->trigger() )
-                p()->proc.blackout_reinforcement_sck->occur();
+               // This effect does not proc from free spinning crane kicks while the buff is already up.
+              if ( !p()->buff.blackout_reinforcement->at_max_stacks() )
+                  if ( p()->buff.blackout_reinforcement->trigger() )
+                    p()->proc.blackout_reinforcement_sck->occur();
           }
 
           monk_melee_attack_t::execute();
@@ -2818,7 +2792,7 @@ namespace monk
           cooldown = p->cooldown.fists_of_fury;
           sef_ability = sef_ability_e::SEF_FISTS_OF_FURY;
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           affected_by.serenity = true;
 
           channeled = tick_zero = true;
@@ -2911,7 +2885,7 @@ namespace monk
           : monk_melee_attack_t( name, p, s ), delay( delay )
         {
           ww_mastery = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
 
           background = true;
           aoe = -1;
@@ -2971,7 +2945,7 @@ namespace monk
           interrupt_auto_attack = false;
           channeled = false;
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           cast_during_sck = true;
 
           spell_power_mod.direct = 0.0;
@@ -3030,7 +3004,7 @@ namespace monk
           sef_ability = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
 
           ww_mastery = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           ap_type = attack_power_type::WEAPON_MAINHAND;
 
           aoe = -1;
@@ -3066,7 +3040,7 @@ namespace monk
         {
           sef_ability = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
           ww_mastery = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           ap_type = attack_power_type::WEAPON_OFFHAND;
 
           aoe = -1;
@@ -3336,7 +3310,7 @@ namespace monk
 
           aoe = -1;
           reduced_aoe_targets = p->talent.brewmaster.keg_smash->effectN( 7 ).base_value();
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           cast_during_sck = true;
 
           attack_power_mod.direct = p->talent.brewmaster.keg_smash->effectN( 2 ).ap_coeff();
@@ -3530,7 +3504,7 @@ namespace monk
           ww_mastery = true;
           may_crit = hasted_ticks = false;
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           cast_during_sck = true;
           parse_options( options_str );
 
@@ -4121,7 +4095,7 @@ namespace monk
         {
           sef_ability = sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
 
           parse_options( options_str );
 
@@ -4210,6 +4184,7 @@ namespace monk
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
+
           if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
           {
             double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
@@ -4256,8 +4231,7 @@ namespace monk
         {
           monk_spell_t::tick( d );
 
-          if ( !p()->bugs && p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) &&
-               !result_is_miss( d->state->result ) )
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( d->state->result ) )
           {
             double amt = d->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
             p()->active_actions.charred_dreams_dmg_2p->target = d->state->target;
@@ -4288,7 +4262,7 @@ namespace monk
           aoe = -1;
           reduced_aoe_targets = 1.0;
           full_amount_targets = 1;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           cast_during_sck = true;
           press_the_advantage_whitelist = true;
 
@@ -5138,7 +5112,7 @@ namespace monk
           parse_options( options_str );
 
           harmful = false;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           gcd_type = gcd_haste_type::NONE;
         }
 
@@ -5398,27 +5372,27 @@ namespace monk
       };
 
       // ==========================================================================
-      // Faeline Stomp
+      // Jadefire Stomp
       // ==========================================================================
 
-      struct faeline_stomp_ww_damage_t : public monk_spell_t
+      struct jadefire_stomp_ww_damage_t : public monk_spell_t
       {
-        faeline_stomp_ww_damage_t( monk_t &p )
-          : monk_spell_t( "faeline_stomp_ww_dmg", &p, p.passives.faeline_stomp_ww_damage )
+        jadefire_stomp_ww_damage_t( monk_t &p )
+          : monk_spell_t( "jadefire_stomp_ww_dmg", &p, p.passives.jadefire_stomp_ww_damage )
         {
           background = true;
           ww_mastery = true;
         }
       };
 
-      struct faeline_stomp_damage_t : public monk_spell_t
+      struct jadefire_stomp_damage_t : public monk_spell_t
       {
-        faeline_stomp_damage_t( monk_t &p ) : monk_spell_t( "faeline_stomp_dmg", &p, p.passives.faeline_stomp_damage )
+        jadefire_stomp_damage_t( monk_t &p ) : monk_spell_t( "jadefire_stomp_dmg", &p, p.passives.jadefire_stomp_damage )
         {
           background = true;
           ww_mastery = true;
 
-          attack_power_mod.direct = p.passives.faeline_stomp_damage->effectN( 1 ).ap_coeff();
+          attack_power_mod.direct = p.passives.jadefire_stomp_damage->effectN( 1 ).ap_coeff();
           spell_power_mod.direct = 0;
         }
 
@@ -5428,39 +5402,39 @@ namespace monk
 
           const std::vector<player_t *> &targets = state->action->target_list();
 
-          if ( p()->talent.windwalker.way_of_the_fae->ok() && !targets.empty() )
-            cam *= 1 + ( p()->talent.windwalker.way_of_the_fae->effectN( 1 ).percent() *
-            std::min( ( double )targets.size(), p()->talent.windwalker.way_of_the_fae->effectN( 2 ).base_value() ) );
+          if ( p()->talent.windwalker.path_of_jade->ok() && !targets.empty() )
+            cam *= 1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
+            std::min( ( double )targets.size(), p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
 
           return cam;
         }
       };
 
-      struct faeline_stomp_heal_t : public monk_heal_t
+      struct jadefire_stomp_heal_t : public monk_heal_t
       {
-        faeline_stomp_heal_t( monk_t &p ) : monk_heal_t( "faeline_stomp_heal", p, p.passives.faeline_stomp_damage )
+        jadefire_stomp_heal_t( monk_t &p ) : monk_heal_t( "jadefire_stomp_heal", p, p.passives.jadefire_stomp_damage )
         {
           background = true;
 
           attack_power_mod.direct = 0;
-          spell_power_mod.direct = p.passives.faeline_stomp_damage->effectN( 2 ).sp_coeff();
+          spell_power_mod.direct = p.passives.jadefire_stomp_damage->effectN( 2 ).sp_coeff();
         }
 
         void impact( action_state_t *s ) override
         {
           monk_heal_t::impact( s );
 
-          p()->buff.fae_exposure->trigger();
+          p()->buff.jadefire_brand->trigger();
         }
       };
 
-      struct faeline_stomp_t : public monk_spell_t
+      struct jadefire_stomp_t : public monk_spell_t
       {
-        faeline_stomp_damage_t *damage;
-        faeline_stomp_heal_t *heal;
-        faeline_stomp_ww_damage_t *ww_damage;
-        faeline_stomp_t( monk_t &p, util::string_view options_str )
-          : monk_spell_t( "faeline_stomp", &p, p.shared.faeline_stomp )
+        jadefire_stomp_damage_t *damage;
+        jadefire_stomp_heal_t *heal;
+        jadefire_stomp_ww_damage_t *ww_damage;
+        jadefire_stomp_t( monk_t &p, util::string_view options_str )
+          : monk_spell_t( "jadefire_stomp", &p, p.shared.jadefire_stomp )
         {
           parse_options( options_str );
           may_combo_strike = true;
@@ -5469,9 +5443,9 @@ namespace monk
 
           aoe = ( int )data().effectN( 3 ).base_value();
 
-          damage = new faeline_stomp_damage_t( p );
-          heal = new faeline_stomp_heal_t( p );
-          ww_damage = new faeline_stomp_ww_damage_t( p );
+          damage = new jadefire_stomp_damage_t( p );
+          heal = new jadefire_stomp_heal_t( p );
+          ww_damage = new jadefire_stomp_ww_damage_t( p );
 
           if ( p.specialization() == MONK_WINDWALKER )
             add_child( ww_damage );
@@ -5494,11 +5468,11 @@ namespace monk
 
           if ( !target_cache.list.empty() )
           {
-            // Prioritize enemies / players that do not have fae exposure
+            // Prioritize enemies / players that do not have jadefire brand
             // the ability does not do this inherently but it is assumed that an observant player would
             range::sort( target_cache.list, [ this ] ( player_t *left, player_t *right )
             {
-              return get_td( left )->debuff.fae_exposure->remains().total_millis() < get_td( right )->debuff.fae_exposure->remains().total_millis();
+              return get_td( left )->debuff.jadefire_brand->remains().total_millis() < get_td( right )->debuff.jadefire_brand->remains().total_millis();
             } );
           }
 
@@ -5509,9 +5483,9 @@ namespace monk
         {
           monk_spell_t::execute();
 
-          p()->buff.faeline_stomp_reset->expire();
-          p()->buff.faeline_stomp->trigger();
-          p()->buff.fae_exposure->trigger();
+          p()->buff.jadefire_stomp_reset->expire();
+          p()->buff.jadefire_stomp->trigger();
+          p()->buff.jadefire_brand->trigger();
         }
 
         void impact( action_state_t *s ) override
@@ -5529,7 +5503,7 @@ namespace monk
             ww_damage->execute();
           }
 
-          get_td( s->target )->debuff.fae_exposure->trigger();
+          get_td( s->target )->debuff.jadefire_brand->trigger();
         }
       };
     }  // namespace spells
@@ -5937,6 +5911,7 @@ namespace monk
 
           target = player;
           may_combo_strike = true;
+          cast_during_sck = true;
 
           cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
 
@@ -6185,7 +6160,7 @@ namespace monk
         {
           sef_ability = sef_ability_e::SEF_CHI_WAVE;
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           cast_during_sck = true;
           parse_options( options_str );
           hasted_ticks = harmful = false;
@@ -6228,7 +6203,7 @@ namespace monk
         chi_burst_heal_t( monk_t &player ) : monk_heal_t( "chi_burst_heal", player, player.passives.chi_burst_heal )
         {
           background = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           target = p();
           // If we are using the user option, each heal just heals 1 target, otherwise use the old SimC code
           aoe = ( p()->user_options.chi_burst_healing_targets > 1 ? 1 : -1 );
@@ -6258,7 +6233,7 @@ namespace monk
         {
           background = true;
           ww_mastery = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
           aoe = -1;
         }
 
@@ -6295,7 +6270,7 @@ namespace monk
         {
           parse_options( options_str );
           may_combo_strike = true;
-          trigger_faeline_stomp = true;
+          trigger_jadefire_stomp = true;
 
           add_child( damage );
           add_child( heal );
@@ -7214,7 +7189,32 @@ namespace monk
       {
         p().proc.blackout_reinforcement_waste->occur();
 
+        if ( p().bugs )
+        {
+          // Blackout Reinforcement is also causing the CDR effect on refreshes from the RPPM "melee attack" procs.
+          // I am assuming this behavior is unintended so it's under the bugs flag for now
+
+          timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p().sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
+
+          p().cooldown.fists_of_fury->adjust( cooldown_reduction );
+          p().cooldown.rising_sun_kick->adjust( cooldown_reduction );
+          p().cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
+          p().cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
+        }
+
         buff_t::refresh( stacks, value, duration );
+      }
+
+      void decrement( int stacks, double value = DEFAULT_VALUE() ) override
+      {
+        timespan_t cooldown_reduction = -1 * timespan_t::from_seconds( p().sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
+
+        p().cooldown.fists_of_fury->adjust( cooldown_reduction );
+        p().cooldown.rising_sun_kick->adjust( cooldown_reduction );
+        p().cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
+        p().cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
+
+        base_t::decrement( stacks, value );
       }
     };
 
@@ -7315,15 +7315,15 @@ namespace monk
       ->set_cooldown( timespan_t::zero() )
       ->set_default_value_from_effect( 3 );
 
-    debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) )
-      ->set_trigger_spell( p->shared.faeline_stomp );
+    debuff.jadefire_stomp = make_buff( *this, "jadefire_stomp_debuff", p->find_spell( 388199 ) )
+      ->set_trigger_spell( p->shared.jadefire_stomp );
 
     debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 387179 ) )
       ->set_trigger_spell( p->talent.brewmaster.weapons_of_order )
       ->set_default_value_from_effect( 1 );
 
-    debuff.fae_exposure = make_buff( *this, "fae_exposure_damage", p->passives.fae_exposure_dmg )
-      ->set_trigger_spell( p->talent.windwalker.faeline_harmony )
+    debuff.jadefire_brand = make_buff( *this, "jadefire_brand_damage", p->passives.jadefire_brand_dmg )
+      ->set_trigger_spell( p->talent.windwalker.jadefire_harmony )
       ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -7393,7 +7393,7 @@ namespace monk
     cooldown.chi_torpedo = get_cooldown( "chi_torpedo" );
     cooldown.drinking_horn_cover = get_cooldown( "drinking_horn_cover" );
     cooldown.expel_harm = get_cooldown( "expel_harm" );
-    cooldown.faeline_stomp = get_cooldown( "faeline_stomp" );
+    cooldown.jadefire_stomp = get_cooldown( "jadefire_stomp" );
     cooldown.fists_of_fury = get_cooldown( "fists_of_fury" );
     cooldown.flying_serpent_kick = get_cooldown( "flying_serpent_kick" );
     cooldown.fortifying_brew = get_cooldown( "fortifying_brew" );
@@ -7427,7 +7427,7 @@ namespace monk
       regen_caches[CACHE_ATTACK_HASTE] = true;
     }
     user_options.initial_chi = 1;
-    user_options.faeline_stomp_uptime = 1.0;
+    user_options.jadefire_stomp_uptime = 1.0;
     user_options.chi_burst_healing_targets = 8;
     user_options.motc_override = 0;
     user_options.squirm_frequency = 15;
@@ -7568,8 +7568,8 @@ namespace monk
     // Covenant Abilities
     if ( name == "bonedust_brew" )
       return new bonedust_brew_t( *this, options_str );
-    if ( name == "faeline_stomp" )
-      return new faeline_stomp_t( *this, options_str );
+    if ( name == "jadefire_stomp" )
+      return new jadefire_stomp_t( *this, options_str );
     if ( name == "weapons_of_order" )
       return new weapons_of_order_t( *this, options_str );
 
@@ -7971,7 +7971,7 @@ namespace monk
     talent.mistweaver.lifecycles = _ST( "Lifecycles" );
     talent.mistweaver.mana_tea = _ST( "Mana Tea" );
     // Row 8
-    talent.mistweaver.faeline_stomp = _ST( "Faeline Stomp" );
+    talent.mistweaver.jadefire_stomp = _ST( "Jadefire Stomp" );
     talent.mistweaver.ancient_teachings = _ST( "Ancient Teachings" );
     talent.mistweaver.clouded_focus = _ST( "Clouded Focus" );
     talent.mistweaver.jade_bond = _ST( "Jade Bond" );
@@ -7988,7 +7988,7 @@ namespace monk
     talent.mistweaver.bountiful_brew = _ST( "Bountiful Brew" );
     talent.mistweaver.attenuation = _ST( "Attenuation" );
     // Row 10
-    talent.mistweaver.awakened_faeline = _ST( "Awakened Faeline" );
+    talent.mistweaver.awakened_jadefire = _ST( "Awakened Jadefire" );
     talent.mistweaver.tea_of_serenity = _ST( "Tea of Serenity" );
     talent.mistweaver.tea_of_plenty = _ST( "Tea of Plenty" );
     talent.mistweaver.unison = _ST( "Unison" );
@@ -8052,15 +8052,15 @@ namespace monk
     talent.windwalker.xuens_battlegear = _ST( "Xuen's Battlegear" );
     talent.windwalker.transfer_the_power = _ST( "Transfer the Power" );
     talent.windwalker.whirling_dragon_punch = _ST( "Whirling Dragon Punch" );
-    talent.windwalker.faeline_stomp = _ST( "Faeline Stomp" );
+    talent.windwalker.jadefire_stomp = _ST( "Jadefire Stomp" );
     // Row 10
     talent.windwalker.attenuation = _ST( "Attenuation" );
     talent.windwalker.dust_in_the_wind = _ST( "Dust in the Wind" );
     talent.windwalker.skyreach = _ST( "Skyreach" );
     talent.windwalker.skytouch = _ST( "Skytouch" );
     talent.windwalker.invokers_delight = _ST( "Invoker's Delight" );
-    talent.windwalker.way_of_the_fae = _ST( "Way of the Fae" );
-    talent.windwalker.faeline_harmony = _ST( "Faeline Harmony" );
+    talent.windwalker.path_of_jade = _ST( "Path of Jade" );
+    talent.windwalker.jadefire_harmony = _ST( "Jadefire Harmony" );
 
     // Specialization spells ====================================
     // Multi-Specialization & Class Spells
@@ -8129,7 +8129,7 @@ namespace monk
     passives.chi_wave_heal = find_spell( 132463 );
     passives.claw_of_the_white_tiger = find_spell( 389541 );
     passives.chi_burst_damage = find_spell( 148135 );
-    passives.faeline_stomp_damage = find_spell( 388207 );
+    passives.jadefire_stomp_damage = find_spell( 388207 );
     passives.fortifying_brew = find_spell( 120954 );
     passives.healing_elixir = find_spell( 122281 );
     passives.mystic_touch = find_spell( 8647 );
@@ -8171,9 +8171,9 @@ namespace monk
     passives.dance_of_chiji_bug = find_spell( 286585 );
     passives.dizzying_kicks = find_spell( 196723 );
     passives.empowered_tiger_lightning = find_spell( 335913 );
-    passives.fae_exposure_dmg = find_spell( 395414 );
-    passives.fae_exposure_heal = find_spell( 395413 );
-    passives.faeline_stomp_ww_damage = find_spell( 388201 );
+    passives.jadefire_brand_dmg = find_spell( 395414 );
+    passives.jadefire_brand_heal = find_spell( 395413 );
+    passives.jadefire_stomp_ww_damage = find_spell( 388201 );
     passives.fists_of_fury_tick = find_spell( 117418 );
     passives.flying_serpent_kick_damage = find_spell( 123586 );
     passives.focus_of_xuen = find_spell( 252768 );
@@ -8242,8 +8242,8 @@ namespace monk
     shared.bonedust_brew =
       _priority( talent.windwalker.bonedust_brew, talent.brewmaster.bonedust_brew );
 
-    shared.faeline_stomp =
-      _priority( talent.windwalker.faeline_stomp, talent.mistweaver.faeline_stomp );
+    shared.jadefire_stomp =
+      _priority( talent.windwalker.jadefire_stomp, talent.mistweaver.jadefire_stomp );
 
     shared.healing_elixir =
       _priority( talent.brewmaster.healing_elixir, talent.mistweaver.healing_elixir );
@@ -8436,12 +8436,12 @@ namespace monk
 
     buff.close_to_heart_driver = new buffs::close_to_heart_driver_t( *this, "close_to_heart_aura_driver", find_spell( 389684 ) );
 
-    buff.faeline_stomp = make_buff( this, "faeline_stomp", find_spell( 327104 ) )
-      ->set_trigger_spell( shared.faeline_stomp )
+    buff.jadefire_stomp = make_buff( this, "jadefire_stomp", find_spell( 388193 ) )
+      ->set_trigger_spell( shared.jadefire_stomp )
       ->set_default_value_from_effect( 2 );
 
-    buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) )
-      ->set_trigger_spell( shared.faeline_stomp );
+    buff.jadefire_stomp_reset = make_buff( this, "jadefire_stomp_reset", find_spell( 388203 ) )
+      ->set_trigger_spell( shared.jadefire_stomp );
 
     buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
 
@@ -8622,8 +8622,8 @@ namespace monk
       ->set_duration( timespan_t::from_seconds( 1.5 ) )
       ->set_quiet( true );
 
-    buff.fae_exposure = make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )
-      ->set_trigger_spell( talent.windwalker.faeline_harmony )
+    buff.jadefire_brand = make_buff( this, "jadefire_brand_heal", passives.jadefire_brand_heal )
+      ->set_trigger_spell( talent.windwalker.jadefire_harmony )
       ->set_default_value_from_effect( 1 );
 
     buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement_buff" ) // find_spell( 115057 )
@@ -9033,7 +9033,9 @@ namespace monk
     if ( sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
     {
       create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
-                            []( monk_t * /*p*/, action_state_t * /*state*/ ) { return true; } );
+                            []( monk_t * p, action_state_t * /*state*/ ) {
+        return true;
+      } );
     }
 
     // ======================================
@@ -9225,6 +9227,8 @@ namespace monk
       case 392959: // glory_of_the_dawn
       case 345727: // faeline_stomp_dmg
       case 327264: // faeline_stomp_ww_dmg
+      case 388207: // jadefire_stomp_dmg
+      case 388201: // jadefire_stomp_ww_dmg
       case 410139: // shadowflame_nova
       // Brewmaster
       case 205523: // blackout_kick_brm
@@ -9630,12 +9634,12 @@ namespace monk
         1 + ( td->debuff.weapons_of_order->check() * td->debuff.weapons_of_order->data().effectN( 2 ).percent() );
     }
 
-    if ( td && td->debuff.fae_exposure->check() )
+    if ( td && td->debuff.jadefire_brand->check() )
     {
       if ( guardian )
-        multiplier *= 1 + passives.fae_exposure_dmg->effectN( 3 ).percent();
+        multiplier *= 1 + passives.jadefire_brand_dmg->effectN( 3 ).percent();
       else
-        multiplier *= 1 + passives.fae_exposure_dmg->effectN( 2 ).percent();
+        multiplier *= 1 + passives.jadefire_brand_dmg->effectN( 2 ).percent();
     }
 
     return multiplier;
@@ -9683,7 +9687,7 @@ namespace monk
     base_t::create_options();
 
     add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-    add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
+    add_option( opt_float( "monk.jadefire_stomp_uptime", user_options.jadefire_stomp_uptime, 0.0, 1.0 ) );
     add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
     add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
     add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
@@ -10416,6 +10420,8 @@ namespace monk
       242390, // Thunderfist
       345727, // Faeline Stomp
       327264, // Faeline Stomp WW Hit
+      388207, // Jadefire Stomp
+      388201, // Jadefire Stomp WW Hit
       115129, // Expel Harm
       391400, // Resonant Fists
       392959, // Glory of the Dawn
@@ -10660,7 +10666,7 @@ namespace monk
       bool match;
     };
 
-    std::vector<monk_bug *> issues;
+    auto_dispose<std::vector<monk_bug *>> issues;
 
     monk_report_t( monk_t &player ) : p( player )
     {

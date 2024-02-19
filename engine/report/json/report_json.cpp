@@ -636,6 +636,7 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
       if ( it != cd.resource_timelines.end() )
       {
         root[ "resource_timelines" ][ util::resource_type_string( r ) ] = it -> timeline;
+        if ( r == RESOURCE_HEALTH ) root[ "resource_timelines" ][ "health_pct" ] = cd.health_pct;
       }
     } );
 

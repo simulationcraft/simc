@@ -4,23 +4,23 @@ race=tauren
 role=attack
 position=ranged_back
 spec=beast_mastery
-talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AolWSAoQAAAAAAAAAAAoBBhmIJkQOQCaSkWIJRiQiWkIB
+talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AolWSAoQAAAAAAAAAAAoBBhmIJkQOQCaCpFlkEJChWkkE
 
 food=revenge_served_cold
 
-head=blazing_dreamstalkers_flamewaker_horns,id=207218,bonus_id=7187/1520,gem_id=192985,enchant=incandescent_essence
-neck=eye_of_the_rising_flame,id=207163,bonus_id=7187/1520,gem_id=192919/192919/192919
-shoulders=blazing_dreamstalkers_finest_hunt,id=207216,bonus_id=7187/1520
+head=blazing_dreamstalkers_flamewaker_horns,id=207218,bonus_id=7187/1520,enchant=incandescent_essence,gem_id=192919
+neck=ironshell_pendant,id=133359,bonus_id=7359/6646/8782/657/9367/5923/7981,gem_id=192985/192919/192919
+shoulder=blazing_dreamstalkers_finest_hunt,id=207216,bonus_id=7187/1520
 back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
 chest=blazing_dreamstalkers_scaled_hauberk,id=207221,bonus_id=7187/1520,enchant=waking_stats_3
-wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405,gem_id=192919
-hands=gloves_of_wretched_lesions,id=137300,bonus_id=657/9367/5923/7981
-waist=soultorn_fury_cinch,id=136724,bonus_id=657/9367/5923/7981/1808,gem_id=192919,enchant=shadowed_belt_clasp_3
+wrist=adaptive_dracothyst_armguards,id=204704,bonus_id=9500/9405,gem_id=192919
+hands=blazing_dreamstalkers_skinners,id=207219,bonus_id=7187/1520
+waist=soultorn_fury_cinch,id=136724,bonus_id=657/9367/5923/7981/1808,gem_id=192919
 legs=blazing_dreamstalkers_shellgreaves,id=207217,bonus_id=7187/1520,enchant=fierce_armor_kit_3
-feet=acidic_hailstone_treads,id=193466,bonus_id=9500/9405
-finger1=band_of_callous_dominance,id=134528,bonus_id=657/9367/5923/7981/1808,gem_id=192919,enchant=devotion_of_critical_strike_3
-finger2=archdruids_tainted_seal,id=134487,bonus_id=657/9367/5923/7981/1808,gem_id=192919,enchant=devotion_of_critical_strike_3
-trinket1=mirror_of_fractured_tomorrows,id=207581,bonus_id=657/9367/5923/7981
+feet=,id=193466,bonus_id=9500/9405
+finger1=band_of_burning_thorns,id=207159,bonus_id=1808/7187/1520,enchant_id=6550,gem_id=192919
+finger2=band_of_twisted_bark,id=134531,bonus_id=1808/657/9367/5923/7981,enchant_id=6550,gem_id=192919
+trinket1=witherbarks_branch,id=109999,bonus_id=657/9367/5923/7981
 trinket2=pips_emerald_friendship_badge,id=207168,bonus_id=7187/1520
 main_hand=travelers_timesplitter,id=207986,bonus_id=7187/1611,enchant=high_intensity_thermal_scanner_3
 
@@ -55,34 +55,6 @@ main_hand=travelers_timesplitter,id=207986,bonus_id=7187/1611,enchant=high_inten
 
 save=T31_Hunter_Marksmanship.simc
 
-hunter="T31_Hunter_Marksmanship_Readiness"
-level=70
-race=tauren
-role=attack
-position=ranged_back
-spec=marksmanship
-talents=B4PAAAAAAAAAAAAAAAAAAAAAA0yBgWAQKIAAAAAQkIkkEhIRSSTkGhEFhmQSSIhgGAAAAA
-
-food=thousandbone_tongueslicer
-
-head=blazing_dreamstalkers_flamewaker_horns,id=207218,bonus_id=7187/1520,gem_id=192988,enchant=incandescent_essence
-neck=ouroboreal_necklet,id=210214,bonus_id=7187/1520,gem_id=192958/192958/192958
-shoulders=blazing_dreamstalkers_finest_hunt,id=207216,bonus_id=7187/1520
-back=mantle_of_blazing_sacrifice,id=207161,bonus_id=7187/1520
-chest=blazing_dreamstalkers_scaled_hauberk,id=207221,bonus_id=7187/1520,enchant=waking_stats_3
-wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8960/8840/8836/8902/1576,gem_id=192958
-hands=blazing_dreamstalkers_skinners,id=207219,bonus_id=7187/1520
-waist=realitywarping_waistband,id=207946,bonus_id=7187/1582,gem_id=192958,enchant=shadowed_belt_clasp_3
-legs=blazing_dreamstalkers_shellgreaves,id=207217,bonus_id=7187/1520,enchant=fierce_armor_kit_3
-feet=acidic_hailstone_treads,id=193466,bonus_id=8960/8840/8836/8902/1576
-finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,gem_id=192958,enchant=devotion_of_mastery_3
-finger2=archdruids_tainted_seal,id=134487,bonus_id=3326/1514/6536/6646/6935,gem_id=192964,enchant=devotion_of_mastery_3
-trinket1=mirror_of_fractured_tomorrows,id=207581,bonus_id=7187/1540
-trinket2=bandolier_of_twisted_blades,id=207165,bonus_id=7187/1520
-main_hand=travelers_timesplitter,id=207986,bonus_id=7187/1611,enchant=high_intensity_thermal_scanner_3
-
-save=T31_Hunter_Marksmanship_Readiness.simc
-
 
 hunter="T31_Hunter_Survival"
 level=70
@@ -90,7 +62,7 @@ race=tauren
 spec=survival
 role=attack
 position=back
-talents=B8PAAAAAAAAAAAAAAAAAAAAAAIHAahkwBoEEkEJRSCQSkWkIAAAAAQIRRoJkEBJOAaAAAAAA
+talents=B8PAAAAAAAAAAAAAAAAAAAAAAIHgWahkQoEEERSkkARSkWECAAAAAESUEaCJSQIoAAAAAA
 
 food=revenge_served_cold
 
@@ -107,7 +79,7 @@ feet=flametouched_treads,id=193421,bonus_id=9500/9405/9379,crafted_stats=32/36
 finger1=signet_of_the_last_elder,id=207162,bonus_id=7187/1520/1808,gem_id=192935,enchant=devotion_of_critical_strike_3
 finger2=thornwoven_band,id=162548,bonus_id=657/9367/5923/7981/1808,gem_id=192935,enchant=devotion_of_haste_3
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=7187/1520
-trinket2=coiled_serpent_idol,id=207175,bonus_id=7187/1520
+trinket2=mydas_talisman,id=158319,bonus_id=657/9367/5923/7981
 main_hand=rashon_the_immortal_blaze,id=207793,bonus_id=7187/1520,enchant=wafting_devotion_3
 
 save=T31_Hunter_Survival.simc

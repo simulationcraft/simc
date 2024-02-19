@@ -20,6 +20,7 @@ namespace
 
 // Forward declarations
 struct evoker_t;
+struct simplified_player_t;
 
 enum empower_e
 {
@@ -109,6 +110,182 @@ struct evoker_action_state_t : public Base, public Data
   }
 };
 
+struct simplified_player_t : public player_t
+{
+  action_t* ability;
+  action_t* snapshot_stats;
+
+  simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
+    : player_t( sim, PLAYER_SIMPLIFIED, name, r )
+  {
+    resource_regeneration = regen_type::DISABLED;
+
+    // Using a background repeating action as a replacement for a foreground action. Change Ready Type to trigger so we
+    // can wake up the pet when it needs to re-execute this action.
+    ready_type            = READY_TRIGGER;
+  }
+
+  struct simple_ability_t : public spell_t
+  {
+    simple_ability_t( player_t* p ) : spell_t( "simple_spell", p )
+    {
+      background = repeating = true;
+
+      allow_class_ability_procs = true;
+      may_crit                  = true;
+
+      spell_power_mod.direct = 8;
+      gcd_type               = gcd_haste_type::SPELL_HASTE;
+      base_execute_time      = 1.5_s;
+      school                 = SCHOOL_CHROMATIC;
+
+      aoe                 = -1;
+      reduced_aoe_targets = 8;
+      full_amount_targets = 1;
+      base_aoe_multiplier = 0.35;
+    }
+
+    bool usable_moving() const override
+    {
+      return true;
+    }
+        
+    void schedule_execute( action_state_t* state ) override
+    {
+      spell_t::schedule_execute( state );
+      // This uses a background repeating event with a ready type of READY_TRIGGER. Without constantly re-updating
+      // the started waiting trigger_ready would never function.
+      player->started_waiting = sim->current_time();
+    }
+  };
+
+  void init_finished() override
+  {
+    player_t::init_finished();
+
+    register_combat_begin( snapshot_stats );
+    matching_gear = true;
+  }
+
+  double composite_mastery_value() const override
+  {
+    return composite_mastery() * 0.0125;
+  }
+
+  void init_base_stats() override
+  {
+    player_t::init_base_stats();
+
+    base.spell_power_per_intellect = 1;
+    
+    base.stats.attribute[ STAT_INTELLECT ] = 15103;
+    
+    // 15030 Secondaries
+    base.stats.crit_rating        = 4675;
+    base.stats.haste_rating       = 4675;
+    base.stats.mastery_rating     = 4675;
+    base.stats.versatility_rating = 1005;
+
+  }
+
+  void create_actions() override
+  {
+    // player_t::create_actions();
+    ability = new simple_ability_t( this );
+    snapshot_stats = new snapshot_stats_t( this, "" );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = player_t::composite_player_multiplier( school );
+
+    m *= 1.0 + cache.mastery_value();
+
+    return m;
+  }
+
+  void acquire_target( retarget_source event, player_t* context ) override
+  {
+    if ( ability->execute_event && ability->target->is_sleeping() )
+    {
+      event_t::cancel( ability->execute_event );
+      started_waiting = sim->current_time();
+    }
+
+    player_t::acquire_target( event, context );
+
+    if ( !ability->execute_event )
+      trigger_ready();
+  }
+  
+  role_e primary_role() const override
+  {
+    return ROLE_SPELL;
+  }
+
+  void invalidate_cache( cache_e cache ) override
+  {
+    player_t::invalidate_cache( cache );
+
+    switch ( cache )
+    {
+      case CACHE_MASTERY:
+        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        break;
+      default:
+        break;
+    }
+  }
+
+  double matching_gear_multiplier( attribute_e attr ) const override
+  {
+    return attr == ATTR_INTELLECT ? 0.05 : 0.0;
+  }
+
+  stat_e convert_hybrid_stat( stat_e stat ) const override
+  {
+    switch ( stat )
+    {
+      case STAT_STR_AGI_INT:
+      case STAT_AGI_INT:
+      case STAT_STR_INT:
+        return STAT_INTELLECT;
+      case STAT_STR_AGI:
+      case STAT_SPIRIT:
+      case STAT_BONUS_ARMOR:
+        return STAT_NONE;
+      default:
+        return stat;
+    }
+  }
+
+  void reschedule_actor()
+  {
+    if ( executing || ability->execute_event || is_sleeping() ||
+         buffs.stunned->check() )
+      return;
+    
+    ability->schedule_execute();
+  }
+
+  void arise() override
+  {
+    player_t::arise();
+
+    reschedule_actor();
+  }
+
+  void schedule_ready( timespan_t delta_time, bool waiting ) override
+  {
+    reschedule_actor();
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_MANA;
+  }
+};
+
 struct evoker_t : public player_t
 {
   // !!!===========================================================================!!!
@@ -150,6 +327,8 @@ struct evoker_t : public player_t
     timespan_t prepull_deep_breath_delay_stddev = timespan_t::from_seconds( 0.05 );
     bool naszuro_accurate_behaviour             = false;
     double naszuro_bounce_chance                = 0.85;
+    std::string force_clutchmates               = "";
+    bool make_simplified_if_alone               = true;
   } option;
 
   // Action pointers
@@ -468,6 +647,7 @@ struct evoker_t : public player_t
   void create_actions() override;
   void create_buffs() override;
   void create_options() override;
+  void create_pets() override;
   // void arise() override;
   void moving() override;
   void schedule_ready( timespan_t, bool ) override;
@@ -3712,8 +3892,6 @@ struct blistering_scales_damage_t : public evoker_external_action_t<spell_t>
 {
 private:
   using base = evoker_external_action_t<spell_t>;
-protected:
-  using state_t = evoker_action_state_t<stats_data_t>;
 
 public:
   blistering_scales_damage_t( player_t* p ) : base( "blistering_scales_damage", p, p->find_spell( 360828 ) )
@@ -3736,7 +3914,7 @@ public:
   {
     base::execute();
 
-    if ( p( execute_state )->talent.reactive_hide.ok() )
+    if ( execute_state && p( execute_state )->talent.reactive_hide.ok() )
       p( execute_state )->buff.reactive_hide->trigger();
   }
 };
@@ -4343,7 +4521,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                   b->current_value = evoker->cache.mastery_value();
                   b->invalidate_cache();
                 }
-              } );
+              } )
+              ->set_freeze_stacks( true );
 
       buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
                                                                        evoker->find_spell( 395152 ) )
@@ -4352,6 +4531,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       buffs.ebon_might->set_cooldown( 0_ms )
           ->set_period( timespan_t::zero() )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+          ->add_invalidate( CACHE_STR_AGI_INT )
           ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
             if ( new_ )
             {
@@ -4633,6 +4813,35 @@ void evoker_t::init_action_list()
   player_t::init_action_list();
 }
 
+void evoker_t::create_pets()
+{
+  player_t::create_pets();
+  if ( specialization() == EVOKER_AUGMENTATION && sim->player_no_pet_list.size() == 1 && option.make_simplified_if_alone )
+  {
+    size_t bobs;
+
+    if ( sim->fight_style ==  FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+    {
+      option.force_clutchmates = "yes";
+      close_as_clutchmates     = true;
+      bobs                     = 2;
+    }
+    else
+    {
+      option.force_clutchmates = "no";
+      close_as_clutchmates     = false;
+      bobs                     = 4;
+    }
+
+    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
+
+    for ( size_t i = 0; i < bobs; i++ )
+    {
+      module->create_player( sim, "Bob" + std::to_string( i ) );
+    }
+  }
+}
+
 void evoker_t::init_finished()
 {
   auto CT = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::CLASS, n ); };
@@ -4648,34 +4857,34 @@ void evoker_t::init_finished()
     {
       if ( p->specialization() == DEATH_KNIGHT_FROST )
       {
-        if ( ST( p, "Breath of Sindragosa" )->ok() )
+        if ( ST( p, "Breath of Sindragosa" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "breath_of_sindragosa" );
         }
-        else if ( ST( p, "Pillar of Frost" )->ok() )
+        else if ( ST( p, "Pillar of Frost" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "pillar_of_frost" );
         }
-        else if ( ST( p, "Empower Rune Weapon" )->ok() || CT( p, "Empower Rune Weapon" )->ok() )
+        else if ( ST( p, "Empower Rune Weapon" ).ok() || CT( p, "Empower Rune Weapon" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "empower_rune_weapon" );
         }
       }
       else if ( p->specialization() == DEATH_KNIGHT_UNHOLY )
       {
-        if ( ST( p, "Commander of the Dead" )->ok() )
+        if ( ST( p, "Commander of the Dead" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "commander_of_the_dead" );
         }
-        else if ( ST( p, "Unholy Assault" )->ok() )
+        else if ( ST( p, "Unholy Assault" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "unholy_assault" );
         }
-        else if ( ST( p, "Defile" )->ok() && ( sim->has_raid_event( "adds" ) || sim->has_raid_event( "pull" ) ) )
+        else if ( ST( p, "Defile" ).ok() && ( sim->has_raid_event( "adds" ) || sim->has_raid_event( "pull" ) ) )
         {
           allied_major_cds[ p ] = buff_t::find( p, "defile" );
         }
-        else if ( ST( p, "Dark Transformation" )->ok() )
+        else if ( ST( p, "Dark Transformation" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "dark_transformation" );
         }
@@ -4690,7 +4899,7 @@ void evoker_t::init_finished()
       else if ( p->specialization() == EVOKER_DEVASTATION )
       {
         auto evoker = static_cast<evoker_t*>( p );
-        if ( evoker->talent.dragonrage->ok() )
+        if ( evoker->talent.dragonrage.ok() )
         {
           allied_major_cds[ p ] = evoker->buff.dragonrage;
         }
@@ -4700,15 +4909,15 @@ void evoker_t::init_finished()
     {
       if ( p->specialization() == PRIEST_SHADOW )
       {
-        if ( CT(p, "Power Infusion" ) )
+        if ( CT( p, "Power Infusion" ).ok() )
         {
           allied_major_cds[ p ] = p->buffs.power_infusion;
         }
-        else if ( ST( p, "Void Eruption" ) )
+        else if ( ST( p, "Void Eruption" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "voidform" );
         }
-        else if ( ST( p, "Dark Ascension" ) )
+        else if ( ST( p, "Dark Ascension" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "dark_ascension" );
         }
@@ -4722,12 +4931,12 @@ void evoker_t::init_finished()
       }
       else if ( p->specialization() == MAGE_FROST )
       {
-        if ( ST( p, "Icy Veins" ) )
+        if ( ST( p, "Icy Veins" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "icy_veins" );
       }
       else if ( p->specialization() == MAGE_ARCANE )
       {
-        if ( ST( p, "Arcane Surge" ) )
+        if ( ST( p, "Arcane Surge" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "arcane_surge" );
       }
     }
@@ -4735,26 +4944,52 @@ void evoker_t::init_finished()
     {
       if ( p->specialization() == HUNTER_MARKSMANSHIP )
       {
-        if ( ST( p, "Trueshot" ) )
+        if ( ST( p, "Trueshot" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "trueshot" );
       }
       else if ( p->specialization() == HUNTER_SURVIVAL )
       {
-        if ( ST( p, "Coordinated Assault" ) )
+        if ( ST( p, "Coordinated Assault" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "coordinated_assault" );
       }
     }
-    else if (p->type == PALADIN)
+    else if ( p->type == PALADIN )
     {
-      if ( CT( p, "Avenging Wrath" ) )
+      if ( CT( p, "Avenging Wrath" ).ok() )
       {
         // TODO: Handle sentinel and other special ones
         allied_major_cds[ p ] = buff_t::find( p, "avenging_wrath" );
       }
     }
+    else if ( p->type == MONK )
+    {
+      if ( ST( p, "Serenity" ).ok() )
+      {
+        allied_major_cds[ p ] = buff_t::find( p, "serenity" );
+      }
+      else if ( ST( p, "Storm, Earth, and Fire" ).ok() )
+      {
+        allied_major_cds[ p ] = buff_t::find( p, "storm_earth_and_fire" );
+      }
+    }
+    else if ( p->type == ROGUE )
+    {
+      if ( p->specialization() == ROGUE_OUTLAW )
+      {
+        allied_major_cds[ p ] = buff_t::find( p, "adrenaline_rush" );
+      }
+      else
+      {
+        if ( CT( p, "Shadow Dance" ).ok() || ST( p, "Shadow Dance" ).ok() )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "shadow_dance" );
+        }
+      }
+    }
   }
 
-  if ( sim->player_no_pet_list.size() <= 5 )
+  if ( sim->player_no_pet_list.size() <= 5 && !util::str_compare_ci( option.force_clutchmates, "no" ) ||
+       util::str_compare_ci( option.force_clutchmates, "yes" ) )
   {
     close_as_clutchmates = true;
     sim->print_debug( "{} Activating Close As Clutchmates", *this );
@@ -5344,6 +5579,8 @@ void evoker_t::create_options()
       opt_timespan( "evoker.prepull_deep_breath_delay_stddev", option.prepull_deep_breath_delay_stddev, 0_s, 1.5_s ) );
   add_option( opt_float( "evoker.naszuro_bounce_chance", option.naszuro_bounce_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "evoker.naszuro_accurate_behaviour", option.naszuro_accurate_behaviour ) );
+  add_option( opt_string( "evoker.force_clutchmates", option.force_clutchmates ) );
+  add_option( opt_bool( "evoker.make_simplified_if_alone", option.make_simplified_if_alone ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -5582,7 +5819,7 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
           for ( auto p : *vec )
           {
-            if ( allied_major_cds.count( p ) && allied_major_cds[ p ] && allied_major_cds[ p ]->check() )
+            if ( allied_major_cds.count( p ) && allied_major_cds[ p ] && allied_major_cds[ p ]->check() || p->type == PLAYER_SIMPLIFIED )
             {
               out++;
             }
@@ -5837,6 +6074,21 @@ private:
   [[maybe_unused]] evoker_t& p;
 };
 
+class player_simplified_report_t : public player_report_extension_t
+{
+public:
+  player_simplified_report_t( simplified_player_t& player ) : p( player )
+  {
+  }
+
+  void html_customsection( report::sc_html_stream& /*os*/ ) override
+  {
+  }
+
+private:
+  [[maybe_unused]] simplified_player_t& p;
+};
+
 // EVOKER MODULE INTERFACE ==================================================
 struct evoker_module_t : public module_t
 {
@@ -5891,10 +6143,61 @@ struct evoker_module_t : public module_t
   {
   }
 };
+
+
+// EVOKER MODULE INTERFACE ==================================================
+struct player_simplified_module_t : public module_t
+{
+  player_simplified_module_t() : module_t( PLAYER_SIMPLIFIED )
+  {
+  }
+
+  player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
+  {
+    auto p              = new simplified_player_t( sim, name, r );
+    p->report_extension = std::make_unique<player_simplified_report_t>( *p );
+    return p;
+  }
+
+  bool valid() const override
+  {
+    return true;
+  }
+
+  void init( player_t* /* p */ ) const override
+  {
+  }
+
+  void static_init() const override
+  {
+  }
+
+  void register_hotfixes() const override
+  {
+  }
+
+  void combat_begin( sim_t* ) const override
+  {
+  }
+
+  void create_actions( player_t* p ) const override
+  {
+  }
+
+  void combat_end( sim_t* ) const override
+  {
+  }
+};
 }  // namespace
 
 const module_t* module_t::evoker()
 {
   static evoker_module_t m;
+  return &m;
+}
+
+const module_t* module_t::player_simplified()
+{
+  static player_simplified_module_t m;
   return &m;
 }

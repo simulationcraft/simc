@@ -697,6 +697,18 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
     os << "</div>\n"
        << "</div>\n";
   }
+
+  if ( sim.fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    os << "<div id=\"route-summary\" class=\"section\">\n"
+       << "<h2 class=\"toggle\" id=\"route-summary-toggle\">Route Information</h2>\n"
+       << "<div class=\"toggle-content hide\">\n";
+
+    raid_event_t::report( &sim, os );
+
+    os << "</div>\n"
+       << "</div>\n\n";
+  }
 }
 
 void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )

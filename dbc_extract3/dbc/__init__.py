@@ -118,11 +118,14 @@ KEY_FIELD_HOTFIX_RECORD = {
     'TraitCond'                   : 'id_trait_tree',
     'TraitNode'                   : 'id_trait_tree',
     'TraitNodeGroup'              : 'id_trait_tree',
+    'TraitTreeLoadout'            : 'id_trait_tree',
+    'TraitTreeLoadoutEntry'       : 'id_trait_tree_loadout',
     'TraitTreeXTraitCurrency'     : 'id_trait_tree',
     'TraitTree'                   : 'unk_3',
     'TraitEdge'                   : 'id',
     'ModifiedCraftingSpellSlot'   : 'id_spell',
     'ItemLogicalCost'             : 'id_item_extended_cost',
+    'CharacterLoadoutItem'        : 'id_loadout',
 }
 
 # Some DB2 files seem to be expanded to 4 byte fields for the hotfix data for

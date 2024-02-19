@@ -46,8 +46,6 @@ void shadow( player_t* p )
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* filler = p->get_action_priority_list( "filler" );
   action_priority_list_t* main = p->get_action_priority_list( "main" );
-  action_priority_list_t* main_variables = p->get_action_priority_list( "main_variables" );
-  action_priority_list_t* pl_torrent = p->get_action_priority_list( "pl_torrent" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "flask" );
@@ -61,32 +59,34 @@ void shadow( player_t* p )
 
   default_->add_action( "variable,name=holding_crash,op=set,value=raid_event.adds.in<15" );
   default_->add_action( "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up" );
-  default_->add_action( "run_action_list,name=aoe,if=active_enemies>2|spell_targets.vampiric_touch>3" );
+  default_->add_action( "run_action_list,name=aoe,if=active_enemies>2" );
   default_->add_action( "run_action_list,name=main" );
 
   aoe->add_action( "call_action_list,name=aoe_variables" );
-  aoe->add_action( "vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied),if=variable.max_vts>0&!variable.manual_vts_applied&!action.shadow_crash.in_flight|!talent.whispering_shadows", "High Priority action to put out Vampiric Touch on enemies that will live at least 18 seconds, up to 12 targets manually while prepping AoE" );
+  aoe->add_action( "vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.dots_up),if=variable.max_vts>0&!variable.manual_vts_applied&!action.shadow_crash.in_flight|!talent.whispering_shadows", "High Priority action to put out Vampiric Touch on enemies that will live at least 18 seconds, up to 12 targets manually while prepping AoE" );
   aoe->add_action( "shadow_crash,if=!variable.holding_crash,target_if=dot.vampiric_touch.refreshable|dot.vampiric_touch.remains<=target.time_to_die&!buff.voidform.up&(raid_event.adds.in-dot.vampiric_touch.remains)<15", "Use Shadow Crash to apply Vampiric Touch to as many adds as possible while being efficient with Vampiric Touch refresh windows" );
   aoe->add_action( "call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)" );
-  aoe->add_action( "mindbender,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight&talent.whispering_shadows)&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)", "Use Shadowfiend or Mindbender on cooldown if DoTs are active and sync with Dark Ascension" );
-  aoe->add_action( "mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&active_enemies<=7&!buff.mind_devourer.up", "Use Mind Blast when capped on charges and talented into Mind Devourer to fish for the buff or if Inescapable Torment is talented with Mindbender active. Only use when facing 3-7 targets." );
-  aoe->add_action( "shadow_word_death,if=pet.fiend.remains<=2&pet.fiend.active&talent.inescapable_torment&active_enemies<=7", "High Priority Shadow Word: Death is Mindbender is expiring in less than 2 seconds" );
-  aoe->add_action( "void_bolt" );
-  aoe->add_action( "devouring_plague,target_if=remains<=gcd.max|!talent.distorted_reality,if=remains<=gcd.max&!variable.pool_for_cds|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<=buff.voidform.remains+2", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 20 or to get out an extra Void Bolt by extending Voidform. With Distorted Reality can maintain more than one at a time in multi-target." );
-  aoe->add_action( "vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied),if=variable.max_vts>0&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash)&!action.shadow_crash.in_flight|!talent.whispering_shadows" );
-  aoe->add_action( "shadow_word_death,if=variable.vts_applied&talent.inescapable_torment&pet.fiend.active&((!talent.insidious_ire&!talent.idol_of_yoggsaron)|buff.deathspeaker.up)", "Use Shadow Word: Death with Inescapable Torment and Mindbender active and not talented into Insidious Ire and Yogg or Deathspeaker is active" );
-  aoe->add_action( "mind_spike_insanity,if=variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Spike: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
-  aoe->add_action( "mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Flay: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
-  aoe->add_action( "mind_blast,if=variable.vts_applied&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)", "# Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
-  aoe->add_action( "call_action_list,name=pl_torrent,target_if=talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=3&(!variable.holding_crash|raid_event.adds.count%(active_dot.vampiric_touch+raid_event.adds.count)<1.5)&((insanity>=50|dot.devouring_plague.ticking|buff.dark_reveries.up)|buff.voidform.up|buff.dark_ascension.up)", "Void Torrent action list for AoE" );
-  aoe->add_action( "void_torrent,if=!talent.psychic_link,target_if=variable.dots_up" );
-  aoe->add_action( "mind_flay,if=buff.mind_flay_insanity.up&talent.idol_of_cthun,interrupt_if=ticks>=2,interrupt_immediate=1", "High priority action for Mind Flay: Insanity to fish for Idol of C'Thun procs, cancel as soon as something else is more important and most of the channel has completed" );
+  aoe->add_action( "mindbender,if=(dot.shadow_word_pain.ticking&variable.dots_up|action.shadow_crash.in_flight&talent.whispering_shadows)&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)", "Use Shadowfiend or Mindbender on cooldown if DoTs are active and sync with Dark Ascension" );
+  aoe->add_action( "devouring_plague,target_if=max:target.time_to_die*(!dot.devouring_plague.ticking),if=talent.distorted_reality&(active_dot.devouring_plague=0|insanity.deficit<=20)" );
+  aoe->add_action( "shadow_word_death,target_if=max:dot.devouring_plague.remains,if=(set_bonus.tier31_4pc|pet.fiend.active&talent.inescapable_torment&set_bonus.tier31_2pc)" );
+  aoe->add_action( "mind_blast,target_if=max:dot.devouring_plague.remains,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&active_enemies<=7&!buff.mind_devourer.up&dot.devouring_plague.remains>execute_time", "Use Mind Blast when capped on charges and talented into Mind Devourer to fish for the buff or if Inescapable Torment is talented with Mindbender active. Only use when facing 3-7 targets." );
+  aoe->add_action( "shadow_word_death,target_if=max:dot.devouring_plague.remains,if=pet.fiend.remains<=2&pet.fiend.active&talent.inescapable_torment&active_enemies<=7", "High Priority Shadow Word: Death is Mindbender is expiring in less than 2 seconds" );
+  aoe->add_action( "void_bolt,target_if=max:target.time_to_die" );
+  aoe->add_action( "devouring_plague,target_if=max:target.time_to_die*(!dot.devouring_plague.ticking),if=talent.distorted_reality", "Use Devouring Plague on enemies that will live the longest with distorted reality." );
+  aoe->add_action( "devouring_plague,if=(remains<=gcd.max&!variable.pool_for_cds|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<=buff.voidform.remains+2)&!talent.distorted_reality", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 20 or to get out an extra Void Bolt by extending Voidform. With Distorted Reality can maintain more than one at a time in multi-target." );
+  aoe->add_action( "vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.dots_up),if=variable.max_vts>0&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash)&!action.shadow_crash.in_flight|!talent.whispering_shadows" );
+  aoe->add_action( "shadow_word_death,target_if=max:dot.devouring_plague.remains,if=variable.dots_up&talent.inescapable_torment&pet.fiend.active&((!talent.insidious_ire&!talent.idol_of_yoggsaron)|buff.deathspeaker.up)&!set_bonus.tier31_2pc", "Use Shadow Word: Death with Inescapable Torment and Mindbender active and not talented into Insidious Ire and Yogg or Deathspeaker is active" );
+  aoe->add_action( "mind_spike_insanity,target_if=max:dot.devouring_plague.remains,if=variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Spike: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
+  aoe->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,if=buff.mind_flay_insanity.up&variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Flay: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
+  aoe->add_action( "mind_blast,target_if=max:dot.devouring_plague.remains,if=variable.dots_up&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)", "# Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
+  aoe->add_action( "void_torrent,target_if=max:dot.devouring_plague.remains,if=(!variable.holding_crash|raid_event.adds.count%(active_dot.vampiric_touch+raid_event.adds.count)<1.5)&(dot.devouring_plague.remains>=2.5|buff.voidform.up)", "Void Torrent action list for AoE" );
+  aoe->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,if=buff.mind_flay_insanity.up&talent.idol_of_cthun,interrupt_if=ticks>=2,interrupt_immediate=1", "High priority action for Mind Flay: Insanity to fish for Idol of C'Thun procs, cancel as soon as something else is more important and most of the channel has completed" );
   aoe->add_action( "call_action_list,name=filler" );
 
   aoe_variables->add_action( "variable,name=max_vts,op=set,default=12,value=spell_targets.vampiric_touch>?12" );
   aoe_variables->add_action( "variable,name=is_vt_possible,op=set,value=0,default=1" );
   aoe_variables->add_action( "variable,name=is_vt_possible,op=set,value=1,target_if=max:(target.time_to_die*dot.vampiric_touch.refreshable),if=target.time_to_die>=18" );
-  aoe_variables->add_action( "variable,name=vts_applied,op=set,value=(active_dot.vampiric_touch+8*(action.shadow_crash.in_flight&talent.whispering_shadows))>=variable.max_vts|!variable.is_vt_possible", "TODO: Revamp to fix undesired behaviour with unstacked fights" );
+  aoe_variables->add_action( "variable,name=dots_up,op=set,value=(active_dot.vampiric_touch+8*(action.shadow_crash.in_flight&talent.whispering_shadows))>=variable.max_vts|!variable.is_vt_possible", "TODO: Revamp to fix undesired behaviour with unstacked fights" );
   aoe_variables->add_action( "variable,name=holding_crash,op=set,value=(variable.max_vts-active_dot.vampiric_touch)<4|raid_event.adds.in<10&raid_event.adds.count>(variable.max_vts-active_dot.vampiric_touch),if=variable.holding_crash&talent.whispering_shadows" );
   aoe_variables->add_action( "variable,name=manual_vts_applied,op=set,value=(active_dot.vampiric_touch+8*!variable.holding_crash)>=variable.max_vts|!variable.is_vt_possible" );
 
@@ -106,23 +106,22 @@ void shadow( player_t* p )
   cds->add_action( "desperate_prayer,if=health.pct<=75", "Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%" );
 
   filler->add_action( "vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness.up", "Cast Vampiric Touch to consume Unfurling Darkness, prefering the target with the lowest DoT duration active" );
-  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|buff.deathspeaker.up|set_bonus.tier31_2pc" );
-  filler->add_action( "mind_spike_insanity" );
-  filler->add_action( "mind_flay,if=buff.mind_flay_insanity.up" );
-  filler->add_action( "mindgames" );
+  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking" );
+  filler->add_action( "mind_spike_insanity,target_if=max:dot.devouring_plague.remains,if=dot.devouring_plague.remains>cast_time" );
+  filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,if=buff.mind_flay_insanity.up" );
+  filler->add_action( "mindgames,target_if=max:dot.devouring_plague.remains" );
   filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
   filler->add_action( "halo,if=spell_targets>1", "Save up to 20s if adds are coming soon." );
-  filler->add_action( "mind_spike" );
-  filler->add_action( "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
+  filler->add_action( "mind_spike,target_if=max:dot.devouring_plague.remains" );
+  filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   filler->add_action( "divine_star" );
-  filler->add_action( "shadow_crash,if=raid_event.adds.in>20", "Use Shadow Crash while moving as a low-priority action when adds will not come in 20 seconds." );
+  filler->add_action( "shadow_crash,if=raid_event.adds.in>20&!set_bonus.tier31_4pc", "Use Shadow Crash while moving as a low-priority action when adds will not come in 20 seconds." );
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
-  filler->add_action( "divine_star", "Use Divine Star while moving as a low-priority action" );
-  filler->add_action( "shadow_word_death", "Use Shadow Word: Death while moving as a low-priority action" );
-  filler->add_action( "power_word_shield,if=set_bonus.tier31_4pc", "Use Power Word: Shield while moving with the T31 tier set" );
-  filler->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
+  filler->add_action( "shadow_word_death,target_if=max:dot.devouring_plague.remains", "Use Shadow Word: Death while moving as a low-priority action" );
+  filler->add_action( "shadow_word_pain,target_if=max:dot.devouring_plague.remains,if=set_bonus.tier31_4pc", "Use Shadow Word: Pain while moving as a low-priority action with T31 4pc" );
+  filler->add_action( "shadow_word_pain,target_if=min:remains,if=!set_bonus.tier31_4pc", "Use Shadow Word: Pain while moving as a low-priority action without T31 4pc" );
 
-  main->add_action( "call_action_list,name=main_variables" );
+  main->add_action( "variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies|action.shadow_crash.in_flight&talent.whispering_shadows" );
   main->add_action( "call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)" );
   main->add_action( "mindbender,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)", "Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension" );
   main->add_action( "devouring_plague,target_if=!talent.distorted_reality|active_enemies=1|remains<=gcd.max,if=remains<=gcd.max|insanity.deficit<=16" );
@@ -140,16 +139,6 @@ void shadow( player_t* p )
   main->add_action( "mind_blast,if=(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
   main->add_action( "void_torrent,if=!variable.holding_crash,target_if=dot.devouring_plague.remains>=2.5,interrupt_if=cooldown.shadow_word_death.ready&pet.fiend.active&set_bonus.tier31_2pc", "Void Torrent if you are not holding Shadow Crash for an add pack coming, prefer the target with the most DoTs active. Only cast if Devouring Plague is on that target and will last at least 2 seconds" );
   main->add_action( "call_action_list,name=filler", "Cast Mindgames if all DoTs will be active by the time the cast finishes" );
-
-  main_variables->add_action( "variable,name=dots_up,op=set,value=(dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|action.shadow_crash.in_flight&talent.whispering_shadows" );
-  main_variables->add_action( "variable,name=all_dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
-  main_variables->add_action( "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up" );
-
-  pl_torrent->add_action( "void_bolt" );
-  pl_torrent->add_action( "vampiric_touch,if=remains<=6&cooldown.void_torrent.remains<gcd*2" );
-  pl_torrent->add_action( "devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd*2", "Use Devouring Plague before Void Torrent cast" );
-  pl_torrent->add_action( "mind_blast,if=!prev_gcd.1.mind_blast" );
-  pl_torrent->add_action( "void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking|buff.voidform.up" );
 
   trinkets->add_action( "use_item,name=voidmenders_shadowgem,if=(buff.power_infusion.up|fight_remains<20)&equipped.voidmenders_shadowgem" );
   trinkets->add_action( "use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains>0|fight_remains<20" );
@@ -246,7 +235,6 @@ void shadow_ptr( player_t* p )
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
   filler->add_action( "divine_star", "Use Divine Star while moving as a low-priority action" );
   filler->add_action( "shadow_word_death", "Use Shadow Word: Death while moving as a low-priority action" );
-  filler->add_action( "power_word_shield,if=set_bonus.tier31_4pc", "Use Power Word: Shield while moving with the T31 tier set" );
   filler->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   main->add_action( "call_action_list,name=main_variables" );

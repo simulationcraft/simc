@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.2.0.52188
-static const std::array<item_name_description_t, 818> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.2.5.53262
+static const std::array<item_name_description_t, 828> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -756,9 +756,11 @@ static const std::array<item_name_description_t, 818> __ptr_item_name_descriptio
   { 14029, "Dawn of the Infinite"                        },
   { 14030, "Soridormi"                                   },
   { 14031, "Dragonflight Season 3"                       },
+  { 14032, "Amirdrassil"                                 },
   { 14033, "Heritage"                                    },
   { 14034, "Emerald Bounty"                              },
   { 14035, "|nShadowflame Suffused"                      },
+  { 14036, "Thundering"                                  },
   { 14037, "Unique Creatures"                            },
   { 14041, "Superbloom"                                  },
   { 14043, "Dragonflight Season 2"                       },
@@ -818,5 +820,13 @@ static const std::array<item_name_description_t, 818> __ptr_item_name_descriptio
   { 14099, "Heroic|n"                                    },
   { 14100, "Mythic|n"                                    },
   { 14101, "Raid Finder|n"                               },
+  { 14104, "Kalimdor and Eastern Kingdoms Cups"          },
+  { 14105, "Outland Cup"                                 },
+  { 14106, "Northrend Cup"                               },
+  { 14107, "In-Game Shop"                                },
+  { 14108, "In-Game Shop Variant"                        },
+  { 14132, "Moon"                                        },
+  { 14133, "Sun"                                         },
+  { 14134, "Cycle"                                       },
 } };
 

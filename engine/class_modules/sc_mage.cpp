@@ -214,6 +214,7 @@ public:
   struct events_t
   {
     event_t* enlightened;
+    event_t* flame_accelerant;
     event_t* from_the_ashes;
     event_t* icicle;
     event_t* merged_buff_execute;
@@ -1701,7 +1702,7 @@ public:
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
         if ( p()->talents.arcane_echo.ok() && this != p()->action.arcane_echo )
-          make_event( *sim, [ this, t = p()->bugs && p()->target ? p()->target : s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
+          make_event( *sim, [ this, t = s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
       }
     }
   }
@@ -3743,7 +3744,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     timespan_t t = fire_mage_spell_t::execute_time();
 
-    if ( p()->buffs.flame_accelerant->check() )
+    if ( !p()->buffs.flame_accelerant_icd->check() )
       t *= 1.0 + p()->talents.flame_accelerant->effectN( 2 ).percent();
 
     return t;
@@ -3753,7 +3754,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    if ( p()->buffs.flame_accelerant->check() )
+    if ( !p()->buffs.flame_accelerant_icd->check() )
       am *= 1.0 + p()->talents.flame_accelerant->effectN( 1 ).percent();
 
     return am;
@@ -3762,7 +3763,11 @@ struct fireball_t final : public fire_mage_spell_t
   void execute() override
   {
     fire_mage_spell_t::execute();
-    p()->buffs.flame_accelerant_icd->trigger();
+
+    if ( !p()->bugs || p()->buffs.flame_accelerant->check() || p()->buffs.flame_accelerant_icd->check() )
+      p()->buffs.flame_accelerant_icd->trigger();
+
+    p()->buffs.flame_accelerant->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -4313,6 +4318,7 @@ struct glacial_blast_t final : public spell_t
 struct glacial_spike_t final : public frost_mage_spell_t
 {
   action_t* glacial_blast = nullptr;
+  shatter_source_t* cleave_source = nullptr;
 
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.glacial_spike )
@@ -4341,7 +4347,11 @@ struct glacial_spike_t final : public frost_mage_spell_t
   void init_finished() override
   {
     proc_brain_freeze = p()->get_proc( "Brain Freeze from Glacial Spike" );
+
     frost_mage_spell_t::init_finished();
+
+    if ( sim->report_details != 0 && p()->talents.splitting_ice.ok() )
+      cleave_source = p()->get_shatter_source( "Glacial Spike cleave" );
   }
 
   bool ready() override
@@ -4403,16 +4413,22 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    if ( !result_is_hit( s->result ) )
+      return;
+
     if ( s->chain_target == 0 && p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
       p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 3 ).time_value() );
 
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
 
-    if ( glacial_blast && result_is_hit( s->result ) && cast_state( s )->frozen )
+    if ( glacial_blast && cast_state( s )->frozen )
     {
       double pct = p()->sets->set( MAGE_FROST, T31, B2 )->effectN( 2 ).percent();
       glacial_blast->execute_on_target( s->target, pct * s->result_total );
     }
+
+    if ( s->chain_target != 0 )
+      record_shatter_source( s, cleave_source );
   }
 };
 
@@ -4468,13 +4484,11 @@ struct ice_lance_state_t final : public mage_spell_state_t
 
 struct ice_lance_t final : public frost_mage_spell_t
 {
-  shatter_source_t* extension_source;
-  shatter_source_t* cleave_source;
+  shatter_source_t* extension_source = nullptr;
+  shatter_source_t* cleave_source = nullptr;
 
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.ice_lance ),
-    extension_source(),
-    cleave_source()
+    frost_mage_spell_t( n, p, p->talents.ice_lance )
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
@@ -5804,6 +5818,33 @@ struct icicle_event_t final : public mage_event_t
   }
 };
 
+struct flame_accelerant_event_t final : public mage_event_t
+{
+  int index;
+
+  flame_accelerant_event_t( mage_t& m, timespan_t delta_time, int index = 2 ) :
+    mage_event_t( m, delta_time ), index( index )
+  { }
+
+  const char* name() const override
+  { return "flame_accelerant_event"; }
+
+  void execute() override
+  {
+    mage->events.flame_accelerant = nullptr;
+
+    if ( !mage->buffs.flame_accelerant->check() && !mage->buffs.flame_accelerant_icd->check() )
+      mage->buffs.flame_accelerant->trigger();
+
+    // According to spell data, this should happen every second, but in
+    // reality each tick seems to be delayed by one server frame (at 150 FPS).
+    // Because one frame is not an integer number of milliseconds, events are
+    // delayed by 7_ms, except for every third event, which is delayed by 6_ms.
+    timespan_t next_event = index % 3 ? 1007_ms : 1006_ms;
+    mage->events.flame_accelerant = make_event<flame_accelerant_event_t>( sim(), *mage, next_event, index + 1 );
+  }
+};
+
 struct from_the_ashes_event_t final : public mage_event_t
 {
   from_the_ashes_event_t( mage_t& m, timespan_t delta_time ) :
@@ -6612,23 +6653,15 @@ void mage_t::create_buffs()
                                      ->set_default_value( talents.firemind->effectN( 3 ).percent() )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                                      ->set_chance( talents.firemind.ok() );
-  // TODO: 2022-10-02 Flame Accelerant has several bugs that are not implemented in simc.
-  // 1. Casting a Fireball as the ICD is expiring can result in that Fireball gaining the
-  // bonus damage without stopping the flame_accelerant buff from being applied just after.
   buffs.flame_accelerant         = make_buff( this, "flame_accelerant", find_spell( 203277 ) )
                                      ->set_can_cancel( false )
                                      ->set_chance( talents.flame_accelerant.ok() )
                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.flame_accelerant_icd     = make_buff( this, "flame_accelerant_icd", find_spell( 203278 ) )
                                      ->set_can_cancel( false )
-                                     ->set_quiet( true )
+                                     ->set_chance( talents.flame_accelerant.ok() )
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                       {
-                                         if ( cur == 0 )
-                                           buffs.flame_accelerant->trigger();
-                                         else
-                                           buffs.flame_accelerant->expire();
-                                       } );
+                                       { if ( !bugs && cur == 0 ) buffs.flame_accelerant->trigger(); } );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) )
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -7161,6 +7194,12 @@ void mage_t::arise()
 
     timespan_t first_tick = rng().real() * 2.0_s;
     events.enlightened = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
+  }
+
+  if ( bugs && talents.flame_accelerant.ok() )
+  {
+    timespan_t first_tick = rng().real() * 1.0_s;
+    events.flame_accelerant = make_event<events::flame_accelerant_event_t>( *sim, *this, first_tick );
   }
 
   if ( talents.from_the_ashes.ok() )

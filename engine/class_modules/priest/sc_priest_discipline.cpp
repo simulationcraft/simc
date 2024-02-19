@@ -211,6 +211,15 @@ struct purge_the_wicked_t final : public priest_spell_t
         trigger_power_of_the_dark_side();
       }
     }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      auto m = priest_spell_t::composite_persistent_multiplier( s );
+
+      m *= 1 + p().buffs.twilight_equilibrium_holy_amp->check_value();
+
+      return m;
+    }
   };
 
   purge_the_wicked_t( priest_t& p, util::string_view options_str )
@@ -615,7 +624,6 @@ public:
     channel->execute_on_target( s->target );
   }
 };
-
 }  // namespace actions::spells
 
 namespace buffs
@@ -666,7 +674,12 @@ void priest_t::create_buffs_discipline()
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) )
                                ->set_default_value( talents.discipline.harsh_discipline->effectN( 2 ).base_value() );
 
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) );
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->add_invalidate( CACHE_HASTE );
+  
+  if ( talents.discipline.borrowed_time.ok() )
+  {
+    buffs.borrowed_time->set_default_value( talents.discipline.borrowed_time->effectN( 2 ).percent() );
+  }
 
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
 
@@ -727,21 +740,20 @@ void priest_t::init_spells_discipline()
   talents.discipline.exaltation          = ST( "Exaltation" );
   talents.discipline.indemnity           = ST( "Indemnity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
-  //talents.discipline.twilight_corruption = ST( "Twilight Corruption" ); //373065
-  // Twilight Corruption doesn't work rn very cool
-  talents.discipline.twilight_corruption = find_spell( 373065 );
+  talents.discipline.twilight_corruption = ST( "Twilight Corruption" ); //373065
   // Row
   talents.discipline.borrowed_time   = ST( "Borrowed Time" );
   talents.discipline.castigation     = ST( "Castigation" );
   talents.discipline.abyssal_reverie = ST( "Abyssal Reverie" );
   // Row 8
-  talents.discipline.train_of_thought = ST( "Train of Thought" );  // TODO: implement PS:S reduction as well
+  talents.discipline.train_of_thought = ST( "Train of Thought" );
   talents.discipline.ultimate_penance = ST( "Ultimate Penitence" );
   talents.discipline.lenience         = ST( "Lenience" );
   talents.discipline.evangelism       = ST( "Evangelism" );
   talents.discipline.void_summoner    = ST( "Void Summoner" );
   // Row 9
   talents.discipline.divine_aegis          = ST( "Divine Aegis" );
+  talents.discipline.divine_aegis_buff     = find_spell( 47753 );
   talents.discipline.blaze_of_light        = ST( "Blaze of Light" );
   talents.discipline.heavens_wrath         = ST( "Heaven's Wrath" );
   talents.discipline.harsh_discipline      = ST( "Harsh Discipline" );
@@ -806,6 +818,24 @@ std::unique_ptr<expr_t> priest_t::create_expression_discipline( util::string_vie
       return expr_t::create_constant( name_str, 0 );
 
     return make_fn_expr( name_str, [ this ]() { return allies_with_atonement.size(); } );
+  }
+
+  if ( name_str == "min_active_atonement" )
+  {
+    if ( !talents.discipline.atonement.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+
+    return make_fn_expr( name_str, [ this ]() {
+      if ( allies_with_atonement.size() < 1 )
+        return 0_s;
+
+      auto min_elem = ( std::min_element(
+          allies_with_atonement.begin(), allies_with_atonement.end(), [ this ]( player_t* a, player_t* b ) {
+            return get_target_data( a )->buffs.atonement->remains() < get_target_data( b )->buffs.atonement->remains();
+          } ) );
+
+      return get_target_data( *min_elem )->buffs.atonement->remains();
+    } );
   }
 
   return nullptr;

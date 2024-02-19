@@ -566,6 +566,10 @@ struct player_t : public actor_t
     // BfA Raid Damage Modifier Debuffs
     buff_t* chaos_brand;  // Demon Hunter
     buff_t* mystic_touch; // Monk
+
+    // Dragonflight Raid Damage Modifier Debuffs
+    buff_t* hunters_mark;
+
   } debuffs;
 
   struct external_buffs_t

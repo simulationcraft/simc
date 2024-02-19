@@ -2557,13 +2557,7 @@ struct haymaker_damage_t : public proc_spell_t
   {
     may_crit = may_miss = false;
     dot_duration = timespan_t::zero();
-  }
-
-  void init() override
-  {
-    proc_spell_t::init();
-
-    snapshot_flags = update_flags = 0;
+    base_dd_min = base_dd_max = 1; // Make sure this snapshots flags
   }
 };
 

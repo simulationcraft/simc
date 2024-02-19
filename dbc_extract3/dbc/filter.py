@@ -896,3 +896,40 @@ class EmbellishmentSet(DataSet):
 
     def ids(self, **kwargs):
         return list(set(v[1] for v in self.get()))
+
+class CharacterLoadoutSet(DataSet):
+    def _filter(self, **kwargs):
+        _data = []
+
+        for cli in self.db('CharacterLoadoutItem').values():
+            loadout = cli.ref('id_loadout')
+            if loadout.purpose != 14:
+                continue
+
+            item = cli.ref('id_item')
+            if item.classs == 2 or item.classs == 4:
+                _data.append([cli, loadout])
+
+        _data.sort(key = lambda e: (e[1].id_class, e[1].id, e[0].id_item ))
+
+        return _data
+
+    def ids(self, **kwargs):
+        return (list(set(v[0].id for v in self.get())))
+
+class TraitLoadoutSet(DataSet):
+    def _filter(self, **kwargs):
+        _data = []
+        loadouts = {}
+
+        for e in self.db('TraitTreeLoadout').values():
+            loadouts[e.id_spec] = e.id
+
+        for e in self.db('TraitTreeLoadoutEntry').values():
+            if e.id_trait_tree_loadout in loadouts.values():
+                _data.append(e)
+
+        return _data
+
+    def ids(self, **kwargs):
+        return (list(set(v.id for v in self.get())))

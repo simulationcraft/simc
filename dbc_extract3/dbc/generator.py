@@ -8,7 +8,8 @@ from dbc import constants, util
 from dbc.constants import Class
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet
 from dbc.filter import SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
-from dbc.filter import PermanentEnchantItemSet, ExpectedStatModSet, TraitSet, EmbellishmentSet
+from dbc.filter import PermanentEnchantItemSet, ExpectedStatModSet, TraitSet, EmbellishmentSet, CharacterLoadoutSet
+from dbc.filter import TraitLoadoutSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -1451,6 +1452,7 @@ class SpellDataGenerator(DataGenerator):
          422651, 422652, 422750, 425571, 425701, 425703, 425461, # Fyrakks Tainted Rageheart
          426474, # Verdant Tether embellishment stat buff
          424051, 424057, # String of Delicacies
+         417138, # Fyr'alath the Dreamrender
         ),
 
         # Warrior:
@@ -2013,6 +2015,9 @@ class SpellDataGenerator(DataGenerator):
           ( 138311, 0 ), # Energy Sphere energy refund
           ( 163272, 0 ), # Chi Sphere chi refund
           ( 365080, 0 ), # Windwalking Movement Buff
+          ( 388199, 0 ), # Jadefire Debuff
+          ( 388203, 0 ), # Jadefire Reset
+          ( 388207, 0 ), # Jadefire Damage
           ( 388814, 0 ), # Fortifying Brew Increases Dodge and Armor
           ( 389541, 0 ), # White Tiger Statue - Claw of the White Tiger
           ( 389684, 0 ), # Close to Heart Leech Buff
@@ -2022,9 +2027,9 @@ class SpellDataGenerator(DataGenerator):
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage
-          ( 124503, 0 ), # Gift of the Ox Orb Left
-          ( 124506, 0 ), # Gift of the Ox Orb Right
-          ( 178173, 0 ), # Gift of the Ox Explosion
+          ( 124503, 1 ), # Gift of the Ox Orb Left
+          ( 124506, 1 ), # Gift of the Ox Orb Right
+          ( 178173, 1 ), # Gift of the Ox Explosion
           ( 124275, 1 ), # Light Stagger
           ( 124274, 1 ), # Medium Stagger
           ( 124273, 1 ), # Heavy Stagger
@@ -2037,7 +2042,7 @@ class SpellDataGenerator(DataGenerator):
           ( 383733, 1 ), # Training of Niuzao Mastery % Buff
           ( 386959, 1 ), # Charred Passions Damage
           ( 395267, 1 ), # Call to Arms Invoke Niuzao
-	  ( 387179, 0 ), # Weapons of Order (Debuff)
+          ( 387179, 1 ), # Weapons of Order (Debuff)
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
@@ -2048,7 +2053,7 @@ class SpellDataGenerator(DataGenerator):
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
-          ( 121283, 0 ), # Chi Sphere from Power Strikes
+          ( 121283, 3 ), # Chi Sphere from Power Strikes
           ( 125174, 3 ), # Touch of Karma redirect buff
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
@@ -2061,6 +2066,7 @@ class SpellDataGenerator(DataGenerator):
           ( 285594, 3 ), # Good Karma Healing Spell
           ( 290461, 3 ), # Reverse Harm Damage
           ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+          ( 388201, 3 ), # Jadefire WW Damage
           ( 396167, 3 ), # Fury of Xuen Stacking Buff
           ( 396168, 3 ), # Fury of Xuen Haste Buff
           ( 393048, 3 ), # Skyreach Debuff
@@ -4891,6 +4897,63 @@ class EmbellishmentGenerator(DataGenerator):
 
         for emb in data:
             fields = [str(emb[0]), str(emb[1]), str(emb[2])]
+            self.output_record(fields)
+
+        self.output_footer()
+
+class CharacterLoadoutGenerator(DataGenerator):
+    def filter(self):
+        return CharacterLoadoutSet(self._options).get()
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Character Loadout data',
+            type = 'character_loadout_data_t',
+            array = 'character_loadout',
+            length = len(data))
+
+        spec_idx = defaultdict(list)
+
+        for _, loadout in data:
+            spec_idx[loadout.id_class].append(loadout.id)
+
+        for k, v in spec_idx.items():
+            spec_idx[k] = sorted(list(set(v)))
+
+        for cli, loadout in data:
+            fields = loadout.field('id', 'id_class')
+            fields += [str(spec_idx[loadout.id_class].index(loadout.id))]
+            fields += cli.field('id_item')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class TraitLoadoutGenerator(DataGenerator):
+    def filter(self):
+        return TraitLoadoutSet(self._options).get()
+
+    def generate(self, data = None):
+        self.output_header(
+            header = 'Trait Loadout data',
+            type = 'trait_loadout_data_t',
+            array = 'trait_loadout',
+            length = len(data))
+
+        for entry in sorted(data, key = lambda e: (e.ref('id_trait_tree_loadout').id_spec, e.order_index)):
+            fields = entry.ref('id_trait_tree_loadout').field('id_spec')
+
+            if entry.id_trait_node_entry != 0:
+                node_entry = entry
+            else:
+                node_entries = entry.ref('id_trait_node').child_refs('TraitNodeXTraitNodeEntry')
+                if len(node_entries) == 1:
+                    node_entry = node_entries[0]
+                else:
+                    node_entry = sorted(node_entries, key = lambda e: e.index)[0]
+
+            fields += node_entry.field('id_trait_node_entry')
+            fields += entry.field('num_points', 'order_index')
+
             self.output_record(fields)
 
         self.output_footer()

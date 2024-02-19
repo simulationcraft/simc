@@ -36,13 +36,13 @@ position=back
 talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSLigkkkUSjolkEJJAAAAAAAQiggkQSSSIJSJoEOAAAAAAASAAA
 
 head=benevolent_embersages_casque,id=207254,bonus_id=1808,enchant_id=7052,gem_id=192982,ilevel=489
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1537,gem_id=192922/192922/192922,ilevel=486,crafted_stats=32/49
+neck=chain_of_the_green_flight,id=137311,bonus_id=4786/8782/9843/9569,gem_id=192922/192922/192922,ilevel=489
 shoulder=benevolent_embersages_wisdom,id=207252,bonus_id=4795,ilevel=489
-back=inflammable_drapeleaf,id=207160,bonus_id=4795,ilevel=489
-chest=benevolent_embersages_robe,id=207257,bonus_id=4795,enchant_id=6625,ilevel=489
-wrist=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537/9379/8960,gem_id=192922,ilevel=486,crafted_stats=32/49
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=8836/8840/8902/9405/9500/8791/9498/8932/8960,crafted_stats=49/32
+chest=spymasters_wrap,id=211404,bonus_id=4786/3168/9576,enchant_id=6625
+wrist=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537/8932/8960,gem_id=192922,ilevel=486,crafted_stats=32/49
 hands=benevolent_embersages_talons,id=207255,bonus_id=4795,ilevel=489
-waist=belt_of_the_eternal_struggle,id=207874,bonus_id=4795/1808,enchant_id=6904,gem_id=192922,ilevel=489
+waist=vengeful_bladebeak_girdle,id=208432,bonus_id=4800/4786/1520/9576/523,enchant_id=6904,gem_id=192922
 legs=benevolent_embersages_leggings,id=207253,bonus_id=4795,enchant_id=6830,ilevel=489
 feet=grove_darkeners_treads,id=134429,bonus_id=4795,ilevel=489
 finger1=archdruids_tainted_seal,id=134487,bonus_id=4795/1808,enchant_id=6550,gem_id=192922,ilevel=489

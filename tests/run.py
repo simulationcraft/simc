@@ -48,7 +48,6 @@ def test_trinkets(klass: str, path: str, enable: dict):
 
 # Test baseline profile & no-talent profile
 def test_baseline(klass: str, path: str, enable: dict):
-    spec = WowSpec.get_wow_spec_from_combined_simc_name(klass)
     fight_style = "Patchwerk"
     grp = TestGroup(
         "{}/{}/baseline".format(profile, fight_style),
@@ -59,15 +58,17 @@ def test_baseline(klass: str, path: str, enable: dict):
     Test(
         "baseline profile",
         group=grp,
+        args=[
+            ( "single_actor_batch", "1" ),
+            ( "json", "test.json" ),
+            ( "html", "test.html" )
+        ]
     )
     Test(
         "no talents",
         group=grp,
         args=[
-            (
-                "talents",
-                "",
-            )
+            ( "talents", "" )
         ],
     )
 

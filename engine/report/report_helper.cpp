@@ -384,11 +384,13 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   {
     tier_name          = "T30";
     max_ilevel_allowed = 457;
+    legendary_ilevel   = 457;
   }
   else if ( p.report_information.save_str.find( "T31" ) != std::string::npos )
   {
     tier_name          = "T31";
     max_ilevel_allowed = 496;
+    legendary_ilevel   = 496;
   }
   else
   {
