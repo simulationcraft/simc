@@ -3846,8 +3846,8 @@ struct unholy_blight_t final : public death_knight_spell_t
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
-    dot -> execute_on_target( d -> state -> target );
-    vp -> execute_on_target( d -> state -> target );
+    vp->execute_on_target( d->state->target );
+    dot->execute_on_target( d->state->target );
   }
 
 private:
