@@ -326,4 +326,4 @@ jobs:
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: ./generate_profiles_ci.sh
+        run: ${{ github.workspace }}/generate_profiles_ci.sh
