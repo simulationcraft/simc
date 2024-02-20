@@ -336,9 +336,3 @@ jobs:
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
         run: ${{ github.workspace }}/generate_profiles_ci.sh
-
-        ubuntu-clang++-15-for_run-fef306a2ee75d5fbc827128fd419c0cf5851b9b0-cpp-17
-        ubuntu-clang++-15-for_run-fef306a2ee75d5fbc827128fd419c0cf5851b9b0-cpp-17
-
-        ubuntu-clang++-15-for_run-fef306a2ee75d5fbc827128fd419c0cf5851b9b0-cpp-17
-        ubuntu-clang++-15-for_run-fef306a2ee75d5fbc827128fd419c0cf5851b9b0-cpp-17
