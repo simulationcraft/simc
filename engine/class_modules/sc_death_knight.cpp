@@ -3279,17 +3279,11 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   bool hasted_gcd;
 
-  struct affected_by_t
-  {
-    bool lingering_chill;
-  } affected_by;
-
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), 
     parse_buff_effects_t( p, this ),
     gain( nullptr ),
-    hasted_gcd( false ),
-    affected_by()
+    hasted_gcd( false )
   {
     this -> may_crit   = true;
     this -> may_glance = false;
@@ -3316,8 +3310,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
       this -> energize_type = action_energize::NONE;
       this -> energize_resource = RESOURCE_NONE;
     }
-
-    this -> affected_by.lingering_chill = this ->  data().affected_by( p -> spell.lingering_chill -> effectN( 1 ) );
 
     if ( this->data().ok() )
     {
@@ -3399,6 +3391,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
     // Frost
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.everfrost->check(); }, p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.piercing_chill->check(); }, p()->spell.piercing_chill_debuff );
+    parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.lingering_chill->check(); }, p()->spell.lingering_chill );
 
     // Unholy
     parse_debuff_effects( []( death_knight_td_t* td ) { return td->debuff.brittle->check(); }, p()->spell.brittle_debuff );
@@ -3445,21 +3438,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   #define PARSE_BUFF_EFFECTS_SETUP_BASE action_base_t
   PARSE_BUFF_EFFECTS_SETUP
-
-  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
-  {
-    double m = action_base_t::composite_target_crit_damage_bonus_multiplier( target );
-
-    const death_knight_td_t* td = get_td( target );
-
-    if ( td && this -> affected_by.lingering_chill && td -> debuff.lingering_chill -> check() )
-    {
-      m *= 1.0 + td -> debuff.lingering_chill -> check_stack_value();
-    }
-
-    return m;
-  }
-
 
   double composite_energize_amount( const action_state_t* s ) const override
   {

@@ -126,7 +126,14 @@
   double composite_target_multiplier( player_t* t ) const override \
   { \
     return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_multiplier( t ) * \
-           get_debuff_effects_value( parse_buff_effects_target_data( t ) ); \
+           get_debuff_effects_value( target_multiplier_dotdebuffs, parse_buff_effects_target_data( t ) ); \
+  }
+
+#define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER \
+  double composite_target_crit_damage_bonus_multiplier( player_t* t ) const override \
+  { \
+    return PARSE_BUFF_EFFECTS_SETUP_BASE::composite_target_crit_damage_bonus_multiplier( t ) * \
+           get_debuff_effects_value( target_crit_damage_dotdebuffs, parse_buff_effects_target_data( t ) ); \
   }
 
 #define PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION \
@@ -146,6 +153,7 @@
   PARSE_BUFF_EFFECTS_SETUP_COOLDOWN_DURATION \
   PARSE_BUFF_EFFECTS_SETUP_RECHARGE_MULTIPLIER \
   PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER \
+  PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER \
   PARSE_BUFF_EFFECTS_SETUP_HTML_CUSTOMSECTION
 
 enum value_type_e
@@ -207,6 +215,7 @@ public:
   std::vector<buff_effect_t> flat_cost_buffeffects;
   std::vector<buff_effect_t> crit_chance_buffeffects;
   std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
+  std::vector<dot_debuff_t> target_crit_damage_dotdebuffs;
 
   parse_buff_effects_t( PLAYER* p, action_t* a ) : player_( p ), action_( a ) {}
   virtual ~parse_buff_effects_t() = default;
@@ -325,6 +334,12 @@ public:
       }
     };
 
+    if ( !val )
+      return;
+
+    if ( mastery )
+      val_mul = 1.0;
+
     if ( !action_->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
       da_multiplier_buffeffects.emplace_back( buff, val * val_mul );
@@ -334,12 +349,6 @@ public:
 
     if ( !action_->data().affected_by_all( eff ) && !force )
       return;
-
-    if ( !val )
-      return;
-
-    if ( mastery )
-      val_mul = 1.0;
 
     if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
@@ -551,23 +560,38 @@ public:
     if ( i <= 5 )
       parse_spell_effects_mods( val, mastery, s_data, i, mods... );
 
+    auto debug_message = [ & ]( std::string_view type ) {
+      action_->sim->print_debug( "dot-debuffs: {} ({}) {} modified by {}{} on targets with dot {} ({}#{})",
+                                action_->name(), action_->id, type, val * val_mul, mastery ? "*mastery" : "",
+                                s_data->name_cstr(), s_data->id(), i );
+    };
+
     if ( !val )
       return;
 
     if ( mastery )
       val_mul = 1.0;
 
-    if ( !( ( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ||
-              eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS ) &&
-            action_->data().affected_by_all( eff ) ) &&
-         !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && !action_->special ) && !force )
+    if ( !action_->special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
+    {
+      target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, eff );
+      debug_message( "auto attack" );
+      return;
+    }
+
+    if ( !action_->data().affected_by_all( eff ) && !force )
       return;
 
-    target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, eff );
-    action_->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}{} on targets with dot {} ({}#{})",
-                               action_->name(), action_->id, val * val_mul, mastery ? "*mastery" : "",
-                               s_data->name_cstr(), s_data->id(), i );
-
+    if ( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS || eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+    {
+      target_multiplier_dotdebuffs.emplace_back( func, val * val_mul, mastery, eff );
+      debug_message( "damage" );
+    }
+    else if ( eff.subtype() == A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS )
+    {
+      target_crit_damage_dotdebuffs.emplace_back( func, val * val_mul, mastery, eff );
+      debug_message( "crit damage" );
+    }
   }
 
   template <typename... Ts>
@@ -591,11 +615,12 @@ public:
     parse_debuff_effect( func, spell, idx, true, mods... );
   }
 
-  virtual double get_debuff_effects_value( TD* td ) const
+  virtual double get_debuff_effects_value( const std::vector<dot_debuff_t>& dotdebuffs, TD* td,
+                                           bool flat = false ) const
   {
-    double return_value = 1.0;
+    double return_value = flat ? 0.0 : 1.0;
 
-    for ( const auto& i : target_multiplier_dotdebuffs )
+    for ( const auto& i : dotdebuffs )
     {
       if ( auto check = i.func( td ) )
       {
@@ -604,7 +629,10 @@ public:
         if ( i.mastery )
           eff_val *= action_->player->cache.mastery();
 
-        return_value *= 1.0 + eff_val * check;
+        if ( flat )
+          return_value += eff_val * check;
+        else
+          return_value *= 1.0 + eff_val * check;
       }
     }
 

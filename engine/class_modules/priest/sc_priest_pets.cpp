@@ -310,9 +310,11 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_p
     return static_cast<priest_pet_t&>( *player );
   }
 
-  // skip composite_target_multiplier() as priest_pet_t doesn't have target_specific_t
+  // skip as priest_pet_t doesn't have get_target_data()
   #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
   #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
+  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER
+  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER
 
   // undef first as setup is also done in sc_priest.hpp for priest_action_t
   #undef PARSE_BUFF_EFFECTS_SETUP_BASE

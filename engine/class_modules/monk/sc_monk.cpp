@@ -777,7 +777,7 @@ namespace monk
       #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
       double composite_target_multiplier( player_t *t ) const override
       {
-        double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( get_td( t ) );
+        double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( target_multiplier_dotdebuffs, get_td( t ) );
 
         auto td = find_td( t );
 

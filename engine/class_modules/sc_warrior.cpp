@@ -1013,6 +1013,7 @@ public:
     // Shared
 
     // Arms
+    parse_debuff_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); }, p()->spell.deep_wounds_arms, p()->mastery.deep_wounds_ARMS );
     parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); }, p()->spell.colossus_smash_debuff, p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
     parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); }, p()->talents.arms.executioners_precision->effectN( 1 ).trigger(), p()->talents.arms.executioners_precision );
 
@@ -1083,7 +1084,7 @@ public:
     return ab::n_targets();
   }
 
-  // custom composite_target_multiplier() to account for arms mastery & concussive blows
+  // custom composite_target_multiplier() to account for concussive blows
   #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
   #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
     double composite_target_multiplier( player_t* target ) const override
@@ -1092,17 +1093,12 @@ public:
 
     warrior_td_t* td = p()->get_target_data( target );
 
-    if ( affected_by.arms_mastery && td->dots_deep_wounds->is_ticking() )
-    {
-      m *= 1.0 + p()->cache.mastery_value();
-    }
-
     if ( td->debuffs_concussive_blows->check() )
     {
       m *= 1.0 + ( td->debuffs_concussive_blows->value() );
     }
 
-    m *= get_debuff_effects_value( td );
+    m *= get_debuff_effects_value( target_multiplier_dotdebuffs, td );
 
     return m;
   }
@@ -1146,9 +1142,9 @@ public:
     return tm;
   }
 
-  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
-  PARSE_BUFF_EFFECTS_SETUP
-
+  // custom composite_target_crit_damage_bonus_multiplier() to account for arms 2pc T30
+  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER
+  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER
   double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
   {
     double tcdbm = ab::composite_target_crit_damage_bonus_multiplier( target );
@@ -1163,6 +1159,9 @@ public:
 
     return tcdbm;
   }
+
+  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
+  PARSE_BUFF_EFFECTS_SETUP
 
   void execute() override
   {
@@ -1628,6 +1627,8 @@ struct melee_t : public warrior_attack_t
     const auto& eff = find_effect( p->talents.warrior.avatar, A_MOD_AUTO_ATTACK_PCT );
     avatar_multi = eff.percent();
     avatar_multi *= 1.0 + p->talents.arms.spiteful_serenity->effectN( 2 ).percent();
+
+    apply_debuff_effects();
   }
 
   void init() override
@@ -1697,24 +1698,6 @@ struct melee_t : public warrior_attack_t
 
     if ( p() -> buff.strike_vulnerabilities -> up() )
       m *= 1.0 + p() -> buff.strike_vulnerabilities -> check_value();
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warrior_attack_t::composite_target_multiplier( target );
-
-    const warrior_td_t* td = p()->get_target_data( target );
-    if ( td && p() -> talents.arms.colossus_smash )
-    {
-      m *= 1.0 + td -> debuffs_colossus_smash -> check_stack_value();
-    }
-
-    if ( td && p() -> talents.protection.booming_voice && td -> debuffs_demoralizing_shout -> up() )
-    {
-      m *= 1.0 + p() -> talents.protection.booming_voice -> effectN( 3 ).percent();
-    }
 
     return m;
   }
