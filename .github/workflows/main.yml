@@ -139,6 +139,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
+            generate_profiles_ci.sh
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-run:
