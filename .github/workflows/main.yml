@@ -296,6 +296,7 @@ jobs:
       - name: Regenerate Profiles
         run: |
           bash ./generate_profiles_ci.sh
+          echo $?
 
       - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
