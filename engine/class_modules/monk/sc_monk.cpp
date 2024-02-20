@@ -64,7 +64,7 @@ namespace monk
   // Template for common monk action code. See priest_action_t.
 
     template <class Base>
-    struct monk_action_t : public Base, public parse_buff_effects_t<monk_td_t>
+    struct monk_action_t : public Base, public parse_buff_effects_t<monk_t, monk_td_t>
     {
       sef_ability_e sef_ability;
       // Whether the ability is affected by the Windwalker's Mastery.
@@ -97,7 +97,7 @@ namespace monk
 
       monk_action_t( util::string_view n, monk_t *player, const spell_data_t *s = spell_data_t::nil() )
         : ab( n, player, s ),
-        parse_buff_effects_t( this ),
+        parse_buff_effects_t( player, this ),
         sef_ability( sef_ability_e::SEF_NONE ),
         ww_mastery( false ),
         may_combo_strike( false ),
@@ -481,33 +481,6 @@ namespace monk
         }
       }
 
-      double cost() const override
-      {
-        double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
-
-        if ( c == 0 )
-          return c;
-
-        c *= 1.0 + cost_reduction();
-        if ( c < 0 )
-          c = 0;
-
-        return c;
-      }
-
-      virtual double cost_reduction() const
-      {
-        double c = 0.0;
-
-        if ( p()->specialization() == MONK_WINDWALKER )
-        {
-          if ( p()->buff.serenity->check() && ab::data().affected_by( p()->talent.windwalker.serenity->effectN( 1 ) ) )
-            c += p()->talent.windwalker.serenity->effectN( 1 ).percent();  // Saved as -100
-        }
-
-        return c;
-      }
-
       void consume_resource() override
       {
         ab::consume_resource();
@@ -743,6 +716,65 @@ namespace monk
         return pm;
       }
 
+      // custom cost() to account for serenity
+      #undef PARSE_BUFF_EFFECTS_SETUP_COST
+      #define PARSE_BUFF_EFFECTS_SETUP_COST
+      double cost() const override
+      {
+        double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
+
+        if ( c == 0 )
+          return c;
+
+        c *= 1.0 + cost_reduction();
+        if ( c < 0 )
+          c = 0;
+
+        return c;
+      }
+
+      virtual double cost_reduction() const
+      {
+        double c = 0.0;
+
+        if ( p()->specialization() == MONK_WINDWALKER )
+        {
+          if ( p()->buff.serenity->check() && ab::data().affected_by( p()->talent.windwalker.serenity->effectN( 1 ) ) )
+            c += p()->talent.windwalker.serenity->effectN( 1 ).percent();  // Saved as -100
+        }
+
+        return c;
+      }
+
+      // custom composite_ta_multiplier() to account for hit_combo
+      #undef PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
+      #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
+      double composite_ta_multiplier( const action_state_t *s ) const override
+      {
+        double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+
+        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
+          ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
+
+        return ta;
+      }
+
+      // custom composite_da_multiplier() to account for hit_combo
+      #undef PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
+      #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
+      double composite_da_multiplier( const action_state_t *s ) const override
+      {
+        double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+
+        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
+          da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
+
+        return da;
+      }
+
+      // custom composite_target_multiplier() to account for weapons of order & jadefire brand
+      #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
+      #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
       double composite_target_multiplier( player_t *t ) const override
       {
         double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( get_td( t ) );
@@ -761,56 +793,8 @@ namespace monk
         return tm;
       }
 
-      double composite_ta_multiplier( const action_state_t *s ) const override
-      {
-        double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
-
-        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
-          ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
-
-        return ta;
-      }
-
-      double composite_da_multiplier( const action_state_t *s ) const override
-      {
-        double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-
-        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
-          da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
-
-        return da;
-      }
-
-      double composite_crit_chance() const override
-      {
-        double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
-
-        return cc;
-      }
-
-      timespan_t execute_time() const override
-      {
-        timespan_t et = ab::execute_time() * get_buff_effects_value( execute_time_buffeffects );
-        return std::max( 0_ms, et );
-      }
-
-      timespan_t composite_dot_duration( const action_state_t *s ) const override
-      {
-        timespan_t dd = ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
-        return dd;
-      }
-
-      timespan_t tick_time( const action_state_t* s ) const override
-      {
-        timespan_t tt = ab::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects );
-        return tt;
-      }
-
-      double recharge_multiplier( const cooldown_t &cd ) const override
-      {
-        double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
-        return rm;
-      }
+      #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
+      PARSE_BUFF_EFFECTS_SETUP
 
       void trigger_storm_earth_and_fire( const action_t *a )
       {
@@ -838,11 +822,6 @@ namespace monk
         {
           s->target->debuffs.mystic_touch->trigger();
         }
-      }
-
-      void html_customsection( report::sc_html_stream& os ) override
-      {
-        parsed_html_report( os );
       }
     };
 
