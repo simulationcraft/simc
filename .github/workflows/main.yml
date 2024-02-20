@@ -260,7 +260,7 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
-            generate_profiles_ci.sh
+            tests
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
@@ -336,4 +336,3 @@ jobs:
           default_author: github_actions
           fetch: false
           add: '*.simc'
-          
