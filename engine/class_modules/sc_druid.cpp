@@ -3265,7 +3265,7 @@ public:
     return static_cast<const state_t*>( s );
   }
 
-  const int combo_points( const action_state_t* s ) const
+  int cp( const action_state_t* s ) const
   {
     return cast_state( s )->combo_points;
   }
@@ -3647,12 +3647,12 @@ struct ferocious_bite_t : public cat_finisher_t
       return;
 
     p()->buff.sabertooth->expire();  // existing buff is replaced with new buff, regardless of CP
-    p()->buff.sabertooth->trigger( combo_points( s ) );
+    p()->buff.sabertooth->trigger( cp( s ) );
 
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
       rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
-        debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to )->combo_points = combo_points( from );
+        debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to )->combo_points = cp( from );
       } );
     }
   }
@@ -3701,7 +3701,7 @@ struct ferocious_bite_t : public cat_finisher_t
                                 : 1.0 + ( excess_energy / max_excess_energy ) *
                                             ( 1 + p()->talent.saber_jaws->effectN( 1 ).percent() );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
-    auto combo_mul = combo_points( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
+    auto combo_mul = cp( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
     // ferocious_bite_max.damage expr calls action_t::calculate_direct_amount, so we must have a separate check for
     // buff.apex_predators_craving, as the free FB from apex is redirected upon execute() which would not have happened
@@ -3765,7 +3765,7 @@ struct maim_t : public cat_finisher_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return cat_finisher_t::composite_da_multiplier( s ) * combo_points( s );
+    return cat_finisher_t::composite_da_multiplier( s ) * cp( s );
   }
 };
 
@@ -3927,7 +3927,7 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
   {
     timespan_t t = base_t::composite_dot_duration( s );
 
-    return t *= combo_points( s ) + 1;
+    return t *= cp( s ) + 1;
   }
 
   void impact( action_state_t* s ) override
