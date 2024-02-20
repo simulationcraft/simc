@@ -10635,19 +10635,21 @@ void druid_t::init()
   }
 }
 
-bool druid_t::validate_fight_style( fight_style_e /* style */ ) const
+bool druid_t::validate_fight_style( fight_style_e style ) const
 {
-  /* uncomment if certain fight styles prove problematic again
-    switch ( specialization() )
+  if ( specialization() == DRUID_BALANCE )
+  {
+    switch ( style )
     {
-      case DRUID_BALANCE:
-      case DRUID_FERAL:
-      case DRUID_GUARDIAN:
-      case DRUID_RESTORATION:
+      case FIGHT_STYLE_PATCHWERK:
+      case FIGHT_STYLE_CASTING_PATCHWERK:
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_CLEAVE_ADD:
+        return true;
       default:
-        break;
+        return false;
     }
-  */
+  }
   return true;
 }
 
