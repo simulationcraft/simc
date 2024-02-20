@@ -307,7 +307,7 @@ jobs:
 
   simc-profiles:
     name: profiles
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     needs: [ ubuntu-clang-build ]
     
     steps:
@@ -317,7 +317,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
 
       - name: Run
         env:
