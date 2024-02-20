@@ -305,3 +305,25 @@ jobs:
           fetch: false
           add: '*.simc'
 
+  simc-profiles:
+    name: profiles
+    runs-on: ${{ matrix.os }}
+    needs: [ ubuntu-clang-build ]
+    
+    steps:
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+      - name: Run
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+          SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
+          SIMC_THREADS: 2
+          SIMC_ITERATIONS: 2
+        run: ${{ github.workspace }}/tests/run.py ${{ matrix.spec }} -tests trinket baseline --max-profiles-to-use 1 --enable-all-talents --enable-all-sets
