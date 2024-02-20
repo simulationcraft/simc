@@ -309,6 +309,15 @@ jobs:
     name: profiles
     runs-on: ubuntu-22.04
     needs: [ ubuntu-clang-build ]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cppVersion: [17]
+        compiler: [clang++-15]        
+        include:
+          - compiler: clang++-15
+            os: ubuntu-22.04
     
     steps:
       - uses: actions/cache@v3
@@ -317,7 +326,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             generate_profiles_ci.sh
-          key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
         env:
@@ -327,3 +336,9 @@ jobs:
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
         run: ${{ github.workspace }}/generate_profiles_ci.sh
+
+        ubuntu-clang++-15-for_run-fef306a2ee75d5fbc827128fd419c0cf5851b9b0-cpp-17
+        ubuntu-clang++-15-for_run-fef306a2ee75d5fbc827128fd419c0cf5851b9b0-cpp-17
+
+        ubuntu-clang++-15-for_run-fef306a2ee75d5fbc827128fd419c0cf5851b9b0-cpp-17
+        ubuntu-clang++-15-for_run-fef306a2ee75d5fbc827128fd419c0cf5851b9b0-cpp-17
