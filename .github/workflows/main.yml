@@ -316,7 +316,7 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
-            tests
+            generate_profiles_ci.sh
           key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
 
       - name: Run
