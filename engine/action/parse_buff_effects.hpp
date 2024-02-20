@@ -595,15 +595,30 @@ public:
   }
 
   template <typename... Ts>
-  void parse_debuff_effects( const dfun& func, const spell_data_t* spell, Ts... mods )
+  void parse_debuff_effects( const dfun& func, const spell_data_t* spell, unsigned ignore_mask, Ts... mods )
   {
     if ( !spell->ok() )
       return;
 
     for ( size_t i = 1; i <= spell->effect_count(); i++ )
     {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
       parse_debuff_effect( func, spell, i, false, mods... );
     }
+  }
+
+  template <typename... Ts, typename = std::common_type_t<Ts...>,
+            typename = std::enable_if_t<!std::is_same_v<unsigned, std::tuple_element_t<0, std::tuple<Ts...>>>>>
+  void parse_debuff_effects( const dfun& func, const spell_data_t* spell, Ts... mods )
+  {
+    parse_debuff_effects( func, spell, 0U, mods... );
+  }
+
+  void parse_debuff_effects( const dfun& func, const spell_data_t* spell )
+  {
+    parse_debuff_effects( func, spell, 0U );
   }
 
   template <typename... Ts>
