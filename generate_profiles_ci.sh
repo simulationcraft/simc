@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
+set -e
 
-SIMC=${SIMC:-../../builddir}
+SIMC=${SIMC:-../../builddir/simc}
 
 if [ ! -d "profiles" ]; then
   echo 'You must run this script with simc root as current working directory.'
