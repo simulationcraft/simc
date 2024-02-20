@@ -326,4 +326,4 @@ jobs:
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: ${{ github.workspace }}/tests/run.py ${{ matrix.spec }} -tests trinket baseline --max-profiles-to-use 1 --enable-all-talents --enable-all-sets
+        run: ${{ github.workspace }}/generate_profiles_ci.sh
