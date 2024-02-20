@@ -295,7 +295,7 @@ jobs:
 
       - name: Regenerate Profiles
         run: |
-          .\generate_profiles.bat
+          .\generate_profiles_ci.bat
 
       - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
