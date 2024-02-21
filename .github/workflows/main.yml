@@ -75,6 +75,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
@@ -141,6 +142,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-run:
@@ -185,6 +187,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
@@ -230,6 +233,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Install Python dependencies
@@ -266,6 +270,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
