@@ -800,6 +800,7 @@ public:
   void arise() override;
   void combat_begin() override;
   void init_rng() override;
+  bool validate_fight_style( fight_style_e style ) const override;
   double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
@@ -7984,6 +7985,24 @@ void warrior_t::init_rng()
                                                     talents.protection.sudden_death );
   rppm.t31_sudden_death = get_rppm( "t31_sudden_death", find_spell( 422923 ) );
 }
+
+// warrior_t::validate_fight_style ==========================================
+bool warrior_t::validate_fight_style( fight_style_e style )
+{
+  if ( specialization() == WARRIOR_PROTECTION )
+  {
+    switch ( style )
+    {
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_DUNGEON_SLICE:
+        return false;
+      default:
+        return true;
+    }
+  }
+  return true;
+}
+
 // warrior_t::init_scaling ==================================================
 
 void warrior_t::init_scaling()
