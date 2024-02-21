@@ -249,7 +249,7 @@ jobs:
         run: ${{ github.workspace }}/tests/run.py ${{ matrix.spec }} -tests trinket baseline --max-profiles-to-use 1 --enable-all-talents --enable-all-sets
   
   simc-profiles:
-    name: profiles
+    name: Regenerate profiles
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
     if: ${{ github.event_name == 'push' }}
