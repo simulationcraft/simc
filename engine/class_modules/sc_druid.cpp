@@ -1399,7 +1399,7 @@ public:
 };
 
 template <class Base>
-struct druid_action_t : public Base, public parse_buff_effects_t<druid_td_t>
+struct druid_action_t : public Base, public parse_buff_effects_t<druid_t, druid_td_t>
 {
 private:
   using ab = Base;  // action base, eg. spell_t
@@ -1422,7 +1422,7 @@ public:
 
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( this ),
+      parse_buff_effects_t( player, this ),
       dot_name( n ),
       form_mask( ab::data().stance_mask() ),
       break_stealth( !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
@@ -1664,6 +1664,9 @@ public:
     }
   }
 
+  // custom cost() to account for innervate and free spellss
+  #undef PARSE_BUFF_EFFECTS_SETUP_COST
+  #define PARSE_BUFF_EFFECTS_SETUP_COST
   double cost() const override
   {
     if ( is_free() || ( p()->specialization() == DRUID_RESTORATION && p()->buff.innervate->up() ) )
@@ -1678,51 +1681,8 @@ public:
     return std::max( 0.0, c );
   }
 
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    return ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    return ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-  }
-
-  double composite_crit_chance() const override
-  {
-    return ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
-  }
-
-  timespan_t execute_time() const override
-  {
-    return std::max( 0_ms, ab::execute_time() * get_buff_effects_value( execute_time_buffeffects ) );
-
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
-  }
-
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    return ab::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects );
-  }
-
-  timespan_t cooldown_duration() const override
-  {
-    return ab::cooldown_duration() * get_buff_effects_value( recharge_multiplier_buffeffects );
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    return ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects );
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    return ab::composite_target_multiplier( t ) * get_debuff_effects_value( td( t ) );
-  }
+  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
+  PARSE_BUFF_EFFECTS_SETUP
 
   // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
   // Swiftness
@@ -1757,11 +1717,6 @@ public:
 #endif
 
     return ab::verify_actor_spec();
-  }
-
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
   }
 };
 
@@ -3310,7 +3265,7 @@ public:
     return static_cast<const state_t*>( s );
   }
 
-  const int combo_points( const action_state_t* s ) const
+  int cp( const action_state_t* s ) const
   {
     return cast_state( s )->combo_points;
   }
@@ -3692,12 +3647,12 @@ struct ferocious_bite_t : public cat_finisher_t
       return;
 
     p()->buff.sabertooth->expire();  // existing buff is replaced with new buff, regardless of CP
-    p()->buff.sabertooth->trigger( combo_points( s ) );
+    p()->buff.sabertooth->trigger( cp( s ) );
 
     if ( rampant_ferocity && s->result_amount > 0 && !rampant_ferocity->target_list().empty() )
     {
       rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
-        debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to )->combo_points = combo_points( from );
+        debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to )->combo_points = cp( from );
       } );
     }
   }
@@ -3746,7 +3701,7 @@ struct ferocious_bite_t : public cat_finisher_t
                                 : 1.0 + ( excess_energy / max_excess_energy ) *
                                             ( 1 + p()->talent.saber_jaws->effectN( 1 ).percent() );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
-    auto combo_mul = combo_points( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
+    auto combo_mul = cp( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
     // ferocious_bite_max.damage expr calls action_t::calculate_direct_amount, so we must have a separate check for
     // buff.apex_predators_craving, as the free FB from apex is redirected upon execute() which would not have happened
@@ -3810,7 +3765,7 @@ struct maim_t : public cat_finisher_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return cat_finisher_t::composite_da_multiplier( s ) * combo_points( s );
+    return cat_finisher_t::composite_da_multiplier( s ) * cp( s );
   }
 };
 
@@ -3972,7 +3927,7 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
   {
     timespan_t t = base_t::composite_dot_duration( s );
 
-    return t *= combo_points( s ) + 1;
+    return t *= cp( s ) + 1;
   }
 
   void impact( action_state_t* s ) override
@@ -10680,19 +10635,21 @@ void druid_t::init()
   }
 }
 
-bool druid_t::validate_fight_style( fight_style_e /* style */ ) const
+bool druid_t::validate_fight_style( fight_style_e style ) const
 {
-  /* uncomment if certain fight styles prove problematic again
-    switch ( specialization() )
+  if ( specialization() == DRUID_BALANCE )
+  {
+    switch ( style )
     {
-      case DRUID_BALANCE:
-      case DRUID_FERAL:
-      case DRUID_GUARDIAN:
-      case DRUID_RESTORATION:
+      case FIGHT_STYLE_PATCHWERK:
+      case FIGHT_STYLE_CASTING_PATCHWERK:
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_CLEAVE_ADD:
+        return true;
       default:
-        break;
+        return false;
     }
-  */
+  }
   return true;
 }
 

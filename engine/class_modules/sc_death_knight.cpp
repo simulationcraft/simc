@@ -3269,7 +3269,7 @@ namespace { // UNNAMED NAMESPACE
 
 // Template for common death knight action code. See priest_action_t.
 template <class Base>
-struct death_knight_action_t : public Base, public parse_buff_effects_t<death_knight_td_t>
+struct death_knight_action_t : public Base, public parse_buff_effects_t<death_knight_t, death_knight_td_t>
 {
   using action_base_t = Base;
   using base_t = death_knight_action_t<Base>;
@@ -3285,7 +3285,7 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), 
-    parse_buff_effects_t( this ),
+    parse_buff_effects_t( p, this ),
     gain( nullptr ),
     hasted_gcd( false ),
     affected_by()
@@ -3442,97 +3442,8 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
                          }, spell, idx, true, mods... );
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = action_base_t::composite_da_multiplier( state );
-
-    m *= get_buff_effects_value( da_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double composite_ta_multiplier( const action_state_t* state ) const override
-  {
-    double m = action_base_t::composite_ta_multiplier( state );
-
-    m *= get_buff_effects_value( ta_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double m = action_base_t::composite_crit_chance();
-
-    m += get_buff_effects_value( crit_chance_buffeffects, true );
-
-    return m;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t m = action_base_t::execute_time();
-
-    m *= get_buff_effects_value( execute_time_buffeffects );
-
-    return std::max( 0_ms, m );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* state ) const override
-  {
-    timespan_t m = action_base_t::composite_dot_duration( state );
-
-    m *= get_buff_effects_value( dot_duration_buffeffects );
-
-    return m;
-  }
-
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    timespan_t m = action_base_t::tick_time( state );
-
-    m *= get_buff_effects_value( tick_time_buffeffects );
-
-    return std::max( 1_ms, m );
-  }
-
-  timespan_t cooldown_duration() const override
-  {
-    timespan_t m = action_base_t::cooldown_duration();
-
-    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = action_base_t::recharge_multiplier( cd );
-
-    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = action_base_t::composite_target_multiplier( target );
-
-    m *= get_debuff_effects_value( get_td( target ) );
-
-    return m;
-  }
-
-  double cost() const override
-  {
-    double c = action_base_t::cost();
-
-    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-    
-    c *= get_buff_effects_value( cost_buffeffects, false, false );
-
-    return std::max( 0.0, c );
-  }
+  #define PARSE_BUFF_EFFECTS_SETUP_BASE action_base_t
+  PARSE_BUFF_EFFECTS_SETUP
 
   double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
   {
@@ -3620,11 +3531,6 @@ struct death_knight_action_t : public Base, public parse_buff_effects_t<death_kn
   void update_ready( timespan_t cd ) override
   {
     action_base_t::update_ready( cd );
-  }
-
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
   }
 };
 
@@ -3846,8 +3752,8 @@ struct unholy_blight_t final : public death_knight_spell_t
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
-    dot -> execute_on_target( d -> state -> target );
-    vp -> execute_on_target( d -> state -> target );
+    vp->execute_on_target( d->state->target );
+    dot->execute_on_target( d->state->target );
   }
 
 private:

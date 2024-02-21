@@ -12851,10 +12851,6 @@ void player_t::analyze( sim_t& s )
 {
   assert( s.iterations > 0 );
 
-  pre_analyze_hook();
-
-  collected_data.analyze( *this );
-
   range::for_each( buff_list, []( buff_t* b ) { b->analyze(); } );
 
   range::for_each( proc_list, []( proc_t* pr ) { pr->analyze(); } );

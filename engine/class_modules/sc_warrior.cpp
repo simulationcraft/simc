@@ -913,7 +913,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
 template <class Base>
-struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_td_t>
+struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_t, warrior_td_t>
 {
   struct affected_by_t
   {
@@ -947,7 +947,7 @@ public:
   bool initialized;
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      parse_buff_effects_t( this ),
+      parse_buff_effects_t( player, this ),
       usable_while_channeling( false ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -1082,18 +1082,10 @@ public:
     return ab::n_targets();
   }
 
-  double cost() const override
-  {
-    double c = ab::cost();
-
-    c += get_buff_effects_value( flat_cost_buffeffects, true, false );
-
-    c *= get_buff_effects_value( cost_buffeffects, false, false );
-
-    return std::max( 0.0, c );
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
+  // custom composite_target_multiplier() to account for arms mastery & concussive blows
+  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
+  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
+    double composite_target_multiplier( player_t* target ) const override
   {
     double m = ab::composite_target_multiplier( target );
 
@@ -1114,30 +1106,9 @@ public:
     return m;
   }
 
-  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
-  {
-    double tcdbm = ab::composite_target_crit_damage_bonus_multiplier( target );
-
-    warrior_td_t* td = p()->get_target_data( target );
-
-    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() &&
-         affected_by.t30_arms_2pc )
-    {
-      tcdbm *= 1.0 + ( p()->spell.deep_wounds_arms->effectN( 5 ).percent() );
-    }
-
-    return tcdbm;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = ab::composite_crit_chance();
-
-    c += get_buff_effects_value( crit_chance_buffeffects, true );
-
-    return c;
-  }
-
+  // custom composite_da_multiplier() to account for fury mastery & sweeping strikes
+  #undef PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
+  #define PARSE_BUFF_EFFECTS_SETUP_DA_MULTIPLIER
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double dm = ab::composite_da_multiplier( s );
@@ -1157,6 +1128,9 @@ public:
     return dm;
   }
 
+  // custom composite_ta_multiplier() to account for fury mastery
+  #undef PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
+  #define PARSE_BUFF_EFFECTS_SETUP_TA_MULTIPLIER
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double tm = ab::composite_ta_multiplier( s );
@@ -1171,49 +1145,22 @@ public:
     return tm;
   }
 
-  timespan_t execute_time() const override
+  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
+  PARSE_BUFF_EFFECTS_SETUP
+
+  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
   {
-    timespan_t m = ab::execute_time();
+    double tcdbm = ab::composite_target_crit_damage_bonus_multiplier( target );
 
-    m *= get_buff_effects_value( execute_time_buffeffects );
+    warrior_td_t* td = p()->get_target_data( target );
 
-    return std::max( 0_ms, m );
-  }
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() &&
+         affected_by.t30_arms_2pc )
+    {
+      tcdbm *= 1.0 + ( p()->spell.deep_wounds_arms->effectN( 5 ).percent() );
+    }
 
-  timespan_t composite_dot_duration( const action_state_t* state ) const override
-  {
-    timespan_t m = ab::composite_dot_duration( state );
-
-    m *= get_buff_effects_value( dot_duration_buffeffects );
-
-    return m;
-  }
-
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    timespan_t m = ab::tick_time( state );
-
-    m *= get_buff_effects_value( tick_time_buffeffects );
-
-    return std::max( 1_ms, m );
-  }
-
-  timespan_t cooldown_duration() const override
-  {
-    timespan_t m = ab::cooldown_duration();
-
-    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
-
-    return m;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = ab::recharge_multiplier( cd );
-
-    m *= get_buff_effects_value( recharge_multiplier_buffeffects );
-
-    return m;
+    return tcdbm;
   }
 
   void execute() override
@@ -1438,11 +1385,6 @@ public:
         p()->cooldown.avatar->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
     }
-  }
-
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
   }
 };
 
