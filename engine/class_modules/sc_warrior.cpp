@@ -7987,7 +7987,7 @@ void warrior_t::init_rng()
 }
 
 // warrior_t::validate_fight_style ==========================================
-bool warrior_t::validate_fight_style( fight_style_e style )
+bool warrior_t::validate_fight_style( fight_style_e style ) const
 {
   if ( specialization() == WARRIOR_PROTECTION )
   {
