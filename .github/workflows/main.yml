@@ -75,6 +75,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
@@ -141,6 +142,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-run:
@@ -185,6 +187,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
@@ -230,6 +233,7 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Install Python dependencies
@@ -248,6 +252,7 @@ jobs:
     name: profiles
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
+    if: ${{ github.event_name == 'push' }}
 
     strategy:
       fail-fast: false
@@ -266,7 +271,10 @@ jobs:
             profiles
             tests
             generate_profiles_ci.sh
+            .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+      - uses: actions/checkout@v4
 
       - name: Run
         env:
@@ -275,7 +283,8 @@ jobs:
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: ${{ github.workspace }}/generate_profiles_ci.sh
+        run: | 
+          ${{ github.workspace }}/generate_profiles_ci.sh
 
       - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
@@ -313,10 +322,7 @@ jobs:
        
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-
-
+      
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
       
