@@ -7750,6 +7750,22 @@ namespace monk
     sample_datas.stagger_pct_timeline.add( sim->current_time(), stagger_pct_val * 100.0 );
   }
 
+  bool monk_t::validate_fight_style( fight_style_e style ) const
+  {
+    if ( specialization() == MONK_BREWMASTER )
+    {
+      switch ( style )
+      {
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_DUNGEON_SLICE:
+        return false;
+      default:
+        return true;
+      }
+    }
+    return true;
+  }
+
   // monk_t::init_spells ======================================================
   void monk_t::init_spells()
   {
