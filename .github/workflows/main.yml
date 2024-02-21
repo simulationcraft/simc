@@ -281,8 +281,8 @@ jobs:
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
         run: | 
-        ${{ github.workspace }}/generate_profiles_ci.sh
-        git switch ${{ github.head_ref || github.ref_name }} 
+          ${{ github.workspace }}/generate_profiles_ci.sh
+          git switch ${{ github.head_ref || github.ref_name }} 
 
       - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
