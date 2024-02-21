@@ -273,6 +273,10 @@ jobs:
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
@@ -282,7 +286,6 @@ jobs:
           SIMC_ITERATIONS: 2
         run: | 
           ${{ github.workspace }}/generate_profiles_ci.sh
-          git switch ${{ github.head_ref || github.ref_name }} 
 
       - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
