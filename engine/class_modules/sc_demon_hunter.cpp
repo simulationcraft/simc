@@ -794,6 +794,7 @@ public:
   void init_rng() override;
   void init_scaling() override;
   void init_spells() override;
+  bool validate_fight_style( fight_style_e style ) const override;
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
@@ -7872,6 +7873,24 @@ void demon_hunter_t::init_spells()
         "throw_glaive_ds_throw", "", throw_glaive_t::glaive_source::DEATH_SWEEP_THROW );
     active.throw_glaive_ds_throw = throw_glaive_ds_throw;
   }
+}
+
+// demon_hunter_t::validate_fight_style =====================================
+
+bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
+{
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    switch ( style )
+    {
+    case FIGHT_STYLE_DUNGEON_ROUTE:
+    case FIGHT_STYLE_DUNGEON_SLICE:
+      return false;
+    default:
+      return true;
+    }
+  }
+  return true;
 }
 
 // demon_hunter_t::invalidate_cache =========================================
