@@ -7763,6 +7763,19 @@ namespace monk
         return true;
       }
     }
+    if ( specialization() == MONK_WINDWALKER )
+    {
+      switch ( style )
+      {
+        case FIGHT_STYLE_PATCHWERK:
+        case FIGHT_STYLE_CASTING_PATCHWERK:
+        case FIGHT_STYLE_DUNGEON_ROUTE:
+        case FIGHT_STYLE_DUNGEON_SLICE:
+          return true;
+        default:
+          return false;
+      }
+    }
     return true;
   }
 
