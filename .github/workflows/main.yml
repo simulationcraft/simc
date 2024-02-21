@@ -280,7 +280,9 @@ jobs:
           SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
           SIMC_THREADS: 2
           SIMC_ITERATIONS: 2
-        run: ${{ github.workspace }}/generate_profiles_ci.sh
+        run: | 
+        ${{ github.workspace }}/generate_profiles_ci.sh
+        git switch ${{ github.head_ref || github.ref_name }} 
 
       - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
@@ -318,10 +320,7 @@ jobs:
        
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-
-
+      
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
       
