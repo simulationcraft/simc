@@ -330,7 +330,7 @@ void frost( player_t* p )
   single_target->add_action( "howling_blast,if=buff.rime.react&set_bonus.tier30_2pc&buff.killing_machine.stack<2" );
   single_target->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
   single_target->add_action( "obliterate,if=buff.killing_machine.react" );
-  single_target->add_action( "howling_blast,if=buff.rime.react&talent.icebreaker.rank=2" );
+  single_target->add_action( "howling_blast,if=buff.rime.react&talent.icebreaker.rank=1" );
   single_target->add_action( "horn_of_winter,if=rune<4&runic_power.deficit>25+(5*buff.rune_of_hysteria.up)&talent.obliteration&talent.breath_of_sindragosa" );
   single_target->add_action( "frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25+(5*buff.rune_of_hysteria.up)|debuff.razorice.stack=5&talent.shattering_blade)" );
   single_target->add_action( "howling_blast,if=variable.rime_buffs" );

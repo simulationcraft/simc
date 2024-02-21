@@ -277,6 +277,14 @@ jobs:
           SIMC_ITERATIONS: 2
         run: ${{ github.workspace }}/generate_profiles_ci.sh
 
+      - name: Commit Profiles
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          message: 'Regenerate profiles'
+          default_author: github_actions
+          fetch: false
+          add: '*.simc'
+
   build-osx:
     name: macos-latest
     runs-on: macos-latest
@@ -329,15 +337,3 @@ jobs:
       - name: Smoke Test
         if: ${{ matrix.runSmokeTest }}
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
-
-      - name: Regenerate Profiles
-        run: |
-          .\generate_profiles_ci.bat
-
-      - name: Commit Profiles
-        uses: EndBug/add-and-commit@v9.1.4
-        with:
-          message: 'Regenerate profiles'
-          default_author: github_actions
-          fetch: false
-          add: '*.simc'
