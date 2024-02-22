@@ -1013,14 +1013,23 @@ public:
     // Shared
 
     // Arms
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); }, p()->spell.deep_wounds_arms, p()->mastery.deep_wounds_ARMS );
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); }, p()->spell.colossus_smash_debuff, p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); }, p()->talents.arms.executioners_precision->effectN( 1 ).trigger(), p()->talents.arms.executioners_precision );
-
+    // Arms deep wounds spell data contains S2 tier set 2pc bonus, which is disabled/enabled via script.
+    // To account for this, we ignore effects #4 and #5 via mas 0b11000 if the set bonus is not active.
+    parse_debuff_effects( []( warrior_td_t* td ) { return td->dots_deep_wounds->is_ticking(); },
+                          p()->spell.deep_wounds_arms, p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) ? 0b0 : 0b11000,
+                          p()->mastery.deep_wounds_ARMS );
+    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_colossus_smash->check(); },
+                          p()->spell.colossus_smash_debuff,
+                          p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
+    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_executioners_precision->check(); },
+                          p()->talents.arms.executioners_precision->effectN( 1 ).trigger(),
+                          p()->talents.arms.executioners_precision );
     // Fury
 
     // Protection
-    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); }, p()->talents.protection.demoralizing_shout, p()->talents.protection.booming_voice );
+    parse_debuff_effects( []( warrior_td_t* td ) { return td->debuffs_demoralizing_shout->check(); },
+                          p()->talents.protection.demoralizing_shout,
+                          p()->talents.protection.booming_voice );
   }
 
   void init() override
@@ -1140,24 +1149,6 @@ public:
     tm *= get_buff_effects_value( ta_multiplier_buffeffects );
 
     return tm;
-  }
-
-  // custom composite_target_crit_damage_bonus_multiplier() to account for arms 2pc T30
-  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER
-  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_CRIT_DAMAGE_BONUS_MULTIPLIER
-  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
-  {
-    double tcdbm = ab::composite_target_crit_damage_bonus_multiplier( target );
-
-    warrior_td_t* td = p()->get_target_data( target );
-
-    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() &&
-         affected_by.t30_arms_2pc )
-    {
-      tcdbm *= 1.0 + ( p()->spell.deep_wounds_arms->effectN( 5 ).percent() );
-    }
-
-    return tcdbm;
   }
 
   #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
