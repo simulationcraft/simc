@@ -10649,7 +10649,8 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
       default:
         return false;
     }
-  } else if ( specialization() == DRUID_GUARDIAN )
+  }
+  if ( specialization() == DRUID_GUARDIAN )
   {
     switch ( style )
     {

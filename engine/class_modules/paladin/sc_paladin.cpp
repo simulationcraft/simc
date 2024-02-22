@@ -2533,9 +2533,9 @@ bool paladin_t::validate_fight_style( fight_style_e style ) const
     {
       case FIGHT_STYLE_DUNGEON_ROUTE:
       case FIGHT_STYLE_DUNGEON_SLICE:
-        return true;
-      default:
         return false;
+      default:
+        return true;
     }
   }
   return true;
