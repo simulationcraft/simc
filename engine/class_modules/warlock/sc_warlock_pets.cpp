@@ -363,7 +363,7 @@ namespace base
 /// Felhunter Begin
 
 felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_FELHUNTER, name != "felhunter" )
+  : warlock_pet_t( owner, name, PET_FELHUNTER, false )
 {
   action_list_str = "shadow_bite";
 
@@ -407,7 +407,7 @@ action_t* felhunter_pet_t::create_action( util::string_view name, util::string_v
 /// Imp Begin
 
 imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_IMP, name != "imp" ), firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) )
+  : warlock_pet_t( owner, name, PET_IMP, false ), firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) )
 {
   action_list_str = "firebolt";
 
@@ -506,7 +506,7 @@ action_t* sayaad_pet_t::create_action( util::string_view name, util::string_view
 /// Voidwalker Begin
 
 voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_VOIDWALKER, name != "voidwalker" )
+  : warlock_pet_t( owner, name, PET_VOIDWALKER, false )
 {
   action_list_str = "consuming_shadows";
 
@@ -551,7 +551,7 @@ namespace demonology
 /// Felguard Begin
 
 felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_FELGUARD, name != "felguard" ),
+  : warlock_pet_t( owner, name, PET_FELGUARD, false ),
     soul_strike( nullptr ),
     felguard_guillotine( nullptr ),
     hatred_proc( nullptr ),
@@ -1271,7 +1271,7 @@ double grimoire_felguard_pet_t::composite_player_multiplier( school_e school ) c
 /// Wild Imp Begin
 
 wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
-  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ), firebolt( nullptr ), power_siphon( false ), imploded( false )
+  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP, true ), firebolt( nullptr ), power_siphon( false ), imploded( false )
 {
   resource_regeneration = regen_type::DISABLED;
   owner_coeff.health    = 0.15;
@@ -1466,7 +1466,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 /// Dreadstalker Begin
 
-dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER )
+dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER, true )
 {
   action_list_str = "travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
@@ -2457,7 +2457,7 @@ namespace destruction
 /// Infernal Begin
 
 infernal_t::infernal_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_INFERNAL, name != "infernal" ), immolation( nullptr )
+  : warlock_pet_t( owner, name, PET_INFERNAL, true ), immolation( nullptr )
 {
   resource_regeneration = regen_type::DISABLED;
 }
@@ -2573,7 +2573,7 @@ namespace affliction
 /// Darkglare Begin
 
 darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_DARKGLARE, name != "darkglare" )
+  : warlock_pet_t( owner, name, PET_DARKGLARE, true )
 {
   action_list_str += "eye_beam";
 }
