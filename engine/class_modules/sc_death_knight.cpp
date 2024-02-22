@@ -1368,6 +1368,7 @@ public:
   void      datacollection_end() override;
   void      analyze( sim_t& sim ) override;
   void      apply_affecting_auras( action_t& action ) override;
+  bool      validate_fight_style( fight_style_e fight ) const override;
 
   // Default consumables
   std::string default_flask() const override { return death_knight_apl::flask( this ); }
@@ -10962,6 +10963,51 @@ role_e death_knight_t::primary_role() const
     return ROLE_TANK;
 
   return ROLE_ATTACK;
+}
+
+bool death_knight_t::validate_fight_style( fight_style_e fight ) const
+{
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
+    switch ( fight )
+    {
+    case FIGHT_STYLE_PATCHWERK:
+    case FIGHT_STYLE_CASTING_PATCHWERK:
+      return true;
+    default:
+      return false;
+    }    
+  }
+  if ( specialization() == DEATH_KNIGHT_FROST )
+  {
+    switch ( fight )
+    {
+    case FIGHT_STYLE_PATCHWERK:
+    case FIGHT_STYLE_CASTING_PATCHWERK:
+    case FIGHT_STYLE_HECTIC_ADD_CLEAVE:
+    case FIGHT_STYLE_DUNGEON_SLICE:
+    case FIGHT_STYLE_DUNGEON_ROUTE:
+      return true;
+    default:
+      return false;
+    }
+  }
+
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    switch ( fight )
+    {
+    case FIGHT_STYLE_PATCHWERK:
+    case FIGHT_STYLE_CASTING_PATCHWERK:
+    case FIGHT_STYLE_HECTIC_ADD_CLEAVE:
+    case FIGHT_STYLE_DUNGEON_SLICE:
+    case FIGHT_STYLE_DUNGEON_ROUTE:
+      return true;
+    default:
+      return false;
+    }
+  }
+  return false;
 }
 
 // death_knight_t::convert_hybrid_stat ==============================================
