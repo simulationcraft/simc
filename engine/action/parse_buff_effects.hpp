@@ -763,7 +763,8 @@ public:
     print_parsed_type( os, recharge_multiplier_buffeffects, "Recharge Multiplier" );
     print_parsed_type( os, flat_cost_buffeffects, "Flat Cost" );
     print_parsed_type( os, cost_buffeffects, "Percent Cost" );
-    print_parsed_type( os, target_multiplier_dotdebuffs, "Dot / Debuff on Target" );
+    print_parsed_type( os, target_multiplier_dotdebuffs, "Damage on Debuff" );
+    print_parsed_type( os, target_crit_damage_dotdebuffs, "Crit Damage on Debuff" );
     print_parsed_custom_type( os );
 
     os << "</table>\n"
