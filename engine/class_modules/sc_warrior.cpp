@@ -919,18 +919,14 @@ struct warrior_action_t : public Base, public parse_buff_effects_t<warrior_t, wa
   struct affected_by_t
   {
     // mastery/buff damage increase.
-    bool fury_mastery_direct, fury_mastery_dot, arms_mastery;
+    bool fury_mastery_direct, fury_mastery_dot;
     // talents
     bool sweeping_strikes;
-    // tier
-    bool t30_arms_2pc;
 
     affected_by_t()
       : fury_mastery_direct( false ),
         fury_mastery_dot( false ),
-        arms_mastery( false ),
-        sweeping_strikes( false ),
-        t30_arms_2pc( false )
+        sweeping_strikes( false )
     {
     }
   } affected_by;
@@ -1050,8 +1046,6 @@ public:
     affected_by.sweeping_strikes         = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
-    affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
-    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->spell.deep_wounds_arms->effectN( 5 ) );
 
     initialized = true;
   }
@@ -1626,7 +1620,6 @@ struct melee_t : public warrior_attack_t
   {
     warrior_attack_t::init();
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
-    affected_by.arms_mastery        = p()->mastery.deep_wounds_ARMS->ok();
   }
 
   void reset() override
