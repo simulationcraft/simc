@@ -578,6 +578,7 @@ public:
   virtual void      init_rng() override;
   virtual void      init_spells() override;
   virtual void      init_action_list() override;
+  virtual bool      validate_fight_style( fight_style_e style ) const override;
   virtual void      reset() override;
   virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 

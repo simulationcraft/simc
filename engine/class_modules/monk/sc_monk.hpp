@@ -1063,6 +1063,7 @@ namespace monk
     void init_action_list() override;
     void activate() override;
     void collect_resource_timeline_information() override;
+    bool validate_fight_style( fight_style_e style ) const override;
     std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
     const monk_td_t *find_target_data( const player_t *target ) const override
     {

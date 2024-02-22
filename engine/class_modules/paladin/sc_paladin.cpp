@@ -2524,6 +2524,23 @@ void paladin_t::init_action_list()
   player_t::init_action_list();
 }
 
+// paladin_t::validate_fight_style ==========================================
+bool paladin_t::validate_fight_style( fight_style_e style ) const
+{
+  if ( specialization() == PALADIN_PROTECTION )
+  {
+    switch ( style )
+    {
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_DUNGEON_SLICE:
+        return false;
+      default:
+        return true;
+    }
+  }
+  return true;
+}
+
 void paladin_t::init_special_effects()
 {
   player_t::init_special_effects();

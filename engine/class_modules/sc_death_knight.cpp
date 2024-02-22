@@ -1325,6 +1325,7 @@ public:
   void      init_gains() override;
   void      init_procs() override;
   void      init_finished() override;
+  bool      validate_fight_style( fight_style_e style ) const override;
   double    composite_bonus_armor() const override;
   double    composite_attack_power_multiplier() const override;
   double    composite_melee_speed() const override;
@@ -10403,6 +10404,49 @@ void death_knight_t::init_finished()
                   "runeforge.name are to be used with Shadowlands Runeforge legendaries only. "
                   "Use death_knight.runeforge.name instead.", name() );
   }
+}
+
+// death_knight_t::validate_fight_style =====================================
+bool death_knight_t::validate_fight_style( fight_style_e fight ) const
+{
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
+    switch ( fight )
+    {
+    case FIGHT_STYLE_PATCHWERK:
+    case FIGHT_STYLE_CASTING_PATCHWERK:
+      return true;
+    default:
+      return false;
+    }
+  }
+  if ( specialization() == DEATH_KNIGHT_FROST )
+  {
+    switch ( fight )
+    {
+    case FIGHT_STYLE_PATCHWERK:
+    case FIGHT_STYLE_CASTING_PATCHWERK:
+    case FIGHT_STYLE_DUNGEON_SLICE:
+    case FIGHT_STYLE_DUNGEON_ROUTE:
+      return true;
+    default:
+      return false;
+    }
+  }
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    switch ( fight )
+    {
+    case FIGHT_STYLE_PATCHWERK:
+    case FIGHT_STYLE_CASTING_PATCHWERK:
+    case FIGHT_STYLE_DUNGEON_SLICE:
+    case FIGHT_STYLE_DUNGEON_ROUTE:
+  return true;
+    default:
+      return false;
+    }
+  }
+  return false;
 }
 
 // death_knight_t::activate =================================================

@@ -10650,6 +10650,17 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
         return false;
     }
   }
+  if ( specialization() == DRUID_GUARDIAN )
+  {
+    switch ( style )
+    {
+    case FIGHT_STYLE_DUNGEON_ROUTE:
+    case FIGHT_STYLE_DUNGEON_SLICE:
+      return false;
+    default:
+      return true;
+    }
+  }
   return true;
 }
 
