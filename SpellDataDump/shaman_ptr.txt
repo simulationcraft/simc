@@ -13601,6 +13601,7 @@ Effects          :
 Description      : $@spelldesc320674
 
 Name             : Primordial Wave (id=375982) [Spell Family (11)] 
+Hotfixed         : Velocity (34 -> 40)
 Talent Entry     : Enhancement [tree=spec, row=8, col=1, max_rank=1, req_points=20]
                  : Elemental [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Shaman
@@ -13610,7 +13611,7 @@ Resource         : 0.6% Base Mana (0) (id=265386)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 34 yards/sec
+Velocity         : 40 yards/sec
 Charges          : 1 (45 seconds cooldown)
 Category         : 1893: Continuous Waves (382046 effect#1)
 Affecting spells : Maelstrom Weapon (187881 effect#2), Primal Maelstrom (384405 effect#1)
