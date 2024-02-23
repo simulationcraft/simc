@@ -137,7 +137,7 @@ struct simplified_player_t : public player_t
       spell_power_mod.direct = 8;
       gcd_type               = gcd_haste_type::SPELL_HASTE;
       base_execute_time      = 1.5_s;
-      school                 = SCHOOL_CHROMATIC;
+      school                 = SCHOOL_MAGIC;
 
       aoe                 = -1;
       reduced_aoe_targets = 8;
