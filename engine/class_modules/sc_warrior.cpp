@@ -805,7 +805,7 @@ public:
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   double composite_player_multiplier( school_e school ) const override;
-  // double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_target_crit_chance( player_t* target ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_speed() const override;
@@ -1089,25 +1089,6 @@ public:
     }
 
     return ab::n_targets();
-  }
-
-  // custom composite_target_multiplier() to account for concussive blows
-  #undef PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
-  #define PARSE_BUFF_EFFECTS_SETUP_TARGET_MULTIPLIER
-    double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = ab::composite_target_multiplier( target );
-
-    warrior_td_t* td = p()->get_target_data( target );
-
-    if ( td->debuffs_concussive_blows->check() )
-    {
-      m *= 1.0 + ( td->debuffs_concussive_blows->value() );
-    }
-
-    m *= get_debuff_effects_value( target_multiplier_dotdebuffs, td );
-
-    return m;
   }
 
   // custom composite_da_multiplier() to account for sweeping strikes
@@ -7559,13 +7540,11 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_thunderous_roar = target->get_dot( "thunderous_roar_dot", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff )
-                            ->set_default_value_from_effect( 2 )
                             ->apply_affecting_aura( p.talents.arms.spiteful_serenity )
                             ->apply_affecting_aura( p.talents.arms.blunt_instruments );
 
-  debuffs_concussive_blows = make_buff( *this , "concussive_blows" )
-                               ->set_default_value( p.spell.concussive_blows_debuff->effectN( 1 ).percent() )
-                               ->set_duration( p.spell.concussive_blows_debuff->duration() );
+  debuffs_concussive_blows = make_buff( *this, "concussive_blows", p.spell.concussive_blows_debuff )
+                                 ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
 
   debuffs_executioners_precision = make_buff( *this, "executioners_precision", p.talents.arms.executioners_precision->effectN( 1 ).trigger() );
 
@@ -8382,7 +8361,25 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-// rogue_t::composite_player_target_crit_chance =============================
+// warrior_t::composite_player_target_multiplier ==============================
+double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  if ( talents.warrior.concussive_blows.ok() )
+  {
+    auto debuff = get_target_data( target )->debuffs_concussive_blows;
+
+    if ( debuff->check() && debuff->has_common_school( school ) )
+    {
+      m *= 1.0 + debuff->value();
+    }
+  }
+
+  return m;
+}
+
+// warrior_t::composite_player_target_crit_chance =============================
 
 double warrior_t::composite_player_target_crit_chance( player_t* target ) const
 {
