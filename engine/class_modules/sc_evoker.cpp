@@ -231,9 +231,17 @@ struct simplified_player_t : public player_t
           { "two_mins_cds", 0.5,  20_s, 120_s },
           { "30s_cds",      0.25, 15_s,  30_s } } } },
       { "assa",    { ROLE_SPELL, 2.75, false, 1_s, 0.5,  -1, 8, 1, {        // 236k
-          { "ten_mins_cds", 0.2,  40_s, 600_s }, 
+          { "ten_mins_cds", 0.2,  40_s, 600_s },
           { "two_mins_cds", 1.25, 20_s, 120_s },
           { "one_mins_cds", 1.1,  14_s,  60_s } } } },
+      { "unh",     { ROLE_SPELL, 3.3, true, 1.5_s, 0.2,  -1, 8, 1, {        // 250k
+          { "three_mins_cds", 1.2,  29_s, 180_s },
+          { "90s_cds", 0.25, 20_s, 90_s },
+          { "45s_cds", 1.4,  20_s,  45_s } } } },
+      // Could probably use some RNG in the 40s cds to better emulate the 30-40s variance in use timing
+      { "dk_frost",{ ROLE_SPELL, 7.25, true, 1.5_s, 0.2,  -1, 8, 1, {        // 260k
+          { "two_mins_cds", 0.2,  20_s, 120_s },
+          { "40s_cds", 0.25, 12_s, 34_s } } } },
   };
 
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
