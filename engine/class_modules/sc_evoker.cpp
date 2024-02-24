@@ -196,7 +196,7 @@ struct simplified_player_t : public player_t
 
   struct bob_settings_t
   {
-    const struct bob_buff_t
+    struct bob_buff_t
     {
       std::string_view name;
       double value;
@@ -337,7 +337,7 @@ struct simplified_player_t : public player_t
     player_t::init_finished();
 
     register_combat_begin( snapshot_stats );
-    register_combat_begin( [ this ]( player_t* p ) {
+    register_combat_begin( [ this ]( player_t* ) {
       for ( auto* b : damage_buffs )
       {
         b->trigger();
@@ -476,7 +476,7 @@ struct simplified_player_t : public player_t
     reschedule_actor();
   }
 
-  void schedule_ready( timespan_t delta_time, bool waiting ) override
+  void schedule_ready( timespan_t, bool ) override
   {
     reschedule_actor();
   }
