@@ -110,39 +110,212 @@ struct evoker_action_state_t : public Base, public Data
   }
 };
 
+struct simple_timed_buff_t : public buff_t
+{
+  event_t* current_event;
+
+  simple_timed_buff_t( player_t* p, std::string_view name )
+    : buff_t( p, name ), current_event( nullptr )
+  {
+  }
+
+  void register_next_trigger( timespan_t time )
+  {
+    if ( current_event )
+      return;
+
+    current_event = make_event( sim, time, [ this ] {
+      current_event = nullptr;
+      trigger();
+    } );
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+    event_t::cancel( current_event );
+  }
+
+  bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
+                timespan_t duration = timespan_t::min() ) override
+  {
+    bool b = false;
+
+    for ( auto* p : sim->target_non_sleeping_list )
+    {
+      if ( !p->is_sleeping() && !( p->debuffs.invulnerable && p->debuffs.invulnerable->check() ) )
+      {
+        b = true;
+        break;
+      }
+    }
+
+    if ( !b )
+    {
+      timespan_t next = timespan_t::max();
+
+      if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+      {
+        for ( auto& event : sim->raid_events )
+        {
+          if ( event->type == "adds" || event->type == "pull" )
+          {
+            next = event->until_next() < next ? event->until_next() : next;
+          }
+        }
+      }
+
+      next = next < timespan_t::max() ? next : 1_s;
+      next += timespan_t::from_millis( rng().gauss_a( 100, 25, 0 ) );
+
+      register_next_trigger( next );
+
+      return false;
+    }
+
+    b = buff_t::trigger( stacks, value, chance, duration );
+
+    if ( b )
+    {
+      if ( cooldown && cooldown->remains() > 0_s )
+      {
+        register_next_trigger( cooldown->remains() + timespan_t::from_millis( rng().gauss_a( 100, 25, 0 ) ) );
+      }
+    }
+
+    return b;
+  }
+};
+
+
 struct simplified_player_t : public player_t
 {
   action_t* ability;
   action_t* snapshot_stats;
+  std::vector<buff_t*> damage_buffs;
+
+  struct bob_settings_t
+  {
+    const struct bob_buff_t
+    {
+      std::string_view name;
+      double value;
+      timespan_t duration;
+      timespan_t cooldown;
+    };
+
+    role_e role;
+
+    double sp_coeff;
+    bool hasted_gcds;
+    timespan_t gcd_time;
+
+    double base_aoe_multiplier;
+    int aoe;
+    int reduced_aoe_targets;
+    int full_amount_targets;
+
+    std::vector<bob_buff_t> buffs;
+  };
+
+  std::string variant;
+  
+  std::map<std::string, bob_settings_t> bob_settings = {
+      { "default", { ROLE_SPELL, 8,   true, 1.5_s, 0.40, -1, 8, 1, {} } },  // 251k
+      { "tank",    { ROLE_TANK,  5,   true, 1.5_s, 0.45, -1, 8, 1, {} } },  // 157k
+      { "healer",  { ROLE_HEAL,  2.5, true, 1.5_s, 0.25,  -1, 5, 1, {} } }, // 78.5k
+      { "shadow",  { ROLE_SPELL, 5.7, true, 1.5_s, 0.45,  -1, 8, 1, {       // 244.3k
+          { "two_mins_cds", 0.6, 20_s, 120_s },
+          { "one_mins_cds", 0.5, 20_s,  60_s } } } },
+      { "bm",      { ROLE_SPELL, 6.2, true, 1.5_s, 0.4,  -1, 8, 1, {        // 243.6k
+          { "two_mins_cds", 0.5,  20_s, 120_s },
+          { "30s_cds",      0.25, 15_s,  30_s } } } },
+      { "assa",    { ROLE_SPELL, 2.75, false, 1_s, 0.5,  -1, 8, 1, {        // 236k
+          { "ten_mins_cds", 0.2,  40_s, 600_s }, 
+          { "two_mins_cds", 1.25, 20_s, 120_s },
+          { "one_mins_cds", 1.1,  14_s,  60_s } } } },
+  };
 
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
-    : player_t( sim, PLAYER_SIMPLIFIED, name, r )
+    : player_t( sim, PLAYER_SIMPLIFIED, name, r ), damage_buffs(), variant( "default" )
   {
     resource_regeneration = regen_type::DISABLED;
 
     // Using a background repeating action as a replacement for a foreground action. Change Ready Type to trigger so we
     // can wake up the pet when it needs to re-execute this action.
-    ready_type            = READY_TRIGGER;
+    ready_type = READY_TRIGGER;
+  }
+
+  buff_t* make_damage_buff( std::string_view name, double value, timespan_t duration, timespan_t cooldown )
+  {
+    buff_t* b = make_buff<simple_timed_buff_t>( this, name );
+
+    b->set_default_value( value )
+        ->set_cooldown( cooldown )
+        ->set_duration( duration )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    damage_buffs.push_back( b );
+
+    return b;
+  }
+
+  buff_t* make_damage_buff( bob_settings_t::bob_buff_t b )
+  {
+    return make_damage_buff( b.name, b.value, b.duration, b.cooldown );
+  }
+
+  void make_damage_buffs( bob_settings_t s )
+  {
+    for ( auto& b : s.buffs )
+    {
+      make_damage_buff( b );
+    }
+  }
+
+  bob_settings_t& get_variant_settings()
+  {
+    auto it = bob_settings.find( variant );
+    if ( it != bob_settings.end() )
+    {
+      return it->second;
+    }
+
+    return bob_settings[ "default" ];
+  }
+
+  void init() override
+  {
+    player_t::init();
+
+    role = get_variant_settings().role;
   }
 
   struct simple_ability_t : public spell_t
   {
-    simple_ability_t( player_t* p ) : spell_t( "simple_spell", p )
+    simple_ability_t( player_t* p, bob_settings_t settings )
+      : spell_t( "simple_spell", p )
     {
       background = repeating = true;
 
       allow_class_ability_procs = true;
       may_crit                  = true;
 
-      spell_power_mod.direct = 8;
-      gcd_type               = gcd_haste_type::SPELL_HASTE;
-      base_execute_time      = 1.5_s;
+      set_action_stats( settings );
+    }
+
+    void set_action_stats( bob_settings_t settings )
+    {
+      spell_power_mod.direct = settings.sp_coeff;
+      gcd_type               = settings.hasted_gcds ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
+      base_execute_time      = settings.gcd_time;
+      
       school                 = SCHOOL_MAGIC;
 
-      aoe                 = -1;
-      reduced_aoe_targets = 8;
-      full_amount_targets = 1;
-      base_aoe_multiplier = 0.35;
+      aoe                 = settings.aoe;
+      reduced_aoe_targets = settings.reduced_aoe_targets;
+      full_amount_targets = settings.full_amount_targets;
+      base_aoe_multiplier = settings.base_aoe_multiplier;
     }
 
     bool usable_moving() const override
@@ -164,7 +337,20 @@ struct simplified_player_t : public player_t
     player_t::init_finished();
 
     register_combat_begin( snapshot_stats );
+    register_combat_begin( [ this ]( player_t* p ) {
+      for ( auto* b : damage_buffs )
+      {
+        b->trigger();
+      }
+    } );
+
     matching_gear = true;
+  }
+
+  void create_buffs() override
+  {
+    player_t::create_buffs();
+    make_damage_buffs( get_variant_settings() );
   }
 
   double composite_mastery_value() const override
@@ -185,13 +371,13 @@ struct simplified_player_t : public player_t
     base.stats.haste_rating       = 4675;
     base.stats.mastery_rating     = 4675;
     base.stats.versatility_rating = 1005;
-
   }
 
   void create_actions() override
   {
     // player_t::create_actions();
-    ability = new simple_ability_t( this );
+
+    ability = new simple_ability_t( this, get_variant_settings() );
     snapshot_stats = new snapshot_stats_t( this, "" );
   }
 
@@ -200,6 +386,14 @@ struct simplified_player_t : public player_t
     double m = player_t::composite_player_multiplier( school );
 
     m *= 1.0 + cache.mastery_value();
+
+    for ( auto* b : damage_buffs )
+    {
+      if ( b->check() )
+      {
+        m *= 1.0 + b->check_stack_value();
+      }
+    }
 
     return m;
   }
@@ -220,7 +414,7 @@ struct simplified_player_t : public player_t
   
   role_e primary_role() const override
   {
-    return ROLE_SPELL;
+    return role;
   }
 
   void invalidate_cache( cache_e cache ) override
@@ -266,6 +460,13 @@ struct simplified_player_t : public player_t
       return;
     
     ability->schedule_execute();
+  }
+
+  void create_options()
+  {
+    player_t::create_options();
+
+    add_option( opt_string( "variant", variant ) );
   }
 
   void arise() override
@@ -4769,26 +4970,29 @@ void evoker_t::create_pets()
   player_t::create_pets();
   if ( specialization() == EVOKER_AUGMENTATION && sim->player_no_pet_list.size() == 1 && option.make_simplified_if_alone )
   {
-    size_t bobs;
+    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
 
-    if ( sim->fight_style ==  FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+    std::vector<std::pair<std::string_view, std::string_view>> bobs;
+
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
     {
       option.force_clutchmates = "yes";
       close_as_clutchmates     = true;
-      bobs                     = 2;
+
+      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
     }
     else
     {
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
-      bobs                     = 4;
+
+      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob", "default" }, { "Bob Assa", "assa" } };
     }
 
-    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
-
-    for ( size_t i = 0; i < bobs; i++ )
+    for ( auto& pair : bobs )
     {
-      module->create_player( sim, "Bob" + std::to_string( i ) );
+      simplified_player_t* p = dynamic_cast<simplified_player_t*>( module->create_player( sim, pair.first ) );
+      p->variant             = pair.second;
     }
   }
 }
