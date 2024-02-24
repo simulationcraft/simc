@@ -342,7 +342,7 @@ public:
 
     if ( !action_->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
-      da_multiplier_buffeffects.emplace_back( buff, val * val_mul );
+      da_multiplier_buffeffects.emplace_back( buff, val * val_mul, value_type, use_stacks, mastery, f, eff );
       debug_message( "auto attack" );
       return;
     }
@@ -610,7 +610,7 @@ public:
   }
 
   template <typename... Ts, typename = std::common_type_t<Ts...>,
-            typename = std::enable_if_t<!std::is_same_v<unsigned, std::tuple_element_t<0, std::tuple<Ts...>>>>>
+            typename = std::enable_if_t<!std::is_integral_v<std::tuple_element_t<0, std::tuple<Ts...>>>>>
   void parse_debuff_effects( const dfun& func, const spell_data_t* spell, Ts... mods )
   {
     parse_debuff_effects( func, spell, 0U, mods... );
