@@ -4298,6 +4298,7 @@ double player_t::composite_weapon_attack_power_by_type( attack_power_type type )
     }
   }
 
+  // weapon attack power is truncated to integer
   return static_cast<int>( wdps * WEAPON_POWER_COEFFICIENT );
 }
 
@@ -4306,18 +4307,16 @@ double player_t::composite_total_attack_power_by_type( attack_power_type type ) 
   // duplicate code to prevent recursion
   if ( current.attack_power_per_spell_power > 0 )
   {
-    return current.attack_power_per_spell_power *
-           static_cast<int>( cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier() );
+    // total spell power is rounded to integer
+    auto sp = std::round( cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier() );
+
+    return std::round( current.attack_power_per_spell_power * sp );
   }
 
   auto mul = composite_attack_power_multiplier();
 
-  // rounded to integer
-  int base_ap = std::round( cache.attack_power() * mul );
-  // multiplier is rounded to 3 digits
-  int weap_ap = std::round( cache.weapon_attack_power( type ) * std::round( mul * 1000 ) * 0.001 );
-
-  return base_ap + weap_ap;
+  // total attack power is rounded to integer
+  return std::round( cache.attack_power() * mul + cache.weapon_attack_power( type ) * mul );
 }
 
 double player_t::composite_attack_power_multiplier() const
@@ -4331,7 +4330,8 @@ double player_t::composite_attack_power_multiplier() const
 
   m *= 1.0 + sim->auras.battle_shout->check_value();
 
-  return m;
+  // multiplier is rounded to 3 digits
+  return std::round( m * 1000 ) * 0.001;
 }
 
 double player_t::composite_melee_crit_chance() const
@@ -4621,17 +4621,15 @@ double player_t::composite_total_spell_power( school_e school ) const
   {
     auto mul = composite_attack_power_multiplier();
 
-  // rounded to integer
-  int base_ap = std::round( cache.attack_power() * mul );
-  // multiplier is rounded to 3 digits
-  int weap_ap = std::round( cache.weapon_attack_power( attack_power_type::WEAPON_MAINHAND ) *
-                std::round( mul * 1000 ) * 0.001 );
+    // total attack power is rounded to integer
+    auto ap = std::round( cache.attack_power() * mul +
+                          cache.weapon_attack_power( attack_power_type::WEAPON_MAINHAND ) * mul );
 
-    return current.spell_power_per_attack_power * ( base_ap + weap_ap );
+    return std::round( current.spell_power_per_attack_power * ap );
   }
 
-  // truncated to integer
-  return static_cast<int>( cache.spell_power( school ) * composite_spell_power_multiplier() );
+  // total spell power is rounded to integer
+  return std::round( cache.spell_power( school ) * composite_spell_power_multiplier() );
 }
 
 double player_t::composite_spell_power_multiplier() const
@@ -4641,7 +4639,8 @@ double player_t::composite_spell_power_multiplier() const
     return 1.0;
   }
 
-  return current.spell_power_multiplier;
+  // multiplier is rounded to 3 digits
+  return std::round( current.spell_power_multiplier * 1000 ) * 0.001;
 }
 
 double player_t::composite_spell_crit_chance() const
