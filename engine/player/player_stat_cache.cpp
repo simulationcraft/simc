@@ -21,6 +21,7 @@ void player_stat_cache_t::invalidate_all()
   range::fill( spell_power_valid, false );
   range::fill( player_mult_valid, false );
   range::fill( player_heal_mult_valid, false );
+  range::fill( weapon_attack_power_valid, false );
 }
 
 /**
