@@ -6852,6 +6852,8 @@ struct weapon_swap_t : public action_t
       rogue -> swap_weapon( WEAPON_MAIN_HAND, swap_to_type );
       rogue -> swap_weapon( WEAPON_OFF_HAND, swap_to_type );
     }
+
+    rogue->invalidate_cache( CACHE_WEAPON_DPS );
   }
 
   bool ready() override
