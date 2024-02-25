@@ -1636,7 +1636,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
           buffed_stats.spell_power,
-          p.composite_total_spell_power( SCHOOL_MAX ),
+          p.composite_spell_power( SCHOOL_MAX ) * p.composite_spell_power_multiplier(),
           p.initial.stats.spell_power );
     }
     if ( p.composite_melee_crit_chance() == p.composite_spell_crit_chance() )

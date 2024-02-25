@@ -276,9 +276,9 @@ void lightless_force( special_effect_t& effect )
       spell_power_mod.direct = data().effectN( 2 ).percent();
     }
 
-    double composite_total_spell_power() const override
+    double composite_spell_power() const override
     {
-      return std::max( proc_spell_t::composite_total_spell_power(), proc_spell_t::composite_total_attack_power() );
+      return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
     }
   };
 
