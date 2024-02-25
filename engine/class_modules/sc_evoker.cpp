@@ -1127,7 +1127,7 @@ public:
 
   double composite_attack_power( const action_state_t* s ) const
   {
-    return p( s )->composite_melee_attack_power_by_type( ab::get_attack_power_type() );
+    return p( s )->composite_total_attack_power_by_type( ab::get_attack_power_type() );
   }
 
   double composite_spell_power( const action_state_t* s ) const
@@ -1139,7 +1139,7 @@ public:
 
     for ( auto base_school : ab::base_schools )
     {
-      tmp = _player->cache.spell_power( base_school );
+      tmp = _player->composite_total_spell_power( base_school );
       if ( tmp > spell_power )
         spell_power = tmp;
     }
@@ -1164,10 +1164,10 @@ public:
       state->haste = composite_haste( state );
 
     if ( flags & STATE_AP )
-      state->attack_power = composite_attack_power( state ) * p( state )->composite_attack_power_multiplier();
+      state->attack_power = composite_attack_power( state );
 
     if ( flags & STATE_SP )
-      state->spell_power = composite_spell_power( state ) * p( state )->composite_spell_power_multiplier();
+      state->spell_power = composite_spell_power( state );
 
     if ( flags & STATE_VERSATILITY )
       state->versatility = composite_versatility( state );
@@ -1197,11 +1197,6 @@ public:
   const evoker_td_t* find_td( action_state_t* s, const player_t* t ) const
   {
     return p( s )->find_target_data( t );
-  }
-
-  double composite_spell_power() const override
-  {
-    return ab::composite_spell_power();
   }
 };
 
@@ -1968,7 +1963,7 @@ public:
       stored +=
           s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent() * ( 1 - p()->option.scarlet_overheal );
       // TODO: confirm if this always matches living flame SP coeff
-      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap );
+      stored = std::min( stored, p()->composite_total_spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap );
     }
   }
 

@@ -855,9 +855,9 @@ public:
   virtual attack_power_type get_attack_power_type() const
   { return ap_type; }
 
-  virtual double composite_attack_power() const;
+  virtual double composite_total_attack_power() const;
 
-  virtual double composite_spell_power() const;
+  virtual double composite_total_spell_power() const;
 
   virtual double composite_target_armor( player_t* t ) const;
 

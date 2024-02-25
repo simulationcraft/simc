@@ -1336,49 +1336,47 @@ const char* util::cache_type_string( cache_e c )
 {
   switch ( c )
   {
-    case CACHE_STRENGTH:  return "strength";
-    case CACHE_AGILITY:   return "agility";
-    case CACHE_STAMINA:   return "stamina";
-    case CACHE_INTELLECT: return "intellect";
-    case CACHE_SPIRIT:    return "spirit";
-
-    case CACHE_SPELL_POWER:  return "spell_power";
-    case CACHE_ATTACK_POWER: return "attack_power";
-
-    case CACHE_EXP:          return "expertise";
-    case CACHE_ATTACK_EXP:   return "attack_expertise";
-    case CACHE_HIT:          return "hit";
-    case CACHE_ATTACK_HIT:   return "attack_hit";
-    case CACHE_SPELL_HIT:    return "spell_hit";
-    case CACHE_CRIT_CHANCE:  return "crit_chance";
-    case CACHE_ATTACK_CRIT_CHANCE: return "attack_crit_chance";
-    case CACHE_SPELL_CRIT_CHANCE:  return "spell_crit_chance";
-    case CACHE_HASTE:        return "haste";
-    case CACHE_ATTACK_HASTE: return "attack_haste";
-    case CACHE_SPELL_HASTE:  return "spell_haste";
-    case CACHE_ATTACK_SPEED: return "attack_speed";
-    case CACHE_SPELL_SPEED:  return "spell_speed";
-    case CACHE_MASTERY:      return "mastery";
+    case CACHE_STRENGTH:                 return "strength";
+    case CACHE_AGILITY:                  return "agility";
+    case CACHE_STAMINA:                  return "stamina";
+    case CACHE_INTELLECT:                return "intellect";
+    case CACHE_SPIRIT:                   return "spirit";
+    case CACHE_SPELL_POWER:              return "spell_power";
+    case CACHE_ATTACK_POWER:             return "attack_power";
+    case CACHE_WEAPON_DPS:               return "weapon_dps";
+    case CACHE_EXP:                      return "expertise";
+    case CACHE_ATTACK_EXP:               return "attack_expertise";
+    case CACHE_HIT:                      return "hit";
+    case CACHE_ATTACK_HIT:               return "attack_hit";
+    case CACHE_SPELL_HIT:                return "spell_hit";
+    case CACHE_CRIT_CHANCE:              return "crit_chance";
+    case CACHE_ATTACK_CRIT_CHANCE:       return "attack_crit_chance";
+    case CACHE_SPELL_CRIT_CHANCE:        return "spell_crit_chance";
+    case CACHE_HASTE:                    return "haste";
+    case CACHE_ATTACK_HASTE:             return "attack_haste";
+    case CACHE_SPELL_HASTE:              return "spell_haste";
+    case CACHE_ATTACK_SPEED:             return "attack_speed";
+    case CACHE_SPELL_SPEED:              return "spell_speed";
+    case CACHE_MASTERY:                  return "mastery";
     case CACHE_PLAYER_DAMAGE_MULTIPLIER: return "player_dmg_mult";
-    case CACHE_PLAYER_HEAL_MULTIPLIER: return "player_heal_mult";
-    case CACHE_PARRY:        return "parry";
-    case CACHE_DODGE:        return "dodge";
-    case CACHE_BLOCK:        return "block";
-    case CACHE_ARMOR:        return "armor";
-    case CACHE_BONUS_ARMOR:  return "bonus_armor";
-    case CACHE_VERSATILITY:  return "versatility";
-    case CACHE_DAMAGE_VERSATILITY:  return "damage_versatility";
-    case CACHE_HEAL_VERSATILITY:  return "heal_versatility";
-    case CACHE_MITIGATION_VERSATILITY:  return "mitigation_versatility";
-    case CACHE_LEECH: return "leech";
-    case CACHE_RUN_SPEED: return "run_speed";
-    case CACHE_RPPM_HASTE: return "rppm_haste_coeff";
-    case CACHE_RPPM_CRIT: return "rppm_crit_coeff";
-    case CACHE_CORRUPTION: return "corruption";
-    case CACHE_CORRUPTION_RESISTANCE: return "corruption_resistance";
-    case CACHE_AVOIDANCE: return "avoidance";
-
-    default: return "unknown";
+    case CACHE_PLAYER_HEAL_MULTIPLIER:   return "player_heal_mult";
+    case CACHE_PARRY:                    return "parry";
+    case CACHE_DODGE:                    return "dodge";
+    case CACHE_BLOCK:                    return "block";
+    case CACHE_ARMOR:                    return "armor";
+    case CACHE_BONUS_ARMOR:              return "bonus_armor";
+    case CACHE_VERSATILITY:              return "versatility";
+    case CACHE_DAMAGE_VERSATILITY:       return "damage_versatility";
+    case CACHE_HEAL_VERSATILITY:         return "heal_versatility";
+    case CACHE_MITIGATION_VERSATILITY:   return "mitigation_versatility";
+    case CACHE_LEECH:                    return "leech";
+    case CACHE_RUN_SPEED:                return "run_speed";
+    case CACHE_RPPM_HASTE:               return "rppm_haste_coeff";
+    case CACHE_RPPM_CRIT:                return "rppm_crit_coeff";
+    case CACHE_CORRUPTION:               return "corruption";
+    case CACHE_CORRUPTION_RESISTANCE:    return "corruption_resistance";
+    case CACHE_AVOIDANCE:                return "avoidance";
+    default:                             return "unknown";
   }
 }
 
