@@ -1669,8 +1669,14 @@ public:
   #define PARSE_BUFF_EFFECTS_SETUP_COST
   double cost() const override
   {
-    if ( is_free() || ( p()->specialization() == DRUID_RESTORATION && p()->buff.innervate->up() ) )
+    if ( is_free() )
       return 0.0;
+
+    if ( p()->specialization() == DRUID_RESTORATION && ab::current_resource() == RESOURCE_MANA &&
+         p()->buff.innervate->up() )
+    {
+      return 0.0;
+    }
 
     double c = ab::cost();
 
