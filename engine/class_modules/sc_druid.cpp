@@ -8529,7 +8529,8 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     cast_list.insert(
         cast_list.end(),
-        static_cast<size_t>( rng().gauss_ab( guidance ? 3 : 4.2, guidance ? 0.8 : 0.9360890055, 0, max_ticks - cast_list.size() ) ),
+        static_cast<size_t>( rng().gauss_ab( guidance ? 3 : 4.2, guidance ? 0.8 : 0.9360890055, as<double>( 0 ),
+                                             as<double>( max_ticks - cast_list.size() ) ) ),
         CAST_MAIN );
   }
 
