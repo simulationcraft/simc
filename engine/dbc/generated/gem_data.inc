@@ -1,5 +1,5 @@
-// Gem properties, wow build 10.2.0.52393
-static const std::array<gem_property_data_t, 2084> __gem_property_data { {
+// Gem properties, wow build 10.2.5.53262
+static const std::array<gem_property_data_t, 2105> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2084,5 +2084,26 @@ static const std::array<gem_property_data_t, 2084> __gem_property_data { {
   { 4058,  6783, 0x02000000 },
   { 4059,  6784, 0x02000000 }, // |C00834FFFProphetic Twilight Stone
   { 4060,  6831, 0x01000000 }, // $spell@spelldesc407949
+  { 4061,  7055, 0x0000000e }, // +Haste
+  { 4062,  7060, 0x0000000e }, // +Critical Strike
+  { 4063,  7061, 0x0000000e }, // +Mastery
+  { 4064,  7062, 0x0000000e }, // +Leech
+  { 4065,  7064, 0x0000000e }, // +Health Regen
+  { 4066,  7063, 0x0000000e }, // +Speed
+  { 4067,  7072, 0x0000000e }, // +Critical Strike & +Haste
+  { 4068,  7073, 0x0000000e }, // +Critical Strike & +Health Regen
+  { 4069,  7074, 0x0000000e }, // +Critical Strike & +Leech
+  { 4070,  7075, 0x0000000e }, // +Haste & +Health Regen
+  { 4071,  7076, 0x0000000e }, // +Haste & +Leech
+  { 4072,  7077, 0x0000000e }, // +Health Regen & +Leech
+  { 4073,  7078, 0x0000000e }, // +Health Regen & +Mastery
+  { 4074,  7079, 0x0000000e }, // +Health Regen & +Speed
+  { 4075,  7080, 0x0000000e }, // +Leech & +Mastery
+  { 4076,  7081, 0x0000000e }, // +Leech & +Speed
+  { 4077,  7082, 0x0000000e }, // +Mastery & +Critical Strike
+  { 4078,  7083, 0x0000000e }, // +Mastery & +Haste
+  { 4079,  7084, 0x0000000e }, // +Mastery & +Speed
+  { 4080,  7085, 0x0000000e }, // +Speed & +Critical Strike
+  { 4081,  7086, 0x0000000e }, // +Speed & +Haste
 } };
 

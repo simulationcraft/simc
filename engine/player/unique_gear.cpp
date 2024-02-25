@@ -991,7 +991,7 @@ struct lfr_harmful_spell_t : public spell_t
 
 // Blazefury Medallion
 // 243988 Driver
-// 243991 Damage spell 
+// 243991 Damage spell
 void item::blazefury_medallion( special_effect_t& effect )
 {
   struct blazefury_medallion_t : public generic_proc_t
@@ -1007,7 +1007,7 @@ void item::blazefury_medallion( special_effect_t& effect )
     action_t* damage;
     double base_damage;
 
-    blazefury_medallion_cb_t( player_t* p, const special_effect_t& e, action_t* a ) :
+    blazefury_medallion_cb_t( const special_effect_t& e, action_t* a ) :
       dbc_proc_callback_t( e.player, e ),
       damage( a ),
       base_damage( e.driver()->effectN( 1 ).trigger()->effectN( 1 ).average( e.item ) )
@@ -1028,8 +1028,11 @@ void item::blazefury_medallion( special_effect_t& effect )
     }
   };
 
+  // if your autoattacks happen to be aoe, this will apply to all targets hit
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
   auto damage = create_proc_action<blazefury_medallion_t>( "blazefury_medallion", effect );
-  new blazefury_medallion_cb_t( effect.player, effect, damage );
+  new blazefury_medallion_cb_t( effect, damage );
 }
 
 void item::rune_of_reorigination( special_effect_t& effect )

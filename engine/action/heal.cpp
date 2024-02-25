@@ -242,6 +242,17 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
       s->target->trigger_callbacks( pt_taken, pt2, this, s );
     }
   }
+   
+  if ( player->spells.leech )
+  {
+    double leech_pct = 0;
+
+    if ( player != s->target && s->result_amount > 0 &&
+         ( leech_pct = s->action->composite_leech( s ) ) > 0 )
+    {
+      player->leech_pool += leech_pct * s->result_amount;
+    }
+  }
 
   if ( record_healing )
   {

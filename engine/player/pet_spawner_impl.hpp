@@ -339,8 +339,8 @@ std::vector<T*> pet_spawner_t<T, O>::spawn( timespan_t duration, unsigned n )
 
   if ( m_owner -> sim -> debug )
   {
-    m_owner -> sim -> out_debug.print( "{} pet_spawner {}, n_pets={}, n_active_pets={}",
-      *m_owner, m_name, n_pets(), n_active_pets() );
+    m_owner -> sim -> out_debug.print( "pet_spawner {}, n_pets={}, n_active_pets={}",
+                                       m_name, n_pets(), n_active_pets() );
   }
 
   unsigned actual = n;
@@ -721,4 +721,3 @@ void pet_spawner_t<T, O>::_invoke_callbacks( pet_event_type t, T* selected_pet )
   } );
 }
 } // Namespace spawner
-

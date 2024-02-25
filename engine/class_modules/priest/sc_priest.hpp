@@ -406,8 +406,7 @@ public:
       player_talent_t exaltation;
       player_talent_t indemnity;
       player_talent_t pain_and_suffering;
-      // player_talent_t twilight_corruption;
-      const spell_data_t* twilight_corruption;
+      player_talent_t twilight_corruption;
       // Row
       player_talent_t borrowed_time;
       player_talent_t castigation;
@@ -818,7 +817,7 @@ namespace actions
  * spell_t/heal_t or absorb_t directly.
  */
 template <typename Base>
-struct priest_action_t : public Base, public parse_buff_effects_t<priest_td_t>
+struct priest_action_t : public Base, public parse_buff_effects_t<priest_t, priest_td_t>
 {
 protected:
   priest_t& priest()
@@ -845,7 +844,7 @@ protected:
 
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s ), parse_buff_effects_t( this )
+    : ab( name, &p, s ), parse_buff_effects_t( &p, this )
   {
     if ( ab::data().ok() )
     {
@@ -1031,6 +1030,8 @@ public:
   }
 
   // Reimplement base cost because I need to bypass the removal of precombat costs
+  #undef PARSE_BUFF_EFFECTS_SETUP_COST
+  #define PARSE_BUFF_EFFECTS_SETUP_COST
   double cost() const override
   {
     resource_e cr = ab::current_resource();
@@ -1070,53 +1071,8 @@ public:
     return floor( c );
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( td( t ) );
-    return tm;
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
-    return ta;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-    return da;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
-    return cc;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t et = std::max( 0_ms, ab::execute_time() * get_buff_effects_value( execute_time_buffeffects ) );
-    return et;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t dd = ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
-    return dd;
-  }
-
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    timespan_t tt = ab::tick_time( s ) * get_buff_effects_value( tick_time_buffeffects );
-    return tt;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
-    return rm;
-  }
+  #define PARSE_BUFF_EFFECTS_SETUP_BASE ab
+  PARSE_BUFF_EFFECTS_SETUP
 
   void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
   {
@@ -1128,11 +1084,6 @@ public:
     {
       ab::gain_energize_resource( resource_type, amount, gain );
     }
-  }
-
-  void html_customsection( report::sc_html_stream& os ) override
-  {
-    parsed_html_report( os );
   }
 
 private:

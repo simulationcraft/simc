@@ -674,7 +674,12 @@ void priest_t::create_buffs_discipline()
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) )
                                ->set_default_value( talents.discipline.harsh_discipline->effectN( 2 ).base_value() );
 
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) );
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->add_invalidate( CACHE_HASTE );
+  
+  if ( talents.discipline.borrowed_time.ok() )
+  {
+    buffs.borrowed_time->set_default_value( talents.discipline.borrowed_time->effectN( 2 ).percent() );
+  }
 
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
 
@@ -735,15 +740,13 @@ void priest_t::init_spells_discipline()
   talents.discipline.exaltation          = ST( "Exaltation" );
   talents.discipline.indemnity           = ST( "Indemnity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
-  //talents.discipline.twilight_corruption = ST( "Twilight Corruption" ); //373065
-  // Twilight Corruption doesn't work rn very cool
-  talents.discipline.twilight_corruption = find_spell( 373065 );
+  talents.discipline.twilight_corruption = ST( "Twilight Corruption" ); //373065
   // Row
   talents.discipline.borrowed_time   = ST( "Borrowed Time" );
   talents.discipline.castigation     = ST( "Castigation" );
   talents.discipline.abyssal_reverie = ST( "Abyssal Reverie" );
   // Row 8
-  talents.discipline.train_of_thought = ST( "Train of Thought" );  // TODO: implement PS:S reduction as well
+  talents.discipline.train_of_thought = ST( "Train of Thought" );
   talents.discipline.ultimate_penance = ST( "Ultimate Penitence" );
   talents.discipline.lenience         = ST( "Lenience" );
   talents.discipline.evangelism       = ST( "Evangelism" );

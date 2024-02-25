@@ -821,7 +821,7 @@ class WDC1Parser(DBCParserBase):
     def __init__(self, options, fname):
         super().__init__(options, fname)
 
-        # Set heder format
+        # Set header format
         self.header_format = self.__WDC1_HEADER_FIELDS
         self.parse_offset = 0
 

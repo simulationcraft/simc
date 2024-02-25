@@ -636,6 +636,7 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
       if ( it != cd.resource_timelines.end() )
       {
         root[ "resource_timelines" ][ util::resource_type_string( r ) ] = it -> timeline;
+        if ( r == RESOURCE_HEALTH ) root[ "resource_timelines" ][ "health_pct" ] = cd.health_pct;
       }
     } );
 
@@ -748,6 +749,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   root[ "party" ] = p.party;
   root[ "ready_type" ] = p.ready_type;
   root[ "bugs" ] = p.bugs;
+  root[ "valid_fight_style" ] = p.validate_fight_style( p.sim->fight_style);
   root[ "scale_player" ] = p.scale_player;
   root[ "potion_used" ] = p.potion_used;
   root[ "timeofday" ] = p.timeofday == player_t::NIGHT_TIME ? "NIGHT_TIME" : "DAY_TIME";

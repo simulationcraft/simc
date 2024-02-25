@@ -20,7 +20,7 @@ finger1=band_of_burning_thorns,id=207159,bonus_id=1520/6935/7187/8767,enchant=de
 finger2=thornwoven_band,id=162548,bonus_id=6935/7187/8767/9853,enchant=devotion_of_haste_3,gem_id=192935
 trinket1=cataclysmic_signet_brand,id=207166,bonus_id=1520/7187/8767
 trinket2=augury_of_the_primal_flame,id=208614,bonus_id=1527/7187/8767
-main_hand=gholak_the_final_conflagration,id=207786,bonus_id=1520/7187/8767,enchant=shadowflame_wreathe_3
+main_hand=gholak_the_final_conflagration,id=207786,bonus_id=1520/7187/8767,enchant=wafting_devotion_3
 off_hand=defender_of_the_ancient,id=207797,bonus_id=1520/7187/8767
 
 save=T31_Paladin_Protection.simc

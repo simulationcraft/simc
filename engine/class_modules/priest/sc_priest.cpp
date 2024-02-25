@@ -644,6 +644,13 @@ struct smite_base_t : public priest_spell_t
       priest().procs.divine_favor_chastise->occur();
       child_holy_fire->execute();
     }
+
+    // T31 Background set bonus triggers the shadow amp. Core logic ignores background spell execution so manually trigger this here.
+    if ( priest().talents.discipline.twilight_equilibrium.enabled() && background )
+    {
+      priest().buffs.twilight_equilibrium_shadow_amp->trigger();
+    }
+
   }
 
   void impact( action_state_t* s ) override
@@ -1181,7 +1188,7 @@ public:
     return static_cast<const state_t*>( s );
   }
 
-  timespan_t execute_time() const
+  timespan_t execute_time() const override
   {
     if ( execute_override > timespan_t::min() )
       return execute_override;
@@ -2343,6 +2350,11 @@ double priest_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
   }
 
+  if ( buffs.borrowed_time->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
+  }
+
   return h;
 }
 
@@ -2353,6 +2365,11 @@ double priest_t::composite_melee_haste() const
   if ( buffs.devoured_anger->check() )
   {
     h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
+  }
+  
+  if ( buffs.borrowed_time->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
   }
 
   return h;

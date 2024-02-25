@@ -1178,6 +1178,7 @@ struct tank_dummy_enemy_t : public enemy_t
 
   void init() override
   {
+    enemy_t::init();
     tank_dummy_enum = convert_tank_dummy_string( tank_dummy_str );
     // Try parsing the name
     if ( tank_dummy_enum == tank_dummy_e::NONE )
@@ -1445,14 +1446,15 @@ void enemy_t::init_target()
 
 // enemy_t::init_actions ====================================================
 
+// default provided to be overloaded for tank_dummy_enemy_t::generate_action_list()
 std::string enemy_t::generate_action_list()
 {
-  return generate_tank_action_list( tank_dummy_e::MYTHIC );
+  return "/";
 }
 
 void enemy_t::generate_heal_raid_event()
 {
-  add_tank_heal_raid_event( tank_dummy_e::HEROIC );
+  // add_tank_heal_raid_event( tank_dummy_e::HEROIC );
 }
 
 std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
@@ -1496,7 +1498,7 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
   //                                           NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
   std::array<int, numTankDummies> heal_value = { 0, 12000, 24000, 36000, 48000, 60000 };
   size_t tank_dummy_index                    = static_cast<size_t>( tank_dummy );
-  std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},period=0.5,duration=0,player_if=role.tank",
+  std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},cooldown=0.5,duration=0,player_if=role.tank",
                                              heal_value[ tank_dummy_index ] );
   sim->raid_events_str += "/" + heal_raid_event;
   std::string::size_type cut_pt = heal_raid_event.find_first_of( ',' );

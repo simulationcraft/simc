@@ -308,6 +308,9 @@ struct malefic_rapture_t : public affliction_spell_t
 
         if ( target_data->dots_phantom_singularity->is_ticking() )
           target_data->dots_phantom_singularity->adjust_duration( t31_soulstealer_extend );
+
+        if ( target_data->dots_soul_rot->is_ticking() )
+          target_data->dots_soul_rot->adjust_duration( t31_soulstealer_extend );
       }
     }
 
@@ -322,6 +325,11 @@ struct malefic_rapture_t : public affliction_spell_t
       }
 
       affliction_spell_t::execute();
+
+      if ( p()->buffs.umbrafire_kindling->check() )
+      {
+        p()->buffs.soul_rot->extend_duration( p(), t31_soulstealer_extend );
+      }
     }
   };
 
@@ -458,10 +466,12 @@ struct drain_soul_t : public affliction_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t dur = dot_duration * ( ( base_tick_time * s->haste ) / base_tick_time );
-
+    double modifier = 1.0;
+    
     if ( p()->buffs.nightfall->check() )
-      dur *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
+      modifier += p()->talents.nightfall_buff->effectN( 4 ).percent();
+
+    timespan_t dur = dot_duration * (( s->haste * modifier * base_tick_time ) / base_tick_time );
 
     return dur;
   }

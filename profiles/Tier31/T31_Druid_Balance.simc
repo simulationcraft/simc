@@ -86,6 +86,7 @@ actions.aoe+=/run_action_list,name=fallthru
 
 actions.fallthru=starfall,if=variable.is_aoe
 actions.fallthru+=/starsurge
+actions.fallthru+=/wild_mushroom,if=!variable.is_aoe
 actions.fallthru+=/sunfire,target_if=dot.moonfire.remains>remains*22%18
 actions.fallthru+=/moonfire
 
