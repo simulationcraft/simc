@@ -467,6 +467,8 @@ public:
 
     // Guardian
     action_t* after_the_wildfire_heal;
+    action_t* blazing_thorns;
+    action_t* brambles_reflect;
     action_t* elunes_favored_heal;
     action_t* galactic_guardian;
     action_t* maul_tooth_and_claw;
@@ -2730,27 +2732,17 @@ struct bt_dummy_buff_t : public druid_buff_t
 // Brambles =================================================================
 struct brambles_buff_t : public druid_absorb_buff_t
 {
-  struct brambles_t : public bear_attack_t
-  {
-    brambles_t( druid_t* p ) : bear_attack_t( "brambles", p, p->find_spell( 203958 ) )
-    {
-      background = proc = true;
-
-      base_dd_min = base_dd_max = 1.0;
-    }
-  };
-
-  action_t* damage;
+  action_t*& damage;
   double coeff;
 
   brambles_buff_t( druid_t* p )
-    : base_t( p, "brambles", p->talent.brambles ), coeff( find_effect( this, A_SCHOOL_ABSORB ).ap_coeff() )
+    : base_t( p, "brambles", p->talent.brambles ),
+      damage( p->active.brambles_reflect ),
+      coeff( find_effect( this, A_SCHOOL_ABSORB ).ap_coeff() )
   {
     set_quiet( true );
     set_default_value( 1 );
     set_absorb_high_priority( true );
-
-    damage = p->get_secondary_action<brambles_t>( "brambles" );
   }
 
   double consume( double a, action_state_t* s ) override
@@ -2823,16 +2815,7 @@ struct celestial_alignment_buff_t : public druid_buff_t
 // Dream Thorns (Guardian Tier 31) ==========================================
 struct dream_thorns_buff_t : public druid_absorb_buff_t
 {
-  struct blazing_thorns_t : public bear_attack_t
-  {
-    blazing_thorns_t( druid_t* p ) : bear_attack_t( "blazing_thorns", p, p->find_spell( 425448 ) )
-    {
-      base_dd_min = base_dd_max = 1.0;
-      proc = true;
-    }
-  };
-
-  action_t* thorns = nullptr;
+  action_t*& damage;
   double absorb_pct;
   double rage_spent;
   double coeff;
@@ -2840,15 +2823,13 @@ struct dream_thorns_buff_t : public druid_absorb_buff_t
 
   dream_thorns_buff_t( druid_t* p, bool has_4pc )
     : base_t( p, has_4pc ? "blazing_thorns" : "dream_thorns", p->find_spell( has_4pc ? 425441 : 425407 ) ),
+      damage( p->active.blazing_thorns ),
       absorb_pct( data().effectN( 2 ).percent() ),
       rage_spent( p->sets->set( DRUID_GUARDIAN, T31, B2 )->effectN( 1 ).base_value() ),
       coeff( p->sets->set( DRUID_GUARDIAN, T31, B2 )->effectN( 2 ).percent() ),
       thorn_pct( p->sets->set( DRUID_GUARDIAN, T31, B4 )->effectN( 2 ).percent() )
   {
     set_absorb_high_priority( true );
-
-    if ( has_4pc )
-      thorns = p->get_secondary_action<blazing_thorns_t>( "blazing_thorns" );
   }
 
   // triggered with rage spent as value
@@ -2878,13 +2859,13 @@ struct dream_thorns_buff_t : public druid_absorb_buff_t
 
   void absorb_used( double a, player_t* t ) override
   {
-    if ( thorns )
+    if ( damage )
     {
       if ( !t || !t->is_enemy() )
         t = p()->target;
 
-      thorns->base_dd_min = thorns->base_dd_max = a * thorn_pct;
-      thorns->execute_on_target( t );
+      damage->base_dd_min = damage->base_dd_max = a * thorn_pct;
+      damage->execute_on_target( t );
     }
   }
 };
@@ -4427,6 +4408,26 @@ struct incarnation_bear_t : public berserk_bear_base_t
   DRUID_ABILITY( incarnation_bear_t, berserk_bear_base_t, "incarnation_guardian_of_ursoc", p->spec.incarnation_bear )
   {
     buff = p->buff.incarnation_bear;
+  }
+};
+
+// Blazing Thorns ( 4t31 ) ==================================================
+struct blazing_thorns_t : public bear_attack_t
+{
+  blazing_thorns_t( druid_t* p ) : bear_attack_t( "blazing_thorns", p, p->find_spell( 425448 ) )
+  {
+    proc = true;
+    base_dd_min = base_dd_max = 1.0;
+  }
+};
+
+// Brambles Reflect =========================================================
+struct brambles_reflect_t : public bear_attack_t
+{
+  brambles_reflect_t( druid_t* p ) : bear_attack_t( "brambles", p, p->find_spell( 203958 ) )
+  {
+    background = proc = true;
+    base_dd_min = base_dd_max = 1.0;
   }
 };
 
@@ -10334,6 +10335,12 @@ void druid_t::create_actions()
   // Guardian
   if ( talent.after_the_wildfire.ok() )
     active.after_the_wildfire_heal = get_secondary_action<after_the_wildfire_heal_t>( "after_the_wildfire" );
+
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, T31, B4 ) )
+    active.blazing_thorns = get_secondary_action<blazing_thorns_t>( "blazing_thorns" );
+
+  if ( talent.brambles.ok() )
+    active.brambles_reflect = get_secondary_action<brambles_reflect_t>( "brambles" );
 
   if ( talent.elunes_favored.ok() )
     active.elunes_favored_heal = get_secondary_action<elunes_favored_heal_t>( "elunes_favored" );
