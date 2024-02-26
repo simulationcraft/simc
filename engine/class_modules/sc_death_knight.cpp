@@ -6554,7 +6554,7 @@ struct howling_blast_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( t );
 
-    if ( p() -> talent.frost.icebreaker.ok() && this -> target == t )
+    if ( p() -> talent.frost.icebreaker.ok() && p() -> buffs.rime -> check() && this -> target == t )
     {
       m *= 1.0 + p() -> talent.frost.icebreaker->effectN( 1 ).percent();
     }
